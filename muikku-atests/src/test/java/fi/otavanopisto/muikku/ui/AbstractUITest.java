@@ -73,17 +73,14 @@ import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Announcement;
 import fi.otavanopisto.muikku.atests.CommunicatorMessage;
 import fi.otavanopisto.muikku.atests.CommunicatorUserLabelRESTModel;
-import fi.otavanopisto.muikku.atests.Flag;
-import fi.otavanopisto.muikku.atests.StudentFlag;
-
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
-
+import fi.otavanopisto.muikku.atests.Flag;
+import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import wiremock.org.apache.commons.lang.StringUtils;

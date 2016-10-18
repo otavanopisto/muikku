@@ -1,7 +1,5 @@
-/* Generic */
-
 form * {
-  outline:none; /* Lets remove form field highlights made by Chrome */
+  outline: none;
 }
 
 input[type="text"],
@@ -9,43 +7,43 @@ input[type="date"],
 input[type="password"],
 input[type="url"],
 textarea {   
-  font-weight:300;
-  font-family:"Open Sans", Arial, sans-serif;
-  border-radius:2px;
-  font-size:18px;     
-  border:1px solid $formBorderColor;
-  color:$formFontColor;
-  background-color:$formBackgroundColor; 
-  width:100%;
-  box-sizing:border-box;
-  padding:10px;
+  font-weight: 300;
+  font-family: "Open Sans", Arial, sans-serif;
+  border-radius: 2px;
+  font-size: 18px;     
+  border: 1px solid $formBorderColor;
+  color: $formFontColor;
+  background-color: $formBackgroundColor; 
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
   
   &:hover {
-    color:$formFontColorFocus;
-    border:1px solid $formBorderColorFocus;
+    color: $formFontColorFocus;
+    border: 1px solid $formBorderColorFocus;
     @include elementFocus(rgba(0, 153, 255,0.3));
   }
   
   &:focus { 
-    color:$formFontColorFocus;
-    border:1px solid $formBorderColorFocus;
+    color: $formFontColorFocus;
+    border: 1px solid $formBorderColorFocus;
     @include elementFocus(rgba(0, 153, 255,0.3));
   }
 
 }
 
 input[type="color"] {
-  width:40px;
-  font-size:40px;
-  height:38px;
-  outline:none;
-  cursor:pointer;
-  border:0; 
+  width: 40px;
+  font-size: 40px;
+  height: 38px;
+  outline: none;
+  cursor: pointer;
+  border: 0; 
 }
 
 input[type="checkbox"], 
 input[type="radio"] {
-  margin:0 2px 0 2px;
+  margin: 0 2px;
   
   &:hover {
     @include elementFocus(rgba(0, 153, 255,0.6));
@@ -54,32 +52,32 @@ input[type="radio"] {
 }
 
 select {
-  color:$formFontColor;
-  font-size:16px;    
-  font-weight:300;
-  font-family:"Open Sans", Arial, sans-serif;
+  color: $formFontColor;
+  font-size: 16px;    
+  font-weight: 300;
+  font-family: "Open Sans", Arial, sans-serif;
 }
 
 label {
-  font-weight:400;
-  font-size:16px;
-  margin:5px 0 0 0;
-  display:block;
-  padding:5px 5px 5px 0;
+  font-weight: 400;
+  font-size: 16px;
+  margin: 5px 0 0;
+  display: block;
+  padding: 5px 5px 5px 0;
 }
 
-/* Every main functionality's search has to be added here as 
-input elements does not allow use of :after nor :before pseudo classes */
+// Every main functionality's search has to be added here as 
+// input elements does not allow use of :after nor :before pseudo classes */
 
 .mf-search-field {
-  position:relative;
+  position: relative;
   
   input.search {
-    padding:10px 10px 10px 40px !important;
+    padding: 10px 10px 10px 40px !important;
   }
   
-  &:before {
-    display:inline-block;
+  &::before {
+    display: inline-block;
     content: "\e61c";
     font-family: 'muikku' !important;
     speak: none;
@@ -90,13 +88,13 @@ input elements does not allow use of :after nor :before pseudo classes */
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-size:26px;
-    height:26px;
-    width:26px;
-    color:#ddd;
-    position:absolute;
-    left:10px;
-    top:12px;
+    font-size: 26px;
+    height: 26px;
+    width: 26px;
+    color: #ddd;
+    position: absolute;
+    left: 10px;
+    top: 12px;
   }
   
 }

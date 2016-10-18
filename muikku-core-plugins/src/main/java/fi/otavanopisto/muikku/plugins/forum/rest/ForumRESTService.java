@@ -68,7 +68,7 @@ public class ForumRESTService extends PluginRESTService {
   public Response listForumAreaGroups() {
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     
-    if (groups.size() > 0) {
+    if (!groups.isEmpty()) {
       List<ForumAreaGroupRESTModel> result = new ArrayList<ForumAreaGroupRESTModel>();
       
       for (ForumAreaGroup group : groups) {
@@ -112,10 +112,10 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areagroups/{AREAGROUPID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETE_FORUMAREAGROUP)
-  public Response deleteAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) {
+  public Response archiveAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) {
     ForumAreaGroup forumAreaGroup = forumController.findForumAreaGroup(areaGroupId);
     
-    forumController.deleteAreaGroup(forumAreaGroup);
+    forumController.archiveAreaGroup(forumAreaGroup);
     
     return Response.noContent().build();
   }
@@ -216,7 +216,7 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areas/{AREAID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteEnvironmentForumArea(@PathParam ("AREAID") Long areaId) {
+  public Response archiveEnvironmentForumArea(@PathParam ("AREAID") Long areaId) {
     ForumArea forumArea = forumController.getForumArea(areaId);
     if (forumArea == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -228,7 +228,7 @@ public class ForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumArea) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)) {
-      forumController.deleteArea(forumArea);
+      forumController.archiveArea(forumArea);
     } else {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -331,6 +331,12 @@ public class ForumRESTService extends PluginRESTService {
     }
     
     if (sessionController.hasPermission(MuikkuPermissions.OWNER, forumThread) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES)) {
+      // User needs permission to change the value of these parameters
+      if (!forumThread.getSticky().equals(updThread.getSticky()) || !forumThread.getLocked().equals(updThread.getLocked())) {
+        if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+
       forumController.updateForumThread(forumThread, 
           updThread.getTitle(),
           updThread.getMessage(),
@@ -353,7 +359,7 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
+  public Response archiveThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) {
     ForumThread thread = forumController.getForumThread(threadId);
     if (thread == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Forum thread (%d) not found", threadId)).build();
@@ -387,6 +393,11 @@ public class ForumRESTService extends PluginRESTService {
     }
    
     if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_WRITE_ENVIRONMENT_MESSAGES)) {
+      if (Boolean.TRUE.equals(newThread.getSticky()) || Boolean.TRUE.equals(newThread.getLocked())) {
+        if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES))
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+      
       Document message = Jsoup.parse(Jsoup.clean(newThread.getMessage(), Whitelist.relaxed().addAttributes("a", "target")));
       message.outputSettings().escapeMode(EscapeMode.xhtml);
       message.select("a[target]").attr("rel", "noopener noreferer");
@@ -542,7 +553,7 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response deleteReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
+  public Response archiveReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
     if (reply == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Forum thread reply (%d) not found", replyId)).build();

@@ -2,69 +2,30 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CommunicatorMessageRESTModel {
+import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
+
+/**
+ * REST model for full information about a single message including recipients, sender and 
+ * message content.
+ */
+public class CommunicatorMessageRESTModel extends AbstractCommunicatorMessageRESTModel {
 
   public CommunicatorMessageRESTModel() {
-    
   }
   
-  public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
-      String content, Date created, Set<String> tags, List<Long> recipientIds) {
-    this.id = id;
-    this.communicatorMessageId = communicatorMessageId;
-    this.senderId = senderId;
-    this.categoryName = categoryName;
-    this.caption = caption;
+  public CommunicatorMessageRESTModel(Long id, Long communicatorMessageId, Long senderId, UserBasicInfo sender, 
+      String categoryName, String caption, String content, Date created, Set<String> tags,
+      List<CommunicatorMessageRecipientRESTModel> recipients, Long recipientCount) {
+    super(id, communicatorMessageId, senderId, categoryName, caption, created, tags);
     this.content = content;
-    this.created = created;
-    this.tags = tags;
-    this.recipientIds = recipientIds;
+    this.sender = sender;
+    this.recipients = recipients;
+    this.recipientCount = recipientCount;
   }
   
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Long getCommunicatorMessageId() {
-    return communicatorMessageId;
-  }
-
-  public void setCommunicatorMessageId(Long communicatorMessageId) {
-    this.communicatorMessageId = communicatorMessageId;
-  }
-
-  public Long getSenderId() {
-    return senderId;
-  }
-
-  public void setSenderId(Long senderId) {
-    this.senderId = senderId;
-  }
-
-  public String getCategoryName() {
-    return categoryName;
-  }
-
-  public void setCategoryName(String categoryName) {
-    this.categoryName = categoryName;
-  }
-
-  public String getCaption() {
-    return caption;
-  }
-
-  public void setCaption(String caption) {
-    this.caption = caption;
-  }
-
   public String getContent() {
     return content;
   }
@@ -73,45 +34,32 @@ public class CommunicatorMessageRESTModel {
     this.content = content;
   }
 
-  public Date getCreated() {
-    return created;
+  public List<CommunicatorMessageRecipientRESTModel> getRecipients() {
+    return recipients;
   }
 
-  public void setCreated(Date created) {
-    this.created = created;
+  public void setRecipients(List<CommunicatorMessageRecipientRESTModel> recipients) {
+    this.recipients = recipients;
   }
 
-  public Set<String> getTags() {
-    return tags;
+  public Long getRecipientCount() {
+    return recipientCount;
   }
 
-  public void setTags(Set<String> tags) {
-    this.tags = tags;
+  public void setRecipientCount(Long recipientCount) {
+    this.recipientCount = recipientCount;
   }
 
-  public List<Long> getRecipientIds() {
-    return recipientIds;
+  public UserBasicInfo getSender() {
+    return sender;
   }
 
-  public void setRecipientIds(List<Long> recipientIds) {
-    this.recipientIds = recipientIds;
+  public void setSender(UserBasicInfo sender) {
+    this.sender = sender;
   }
-
-  private Long id;
-
-  private Long communicatorMessageId;
-
-  private Long senderId;
-  
-  private String categoryName;
-  
-  private String caption;
 
   private String content;
-
-  private Date created;
-  
-  private Set<String> tags = new HashSet<String>();
-  
-  private List<Long> recipientIds = new ArrayList<Long>();
+  private UserBasicInfo sender;
+  private Long recipientCount;
+  private List<CommunicatorMessageRecipientRESTModel> recipients = new ArrayList<CommunicatorMessageRecipientRESTModel>();
 }

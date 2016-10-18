@@ -2,11 +2,19 @@
       <div class="mf-item-details cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <div class="cm-message-details-container flex-row">       
           <div class="mf-item-description cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <div class="cm-message-details-sender">
+            <div class="cm-message-details-sender flex-row flex-align-items-center">
               <div class="mf-item-header-content-primary cm-message-header-content-primary">
                 <span>{senderFullName}</span>
-                {#recipients}
-                  <span class="icon-arrow-right" data-recipient-id="{recipientFullName}"></span>
+                {?recipients}
+                  <span class="icon-arrow-right cm-message-recipient-arrow"></span>
+                  {#recipients}
+                  	{@lt key=$idx value=3}
+                      <span class="cm-message-recipient-name">{firstName} {lastName}</span>
+                    {/lt}
+                  {/recipients}
+                  {@gt key=recipients.length value=3}
+                    <span class="cm-message-recipient-name">...</span>
+                  {/gt}
                 {/recipients}
               </div>        
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary">{created|formatDate} {created|formatTime}</div>    

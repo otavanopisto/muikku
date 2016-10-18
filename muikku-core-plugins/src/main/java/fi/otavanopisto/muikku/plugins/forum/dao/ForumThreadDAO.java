@@ -65,18 +65,28 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
   }
 
   public List<ForumThread> listByForumAreaOrdered(ForumArea forumArea, int firstResult, int maxResults) {
+    return listByForumAreaOrdered(forumArea, firstResult, maxResults, false);
+  }
+  
+  public List<ForumThread> listByForumAreaOrdered(ForumArea forumArea, int firstResult, int maxResults, boolean includeArchived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<ForumThread> criteria = criteriaBuilder.createQuery(ForumThread.class);
     Root<ForumThread> root = criteria.from(ForumThread.class);
     criteria.select(root);
-    criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(ForumThread_.forumArea), forumArea),
-            criteriaBuilder.equal(root.get(ForumThread_.archived), Boolean.FALSE)
-        )
-    );
+    if (!includeArchived) {
+      criteria.where(
+          criteriaBuilder.and(
+              criteriaBuilder.equal(root.get(ForumThread_.forumArea), forumArea),
+              criteriaBuilder.equal(root.get(ForumThread_.archived), Boolean.FALSE)
+          )
+      );
+    } else {
+      criteria.where(
+          criteriaBuilder.equal(root.get(ForumThread_.forumArea), forumArea)
+      );
+    }
 
     criteria.orderBy(criteriaBuilder.desc(root.get(ForumThread_.sticky)), criteriaBuilder.desc(root.get(ForumThread_.updated)));
     

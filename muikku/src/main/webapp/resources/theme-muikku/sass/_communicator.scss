@@ -41,7 +41,7 @@
     
    .cm-message-tool{
     padding:0 10px 0 10px;
-    border:1px solid $brd2;
+    border:1px solid $environment-border-selected-color;
     color:#000;
 
     }   
@@ -111,14 +111,14 @@
  - should be removed and replaced in dust templates whenever YOU are working on the communicator the next time */
 
 .cm-messages-toolbar{
-    border:1px solid $brd2;
+    border:1px solid $environment-border-selected-color;
     background-color: #fff;
     padding:5px;
     margin-bottom:5px;
   
   .cm-messages-tool{
     padding:0 10px 0 10px;
-    border:1px solid $brd2;
+    border:1px solid $environment-border-selected-color;
     background-color:$bgr1; 
     font-size:1.5em;
     float:left;
@@ -264,7 +264,7 @@
   
   .cm-message-tool{
     padding:0 10px 0 10px;
-    border:1px solid $brd2;
+    border:1px solid $environment-border-selected-color;
     background-color:$bgr1; 
     font-size:1.5em;
     float:left;
@@ -319,7 +319,7 @@
       
       
      &.owner{
-       border-left:5px solid $brd2; 
+       border-left:5px solid $environment-border-selected-color; 
        h3{
         color:#dadada;
        }

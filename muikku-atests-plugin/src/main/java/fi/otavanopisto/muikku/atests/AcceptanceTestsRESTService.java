@@ -556,10 +556,10 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (forumArea == null) {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
-//    forumController.list
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true);
     for (ForumThread thread : threads) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
       for (ForumThreadReply reply : replies) {
         forumController.deleteReply(reply); 
       }
@@ -847,9 +847,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Discussion not found").build();
     }
 
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE);
+    List<ForumThread> threads = forumController.listForumThreads(forumArea, 0, Integer.MAX_VALUE, true);
     for (ForumThread thread : threads) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE);
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
       for (ForumThreadReply reply : replies) {
         forumController.deleteReply(reply); 
       }

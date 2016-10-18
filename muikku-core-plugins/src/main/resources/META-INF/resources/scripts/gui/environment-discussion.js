@@ -85,7 +85,7 @@
         .callback(callback);
     },
     
-    updateThread: function (areaId, threadId, title, message, callback) {
+    updateThread: function (areaId, threadId, title, message, sticky, locked, callback) {
       mApi().forum.areas.threads
         .read(areaId, threadId)
         .callback($.proxy(function(getErr, thread) {
@@ -94,7 +94,9 @@
           } else {
             thread = $.extend(thread, {
               title: title,
-              message: message
+              message: message,
+              sticky: sticky,
+              locked: locked
             });
             
             mApi().forum.areas.threads
@@ -176,6 +178,7 @@
   $(document).ready(function() {
     $('#discussion').discussion({
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
+      lockStickyPermission: $.parseJSON($('input[name="lockStickyPermission"]').val()),
       ioController: new EnvironmentDiscussionIOController()
     });
     

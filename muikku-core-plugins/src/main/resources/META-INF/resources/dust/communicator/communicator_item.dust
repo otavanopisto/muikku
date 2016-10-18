@@ -12,8 +12,13 @@
                 <div class="cm-message-recipients cm-message-header-content-primary">
                   <span>({recipientCount})</span>
                   {#recipients}
-                    <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                  	{@lt key=$idx value=3}
+                      <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                    {/lt}
                   {/recipients}
+                  {@gt key=recipients.length value=3}
+                    <span class="cm-message-recipient-name">...</span>
+                  {/gt}
                 </div>
               {/recipients}
             {:else}
@@ -30,7 +35,7 @@
         </div>
         <div class="cm-message-additional no-margin-top no-margin-bottom">
           <div class="cm-message-header-count flex-center">
-            {@gt key=messageCount value=1}<span class="cm-message-replies">{messageCount}</span>{/gt}
+            {@gt key=messageCountInThread value=1}<span class="cm-message-replies">{messageCountInThread}</span>{/gt}
           </div>
           <div class="cm-message-latest">
             <span>

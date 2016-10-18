@@ -7,9 +7,11 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 
@@ -18,6 +20,9 @@ public class WorkspaceIndexer {
   @Inject
   private Logger logger;
 
+  @Inject 
+  private CourseMetaController courseMetaController; 
+  
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
@@ -64,6 +69,11 @@ public class WorkspaceIndexer {
       Map<String, Object> extra = new HashMap<>();
       extra.put("published", workspaceEntity.getPublished());
       extra.put("access", workspaceEntity.getAccess());
+
+      if (workspace.getSubjectIdentifier() != null) {
+        Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
+        extra.put("subject", subject.getName());
+      }
       
       indexer.index(Workspace.class.getSimpleName(), workspace, extra);
     } catch (Exception e) {
