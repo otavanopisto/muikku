@@ -53,7 +53,7 @@ public class TranscriptOfRecordsFileController {
     
     transcriptOfRecordsFileDAO.create(
       student,
-      file.getAbsolutePath(),
+      fileUuid,
       contentType,
       title,
       description
