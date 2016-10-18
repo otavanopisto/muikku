@@ -219,7 +219,7 @@ div[class*='ps-edit-container']{
 
 .se-plugins form {
   margin-bottom:5px;
-  border:1px solid $brd2;
+  border:1px solid $environment-border-selected-color;
   padding:4px;
   background:#fff;
   border-top-left-radius:10px 50% ;
@@ -227,7 +227,7 @@ div[class*='ps-edit-container']{
 }
 
 .se-plugins-plugin input {
-  border:1px solid $brd2;
+  border:1px solid $environment-border-selected-color;
   padding:4px !important;
   width:20px;
   height:20px;

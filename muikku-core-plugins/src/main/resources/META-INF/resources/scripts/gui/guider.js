@@ -1,5 +1,5 @@
+/* global MUIKKU_LOGGED_USER */
 (function() {
-  
   $.widget("custom.guiderSearch", {
     _create : function() {
       this.element.on('keyup', '.search', $.proxy(this._inputKeyUp, this));
@@ -21,7 +21,106 @@
       this._loadFilters($.proxy(function () {
         this.filters(this._filters);
         this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
+        this.element.on('click', '.mf-label-functions', $.proxy(this._onFilterMenuLink, this));
+
+        this.element.on('click', '.mf-label-function-edit', $.proxy(this._onFlagEditClick, this));               
+        this.element.on('click', '.mf-label-function-delete', $.proxy(this._onFlagDeleteClick, this));               
+      
       }, this));
+    },
+
+    _onFlagEditClick: function (event) {
+      var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+      
+      this._loadFlag(flagId, $.proxy(function (err, flag) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          renderDustTemplate('guider/guider_edit_flag.dust', { flag: flag }, $.proxy(function(text) {
+            var dialog = $(text);
+            $(dialog).dialog({
+              modal : true,
+              minHeight : 200,
+              resizable : false,
+              width : 560,
+              dialogClass : "guider-edit-flag-dialog",
+              buttons : [ {
+                'text' : dialog.attr('data-button-save'),
+                'class' : 'save-button',
+                'click' : function(event) {
+                  $.each(['name', 'color', 'description'], $.proxy(function (index, property) {
+                    flag[property] = $(this).find('*[name="' + property + '"]').val();
+                  }, this));
+                  
+                  mApi().user.flags
+                    .update(flagId, flag)
+                    .callback($.proxy(function (err) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      } else {
+                        $(this).dialog("destroy").remove();
+                        window.location.reload(true);
+                      }
+                    }, this));
+                }
+              }, {
+                'text' : dialog.attr('data-button-cancel'),
+                'class' : 'cancel-button',
+                'click' : function(event) {
+                  $(this).dialog("destroy").remove();
+                }
+              } ]
+            });
+          }, this));
+        }
+      }, this));
+    },
+
+    _onFlagDeleteClick: function(event) {
+        var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+        var isOwner = $(event.target).closest("[data-is-owner]").attr('data-is-owner');
+
+        function confirmCallback() {
+          mApi().user.flags.del(flagId).callback(function() {
+              $(event.target).closest(".mf-label").remove();
+          });
+        }
+
+        renderDustTemplate('guider/guider_delete_flag_dialog.dust', { isOwner: isOwner }, $.proxy(function (text) {
+          var dialog = $(text);
+          $(text).dialog({
+            modal: true, 
+            resizable: false,
+            width: 360,
+            dialogClass: "guider-edit-flag-dialog",
+            buttons: [{
+              'text': dialog.data('button-delete-text'),
+              'class': 'delete-button',
+              'click': function() {
+                  $(this).dialog().remove();
+                  confirmCallback();
+                }
+              }, {
+              'text': dialog.data('button-cancel-text'),
+              'class': 'cancel-button',
+              'click': function() {
+                $(this).dialog().remove();
+              }
+            }]
+        });
+      }, this));
+    },
+
+    _loadFlag: function (id, callback) {
+      mApi().user.flags
+        .read(id)
+        .callback($.proxy(function (err, flag) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, flag);
+          }
+        }, this));
     },
     
     filters: function (filters) {
@@ -72,6 +171,25 @@
       }
     },
     
+    _onFilterMenuLink: function (event) {
+      var element = $(event.target).closest('li');
+      var menu = $(element).find('.gt-flag-functions-menu');
+      var menus = $(element).closest('ul').find('.gt-flag-functions-menu');
+      var menuPosition = $(element).width() - 10;
+      var menuState = menu.css('display') ;     
+      
+      menu.css('left', menuPosition);
+      
+      menus.hide();
+
+      if(menuState == 'none'){
+        menu.show();       
+      }else{
+        menu.hide();   
+        
+      }
+    },
+
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gt-filter-link');
       if (element.hasClass('selected')) {
@@ -79,7 +197,7 @@
       } else {
         this.addFilter(element.attr('data-type'), element.attr('data-id'));
       }
-    },
+    },    
     
     _loadFilters: function (callback) {
       async.parallel([ this._loadFlags,this._loadWorkspaces], $.proxy(function(err, filters){
@@ -109,7 +227,8 @@
                   'id': flag.id,
                   'name': flag.name,
                   'color': flag.color,
-                  'iconClass': 'icon-flag'
+                  'iconClass': 'icon-flag',
+                  'isOwner': flag.ownerIdentifier === MUIKKU_LOGGED_USER ? 'true' : 'false'
                 };
               })
             });
