@@ -1,10 +1,9 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
-import java.nio.file.Paths;
-import java.util.UUID;
+import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -16,10 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import javax.transaction.Transactional;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -34,9 +32,6 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
 
   @Inject
   private SystemSettingsController systemSettingsController;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private SessionController sessionController;
@@ -54,27 +49,20 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       super("No upload base path set");
     }
   }
-  
-  private String getFileUploadBasePath() {
-    String basePath = pluginSettingsController.getPluginSetting("transcriptofrecords", "fileUploadBasePath");
-    if (basePath == null) {
-      throw new NoUploadBasePathSetException();
-    }
-    
-    return basePath;
-  }
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String fileUuid = UUID.randomUUID().toString();
-    File file = Paths.get(getFileUploadBasePath(), fileUuid).toFile();
-    
     if (!sessionController.isLoggedIn()) {
-      sendResponse(resp, "Unauthorized", HttpServletResponse.SC_UNAUTHORIZED);
+      sendResponse(resp, "Must be logged in", HttpServletResponse.SC_FORBIDDEN);
+      return;
+    }
+    
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_FILE_UPLOAD)) {
+      sendResponse(resp, "Insufficient permissions", HttpServletResponse.SC_FORBIDDEN);
       return;
     }
 
-    String userEntityIdString = req.getPathInfo();
+    String userEntityIdString = req.getPathInfo().replaceFirst("/", "");
     if (StringUtils.isBlank(userEntityIdString) || !StringUtils.isNumeric(userEntityIdString)) {
       sendResponse(resp, "Invalid user entity id", HttpServletResponse.SC_BAD_REQUEST);
       return;
@@ -87,25 +75,47 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       return;
     }
     
-    Part part = req.getPart("upload");
-    if (part == null) {
+    Part titlePart = req.getPart("title");
+    if (titlePart == null) {
+      sendResponse(resp, "Missing title", HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    String title = "";
+    try (InputStream is = titlePart.getInputStream()) {
+      title = IOUtils.toString(is, StandardCharsets.UTF_8);
+    }
+
+    Part descriptionPart = req.getPart("description");
+    if (descriptionPart == null) {
+      sendResponse(resp, "Missing description", HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    String description = "";
+    try (InputStream is = descriptionPart.getInputStream()) {
+      description = IOUtils.toString(is, StandardCharsets.UTF_8);
+    }
+    
+    Part uploadPart = req.getPart("upload");
+    if (uploadPart == null) {
       sendResponse(resp, "Missing file", HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
+    String contentType = uploadPart.getContentType();
 
     long fileSizeLimit = systemSettingsController.getUploadFileSizeLimit();
-    if (part.getSize() > fileSizeLimit) {
+    if (uploadPart.getSize() > fileSizeLimit) {
       sendResponse(resp, "File too large", HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
       return;
     }
     
-    FileUtils.copyInputStreamToFile(part.getInputStream(), file);
-    
-    try {
-      transcriptOfRecordsFileController.attachFile(userEntity, file, "title", "description");
-      return;
-    } catch (Exception ex) {
-      file.delete();
+    try (InputStream is = uploadPart.getInputStream()){
+      transcriptOfRecordsFileController.attachFile(
+          userEntity,
+          is,
+          contentType,
+          title,
+          description);
+      sendResponse(resp, "File uploaded", HttpServletResponse.SC_OK);
     }
   }
 
