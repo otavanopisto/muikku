@@ -6,7 +6,7 @@
   <div class="mf-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <div class="mf-item tr-item flex-row">
       <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-        <h3>{#localize key="plugin.records.workspace.evaluated.verbal.topic" /}</h3>
+        <h3>{#localize key="plugin.records.files.topic" /}</h3>
       </div>          
       <div class="tr-user-files mf-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
         <div class="tr-user-file mf-file flex-row">
