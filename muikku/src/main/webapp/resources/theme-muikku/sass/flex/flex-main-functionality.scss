@@ -981,6 +981,17 @@ ul.mf-tool-label-container {
   
 }
 
+.mf-file {
+  background-color: $environment-file-color;
+  color: $environment-alt-font-color;
+  font-weight: 600;
+  padding: 0 5px;
+}
+
+.mf-file-action {
+  text-transform: uppercase;
+}
+
 .mf-option-name {
   font-weight: 700;
 }
