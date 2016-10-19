@@ -9,12 +9,15 @@ $environment-background-dim-color: #ededed;
 $environment-background-light-dim-color: #f9f9f9;
 $environment-background-highlight-color: #fff8c1;
 $environment-background-selected-color: #eee;
+$environment-file-color: #34acfd;
 $environment-font-color: #000;
 $environment-alt-font-color: #fff; 
 $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
 $environment-border-transparent: rgba(255, 255, 255, 0);
+
+
 
 
 // Items in the content-area  (messages, users, workspaces...)
@@ -38,6 +41,7 @@ $item-grade-passing-color: #0acf00;
 $item-grade-failing-color: #ea7401;
 $item-button-add-color: #0099ff;
 $item-button-font-color: #fff;
+
 
 
 // Vertical navigation bar seen in mainfunctions (labels, folders...)

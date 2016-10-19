@@ -180,8 +180,24 @@
     }      
   }  
 }
- 
 
+.gt-user-file-add {
+  
+  a{
+   text-transform: uppercase;
+   text-decoration: none;
+  }
+} 
+.gt-user-file {
+  background-color: $environment-file-color;
+  color: $environment-alt-font-color;
+  font-weight: 600;
+  padding: 0 5px;
+}
+
+.gt-user-file-action {
+  text-transform: uppercase;
+}
  
 .gt-course {
   border-left: 3px solid $item-border-color-active; 
