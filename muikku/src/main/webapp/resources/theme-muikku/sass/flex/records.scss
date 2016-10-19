@@ -96,6 +96,23 @@
   
 }
 
+.tr-user-files{
+  padding: 0 10px;
+  
+}
+
+.tr-user-file{
+  display:inline-block;
+  padding:5px;
+}
+
+
+.tr-user-file-size{
+  margin-left:10px;
+  font-weight:300;
+}
+
+
 .tr-task-not-evaluated {
   span:not(:first-child) {
     margin-left: 10px;
