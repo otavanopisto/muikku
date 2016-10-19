@@ -31,6 +31,7 @@
     </div>
   {/studentFlags}
   <div class="gt-user-view-profile-info mf-widget flex-row">
+  
 <!--     <div class="gt-user-details-picture"> -->
 <!--       {?senderHasPicture}  -->
 <!--         <img class="gt-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />  -->
@@ -91,6 +92,27 @@
      {/addresses}
     </div>
     <div class="clear"></div>  
+  </div>
+  
+  <div class="gt-user-view-profile-files mf-widget flex-row">
+    <div class="gt-user-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+      <div class="flex-row">
+        <div class="gt-user-file-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
+          <a href="">{#localize key="plugin.guider.user.details.files.info"/}</a>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="gt-user-file-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
+          <span>filename.tga</span>
+        </div>
+        <div class="gt-user-file-action lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 flex-right">
+          <span>Poista</span>
+        </div>
+        <div class="gt-user-file-meta lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-right">
+          <span class="gt-user-file-size">1000 μm</span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="gt-user-view-profile-data mf-widget flex-row">
      <div class="gt-user-view-profile-data gt-data-container-1 mf-widget-subarea lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
