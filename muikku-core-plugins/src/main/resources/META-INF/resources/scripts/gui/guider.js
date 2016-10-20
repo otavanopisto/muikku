@@ -748,6 +748,57 @@
     }
   });
   
+  $.widget("custom.guiderFiles", {
+    options: {
+      userIdentifier: null
+    },
+    
+    _create : function() {
+      this._fileAddElement = this.element.find("[data-file-add]");
+      this._fileListElement = this.element.find("[data-file-list]");
+      this._fileRowElementContent = this._fileListElement.children(":first-child").html();
+
+      this._setup();
+      
+      this._loadFiles();
+    },
+    
+    _setup : function() {
+      this._fileListElement.empty();
+      
+      console.log(this._fileAddElement.find("input[name=upload]"));
+      this._fileAddElement
+        .find("input[name=upload]")
+        .on('change', $.proxy(this._onFileInputChange, this));
+    },
+    
+    _onFileInputChange : function (event) {
+      console.log(event);
+      for (var i=0; i<event.target.files.length; i++) {
+        var file = event.target.files[i];
+        console.log(file);
+      }
+    },
+    
+    _loadFiles : function() {
+      var userIdentifier = this.options.userIdentifier;
+      mApi().guider.users.files.read(userIdentifier).callback($.proxy(this._onFilesLoaded, this));
+    },
+    
+    _onFilesLoaded: function(err, files) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      } else {
+        for (var i=0; i<files.length; i++) {
+          var file = files[i];
+          console.log(file);
+          var elem = $(this._fileRowElementContent);
+          elem.find("[data-file-name]").text(file.title);
+          this._fileListElement.append(elem);
+        }
+      }
+    }
+  });
 
   $.widget("custom.guiderProfile", {
     options: {
@@ -755,6 +806,7 @@
     },
     
     _create : function() {
+
       this.element.addClass('gt-user-view-profile');
       
       this.element.on("click", ".gt-new-flag", $.proxy(this._onNewFlagClick, this));
@@ -770,7 +822,11 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          this._loadUser(flags);
+          this._loadUser(flags, $.proxy(function () {
+            this.element.find(".gt-user-files").guiderFiles({
+              userIdentifier: this.options.userIdentifier
+            });
+          }, this));
         }
       }, this));
     },
@@ -1019,7 +1075,7 @@
       }, this);
     },
     
-    _loadUser: function (flags) {
+    _loadUser: function (flags, callback) {
       this.element.addClass('loading');
       var flagMap = {};
       $.each(flags, function (index, flag) {
@@ -1114,6 +1170,7 @@
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                    callback();
                   }, this));
                 }, this))
               }, this)); 

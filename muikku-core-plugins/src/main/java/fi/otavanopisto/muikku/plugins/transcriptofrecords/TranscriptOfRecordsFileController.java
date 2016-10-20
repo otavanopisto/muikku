@@ -60,9 +60,15 @@ public class TranscriptOfRecordsFileController {
     );
   }
   
-  
   public List<TranscriptOfRecordsFile> listFiles(UserEntity student) {
     return transcriptOfRecordsFileDAO.listByUserEntity(student);
   }
-
+  
+  public TranscriptOfRecordsFile findFileById(Long id) {
+    return transcriptOfRecordsFileDAO.findById(id);
+  }
+  
+  public void delete(TranscriptOfRecordsFile file) {
+    transcriptOfRecordsFileDAO.archive(file);
+  }
 }

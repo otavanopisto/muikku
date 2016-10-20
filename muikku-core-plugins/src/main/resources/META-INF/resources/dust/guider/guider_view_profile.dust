@@ -97,21 +97,26 @@
   <div class="gt-user-view-profile-files mf-widget flex-row">
     <div class="gt-user-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
       <div class="flex-row">
-        <div class="gt-user-file-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
-          <a href="">{#localize key="plugin.guider.user.details.files.hint"/}</a>
+        <div data-file-add class="gt-user-file-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
+          <span>{#localize key="plugin.guider.user.details.files.hint"/}</span>
+          <form>
+            <input name="upload" type="file">
+          </form>
         </div>
       </div>
-      <div class="gt-user-file flex-row">
-        <div class="gt-user-file-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
-          <span>filename.tga</span>
-        </div>
-        <div class="gt-user-file-action lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 flex-right">
-          <span>Poista</span>
+      <div data-file-list>
+        <div class="gt-user-file flex-row">
+          <div class="gt-user-file-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
+            <span data-file-name>filename.tga</span>
+          </div>
+          <div class="gt-user-file-action lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 flex-right">
+            <span data-file-delete>Poista</span>
+          </div>
         </div>
       </div>
       <div class="gt-user-file-meta flex-row flex-right">
         <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-right">
-          <span class="gt-user-file-size">1000 μm</span>
+          <span data-file-size class="gt-user-file-size">1000 μm</span>
         </div>
       </div>      
     </div>
