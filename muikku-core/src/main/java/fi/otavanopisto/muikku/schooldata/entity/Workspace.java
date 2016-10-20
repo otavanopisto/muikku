@@ -1,8 +1,9 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
-import java.util.Date;
-
 import java.time.OffsetDateTime;
+import java.util.Date;
+import java.util.Set;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.search.annotations.IndexField;
 import fi.otavanopisto.muikku.search.annotations.IndexId;
@@ -30,10 +31,10 @@ import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
       }
     ),
     @IndexableFieldOption (
-      name = "curriculumIdentifier",
+      name = "curriculumIdentifiers",
       type = "multi_field",
       multiFields = {
-        @IndexableFieldMultiField(name = "curriculumIdentifier", type="string", index = "analyzed"),
+        @IndexableFieldMultiField(name = "curriculumIdentifiers", type="string", index = "analyzed"),
         @IndexableFieldMultiField(name = "untouched", type="string", index = "not_analyzed")
       }
     ),
@@ -111,5 +112,5 @@ public interface Workspace extends SchoolDataEntity {
   @IndexField (
     toId = true
   )
-  public SchoolDataIdentifier getCurriculumIdentifier();
+  public Set<SchoolDataIdentifier> getCurriculumIdentifiers();
 }
