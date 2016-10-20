@@ -6,15 +6,16 @@
   /* announcer (.an-*) */
 
 .ui-autocomplete {
-  position: absolute !important;
-  top: 20px !important;
-  right: 0 !important;
   left: 0 !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 20px !important;
+
   .ui-menu-item {
     &[data-existing="true"] {
       color: $environment-font-disabled-color;
-      font-style: italic;
       cursor: default;
+      font-style: italic;
     }
   }
 }
@@ -34,8 +35,8 @@
   } 
   
   .an-announcement-targetgroup {
-    float: left;
     cursor: pointer;
+    float: left;
     margin-top: 0 !important;  
       
     &:not(:first-child) {
@@ -47,9 +48,9 @@
   
   .an-announcement-targetgroup-name {
     float: left;
-    margin-top: 0 !important;
-    font-family: inherit;
+    font-family: inherit;    
     margin-left: 10px;
+    margin-top: 0 !important;
     padding: 9px 0;
 
     &::before {
@@ -60,7 +61,7 @@
     &.usergroup {
 
       &::before {
-       color: $target-group-icon-color;
+        color: $target-group-icon-color;
       }     
 
     }
@@ -113,8 +114,8 @@
 }
 .an-announcement-dates{
   background-color: $environment-background-light-dim-color;
-  text-align: right;
   padding: 5px;
+  text-align: right;
 }
 
 
@@ -130,12 +131,12 @@
 .an-announcement-topic{
   border-bottom: 1px solid $environment-border-color;
   color: $environment-font-color;
-  font-weight: 300;
   font-size: 20px;
+  font-weight: 300;
   overflow: hidden;
-  padding-top: 10px;
-  padding-left: 10px;
   padding-bottom: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
   text-overflow: ellipsis;  
   white-space: nowrap;
 }
