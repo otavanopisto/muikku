@@ -20,7 +20,7 @@ import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 @Path("/records")
 @RequestScoped
 @Stateful
-@Produces ("application/json")
+@Produces("*/*")
 @RestCatchSchoolDataExceptions
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
@@ -30,7 +30,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
   
   @GET
-  @Path("/files/{ID}/content)")
+  @Path("/files/{ID}/content")
   @RESTPermitUnimplemented
   public Response getFileContent(@PathParam("ID") Long fileId) {
     
