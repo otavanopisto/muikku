@@ -1127,14 +1127,19 @@
             
             renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
               this.element.html(text);
-              if (message.senderId === MUIKKU_LOGGED_USER_ID) {                 
-                $.each(message.recipients,  $.proxy(function (index, recipient) {
-                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
-                  
-                  if (recipient.userId != message.senderId) {
-                    this._addRecipient('USER', recipient.userId, recipientFullName);
+              if (message.senderId === MUIKKU_LOGGED_USER_ID) {
+                mApi().communicator.communicatormessages.recipients.read(replyMessageId).callback($.proxy(function (err, recipients) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  } else {
+                    $.each(recipients,  $.proxy(function (index, recipient) {
+                      var recipientFullName = recipient.firstName + " " + recipient.lastName;
+                      
+                      if (recipient.userId != message.senderId) {
+                        this._addRecipient('USER', recipient.userId, recipientFullName);
+                      }
+                    }, this));
                   }
-                  
                 }, this));
               }
               

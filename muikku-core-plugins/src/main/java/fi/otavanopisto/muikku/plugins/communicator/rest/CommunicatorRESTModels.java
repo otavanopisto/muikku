@@ -132,9 +132,12 @@ public class CommunicatorRESTModels {
     UserBasicInfo senderBasicInfo = getSenderBasicInfo(message);
     
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(message);
-    List<CommunicatorMessageRecipientRESTModel> restRecipients = restRecipient(messageRecipients);
     
     Long recipientCount = (long) messageRecipients.size();
+
+    // Max 5 recipients
+    int toIndex = (int) Math.min(recipientCount, 5);
+    List<CommunicatorMessageRecipientRESTModel> restRecipients = restRecipient(messageRecipients.subList(0, toIndex));
     
     return new CommunicatorMessageRESTModel(
         message.getId(), message.getCommunicatorMessageId().getId(), 
