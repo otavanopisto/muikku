@@ -405,7 +405,9 @@ public class CommunicatorRESTService extends PluginRESTService {
     params.put("url", String.format("%s/communicator", baseUrl));
     //TODO Hash paramters cannot be utilized in redirect URLs
     //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
-      
+    
+    // Remove sender from notification list
+    communicatorController.removeRecipient(recipients, userEntity);
     notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
     
     return Response.ok(
@@ -570,6 +572,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     //TODO Hash paramters cannot be utilized in redirect URLs
     //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
 
+    // Remove sender from notification list
+    communicatorController.removeRecipient(recipients, userEntity);
     notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
     
     return Response.ok(
