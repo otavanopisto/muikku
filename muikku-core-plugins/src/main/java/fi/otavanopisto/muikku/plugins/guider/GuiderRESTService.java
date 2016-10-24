@@ -108,11 +108,8 @@ public class GuiderRESTService extends PluginRESTService {
   
   @GET
   @Path("/users/{IDENTIFIER}/files")
-  @RESTPermitUnimplemented
+  @RESTPermit(GuiderPermissions.GUIDER_LIST_TORFILES)
   public Response listTranscriptOfRecordsFiles(@PathParam("IDENTIFIER") String identifierString) {
-    
-    // TODO permission checks
-    
     SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
     UserEntity ue = userEntityController.findUserEntityByUserIdentifier(identifier);
     if (ue == null) {
@@ -125,7 +122,7 @@ public class GuiderRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/files/{ID}")
-  @RESTPermitUnimplemented
+  @RESTPermit(GuiderPermissions.GUIDER_DELETE_TORFILE)
   public Response deleteTranscriptOfRecordsFile(@PathParam("ID") Long fileId) {
     TranscriptOfRecordsFile file = torFileController.findFileById(fileId);
     if (file == null) {
