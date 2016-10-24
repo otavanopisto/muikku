@@ -8,11 +8,9 @@
                 {?recipients}
                   <span class="icon-arrow-right cm-message-recipient-arrow"></span>
                   {#recipients}
-                  	{@lt key=$idx value=3}
-                      <span class="cm-message-recipient-name">{firstName} {lastName}</span>
-                    {/lt}
+                    <span class="cm-message-recipient-name">{firstName} {lastName}</span>
                   {/recipients}
-                  {@gt key=recipients.length value=3}
+                  {@gt key=recipientCount value=5}
                     <span class="cm-message-recipient-name">...</span>
                   {/gt}
                 {/recipients}
