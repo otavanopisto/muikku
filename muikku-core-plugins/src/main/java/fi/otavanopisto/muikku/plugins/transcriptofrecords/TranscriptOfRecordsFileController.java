@@ -34,7 +34,7 @@ public class TranscriptOfRecordsFileController {
     return basePath;
   }
 
-  public void attachFile(
+  public TranscriptOfRecordsFile attachFile(
       UserEntity student,
       InputStream content,
       String contentType,
@@ -51,7 +51,7 @@ public class TranscriptOfRecordsFileController {
       throw new RuntimeException("Couldn't save file", ex);
     }
     
-    transcriptOfRecordsFileDAO.create(
+    return transcriptOfRecordsFileDAO.create(
       student,
       fileUuid,
       contentType,

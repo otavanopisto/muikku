@@ -16,10 +16,12 @@ import javax.servlet.http.Part;
 import javax.transaction.Transactional;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -118,13 +120,14 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
     }
     
     try (InputStream is = uploadPart.getInputStream()){
-      transcriptOfRecordsFileController.attachFile(
+      TranscriptOfRecordsFile file = transcriptOfRecordsFileController.attachFile(
           userEntity,
           is,
           contentType,
           title,
           description);
-      sendResponse(resp, "File uploaded", HttpServletResponse.SC_OK);
+      String result = (new ObjectMapper()).writeValueAsString(file);
+      sendResponse(resp, result, HttpServletResponse.SC_OK);
     }
   }
 

@@ -783,9 +783,10 @@
           url: '/transcriptofrecordsfileupload/',
           type: 'POST',
           data: formData,
-          success: $.proxy(function() {
+          success: $.proxy(function(dataString) {
+            var data = JSON.parse(dataString);
             this._fileAddForm[0].reset();
-            this._appendFile(file.name);
+            this._appendFile(file.name, data.id);
           }, this),
           error: $.proxy(function(xhr, err, thrown) {
             this._fileAddForm[0].reset();
