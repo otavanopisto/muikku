@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.ejb.Stateful;
@@ -331,16 +332,16 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    // TODO: Duplicates
-    
-    if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING, null)) {
+    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
       for (Long groupId : newMessage.getRecipientGroupIds()) {
         UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
         List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
         
         for (UserGroupUserEntity groupUser : groupUsers) {
           UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-          recipients.add(userSchoolDataIdentifier.getUserEntity());
+          UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
+          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
+            recipients.add(recipient);
         }
       }
     } else {
@@ -359,7 +360,9 @@ public class CommunicatorRESTService extends PluginRESTService {
             workspaceEntity, WorkspaceRoleArchetype.STUDENT);
         
         for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
-          recipients.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+          UserEntity recipient = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
+            recipients.add(recipient);
         }
       } else
         return Response.status(Status.BAD_REQUEST).build();
@@ -373,7 +376,9 @@ public class CommunicatorRESTService extends PluginRESTService {
             workspaceEntity, WorkspaceRoleArchetype.TEACHER);
         
         for (WorkspaceUserEntity wosu : workspaceUsers) {
-          recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+          UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
+          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
+            recipients.add(recipient);
         }
       } else
         return Response.status(Status.BAD_REQUEST).build();
@@ -495,7 +500,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING, null)) {
+    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
       for (Long groupId : newMessage.getRecipientGroupIds()) {
         UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
         List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
@@ -503,8 +508,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         for (UserGroupUserEntity groupUser : groupUsers) {
           UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
           UserEntity recipient = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
-          
-          recipients.add(recipient);
+          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
+            recipients.add(recipient);
         }
       }
     } else {
@@ -523,7 +528,9 @@ public class CommunicatorRESTService extends PluginRESTService {
             workspaceEntity, WorkspaceRoleArchetype.STUDENT);
         
         for (WorkspaceUserEntity wosu : workspaceUsers) {
-          recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+          UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
+          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
+            recipients.add(recipient);
         }
       } else
         return Response.status(Status.BAD_REQUEST).build();
@@ -537,7 +544,9 @@ public class CommunicatorRESTService extends PluginRESTService {
             workspaceEntity, WorkspaceRoleArchetype.TEACHER);
         
         for (WorkspaceUserEntity wosu : workspaceUsers) {
-          recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+          UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
+          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
+            recipients.add(recipient);
         }
       } else
         return Response.status(Status.BAD_REQUEST).build();
