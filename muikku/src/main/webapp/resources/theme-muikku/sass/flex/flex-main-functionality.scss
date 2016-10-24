@@ -1,4 +1,5 @@
 @import "_vars.scss";
+@import "_vars_backup";
 @import "_styles.scss";
 
 .mf-content-master {
@@ -275,7 +276,7 @@
     margin: 0;
     
     li {
-      border-bottom: 1px solid $brd1;
+      border-bottom: 1px solid $environment-border-color;
       border-left: 5px solid #fff;
       
       a {
@@ -291,13 +292,13 @@
       }
             
       &:hover {
-        border-left: 5px solid $brd1;     
+        border-left: 5px solid $environment-border-color;     
         cursor: pointer;   
       }
        
       &.selected {
         background-color: $bgr3;
-        border-left: 5px solid $brd2;
+        border-left: 5px solid $environment-border-selected-color;
         
         a {
           font-weight: normal;
@@ -336,7 +337,7 @@
   
   .mf-view-tool {
     padding: 0 10px;
-    border: 1px solid $brd2;
+    border: 1px solid $environment-border-selected-color;
     background-color: $bgr1; 
     font-size: 1.5em;
     float: left;
@@ -502,7 +503,7 @@ ul.mf-tool-label-container {
 
   &.button {
     background-color: #72d200; 
-    border: 1px solid $brd2;
+    border: 1px solid $environment-border-selected-color;
     color: #fff;
     cursor: pointer;
     display: inline-block;    
@@ -1151,7 +1152,7 @@ ul.mf-tool-label-container {
   
   .mf-items-tool {
     background-color: $bgr1;
-    border: 1px solid $brd2;
+    border: 1px solid $environment-border-selected-color;
     color: #000;
     cursor: pointer;
     font-size: 1.5em;
@@ -1236,89 +1237,89 @@ div[class*="-side-button-dropdown"] {
 /* Categories */
 
 .mf-category-1-brd {
-  border-left: 5px solid $category1;
+  border-left: 5px solid $category-color-1;
 }
 
 .mf-category-2-brd {
-  border-left: 5px solid $category2;
+  border-left: 5px solid $category-color-2;
 }
 
 .mf-category-3-brd {
-  border-left: 5px solid $category3;
+  border-left: 5px solid $category-color-3;
 }
 
 .mf-category-4-brd {
-  border-left: 5px solid $category4;
+  border-left: 5px solid $category-color-4;
 }
 
 .mf-category-5-brd {
-  border-left: 5px solid $category5;
+  border-left: 5px solid $category-color-5;
 }
 
 .mf-category-6-brd {
-  border-left: 5px solid $category6;
+  border-left: 5px solid $category-color-6;
 }
 
 .mf-category-7-brd {
-  border-left: 5px solid $category7;
+  border-left: 5px solid $category-color-7;
 }
 
 .mf-category-8-brd {
-  border-left: 5px solid $category8;
+  border-left: 5px solid $category-color-8;
 }
 
 .mf-category-9-brd {
-  border-left: 5px solid $category9;
+  border-left: 5px solid $category-color-9;
 }
 
 .mf-category-10-brd {
-  border-left: 5px solid $category10;
+  border-left: 5px solid $category-color-10;
 }
 
 .mf-category-11-brd {
-  border-left: 5px solid $category11;
+  border-left: 5px solid $category-color-11;
 }
 
 .mf-category-1-font {
-  color: $category1;
+  color: $category-color-1;
 }
 
 .mf-category-2-font {
-  color: $category2;
+  color: $category-color-2;
 }
 
 .mf-category-3-font {
-  color: $category3;
+  color: $category-color-3;
 }
 
 .mf-category-4-font {
-  color: $category4;
+  color: $category-color-4;
 }
 
 .mf-category-5-font {
-  color: $category5;
+  color: $category-color-5;
 }
 
 .mf-category-6-font {
-  color: $category6;
+  color: $category-color-6;
 }
 
 .mf-category-7-font {
-  color: $category7;
+  color: $category-color-7;
 }
 
 .mf-category-8-font {
-  color: $category8;
+  color: $category-color-8;
 }
 
 .mf-category-9-font {
-  color: $category9;
+  color: $category-color-9;
 }
 
 .mf-category-10-font {
-  color: $category10;
+  color: $category-color-10;
 }
 
 .mf-category-11-font {
-  color: $category11;
+  color: $category-color-11;
 }

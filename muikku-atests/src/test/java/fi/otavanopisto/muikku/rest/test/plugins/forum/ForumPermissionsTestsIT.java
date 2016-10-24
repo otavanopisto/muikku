@@ -180,6 +180,8 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
     deleteResponse
       .then()
       .statusCode(204);
+
+    permanentDeleteArea(id);
   }
 
   @Test
@@ -196,7 +198,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
     asManager()
       .delete("/forum/areas/{ID}", id)
       .then()
-      .statusCode(403);
+      .statusCode(204);
 
     permanentDeleteArea(id);
   }  

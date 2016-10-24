@@ -698,7 +698,7 @@
       list-style-type: none;
       
       li{
-        border-bottom: 1px solid $brd1;
+        border-bottom: 1px solid $environment-border-color;
         border-left:0;        
         a{
           font-weight:300;
@@ -712,12 +712,12 @@
           padding-left:10px;
           border-left: 5px solid #fff;       
           &:hover{
-            border-left:5px solid $brd1;     
+            border-left:5px solid $environment-border-color;     
             cursor:pointer;   
           } 
           &.selected{
             background-color:$bgr3;
-            border-left:5px solid $brd2;
+            border-left:5px solid $environment-border-selected-color;
 
           }                
         }

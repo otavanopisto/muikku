@@ -6,12 +6,12 @@
 .tr-content-main {
   
   &.loading {
-    height:200px;
+    height: 200px;
     
     &::before {
       @include generic-loader(50px);
-      margin-top:50%;
-      margin-left:50%;
+      margin-left: 50%;
+      margin-top: 50%;
     }
     
   }
@@ -19,32 +19,33 @@
 }
 
 .tr-item-workspace-assessment {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .tr-study-programme-name {
-  padding-left:5px;
+  padding-left: 5px;
 }
 
 .tr-item-header-details {
  
   .tr-item-header-detail {
-    display:inline-block;
+    display: inline-block;
   
     &.grade {
-      padding:0 6px;
-      color:#fff;
-      box-sizing:border-box; 
-      text-transform:uppercase;
-      font-size:12px;
-      margin-left:5px;
+      box-sizing: border-box;
+      color: $item-grade-font-color;
+      font-size: 12px;
+      margin-left: 5px;
+      padding: 0 6px; 
+      text-transform: uppercase;
+ 
 
       &.passing {
-        background-color:#0acf00;
+        background-color: $item-grade-passing-color;
       }
       
       &.non-passing {
-        background-color:#ea7401;
+        background-color: $item-grade-failing-color;
       }
       
     }
@@ -56,30 +57,30 @@
 .tr-item-description-title {
   
   span {
-    font-size:19px;
-    font-weight:700;
+    font-size: 19px;
+    font-weight: 700;
     
     &.tr-item-long {
-      margin-left:10px;
+      margin-left: 10px;
     }    
     
     &.grade {
-      padding:5px 10px;
-      color:#fff;
-      margin-left:3px; 
-           
+      color: $item-grade-font-color;
+      margin-left: 3px; 
+      padding: 5px 10px;
+      
       &.passing {
-        background-color:#0acf00;
+        background-color: $item-grade-passing-color;
       }
       
       &.non-passing {
-        background-color:#ea7401;
+        background-color: $item-grade-failing-color;
       }
       
     }
     
     &:not(:first-child) {
-      margin-left:10px;
+      margin-left: 10px;
     }
     
   }
@@ -89,15 +90,15 @@
 .tr-item-description-content {
   
   span {
-    display:inline-block;
-    margin-left:10px;
+    display: inline-block;
+    margin-left: 10px;
   }
   
 }
 
 .tr-task-not-evaluated {
   span:not(:first-child) {
-    margin-left:10px;
+    margin-left: 10px;
   }  
     
 }
@@ -105,25 +106,23 @@
 .tr-task-evaluated {
   
   &:hover {
-    cursor:pointer;
-    background-color:$bgr1;
+    background-color: $environment-background-dim-color;
+    cursor: pointer;
   }
   
-  .title-container {
-  }
   
   .content-container {
-    background-color:$bgr4;
+    background-color: $environment-background-light-dim-color;
   }  
   
   .title {
   
     span {
-      display:inline-block;
-      box-sizing:border-box;
-      
+      box-sizing: border-box;
+      display: inline-block;
+            
       &:not(:first-child) {
-       margin-left:10px;
+        margin-left: 10px;
       }
       
     }
@@ -131,25 +130,25 @@
   }
   
   .content {
-    padding:15px;
+    padding: 15px;
   }
   
 }
 
 .tr-task-evaluated-grade {
-  background-color:$bgr1;
-  color:#dadada; 
+  background-color: $environment-background-dim-color;
+  color: $environment-font-disabled-color; 
   padding:5px 10px;
 
   &.grade {
-    color:#fff;
+    color: $item-grade-font-color;
     
     &.passing {
-      background-color:#0acf00;
+      background-color: $item-grade-passing-color;
     }
     
     &.non-passing {
-      background-color:#ea7401;
+      background-color: $item-grade-failing-color;
     }
     
   }
@@ -161,7 +160,7 @@
 }
 
 .tr-studydiary-entry-date {
-  padding: 2px;
-  margin: 5px 0 10px;
   font-style: italic;
+  margin: 5px 0 10px;
+  padding: 2px;
 }

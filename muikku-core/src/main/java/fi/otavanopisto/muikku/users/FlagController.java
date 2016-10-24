@@ -163,6 +163,11 @@ public class FlagController {
   public List<FlagShare> listShares(Flag flag) {
     return flagShareDAO.listByFlag(flag);
   }
+  
+  public void unshareFlag(Flag flag, UserSchoolDataIdentifier userIdentifier) {
+    FlagShare flagShare = flagShareDAO.findByFlagAndUserIdentifier(flag, userIdentifier);
+    flagShareDAO.delete(flagShare);
+  }
 
   public FlagShare findFlagShare(Long id) {
     return flagShareDAO.findById(id);
@@ -188,6 +193,15 @@ public class FlagController {
   
   public void deleteFlag(Flag flag) {
     flagDAO.delete(flag);
+  }
+  
+  public void deleteFlagCascade(Flag flag) {
+    List<FlagStudent> flagStudents = flagStudentDAO.listByFlag(flag);
+    for (FlagStudent flagStudent : flagStudents) {
+      flagStudentDAO.delete(flagStudent);
+    }
+    
+    deleteFlag(flag);
   }
   
   private List<SchoolDataIdentifier> toIdentifiers(List<UserSchoolDataIdentifier> userSchoolDataIdentifiers) {
