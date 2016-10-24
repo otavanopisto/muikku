@@ -7,9 +7,6 @@
     _create : function() {
       this._loadAssessmentRequests();
     },
-    getGrades() {
-      return this._grades;
-    },
     _loadAssessmentRequests: function () {
       var requestContainer = $('.evaluation-requests-container'); 
       $(requestContainer).empty();

@@ -37,15 +37,15 @@
       this.options.ckeditor.extraPlugins = extraPlugins.join(',');
       // Grading scales
       mApi().evaluation.compositeGradingScales
-      .read()
-      .callback($.proxy(function (err, gradingScales) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }
-        else {
-          this._gradingScales = gradingScales;
-        }
-      }, this)); 
+        .read()
+        .callback($.proxy(function (err, gradingScales) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            this._gradingScales = gradingScales;
+          }
+        }, this)); 
     },
     open: function(requestCard) {
       this._evaluationModal = $('<div>')
