@@ -33,6 +33,17 @@
 
   $(document).ready(function () {
     $(document).evaluationMainView().evaluationModal();
+    // Grading scales
+    mApi().evaluation.compositeGradingScales
+      .read()
+      .callback($.proxy(function (err, gradingScales) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          $(document).evaluationModal('setGradingScales', gradingScales);
+        }
+      }, this)); 
   });
 
   $(document).on('click', '.evaluate-button', function (event) {

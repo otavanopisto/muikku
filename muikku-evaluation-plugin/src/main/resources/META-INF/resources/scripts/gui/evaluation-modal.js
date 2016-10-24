@@ -35,17 +35,9 @@
         extraPlugins.push(plugin);
       }, this));
       this.options.ckeditor.extraPlugins = extraPlugins.join(',');
-      // Grading scales
-      mApi().evaluation.compositeGradingScales
-        .read()
-        .callback($.proxy(function (err, gradingScales) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            this._gradingScales = gradingScales;
-          }
-        }, this)); 
+    },
+    setGradingScales: function(gradingScales) {
+      this._gradingScales = gradingScales;
     },
     open: function(requestCard) {
       this._evaluationModal = $('<div>')
