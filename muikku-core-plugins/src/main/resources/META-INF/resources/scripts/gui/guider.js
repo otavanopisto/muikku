@@ -757,7 +757,7 @@
       this._fileAddForm = this.element.find("[data-file-add]");
       this._fileAddFileInput = this._fileAddForm.find("input[name=upload]");
       this._fileListElement = this.element.find("[data-file-list]");
-      this._fileRowElementContent = this._fileListElement.children(":first-child").html();
+      this._fileRowElementContent = this._fileListElement.html();
 
       this._setup();
       
@@ -803,9 +803,16 @@
       mApi().guider.users.files.read(userIdentifier).callback($.proxy(this._onFilesLoaded, this));
     },
     
-    _appendFile: function(title) {
+    _deleteFile: function(elem, fileId) {
+      mApi().guider.files.del(fileId).callback($.proxy(function () {
+        elem.remove();
+      }, this));
+    },
+    
+    _appendFile: function(title, fileId) {
       var elem = $(this._fileRowElementContent);
       elem.find("[data-file-name]").text(title);
+      elem.find("[data-file-delete]").on('click', $.proxy(function () { this._deleteFile(elem, fileId); }, this));
       this._fileListElement.append(elem);
     },
     
@@ -815,7 +822,7 @@
       } else {
         for (var i=0; i<files.length; i++) {
           var file = files[i];
-          this._appendFile(file.title);
+          this._appendFile(file.title, file.id);
         }
       }
     }
