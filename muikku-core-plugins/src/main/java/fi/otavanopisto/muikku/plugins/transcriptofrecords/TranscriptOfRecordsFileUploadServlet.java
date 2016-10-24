@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -62,16 +63,24 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       return;
     }
 
-    String userEntityIdString = req.getPathInfo().replaceFirst("/", "");
-    if (StringUtils.isBlank(userEntityIdString) || !StringUtils.isNumeric(userEntityIdString)) {
-      sendResponse(resp, "Invalid user entity id", HttpServletResponse.SC_BAD_REQUEST);
+    Part userIdentifierPart = req.getPart("userIdentifier");
+    if (userIdentifierPart == null) {
+      sendResponse(resp, "Missing userIdentifier", HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-    long userEntityId = Long.parseLong(userEntityIdString, 10);
-    
-    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    String userIdentifier = "";
+    try (InputStream is = userIdentifierPart.getInputStream()) {
+      userIdentifier = IOUtils.toString(is, StandardCharsets.UTF_8);
+    }
+
+    SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
+    if (schoolDataIdentifier == null) {
+      sendResponse(resp, "Invalid userIdentifier", HttpServletResponse.SC_BAD_REQUEST);
+      return;
+    }
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(schoolDataIdentifier);
     if (userEntity == null) {
-      sendResponse(resp, "User entity not found", HttpServletResponse.SC_NOT_FOUND);
+      sendResponse(resp, "User entity not found", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
     }
     

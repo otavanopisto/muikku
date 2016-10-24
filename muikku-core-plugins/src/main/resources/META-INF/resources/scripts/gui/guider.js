@@ -754,7 +754,8 @@
     },
     
     _create : function() {
-      this._fileAddElement = this.element.find("[data-file-add]");
+      this._fileAddForm = this.element.find("[data-file-add]");
+      this._fileAddFileInput = this._fileAddForm.find("input[name=upload]");
       this._fileListElement = this.element.find("[data-file-list]");
       this._fileRowElementContent = this._fileListElement.children(":first-child").html();
 
@@ -766,17 +767,34 @@
     _setup : function() {
       this._fileListElement.empty();
       
-      console.log(this._fileAddElement.find("input[name=upload]"));
-      this._fileAddElement
-        .find("input[name=upload]")
-        .on('change', $.proxy(this._onFileInputChange, this));
+      this._fileAddFileInput.on('change', $.proxy(this._onFileInputChange, this));
     },
     
     _onFileInputChange : function (event) {
       console.log(event);
       for (var i=0; i<event.target.files.length; i++) {
+        console.log(this._fileAddForm[0]);
         var file = event.target.files[i];
-        console.log(file);
+        var formData = new FormData(this._fileAddForm[0]);
+        formData.append('title', file.name);
+        formData.append('description', '');
+        formData.append('userIdentifier', this.options.userIdentifier);
+        $.ajax({
+          url: '/transcriptofrecordsfileupload/',
+          type: 'POST',
+          data: formData,
+          success: $.proxy(function() {
+            this._fileAddForm[0].reset();
+            this._appendFile(file.name);
+          }, this),
+          error: $.proxy(function(xhr, err, thrown) {
+            this._fileAddForm[0].reset();
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }, this),
+          cache: false,
+          contentType: false,
+          processData: false
+        })
       }
     },
     
@@ -785,16 +803,19 @@
       mApi().guider.users.files.read(userIdentifier).callback($.proxy(this._onFilesLoaded, this));
     },
     
+    _appendFile: function(title) {
+      var elem = $(this._fileRowElementContent);
+      elem.find("[data-file-name]").text(title);
+      this._fileListElement.append(elem);
+    },
+    
     _onFilesLoaded: function(err, files) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       } else {
         for (var i=0; i<files.length; i++) {
           var file = files[i];
-          console.log(file);
-          var elem = $(this._fileRowElementContent);
-          elem.find("[data-file-name]").text(file.title);
-          this._fileListElement.append(elem);
+          this._appendFile(file.title);
         }
       }
     }

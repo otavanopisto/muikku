@@ -97,10 +97,10 @@
   <div class="gt-user-view-profile-files mf-widget flex-row">
     <div class="gt-user-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
       <div class="flex-row">
-        <div data-file-add class="gt-user-file-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
+        <div class="gt-user-file-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
           <span>{#localize key="plugin.guider.user.details.files.hint"/}</span>
-          <form>
-            <input name="upload" type="file">
+          <form style="opacity: 0; cursor: pointer" data-file-add>
+            <input style="width: 100%; height: 100%" name="upload" type="file">
           </form>
         </div>
       </div>
