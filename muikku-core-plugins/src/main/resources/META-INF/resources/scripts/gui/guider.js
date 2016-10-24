@@ -771,9 +771,7 @@
     },
     
     _onFileInputChange : function (event) {
-      console.log(event);
       for (var i=0; i<event.target.files.length; i++) {
-        console.log(this._fileAddForm[0]);
         var file = event.target.files[i];
         var formData = new FormData(this._fileAddForm[0]);
         formData.append('title', file.name);
@@ -788,7 +786,7 @@
             this._fileAddForm[0].reset();
             this._appendFile(file.name, data.id);
           }, this),
-          error: $.proxy(function(xhr, err, thrown) {
+          error: $.proxy(function(xhr, err) {
             this._fileAddForm[0].reset();
             $('.notification-queue').notificationQueue('notification', 'error', err);
           }, this),
