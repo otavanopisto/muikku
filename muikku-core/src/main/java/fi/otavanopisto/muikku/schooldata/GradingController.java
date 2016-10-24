@@ -84,6 +84,10 @@ public class GradingController {
     return gradingSchoolDataController.findGradingScale(schoolDataSource, identifier);
   }
 
+  public GradingScale findGradingScale(SchoolDataIdentifier identifier) {
+    return gradingSchoolDataController.findGradingScale(identifier.getDataSource(), identifier.getIdentifier());
+  }
+
 	public List<GradingScale> listGradingScales() {
 		return gradingSchoolDataController.listGradingScales();
 	}
@@ -96,6 +100,10 @@ public class GradingController {
 	
 	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
+  }
+
+	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, SchoolDataIdentifier identifier) {
+    return gradingSchoolDataController.findGradingScaleItem(identifier.getDataSource(), gradingScale, identifier.getIdentifier());
   }
 
 	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {

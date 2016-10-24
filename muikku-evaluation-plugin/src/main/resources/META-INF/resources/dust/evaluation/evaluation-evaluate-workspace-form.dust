@@ -25,7 +25,7 @@
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
     <select name="assessor">
     {#assessors}
-      <option value="{userEntityId}">{lastName}, {firstName}</option>
+      <option value="{userIdentifier}">{lastName}, {firstName}</option>
     {/assessors}
     </select>
   </div>

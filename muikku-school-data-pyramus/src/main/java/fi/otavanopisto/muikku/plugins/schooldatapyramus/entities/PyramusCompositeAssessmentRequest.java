@@ -8,15 +8,15 @@ import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 
 public class PyramusCompositeAssessmentRequest implements CompositeAssessmentRequest {
   
-  public PyramusCompositeAssessmentRequest(SchoolDataIdentifier courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
+  public PyramusCompositeAssessmentRequest(String courseStudentIdentifier, String userIdentifier, String firstName, String lastName,
       String studyProgramme, String courseIdentifier, String courseName, String courseNameExtension, Date courseEnrollmentDate,
       Date assessmentRequestDate, Date evaluationDate, Boolean passing) {
-    this.courseStudentIdentifier = courseStudentIdentifier;
-    this.userIdentifier = userIdentifier;
+    this.courseStudentIdentifier = new SchoolDataIdentifier(courseStudentIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.userIdentifier = new SchoolDataIdentifier(userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.firstName = firstName;
     this.lastName = lastName;
     this.studyProgramme = studyProgramme;
-    this.courseIdentifier = courseIdentifier;
+    this.courseIdentifier = new SchoolDataIdentifier(courseIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.courseName = courseName;
     this.courseNameExtension = courseNameExtension;
     this.courseEnrollmentDate = courseEnrollmentDate;
@@ -36,7 +36,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   }
 
   @Override
-  public String getUserIdentifier() {
+  public SchoolDataIdentifier getUserIdentifier() {
     return userIdentifier;
   }
 
@@ -56,7 +56,7 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   }
 
   @Override
-  public String getCourseIdentifier() {
+  public SchoolDataIdentifier getCourseIdentifier() {
     return courseIdentifier;
   }
 
@@ -91,11 +91,11 @@ public class PyramusCompositeAssessmentRequest implements CompositeAssessmentReq
   }
 
   private final SchoolDataIdentifier courseStudentIdentifier;
-  private final String userIdentifier;
+  private final SchoolDataIdentifier userIdentifier;
   private final String firstName;
   private final String lastName;
   private final String studyProgramme;
-  private final String courseIdentifier;
+  private final SchoolDataIdentifier courseIdentifier;
   private final String courseName;
   private final String courseNameExtension;
   private final Date courseEnrollmentDate;

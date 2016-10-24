@@ -2,7 +2,7 @@ package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 
 import java.util.Date;
 
-public class RESTAssessmentRequest {
+public class RestAssessmentRequest {
 
   public String getFirstName() {
     return firstName;

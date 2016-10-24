@@ -778,21 +778,19 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   private fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry) {
-    UserEntity assessor = userEntityController.findUserEntityByDataSourceAndIdentifier(entry.getAssessingUserSchoolDataSource(), entry.getAssessingUserIdentifier());
-    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleSchoolDataSource(), entry.getGradingScaleIdentifier());
-    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeSchoolDataSource(), entry.getGradeIdentifier());
-    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(entry.getWorkspaceUserIdentifier(), entry.getWorkspaceUserSchoolDataSource());
-    SchoolDataIdentifier assessmentIdentifier = new SchoolDataIdentifier(entry.getIdentifier(), entry.getSchoolDataSource());
+    UserEntity assessor = userEntityController.findUserEntityByUserIdentifier(entry.getAssessingUserIdentifier());
+    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleIdentifier());
+    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeIdentifier());
     
     return new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment(
-      assessmentIdentifier.toId(),
+      entry.getIdentifier().toId(),
       entry.getDate(),
       assessor != null ? assessor.getId() : null,
-      workspaceUserIdentifier.toId(),
-      entry.getGradingScaleIdentifier(),
-      entry.getGradingScaleSchoolDataSource(),
-      entry.getGradeIdentifier(),
-      entry.getGradeSchoolDataSource(),
+      entry.getWorkspaceUserIdentifier().toId(),
+      entry.getGradingScaleIdentifier().getIdentifier(),
+      entry.getGradingScaleIdentifier().getDataSource(),
+      entry.getGradeIdentifier().getIdentifier(),
+      entry.getGradeIdentifier().getDataSource(),
       entry.getVerbalAssessment(),
       grade.isPassingGrade()
     ); 

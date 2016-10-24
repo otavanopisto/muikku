@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -9,13 +10,15 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RESTAssessmentRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -30,6 +33,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -65,17 +69,29 @@ public class Evaluation2RESTService {
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @GET
-  @Path("/courseStudent/{COURSESTUDENTID}/assessment")
+  @Path("/courseStudent/{COURSESTUDENTIDENTIFIER}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceStudentAssessment() {
+  public Response getWorkspaceStudentAssessment(@PathParam("COURSESTUDENTIDENTIFIER") String courseStudentIdentifier) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    // TODO Implement
-    return null;
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(courseStudentIdentifier);
+    WorkspaceAssessment workspaceAssessment = gradingController.findWorkspaceAssessment(identifier);
+    if (workspaceAssessment == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    RestAssessment restAssessment = new RestAssessment(
+        workspaceAssessment.getIdentifier().toId(),
+        workspaceAssessment.getWorkspaceUserIdentifier().toId(),
+        workspaceAssessment.getAssessingUserIdentifier().toId(),
+        workspaceAssessment.getGradingScaleIdentifier().toId(),
+        workspaceAssessment.getGradeIdentifier().toId(),
+        workspaceAssessment.getVerbalAssessment(),
+        workspaceAssessment.getDate());
+    return Response.ok(restAssessment).build();
   }
 
   @GET
@@ -115,7 +131,7 @@ public class Evaluation2RESTService {
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    List<RESTAssessmentRequest> restAssessmentRequests = new ArrayList<RESTAssessmentRequest>();
+    List<RestAssessmentRequest> restAssessmentRequests = new ArrayList<RestAssessmentRequest>();
     SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
     List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByStaffMember(loggedUser);
     for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
@@ -124,13 +140,11 @@ public class Evaluation2RESTService {
     return Response.ok(restAssessmentRequests).build();
   }
   
-  private RESTAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest) {
+  private RestAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest) {
     Long assignmentsDone = 0L;
     Long assignmentsTotal = 0L;
     // Assignments total
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
-        compositeAssessmentRequest.getSchoolDataSource(),
-        compositeAssessmentRequest.getCourseIdentifier());
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByIdentifier(compositeAssessmentRequest.getCourseIdentifier());
     if (workspaceEntity == null) {
       logger.severe(String.format("WorkspaceEntity for course %s not found", compositeAssessmentRequest.getCourseIdentifier()));
     }
@@ -141,9 +155,7 @@ public class Evaluation2RESTService {
       assignmentsTotal = new Long(evaluatedAssignments.size());
       // Assignments done by user
       if (assignmentsTotal > 0) {
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(
-            compositeAssessmentRequest.getSchoolDataSource(),
-            compositeAssessmentRequest.getUserIdentifier());
+        UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());            
         if (userEntity == null) {
           logger.severe(String.format("UserEntity not found for AssessmentRequest student %s not found", compositeAssessmentRequest.getUserIdentifier()));
         }
@@ -155,8 +167,8 @@ public class Evaluation2RESTService {
         }
       }
     }
-    RESTAssessmentRequest restAssessmentRequest = new RESTAssessmentRequest();
-    restAssessmentRequest.setCourseStudentIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toString());
+    RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
+    restAssessmentRequest.setCourseStudentIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
     restAssessmentRequest.setEvaluationDate(compositeAssessmentRequest.getEvaluationDate());
     restAssessmentRequest.setPassing(compositeAssessmentRequest.getPassing());

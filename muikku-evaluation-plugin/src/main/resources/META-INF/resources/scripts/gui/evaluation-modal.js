@@ -56,7 +56,17 @@
       var verbalAssessment, assessorId, gradeId;
       var evaluationDate = new Date();
       if ($(requestCard).attr('data-evaluated') == 'true') {
-        // load evaluation data
+        var courseStudentIdentifier = $(requestCard).attr('data-course-student-identifier');
+        mApi().evaluation.courseStudent.assessment
+          .read(courseStudentIdentifier)
+          .callback($.proxy(function (err, assessment) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              // TODO pass assessment to dust
+            }
+          }, this));
       }
       
       // Assessors
