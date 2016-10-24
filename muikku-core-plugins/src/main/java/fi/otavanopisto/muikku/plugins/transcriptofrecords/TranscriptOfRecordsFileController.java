@@ -80,7 +80,7 @@ public class TranscriptOfRecordsFileController {
     return transcriptOfRecordsFileDAO.findById(id);
   }
   
-  public void getFileContent(TranscriptOfRecordsFile torFile, OutputStream stream) {
+  public void outputFileToStream(TranscriptOfRecordsFile torFile, OutputStream stream) {
     String fileUuid = torFile.getFileName();
     if (!UUID_PATTERN.matcher(fileUuid).matches()) {
       throw new RuntimeException("File name is not a valid UUID");
