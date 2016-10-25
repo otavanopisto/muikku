@@ -147,8 +147,7 @@
           // Verbal assessment
           CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
           // Date
-          var dateEditor = $(this._evaluationModal).find('input[name="evaluationDate"]');
-          $(dateEditor).datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+          $('#evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
           // Assessor + grade
           $('#assessor').val(assessment.assessorIdentifier);
           $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
@@ -168,11 +167,12 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
+              var scaleAndGrade = $('#grade').val().split('@');
               assessment.verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
-//              assessment.assessmentDate = '';
-//              assessment.assessorIdentifier = '';
-//              assessment.gradingScaleIdentifier = '';
-//              assessment.gradeIdentifier = '';
+              assessment.assessmentDate = $('#evaluationDate').datepicker('getDate').getTime();
+              assessment.assessorIdentifier = $('#assessor').val();
+              assessment.gradingScaleIdentifier = scaleAndGrade[0];
+              assessment.gradeIdentifier = scaleAndGrade[1];
               mApi().evaluation.workspace.student.assessment
                 .update(workspaceEntityId, userEntityId, assessment)
                 .callback($.proxy(function (err, assessment) {
