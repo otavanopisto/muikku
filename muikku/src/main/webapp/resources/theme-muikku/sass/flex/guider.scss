@@ -170,6 +170,7 @@
 }
 
  .gt-data {
+ 
   .gt-course-details-container {
     background-color: $environment-background-color;
     cursor: pointer;    
@@ -183,16 +184,21 @@
 
 .gt-user-file-add {
   
-  a{
-   text-transform: uppercase;
-   text-decoration: none;
+  span {
+    text-decoration: none;
+    text-transform: uppercase;
   }
 } 
+
 .gt-user-file {
   background-color: $environment-file-color;
   color: $environment-alt-font-color;
   font-weight: 600;
   padding: 0 5px;
+  
+  &:not(:first-child) {
+   margin-top:5px;  
+  }
 }
 
 .gt-user-file-action {
@@ -213,12 +219,9 @@
       
       .gt-course-header-name {
         color: $environment-alt-font-color;
-      }
-      
-    }
-    
-  }
-  
+      }      
+    }    
+  }  
 }
 
 .gt-course h4 {
