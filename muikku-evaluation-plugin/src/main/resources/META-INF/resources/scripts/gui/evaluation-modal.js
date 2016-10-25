@@ -34,6 +34,7 @@
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
       }, this));
+      this._gradingScales = null;
       this.options.ckeditor.extraPlugins = extraPlugins.join(',');
     },
     setGradingScales: function(gradingScales) {
@@ -45,20 +46,21 @@
         .appendTo('body');
       $('body').addClass('no-scroll');
       
-      var verbalAssessment, assessorId, gradeId;
-      var evaluationDate = new Date();
       if ($(requestCard).attr('data-evaluated') == 'true') {
         var courseStudentIdentifier = $(requestCard).attr('data-course-student-identifier');
-        mApi().evaluation.courseStudent.assessment
+        mApi({async: false}).evaluation.courseStudent.assessment
           .read(courseStudentIdentifier)
           .callback($.proxy(function (err, assessment) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              // TODO pass assessment to dust
+              this._assessment = assessment;
             }
           }, this));
+      }
+      else {
+        this._assessment = null;
       }
       
       // Assessors
@@ -79,14 +81,23 @@
               assessors: staffMembers
             }, $.proxy(function (html) {
               this._evaluationModal.append(html);
-              // CKEditor
-              CKEDITOR.replace(this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0], this.options.ckeditor);
-              $(this._evaluationModal).find('input[name="evaluationDate"]')
+              // Verbal assessment and CKEditor
+              var verbalAssessmentEditor = this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0];
+              $(verbalAssessmentEditor).val(this._assessment ? this._assessment.verbalAssessment : '');
+              CKEDITOR.replace(verbalAssessmentEditor, this.options.ckeditor);
+              // Assessment date and date picker
+              var dateEditor = $(this._evaluationModal).find('input[name="evaluationDate"]'); 
+              $(dateEditor)
                 .css({'z-index': 9999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
-              $(this._evaluationModal).find('input[name="evaluationDate"]')
-                .datepicker('setDate', evaluationDate);
+              var evaluationDate = this._assessment ? new Date(moment(this._assessment.assessmentDate)) : new Date();
+              $(dateEditor).datepicker('setDate', evaluationDate);
+              // Assessor
+              if (this._assessment) {
+                $('#assessor').val(this._assessment.assessorIdentifier);
+                $('#grade').val(this._assessment.gradingScaleIdentifier + '@' + this._assessment.gradeIdentifier);
+              } 
               // Close button
               $('.eval-modal-close').click($.proxy(function (event) {
                 this.close();

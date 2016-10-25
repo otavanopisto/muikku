@@ -13,7 +13,7 @@
       {#gradingScales}
         <optgroup label="{name}">
         {#grades scaleid=id scaleds=dataSource}
-          <option value="{id}/{dataSource}@{scaleid}/{scaleds}">
+          <option value="{scaleds}-{scaleid}@{dataSource}-{id}">
             {name}
           </option>
         {/grades}
@@ -23,7 +23,7 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
-    <select name="assessor">
+    <select name="assessor" id="assessor">
     {#assessors}
       <option value="{userIdentifier}">{lastName}, {firstName}</option>
     {/assessors}
