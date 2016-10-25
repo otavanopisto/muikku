@@ -3,6 +3,9 @@ package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 import java.util.Date;
 
 public class RestAssessment {
+  
+  public RestAssessment() {
+  }
 
   public RestAssessment(String identifier, String courseStudentIdentifier, String assessorIdentifier,
       String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate) {

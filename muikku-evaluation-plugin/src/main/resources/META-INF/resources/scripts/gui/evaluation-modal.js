@@ -45,29 +45,15 @@
     },
     
     open: function(requestCard) {
+      
+      this._loadEvaluation = $(requestCard).attr('data-evaluated') == 'true';
+      this._workspaceEntityId = $(requestCard).attr('data-workspace-entity-id');
+      this._userEntityId = $(requestCard).attr('data-user-entity-id');
+      
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
         .appendTo('body');
       $('body').addClass('no-scroll');
-      
-      // Load assessment
-      
-      if ($(requestCard).attr('data-evaluated') == 'true') {
-        var courseStudentIdentifier = $(requestCard).attr('data-course-student-identifier');
-        mApi({async: false}).evaluation.courseStudent.assessment
-          .read(courseStudentIdentifier)
-          .callback($.proxy(function (err, assessment) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-            else {
-              this._assessment = assessment;
-            }
-          }, this));
-      }
-      else {
-        this._assessment = null;
-      }
       
       // Load assessors
       
@@ -88,36 +74,31 @@
               courseName: $(requestCard).find('.workspace-name').text(),
               gradingScales: this._gradingScales||{},
               assessors: staffMembers,
-              assessmentIdentifier: this._assessment ? this._assessment.identifier : ''
+              workspaceEntityId: $(requestCard).attr('data-workspace-entity-id'),
+              userEntityId: $(requestCard).attr('data-user-entity-id')
             }, $.proxy(function (html) {
               
               // Modal UI
               
               this._evaluationModal.append(html);
               
-              // Verbal assessment and CKEditor
+              // CKEditor
               
               var verbalAssessmentEditor = this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0];
-              $(verbalAssessmentEditor).val(this._assessment ? this._assessment.verbalAssessment : '');
-              CKEDITOR.replace(verbalAssessmentEditor, this.options.ckeditor);
+              CKEDITOR.replace(verbalAssessmentEditor, $.extend(this.options.ckeditor, {
+                on: {
+                  instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
+                }
+              }));
 
-              // Assessment date and date picker
+              // Date picker
               
               var dateEditor = $(this._evaluationModal).find('input[name="evaluationDate"]'); 
               $(dateEditor)
                 .css({'z-index': 9999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
-              var evaluationDate = this._assessment ? new Date(moment(this._assessment.assessmentDate)) : new Date();
-              $(dateEditor).datepicker('setDate', evaluationDate);
               
-              // Assessor and grade
-              
-              if (this._assessment) {
-                $('#assessor').val(this._assessment.assessorIdentifier);
-                $('#grade').val(this._assessment.gradingScaleIdentifier + '@' + this._assessment.gradeIdentifier);
-              }
-
               // Save assessment button
               
               $('.button-evaluate-passing').click($.proxy(function(event) {
@@ -129,6 +110,9 @@
               $('.eval-modal-close').click($.proxy(function (event) {
                 this.close();
               }, this));
+
+              // Assessment, if any
+              
             
             }, this));
           }
@@ -144,10 +128,57 @@
       this._gradingScales = gradingScales;
     },
     
+    _onLiteralEvaluationEditorReady: function() {
+      if (this._loadEvaluation) {
+        this._loadAssessment(this._workspaceEntityId, this._userEntityId);
+      }
+    },
+    
+    _loadAssessment: function(workspaceEntityId, userEntityId) {
+      mApi().evaluation.workspace.student.assessment
+      .read(workspaceEntityId, userEntityId)
+      .callback($.proxy(function (err, assessment) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          // Assessment identifier
+          $('#assessmentIdentifier').val(assessment.identifier);
+          // Verbal assessment
+          CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+          // Date
+          var dateEditor = $(this._evaluationModal).find('input[name="evaluationDate"]');
+          $(dateEditor).datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+          // Assessor + grade
+          $('#assessor').val(assessment.assessorIdentifier);
+          $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+        }
+      }, this));
+    },
+    
     _saveAssessment: function() {
+      var workspaceEntityId = $('#workspaceEntityId').val();
+      var userEntityId = $('#userEntityId').val();
       var assessmentIdentifier = $('#assessmentIdentifier').val();
       if (assessmentIdentifier) {
-        // TODO modify existing        
+        mApi().evaluation.workspace.student.assessment
+          .read(workspaceEntityId, userEntityId)
+          .callback($.proxy(function (err, assessment) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              assessment.verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
+//              assessment.assessmentDate = '';
+//              assessment.assessorIdentifier = '';
+//              assessment.gradingScaleIdentifier = '';
+//              assessment.gradeIdentifier = '';
+              mApi().evaluation.workspace.student.assessment
+                .update(workspaceEntityId, userEntityId, assessment)
+                .callback($.proxy(function (err, assessment) {
+                }, this));
+            }
+          }, this));
       }
       else {
         // TODO create new       

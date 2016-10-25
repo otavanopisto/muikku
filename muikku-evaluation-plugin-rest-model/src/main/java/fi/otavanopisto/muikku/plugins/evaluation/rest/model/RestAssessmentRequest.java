@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
 import java.util.Date;
 
 public class RestAssessmentRequest {
-
+  
   public String getFirstName() {
     return firstName;
   }
@@ -108,15 +108,15 @@ public class RestAssessmentRequest {
     this.passing = passing;
   }
 
-  public String getCourseStudentIdentifier() {
-    return courseStudentIdentifier;
+  public Long getUserEntityId() {
+    return userEntityId;
   }
 
-  public void setCourseStudentIdentifier(String courseStudentIdentifier) {
-    this.courseStudentIdentifier = courseStudentIdentifier;
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
   }
 
-  private String courseStudentIdentifier;
+  private Long userEntityId;
   private String firstName;
   private String lastName;
   private String studyProgramme;
