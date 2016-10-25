@@ -1,15 +1,15 @@
 <div class="evaluation-modal-evaluate-form"> 
   <input type="hidden" name="assessmentIdentifier" id="assessmentIdentifier" value="{assessmentIdentifier}"/>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="evaluateFormLiteralEvaluation">Opintojakson sanallinen arviointi</label>
+    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
     <textarea id="evaluateFormLiteralEvaluation"></textarea>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="evaluationDate">Arviointipäivämäärä</label>
+    <label for="evaluationDate">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentDate"/}</label>
     <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="grade">Arvosana</label>
+    <label for="grade">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentGrade"/}</label>
     <select name="grade" id="grade">
       {#gradingScales}
         <optgroup label="{name}">
@@ -33,7 +33,7 @@
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
       <div class="eval-modal-evaluate-button button-delete">POISTA ARVIOINTI</div>
-      <div class="eval-modal-evaluate-button button-evaluate-nonpassing">TÄYDENNETTÄVÄ</div>
+      <div class="eval-modal-evaluate-button button-evaluate-nonpassing" style="display:none;">TÄYDENNETTÄVÄ</div>
       <div class="eval-modal-evaluate-button button-evaluate-passing">ARVIOI OPINTOJAKSO</div>
       <div class="eval-modal-evaluate-button button-cancel">PERUUTA</div>
     </div>

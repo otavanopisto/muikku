@@ -145,7 +145,14 @@
     },
     
     _saveAssessment: function() {
-      alert('let us shave!!');
+      var assessmentIdentifier = $('#assessmentIdentifier').val();
+      if (assessmentIdentifier) {
+        // TODO modify existing        
+      }
+      else {
+        // TODO create new       
+      }
+      
     }
   });
   
