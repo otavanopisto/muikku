@@ -25,6 +25,12 @@
 
         this.element.on('click', '.mf-label-function-edit', $.proxy(this._onFlagEditClick, this));               
         this.element.on('click', '.mf-label-function-delete', $.proxy(this._onFlagDeleteClick, this));               
+        
+        $(document).on('click',function(e){
+          if ( $(e.target).closest('.gt-filters').length === 0 ) {
+             $('.current').hide().removeClass('current');
+          }
+       })
       
       }, this));
     },
@@ -177,13 +183,19 @@
       var menus = $(element).closest('ul').find('.gt-flag-functions-menu');
       var menuPosition = $(element).width() - 10;
       var menuState = menu.css('display') ;     
+
+
       
+
+      
+
       menu.css('left', menuPosition);
       
       menus.hide();
 
       if(menuState == 'none'){
-        menu.show();       
+        menu.addClass("current");
+        menu.show();               
       }else{
         menu.hide();   
         
@@ -192,6 +204,8 @@
 
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gt-filter-link');
+      $('.current').hide().removeClass('current');   
+      
       if (element.hasClass('selected')) {
         this.removeFilter(element.attr('data-type'), element.attr('data-id'));
       } else {
