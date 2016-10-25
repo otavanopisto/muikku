@@ -105,7 +105,16 @@
 .tr-user-file{
   display:inline-block;
   padding:5px;
-  background-color: #34acfd;
+  background-color: $environment-file-color;
+  a {
+    color: $environment-alt-font-color;
+    text-decoration: none;
+  }
+  
+  &:not(:first-child){
+   margin-left:5px;
+  }
+
 }
 
 
