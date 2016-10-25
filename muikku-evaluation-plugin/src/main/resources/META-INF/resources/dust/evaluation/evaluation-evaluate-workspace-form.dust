@@ -1,4 +1,5 @@
 <div class="evaluation-modal-evaluate-form"> 
+  <input type="hidden" name="assessmentIdentifier" id="assessmentIdentifier" value="{assessmentIdentifier}"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">Opintojakson sanallinen arviointi</label>
     <textarea id="evaluateFormLiteralEvaluation"></textarea>
@@ -24,9 +25,9 @@
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
     <select name="assessor" id="assessor">
-    {#assessors}
-      <option value="{userIdentifier}">{lastName}, {firstName}</option>
-    {/assessors}
+      {#assessors}
+        <option value="{userIdentifier}">{lastName}, {firstName}</option>
+      {/assessors}
     </select>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
