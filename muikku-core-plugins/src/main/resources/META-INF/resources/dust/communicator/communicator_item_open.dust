@@ -8,11 +8,9 @@
                 {?recipients}
                   <span class="icon-arrow-right cm-message-recipient-arrow"></span>
                   {#recipients}
-                  	{@lt key=$idx value=3}
-                      <span class="cm-message-recipient-name">{firstName} {lastName}</span>
-                    {/lt}
+                    <span class="cm-message-recipient-name">{firstName} {lastName}</span>
                   {/recipients}
-                  {@gt key=recipients.length value=3}
+                  {@gt key=recipientCount value=5}
                     <span class="cm-message-recipient-name">...</span>
                   {/gt}
                 {/recipients}
@@ -24,11 +22,7 @@
               <div class="mf-item-content-text cm-message-content-text">{content|s}</div>          
               <div class="cm-message-content-tools">
                 <div class="cm-message-content-tools-container">
-                  {^isOwner}
-                    <div id="{id}" data-recipients="{recipientIds}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>                    
-                  {:else}
-                    <div id="{id}" data-recipients="{recipientIds}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>
-                  {/isOwner}
+                  <div id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>
                 </div>
                 <div class="cm-message-content-tools-reply-container"></div>
               </div>
