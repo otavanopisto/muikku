@@ -8,6 +8,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -120,7 +121,6 @@ public class Evaluation2RESTService {
     }
     RestAssessment restAssessment = new RestAssessment(
         workspaceAssessment.getIdentifier().toId(),
-        workspaceAssessment.getWorkspaceUserIdentifier().toId(),
         workspaceAssessment.getAssessingUserIdentifier().toId(),
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
@@ -132,7 +132,7 @@ public class Evaluation2RESTService {
   @PUT
   @Path("/workspace/{WORKSPACEENTITYID}/student/{USERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceStudentAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, RestAssessment payload) {
+  public Response updateWorkspaceStudentAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, RestAssessment payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -197,7 +197,90 @@ public class Evaluation2RESTService {
     
     RestAssessment restAssessment = new RestAssessment(
         workspaceAssessment.getIdentifier().toId(),
-        workspaceAssessment.getWorkspaceUserIdentifier().toId(),
+        workspaceAssessment.getAssessingUserIdentifier().toId(),
+        workspaceAssessment.getGradingScaleIdentifier().toId(),
+        workspaceAssessment.getGradeIdentifier().toId(),
+        workspaceAssessment.getVerbalAssessment(),
+        workspaceAssessment.getDate());
+    return Response.ok(restAssessment).build();
+  }
+
+  @POST
+  @Path("/workspace/{WORKSPACEENTITYID}/student/{USERENTITYID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceStudentAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId, RestAssessment payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Workspace entity to identifier
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    
+    // User entity to identifier
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    
+    // TODO listWorkspaceAssessments is incorrect; one student in one workspace should have one assessment at most
+    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, userIdentifier);
+    WorkspaceAssessment workspaceAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
+    
+    // Workspace user
+    
+    WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
+
+    // Assessor
+    
+    SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
+    User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
+    
+    // Grade
+    
+    SchoolDataIdentifier gradingScaleIdentifier = SchoolDataIdentifier.fromId(payload.getGradingScaleIdentifier());
+    GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+    SchoolDataIdentifier gradeIdentifier = SchoolDataIdentifier.fromId(payload.getGradeIdentifier());
+    GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+    
+    // Create (also update capability, just in case)
+    
+    if (workspaceAssessment == null) {
+      workspaceAssessment = gradingController.createWorkspaceAssessment(
+          workspaceIdentifier.getDataSource(),
+          workspaceUser,
+          assessingUser,
+          gradingScaleItem,
+          payload.getVerbalAssessment(),
+          payload.getAssessmentDate());
+    }
+    else {
+      workspaceAssessment = gradingController.updateWorkspaceAssessment(
+          workspaceAssessment.getIdentifier(),
+          workspaceUser,
+          assessingUser,
+          gradingScaleItem,
+          payload.getVerbalAssessment(),
+          payload.getAssessmentDate());
+    }
+    
+    // Back to rest
+    
+    RestAssessment restAssessment = new RestAssessment(
+        workspaceAssessment.getIdentifier().toId(),
         workspaceAssessment.getAssessingUserIdentifier().toId(),
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),

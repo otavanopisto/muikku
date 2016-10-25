@@ -7,10 +7,8 @@ public class RestAssessment {
   public RestAssessment() {
   }
 
-  public RestAssessment(String identifier, String courseStudentIdentifier, String assessorIdentifier,
-      String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate) {
+  public RestAssessment(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate) {
     this.identifier = identifier;
-    this.courseStudentIdentifier = courseStudentIdentifier;
     this.assessorIdentifier = assessorIdentifier;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
     this.gradeIdentifier = gradeIdentifier;
@@ -66,16 +64,7 @@ public class RestAssessment {
     this.assessmentDate = assessmentDate;
   }
 
-  public String getCourseStudentIdentifier() {
-    return courseStudentIdentifier;
-  }
-
-  public void setCourseStudentIdentifier(String courseStudentIdentifier) {
-    this.courseStudentIdentifier = courseStudentIdentifier;
-  }
-
   private String identifier;
-  private String courseStudentIdentifier;
   private String assessorIdentifier;
   private String gradingScaleIdentifier;
   private String gradeIdentifier;

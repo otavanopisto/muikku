@@ -46,9 +46,7 @@
     
     open: function(requestCard) {
       
-      this._loadEvaluation = $(requestCard).attr('data-evaluated') == 'true';
-      this._workspaceEntityId = $(requestCard).attr('data-workspace-entity-id');
-      this._userEntityId = $(requestCard).attr('data-user-entity-id');
+      this._requestCard = requestCard;
       
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
@@ -105,14 +103,11 @@
                 this._saveAssessment();
               }, this));
               
-              // Close button
+              // Cancel and close buttons
               
-              $('.eval-modal-close').click($.proxy(function (event) {
+              $('.eval-modal-close, .button-cancel').click($.proxy(function (event) {
                 this.close();
               }, this));
-
-              // Assessment, if any
-              
             
             }, this));
           }
@@ -129,8 +124,11 @@
     },
     
     _onLiteralEvaluationEditorReady: function() {
-      if (this._loadEvaluation) {
-        this._loadAssessment(this._workspaceEntityId, this._userEntityId);
+      if ($(this._requestCard).attr('data-evaluated')) {
+        this._loadAssessment($(this._requestCard).attr('data-workspace-entity-id'), $(this._requestCard).attr('data-user-entity-id'));
+      }
+      else {
+        $('#evaluationDate').datepicker('setDate', new Date());
       }
     },
     
@@ -176,14 +174,35 @@
               mApi().evaluation.workspace.student.assessment
                 .update(workspaceEntityId, userEntityId, assessment)
                 .callback($.proxy(function (err, assessment) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  else {
+                    $(this._requestCard).attr('data-evaluated', true);
+                  }
                 }, this));
             }
           }, this));
       }
       else {
-        // TODO create new       
+        var scaleAndGrade = $('#grade').val().split('@');
+        mApi().evaluation.workspace.student.assessment
+          .create(workspaceEntityId, userEntityId, {
+            assessorIdentifier: $('#assessor').val(),
+            gradingScaleIdentifier: scaleAndGrade[0],
+            gradeIdentifier: scaleAndGrade[1],
+            verbalAssessment: CKEDITOR.instances.evaluateFormLiteralEvaluation.getData(),
+            assessmentDate: $('#evaluationDate').datepicker('getDate').getTime()
+          })
+          .callback($.proxy(function (err, assessment) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              $(this._requestCard).attr('data-evaluated', true);
+            }
+          }, this));
       }
-      
     }
   });
   
