@@ -374,4 +374,16 @@ public class CommunicatorController {
         userEntities.remove(i);
     }
   }
+  
+  public void removeRecipient(List<UserEntity> userEntities, UserEntity userEntity) {
+    for (int i = userEntities.size() - 1; i >= 0; i--) {
+      if (userEntities.get(i) != null) {
+        Long userId = userEntities.get(i).getId();
+        
+        if (userId.equals(userEntity.getId()))
+          userEntities.remove(i);
+      }
+    }
+  }
+  
 }
