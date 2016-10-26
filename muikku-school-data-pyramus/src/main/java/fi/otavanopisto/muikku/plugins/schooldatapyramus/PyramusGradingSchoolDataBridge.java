@@ -204,17 +204,6 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public WorkspaceAssessment findWorkspaceAssessment(String workspaceStudentIdentifier) {
-    Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceStudentIdentifier);
-    if (courseStudentId == null) {
-      logger.severe(String.format("Could not translate %s to Pyramus course student", workspaceStudentIdentifier));
-      return null; 
-    }
-    CourseAssessment courseAssessment = pyramusClient.get(String.format("/students/courseStudents/%d/assessment", courseStudentId), CourseAssessment.class);
-    return entityFactory.createEntity(courseAssessment);
-  }
-
-  @Override
   public WorkspaceAssessment findWorkspaceAssessment(String identifier, String workspaceIdentifier, String studentIdentifier) {
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
