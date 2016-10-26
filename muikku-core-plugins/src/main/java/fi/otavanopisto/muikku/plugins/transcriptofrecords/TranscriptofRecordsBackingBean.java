@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
@@ -40,6 +43,9 @@ public class TranscriptofRecordsBackingBean {
 
   @Inject
   private GradingController gradingController;
+  
+  @Inject
+  private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
 
   @RequestAction
 	public String init() {
@@ -73,6 +79,22 @@ public class TranscriptofRecordsBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
     
+    UserEntity loggedEntity = sessionController.getLoggedUserEntity();
+    
+    List<TranscriptOfRecordsFile> transcriptOfRecordsFiles;
+    if (loggedEntity != null) {
+      transcriptOfRecordsFiles = transcriptOfRecordsFileController.listFiles(loggedEntity);
+    } else {
+      transcriptOfRecordsFiles = Collections.emptyList();
+    }
+
+    try {
+      files = new ObjectMapper().writeValueAsString(transcriptOfRecordsFiles);
+    } catch (JsonProcessingException e) {
+      logger.log(Level.SEVERE, "Failed to serialize files", e);
+      return NavigationRules.INTERNAL_ERROR;
+    }
+    
 	  return null;
 	}
   
@@ -80,7 +102,13 @@ public class TranscriptofRecordsBackingBean {
     return grades;
   }
   
+  public String getFiles() {
+    return files;
+  }
+  
   private String grades;
+  
+  private String files;
 	
   public static class Grade {
     
