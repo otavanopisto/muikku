@@ -29,19 +29,17 @@
     },
     
     _create : function() {
-      
-      // CKEditor
-      
       var extraPlugins = [];
       $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
       }, this));
       this.options.ckeditor.extraPlugins = extraPlugins.join(',');
-      
-      // Init grading scales
-      
+
       this._gradingScales = null;
+      
+      this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
+      this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
     },
     
     open: function(requestCard) {
@@ -124,12 +122,64 @@
     },
     
     _onLiteralEvaluationEditorReady: function() {
+      this.element.trigger("dialogReady");
+    },
+    
+    _loadMaterials: function() {
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      
+      var loads = $.map(["EVALUATED", "EXERCISE"], $.proxy(function (assignmentType) {
+        return $.proxy(function (callback) {
+          mApi().workspace.workspaces.materials
+            .read(workspaceEntityId, { assignmentType : assignmentType})
+            .callback(callback)
+        }, this);
+      }, this));
+      
+      async.parallel(loads, $.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          var evaluableAssignments = results[0]||[];
+          var exerciseAssignments = results[1]||[];
+          this.element.trigger("materialsLoaded", {
+            assignments: evaluableAssignments.concat(exerciseAssignments)
+          });
+        }
+      }, this));
+    },
+    
+    _openAssignment: function(assignment) {
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
+      mApi().workspace.workspaces.materials.compositeMaterialReplies
+        .read(workspaceEntityId, workspaceMaterialId, {
+          userEntityId: userEntityId
+        })
+        .callback($.proxy(function(err, replies) {
+          // TODO student answers here, load material content 
+        }, this));
+    },
+    
+    _onDialogReady: function() {
       if ($(this._requestCard).attr('data-evaluated')) {
         this._loadAssessment($(this._requestCard).attr('data-workspace-entity-id'), $(this._requestCard).attr('data-user-entity-id'));
       }
       else {
         $('#evaluationDate').datepicker('setDate', new Date());
       }
+      this._loadMaterials();
+    },
+    
+    _onMaterialsLoaded: function(event, data) {
+      $.each(data.assignments, $.proxy(function(index, assignment) {
+        var assignment = $('<div>').addClass('dummy-assignment').attr('data-workspace-material-id', assignment.id).text(assignment.title).appendTo($('.eval-modal-assignment-content'));
+        $(assignment).click($.proxy(function(event) {
+          this._openAssignment(assignment);
+        }, this));
+      }, this));
     },
     
     _loadAssessment: function(workspaceEntityId, userEntityId) {
@@ -146,8 +196,9 @@
           CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
           // Date
           $('#evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
-          // Assessor + grade
+          // Assessor
           $('#assessor').val(assessment.assessorIdentifier);
+          // Grade
           $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
         }
       }, this));

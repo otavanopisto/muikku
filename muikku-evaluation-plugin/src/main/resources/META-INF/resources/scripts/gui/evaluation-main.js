@@ -32,7 +32,10 @@
   });
 
   $(document).ready(function () {
-    $(document).evaluationMainView().evaluationModal();
+    $(document).evaluationMainView().evaluationModal().muikkuMaterialLoader({
+      prependTitle: false,
+      readOnlyFields: true
+    });
     // Grading scales
     mApi().evaluation.compositeGradingScales
       .read()
