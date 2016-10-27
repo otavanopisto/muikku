@@ -1127,16 +1127,16 @@
             
             renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
               this.element.html(text);
-              if (message.senderId === MUIKKU_LOGGED_USER_ID) {                 
-                $.each(message.recipients,  $.proxy(function (index, recipient) {
-                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
-                  
-                  if (recipient.userId != message.senderId) {
-                    this._addRecipient('USER', recipient.userId, recipientFullName);
-                  }
-                  
-                }, this));
-              }
+//              if (message.senderId === MUIKKU_LOGGED_USER_ID) {               
+//                $.each(message.recipients,  $.proxy(function (index, recipient) {
+//                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
+//                  
+//                  if (recipient.userId != message.senderId) {
+//                    this._addRecipient('USER', recipient.userId, recipientFullName);
+//                  }
+//              
+//                }, this));
+//              }
               
               var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
               this._addRecipient('USER', message.sender.id, senderFullName);                       
