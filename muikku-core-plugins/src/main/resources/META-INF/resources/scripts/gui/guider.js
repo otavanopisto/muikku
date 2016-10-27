@@ -22,13 +22,12 @@
         this.filters(this._filters);
         this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
         this.element.on('click', '.mf-label-functions', $.proxy(this._onFilterMenuLink, this));
-
         this.element.on('click', '.mf-label-function-edit', $.proxy(this._onFlagEditClick, this));               
         this.element.on('click', '.mf-label-function-delete', $.proxy(this._onFlagDeleteClick, this));               
         
         $(document).on('click',function(e){
-          if ( $(e.target).closest('.gt-filters').length === 0 ) {
-             $('.current').hide().removeClass('current');
+          if ( $(e.target).closest('.gt-filters').length === 0 ) {            
+             $('.gt-filters').find('.gt-flag-functions-menu').hide();                              
           }
        })
       
