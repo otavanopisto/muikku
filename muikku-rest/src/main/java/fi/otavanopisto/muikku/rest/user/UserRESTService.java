@@ -301,7 +301,8 @@ public class UserRESTService extends AbstractRESTService {
             emailAddress,
             studyStartDate,
             studyEndDate,
-            studyTimeEnd));
+            studyTimeEnd,
+            (String) o.get("curriculumIdentifier")));
         }
       }
     }
@@ -354,7 +355,7 @@ public class UserRESTService extends AbstractRESTService {
     Date studyStartDate = user.getStudyStartDate() != null ? Date.from(user.getStudyStartDate().toInstant()) : null;
     Date studyEndDate = user.getStudyEndDate() != null ? Date.from(user.getStudyEndDate().toInstant()) : null;
     Date studyTimeEnd = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
-    
+
     Student student = new Student(
         studentIdentifier.toId(), 
         user.getFirstName(), 
@@ -368,7 +369,8 @@ public class UserRESTService extends AbstractRESTService {
         emailAddress, 
         studyStartDate,
         studyEndDate,
-        studyTimeEnd);
+        studyTimeEnd,
+        user.getCurriculumIdentifier());
     
     return Response
         .ok(student)
@@ -571,7 +573,11 @@ public class UserRESTService extends AbstractRESTService {
   @GET
   @Path("/students/{ID}/transferCredits")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listStudentTransferCredits(@PathParam("ID") String id) {
+  public Response searchStudentTransferCredits(
+      @PathParam("ID") String id,
+      @QueryParam("curriculumEmpty") @DefaultValue ("true") Boolean curriculumEmpty,
+      @QueryParam("curriculumIdentifier") String curriculumIdentifier
+      ) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -592,7 +598,22 @@ public class UserRESTService extends AbstractRESTService {
       }
     }
     
-    List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(studentIdentifier);
+    List<TransferCredit> transferCredits = new ArrayList<TransferCredit>(gradingController.listStudentTransferCredits(studentIdentifier));
+
+    for (int i = transferCredits.size() - 1; i >= 0; i--) {
+      TransferCredit tc = transferCredits.get(i);
+      SchoolDataIdentifier tcCurriculum = tc.getCurriculumIdentifier();
+      
+      if (tcCurriculum != null) {
+        if (curriculumIdentifier != null) {
+          if (!Objects.equals(tcCurriculum.toId(), curriculumIdentifier))
+            transferCredits.remove(i);
+        }
+      } else {
+        if (!curriculumEmpty)
+          transferCredits.remove(i);
+      }
+    }
     
     return Response.ok(createRestModel(transferCredits.toArray(new TransferCredit[0]))).build();
   }
