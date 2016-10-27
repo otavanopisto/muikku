@@ -605,9 +605,8 @@ public class UserRESTService extends AbstractRESTService {
       SchoolDataIdentifier tcCurriculum = tc.getCurriculumIdentifier();
       
       if (tcCurriculum != null) {
-        if (curriculumIdentifier != null) {
-          if (!Objects.equals(tcCurriculum.toId(), curriculumIdentifier))
-            transferCredits.remove(i);
+        if (!StringUtils.isEmpty(curriculumIdentifier) && !Objects.equals(tcCurriculum.toId(), curriculumIdentifier)) {
+          transferCredits.remove(i);
         }
       } else {
         if (!curriculumEmpty)

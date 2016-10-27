@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -408,14 +409,17 @@ public class ElasticSearchProvider implements SearchProvider {
         }
         query.must(termsQuery("educationTypeIdentifier.untouched", educationTypeIds));
       }
-      
-      if (curriculumIdentifiers != null && !curriculumIdentifiers.isEmpty()) {
+
+      if (!CollectionUtils.isEmpty(curriculumIdentifiers)) {
         List<String> curriculumIds = new ArrayList<>(curriculumIdentifiers.size());
         for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
           curriculumIds.add(curriculumIdentifier.toId());
         }
-        
-        query.must(termsQuery("curriculumIdentifier.untouched", curriculumIds));
+
+        query.must(boolQuery()
+            .should(termsQuery("curriculumIdentifier.untouched", curriculumIds))
+            .should(boolQuery().mustNot(existsQuery("curriculumIdentifier")))
+            .minimumNumberShouldMatch(1));
       }
   
       if (identifiers != null) {
