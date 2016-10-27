@@ -20,7 +20,9 @@
       mApi().user.students
         .read({userEntityId: this.options.userEntityId, includeInactiveStudents: true, includeHidden: true })
         .on('$', $.proxy(function (student, callback) {
-          async.parallel([this._createStudentWorkspacesLoad(student.id, student.curriculumIdentifier), this._createStudentTransferCreditsLoad(student.id, student.curriculumIdentifier)], $.proxy(function (err, results) {
+          var curriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
+          
+          async.parallel([this._createStudentWorkspacesLoad(student.id, curriculumIdentifier), this._createStudentTransferCreditsLoad(student.id, curriculumIdentifier)], $.proxy(function (err, results) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
