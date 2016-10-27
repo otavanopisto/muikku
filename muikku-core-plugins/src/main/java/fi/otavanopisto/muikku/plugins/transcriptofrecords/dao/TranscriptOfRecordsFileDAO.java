@@ -41,10 +41,15 @@ public class TranscriptOfRecordsFileDAO extends CorePluginsDAO<TranscriptOfRecor
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(TranscriptOfRecordsFile_.userEntityId), userEntity.getId())
+        criteriaBuilder.equal(root.get(TranscriptOfRecordsFile_.userEntityId), userEntity.getId()),
+        criteriaBuilder.equal(root.get(TranscriptOfRecordsFile_.archived), false)
       )
     );
 
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public void archive(TranscriptOfRecordsFile file) {
+    file.setArchived(true);
   }
 }
