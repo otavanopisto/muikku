@@ -51,9 +51,16 @@
         .appendTo('body');
       $('body').addClass('no-scroll');
       
-      // Load assessors
+      // Initialize material loader
       
       var workspaceEntityId = $(requestCard).attr('data-workspace-entity-id');
+      var workspaceUrlName = $(requestCard).attr('data-workspace-url-name');
+      var materialsBaseUrl = '/workspace/' + workspaceUrlName + '/materials';
+      $(document).muikkuMaterialLoader('option', 'workspaceEntityId', workspaceEntityId);
+      $(document).muikkuMaterialLoader('option', 'baseUrl', materialsBaseUrl);
+
+      // Load assessors
+      
       mApi().workspace.workspaces.staffMembers
         .read(workspaceEntityId, {orderBy: 'name'})
         .callback($.proxy(function (err, staffMembers) {
@@ -211,6 +218,7 @@
           .addClass('dummy-assignment')
           .attr('data-workspace-material-id', assignment.id)
           .attr('data-material-id', assignment.materialId)
+          .attr('data-path', assignment.path)
           .attr('data-open', false)
           .attr('data-loaded', false)
           .text(assignment.title)
