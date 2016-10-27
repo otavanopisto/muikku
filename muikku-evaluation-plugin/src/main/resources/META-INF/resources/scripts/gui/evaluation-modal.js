@@ -150,17 +150,49 @@
       }, this));
     },
     
-    _openAssignment: function(assignment) {
-      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
-      mApi().workspace.workspaces.materials.compositeMaterialReplies
-        .read(workspaceEntityId, workspaceMaterialId, {
-          userEntityId: userEntityId
-        })
-        .callback($.proxy(function(err, replies) {
-          // TODO student answers here, load material content 
-        }, this));
+    _toggleAssignment: function(assignment) {
+      if ($(assignment).attr('data-loaded') == 'true') {
+        if ($(assignment).attr('data-open') == 'true') {
+          $(assignment).attr('data-open', false);
+          $(assignment).children().hide();
+        }
+        else {
+          $(assignment).attr('data-open', true);
+          $(assignment).children().show();
+        }
+      }
+      else {
+        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+        var materialId = $(assignment).attr('data-material-id');
+        var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
+        // Answers
+        mApi().workspace.workspaces.materials.compositeMaterialReplies
+          .read(workspaceEntityId, workspaceMaterialId, {
+            userEntityId: userEntityId
+          })
+          .callback($.proxy(function(err, replies) {
+            var fieldAnswers = {};
+            for (var i = 0, l = replies.answers.length; i < l; i++) {
+              var answer = replies.answers[i];
+              var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+              fieldAnswers[answerKey] = answer.value;
+            }
+            // Material html
+            mApi().materials.html
+              .read(materialId)
+              .callback($.proxy(function (err, htmlMaterial) {
+                $(assignment)
+                  .attr('data-material-type', 'html')
+                  .attr('data-material-title', htmlMaterial.title)
+                  .attr('data-material-content', htmlMaterial.html)
+                  .attr('data-view-restricted', htmlMaterial.viewRestrict)
+                  .attr('data-loaded', true)
+                  .attr('data-open', true);
+                $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
+              }, this));
+          }, this));
+      }
     },
     
     _onDialogReady: function() {
@@ -175,9 +207,16 @@
     
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
-        var assignment = $('<div>').addClass('dummy-assignment').attr('data-workspace-material-id', assignment.id).text(assignment.title).appendTo($('.eval-modal-assignment-content'));
+        var assignment = $('<div>')
+          .addClass('dummy-assignment')
+          .attr('data-workspace-material-id', assignment.id)
+          .attr('data-material-id', assignment.materialId)
+          .attr('data-open', false)
+          .attr('data-loaded', false)
+          .text(assignment.title)
+          .appendTo($('.eval-modal-assignment-content'));
         $(assignment).click($.proxy(function(event) {
-          this._openAssignment(assignment);
+          this._toggleAssignment(assignment);
         }, this));
       }, this));
     },
