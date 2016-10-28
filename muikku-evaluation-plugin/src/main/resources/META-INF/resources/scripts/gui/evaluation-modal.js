@@ -44,7 +44,7 @@
     
     open: function(requestCard) {
       
-      this._requestCard = requestCard;
+      this._requestCard = requestCard;      
       
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
@@ -105,7 +105,9 @@
               // Remove assessment button
               
               $('.button-delete').click($.proxy(function(event) {
-                this._deleteAssessment();
+                this._confirmAssessmentDeletion($.proxy(function () {
+                  this._deleteAssessment();
+                }, this));
               }, this));
               
               // Save assessment button
@@ -214,6 +216,7 @@
       }
       else {
         $('#evaluationDate').datepicker('setDate', new Date());
+        $('.button-delete').hide();
       }
       this._loadMaterials();
     },
@@ -243,8 +246,6 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          // Assessment identifier
-          $('#assessmentIdentifier').val(assessment.identifier);
           // Verbal assessment
           CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
           // Date
@@ -253,14 +254,14 @@
           $('#assessor').val(assessment.assessorIdentifier);
           // Grade
           $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+          // Remove assessment button
+          $('.button-delete').show();
         }
       }, this));
     },
     
-    _deleteAssessment: function() {
+    _confirmAssessmentDeletion: function(callback) {
       var studentName = $(this._requestCard).find('.evaluation-request-student').text();
-      var workspaceEntityId = $('#workspaceEntityId').val();
-      var userEntityId = $('#userEntityId').val();
       renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
@@ -274,15 +275,7 @@
             'class' : 'remove-button',
             'click' : function(event) {
               $(this).dialog("destroy").remove();
-              mApi().evaluation.workspaces.students.assessment
-                .del(workspaceEntityId, userEntityId)
-                .callback($.proxy(function (err) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  }
-                  $(this._requestCard).attr('data-evaluated', false);
-                  // TODO reset form?
-                }, this));
+              callback();
             }
           }, {
             'text' : dialog.attr('data-button-cancel-text'),
@@ -295,11 +288,25 @@
       }, this));
     },
     
+    _deleteAssessment: function() {
+      var workspaceEntityId = $('#workspaceEntityId').val();
+      var userEntityId = $('#userEntityId').val();
+      mApi().evaluation.workspaces.students.assessment
+        .del(workspaceEntityId, userEntityId)
+        .callback($.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          $(this._requestCard).removeAttr('data-evaluated');
+          $('.button-delete').hide();
+          // TODO reset form?
+        }, this));
+    },
+    
     _saveAssessment: function() {
       var workspaceEntityId = $('#workspaceEntityId').val();
       var userEntityId = $('#userEntityId').val();
-      var assessmentIdentifier = $('#assessmentIdentifier').val();
-      if (assessmentIdentifier) {
+      if ($(this._requestCard).attr('data-evaluated')) {
         mApi().evaluation.workspace.student.assessment
           .read(workspaceEntityId, userEntityId)
           .callback($.proxy(function (err, assessment) {
@@ -321,6 +328,7 @@
                   }
                   else {
                     $(this._requestCard).attr('data-evaluated', true);
+                    $('.button-delete').show();
                   }
                 }, this));
             }
@@ -342,6 +350,7 @@
             }
             else {
               $(this._requestCard).attr('data-evaluated', true);
+              $('.button-delete').show();
             }
           }, this));
       }
