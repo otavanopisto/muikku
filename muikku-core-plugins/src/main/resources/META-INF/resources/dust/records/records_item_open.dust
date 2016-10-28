@@ -3,12 +3,10 @@
    <div class="clear"></div>
 </div>
 {#.}
- <div class="mf-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+  <div class="mf-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <div class="mf-item tr-item ft-01 open flex-row">
       <input type="hidden" name="workspaceId" value="{id}"/>
       <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-    
-      <div class="flex-row">
         <div class="tr-item-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">  
           <div class="flex-row tr-item-description-title">
             <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
@@ -25,10 +23,9 @@
           <div class="flex-row tr-item-description-content">
             <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><span>{workspaceDescription|s}</span></div>
           </div>      
-        </div>
-      </div>
+        </div>      
     </div>
-   {?workspaceVerbalAssessment}
+    {?workspaceVerbalAssessment}
       <div class="mf-item tr-evaluation-verbal flex-row">
         <div class="topic lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{#localize key="plugin.records.workspace.evaluated.verbal.topic" /}</h3></div>
         <div class="content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{workspaceVerbalAssessment|s}</div>
@@ -62,8 +59,15 @@
         </div>
       </div>  
     {/workspaceJournalEntries}
-  </div>
-</div>  
+    <div class="tr-user-files mf-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+      <div class="tr-user-file mf-file flex-row">
+        <div class="tr-user-file-name mf-file-name">
+          <span>filename.tga</span>
+          <span class="tr-user-file-size">1000 μm / 100 μm</span>
+        </div>
+      </div>
+    </div>
+  </div> 
 {:else}
   <div class="mf-content-empty cm-no-messages lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
     <h3>{#localize key="plugin.records.empty.topic.all"/}</h3>
