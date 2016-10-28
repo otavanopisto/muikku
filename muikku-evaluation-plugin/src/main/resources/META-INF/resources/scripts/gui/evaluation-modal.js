@@ -102,6 +102,12 @@
                 .attr('type', 'text')
                 .datepicker();
               
+              // Remove assessment button
+              
+              $('.button-delete').click($.proxy(function(event) {
+                this._deleteAssessment();
+              }, this));
+              
               // Save assessment button
               
               $('.button-evaluate-passing').click($.proxy(function(event) {
@@ -248,6 +254,44 @@
           // Grade
           $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
         }
+      }, this));
+    },
+    
+    _deleteAssessment: function() {
+      var studentName = $(this._requestCard).find('.evaluation-request-student').text();
+      var workspaceEntityId = $('#workspaceEntityId').val();
+      var userEntityId = $('#userEntityId').val();
+      renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          resizable : false,
+          width : 560,
+          dialogClass : "evaluation-remove-workspace-evaluation-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-remove-text'),
+            'class' : 'remove-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+              mApi().evaluation.workspaces.students.assessment
+                .del(workspaceEntityId, userEntityId)
+                .callback($.proxy(function (err) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  $(this._requestCard).attr('data-evaluated', false);
+                  // TODO reset form?
+                }, this));
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+            }
+          } ]
+        });
       }, this));
     },
     

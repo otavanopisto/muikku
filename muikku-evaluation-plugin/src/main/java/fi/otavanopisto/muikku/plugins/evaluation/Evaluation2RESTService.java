@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -82,6 +83,40 @@ public class Evaluation2RESTService {
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
+  @DELETE
+  @Path("/workspaces/{WORKSPACEENTITYID}/students/{USERENTITYID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteWorkspaceStudentAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND)
+        .entity(String.format("Could not find workspace entity %d", workspaceEntityId))
+        .build();
+    }
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+
+    // TODO listWorkspaceAssessments is incorrect; one student in one workspace should have one assessment at most
+    List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, userIdentifier);
+    WorkspaceAssessment workspaceAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
+    
+    gradingController.deleteWorkspaceAssessment(workspaceIdentifier, userIdentifier, workspaceAssessment.getIdentifier());
+    
+    return Response.noContent().build();
+  }
+
   @GET
   @Path("/workspace/{WORKSPACEENTITYID}/student/{USERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -99,11 +134,7 @@ public class Evaluation2RESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    if (workspace == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
     
     // User entity to identifier
     
