@@ -34,7 +34,8 @@
   $(document).ready(function () {
     $(document).evaluationMainView().evaluationModal().muikkuMaterialLoader({
       prependTitle: false,
-      readOnlyFields: true
+      readOnlyFields: true,
+      fieldlessMode: true
     });
     // Grading scales
     mApi().evaluation.compositeGradingScales

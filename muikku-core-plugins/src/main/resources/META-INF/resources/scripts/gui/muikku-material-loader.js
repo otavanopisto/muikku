@@ -8,6 +8,7 @@
       workspaceEntityId: -1,
       loadAnswers: false,
       readOnlyFields: false,
+      fieldlessMode: false,
       dustTemplate: 'workspace/materials-page.dust',
       prependTitle : true,
       renderMode: {
@@ -108,7 +109,8 @@
           materialId: materialId,
           element: parsed,
           fieldAnswers: fieldAnswers,
-          readOnlyFields: this.options.readOnlyFields
+          readOnlyFields: this.options.readOnlyFields,
+          fieldlessMode: this.options.fieldlessMode
         });
         
         if (this._getRenderMode('html') == 'dust') {
@@ -121,7 +123,8 @@
               workspaceMaterialId: workspaceMaterialId,
               materialId: materialId,
               fieldAnswers: fieldAnswers,
-              readOnlyFields: this.options.readOnlyFields
+              readOnlyFields: this.options.readOnlyFields,
+              fieldlessMode: this.options.fieldlessMode
             });
             $.waypoints('refresh');
           }, this));
@@ -134,7 +137,8 @@
             workspaceMaterialId: workspaceMaterialId,
             materialId: materialId,
             fieldAnswers: fieldAnswers,
-            readOnlyFields: this.options.readOnlyFields
+            readOnlyFields: this.options.readOnlyFields,
+            fieldlessMode: this.options.fieldlessMode
           });
           $(pageElement).muikkuMaterialPage('applyState', this.options.readOnlyFields);
         }
@@ -412,65 +416,75 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
-      var field = $('<textarea>')
-        .addClass('muikku-memo-field')
-        .attr({
-          'cols':data.meta.columns,
-          'rows':data.meta.rows,
-          'placeholder': data.meta.help,
-          'title': data.meta.hint,
-          'name': data.name
-        })
-        .val(data.value)
-        .muikkuField({
-          meta: data.meta,
-          fieldName: data.name,
-          materialId: data.materialId,
-          embedId: data.embedId,
-          readonly: data.readOnlyFields||false,
-          trackChange: data.meta.richedit,
-          trackKeyUp: !!!data.meta.richedit,
-          isReadonly: function () {
-            return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
-          },
-          setReadonly: function (readonly) {
-            if (readonly) {
-              $(this.element).attr('readonly', 'readonly')
-            } else {
-              $(this.element).removeAttr('readonly');
-            } 
-            
-            if ($(this.element).hasClass('ckeditor-field')) {
-              $(this.element).muikkuRichMemoField('setReadOnly', readonly);
-            }
-            
-          },
-          canCheckAnswer: function() {
-            return false;
-          },
-          hasDisplayableAnswers: function() {
-            return this.hasExamples();
-          },
-          hasExamples: function () {
-            var meta = this.options.meta;
-            return meta.example && meta.example != '';
-          },
-          getCorrectAnswers: function() {
-            return [];
-          },
-          getExamples: function () {
-            var meta = this.options.meta;
-            if (meta.example) {
-              return [meta.example];
-            } else {
-              return [];
-            }
-          }
-        });
-      if (data.meta.richedit == true) {
-        field.addClass('ckeditor-field');
+      if (data.fieldlessMode) {
+        var container = $('<div>')
+          .attr({
+            'data-name': data.name
+          })
+          .html(data.value);
+        $(object).replaceWith(container);
       }
-      $(object).replaceWith(field);
+      else {
+        var field = $('<textarea>')
+          .addClass('muikku-memo-field')
+          .attr({
+            'cols':data.meta.columns,
+            'rows':data.meta.rows,
+            'placeholder': data.meta.help,
+            'title': data.meta.hint,
+            'name': data.name
+          })
+          .val(data.value)
+          .muikkuField({
+            meta: data.meta,
+            fieldName: data.name,
+            materialId: data.materialId,
+            embedId: data.embedId,
+            readonly: data.readOnlyFields||false,
+            trackChange: data.meta.richedit,
+            trackKeyUp: !!!data.meta.richedit,
+            isReadonly: function () {
+              return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+            },
+            setReadonly: function (readonly) {
+              if (readonly) {
+                $(this.element).attr('readonly', 'readonly')
+              } else {
+                $(this.element).removeAttr('readonly');
+              } 
+              
+              if ($(this.element).hasClass('ckeditor-field')) {
+                $(this.element).muikkuRichMemoField('setReadOnly', readonly);
+              }
+              
+            },
+            canCheckAnswer: function() {
+              return false;
+            },
+            hasDisplayableAnswers: function() {
+              return this.hasExamples();
+            },
+            hasExamples: function () {
+              var meta = this.options.meta;
+              return meta.example && meta.example != '';
+            },
+            getCorrectAnswers: function() {
+              return [];
+            },
+            getExamples: function () {
+              var meta = this.options.meta;
+              if (meta.example) {
+                return [meta.example];
+              } else {
+                return [];
+              }
+            }
+          });
+        if (data.meta.richedit == true) {
+          field.addClass('ckeditor-field');
+        }
+        $(object).replaceWith(field);
+      }
     }
   });
   
@@ -1227,7 +1241,8 @@
         embedId: embedId,
         materialId: materialId,
         value: value,
-        readOnlyFields: data.readOnlyFields
+        readOnlyFields: data.readOnlyFields,
+        fieldlessMode: data.fieldlessMode
       });
     });
   });
