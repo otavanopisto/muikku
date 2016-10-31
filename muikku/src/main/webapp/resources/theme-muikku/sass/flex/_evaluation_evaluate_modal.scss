@@ -76,7 +76,13 @@
   
 .eval-modal-assignment-content,
 .eval-modal-evaluate-content {
+  bottom: 0;
+  left: 0;
+  overflow: auto;
   padding: 10px 20px;
+  position: absolute;
+  right: 0;
+  top: 50px;
 }
 
 // EVALUATE FORM
@@ -109,7 +115,6 @@
     border: 2px solid #abdbed;
     border-radius: 3px;
     box-sizing: border-box;
-
     font-family: 'Open Sans', Arial, sans-serif;
     font-size: 14px;
     padding: 5px;
@@ -137,7 +142,6 @@
 }
 
 .eval-modal-evaluate-buttonset {
-  padding: 20px;
   text-align: right;
 }
 
@@ -166,4 +170,15 @@
     background: #ea7503;
   }
   
+}
+
+// ASSIGNMENTS & EXERCISES
+.assignment {
+  border-bottom: 1px solid #f8f8f8;
+}
+  
+.assignment-header {
+  cursor: pointer;
+  font-size: 20px;
+  padding: 15px 0;
 }

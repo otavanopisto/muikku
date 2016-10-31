@@ -169,11 +169,11 @@
       if ($(assignment).attr('data-loaded') == 'true') {
         if ($(assignment).attr('data-open') == 'true') {
           $(assignment).attr('data-open', false);
-          $(assignment).children().hide();
+          $(assignment).find('.page-content, .clear').hide();
         }
         else {
           $(assignment).attr('data-open', true);
-          $(assignment).children().show();
+          $(assignment).find('.page-content, .clear').show();
         }
       }
       else {
@@ -223,16 +223,21 @@
     
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
+        var assignmentTitle = $('<div>')
+          .addClass('assignment-header')
+          .text(assignment.title); 
+        
         var assignment = $('<div>')
-          .addClass('dummy-assignment')
+          .addClass('assignment')
           .attr('data-workspace-material-id', assignment.id)
           .attr('data-material-id', assignment.materialId)
           .attr('data-path', assignment.path)
           .attr('data-open', false)
           .attr('data-loaded', false)
-          .text(assignment.title)
+            .append(assignmentTitle)
           .appendTo($('.eval-modal-assignment-content'));
-        $(assignment).click($.proxy(function(event) {
+        
+        $(assignmentTitle).click($.proxy(function(event) {
           this._toggleAssignment(assignment);
         }, this));
       }, this));
