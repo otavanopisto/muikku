@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -12,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -25,6 +27,7 @@ import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -55,6 +58,9 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private SessionController sessionController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
@@ -131,5 +137,27 @@ public class GuiderRESTService extends PluginRESTService {
     
     torFileController.delete(file);
     return Response.status(Status.NO_CONTENT).build();
+  }
+
+  @GET
+  @Path("/files/{ID}/content")
+  @RESTPermit(GuiderPermissions.GUIDER_GET_TORFILE_CONTENT)
+  public Response getTranscriptOfRecordsFileContent(@PathParam("ID") Long fileId) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    TranscriptOfRecordsFile file = torFileController .findFileById(fileId);
+
+    if (file == null) {
+      return Response.status(Status.NOT_FOUND).entity("File not found").build();
+    }
+    
+    StreamingOutput output = s -> torFileController.outputFileToStream(file, s);
+    
+    String contentType = file.getContentType();
+    
+    return Response.ok().type(contentType).entity(output).build();
   }
 } 
