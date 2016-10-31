@@ -60,7 +60,11 @@ public class NotificationController {
    map.put("category", category);
    map.put("recipient", recipient.getId());
     
-   getProvider(LOG_PROVIDER).log(COLLECTION_NAME, map);
+   LogProvider provider = getProvider(LOG_PROVIDER);
+   
+   if (provider != null) {
+     provider.log(COLLECTION_NAME, map);
+   }
     
    String recipientEmail = getRecipientEmail();
    if (recipientEmail == null) {
