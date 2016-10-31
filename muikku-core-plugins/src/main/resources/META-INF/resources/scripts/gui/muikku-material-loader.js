@@ -1327,8 +1327,25 @@
     }
     
     if ((typeof MathJax) != 'undefined') {
+      
+      MathJax.Hub.Config({
+        "HTML-CSS": {
+          scale: 90
+        },
+        NativeMML: {
+          scale: 90
+        }
+      });
+      
       MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(data.pageElement)[0]]);
     }
+    
+    $(data.pageElement).find('.math-tex').each(function (index, mathtex) {
+      var mathWrapper = $('<div>')
+      .addClass('math-wrapper')
+      .insertBefore(mathtex);
+    $(mathtex).appendTo(mathWrapper);
+    });
 
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
