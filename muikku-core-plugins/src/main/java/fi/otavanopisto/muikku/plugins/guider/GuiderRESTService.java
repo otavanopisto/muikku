@@ -144,10 +144,6 @@ public class GuiderRESTService extends PluginRESTService {
   @RESTPermit(GuiderPermissions.GUIDER_GET_TORFILE_CONTENT)
   public Response getTranscriptOfRecordsFileContent(@PathParam("ID") Long fileId) {
     
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-    
     TranscriptOfRecordsFile file = torFileController .findFileById(fileId);
 
     if (file == null) {
