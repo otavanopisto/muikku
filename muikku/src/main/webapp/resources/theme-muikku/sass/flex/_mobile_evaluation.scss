@@ -80,11 +80,15 @@
   .eval-modal-student-container,
   .eval-modal-evaluate-container {
     position: static;
-    min-height: 500px;
   }
   
-  .eval-modal-evaluate-container {
-    
+  .eval-modal-assignment-content, 
+  .eval-modal-evaluate-content {
+    bottom: auto;
+    left: auto;
+    position: relative;
+    right: auto;
+    top: auto;
   }
   
   .eval-modal-workspace-name {
