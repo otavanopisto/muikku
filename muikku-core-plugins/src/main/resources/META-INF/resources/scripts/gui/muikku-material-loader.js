@@ -264,7 +264,8 @@
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
       var muikkuFieldElement;
       if (data.fieldlessMode) {
-        muikkuFieldElement = $('<span>')
+        muikkuFieldElement = $('<div>')
+          .addClass('muikku-text-field')
           .text(data.value);
       }
       else {
@@ -431,6 +432,7 @@
       var memoFieldElement;
       if (data.fieldlessMode) {
         memoFieldElement = $('<div>')
+          .addClass('muikku-memo-field')
           .html(data.value);
       }
       else {
