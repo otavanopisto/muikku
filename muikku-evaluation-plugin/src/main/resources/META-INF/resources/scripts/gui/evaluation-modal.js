@@ -223,22 +223,23 @@
     
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
+        var assignmentWrapper = $('<div>')
+          .addClass('assignment-wrapper')
+          .appendTo($('.eval-modal-assignment-content'));
         var assignmentTitle = $('<div>')
           .addClass('assignment-header')
-          .text(assignment.title); 
-        
-        var assignment = $('<div>')
-          .addClass('assignment')
+          .text(assignment.title)
+          .appendTo(assignmentWrapper);
+        var assignmentContent = $('<div>')
+          .addClass('assignment-content')
           .attr('data-workspace-material-id', assignment.id)
           .attr('data-material-id', assignment.materialId)
           .attr('data-path', assignment.path)
           .attr('data-open', false)
           .attr('data-loaded', false)
-            .append(assignmentTitle)
-          .appendTo($('.eval-modal-assignment-content'));
-        
+          .appendTo(assignmentWrapper);
         $(assignmentTitle).click($.proxy(function(event) {
-          this._toggleAssignment(assignment);
+          this._toggleAssignment(assignmentContent);
         }, this));
       }, this));
     },
