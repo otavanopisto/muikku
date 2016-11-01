@@ -19,14 +19,15 @@
 
 // EXAMPLE ANSWERS
 span.muikku-field-examples {
-  border-radius: 3px;
-  padding: 3px;
-  width: auto;
   background: #e2ffe2;
-  font-style: italic;
-  margin: 1px 3px;
+  border-radius: 3px;
   display: inline-block;
   font-size: 13px;
+  font-style: italic;
+  margin: 1px 3px;
+  padding: 3px;
+  vdrtical-align: middle;
+  width: auto;
   
   span.muikku-field-examples-title {
     font-weight: 600;
@@ -34,11 +35,11 @@ span.muikku-field-examples {
   }
   
   span.muikku-field-example {
-    margin: 3px 0 3px 5px;
-    padding: 0 8px;
     border-left: 1px solid #439ba0;
     display: inline-block;
     line-height: 1.5;
+    margin: 3px 0 3px 5px;
+    padding: 0 8px;
   }
   
 }

@@ -129,6 +129,13 @@ select {
   
 }
 
+// GENERIC SELECT FIELD
+.muikku-select-field,
+.muikku-checkbox-field {
+  display: inline-block;
+  margin: 0 10px 0 0;
+}
+
 label {
   display: inline;
   font-weight: 400;
