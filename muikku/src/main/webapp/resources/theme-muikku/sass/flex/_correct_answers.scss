@@ -45,31 +45,35 @@ span.muikku-field-examples {
 }
 
 // TEXTFIELD, TEXTAREA, SELECT CORRECT ANSWERS
+div.muikku-text-field.muikku-field-correct-answer,
+div.muikku-memo-field.muikku-field-correct-answer,
 input[type="text"].muikku-field-correct-answer,
 textarea.muikku-field-correct-answer,
 select.muikku-field-correct-answer {
-  box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
   border: 2px solid #00ff2a;
   border-radius: 3px;
+  box-shadow: none;
   
   &:hover {
-    box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
     border: 2px solid #00ff2a;
+    box-shadow: none;
   }
   
 }
 
 // TEXTFIELD, TEXTAREA, SELECT INCORRECT ANSWERS
+div.muikku-text-field.muikku-field-incorrect-answer,
+div.muikku-memo-field.muikku-field-incorrect-answer,
 input[type="text"].muikku-field-incorrect-answer,
 textarea.muikku-field-incorrect-answer,
 select.muikku-field-incorrect-answer {
   border: 2px solid #f64e4e;
-  box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+  box-shadow: none;
   border-radius: 3px;
   
   &:hover {
     border: 2px solid #f64e4e;
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+    box-shadow: none;
   }
   
 }
@@ -116,37 +120,37 @@ div.muikku-connect-field.muikku-field-incorrect-answer {
 div.muikku-organizer-field {
   
   .muikku-category.muikku-field-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
     border: 2px solid #00ff2a;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
       border: 2px solid #00ff2a;
+      box-shadow: none;
     }
     
   }
   
   .muikku-category.muikku-field-semi-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
     border: 2px solid #dab33d;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
       border: 2px solid #dab33d;
+      box-shadow: none;
     }
     
   }
   
   .muikku-category.muikku-field-incorrect-answer {
     border: 2px solid #f64e4e;
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
       border: 2px solid #f64e4e;
-      box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+      box-shadow: none;
     }
 
   }
@@ -157,37 +161,37 @@ div.muikku-organizer-field {
 .muikku-sorter-field {
   
   .muikku-sorter-items-container.muikku-field-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
     border: 2px solid #00ff2a;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
       border: 2px solid #00ff2a;
+      box-shadow: none;
     }
     
   }
   
   .muikku-sorter-items-container.muikku-field-semi-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
     border: 2px solid #dab33d;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
       border: 2px solid #dab33d;
+      box-shadow: none;
     }
     
   }
   
   .muikku-sorter-items-container.muikku-field-incorrect-answer {
     border: 2px solid #f64e4e;
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
       border: 2px solid #f64e4e;
-      box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+      box-shadow: none;
     }
 
   }
@@ -217,7 +221,7 @@ span.muikku-field-correct-answer {
   
   input[type="checkbox"],
   input[type="radio"] {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
+    box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
   }
   
   &:hover {
@@ -234,7 +238,7 @@ span.muikku-field-incorrect-answer {
   
   input[type="checkbox"],
   input[type="radio"] {
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.7);
+    box-shadow: 0 0 0 2px rgba(255,0,0,0.7);
   }
   
   &:hover {
@@ -244,12 +248,12 @@ span.muikku-field-incorrect-answer {
   
   input[type="checkbox"].muikku-field-correct-answer-override,
   input[type="radio"].muikku-field-correct-answer-override {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
+    box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
     border: 2px solid #00ff2a;
     border-radius: 3px;
     
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
+      box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
       border: 2px solid #00ff2a;
     }
   

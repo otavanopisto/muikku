@@ -53,6 +53,13 @@ mark[data-muikku-word-definition] {
   position: relative;
 }
 
+// OVERRIDE FOR ORGANIZER, SORTER & CONNECT FIELDS
+.muikku-organizer-field[disabled="disabled"],
+.muikku-sorter-field[data-disabled="true"],
+.muikku-connect-field[disabled="disabled"] {
+  opacity: 1;  
+}
+
 // HORZ & VERTZ RADIOBUTTON & CHECKBOX WRAPPER
 span.radiobutton-horizontal,
 span.checkbox-horizontal {
@@ -86,6 +93,26 @@ span.checkbox-vertical {
     
   }
   
+}
+
+// TEXTFIELD & MEMOFIELD
+div.muikku-memo-field {
+  background: #ebf7ff;
+  border-radius: 3px;
+  box-sizing: border-box;  
+  font-style: italic;
+  padding: 5px 10px;
+  margin: 4px 0;
+}
+
+div.muikku-text-field {
+  background: #ebf7ff;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: inline-block;  
+  font-style: italic;
+  padding: 2px 8px;
+  margin: 4px 3px; 
 }
 
 // CHECKBOX & RADIOBUTTON

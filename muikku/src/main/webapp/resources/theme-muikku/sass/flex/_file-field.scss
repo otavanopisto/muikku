@@ -66,9 +66,7 @@
   padding: 5px 10px;
   background: #fff;
   border: 2px solid #abdbed;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   text-transform: uppercase;
   color: #186089;
@@ -76,12 +74,10 @@
   &[data-readonly="readonly"] {
     background: #fcfcfc !important;
     border: 2px dotted #eaeaea !important;
-    box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
       border: 2px dotted #eee;
-      box-shadow: none;
       color: #555555 !important;
     }
 
@@ -89,7 +85,6 @@
   
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
   }
   
   a {
