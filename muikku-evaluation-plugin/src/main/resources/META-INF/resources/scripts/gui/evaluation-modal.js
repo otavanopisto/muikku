@@ -362,5 +362,12 @@
       }
     }
   });
+
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    var replyState = $(data.pageElement).attr('data-reply-state');
+    if (replyState != '') {
+      $(data.pageElement).muikkuMaterialPage('checkExercises', true);
+    }
+  });
   
 }).call(this);
