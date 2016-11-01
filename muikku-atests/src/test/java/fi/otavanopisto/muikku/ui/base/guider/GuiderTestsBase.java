@@ -1,9 +1,11 @@
 package fi.otavanopisto.muikku.ui.base.guider;
 
+import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.Test;
 
+import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
@@ -64,6 +66,49 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".gt-user .gt-user-meta-topic>span", "Second User (Test Study Programme)");
     } finally {
       deleteWorkspace(workspace2.getId());
+      deleteWorkspace(workspace.getId());
+    }
+  }
+  
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+    }
+  )
+  public void uploadFileToStudentTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(1l, workspace.getId(), student.getId());
+    
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, 1l, admin.getId(), 7l);
+
+    mockBuilder
+      .addCourseStaffMember(workspace.getId(), courseStaffMember)
+      .addCourseStudent(workspace.getId(), mcs)
+      .build();
+    try {
+      navigate("/guider", true);
+      waitAndClick(".gt-user .gt-user-meta-topic>span");
+      waitAndClick(".gt-user .gt-tool-view-profile");
+      File testFile = getTestFile();
+      waitForPresent(".gt-user-files .gt-user-file-add input[type=\"file\"]");
+      sendKeys(".gt-user-files .gt-user-file-add input[type=\"file\"]", testFile.getAbsolutePath());
+      waitForPresent(".gt-user-file");
+      assertTextIgnoreCase(".gt-user-file .gt-user-file-name span", testFile.getName());
+      logout();
+      mockBuilder.mockLogin(student).build();
+      login();
+      navigate("/records/", true);
+      waitForPresent(".mf-item .mf-files .mf-file-name a");
+      assertText(".mf-item .mf-files .mf-file-name a", "img_100x100_3x8bit_RGB_circles_center_0016.png");
+    } finally {
       deleteWorkspace(workspace.getId());
     }
   }
