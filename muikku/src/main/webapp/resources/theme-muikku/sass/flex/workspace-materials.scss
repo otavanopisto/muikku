@@ -218,7 +218,7 @@ nav.workspace-materials-toc-wrapper {
     }
     
     &.assignment {
-      border-left: 2px solid $evaluatedAssignment;
+      border-left: 2px solid $assignment;
       
       // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
       &.submitted,
@@ -230,7 +230,7 @@ nav.workspace-materials-toc-wrapper {
     }
     
     &.exercise {
-      border-left: 2px solid $exerciseAssignment;
+      border-left: 2px solid $exercise;
       
        // Adjust link padding when exercise is "done" so icon has more room
        &.submitted {

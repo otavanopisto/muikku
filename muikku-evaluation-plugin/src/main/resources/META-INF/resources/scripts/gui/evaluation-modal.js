@@ -169,11 +169,11 @@
       if ($(assignment).attr('data-loaded') == 'true') {
         if ($(assignment).attr('data-open') == 'true') {
           $(assignment).attr('data-open', false);
-          $(assignment).find('.page-content, .clear').hide();
+          $(assignment).hide();
         }
         else {
           $(assignment).attr('data-open', true);
-          $(assignment).find('.page-content, .clear').show();
+          $(assignment).show();
         }
       }
       else {
@@ -227,7 +227,7 @@
           .addClass('assignment-wrapper')
           .appendTo($('.eval-modal-assignment-content'));
         var assignmentTitle = $('<div>')
-          .addClass('assignment-header')
+          .addClass('assignment-title')
           .text(assignment.title)
           .appendTo(assignmentWrapper);
         var assignmentContent = $('<div>')

@@ -713,22 +713,22 @@ sup {
       
       // Check Exercise
       &.muikku-check-exercises {
-        background: $exerciseAssignment;
+        background: $exercise;
       }
       
       // Submit Assignment
       &.muikku-submit-assignment {
-        background: $evaluatedAssignment;
+        background: $assignment;
       }
       
       // Withdraw Assingment
       &.muikku-withdraw-assignment {
-        background: darken($evaluatedAssignment,10%);
+        background: darken($assignment,10%);
       }
       
       // Update Assignment
       &.muikku-update-assignment {
-        background: lighten($evaluatedAssignment,5%);
+        background: lighten($assignment,5%);
       }
       
     }
@@ -783,11 +783,11 @@ sup {
     position: relative;
     
     &.assignment {
-      background: $evaluatedAssignment;
+      background: $assignment;
     }
     
     &.exercise {
-      background: $exerciseAssignment;
+      background: $exercise;
     }
     
     // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"

@@ -1,6 +1,5 @@
 .muikku-file-input-field-file {
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 5px 0;
   position: relative;
 }
 
@@ -64,7 +63,7 @@
 
 .muikku-file-input-field-file-uploader-container {
   position: relative;
-  padding: 20px;
+  padding: 5px 10px;
   background: #fff;
   border: 2px solid #abdbed;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;

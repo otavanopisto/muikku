@@ -174,23 +174,23 @@
 }
 
 // ASSIGNMENTS & EXERCISES
-.assignment,
-.exercise {
+.assignment-wrapper,
+.exercise-wrapper {
   border-bottom: 1px solid #f8f8f8;
   padding: 8px 0;
 }
   
-.assignment-header,
-.exercise-header {
+.assignment-title,
+.exercise-title {
   cursor: pointer;
   font-size: 20px;
   padding: 12px 10px;
 }
 
-.assignment-header {
+.assignment-title {
   border-left: 3px solid $assignment;
 }
   
-.exercise-header {
+.exercise-title {
   border-left: 3px solid $exercise;
 }
