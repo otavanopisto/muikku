@@ -43,31 +43,6 @@ span.muikku-field-examples {
   
 }
 
-// WHEN TASK FIELD HAS NO CORRECT ANSWERS SET - EVALUATION ONLY
-select {
-  background: #fff;
-  border: 2px solid #abdbed;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
-  outline: none;
-  color: #0061a2;
-  display: inline-block;
-  margin: 4px;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
-  border-radius: 3px;
-  max-width: 100%;
-  word-wrap: break-word;
-  vertical-align: middle;
-}
-
-input[checked="checked"] {
-  box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
-  
-  &:hover {
-    box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
-  }
-  
-}
-
 // TEXTFIELD, TEXTAREA, SELECT CORRECT ANSWERS
 input[type="text"].muikku-field-correct-answer,
 textarea.muikku-field-correct-answer,
