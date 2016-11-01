@@ -262,154 +262,159 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
-      var taskfieldWrapper = $('<span>').addClass('textfield-wrapper');
-      var input = $('<input>')
-        .addClass('muikku-text-field')
-        .attr({
-          'type': "text",
-          'size':data.meta.columns,
-          'placeholder': data.meta.hint,
-          'name': data.name
-        })
-        .val(data.value)
-        .muikkuField({
-          fieldName: data.name,
-          materialId: data.materialId,
-          embedId: data.embedId,
-          meta: data.meta,
-          readonly: data.readOnlyFields||false,
-          trackChange: false,
-          isReadonly: function () {
-            return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
-          },
-          setReadonly: function (readonly) {
-            if (readonly) {
-              $(this.element).attr('readonly', 'readonly')
-            } else {
-              $(this.element).removeAttr('readonly');
-            } 
-          },
-          hasExamples: function () {
-            var meta = this.options.meta;
-            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
-              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
-                if (meta.rightAnswers[i].correct === true) {
-                  return false;
+      if (data.fieldlessMode) {
+        $(object).replaceWith($('<span>').text(data.value));
+      }
+      else {
+        var taskfieldWrapper = $('<span>').addClass('textfield-wrapper');
+        var input = $('<input>')
+          .addClass('muikku-text-field')
+          .attr({
+            'type': "text",
+            'size':data.meta.columns,
+            'placeholder': data.meta.hint,
+            'name': data.name
+          })
+          .val(data.value)
+          .muikkuField({
+            fieldName: data.name,
+            materialId: data.materialId,
+            embedId: data.embedId,
+            meta: data.meta,
+            readonly: data.readOnlyFields||false,
+            trackChange: false,
+            isReadonly: function () {
+              return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
+            },
+            setReadonly: function (readonly) {
+              if (readonly) {
+                $(this.element).attr('readonly', 'readonly')
+              } else {
+                $(this.element).removeAttr('readonly');
+              } 
+            },
+            hasExamples: function () {
+              var meta = this.options.meta;
+              if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+                for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                  if (meta.rightAnswers[i].correct === true) {
+                    return false;
+                  }
                 }
+                
+                return true;
               }
               
-              return true;
-            }
-            
-            return false;
-          },
-          getCorrectAnswers: function() {
-            var result = [];
-            var meta = this.options.meta;
-            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
-              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
-                if (meta.rightAnswers[i].correct) {
+              return false;
+            },
+            getCorrectAnswers: function() {
+              var result = [];
+              var meta = this.options.meta;
+              if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+                for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                  if (meta.rightAnswers[i].correct) {
+                    result.push(meta.rightAnswers[i].text);
+                  }
+                }
+              }
+              return result;
+            },
+            getExamples: function () {
+              var result = [];
+              
+              var meta = this.options.meta;
+              if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+                for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
                   result.push(meta.rightAnswers[i].text);
                 }
               }
-            }
-            return result;
-          },
-          getExamples: function () {
-            var result = [];
-            
-            var meta = this.options.meta;
-            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
-              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
-                result.push(meta.rightAnswers[i].text);
-              }
-            }
-            
-            return result;
-          },
-          hasDisplayableAnswers: function() {
-            return this.options.meta.rightAnswers && this.options.meta.rightAnswers.length > 0; 
-          },
-          canCheckAnswer: function() {
-            var meta = this.options.meta;
-            if (meta.rightAnswers) {
-              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
-                if (meta.rightAnswers[i].correct === true) {
-                  return true;
-                }
-              }
-            }
-            
-            return false;
-          },
-          isCorrectAnswer: function() {
-            var meta = this.options.meta;
-            
-            var meta = this.options.meta;
-            if (meta.rightAnswers) {
-              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
-                if (meta.rightAnswers[i].correct === true) {
-                  var answer = this.answer()||'';
-                  var text = meta.rightAnswers[i].text||'';
-                  
-                  if (!meta.rightAnswers[i].caseSensitive) {
-                    answer = answer.toLowerCase();
-                    text = text.toLowerCase();
-                  }
-                  
-                  if (meta.rightAnswers[i].normalizeWhitespace) {
-                    answer = answer.trim();
-                    text = text.trim();
-                  }
-                  
-                  if (text == answer) {
+              
+              return result;
+            },
+            hasDisplayableAnswers: function() {
+              return this.options.meta.rightAnswers && this.options.meta.rightAnswers.length > 0; 
+            },
+            canCheckAnswer: function() {
+              var meta = this.options.meta;
+              if (meta.rightAnswers) {
+                for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                  if (meta.rightAnswers[i].correct === true) {
                     return true;
                   }
                 }
               }
+              
+              return false;
+            },
+            isCorrectAnswer: function() {
+              var meta = this.options.meta;
+              
+              var meta = this.options.meta;
+              if (meta.rightAnswers) {
+                for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                  if (meta.rightAnswers[i].correct === true) {
+                    var answer = this.answer()||'';
+                    var text = meta.rightAnswers[i].text||'';
+                    
+                    if (!meta.rightAnswers[i].caseSensitive) {
+                      answer = answer.toLowerCase();
+                      text = text.toLowerCase();
+                    }
+                    
+                    if (meta.rightAnswers[i].normalizeWhitespace) {
+                      answer = answer.trim();
+                      text = text.trim();
+                    }
+                    
+                    if (text == answer) {
+                      return true;
+                    }
+                  }
+                }
+              }
+              
+              return false; 
             }
-            
-            return false; 
-          }
-        });
-      
-      if (data.meta.autogrow !== false) {
-        input.addClass('autogrow');
-      }
-      
-      taskfieldWrapper.append(input);
-      
-      if (data.meta.hint != '') {
-        taskfieldWrapper.append($('<span class="muikku-text-field-hint">' + data.meta.hint + '</span>'));  
+          });
         
-        $(input).on("focus", function() {
-          $(taskfieldWrapper).children('.muikku-text-field-hint')
-            .css({
-              visibility:"visible",
-              top: input.outerHeight() + 4 + 'px'
-            })
-            .animate({
-              opacity:1
-              
-            }, 300, function() {
-            
-            })
-        });
+        if (data.meta.autogrow !== false) {
+          input.addClass('autogrow');
+        }
         
-        $(input).on("blur", function() {
-          $(taskfieldWrapper).children('.muikku-text-field-hint')
-            .css({
-              visibility:"hidden"  
-            })
-            .animate({
-              opacity:0
+        taskfieldWrapper.append(input);
+        
+        if (data.meta.hint != '') {
+          taskfieldWrapper.append($('<span class="muikku-text-field-hint">' + data.meta.hint + '</span>'));  
+          
+          $(input).on("focus", function() {
+            $(taskfieldWrapper).children('.muikku-text-field-hint')
+              .css({
+                visibility:"visible",
+                top: input.outerHeight() + 4 + 'px'
+              })
+              .animate({
+                opacity:1
+                
+              }, 300, function() {
               
-            }, 150, function() {
-            
-            })
-        });
+              })
+          });
+          
+          $(input).on("blur", function() {
+            $(taskfieldWrapper).children('.muikku-text-field-hint')
+              .css({
+                visibility:"hidden"  
+              })
+              .animate({
+                opacity:0
+                
+              }, 150, function() {
+              
+              })
+          });
+        }
+        $(object).replaceWith(taskfieldWrapper);
       }
-      $(object).replaceWith(taskfieldWrapper);      
     }
   });
   
