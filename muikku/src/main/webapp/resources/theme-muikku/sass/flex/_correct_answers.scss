@@ -215,13 +215,19 @@ div.muikku-organizer-field {
 }
 
 // RADIO BUTTON, CHECKBOX CORRECT ANSWERS
-span.muikku-field-correct-answer {
+span.muikku-checkbox-field.muikku-field-correct-answer,
+span.muikku-select-field.muikku-field-correct-answer {
   box-shadow: none;
   border: none;
   
   input[type="checkbox"],
   input[type="radio"] {
     box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
+    
+    &:hover {
+      box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
+    }
+    
   }
   
   &:hover {
@@ -232,13 +238,19 @@ span.muikku-field-correct-answer {
 }
 
 // RADIO BUTTON, CHECKBOX INCORRECT ANSWERS
-span.muikku-field-incorrect-answer {
+span.muikku-checkbox-field.muikku-field-incorrect-answer,
+span.muikku-select-field.muikku-field-incorrect-answer {
   box-shadow: none;
   border: none;
   
   input[type="checkbox"],
   input[type="radio"] {
     box-shadow: 0 0 0 2px rgba(255,0,0,0.7);
+    
+    &:hover {
+      box-shadow: 0 0 0 2px rgba(255,0,0,0.7);
+    }
+    
   }
   
   &:hover {
