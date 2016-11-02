@@ -14,11 +14,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
@@ -46,6 +49,7 @@ import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -76,7 +80,10 @@ public class Evaluation2RESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
 
@@ -353,7 +360,7 @@ public class Evaluation2RESTService {
   @GET
   @Path("/compositeAssessmentRequests")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listAssessmentRequests() {
+  public Response listAssessmentRequests(@QueryParam("workspaceEntityId") Long workspaceEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -361,10 +368,31 @@ public class Evaluation2RESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     List<RestAssessmentRequest> restAssessmentRequests = new ArrayList<RestAssessmentRequest>();
-    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
-    List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByStaffMember(loggedUser);
-    for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
-      restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+    if (workspaceEntityId == null) {
+
+      // List assessment requests by staff member
+      
+      SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByStaffMember(loggedUser);
+      for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
+        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+      }
+    }
+    else {
+      
+      // List assessment requests by workspace
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
+      List<String> workspaceStudentIdentifiers = new ArrayList<String>();
+      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+        workspaceStudentIdentifiers.add(workspaceUserEntity.getIdentifier());
+      }
+      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
+      for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
+        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+      }
     }
     return Response.ok(restAssessmentRequests).build();
   }

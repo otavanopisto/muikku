@@ -393,6 +393,29 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/assessmentRequests/", studentId), CourseAssessmentRequest[].class));
   }
   
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByWorkspace(String workspaceIdentifier) {
+    return listCompositeAssessmentRequestsByWorkspace(workspaceIdentifier, new ArrayList<String>());
+  }
+
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByWorkspace(String workspaceIdentifier, List<String> workspaceStudentIdentifiers) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    StringBuffer courseStudentIds = new StringBuffer();
+    for (String workspaceStudentIdentifier : workspaceStudentIdentifiers) {
+      if (courseStudentIds.length() > 0) {
+        courseStudentIds.append(",");
+      }
+      courseStudentIds.append(identifierMapper.getPyramusCourseStudentId(workspaceStudentIdentifier));
+    }
+    fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[] compositeAssessmentRequests = pyramusClient.get(
+        String.format("/composite/course/%d/assessmentRequests?courseStudentIds=%s", courseId, courseStudentIds),
+        fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[].class); 
+    return entityFactory.createEntity(compositeAssessmentRequests);
+  }
+  
   public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByStaffMember(String identifier) {
     Long staffMemberId = identifierMapper.getPyramusStaffId(identifier);
     if (staffMemberId == null) {

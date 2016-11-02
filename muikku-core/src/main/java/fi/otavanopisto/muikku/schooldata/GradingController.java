@@ -193,6 +193,10 @@ public class GradingController {
     return gradingSchoolDataController.listAssessmentRequestsByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
   }
   
+  public List<CompositeAssessmentRequest> listAssessmentRequestsByWorkspace(SchoolDataIdentifier workspaceIdentifier, List<String> workspaceStudentIdentifiers) {
+    return gradingSchoolDataController.listCompositeAssessmentRequestsByWorkspace(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), workspaceStudentIdentifiers);
+  }
+
   public List<CompositeAssessmentRequest> listAssessmentRequestsByStaffMember(SchoolDataIdentifier staffMemberIdentifier) {
     return gradingSchoolDataController.listCompositeAssessmentRequestsByStaffMember(staffMemberIdentifier.getDataSource(), staffMemberIdentifier.getIdentifier());
   }

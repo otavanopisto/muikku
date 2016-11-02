@@ -320,6 +320,17 @@ class GradingSchoolDataController {
     return null;
   }
   
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByWorkspace(String schoolDataSource, String workspaceIdentifier, List<String> workspaceStudentIdentifiers) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.listCompositeAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+    }
+    return null;
+  }
+
   public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByStaffMember(String schoolDataSource, String staffMemberIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);

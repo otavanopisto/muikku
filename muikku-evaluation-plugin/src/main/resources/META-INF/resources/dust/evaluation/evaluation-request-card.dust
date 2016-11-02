@@ -13,10 +13,16 @@
       <span class="evaluation-request-data-label">Ilmoittautunut kurssille</span>
       <span class="evaluation-request-data-text">{enrollmentDate|formatDate}</span>
     </div>
-    <div class="evaluation-request-data-row highlight">
+    <div class="evaluation-request-data-row {?assessmentRequestDate}{^evaluationDate}highlight{/evaluationDate}{/assessmentRequestDate}">
       <span class="evaluation-request-data-label">Arviointipyyntö jätetty</span>
       <span class="evaluation-request-data-text">{assessmentRequestDate|formatDate}</span>
     </div>
+    {?evaluationDate}
+      <div class="evaluation-request-data-row highlight">
+        <span class="evaluation-request-data-label">Arvioitu</span>
+        <span class="evaluation-request-data-text">{evaluationDate|formatDate}</span>
+      </div>
+    {/evaluationDate}
     <div class="evaluation-request-data-row">
       <span class="evaluation-request-data-label">Tehtäviä tehty</span>
       <span class="evaluation-request-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
