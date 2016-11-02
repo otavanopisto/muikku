@@ -163,33 +163,32 @@ body {
 // REQUEST
 .evaluation-request {
   background: #fff;
-  border: 2px solid #fff;
-  box-shadow: 0 3px 5px rgba(58, 111, 148, 0.2);
+  border: 1px solid #d7edfb;
+  border-radius: 3px;
   box-sizing: border-box;
   display: inline-block;
   margin: 10px;
-  padding: 2px;
   vertical-align: top;
   width: 285px;
   
   &.evaluated-incomplete {
-    border: 2px solid #ea7503;
-    box-shadow: 0 3px 5px rgba(234, 117, 3, 0.2);
+    border: 1px solid #ea7503;
+    box-shadow: 0 0 2px rgba(234, 117, 3, 0.2);
   }
   
   &.evaluated-passed {
-    border: 2px solid #3edd2d;
-    box-shadow: 0 3px 5px rgba(60, 221, 3, 0.2);
+    border: 1px solid #3edd2d;
+    box-shadow: 0 0 2px rgba(60, 221, 3, 0.2);
     
-    .evaluation-request-card-button.delete-button {
+    .evaluation-request-card-button.archive-button {
       display: inline-block;
     }
     
   }
   
   &.evaluation-requested {
-    border: 2px solid #00ccff;
-    box-shadow: 0 3px 5px rgba(0, 204, 255, 0.2);
+    border: 1px solid #00ccff;
+    box-shadow: 0 0 2px rgba(0, 204, 255, 0.2);
   }
   
 }
@@ -276,8 +275,8 @@ body {
     text-align: center;
     vertical-align: top;
     
-    &.delete-button {
-      background: #d50b36;
+    &.archive-button {
+      background: #4c4c4c;
       display: none;
       font-size: 20px;
       height: 20px;
