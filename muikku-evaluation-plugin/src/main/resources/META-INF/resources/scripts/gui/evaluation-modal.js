@@ -226,10 +226,26 @@
         var assignmentWrapper = $('<div>')
           .addClass('assignment-wrapper')
           .appendTo($('.eval-modal-assignment-content'));
+        
+        var assignmentTitleWrapper = $('<div>')
+          .addClass('assignment-title-wrapper')
+          .appendTo(assignmentWrapper);
+        
         var assignmentTitle = $('<div>')
           .addClass('assignment-title')
           .text(assignment.title)
-          .appendTo(assignmentWrapper);
+          .appendTo(assignmentTitleWrapper);
+        
+        var assignmentDone = $('<div>')
+          .addClass('assignment-done')
+            .append($('<span>')
+              .addClass('assignment-done-label')
+              .text('Tehty'))
+            .append($('<span>')
+              .addClass('assignment-done-data')
+              .text('12.12.2022'))
+          .appendTo(assignmentTitleWrapper);
+        
         var assignmentEvaluationButton = $('<div>')
           .addClass('assignment-evaluate-button icon-evaluate')
           .attr('title', 'Arvioi tehtävä')
@@ -242,7 +258,7 @@
           .attr('data-open', false)
           .attr('data-loaded', false)
           .appendTo(assignmentWrapper);
-        $(assignmentTitle).click($.proxy(function(event) {
+        $(assignmentTitleWrapper).click($.proxy(function(event) {
           this._toggleAssignment(assignmentContent);
         }, this));
       }, this));
