@@ -196,7 +196,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment);
+    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
     WorkspaceAssessment workspaceAssessment = entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
     updateParticipationTypeByGrade(courseStudentId, courseId, grade);
     
@@ -281,7 +281,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment);
+    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
     updateParticipationTypeByGrade(courseStudentId, courseId, grade);
     
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));

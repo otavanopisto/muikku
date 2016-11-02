@@ -1,4 +1,4 @@
-<div class="evaluation-request" data-user-entity-id="{userEntityId}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true" data-passing="{passing}"{/evaluationDate} data-assessment-request-date="{assessmentRequestDate}">
+<div class="evaluation-request {?evaluationDate}{?passing}evaluated-passed{:else}evaluated-incomplete{/passing}{/evaluationDate}" data-user-entity-id="{userEntityId}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true"{/evaluationDate} data-assessment-request-date="{assessmentRequestDate}">
   <div class="evaluation-request-title">
     <div class="evaluation-request-student">{lastName}, {firstName}</div>
     <div class="evaluation-request-study-programme">{studyProgramme}</div>

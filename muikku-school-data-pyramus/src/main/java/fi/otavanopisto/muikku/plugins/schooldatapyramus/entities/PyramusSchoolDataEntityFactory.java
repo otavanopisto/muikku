@@ -342,7 +342,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
         gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
-        courseAssessment.getVerbalAssessment(), courseAssessmentDate);
+        courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
   }
 
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {

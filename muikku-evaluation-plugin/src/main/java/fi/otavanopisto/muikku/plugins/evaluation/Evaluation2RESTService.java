@@ -156,7 +156,8 @@ public class Evaluation2RESTService {
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
         workspaceAssessment.getVerbalAssessment(),
-        workspaceAssessment.getDate());
+        workspaceAssessment.getDate(),
+        workspaceAssessment.getPassing());
     return Response.ok(restAssessment).build();
   }
 
@@ -232,7 +233,8 @@ public class Evaluation2RESTService {
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
         workspaceAssessment.getVerbalAssessment(),
-        workspaceAssessment.getDate());
+        workspaceAssessment.getDate(),
+        workspaceAssessment.getPassing());
     return Response.ok(restAssessment).build();
   }
 
@@ -316,7 +318,8 @@ public class Evaluation2RESTService {
         workspaceAssessment.getGradingScaleIdentifier().toId(),
         workspaceAssessment.getGradeIdentifier().toId(),
         workspaceAssessment.getVerbalAssessment(),
-        workspaceAssessment.getDate());
+        workspaceAssessment.getDate(),
+        workspaceAssessment.getPassing());
     return Response.ok(restAssessment).build();
   }
 
