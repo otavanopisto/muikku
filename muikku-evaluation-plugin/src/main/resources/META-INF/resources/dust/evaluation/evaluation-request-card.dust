@@ -4,11 +4,13 @@
     <div class="evaluation-request-study-programme">{studyProgramme}</div>
   </div>
   <div class="evaluation-request-data">
-    <div class="evaluation-request-data-row">
-      <div class="workspace-name">
-        <a href="/evaluation2/{workspaceUrlName}">{workspaceName} {#workspaceNameExtension}({workspaceNameExtension}){/workspaceNameExtension}</a>
+    {?showWorkspace}
+      <div class="evaluation-request-data-row">
+        <div class="workspace-name">
+          <a href="/evaluation2/{workspaceUrlName}">{workspaceName} {#workspaceNameExtension}({workspaceNameExtension}){/workspaceNameExtension}</a>
+        </div>
       </div>
-    </div>
+    {/showWorkspace}
     <div class="evaluation-request-data-row">
       <span class="evaluation-request-data-label">Ilmoittautunut kurssille</span>
       <span class="evaluation-request-data-text">{enrollmentDate|formatDate}</span>

@@ -9,6 +9,15 @@
     },
     _loadAssessmentRequests: function () {
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
+      
+      // View title (TODO localize)
+      if (workspaceEntityId) {
+        $('.evaluation-requests-title h3').text($('#workspaceName').val());
+      }
+      else {
+        $('.evaluation-requests-title h3').text('Arviointipyynnöt');
+      }
+      
       var requestContainer = $('.evaluation-requests-container'); 
       $(requestContainer).empty();
       mApi().evaluation.compositeAssessmentRequests
@@ -23,6 +32,9 @@
               return Date.parse(a.assessmentRequestDate) > Date.parse(b.assessmentRequestDate);
             });
             for (var i = 0; i < assessmentRequests.length; i++) {
+              if (!workspaceEntityId) {
+                assessmentRequests[i] = $.extend({}, assessmentRequests[i], {showWorkspace: true});
+              }
               renderDustTemplate("evaluation/evaluation-request-card.dust", assessmentRequests[i], $.proxy(function (html) {
                 $(requestContainer).append(html);
               }, this));
