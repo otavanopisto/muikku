@@ -22,7 +22,8 @@
       <span class="evaluation-request-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
     </div>
     <div class="evaluation-request-button-row">
-      <div class="evaluation-request-card-button evaluate-button icon-evaluate" title="Arvioi Opiskelijan opintojakso"></div>
+      <div class="evaluation-request-card-button archive-button icon-archive" title="Arkistoi opiskelija"></div>
+      <div class="evaluation-request-card-button evaluate-button icon-evaluate" title="Arvioi opiskelijan opintojakso"></div>
     </div>
   </div>
 </div>
