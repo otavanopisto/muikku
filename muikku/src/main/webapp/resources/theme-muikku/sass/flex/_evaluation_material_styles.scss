@@ -101,6 +101,7 @@ div.muikku-memo-field {
   box-sizing: border-box;  
   line-height: 1.7em;
   margin: 4px 0;
+  min-height: 29px;
   padding: 5px 10px;
 }
 
@@ -109,8 +110,10 @@ div.muikku-text-field {
   border-radius: 3px;
   box-sizing: border-box;
   display: inline-block;
-  margin: 4px 3px;   
+  margin: 4px 3px;
+  min-height: 29px; 
   padding: 2px 8px;
+  vertical-align: middle;
 }
 
 // CHECKBOX & RADIOBUTTON
