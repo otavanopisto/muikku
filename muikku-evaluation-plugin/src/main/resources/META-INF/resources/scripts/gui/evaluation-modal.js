@@ -230,6 +230,10 @@
           .addClass('assignment-title')
           .text(assignment.title)
           .appendTo(assignmentWrapper);
+        var assignmentEvaluationButton = $('<div>')
+          .addClass('assignment-evaluate-button icon-evaluate')
+          .attr('title', 'Arvioi tehtävä')
+          .appendTo(assignmentWrapper);
         var assignmentContent = $('<div>')
           .addClass('assignment-content')
           .attr('data-workspace-material-id', assignment.id)
