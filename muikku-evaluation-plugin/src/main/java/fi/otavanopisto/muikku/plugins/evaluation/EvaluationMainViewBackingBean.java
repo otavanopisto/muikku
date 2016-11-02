@@ -12,6 +12,8 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -29,12 +31,35 @@ public class EvaluationMainViewBackingBean {
   @Inject
   private SessionController sessionController;
 
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
   @RequestAction
   public String init() {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (userEntity == null) {
       return NavigationRules.ACCESS_DENIED;
     }
+    
+    WorkspaceEntity workspaceEntity = null;
+    if (workspaceEntityId != null) {
+      workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        return NavigationRules.NOT_FOUND;
+      }
+    }
+    
+    if (workspaceEntity == null) {
+      if (!sessionController.hasEnvironmentPermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX)) {
+        return NavigationRules.ACCESS_DENIED; 
+      }
+    }
+    else {
+      if (!sessionController.hasWorkspacePermission(EvaluationResourcePermissionCollection.EVALUATION_VIEW_INDEX, workspaceEntity)) {
+        return NavigationRules.ACCESS_DENIED; 
+      }
+    }
+    
     return null;
   }
 
