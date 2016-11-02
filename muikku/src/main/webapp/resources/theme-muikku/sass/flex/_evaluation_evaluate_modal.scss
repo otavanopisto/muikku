@@ -186,20 +186,38 @@
   font-size: 16px;
 }
   
-.assignment-title,
-.exercise-title {
+.assignment-title-wrapper {
+  border-left: 3px solid $assignment;
   cursor: pointer;
-  font-size: 20px;
+  padding: 2px 50px 2px 8px;
 }
 
-.assignment-title {
-  border-left: 3px solid $assignment;
-  padding: 12px 50px 10px 12px;
-}
-  
-.exercise-title {
+.exercise-title-wrapper {
   border-left: 3px solid $exercise;
-  padding: 12px 10px;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+.assignment-title,
+.exercise-title {
+  font-size: 20px;
+  padding: 0 0 4px 0;  
+}
+
+.assignment-done {
+  font-size: 13px;
+  font-style: italic;
+  
+  .assignment-done-label {
+    color: #27b91c;
+    font-weight: 400;
+    padding: 0 4px 0 0;
+  }
+  
+  .assignment-done-data {
+  
+  }
+  
 }
 
 .assignment-evaluate-button {
@@ -210,12 +228,11 @@
   display: inline-block;
   font-size: 18px;
   height: 18px;
-  margin-top: -14px;
   width: 18px;
   padding: 5px;
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 18px;
   text-align: center;
   vertical-align: top;
   z-index: 9;
