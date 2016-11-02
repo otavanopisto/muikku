@@ -333,6 +333,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
                     $(this._requestCard).attr('data-evaluated', true);
                     $('.button-delete').show();
                   }
@@ -355,6 +356,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
               $(this._requestCard).attr('data-evaluated', true);
               $('.button-delete').show();
             }
