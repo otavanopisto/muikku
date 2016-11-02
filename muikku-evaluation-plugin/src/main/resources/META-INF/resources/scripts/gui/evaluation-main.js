@@ -8,10 +8,11 @@
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
+      var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       var requestContainer = $('.evaluation-requests-container'); 
       $(requestContainer).empty();
       mApi().evaluation.compositeAssessmentRequests
-        .read()
+        .read({workspaceEntityId: workspaceEntityId})
         .callback($.proxy(function (err, assessmentRequests) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
