@@ -7,13 +7,14 @@ public class RestAssessment {
   public RestAssessment() {
   }
 
-  public RestAssessment(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate) {
+  public RestAssessment(String identifier, String assessorIdentifier, String gradingScaleIdentifier, String gradeIdentifier, String verbalAssessment, Date assessmentDate, Boolean passing) {
     this.identifier = identifier;
     this.assessorIdentifier = assessorIdentifier;
     this.gradingScaleIdentifier = gradingScaleIdentifier;
     this.gradeIdentifier = gradeIdentifier;
     this.verbalAssessment = verbalAssessment;
     this.assessmentDate = assessmentDate;
+    this.passing = passing;
   }
 
   public String getIdentifier() {
@@ -64,11 +65,20 @@ public class RestAssessment {
     this.assessmentDate = assessmentDate;
   }
 
+  public Boolean getPassing() {
+    return passing;
+  }
+
+  public void setPassing(Boolean passing) {
+    this.passing = passing;
+  }
+
   private String identifier;
   private String assessorIdentifier;
   private String gradingScaleIdentifier;
   private String gradeIdentifier;
   private String verbalAssessment;
   private Date assessmentDate;
+  private Boolean passing;
 
 }

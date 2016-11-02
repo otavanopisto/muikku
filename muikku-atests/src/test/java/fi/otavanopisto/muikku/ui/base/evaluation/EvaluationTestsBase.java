@@ -316,7 +316,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           
           // TODO: Move to new mocker
           OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-          CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, admin.getId(), assessmentCreated, "Test evaluation.");
+          CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, admin.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
           stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -337,7 +337,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           
   //        There's no JSONComparator that allows different values. And since dev machine and travis testing gives different dates we can not test requestBody with CourseAssessment model.
           
-          CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, admin.getId(), null, "<p>Test evaluation.</p>\n");
+          CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, admin.getId(), null, "<p>Test evaluation.</p>\n", Boolean.TRUE);
           verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseId)))
             .withHeader("Content-Type", equalTo("application/json"))
             .withRequestBody(equalToJson(objectMapper.writeValueAsString(cAss), wiremock.org.skyscreamer.jsonassert.JSONCompareMode.LENIENT)));

@@ -334,6 +334,12 @@
                   }
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+                    if (assessment.passing) {
+                      $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+                    }
+                    else {
+                      $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+                    }
                     $(this._requestCard).attr('data-evaluated', true);
                     $('.button-delete').show();
                   }
@@ -357,6 +363,12 @@
             }
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+              if (assessment.passing) {
+                $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+              }
+              else {
+                $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+              }
               $(this._requestCard).attr('data-evaluated', true);
               $('.button-delete').show();
             }

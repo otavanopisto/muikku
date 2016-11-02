@@ -9,7 +9,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
   
   public PyramusWorkspaceAssessment(String identifier, String workSpaceUserIdentifier, String assessingUserIdentifier, String gradeIdentifier, String gradingScaleIdentifier,
-      String verbalAssessment, Date date) {
+      String verbalAssessment, Date date, Boolean passing) {
     super();
     this.identifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.workSpaceUserIdentifier = new SchoolDataIdentifier(workSpaceUserIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
@@ -18,6 +18,7 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
     this.gradingScaleIdentifier = new SchoolDataIdentifier(gradingScaleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.verbalAssessment = verbalAssessment;
     this.date = date;
+    this.passing = passing;
   }
 
   @Override
@@ -60,6 +61,11 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
     return date;
   }
 
+  @Override
+  public Boolean getPassing() {
+    return passing;
+  }
+
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier workSpaceUserIdentifier;
   private SchoolDataIdentifier assessingUserIdentifier;
@@ -67,5 +73,6 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
   private SchoolDataIdentifier gradingScaleIdentifier;
   private String verbalAssessment;
   private Date date;
+  private Boolean passing;
   
 }

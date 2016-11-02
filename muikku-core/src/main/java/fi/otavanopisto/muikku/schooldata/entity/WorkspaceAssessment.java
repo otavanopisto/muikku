@@ -54,5 +54,7 @@ public interface WorkspaceAssessment extends SchoolDataEntity {
    * @return assessment date
    */
   public Date getDate();
+  
+  public Boolean getPassing();
 	
 }
