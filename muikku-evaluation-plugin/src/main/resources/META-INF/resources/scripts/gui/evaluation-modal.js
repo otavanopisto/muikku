@@ -257,18 +257,27 @@
           .text(assignment.title)
           .appendTo(assignmentTitleWrapper);
         
-        if (assignment.assignmentDate) {
+        // TODO: Localization
+        if (assignment.assignmentState == 'SUBMITTED') {
           var assignmentDone = $('<div>')
             .addClass('assignment-done')
-              .append($('<span>')
-                .addClass('assignment-done-label')
-                .text('Tehty'))
-              .append($('<span>')
-                .addClass('assignment-done-data')
-                .text(formatDate(new Date(moment(assignment.assignmentDate)))))
+            .append($('<span>')
+              .addClass('assignment-done-label')
+              .text('Tehty'))
+            .append($('<span>')
+              .addClass('assignment-done-data')
+              .text(formatDateTime(new Date(moment(assignment.assignmentDate)))))
+            .appendTo(assignmentTitleWrapper);
+        } else {
+          var assignmentDone = $('<div>')
+            .addClass('assignment-done')
+            .append($('<span>')
+              .addClass('assignment-notdone-label')
+              .text('Ei tehty'))
             .appendTo(assignmentTitleWrapper);
         }
         
+        // TODO: Localization
         var assignmentEvaluationButton = $('<div>')
           .addClass('assignment-evaluate-button icon-evaluate')
           .attr('title', 'Arvioi tehtävä')
