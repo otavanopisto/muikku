@@ -1,7 +1,5 @@
 <div class="evaluation-modal-evaluate-form"> 
-  <input type="hidden" name="assessmentIdentifier" id="assessmentIdentifier" value="{assessmentIdentifier}"/>
-  <input type="hidden" name="workspaceEntityId" id="workspaceEntityId" value="{workspaceEntityId}"/>
-  <input type="hidden" name="workspaceEntityId" id="userEntityId" value="{userEntityId}"/>
+  <input type="hidden" name="workspaceUserEntityId" id="workspaceUserEntityId" value="{workspaceUserEntityId}"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
     <textarea id="evaluateFormLiteralEvaluation"></textarea>

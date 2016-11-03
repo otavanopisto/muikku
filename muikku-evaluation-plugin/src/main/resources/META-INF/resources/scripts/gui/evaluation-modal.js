@@ -78,8 +78,7 @@
               courseName: $(requestCard).find('.workspace-name').text(),
               gradingScales: this._gradingScales||{},
               assessors: staffMembers,
-              workspaceEntityId: $(requestCard).attr('data-workspace-entity-id'),
-              userEntityId: $(requestCard).attr('data-user-entity-id')
+              workspaceUserEntityId: $(requestCard).attr('data-workspace-user-entity-id')
             }, $.proxy(function (html) {
               
               // Modal UI
@@ -202,11 +201,6 @@
         }
       }
       else {
-        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-        var materialId = $(assignment).attr('data-material-id');
-        var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
-
         var fieldAnswers = {};
         var userAnswers = this.options.assignmentAnswers[materialId]
         for (var i = 0, l = userAnswers.length; i < l; i++) {
@@ -214,6 +208,7 @@
           var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
           fieldAnswers[answerKey] = answer.value;
         }
+        var materialId = $(assignment).attr('data-material-id');
         // Material html
         mApi().materials.html
           .read(materialId)
@@ -232,7 +227,7 @@
     
     _onDialogReady: function() {
       if ($(this._requestCard).attr('data-evaluated')) {
-        this._loadAssessment($(this._requestCard).attr('data-workspace-entity-id'), $(this._requestCard).attr('data-user-entity-id'));
+        this._loadAssessment($(this._requestCard).attr('data-workspace-user-entity-id'));
       }
       else {
         $('#evaluationDate').datepicker('setDate', new Date());
@@ -297,26 +292,26 @@
       }, this));
     },
     
-    _loadAssessment: function(workspaceEntityId, userEntityId) {
-      mApi().evaluation.workspace.student.assessment
-      .read(workspaceEntityId, userEntityId)
-      .callback($.proxy(function (err, assessment) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }
-        else {
-          // Verbal assessment
-          CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
-          // Date
-          $('#evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
-          // Assessor
-          $('#assessor').val(assessment.assessorIdentifier);
-          // Grade
-          $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
-          // Remove assessment button
-          $('.button-delete').show();
-        }
-      }, this));
+    _loadAssessment: function(workspaceUserEntityId) {
+      mApi().evaluation.workspaceuser.assessment
+        .read(workspaceUserEntityId)
+        .callback($.proxy(function (err, assessment) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            // Verbal assessment
+            CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+            // Date
+            $('#evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+            // Assessor
+            $('#assessor').val(assessment.assessorIdentifier);
+            // Grade
+            $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+            // Remove assessment button
+            $('.button-delete').show();
+          }
+        }, this));
     },
     
     _confirmAssessmentDeletion: function(callback) {
@@ -348,10 +343,9 @@
     },
     
     _deleteAssessment: function() {
-      var workspaceEntityId = $('#workspaceEntityId').val();
-      var userEntityId = $('#userEntityId').val();
-      mApi().evaluation.workspaces.students.assessment
-        .del(workspaceEntityId, userEntityId)
+      var workspaceUserEntityId = $('#workspaceUserEntityId').val();
+      mApi().evaluation.workspaceuser.assessment
+        .del(workspaceUserEntityId)
         .callback($.proxy(function (err) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -363,11 +357,10 @@
     },
     
     _saveAssessment: function() {
-      var workspaceEntityId = $('#workspaceEntityId').val();
-      var userEntityId = $('#userEntityId').val();
+      var workspaceUserEntityId = $('#workspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
-        mApi().evaluation.workspace.student.assessment
-          .read(workspaceEntityId, userEntityId)
+        mApi().evaluation.workspaceuser.assessment
+          .read(workspaceUserEntityId)
           .callback($.proxy(function (err, assessment) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -379,8 +372,8 @@
               assessment.assessorIdentifier = $('#assessor').val();
               assessment.gradingScaleIdentifier = scaleAndGrade[0];
               assessment.gradeIdentifier = scaleAndGrade[1];
-              mApi().evaluation.workspace.student.assessment
-                .update(workspaceEntityId, userEntityId, assessment)
+              mApi().evaluation.workspaceuser.assessment
+                .update(workspaceUserEntityId, assessment)
                 .callback($.proxy(function (err, assessment) {
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -402,8 +395,8 @@
       }
       else {
         var scaleAndGrade = $('#grade').val().split('@');
-        mApi().evaluation.workspace.student.assessment
-          .create(workspaceEntityId, userEntityId, {
+        mApi().evaluation.workspaceuser.assessment
+          .create(workspaceUserEntityId, {
             assessorIdentifier: $('#assessor').val(),
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
