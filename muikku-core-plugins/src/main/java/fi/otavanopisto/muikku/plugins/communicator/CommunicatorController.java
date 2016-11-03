@@ -144,9 +144,17 @@ public class CommunicatorController {
       CommunicatorMessageCategory category, String caption, String content, Set<Tag> tags) {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
 
+    // Clean duplicates from recipient list
+    cleanDuplicateRecipients(userRecipients);
+    
+    Set<Long> recipientIds = new HashSet<Long>();
+    
     for (UserEntity recipient : userRecipients) {
-      communicatorMessageRecipientDAO.create(message, recipient, null);
-      communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+      if (!recipientIds.contains(recipient.getId())) {
+        recipientIds.add(recipient.getId());
+        communicatorMessageRecipientDAO.create(message, recipient, null);
+        communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+      }
     }
     
     if (!CollectionUtils.isEmpty(userGroupRecipients)) {
@@ -160,8 +168,11 @@ public class CommunicatorController {
             UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
-              communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
-              communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+              if (!recipientIds.contains(recipient.getId())) {
+                recipientIds.add(recipient.getId());
+                communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
+                communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+              }
             }
           }
         }
@@ -181,8 +192,11 @@ public class CommunicatorController {
           for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
             UserEntity recipient = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
-              communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
-              communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+              if (!recipientIds.contains(recipient.getId())) {
+                recipientIds.add(recipient.getId());
+                communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
+                communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+              }
             }
           }
         }
@@ -200,8 +214,11 @@ public class CommunicatorController {
           for (WorkspaceUserEntity wosu : workspaceUsers) {
             UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
-              communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
-              communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+              if (!recipientIds.contains(recipient.getId())) {
+                recipientIds.add(recipient.getId());
+                communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
+                communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+              }
             }
           }
         }
@@ -230,6 +247,10 @@ public class CommunicatorController {
   
   public CommunicatorMessageRecipient findCommunicatorMessageRecipient(Long id) {
     return communicatorMessageRecipientDAO.findById(id);
+  }
+
+  public CommunicatorMessageRecipient findCommunicatorMessageRecipientByMessageAndRecipient(CommunicatorMessage communicatorMessage, UserEntity recipient) {
+    return communicatorMessageRecipientDAO.findByMessageAndRecipient(communicatorMessage, recipient);
   }
 
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
