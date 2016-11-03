@@ -225,7 +225,7 @@
       $.each(data.assignments, $.proxy(function(index, assignment) {
         var assignmentWrapper = $('<div>')
           .addClass('assignment-wrapper')
-          .addClass(assignment.assignmentType == 'EVALUATED' ? 'assignment-evaluated' : 'assignment-exercise')
+          .addClass(assignment.assignmentType == 'EVALUATED' ? 'assignment' : 'exercise')
           .appendTo($('.eval-modal-assignment-content'));
         
         var assignmentTitleWrapper = $('<div>')

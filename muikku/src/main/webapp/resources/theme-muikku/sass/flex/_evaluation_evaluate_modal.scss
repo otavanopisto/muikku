@@ -175,8 +175,7 @@
 }
 
 // ASSIGNMENTS & EXERCISES
-.assignment-wrapper,
-.exercise-wrapper {
+.assignment-wrapper {
   border-bottom: 1px solid #f8f8f8;
   padding: 8px 0;
   position: relative;
@@ -186,13 +185,13 @@
   font-size: 16px;
 }
   
-.assignment-title-wrapper {
+.assignment-wrapper.assignment .assignment-title-wrapper {
   border-left: 3px solid $assignment;
   cursor: pointer;
   padding: 2px 50px 2px 8px;
 }
 
-.exercise-title-wrapper {
+.assignment-wrapper.exercise .assignment-title-wrapper {
   border-left: 3px solid $exercise;
   cursor: pointer;
   padding: 2px 8px;
@@ -236,4 +235,8 @@
   text-align: center;
   vertical-align: top;
   z-index: 9;
-} 
+}
+
+.assignment-wrapper.exercise .assignment-evaluate-button {
+  display: none;
+}
