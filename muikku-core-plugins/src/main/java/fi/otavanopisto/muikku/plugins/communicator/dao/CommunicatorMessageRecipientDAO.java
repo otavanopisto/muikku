@@ -54,6 +54,26 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public CommunicatorMessageRecipient findByMessageAndRecipient(CommunicatorMessage communicatorMessage,
+      UserEntity recipient) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageRecipient> criteria = criteriaBuilder.createQuery(CommunicatorMessageRecipient.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+        )
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
   public List<CommunicatorMessageRecipient> listByUserAndMessageId(UserEntity user, CommunicatorMessageId messageId, boolean trashed, boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -124,4 +144,5 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
   public void delete(CommunicatorMessageRecipient e) {
     super.delete(e);
   }
+
 }

@@ -6,11 +6,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -41,6 +48,7 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentControl
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
+import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageAttachment;
@@ -77,6 +85,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @BaseUrl
   private String baseUrl;
   
+  @Inject
+  private Logger logger;
+ 
   @Inject
   private SessionController sessionController;
   
@@ -374,28 +385,12 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("CategoryName missing").build();
     }
 
-    // Clean duplicates from recipient list
-    communicatorController.cleanDuplicateRecipients(recipients);
-    
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, 
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
-    
-    Map<String, Object> params = new HashMap<String, Object>();
-    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-    params.put("sender", String.format("%s %s", user.getFirstName(), user.getLastName()));
-    params.put("subject", newMessage.getCaption());
-    params.put("content", newMessage.getContent());
-    params.put("url", String.format("%s/communicator", baseUrl));
-    //TODO Hash paramters cannot be utilized in redirect URLs
-    //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
-    
-    // Remove sender from notification list
-    communicatorController.removeRecipient(recipients, userEntity);
-    notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
     
     return Response.ok(
       restModels.restFullMessage(message)
@@ -535,9 +530,6 @@ public class CommunicatorRESTService extends PluginRESTService {
       }
     }
     
-    // Clean duplicates from recipient list
-    communicatorController.cleanDuplicateRecipients(recipients);
-    
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
@@ -545,19 +537,6 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
 
-    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-    Map<String, Object> params = new HashMap<String, Object>();
-    params.put("sender", String.format("%s %s", user.getFirstName(), user.getLastName()));
-    params.put("subject", newMessage.getCaption());
-    params.put("content", newMessage.getContent());
-    params.put("url", String.format("%s/communicator", baseUrl));
-    //TODO Hash paramters cannot be utilized in redirect URLs
-    //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
-
-    // Remove sender from notification list
-    communicatorController.removeRecipient(recipients, userEntity);
-    notifierController.sendNotification(communicatorNewInboxMessageNotification, userEntity, recipients, params);
-    
     return Response.ok(
       restModels.restFullMessage(message)
     ).build();
@@ -865,15 +844,36 @@ public class CommunicatorRESTService extends PluginRESTService {
         return true;
       }
       else {
-        List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
-        for (CommunicatorMessageRecipient recipient : recipients) {
-          if (recipient.getRecipient().equals(userEntityId)) {
-            return true;
-          }
-        }
+        CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipientByMessageAndRecipient(communicatorMessage, sessionController.getLoggedUserEntity());
+
+        return recipient != null;
       }
     }
     return false;
   }
 
+  @Transactional (value = TxType.REQUIRES_NEW)
+  public void onCommunicatorMessageSent(@Observes (during = TransactionPhase.AFTER_COMPLETION) CommunicatorMessageSent event) {
+    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(event.getCommunicatorMessageId());
+    UserEntity sender = userEntityController.findUserEntityById(communicatorMessage.getSender());
+    UserEntity recipient = userEntityController.findUserEntityById(event.getRecipientUserEntityId());
+
+    if ((communicatorMessage != null) && (sender != null) && (recipient != null)) {
+      if (!Objects.equals(sender.getId(), recipient.getId())) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        User senderUser = userController.findUserByUserEntityDefaults(sender);
+        params.put("sender", String.format("%s %s", senderUser.getFirstName(), senderUser.getLastName()));
+        params.put("subject", communicatorMessage.getCaption());
+        params.put("content", communicatorMessage.getContent());
+        params.put("url", String.format("%s/communicator", baseUrl));
+        //TODO Hash paramters cannot be utilized in redirect URLs
+        //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
+        
+        notifierController.sendNotification(communicatorNewInboxMessageNotification, sender, recipient, params);
+      }
+    } else {
+      logger.log(Level.SEVERE, String.format("Communicator couldn't send notifications as some entity was not found"));
+    }
+  }
+  
 }
