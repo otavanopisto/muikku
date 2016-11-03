@@ -107,7 +107,7 @@
       <div data-file-list>
         <div class="gt-user-file flex-row">          
           <div class="gt-user-file-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
-            <span data-file-name></span>
+            <a data-file-name></a>
           </div>
           <div class="gt-user-file-action lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 flex-right">
             <span style="cursor:pointer" data-file-delete>{#localize key="plugin.guider.user.details.files.file.remove"/}</span>
@@ -126,4 +126,5 @@
      <div class="clear"></div>
   </div>
 {/student}
+
 
