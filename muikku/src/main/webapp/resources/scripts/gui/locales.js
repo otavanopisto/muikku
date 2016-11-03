@@ -66,6 +66,10 @@
     return val;
   }
   
+  function formatDateTime(d) {
+    return formatDate(d) + ' ' + formatTime(d);
+  }
+  
   window.getLocaleText = getLocaleText;
   window.getLocale = getLocale;
   window.getCurrentDate = getCurrentDate;
