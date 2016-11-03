@@ -11,7 +11,7 @@
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
-      this.element.trigger("loadStart");
+      this.element.trigger("loadStart", $('.evaluation-requests-container'));
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       
       // View title (TODO localize)
@@ -43,17 +43,17 @@
                 $(requestContainer).append(html);
               }, this));
             }
-            this.element.trigger("loadEnd");
+            this.element.trigger("loadEnd", $('.evaluation-requests-container'));
           }
         }, this)); 
     },
-    _onLoadStart: function(event, data) {
+    _onLoadStart: function(event, target) {
       this._loadOperations++;
       if (this._loadOperations == 1) {
         console.log('show loading animation');
       }
     },
-    _onLoadEnd: function(event, data) {
+    _onLoadEnd: function(event, target) {
       this._loadOperations--;
       if (this._loadOperations == 0) {
         console.log('hide loading animation');
@@ -67,7 +67,7 @@
       readOnlyFields: true,
       fieldlessMode: true
     });
-    $(document).trigger("loadStart");
+    $(document).trigger("loadStart", $('.evaluation-requests-container'));
     // Grading scales
     mApi().evaluation.compositeGradingScales
       .read()
@@ -78,13 +78,14 @@
         else {
           $(document).evaluationModal('setGradingScales', gradingScales);
         }
-        $(document).trigger("loadEnd");
+        $(document).trigger("loadEnd", $('.evaluation-requests-container'));
       }, this)); 
   });
 
   $(document).on('click', '.evaluate-button', function (event) {
+    var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
     var requestCard = event.target.closest('.evaluation-request');
-    $(document).evaluationModal('open', requestCard);
+    $(document).evaluationModal('open', requestCard, !workspaceEntityId);
   });
   
   // Sort by assessment request date, ascending
