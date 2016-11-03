@@ -28,7 +28,8 @@
 }
 
 // VERTICAL SCROLLING WRAPPER FOR TABLES
-.table-wrapper {
+.table-wrapper,
+.math-wrapper {
   max-width: 100%;
   overflow-x: auto;
 }
@@ -147,7 +148,6 @@ textarea {
   padding: 4px 8px;
   transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
-  font-size: 17px;
   color: #4c4c4c;
   width: 100%;
   max-width: 100%;
@@ -355,12 +355,6 @@ select {
 
 }
 
-// OVERRIDES THE VALUES USED IN READING/MANAGEMENT
-label,select,option,input,textarea { 
-  font-weight: 400;
-  font-size: 14px;
-}
-
 // GENERIC PAGE ELEMENTS
 blockquote {
   font-family: 'Open Sans', Arial, sans-serif;
@@ -396,8 +390,8 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 label,select,option,input,textarea {
-  font-weight: 400;
-  font-size: 14px;
+  font-size: 100%;
+  font-weight: 300;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -640,7 +634,6 @@ td {
 
 label {
   display: inline;
-  font-weight: 300;
 }
 
 ul {
