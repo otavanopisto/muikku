@@ -258,8 +258,9 @@
           .appendTo(assignmentTitleWrapper);
         
         // TODO: Localization
+        var assignmentDone = $('<div>');
         if (assignment.assignmentState == 'SUBMITTED') {
-          var assignmentDone = $('<div>')
+          $(assignmentDone)
             .addClass('assignment-done')
             .append($('<span>')
               .addClass('assignment-done-label')
@@ -269,7 +270,7 @@
               .text(formatDateTime(new Date(moment(assignment.assignmentDate)))))
             .appendTo(assignmentTitleWrapper);
         } else {
-          var assignmentDone = $('<div>')
+          $(assignmentDone)
             .addClass('assignment-done')
             .append($('<span>')
               .addClass('assignment-notdone-label')
