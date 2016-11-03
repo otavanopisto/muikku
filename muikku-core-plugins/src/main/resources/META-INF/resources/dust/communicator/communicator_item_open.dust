@@ -20,7 +20,7 @@
                 
                 {?workspaceRecipients}
                   {#workspaceRecipients}
-                    <span class="cm-message-recipient-name">{name}</span>
+                    <span class="cm-message-recipient-name">{workspaceName}</span>
                   {/workspaceRecipients}
                 {/workspaceRecipients}
               </div>        
