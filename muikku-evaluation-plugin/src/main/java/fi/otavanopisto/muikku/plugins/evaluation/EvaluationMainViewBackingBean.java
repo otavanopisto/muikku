@@ -93,6 +93,5 @@ public class EvaluationMainViewBackingBean {
   public void setWorkspaceName(String workspaceName) {
     this.workspaceName = workspaceName;
   }
-  
 
 }
