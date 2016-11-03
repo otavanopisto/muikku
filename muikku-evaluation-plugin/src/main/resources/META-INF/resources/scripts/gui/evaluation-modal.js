@@ -43,9 +43,11 @@
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
     },
     
-    open: function(requestCard) {
+    open: function(requestCard, discardOnSave) {
       
-      this._requestCard = requestCard;      
+      this._requestCard = requestCard;
+      this._discardOnSave = discardOnSave;
+      this._assignmentSaved = false;
       
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
@@ -119,6 +121,9 @@
               // Cancel and close buttons
               
               $('.eval-modal-close, .button-cancel').click($.proxy(function (event) {
+                if (this._discardOnSave && this._assignmentSaved) {
+                  $(this._requestCard).remove();
+                }
                 this.close();
               }, this));
             
@@ -380,6 +385,7 @@
                   }
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+                    this._assignmentSaved = true; 
                     if (assessment.passing) {
                       $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
                     }
@@ -409,6 +415,7 @@
             }
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+              this._assignmentSaved = true;
               if (assessment.passing) {
                 $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
               }
