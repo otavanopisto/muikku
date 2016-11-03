@@ -15,17 +15,19 @@ import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientGroup;
 
 
 public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<CommunicatorMessageRecipient> {
 	
   private static final long serialVersionUID = -7830619828801454118L;
 
-  public CommunicatorMessageRecipient create(CommunicatorMessage communicatorMessage, UserEntity recipient) {
+  public CommunicatorMessageRecipient create(CommunicatorMessage communicatorMessage, UserEntity recipient, CommunicatorMessageRecipientGroup recipientGroup) {
     CommunicatorMessageRecipient msg = new CommunicatorMessageRecipient();
     
     msg.setCommunicatorMessage(communicatorMessage);
     msg.setRecipient(recipient.getId());
+    msg.setRecipientGroup(recipientGroup);
     msg.setReadByReceiver(false);
     msg.setArchivedByReceiver(false);
     msg.setTrashedByReceiver(false);
@@ -43,7 +45,10 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage),
+            criteriaBuilder.isNull(root.get(CommunicatorMessageRecipient_.recipientGroup))
+        )
     );
     
     return entityManager.createQuery(criteria).getResultList();

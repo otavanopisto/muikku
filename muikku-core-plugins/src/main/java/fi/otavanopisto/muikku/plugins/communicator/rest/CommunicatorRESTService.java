@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.ejb.Stateful;
@@ -28,17 +27,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
@@ -64,7 +60,6 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
-import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -114,9 +109,6 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-
-  @Inject
-  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private CommunicatorRESTModels restModels;
@@ -331,58 +323,52 @@ public class CommunicatorRESTService extends PluginRESTService {
       if (recipient != null)
         recipients.add(recipient);
     }
+
+    List<UserGroupEntity> userGroupRecipients = null;
+    List<WorkspaceEntity> workspaceStudentRecipients = null;
+    List<WorkspaceEntity> workspaceTeacherRecipients = null;
     
-    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
-      for (Long groupId : newMessage.getRecipientGroupIds()) {
-        UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
-        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
+    if (!CollectionUtils.isEmpty(newMessage.getRecipientGroupIds())) {
+      if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
+        userGroupRecipients = new ArrayList<UserGroupEntity>();
         
-        for (UserGroupUserEntity groupUser : groupUsers) {
-          UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-          UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
-          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
-            recipients.add(recipient);
+        for (Long groupId : newMessage.getRecipientGroupIds()) {
+          UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+          userGroupRecipients.add(group);
         }
-      }
-    } else {
-      // Trying to feed group ids when you don't have permission greets you with bad request
-      if (!newMessage.getRecipientGroupIds().isEmpty())
+      } else {
+        // Trying to feed group ids when you don't have permission greets you with bad request
         return Response.status(Status.BAD_REQUEST).build();
+      }
     }
 
     // Workspace members
 
-    for (Long workspaceId : newMessage.getRecipientStudentsWorkspaceIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    if (!CollectionUtils.isEmpty(newMessage.getRecipientStudentsWorkspaceIds())) {
+      workspaceStudentRecipients = new ArrayList<WorkspaceEntity>();
+      
+      for (Long workspaceId : newMessage.getRecipientStudentsWorkspaceIds()) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  
+        if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity))
+          workspaceStudentRecipients.add(workspaceEntity);
+        else
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
 
-      if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity)) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-            workspaceEntity, WorkspaceRoleArchetype.STUDENT);
-        
-        for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
-          UserEntity recipient = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
-          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
-            recipients.add(recipient);
-        }
-      } else
-        return Response.status(Status.BAD_REQUEST).build();
-    }      
-
-    for (Long workspaceId : newMessage.getRecipientTeachersWorkspaceIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-
-      if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity)) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-            workspaceEntity, WorkspaceRoleArchetype.TEACHER);
-        
-        for (WorkspaceUserEntity wosu : workspaceUsers) {
-          UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
-          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
-            recipients.add(recipient);
-        }
-      } else
-        return Response.status(Status.BAD_REQUEST).build();
-    }      
+    if (!CollectionUtils.isEmpty(newMessage.getRecipientTeachersWorkspaceIds())) {
+      workspaceTeacherRecipients = new ArrayList<WorkspaceEntity>();
+      
+      for (Long workspaceId : newMessage.getRecipientTeachersWorkspaceIds()) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  
+        if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity))
+          workspaceTeacherRecipients.add(workspaceEntity);
+        else
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
     
     if (StringUtils.isBlank(newMessage.getCategoryName())) {
       return Response.status(Status.BAD_REQUEST).entity("CategoryName missing").build();
@@ -394,7 +380,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, recipients, categoryEntity, 
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, userEntity, 
+        recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
     
     Map<String, Object> params = new HashMap<String, Object>();
@@ -502,57 +489,51 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
-      for (Long groupId : newMessage.getRecipientGroupIds()) {
-        UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
-        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
+    List<UserGroupEntity> userGroupRecipients = null;
+    List<WorkspaceEntity> workspaceStudentRecipients = null;
+    List<WorkspaceEntity> workspaceTeacherRecipients = null;
+    
+    if (!CollectionUtils.isEmpty(newMessage.getRecipientGroupIds())) {
+      if (sessionController.hasEnvironmentPermission(CommunicatorPermissionCollection.COMMUNICATOR_GROUP_MESSAGING)) {
+        userGroupRecipients = new ArrayList<UserGroupEntity>();
         
-        for (UserGroupUserEntity groupUser : groupUsers) {
-          UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
-          UserEntity recipient = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
-          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
-            recipients.add(recipient);
+        for (Long groupId : newMessage.getRecipientGroupIds()) {
+          UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+          userGroupRecipients.add(group);
         }
-      }
-    } else {
-      // Trying to feed group ids when you don't have permission greets you with bad request
-      if (!newMessage.getRecipientGroupIds().isEmpty())
+      } else {
+        // Trying to feed group ids when you don't have permission greets you with bad request
         return Response.status(Status.BAD_REQUEST).build();
+      }
     }
-      
+
     // Workspace members
 
-    for (Long workspaceId : newMessage.getRecipientStudentsWorkspaceIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    if (!CollectionUtils.isEmpty(newMessage.getRecipientStudentsWorkspaceIds())) {
+      workspaceStudentRecipients = new ArrayList<WorkspaceEntity>();
+      
+      for (Long workspaceId : newMessage.getRecipientStudentsWorkspaceIds()) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  
+        if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity))
+          workspaceStudentRecipients.add(workspaceEntity);
+        else
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
 
-      if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity)) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-            workspaceEntity, WorkspaceRoleArchetype.STUDENT);
-        
-        for (WorkspaceUserEntity wosu : workspaceUsers) {
-          UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
-          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
-            recipients.add(recipient);
-        }
-      } else
-        return Response.status(Status.BAD_REQUEST).build();
-    }      
-
-    for (Long workspaceId : newMessage.getRecipientTeachersWorkspaceIds()) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-
-      if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity)) {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-            workspaceEntity, WorkspaceRoleArchetype.TEACHER);
-        
-        for (WorkspaceUserEntity wosu : workspaceUsers) {
-          UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
-          if ((recipient != null) && !Objects.equals(userEntity.getId(), recipient.getId()))
-            recipients.add(recipient);
-        }
-      } else
-        return Response.status(Status.BAD_REQUEST).build();
-    }      
+    if (!CollectionUtils.isEmpty(newMessage.getRecipientTeachersWorkspaceIds())) {
+      workspaceTeacherRecipients = new ArrayList<WorkspaceEntity>();
+      
+      for (Long workspaceId : newMessage.getRecipientTeachersWorkspaceIds()) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+  
+        if (sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_WORKSPACE_MESSAGING, workspaceEntity))
+          workspaceTeacherRecipients.add(workspaceEntity);
+        else
+          return Response.status(Status.BAD_REQUEST).build();
+      }
+    }
     
     // Clean duplicates from recipient list
     communicatorController.cleanDuplicateRecipients(recipients);
@@ -561,7 +542,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, userEntity, 
-        recipients, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
+        recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
+        newMessage.getCaption(), newMessage.getContent(), tagList);
 
     User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
     Map<String, Object> params = new HashMap<String, Object>();

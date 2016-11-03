@@ -5,12 +5,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
@@ -19,11 +21,19 @@ import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageCategoryDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageIdLabelDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientUserGroupDAO;
+import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipientWorkspaceGroupDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorUserLabelDAO;
@@ -34,14 +44,24 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCate
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
 public class CommunicatorController {
    
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+
   @Inject
   private CommunicatorMessageDAO communicatorMessageDAO;
 
@@ -65,6 +85,12 @@ public class CommunicatorController {
   
   @Inject
   private CommunicatorMessageIdLabelDAO communicatorMessageIdLabelDAO; 
+
+  @Inject
+  private CommunicatorMessageRecipientUserGroupDAO communicatorMessageRecipientUserGroupDAO;
+  
+  @Inject
+  private CommunicatorMessageRecipientWorkspaceGroupDAO communicatorMessageRecipientWorkspaceGroupDAO;
   
   @Inject
   private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
@@ -112,16 +138,86 @@ public class CommunicatorController {
     return communicatorMessageIdDAO.create();
   }
   
-  public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, List<UserEntity> recipients, 
+  public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, 
+      List<UserEntity> userRecipients, List<UserGroupEntity> userGroupRecipients,
+      List<WorkspaceEntity> workspaceStudentRecipients, List<WorkspaceEntity> workspaceTeacherRecipients,
       CommunicatorMessageCategory category, String caption, String content, Set<Tag> tags) {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, clean(content), new Date(), tags);
 
-    for (UserEntity recipient : recipients) {
-      communicatorMessageRecipientDAO.create(message, recipient);
+    for (UserEntity recipient : userRecipients) {
+      communicatorMessageRecipientDAO.create(message, recipient, null);
       communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
     }
     
+    if (!CollectionUtils.isEmpty(userGroupRecipients)) {
+      for (UserGroupEntity userGroup : userGroupRecipients) {
+        List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(userGroup);
+
+        if (!CollectionUtils.isEmpty(groupUsers)) {
+          CommunicatorMessageRecipientUserGroup groupRecipient = createUserGroupRecipient(userGroup);
+
+          for (UserGroupUserEntity groupUser : groupUsers) {
+            UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
+            UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
+            if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
+              communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
+              communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+            }
+          }
+        }
+      }
+    }
+
+    // Workspace members
+
+    if (!CollectionUtils.isEmpty(workspaceStudentRecipients)) {
+      for (WorkspaceEntity workspaceEntity : workspaceStudentRecipients) {
+        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
+            workspaceEntity, WorkspaceRoleArchetype.STUDENT);
+
+        if (!CollectionUtils.isEmpty(workspaceUsers)) {
+          CommunicatorMessageRecipientWorkspaceGroup groupRecipient = createWorkspaceGroupRecipient(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
+          
+          for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
+            UserEntity recipient = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+            if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
+              communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
+              communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+            }
+          }
+        }
+      }
+    }
+
+    if (!CollectionUtils.isEmpty(workspaceTeacherRecipients)) {
+      for (WorkspaceEntity workspaceEntity : workspaceTeacherRecipients) {
+        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
+            workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+        
+        if (!CollectionUtils.isEmpty(workspaceUsers)) {
+          CommunicatorMessageRecipientWorkspaceGroup groupRecipient = createWorkspaceGroupRecipient(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+
+          for (WorkspaceUserEntity wosu : workspaceUsers) {
+            UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
+            if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
+              communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
+              communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
+            }
+          }
+        }
+      }
+    }
+    
     return message;
+  }
+
+  private CommunicatorMessageRecipientUserGroup createUserGroupRecipient(UserGroupEntity userGroup) {
+    return communicatorMessageRecipientUserGroupDAO.create(userGroup);
+  }
+
+  private CommunicatorMessageRecipientWorkspaceGroup createWorkspaceGroupRecipient(WorkspaceEntity workspaceEntity,
+      WorkspaceRoleArchetype archetype) {
+    return communicatorMessageRecipientWorkspaceGroupDAO.create(workspaceEntity, archetype);
   }
 
   public CommunicatorMessageId findCommunicatorMessageId(Long communicatorMessageId) {
@@ -138,6 +234,14 @@ public class CommunicatorController {
 
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
     return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
+  }
+
+  public List<CommunicatorMessageRecipientUserGroup> listCommunicatorMessageUserGroupRecipients(CommunicatorMessage communicatorMessage) {
+    return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
+  }
+
+  public List<CommunicatorMessageRecipientWorkspaceGroup> listCommunicatorMessageWorkspaceGroupRecipients(CommunicatorMessage communicatorMessage) {
+    return communicatorMessageRecipientWorkspaceGroupDAO.listByMessage(communicatorMessage);
   }
 
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipientsByUserAndMessage(UserEntity user, CommunicatorMessageId messageId, boolean trashed) {
@@ -268,13 +372,13 @@ public class CommunicatorController {
     // TODO Category not existing at this point would technically indicate an invalid state 
     CommunicatorMessageCategory categoryEntity = persistCategory(category);
     
-    return createMessage(communicatorMessageId, sender, recipients, categoryEntity, subject, content, null);
+    return createMessage(communicatorMessageId, sender, recipients, null, null, null, categoryEntity, subject, content, null);
   }
 
   public CommunicatorMessage replyToMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients, CommunicatorMessageId communicatorMessageId) {
     CommunicatorMessageCategory categoryEntity = persistCategory(category);
     
-    return createMessage(communicatorMessageId, sender, recipients, categoryEntity, subject, content, null);
+    return createMessage(communicatorMessageId, sender, recipients, null, null, null, categoryEntity, subject, content, null);
   }
 
   public List<CommunicatorMessage> listAllMessages() {

@@ -1205,6 +1205,7 @@
       var existingWorkspaceIds = this._getExistingWorkspaceIds();
       
       return $.proxy(function (callback) {
+        // coursepicker??
         mApi().coursepicker.workspaces
           .read({
             search: term,
