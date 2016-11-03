@@ -142,33 +142,70 @@ public class CommunicatorRESTModels {
   }
 
   public List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients(List<CommunicatorMessageRecipientUserGroup> recipients) {
-    List<fi.otavanopisto.muikku.rest.model.UserGroup> result = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
-    for (CommunicatorMessageRecipientUserGroup recipient : recipients)
-      result.add(restUserGroupRecipient(recipient));
-    return result;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<fi.otavanopisto.muikku.rest.model.UserGroup> result = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
+      for (CommunicatorMessageRecipientUserGroup recipient : recipients) {
+        fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient = restUserGroupRecipient(recipient);
+        if (restUserGroupRecipient != null)
+          result.add(restUserGroupRecipient);
+      }
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   public fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient(CommunicatorMessageRecipientUserGroup userGroup) {
-    UserGroupEntity entity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
-    UserGroup group = userGroupController.findUserGroup(entity);
-    Long userCount = userGroupEntityController.getGroupUserCount(entity);
-    
-    return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserGroupEntity entity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
+      if (entity != null) {
+        Long userCount = userGroupEntityController.getGroupUserCount(entity);
+        UserGroup group = userGroupController.findUserGroup(entity);
+        
+        if (group != null)
+          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount);
+      }
+      
+      return null;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   public List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceGroupRecipients(List<CommunicatorMessageRecipientWorkspaceGroup> recipients) {
-    List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> result = new ArrayList<CommunicatorMessageRecipientWorkspaceGroupRESTModel>();
-    for (CommunicatorMessageRecipientWorkspaceGroup recipient : recipients)
-      result.add(restWorkspaceGroupRecipient(recipient));
-    return result;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> result = new ArrayList<CommunicatorMessageRecipientWorkspaceGroupRESTModel>();
+      for (CommunicatorMessageRecipientWorkspaceGroup recipient : recipients) {
+        CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient = restWorkspaceGroupRecipient(recipient);
+        if (restWorkspaceGroupRecipient != null)
+          result.add(restWorkspaceGroupRecipient);
+      }
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   public CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient(CommunicatorMessageRecipientWorkspaceGroup workspaceGroup) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    
-    return new CommunicatorMessageRecipientWorkspaceGroupRESTModel(workspaceGroup.getWorkspaceEntityId(), 
-        workspaceGroup.getArchetype(), workspace.getName(), workspace.getNameExtension());
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
+      if (workspaceEntity != null) {
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+        if (workspace != null) {
+          return new CommunicatorMessageRecipientWorkspaceGroupRESTModel(workspaceGroup.getWorkspaceEntityId(), 
+              workspaceGroup.getArchetype(), workspace.getName(), workspace.getNameExtension());
+        }
+      }
+      
+      return null;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   public List<CommunicatorMessageRESTModel> restFullMessage(List<CommunicatorMessage> messages) {
