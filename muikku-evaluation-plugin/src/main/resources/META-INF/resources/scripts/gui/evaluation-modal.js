@@ -3,6 +3,7 @@
   
   $.widget("custom.evaluationModal", {
     options: {
+      assignmentAnswers: {},
       ckeditor: {
         baseFloatZIndex: 99999,
         language: getLocale(),
@@ -158,9 +159,33 @@
         else {
           var evaluableAssignments = results[0]||[];
           var exerciseAssignments = results[1]||[];
-          this.element.trigger("materialsLoaded", {
-            assignments: evaluableAssignments.concat(exerciseAssignments)
-          });
+          var assignments = evaluableAssignments.concat(exerciseAssignments);
+          
+          var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+          var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+          
+          var batchCalls = $.map(assignments, $.proxy(function (assignment) {
+            return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(workspaceEntityId, assignment.id, {
+              userEntityId: userEntityId
+            });
+          }, this));
+
+          mApi().batch(batchCalls).callback($.proxy(function (err, results) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              for (var i = 0; i < assignments.length; i++) {
+                this.options.assignmentAnswers[assignments[i].materialId] = results[i].answers;
+                assignments[i] = $.extend({}, assignments[i], {
+                  assignmentState: results[i].state,
+                  assignmentDate: results[i].lastModified
+                }); 
+              }
+              this.element.trigger("materialsLoaded", {
+                assignments: assignments
+              });
+            }
+          }, this));
         }
       }, this));
     },
@@ -181,31 +206,26 @@
         var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
         var materialId = $(assignment).attr('data-material-id');
         var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
-        // Answers
-        mApi().workspace.workspaces.materials.compositeMaterialReplies
-          .read(workspaceEntityId, workspaceMaterialId, {
-            userEntityId: userEntityId
-          })
-          .callback($.proxy(function(err, replies) {
-            var fieldAnswers = {};
-            for (var i = 0, l = replies.answers.length; i < l; i++) {
-              var answer = replies.answers[i];
-              var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-              fieldAnswers[answerKey] = answer.value;
-            }
-            // Material html
-            mApi().materials.html
-              .read(materialId)
-              .callback($.proxy(function (err, htmlMaterial) {
-                $(assignment)
-                  .attr('data-material-type', 'html')
-                  .attr('data-material-title', htmlMaterial.title)
-                  .attr('data-material-content', htmlMaterial.html)
-                  .attr('data-view-restricted', htmlMaterial.viewRestrict)
-                  .attr('data-loaded', true)
-                  .attr('data-open', true);
-                $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
-              }, this));
+
+        var fieldAnswers = {};
+        var userAnswers = this.options.assignmentAnswers[materialId]
+        for (var i = 0, l = userAnswers.length; i < l; i++) {
+          var answer = userAnswers[i];
+          var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+          fieldAnswers[answerKey] = answer.value;
+        }
+        // Material html
+        mApi().materials.html
+          .read(materialId)
+          .callback($.proxy(function (err, htmlMaterial) {
+            $(assignment)
+              .attr('data-material-type', 'html')
+              .attr('data-material-title', htmlMaterial.title)
+              .attr('data-material-content', htmlMaterial.html)
+              .attr('data-view-restricted', htmlMaterial.viewRestrict)
+              .attr('data-loaded', true)
+              .attr('data-open', true);
+            $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
           }, this));
       }
     },
@@ -237,15 +257,17 @@
           .text(assignment.title)
           .appendTo(assignmentTitleWrapper);
         
-        var assignmentDone = $('<div>')
-          .addClass('assignment-done')
-            .append($('<span>')
-              .addClass('assignment-done-label')
-              .text('Tehty'))
-            .append($('<span>')
-              .addClass('assignment-done-data')
-              .text('12.12.2022'))
-          .appendTo(assignmentTitleWrapper);
+        if (assignment.assignmentDate) {
+          var assignmentDone = $('<div>')
+            .addClass('assignment-done')
+              .append($('<span>')
+                .addClass('assignment-done-label')
+                .text('Tehty'))
+              .append($('<span>')
+                .addClass('assignment-done-data')
+                .text(formatDate(new Date(moment(assignment.assignmentDate)))))
+            .appendTo(assignmentTitleWrapper);
+        }
         
         var assignmentEvaluationButton = $('<div>')
           .addClass('assignment-evaluate-button icon-evaluate')
