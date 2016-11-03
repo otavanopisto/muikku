@@ -49,6 +49,16 @@
   top: 0;
 }
 
+.eval-modal-assignment-evaluate-container {
+  background: #fff;
+  bottom: 0;
+  left: 50%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 99999;
+}
+
 // MODAL HEADER'S <header>
 .eval-modal-student-header,
 .eval-modal-evaluate-header {
