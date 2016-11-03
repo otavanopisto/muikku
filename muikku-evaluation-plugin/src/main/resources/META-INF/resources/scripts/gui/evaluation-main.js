@@ -5,9 +5,13 @@
 
   $.widget("custom.evaluationMainView", {
     _create : function() {
+      this._loadOperations = 0;
+      this.element.on("loadStart", $.proxy(this._onLoadStart, this));
+      this.element.on("loadEnd", $.proxy(this._onLoadEnd, this));
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
+      this.element.trigger("loadStart");
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       
       // View title (TODO localize)
@@ -39,8 +43,21 @@
                 $(requestContainer).append(html);
               }, this));
             }
+            this.element.trigger("loadEnd");
           }
         }, this)); 
+    },
+    _onLoadStart: function(event, data) {
+      this._loadOperations++;
+      if (this._loadOperations == 1) {
+        console.log('show loading animation');
+      }
+    },
+    _onLoadEnd: function(event, data) {
+      this._loadOperations--;
+      if (this._loadOperations == 0) {
+        console.log('hide loading animation');
+      }
     }
   });
 
@@ -50,6 +67,7 @@
       readOnlyFields: true,
       fieldlessMode: true
     });
+    $(document).trigger("loadStart");
     // Grading scales
     mApi().evaluation.compositeGradingScales
       .read()
@@ -60,6 +78,7 @@
         else {
           $(document).evaluationModal('setGradingScales', gradingScales);
         }
+        $(document).trigger("loadEnd");
       }, this)); 
   });
 
