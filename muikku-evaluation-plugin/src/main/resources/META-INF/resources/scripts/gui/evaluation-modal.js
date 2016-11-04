@@ -88,6 +88,10 @@
               this._evaluationModal.append(html);
               $('.eval-modal-assignment-evaluate-container').hide();
               
+              // Material's loading animation start
+              
+              this.element.trigger("loadStart", $('.eval-modal-assignment-content'));
+              
               // CKEditor
               
               var verbalAssessmentEditor = this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0];
@@ -101,7 +105,7 @@
               
               var dateEditor = $(this._evaluationModal).find('input[name="evaluationDate"]'); 
               $(dateEditor)
-                .css({'z-index': 9999, 'position': 'relative'})
+                .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
               
@@ -148,7 +152,6 @@
     
     _loadMaterials: function() {
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      
       var loads = $.map(["EVALUATED", "EXERCISE"], $.proxy(function (assignmentType) {
         return $.proxy(function (callback) {
           mApi().workspace.workspaces.materials
@@ -165,10 +168,8 @@
           var evaluableAssignments = results[0]||[];
           var exerciseAssignments = results[1]||[];
           var assignments = evaluableAssignments.concat(exerciseAssignments);
-          
           var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
           var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          
           var batchCalls = $.map(assignments, $.proxy(function (assignment) {
             return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(workspaceEntityId, assignment.id, {
               userEntityId: userEntityId
@@ -296,6 +297,9 @@
           this._toggleAssignment(assignmentContent);
         }, this));
       }, this));
+      
+      // Material's loading animation end
+      this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
     _loadAssessment: function(workspaceUserEntityId) {
@@ -394,7 +398,7 @@
                       $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
                     }
                     $(this._requestCard).attr('data-evaluated', true);
-                    $('.button-delete').show();
+                    this.close();
                   }
                 }, this));
             }
@@ -424,7 +428,7 @@
                 $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
               }
               $(this._requestCard).attr('data-evaluated', true);
-              $('.button-delete').show();
+              this.close();
             }
           }, this));
       }

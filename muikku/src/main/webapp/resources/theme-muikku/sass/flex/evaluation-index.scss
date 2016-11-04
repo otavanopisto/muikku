@@ -1,6 +1,7 @@
 @import "_vars.scss";
 @import "_vars_backup";
 @import "_styles";
+@import "_animations";
 @import "_fonts";
 @import "_custom-ckeditor-styles";
 @import "_jquery.datepicker";
@@ -33,6 +34,21 @@ body {
   }
   
 }
+
+.loading {
+  min-height: 200px;
+  position: relative;
+  
+  &::before {
+    @include generic-loader(50px);
+    margin: -25px 0 0 -25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+  
+}
+
 // FRONTPAGE VIEW WRAPPER
 .evaluation-frontpage-wrapper {
   background: #fff;
@@ -195,6 +211,8 @@ body {
 
 .evaluation-request-title {
   background: #ebfbfe;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
   padding: 4px 6px;
 }
 
