@@ -126,9 +126,6 @@
               // Cancel and close buttons
               
               $('.eval-modal-close, .button-cancel').click($.proxy(function (event) {
-                if (this._discardOnSave && this._assignmentSaved) {
-                  $(this._requestCard).remove();
-                }
                 this.close();
               }, this));
             
@@ -139,6 +136,9 @@
     
     close: function() {
       $('body').removeClass('no-scroll');
+      if (this._discardOnSave && this._assignmentSaved) {
+        $(this._requestCard).remove();
+      }
       this._evaluationModal.remove();
     },
 
