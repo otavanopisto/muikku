@@ -207,6 +207,7 @@
         }
       }
       else {
+        var materialId = $(assignment).attr('data-material-id');
         var fieldAnswers = {};
         var userAnswers = this.options.assignmentAnswers[materialId]
         for (var i = 0, l = userAnswers.length; i < l; i++) {
@@ -214,7 +215,6 @@
           var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
           fieldAnswers[answerKey] = answer.value;
         }
-        var materialId = $(assignment).attr('data-material-id');
         // Material html
         mApi().materials.html
           .read(materialId)
