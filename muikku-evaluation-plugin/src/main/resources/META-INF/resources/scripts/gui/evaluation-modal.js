@@ -360,9 +360,13 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           }
-          $(this._requestCard).removeAttr('data-evaluated');
-          $('.button-delete').hide();
-          // TODO reset form?
+          else {
+            $('.button-delete').hide();
+            $(this._requestCard).removeAttr('data-evaluated');
+            $(this._requestCard).removeClass('evaluated-incomplete evaluated-passed');
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.deleteSuccessful"));
+            this.close();
+          }
         }, this));
     },
     
