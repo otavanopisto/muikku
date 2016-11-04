@@ -86,46 +86,52 @@
               // Modal UI
               
               this._evaluationModal.append(html);
-              $('.eval-modal-assignment-evaluate-container').hide();
               
               // Material's loading animation start
               
               this.element.trigger("loadStart", $('.eval-modal-assignment-content'));
               
-              // CKEditor
-              
-              var verbalAssessmentEditor = this._evaluationModal.find("#evaluateFormLiteralEvaluation")[0];
-              CKEDITOR.replace(verbalAssessmentEditor, $.extend(this.options.ckeditor, {
+              // Workspace assessment editor
+
+              var workspaceLiteralEditor = this._evaluationModal.find("#workspaceEvaluateFormLiteralEvaluation")[0]; 
+              CKEDITOR.replace(workspaceLiteralEditor, $.extend(this.options.ckeditor, {
                 on: {
                   instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
                 }
               }));
-
-              // Date picker
-              
-              var dateEditor = $(this._evaluationModal).find('input[name="evaluationDate"]'); 
-              $(dateEditor)
+              var workspaceDateEditor = $(this._evaluationModal).find('#workspace-evaluationDate'); 
+              $(workspaceDateEditor)
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
-              
-              // Remove assessment button
-              
-              $('.button-delete').click($.proxy(function(event) {
+              if ($(this._requestCard).attr('data-evaluated')) {
+                $('#workspace-delete-button').show();
+              }
+              $('#workspace-delete-button').click($.proxy(function(event) {
                 this._confirmAssessmentDeletion($.proxy(function () {
                   this._deleteAssessment();
                 }, this));
               }, this));
-              
-              // Save assessment button
-              
-              $('.button-evaluate-passing').click($.proxy(function(event) {
+              $('#workspace-save-button').click($.proxy(function(event) {
                 this._saveAssessment();
               }, this));
+              $('#workspace-cancel-button').click($.proxy(function(event) {
+                this.close();
+              }, this));
               
-              // Cancel and close buttons
+              // Assignment assessment editor
+
+              var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+              CKEDITOR.replace(assignmentLiteralEditor, this.options.ckeditor);
+              var assignmentDateEditor = $(this._evaluationModal).find('#assignment-evaluationDate'); 
+              $(assignmentDateEditor)
+                .css({'z-index': 999, 'position': 'relative'})
+                .attr('type', 'text')
+                .datepicker();
               
-              $('.eval-modal-close, .button-cancel').click($.proxy(function (event) {
+              // Discard modal button (top right)  
+
+              $('.eval-modal-close').click($.proxy(function (event) {
                 this.close();
               }, this));
             
@@ -237,8 +243,7 @@
         this._loadAssessment($(this._requestCard).attr('data-workspace-user-entity-id'));
       }
       else {
-        $('#evaluationDate').datepicker('setDate', new Date());
-        $('.button-delete').hide();
+        $('#workspace-evaluationDate').datepicker('setDate', new Date());
       }
       this._loadMaterials();
     },
@@ -285,6 +290,11 @@
           .addClass('assignment-evaluate-button icon-evaluate')
           .attr('title', 'Arvioi tehtävä')
           .appendTo(assignmentWrapper);
+        $(assignmentEvaluationButton).click($.proxy(function(event) {
+          // TODO Load assignment evaluation, slide open, etc. 
+          $('.eval-modal-assignment-evaluate-container').show();
+        }, this));
+        
         var assignmentContent = $('<div>')
           .addClass('assignment-content')
           .attr('data-workspace-material-id', assignment.id)
@@ -302,6 +312,10 @@
       this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
+    _loadAssignmentAssessment: function(materialId) {
+      
+    },
+    
     _loadAssessment: function(workspaceUserEntityId) {
       mApi().evaluation.workspaceuser.assessment
         .read(workspaceUserEntityId)
@@ -311,13 +325,13 @@
           }
           else {
             // Verbal assessment
-            CKEDITOR.instances.evaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+            CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
             // Date
-            $('#evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+            $('#workspace-evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
             // Assessor
-            $('#assessor').val(assessment.assessorIdentifier);
+            $('#workspace-assessor').val(assessment.assessorIdentifier);
             // Grade
-            $('#grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+            $('#workspace-grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
             // Remove assessment button
             $('.button-delete').show();
           }
@@ -353,7 +367,7 @@
     },
     
     _deleteAssessment: function() {
-      var workspaceUserEntityId = $('#workspaceUserEntityId').val();
+      var workspaceUserEntityId = $('#workspace-workspaceUserEntityId').val();
       mApi().evaluation.workspaceuser.assessment
         .del(workspaceUserEntityId)
         .callback($.proxy(function (err) {
@@ -371,7 +385,7 @@
     },
     
     _saveAssessment: function() {
-      var workspaceUserEntityId = $('#workspaceUserEntityId').val();
+      var workspaceUserEntityId = $('#workspace-workspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
         mApi().evaluation.workspaceuser.assessment
           .read(workspaceUserEntityId)
@@ -380,10 +394,10 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              var scaleAndGrade = $('#grade').val().split('@');
-              assessment.verbalAssessment = CKEDITOR.instances.evaluateFormLiteralEvaluation.getData();
-              assessment.assessmentDate = $('#evaluationDate').datepicker('getDate').getTime();
-              assessment.assessorIdentifier = $('#assessor').val();
+              var scaleAndGrade = $('#workspace-grade').val().split('@');
+              assessment.verbalAssessment = CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData();
+              assessment.assessmentDate = $('#workspace-evaluationDate').datepicker('getDate').getTime();
+              assessment.assessorIdentifier = $('#workspace-assessor').val();
               assessment.gradingScaleIdentifier = scaleAndGrade[0];
               assessment.gradeIdentifier = scaleAndGrade[1];
               mApi().evaluation.workspaceuser.assessment
@@ -409,14 +423,14 @@
           }, this));
       }
       else {
-        var scaleAndGrade = $('#grade').val().split('@');
+        var scaleAndGrade = $('#workspace-grade').val().split('@');
         mApi().evaluation.workspaceuser.assessment
           .create(workspaceUserEntityId, {
-            assessorIdentifier: $('#assessor').val(),
+            assessorIdentifier: $('#workspace-assessor').val(),
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
-            verbalAssessment: CKEDITOR.instances.evaluateFormLiteralEvaluation.getData(),
-            assessmentDate: $('#evaluationDate').datepicker('getDate').getTime()
+            verbalAssessment: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData(),
+            assessmentDate: $('#workspace-evaluationDate').datepicker('getDate').getTime()
           })
           .callback($.proxy(function (err, assessment) {
             if (err) {

@@ -1,16 +1,17 @@
 <div class="evaluation-modal-evaluate-form"> 
-  <input type="hidden" name="workspaceUserEntityId" id="workspace-workspaceUserEntityId" value="{workspaceUserEntityId}"/>
+  <input type="hidden" name="materialId" id="assignment-materialId" value="TODO materialId"/>
+  <input type="hidden" name="workspaceUserEntityId" id="assignment-workspaceUserEntityId" value="{workspaceUserEntityId}"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
-    <textarea id="workspaceEvaluateFormLiteralEvaluation"></textarea>
+    <textarea id="assignmentEvaluateFormLiteralEvaluation"></textarea>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluationDate">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentDate"/}</label>
-    <input required="required" type="date" name="evaluationDate" id="workspace-evaluationDate"/>
+    <input required="required" type="date" name="evaluationDate" id="assignment-evaluationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="grade">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentGrade"/}</label>
-    <select name="grade" id="workspace-grade">
+    <select name="grade" id="assignment-grade">
       {#gradingScales}
         <optgroup label="{name}">
         {#grades scaleid=id scaleds=dataSource}
@@ -24,7 +25,7 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
-    <select name="assessor" id="workspace-assessor">
+    <select name="assessor" id="assignment-assessor">
       {#assessors}
         <option value="{userIdentifier}">{lastName}, {firstName}</option>
       {/assessors}
@@ -32,9 +33,9 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
-      <div id="workspace-delete-button" class="eval-modal-evaluate-button button-delete" style="display:none;">POISTA ARVIOINTI</div>
-      <div id="workspace-save-button" class="eval-modal-evaluate-button button-evaluate-passing">ARVIOI OPINTOJAKSO</div>
-      <div id="workspace-cancel-button" class="eval-modal-evaluate-button button-cancel">PERUUTA</div>
+      <div id="assignment-delete-button" class="eval-modal-evaluate-button button-delete" style="display:none;">POISTA ARVIOINTI</div>
+      <div id="assignment-save-button" class="eval-modal-evaluate-button button-evaluate-passing">ARVIOI TEHTÄVÄ</div>
+      <div id="assignment-cancel-button" class="eval-modal-evaluate-button button-cancel">PERUUTA</div>
     </div>
   </div>
 </div>
