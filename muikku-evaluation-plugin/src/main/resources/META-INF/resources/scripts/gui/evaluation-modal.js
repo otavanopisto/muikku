@@ -39,8 +39,6 @@
 
       this._gradingScales = null;
       
-      $('.eval-modal-assignment-evaluate-container').hide();
-      
       this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
     },
@@ -88,6 +86,7 @@
               // Modal UI
               
               this._evaluationModal.append(html);
+              $('.eval-modal-assignment-evaluate-container').hide();
               
               // Material's loading animation start
               
@@ -209,6 +208,7 @@
         }
       }
       else {
+        var materialId = $(assignment).attr('data-material-id');
         var fieldAnswers = {};
         var userAnswers = this.options.assignmentAnswers[materialId]
         for (var i = 0, l = userAnswers.length; i < l; i++) {
@@ -216,7 +216,6 @@
           var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
           fieldAnswers[answerKey] = answer.value;
         }
-        var materialId = $(assignment).attr('data-material-id');
         // Material html
         mApi().materials.html
           .read(materialId)

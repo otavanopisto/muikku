@@ -824,6 +824,7 @@
     _appendFile: function(title, fileId) {
       var elem = $(this._fileRowElementContent);
       elem.find("[data-file-name]").text(title);
+      elem.find("[data-file-name]").attr('href', '/rest/guider/files/' + fileId + '/content');
       elem.find("[data-file-delete]").on('click', $.proxy(function () { this._deleteFile(elem, fileId); }, this));
       this._fileListElement.append(elem);
     },

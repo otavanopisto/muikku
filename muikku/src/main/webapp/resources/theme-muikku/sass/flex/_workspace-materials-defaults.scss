@@ -28,7 +28,8 @@
 }
 
 // VERTICAL SCROLLING WRAPPER FOR TABLES
-.table-wrapper {
+.table-wrapper,
+.math-wrapper {
   max-width: 100%;
   overflow-x: auto;
 }
@@ -142,8 +143,7 @@ textarea {
   display: inline-block;
   padding: 4px 8px;
   outline: none;
-  font-size: 16px;
-  color: #000;
+  color: #4c4c4c;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
@@ -352,6 +352,11 @@ blockquote {
 
 p, h1, h2, h3, h4, h5, h6 {
   word-wrap: break-word;
+}
+
+label,select,option,input,textarea {
+  font-size: 100%;
+  font-weight: 300;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -594,7 +599,6 @@ td {
 
 label {
   display: inline;
-  font-weight: 300;
 }
 
 ul {
