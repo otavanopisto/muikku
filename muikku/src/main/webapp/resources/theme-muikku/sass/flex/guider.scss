@@ -196,6 +196,10 @@
   font-weight: 600;
   padding: 0 5px;
   
+  & a {
+    color: $environment-alt-font-color;
+  }
+  
   &:not(:first-child) {
     margin-top:5px;  
   }
