@@ -23,7 +23,6 @@
       }
       
       var requestContainer = $('.evaluation-requests-container'); 
-      $(requestContainer).empty();
       mApi().evaluation.compositeAssessmentRequests
         .read({workspaceEntityId: workspaceEntityId})
         .callback($.proxy(function (err, assessmentRequests) {
@@ -50,13 +49,15 @@
     _onLoadStart: function(event, target) {
       this._loadOperations++;
       if (this._loadOperations == 1) {
-        console.log('show loading animation');
+        var loadingContainer = $('<div>')
+          .addClass('loading')
+          .appendTo(target);
       }
     },
     _onLoadEnd: function(event, target) {
       this._loadOperations--;
       if (this._loadOperations == 0) {
-        console.log('hide loading animation');
+        $(document).find('div.loading').remove();
       }
     }
   });
