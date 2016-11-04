@@ -228,9 +228,16 @@ body {
 
 .evaluation-request-data {
   font-size: 13px;
-  min-height: 180px;
   padding: 4px 6px;
   position: relative;
+}
+
+.evaluation-frontpage-wrapper .evaluation-request-data {
+  min-height: 180px;
+}
+
+.evaluation-workspace-wrapper .evaluation-request-data {
+  min-height: 138px;
 }
 
 .evaluation-request-data-row {

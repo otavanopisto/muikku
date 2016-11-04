@@ -450,7 +450,7 @@
             }
           }, this));
       }
-    }
+    },
   });
 
   $(document).on('afterHtmlMaterialRender', function (event, data) {
