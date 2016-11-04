@@ -1,9 +1,11 @@
 .cke {
   border: 1px solid #fff !important;
   border-radius: 5px;
+  box-shadow: none !important;
   
   &[data-readonly="readonly"] {
-  
+    box-shadow: none;
+      
     .cke_inner {
       background: #fcfcfc !important;
       border: 2px dotted #eaeaea !important;

@@ -398,7 +398,7 @@
                       $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
                     }
                     $(this._requestCard).attr('data-evaluated', true);
-                    $('.button-delete').show();
+                    this.close();
                   }
                 }, this));
             }
@@ -428,7 +428,7 @@
                 $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
               }
               $(this._requestCard).attr('data-evaluated', true);
-              $('.button-delete').show();
+              this.close();
             }
           }, this));
       }
