@@ -39,6 +39,8 @@
 
       this._gradingScales = null;
       
+      $('.eval-modal-assignment-evaluate-container').hide();
+      
       this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
     },
