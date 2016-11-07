@@ -30,9 +30,9 @@
     font-weight: 400;
      
     &.disabled {
-     @include gradient-top-bottom($environment-button-disabled-gradient-start-color, $environment-button-disabled-gradient-end-color, $environment-button-disabled-background-color);      
-     color: $environment-button-disabled-font-color;
-     text-shadow: none;
+      @include gradient-top-bottom($environment-button-disabled-gradient-start-color, $environment-button-disabled-gradient-end-color, $environment-button-disabled-background-color);      
+      color: $environment-button-disabled-font-color;
+      text-shadow: none;
     }
     
     .mf-primary-function-text {
@@ -160,7 +160,7 @@
   position: relative;
   
   &.active .mf-dropdown-content {
-    @include gradient-top-bottom($environment-button-gradient-end-color,$environment-button-gradient-start-color,$environment-button-background-color);
+    @include gradient-top-bottom($environment-button-gradient-end-color, $environment-button-gradient-start-color, $environment-button-background-color);
   }
   
   ul {
