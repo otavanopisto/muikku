@@ -7,7 +7,7 @@
     {?showWorkspace}
       <div class="evaluation-request-data-row">
         <div class="workspace-name">
-          <a href="/evaluation2/{workspaceUrlName}">{workspaceName} {#workspaceNameExtension}({workspaceNameExtension}){/workspaceNameExtension}</a>
+          <a href="/evaluation2?workspaceEntityId={workspaceEntityId}">{workspaceName} {#workspaceNameExtension}({workspaceNameExtension}){/workspaceNameExtension}</a>
         </div>
       </div>
     {/showWorkspace}
