@@ -2,15 +2,15 @@
   <input type="hidden" name="materialId" id="assignmentMaterialId" value="TODO materialId"/>
   <input type="hidden" name="workspaceUserEntityId" id="assignmentWorkspaceUserEntityId" value="{workspaceUserEntityId}"/>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.literalAssessment"/}</label>
+    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"/}</label>
     <textarea id="assignmentEvaluateFormLiteralEvaluation"></textarea>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="evaluationDate">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentDate"/}</label>
+    <label for="evaluationDate">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentDateLabel"/}</label>
     <input required="required" type="date" name="evaluationDate" id="assignmentEvaluationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="grade">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentGrade"/}</label>
+    <label for="grade">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentGradeLabel"/}</label>
     <select name="grade" id="assignmentGrade">
       {#gradingScales}
         <optgroup label="{name}">
@@ -24,7 +24,7 @@
     </select>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.workspaceEvaluationDialog.assessmentAssessor"/}</label>
+    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessorLabel"/}</label>
     <select name="assessor" id="assignmentAssessor">
       {#assessors}
         <option value="{userIdentifier}">{lastName}, {firstName}</option>
@@ -33,9 +33,9 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
-      <div id="assignmentDeleteButton" class="eval-modal-evaluate-button button-delete" style="display:none;">POISTA ARVIOINTI</div>
-      <div id="assignmentSaveButton" class="eval-modal-evaluate-button button-evaluate-passing">ARVIOI TEHTÄVÄ</div>
-      <div id="assignmentCancelButton" class="eval-modal-evaluate-button button-cancel">PERUUTA</div>
+      <div id="assignmentDeleteButton" class="eval-modal-evaluate-button button-delete" style="display:none;">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.removeAssessmentButtonLabel"/}</div>
+      <div id="assignmentSaveButton" class="eval-modal-evaluate-button button-evaluate-passing">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.evaluateAssignmentButtonLabel"/}</div>
+      <div id="assignmentCancelButton" class="eval-modal-evaluate-button button-cancel">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.cancelButtonLabel"/}</div>
     </div>
   </div>
 </div>

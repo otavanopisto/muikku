@@ -235,14 +235,13 @@
           .text(assignment.title)
           .appendTo(assignmentTitleWrapper);
         
-        // TODO: Localization
         var assignmentDone = $('<div>');
         if (assignment.submitted) {
           $(assignmentDone)
             .addClass('assignment-done')
             .append($('<span>')
               .addClass('assignment-done-label')
-              .text('Tehty'))
+              .text(getLocaleText("plugin.evaluation.evaluationModal.assignmentDoneLabel")))
             .append($('<span>')
               .addClass('assignment-done-data')
               .text(formatDateTime(new Date(moment(assignment.submitted)))))
@@ -252,14 +251,13 @@
             .addClass('assignment-done')
             .append($('<span>')
               .addClass('assignment-notdone-label')
-              .text('Ei tehty'))
+              .text(getLocaleText("plugin.evaluation.evaluationModal.assignmentNotDoneLabel")))
             .appendTo(assignmentTitleWrapper);
         }
         
-        // TODO: Localization
         var assignmentEvaluationButton = $('<div>')
           .addClass('assignment-evaluate-button icon-evaluate')
-          .attr('title', 'Arvioi tehtävä')
+          .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
           var userEntityId = $(this._requestCard).attr('data-user-entity-id');
@@ -303,7 +301,13 @@
             // Remove assessment button
             $('.button-delete').show();
             // Show material evaluation view
-            $('.eval-modal-assignment-evaluate-container').show();
+            $('.eval-modal-assignment-evaluate-container')
+              .show()
+              .animate({
+                left: "50%"
+              }, 150, function() {
+                // Animation complete.
+              });
           }
         }, this));
     },
@@ -370,7 +374,7 @@
             $('.button-delete').hide();
             $(this._requestCard).removeAttr('data-evaluated');
             $(this._requestCard).removeClass('evaluated-incomplete evaluated-passed');
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.deleteSuccessful"));
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.deleteSuccessful"));
             this.close();
           }
         }, this));
@@ -399,7 +403,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
                     this._assignmentSaved = true; 
                     if (assessment.passing) {
                       $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
@@ -429,7 +433,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.saveSuccessful"));
               this._assignmentSaved = true;
               if (assessment.passing) {
                 $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');

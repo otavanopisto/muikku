@@ -49,20 +49,32 @@
   top: 0;
 }
 
+// ASSIGNMENT INFO & EVALUATION FORM <section>
 .eval-modal-assignment-evaluate-container {
   background: #fff;
   bottom: 0;
-  left: 50%;
+  box-shadow: -5px 0 30px rgba(0,0,0,0.25);
+  left: 100%;
   position: absolute;
   right: 0;
   top: 0;
   z-index: 99999;
 }
 
-// MODAL HEADER'S <header>
+// STUDENT & WORKSPACE HEADER'S <header>
 .eval-modal-student-header,
 .eval-modal-evaluate-header {
   background: #3786bf;
+  min-height: 30px;
+  padding: 10px 0;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+}
+
+// ASSIGNMENT EVALUATION HEADER <header>
+.eval-modal-assignment-evaluate-header {
+  background: #fff;
   min-height: 30px;
   padding: 10px 0;
   position: relative;
@@ -74,6 +86,19 @@
 .eval-modal-workspace-name {
   box-sizing: border-box;
   color: #fff;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 1.5em;
+  overflow: hidden;
+  padding: 0 50px 0 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.eval-modal-assignment-title {
+  box-sizing: border-box;
+  color: #d522c6;
   display: inline-block;
   font-size: 20px;
   line-height: 1.5em;
@@ -155,6 +180,7 @@
 .eval-modal-evaluate-buttonset {
   padding: 10px 0 0;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .eval-modal-evaluate-button {
