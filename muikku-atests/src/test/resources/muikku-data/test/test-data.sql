@@ -38,3 +38,5 @@ insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/oaut
 
 insert into PluginSetting (value, key_id) select 'http://dev.muikku.fi:8089/dnm', (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = 'service.url') having count(*) = 0;
 
+insert into PluginSettingKey (name, plugin) select 'fileUploadBasePath', 'transcriptofrecords' from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'fileUploadBasePath' having count(*) = 0;
+insert into PluginSetting (value, key_id) select '/tmp/', id from PluginSettingKey where plugin = 'transcriptofrecords' and name = 'fileUploadBasePath';

@@ -1,5 +1,15 @@
 (function() {
   
+  $.widget("custom.recordFiles", {
+    _create : function() {
+      var files = $.parseJSON(this.element.attr('data-files'));
+
+      renderDustTemplate('/records/records_files.dust', { files: files }, $.proxy(function(text) {
+        this.element.append(text);
+      }, this));
+    }
+  });
+  
   $.widget("custom.records", {
     options: {
       studentIdentifier: null
@@ -244,9 +254,11 @@
   });
   
   $(document).ready(function(){
-    $('.tr-content-main').records({
+    $('[data-grades]').records({
       'userEntityId': MUIKKU_LOGGED_USER_ID,
       'studentIdentifier': MUIKKU_LOGGED_USER
+    });
+    $('[data-files]').recordFiles({
     });
   });
   

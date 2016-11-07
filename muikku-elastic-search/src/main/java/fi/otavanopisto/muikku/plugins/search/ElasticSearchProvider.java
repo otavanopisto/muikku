@@ -417,8 +417,8 @@ public class ElasticSearchProvider implements SearchProvider {
         }
 
         query.must(boolQuery()
-            .should(termsQuery("curriculumIdentifier.untouched", curriculumIds))
-            .should(boolQuery().mustNot(existsQuery("curriculumIdentifier")))
+            .should(termsQuery("curriculumIdentifiers.untouched", curriculumIds))
+            .should(boolQuery().mustNot(existsQuery("curriculumIdentifiers")))
             .minimumNumberShouldMatch(1));
       }
   
