@@ -1,0 +1,37 @@
+<div class="evaluation-card {?showWorkspace}frontpage{:else}workspace{/showWorkspace} {?evaluationDate}{?passing}evaluated-passed{:else}evaluated-incomplete{/passing}{:else}{?assessmentRequestDate}{^showWorkspace}evaluation-requested{/showWorkspace}{/assessmentRequestDate}{/evaluationDate}" data-user-entity-id="{userEntityId}" data-workspace-user-entity-id="{workspaceUserEntityId}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true"{/evaluationDate} data-assessment-request-date="{assessmentRequestDate}">
+  <div class="evaluation-card-title">
+    <div class="evaluation-card-student">{lastName}, {firstName}</div>
+    <div class="evaluation-card-study-programme">{studyProgramme}</div>
+  </div>
+  <div class="evaluation-card-data">
+    {?showWorkspace}
+      <div class="evaluation-card-data-row">
+        <div class="workspace-name">
+          <a href="/evaluation2?workspaceEntityId={workspaceEntityId}">{workspaceName} {#workspaceNameExtension}({workspaceNameExtension}){/workspaceNameExtension}</a>
+        </div>
+      </div>
+    {/showWorkspace}
+    <div class="evaluation-card-data-row">
+      <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.joinedWorkspaceLabel"/}</span>
+      <span class="evaluation-card-data-text">{enrollmentDate|formatDate}</span>
+    </div>
+    <div class="evaluation-card-data-row {?assessmentRequestDate}{^evaluationDate}highlight{/evaluationDate}{/assessmentRequestDate}">
+      <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluationRequestedLabel"/}</span>
+      <span class="evaluation-card-data-text">{assessmentRequestDate|formatDate}</span>
+    </div>
+    {?evaluationDate}
+      <div class="evaluation-card-data-row highlight">
+        <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluatedLabel"/}</span>
+        <span class="evaluation-card-data-text">{evaluationDate|formatDate}</span>
+      </div>
+    {/evaluationDate}
+    <div class="evaluation-card-data-row">
+      <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.assignmentsDoneLabel"/}</span>
+      <span class="evaluation-card-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
+    </div>
+    <div class="evaluation-card-button-row">
+      <div class="evaluation-card-button archive-button icon-archive" title="{#localize key="plugin.evaluation.card.button.archiveButtonLabel"/}"></div>
+      <div class="evaluation-card-button evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}"></div>
+    </div>
+  </div>
+</div>
