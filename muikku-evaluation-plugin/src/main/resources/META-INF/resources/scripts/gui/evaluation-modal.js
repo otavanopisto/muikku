@@ -47,7 +47,8 @@
       
       this._requestCard = requestCard;
       this._discardOnSave = discardOnSave;
-      this._assignmentSaved = false;
+      this._workspaceAssessmentSaved = false;
+      this._activeAssignment = null;
       
       this._evaluationModal = $('<div>')
         .addClass('eval-modal')
@@ -148,7 +149,7 @@
     
     close: function() {
       $('body').removeClass('no-scroll');
-      if (this._discardOnSave && this._assignmentSaved) {
+      if (this._discardOnSave && this._workspaceAssessmentSaved) {
         $(this._requestCard).remove();
       }
       this._evaluationModal.remove();
@@ -267,11 +268,11 @@
           .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
-          var assignment = $(assignmentEvaluationButton).closest('.assignment-wrapper');
+          this._activeAssignment = $(assignmentEvaluationButton).closest('.assignment-wrapper'); 
           var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id'); 
+          var workspaceMaterialId = $(this._activeAssignment).find('.assignment-content').attr('data-workspace-material-id'); 
           $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
-          this._loadMaterialAssessment(userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
+          this._loadMaterialAssessment(userEntityId, workspaceMaterialId, $(this._activeAssignment).attr('data-evaluated'));
         }, this));
         
         var assignmentContent = $('<div>')
@@ -311,8 +312,6 @@
               $('#assignmentAssessor').val(assessment.assessorIdentifier);
               // Grade
               $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
-              // Remove assessment button
-              $('.button-delete').show();
               // Show material evaluation view
               this._toggleMaterialAssessmentView(true);
             }
@@ -324,7 +323,6 @@
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').prop('selectedIndex', 0);
         $('#assignmentGrade').prop('selectedIndex', 0);
-        $('.button-delete').hide();
         this._toggleMaterialAssessmentView(true);
       }
     },
@@ -427,10 +425,6 @@
         }, this));
     },
 
-    _deleteMaterialAssessment: function() {
-      // TODO implement
-    },
-    
     _saveAssessment: function() {
       var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
@@ -455,7 +449,7 @@
                   }
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
-                    this._assignmentSaved = true; 
+                    this._workspaceAssessmentSaved = true; 
                     if (assessment.passing) {
                       $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
                     }
@@ -485,7 +479,7 @@
             }
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.saveSuccessful"));
-              this._assignmentSaved = true;
+              this._workspaceAssessmentSaved = true;
               if (assessment.passing) {
                 $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
               }
@@ -524,7 +518,8 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
-                    alert('tehtäväarviointi päivitetty');
+                    $(this._activeAssignment).attr('data-evaluated', true);
+                    this._toggleMaterialAssessmentView(false);
                   }
                 }, this));
             }
@@ -545,7 +540,8 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              alert('tehtäväarviointi luotu');
+              $(this._activeAssignment).attr('data-evaluated', true);
+              this._toggleMaterialAssessmentView(false);
             }
           }, this));
       }

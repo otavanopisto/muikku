@@ -34,7 +34,6 @@
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <div class="eval-modal-evaluate-buttonset">
-      <div id="assignmentDeleteButton" class="eval-modal-evaluate-button button-delete" style="display:none;">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.removeAssessmentButtonLabel"/}</div>
       <div id="assignmentSaveButton" class="eval-modal-evaluate-button button-evaluate-passing">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.evaluateAssignmentButtonLabel"/}</div>
       <div id="assignmentCancelButton" class="eval-modal-evaluate-button button-cancel">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.cancelButtonLabel"/}</div>
     </div>
