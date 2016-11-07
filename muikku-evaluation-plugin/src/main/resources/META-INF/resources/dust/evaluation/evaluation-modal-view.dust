@@ -23,6 +23,7 @@
 <section class="eval-modal-assignment-evaluate-container" id="evaluationAssignmentEvaluateContainer" style="display:none;">
   <header class="eval-modal-assignment-evaluate-header flex-row flex-align-items-center">
     <div class="eval-modal-assignment-title"></div>
+    <dic class="eval-modal-assignment-close icon-arrow-right"></div>
   </header>
   <div class="eval-modal-evaluate-content">
     {>"evaluation/evaluation-evaluate-assignment-form.dust"/}

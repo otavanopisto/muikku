@@ -31,6 +31,30 @@
   
 }
 
+.eval-modal-assignment-close {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 31;
+  
+  &:hover {
+    text-shadow: 0 0 15px #fff;
+  }
+  
+  &.icon-arrow-right {
+    border: 1px solid #d522c6;
+    border-radius: 100%;
+    color: #d522c6;
+    font-size: 16px;
+    height: 16px;
+    margin: 10px;
+    padding: 6px;
+    width: 16px;
+  }
+  
+}
+
 // STUDENT INFO & ASSIGNMENTS <section>
 .eval-modal-student-container {
   bottom: 0;
@@ -49,7 +73,7 @@
   top: 0;
 }
 
-// ASSIGNMENT INFO & EVALUATION FORM <section>
+// ASSIGNMENT EVALUATION FORM <section>
 .eval-modal-assignment-evaluate-container {
   background: #fff;
   bottom: 0;
@@ -58,6 +82,7 @@
   position: absolute;
   right: 0;
   top: 0;
+  width: 50%;
   z-index: 99999;
 }
 
@@ -90,7 +115,7 @@
   font-size: 20px;
   line-height: 1.5em;
   overflow: hidden;
-  padding: 0 50px 0 20px;
+  padding: 0 50px 0 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
@@ -101,9 +126,10 @@
   color: #d522c6;
   display: inline-block;
   font-size: 20px;
+  font-weight: 400;
   line-height: 1.5em;
   overflow: hidden;
-  padding: 0 50px 0 20px;
+  padding: 0 50px 0 10px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;

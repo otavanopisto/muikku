@@ -128,7 +128,7 @@
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
-              $('#assignmentCancelButton').click($.proxy(function(event) {
+              $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
                 this._toggleMaterialAssessmentView(false);
               }, this));
               
@@ -327,20 +327,34 @@
     },
     
     _toggleMaterialAssessmentView(show) {
+      this._disableModalScrolling();
       if (show) {
         $('.eval-modal-assignment-evaluate-container')
           .show()
           .animate({
             left: "50%"
-        }, 150, function() {});
+        }, 300, "swing", function() {
+//          this._enableModalScrolling();  
+        });
       }
       else {
         $('.eval-modal-assignment-evaluate-container')
-          .hide()
           .animate({
-            left: "50%"
-        }, 150, function() {});
+            left: "100%"
+        }, 250, "swing", function() {
+          $(this).hide();
+//          this._enableModalScrolling();
+        });
       }
+
+    },
+    
+    _disableModalScrolling: function() {
+      $('.eval-modal').addClass('no-scroll');
+    },
+    
+    _enableModalScrolling: function() {
+      $('.eval-modal').removeClass('no-scroll');
     },
     
     _loadAssessment: function(workspaceUserEntityId) {
