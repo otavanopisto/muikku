@@ -96,7 +96,7 @@
     var cards = $('.evaluation-request').sort(function (a,b) {
       var a = Date.parse($(a).attr('data-assessment-request-date'));
       var b = Date.parse($(b).attr('data-assessment-request-date'));
-      return a < b ? -1 : a > b ? 1 : 0;
+      return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
     });
     $('.evaluation-requests-container').html(cards);
   });
@@ -108,7 +108,7 @@
     var cards = $('.evaluation-request').sort(function (a,b) {
       var a = Date.parse($(a).attr('data-assessment-request-date'));
       var b = Date.parse($(b).attr('data-assessment-request-date'));
-      return a < b ? 1 : a > b ? -1 : 0;   
+      return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? 1 : a > b ? -1 : 0;   
     });
     $('.evaluation-requests-container').html(cards);
   });
