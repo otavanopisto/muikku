@@ -286,21 +286,21 @@
       mApi().evaluation.user.workspacematerial.assessment
         .read(userEntityId, workspaceMaterialId)
         .callback($.proxy(function (err, assessment) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            // Verbal assessment
-            CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
-            // Date
-            $('#assignmentEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
-            // Assessor
-            $('#assignmentAssessor').val(assessment.assessorIdentifier);
-            // Grade
-            $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
-            // Remove assessment button
-            $('.button-delete').show();
-            // Show material evaluation view
+//          if (err) {
+//            $('.notification-queue').notificationQueue('notification', 'error', err);
+//          }
+//          else {
+//            // Verbal assessment
+//            CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+//            // Date
+//            $('#assignmentEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+//            // Assessor
+//            $('#assignmentAssessor').val(assessment.assessorIdentifier);
+//            // Grade
+//            $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+//            // Remove assessment button
+//            $('.button-delete').show();
+//            // Show material evaluation view
             $('.eval-modal-assignment-evaluate-container')
               .show()
               .animate({
@@ -308,7 +308,7 @@
               }, 150, function() {
                 // Animation complete.
               });
-          }
+//          }
         }, this));
     },
     
