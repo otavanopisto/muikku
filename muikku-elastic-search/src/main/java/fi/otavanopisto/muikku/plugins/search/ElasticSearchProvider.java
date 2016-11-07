@@ -415,7 +415,7 @@ public class ElasticSearchProvider implements SearchProvider {
           curriculumIds.add(curriculumIdentifier.toId());
         }
         
-        query.must(termsQuery("curriculumIdentifier.untouched", curriculumIds));
+        query.must(termsQuery("curriculumIdentifiers.untouched", curriculumIds));
       }
   
       if (identifiers != null) {
