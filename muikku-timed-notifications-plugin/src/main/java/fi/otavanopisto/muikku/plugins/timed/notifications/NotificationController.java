@@ -32,7 +32,7 @@ public class NotificationController {
   @Inject
   private Instance<LogProvider> logProviders;
   
-  public static final String COLLECTION_NAME = "loginDetails";
+  public static final String COLLECTION_NAME = "studentNotifications";
   public static final String LOG_PROVIDER = "mongo-provider";
   
   /*
