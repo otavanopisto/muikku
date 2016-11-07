@@ -269,11 +269,12 @@
           .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
-          this._activeAssignment = $(assignmentEvaluationButton).closest('.assignment-wrapper'); 
+          var assignment = $(assignmentEvaluationButton).closest('.assignment-wrapper');
+          this._activeAssignment = assignment; 
           var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          var workspaceMaterialId = $(this._activeAssignment).find('.assignment-content').attr('data-workspace-material-id'); 
+          var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id'); 
           $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
-          this._loadMaterialAssessment(userEntityId, workspaceMaterialId, $(this._activeAssignment).attr('data-evaluated'));
+          this._loadMaterialAssessment(userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
         }, this));
         
         var assignmentContent = $('<div>')

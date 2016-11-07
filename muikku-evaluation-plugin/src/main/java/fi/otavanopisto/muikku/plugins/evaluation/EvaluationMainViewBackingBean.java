@@ -5,6 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Matches;
 import org.ocpsoft.rewrite.annotation.Parameter;
@@ -59,7 +60,7 @@ public class EvaluationMainViewBackingBean {
         return NavigationRules.NOT_FOUND;
       }
       setWorkspaceName(workspace.getName());
-      if (workspace.getNameExtension() != null) {
+      if (!StringUtils.isEmpty(workspace.getNameExtension())) {
         setWorkspaceName(getWorkspaceName() + String.format(" (%s)", workspace.getNameExtension()));
       }
     }
