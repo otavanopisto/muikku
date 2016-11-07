@@ -1,8 +1,9 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
-
+import java.util.Set;
 import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractWorkspace implements Workspace {
@@ -13,7 +14,7 @@ public abstract class AbstractWorkspace implements Workspace {
   public AbstractWorkspace(String identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
-      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, SchoolDataIdentifier curriculumIdentifier) {
+      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers) {
     super();
     this.identifier = identifier;
     this.name = name;
@@ -31,7 +32,7 @@ public abstract class AbstractWorkspace implements Workspace {
     this.endDate = endDate;
     this.archived = archived;
     this.evaluationFeeApplicable = evaluationFeeApplicable;
-    this.curriculumIdentifier = curriculumIdentifier;
+    this.curriculumIdentifiers = curriculumIdentifiers;
   }
   
   @Override
@@ -148,8 +149,8 @@ public abstract class AbstractWorkspace implements Workspace {
   }
 
   @Override
-  public SchoolDataIdentifier getCurriculumIdentifier() {
-    return curriculumIdentifier;
+  public Set<SchoolDataIdentifier> getCurriculumIdentifiers() {
+    return curriculumIdentifiers;
   }
   
   private String identifier;
@@ -168,5 +169,5 @@ public abstract class AbstractWorkspace implements Workspace {
   private OffsetDateTime endDate;
   private boolean archived;
   private boolean evaluationFeeApplicable;
-  private SchoolDataIdentifier curriculumIdentifier;
+  private Set<SchoolDataIdentifier> curriculumIdentifiers;
 }
