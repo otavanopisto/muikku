@@ -271,24 +271,24 @@
             .addClass('assignment-done')
             .append($('<span>')
               .addClass('assignment-done-label')
-              .text('Tehty'))
+              .text(getLocaleText("plugin.evaluation.evaluationModal.assignmentDoneLabel")))
             .append($('<span>')
               .addClass('assignment-done-data')
               .text(formatDateTime(new Date(moment(assignment.assignmentDate)))))
-            .appendTo(assignmentTitleWrapper);
+              .appendTo(assignmentTitleWrapper);
         } else {
           $(assignmentDone)
             .addClass('assignment-done')
             .append($('<span>')
               .addClass('assignment-notdone-label')
-              .text('Ei tehty'))
+              .text(getLocaleText("plugin.evaluation.evaluationModal.assignmentNotDoneLabel")))
             .appendTo(assignmentTitleWrapper);
         }
         
         // TODO: Localization
         var assignmentEvaluationButton = $('<div>')
           .addClass('assignment-evaluate-button icon-evaluate')
-          .attr('title', 'Arvioi tehtävä')
+          .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
           // TODO Load assignment evaluation, slide open, etc. 
@@ -378,7 +378,7 @@
             $('.button-delete').hide();
             $(this._requestCard).removeAttr('data-evaluated');
             $(this._requestCard).removeClass('evaluated-incomplete evaluated-passed');
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.deleteSuccessful"));
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.deleteSuccessful"));
             this.close();
           }
         }, this));
@@ -407,7 +407,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
                     this._assignmentSaved = true; 
                     if (assessment.passing) {
                       $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
@@ -437,7 +437,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.workspaceEvaluationDialog.evaluation.updateSuccessful"));
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.saveSuccessful"));
               this._assignmentSaved = true;
               if (assessment.passing) {
                 $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
