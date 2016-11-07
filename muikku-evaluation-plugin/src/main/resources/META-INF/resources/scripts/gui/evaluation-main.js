@@ -94,7 +94,9 @@
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-request').sort(function (a,b) {
-      return Date.parse($(a).attr('data-assessment-request-date')) > Date.parse($(b).attr('data-assessment-request-date')); 
+      var a = Date.parse($(a).attr('data-assessment-request-date'));
+      var b = Date.parse($(b).attr('data-assessment-request-date'));
+      return a < b ? -1 : a > b ? 1 : 0;
     });
     $('.evaluation-requests-container').html(cards);
   });
@@ -104,7 +106,9 @@
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-request').sort(function (a,b) {
-      return Date.parse($(a).attr('data-assessment-request-date')) < Date.parse($(b).attr('data-assessment-request-date')); 
+      var a = Date.parse($(a).attr('data-assessment-request-date'));
+      var b = Date.parse($(b).attr('data-assessment-request-date'));
+      return a < b ? 1 : a > b ? -1 : 0;   
     });
     $('.evaluation-requests-container').html(cards);
   });
@@ -114,7 +118,9 @@
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-request').sort(function (a,b) {
-      return $(a).find('.evaluation-request-student').text() > $(b).find('.evaluation-request-student').text(); 
+      var a = $(a).find('.evaluation-request-student').text().toLowerCase();
+      var b = $(b).find('.evaluation-request-student').text().toLowerCase();
+      return a < b ? -1 : a > b ? 1 : 0;
     });
     $('.evaluation-requests-container').html(cards);
   });
@@ -124,7 +130,9 @@
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-request').sort(function (a,b) {
-      return $(a).find('.evaluation-request-student').text() < $(b).find('.evaluation-request-student').text(); 
+      var a = $(a).find('.evaluation-request-student').text().toLowerCase();
+      var b = $(b).find('.evaluation-request-student').text().toLowerCase();
+      return a < b ? 1 : a > b ? -1 : 0;
     });
     $('.evaluation-requests-container').html(cards);
   });
