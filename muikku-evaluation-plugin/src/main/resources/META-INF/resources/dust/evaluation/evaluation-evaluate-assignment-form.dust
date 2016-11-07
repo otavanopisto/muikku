@@ -1,6 +1,7 @@
 <div class="evaluation-modal-evaluate-form"> 
-  <input type="hidden" name="materialId" id="assignmentMaterialId" value="TODO materialId"/>
-  <input type="hidden" name="workspaceUserEntityId" id="assignmentWorkspaceUserEntityId" value="{workspaceUserEntityId}"/>
+  <input type="hidden" name="assignmentAssessmentId" id="assignmentAssessmentId"/>
+  <input type="hidden" name="assignmentWorkspaceMaterialId" id="assignmentWorkspaceMaterialId"/>
+  <input type="hidden" name="assignmentUserEntityId" id="assignmentUserEntityId"/>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.literalAssessmentLabel"/}</label>
     <textarea id="assignmentEvaluateFormLiteralEvaluation"></textarea>

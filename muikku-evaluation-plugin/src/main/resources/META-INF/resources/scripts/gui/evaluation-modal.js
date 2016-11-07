@@ -289,6 +289,8 @@
     },
     
     _loadMaterialEvaluation: function(userEntityId, workspaceMaterialId, evaluated) {
+      $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
+      $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
         mApi().evaluation.user.workspacematerial.assessment
           .read(userEntityId, workspaceMaterialId)
@@ -297,6 +299,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
+              $('#assignmentAssessmentId').val(assessment.identifier);
               // Verbal assessment
               CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
               // Date
@@ -313,6 +316,7 @@
           }, this));
       }
       else {
+        $('#assignmentAssessmentId').val('');
         CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').prop('selectedIndex', 0);
@@ -474,7 +478,54 @@
           }, this));
       }
     },
+
+    _saveAssignmentAssessment: function() {
+      var assessmentId = $('#assignmentAssessmentId').val();
+      var userEntityId = $('#assignmentUserEntityId').val();
+      var workspaceMaterialId = $('#assignmentWorkspaceMaterialId').val();
+      if (assessmentId) {
+        mApi().evaluation.user.workspacematerial.assessment
+          .read(userEntityId, workspaceMaterialId)
+          .callback($.proxy(function (err, assessment) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              var scaleAndGrade = $('#assignmentGrade').val().split('@');
+              assessment.verbalAssessment = CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData();
+              assessment.assessmentDate = $('#assignmentEvaluationDate').datepicker('getDate').getTime();
+              assessment.assessorIdentifier = $('#assignmentAssessor').val();
+              assessment.gradingScaleIdentifier = scaleAndGrade[0];
+              assessment.gradeIdentifier = scaleAndGrade[1];
+              mApi().evaluation.user.workspacematerial.assessment
+                .update(userEntityId, workspaceMaterialId, assessment)
+                .callback($.proxy(function (err, assessment) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  else {
+                    alert('tehtäväarviointi päivitetty');
+//                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
+//                    this._assignmentSaved = true; 
+//                    if (assessment.passing) {
+//                      $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+//                    }
+//                    else {
+//                      $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+//                    }
+//                    $(this._requestCard).attr('data-evaluated', true);
+//                    this.close();
+                  }
+                }, this));
+            }
+          }, this));
+      }
+      else {
+        
+      }
+    }
   });
+  
 
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     var replyState = $(data.pageElement).attr('data-reply-state');
