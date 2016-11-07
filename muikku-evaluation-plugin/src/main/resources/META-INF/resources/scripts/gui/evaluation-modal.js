@@ -301,15 +301,40 @@
 //            // Remove assessment button
 //            $('.button-delete').show();
 //            // Show material evaluation view
+            this._disableModalScrolling();
             $('.eval-modal-assignment-evaluate-container')
               .show()
               .animate({
                 left: "50%"
-              }, 150, function() {
-                // Animation complete.
+              }, 200, "swing", function() {
+                $.proxy(this._enableModalScrolling(), this);
               });
+            
+            $('.eval-modal-assignment-close').click($.proxy(function(event) {
+              this._closeMaterialEvaluation();
+            }, this));
+            
 //          }
         }, this));
+    },
+    
+    _closeMaterialEvaluation: function (event) {
+      this._disableModalScrolling();
+      $('.eval-modal-assignment-evaluate-container')
+        .animate({
+          left: "100%"
+        }, 200, "swing", function() {
+          $(this).hide();
+          $.proxy(this._enableModalScrolling(), this);
+        });
+    },
+    
+    _disableModalScrolling: function() {
+      $('.eval-modal').addClass('no-scroll');
+    },
+    
+    _enableModalScrolling: function() {
+      $('.eval-modal').removeClass('no-scroll');
     },
     
     _loadAssessment: function(workspaceUserEntityId) {

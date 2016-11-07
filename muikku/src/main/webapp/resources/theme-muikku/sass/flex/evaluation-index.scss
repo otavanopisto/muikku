@@ -27,12 +27,11 @@ body {
   line-height:1.5em; /* Set line-height:1 to element when there's a need to override */
   margin: 0;
   min-width: 320px;
-  padding: 0;
-  
-  &.no-scroll {
-    overflow: hidden;
-  }
-  
+  padding: 0; 
+}
+
+ .no-scroll {
+  overflow: hidden;
 }
 
 .loading {
