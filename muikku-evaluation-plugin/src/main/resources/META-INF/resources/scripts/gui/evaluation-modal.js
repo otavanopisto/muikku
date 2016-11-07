@@ -264,7 +264,6 @@
           .text(assignment.title)
           .appendTo(assignmentTitleWrapper);
         
-        // TODO: Localization
         var assignmentDone = $('<div>');
         if (assignment.assignmentState == 'SUBMITTED') {
           $(assignmentDone)
@@ -285,14 +284,19 @@
             .appendTo(assignmentTitleWrapper);
         }
         
-        // TODO: Localization
         var assignmentEvaluationButton = $('<div>')
           .addClass('assignment-evaluate-button icon-evaluate')
           .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
           // TODO Load assignment evaluation, slide open, etc. 
-          $('.eval-modal-assignment-evaluate-container').show();
+          $('.eval-modal-assignment-evaluate-container')
+            .show()
+            .animate({
+              left: "50%"
+            }, 150, function() {
+              // Animation complete.
+            });
         }, this));
         
         var assignmentContent = $('<div>')
