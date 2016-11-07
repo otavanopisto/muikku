@@ -99,23 +99,23 @@
                   instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
                 }
               }));
-              var workspaceDateEditor = $(this._evaluationModal).find('#workspace-evaluationDate'); 
+              var workspaceDateEditor = $(this._evaluationModal).find('#workspaceEvaluationDate'); 
               $(workspaceDateEditor)
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
               if ($(this._requestCard).attr('data-evaluated')) {
-                $('#workspace-delete-button').show();
+                $('#workspaceDeleteButton').show();
               }
-              $('#workspace-delete-button').click($.proxy(function(event) {
+              $('#workspaceDeleteButton').click($.proxy(function(event) {
                 this._confirmAssessmentDeletion($.proxy(function () {
                   this._deleteAssessment();
                 }, this));
               }, this));
-              $('#workspace-save-button').click($.proxy(function(event) {
+              $('#workspaceSaveButton').click($.proxy(function(event) {
                 this._saveAssessment();
               }, this));
-              $('#workspace-cancel-button').click($.proxy(function(event) {
+              $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
               }, this));
               
@@ -123,7 +123,7 @@
 
               var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
               CKEDITOR.replace(assignmentLiteralEditor, this.options.ckeditor);
-              var assignmentDateEditor = $(this._evaluationModal).find('#assignment-evaluationDate'); 
+              var assignmentDateEditor = $(this._evaluationModal).find('#assignmentEvaluationDate'); 
               $(assignmentDateEditor)
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
@@ -243,7 +243,7 @@
         this._loadAssessment($(this._requestCard).attr('data-workspace-user-entity-id'));
       }
       else {
-        $('#workspace-evaluationDate').datepicker('setDate', new Date());
+        $('#workspaceEvaluationDate').datepicker('setDate', new Date());
       }
       this._loadMaterials();
     },
@@ -327,11 +327,11 @@
             // Verbal assessment
             CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
             // Date
-            $('#workspace-evaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+            $('#workspaceEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
             // Assessor
-            $('#workspace-assessor').val(assessment.assessorIdentifier);
+            $('#workspaceAssessor').val(assessment.assessorIdentifier);
             // Grade
-            $('#workspace-grade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+            $('#workspaceGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
             // Remove assessment button
             $('.button-delete').show();
           }
@@ -367,7 +367,7 @@
     },
     
     _deleteAssessment: function() {
-      var workspaceUserEntityId = $('#workspace-workspaceUserEntityId').val();
+      var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
       mApi().evaluation.workspaceuser.assessment
         .del(workspaceUserEntityId)
         .callback($.proxy(function (err) {
@@ -385,7 +385,7 @@
     },
     
     _saveAssessment: function() {
-      var workspaceUserEntityId = $('#workspace-workspaceUserEntityId').val();
+      var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
         mApi().evaluation.workspaceuser.assessment
           .read(workspaceUserEntityId)
@@ -394,10 +394,10 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              var scaleAndGrade = $('#workspace-grade').val().split('@');
+              var scaleAndGrade = $('#workspaceGrade').val().split('@');
               assessment.verbalAssessment = CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData();
-              assessment.assessmentDate = $('#workspace-evaluationDate').datepicker('getDate').getTime();
-              assessment.assessorIdentifier = $('#workspace-assessor').val();
+              assessment.assessmentDate = $('#workspaceEvaluationDate').datepicker('getDate').getTime();
+              assessment.assessorIdentifier = $('#workspaceAssessor').val();
               assessment.gradingScaleIdentifier = scaleAndGrade[0];
               assessment.gradeIdentifier = scaleAndGrade[1];
               mApi().evaluation.workspaceuser.assessment
@@ -423,14 +423,14 @@
           }, this));
       }
       else {
-        var scaleAndGrade = $('#workspace-grade').val().split('@');
+        var scaleAndGrade = $('#workspaceGrade').val().split('@');
         mApi().evaluation.workspaceuser.assessment
           .create(workspaceUserEntityId, {
-            assessorIdentifier: $('#workspace-assessor').val(),
+            assessorIdentifier: $('#workspaceAssessor').val(),
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
             verbalAssessment: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData(),
-            assessmentDate: $('#workspace-evaluationDate').datepicker('getDate').getTime()
+            assessmentDate: $('#workspaceEvaluationDate').datepicker('getDate').getTime()
           })
           .callback($.proxy(function (err, assessment) {
             if (err) {
