@@ -99,6 +99,42 @@ public class Evaluation2RESTService {
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @DELETE
+  @Path("/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteWorkspaceMaterialAssessment(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // User entity
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material
+
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material evaluation
+    
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    if (workspaceMaterialEvaluation == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    evaluationController.deleteWorkspaceMaterialEvaluation(workspaceMaterialEvaluation);
+    return Response.noContent().build();
+  }
+
+  @DELETE
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
   public Response deleteWorkspaceStudentAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
@@ -295,7 +331,7 @@ public class Evaluation2RESTService {
     
     UserEntity assessingUser = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getAssessorEntityId());
     String assessmentIdentifier = workspaceMaterialEvaluation.getId().toString();
-    String assessingUserIdentifier = assessingUser.getDefaultIdentifier();
+    String assessingUserIdentifier = new SchoolDataIdentifier(assessingUser.getDefaultIdentifier(), assessingUser.getDefaultSchoolDataSource().getIdentifier()).toId();
     String gradingScaleIdentifier = new SchoolDataIdentifier(workspaceMaterialEvaluation.getGradingScaleIdentifier(), workspaceMaterialEvaluation.getGradingScaleSchoolDataSource()).toId();
     String gradeIdentifier = new SchoolDataIdentifier(workspaceMaterialEvaluation.getGradeIdentifier(), workspaceMaterialEvaluation.getGradeSchoolDataSource()).toId();
 

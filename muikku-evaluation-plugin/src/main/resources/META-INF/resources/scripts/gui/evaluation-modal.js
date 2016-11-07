@@ -128,6 +128,9 @@
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
+              $('#assignmentSaveButton').click($.proxy(function(event) {
+                this._saveMaterialAssessment();
+              }, this));
               $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
                 this._toggleMaterialAssessmentView(false);
               }, this));
@@ -268,7 +271,7 @@
           var userEntityId = $(this._requestCard).attr('data-user-entity-id');
           var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id'); 
           $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
-          this._loadMaterialEvaluation(userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
+          this._loadMaterialAssessment(userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
         }, this));
         
         var assignmentContent = $('<div>')
@@ -288,7 +291,7 @@
       this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
-    _loadMaterialEvaluation: function(userEntityId, workspaceMaterialId, evaluated) {
+    _loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
@@ -333,20 +336,19 @@
           .show()
           .animate({
             left: "50%"
-        }, 300, "swing", function() {
-//          this._enableModalScrolling();  
-        });
+        }, 300, "swing", $.proxy(function() {
+          this._enableModalScrolling();  
+        }, this));
       }
       else {
         $('.eval-modal-assignment-evaluate-container')
           .animate({
             left: "100%"
-        }, 250, "swing", function() {
-          $(this).hide();
-//          this._enableModalScrolling();
-        });
+        }, 250, "swing", $.proxy(function() {
+          $('.eval-modal-assignment-evaluate-container').hide();
+          this._enableModalScrolling();
+        }, this));
       }
-
     },
     
     _disableModalScrolling: function() {
@@ -424,6 +426,10 @@
           }
         }, this));
     },
+
+    _deleteMaterialAssessment: function() {
+      // TODO implement
+    },
     
     _saveAssessment: function() {
       var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
@@ -493,7 +499,7 @@
       }
     },
 
-    _saveAssignmentAssessment: function() {
+    _saveMaterialAssessment: function() {
       var assessmentId = $('#assignmentAssessmentId').val();
       var userEntityId = $('#assignmentUserEntityId').val();
       var workspaceMaterialId = $('#assignmentWorkspaceMaterialId').val();
@@ -519,27 +525,32 @@
                   }
                   else {
                     alert('tehtäväarviointi päivitetty');
-//                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
-//                    this._assignmentSaved = true; 
-//                    if (assessment.passing) {
-//                      $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
-//                    }
-//                    else {
-//                      $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
-//                    }
-//                    $(this._requestCard).attr('data-evaluated', true);
-//                    this.close();
                   }
                 }, this));
             }
           }, this));
       }
       else {
-        
+        var scaleAndGrade = $('#workspaceGrade').val().split('@');
+        mApi().evaluation.user.workspacematerial.assessment
+          .create(userEntityId, workspaceMaterialId, {
+            assessorIdentifier: $('#assignmentAssessor').val(),
+            gradingScaleIdentifier: scaleAndGrade[0],
+            gradeIdentifier: scaleAndGrade[1],
+            verbalAssessment: CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData(),
+            assessmentDate: $('#assignmentEvaluationDate').datepicker('getDate').getTime()
+          })
+          .callback($.proxy(function (err, assessment) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              alert('tehtäväarviointi luotu');
+            }
+          }, this));
       }
     }
   });
-  
 
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     var replyState = $(data.pageElement).attr('data-reply-state');
