@@ -297,8 +297,10 @@ public class PyramusSchoolDataEntityFactory {
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
     
     Set<SchoolDataIdentifier> curriculumIdentifiers = new HashSet<>();
-    for (Long curriculumId : course.getCurriculumIds()) {
-      curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId));
+    if (course.getCurriculumIds() != null) {
+      for (Long curriculumId : course.getCurriculumIds()) {
+        curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId));
+      }
     }
     
     return new PyramusWorkspace(
