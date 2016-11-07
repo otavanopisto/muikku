@@ -128,6 +128,9 @@
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
+              $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
+                this._toggleMaterialAssessmentView(false);
+              }, this));
               
               // Discard modal button (top right)  
 
@@ -224,6 +227,7 @@
         var assignmentWrapper = $('<div>')
           .addClass('assignment-wrapper')
           .addClass(assignment.evaluable ? 'assignment' : 'exercise')
+          .attr('data-evaluated', assignment.evaluated)
           .appendTo($('.eval-modal-assignment-content'));
         
         var assignmentTitleWrapper = $('<div>')
@@ -260,9 +264,11 @@
           .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
+          var assignment = $(assignmentEvaluationButton).closest('.assignment-wrapper');
           var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          var workspaceMaterialId = $(assignmentEvaluationButton).closest('.assignment').find('.assignment-content').attr('data-workspace-material-id'); 
-          this._loadMaterialEvaluation(userEntityId, workspaceMaterialId);
+          var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id'); 
+          $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
+          this._loadMaterialEvaluation(userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
         }, this));
         
         var assignmentContent = $('<div>')
@@ -282,51 +288,61 @@
       this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
-    _loadMaterialEvaluation: function(userEntityId, workspaceMaterialId) {
-      mApi().evaluation.user.workspacematerial.assessment
-        .read(userEntityId, workspaceMaterialId)
-        .callback($.proxy(function (err, assessment) {
-//          if (err) {
-//            $('.notification-queue').notificationQueue('notification', 'error', err);
-//          }
-//          else {
-//            // Verbal assessment
-//            CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
-//            // Date
-//            $('#assignmentEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
-//            // Assessor
-//            $('#assignmentAssessor').val(assessment.assessorIdentifier);
-//            // Grade
-//            $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
-//            // Remove assessment button
-//            $('.button-delete').show();
-//            // Show material evaluation view
-            this._disableModalScrolling();
-            $('.eval-modal-assignment-evaluate-container')
-              .show()
-              .animate({
-                left: "50%"
-              }, 200, "swing", function() {
-                $.proxy(this._enableModalScrolling(), this);
-              });
-            
-            $('.eval-modal-assignment-close').click($.proxy(function(event) {
-              this._closeMaterialEvaluation();
-            }, this));
-            
-//          }
-        }, this));
+    _loadMaterialEvaluation: function(userEntityId, workspaceMaterialId, evaluated) {
+      if (evaluated) {
+        mApi().evaluation.user.workspacematerial.assessment
+          .read(userEntityId, workspaceMaterialId)
+          .callback($.proxy(function (err, assessment) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              // Verbal assessment
+              CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+              // Date
+              $('#assignmentEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+              // Assessor
+              $('#assignmentAssessor').val(assessment.assessorIdentifier);
+              // Grade
+              $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+              // Remove assessment button
+              $('.button-delete').show();
+              // Show material evaluation view
+              this._toggleMaterialAssessmentView(true);
+            }
+          }, this));
+      }
+      else {
+        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData('');
+        $('#assignmentEvaluationDate').datepicker('setDate', new Date());
+        $('#assignmentAssessor').prop('selectedIndex', 0);
+        $('#assignmentGrade').prop('selectedIndex', 0);
+        $('.button-delete').hide();
+        this._toggleMaterialAssessmentView(true);
+      }
     },
     
-    _closeMaterialEvaluation: function (event) {
+    _toggleMaterialAssessmentView(show) {
       this._disableModalScrolling();
-      $('.eval-modal-assignment-evaluate-container')
-        .animate({
-          left: "100%"
-        }, 200, "swing", function() {
-          $(this).hide();
-          $.proxy(this._enableModalScrolling(), this);
+      if (show) {
+        $('.eval-modal-assignment-evaluate-container')
+          .show()
+          .animate({
+            left: "50%"
+        }, 300, "swing", function() {
+//          this._enableModalScrolling();  
         });
+      }
+      else {
+        $('.eval-modal-assignment-evaluate-container')
+          .animate({
+            left: "100%"
+        }, 250, "swing", function() {
+          $(this).hide();
+//          this._enableModalScrolling();
+        });
+      }
+
     },
     
     _disableModalScrolling: function() {
