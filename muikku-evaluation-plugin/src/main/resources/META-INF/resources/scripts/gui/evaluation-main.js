@@ -11,18 +11,18 @@
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
-      this.element.trigger("loadStart", $('.evaluation-requests-container'));
+      this.element.trigger("loadStart", $('.evaluation-cards-container'));
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       
       // View title (TODO localize)
       if (workspaceEntityId) {
-        $('.evaluation-requests-title h3').text($('#workspaceName').val());
+        $('.evaluation-cards-title h3').text($('#workspaceName').val());
       }
       else {
-        $('.evaluation-requests-title h3').text('Arviointipyynnöt');
+        $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
       }
       
-      var requestContainer = $('.evaluation-requests-container'); 
+      var requestContainer = $('.evaluation-cards-container'); 
       mApi().evaluation.compositeAssessmentRequests
         .read({workspaceEntityId: workspaceEntityId})
         .callback($.proxy(function (err, assessmentRequests) {
@@ -38,11 +38,11 @@
               if (!workspaceEntityId) {
                 assessmentRequests[i] = $.extend({}, assessmentRequests[i], {showWorkspace: true});
               }
-              renderDustTemplate("evaluation/evaluation-request-card.dust", assessmentRequests[i], $.proxy(function (html) {
+              renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
                 $(requestContainer).append(html);
               }, this));
             }
-            this.element.trigger("loadEnd", $('.evaluation-requests-container'));
+            this.element.trigger("loadEnd", $('.evaluation-cards-container'));
           }
         }, this)); 
     },
@@ -68,7 +68,7 @@
       readOnlyFields: true,
       fieldlessMode: true
     });
-    $(document).trigger("loadStart", $('.evaluation-requests-container'));
+    $(document).trigger("loadStart", $('.evaluation-cards-container'));
     // Grading scales
     mApi().evaluation.compositeGradingScales
       .read()
@@ -79,13 +79,13 @@
         else {
           $(document).evaluationModal('setGradingScales', gradingScales);
         }
-        $(document).trigger("loadEnd", $('.evaluation-requests-container'));
+        $(document).trigger("loadEnd", $('.evaluation-cards-container'));
       }, this)); 
   });
 
   $(document).on('click', '.evaluate-button', function (event) {
     var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
-    var requestCard = event.target.closest('.evaluation-request');
+    var requestCard = event.target.closest('.evaluation-card');
     $(document).evaluationModal('open', requestCard, !workspaceEntityId);
   });
   
@@ -93,48 +93,48 @@
   $(document).on('click', '.icon-sort-amount-asc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-request').sort(function (a,b) {
+    var cards = $('.evaluation-card').sort(function (a,b) {
       var a = Date.parse($(a).attr('data-assessment-request-date'));
       var b = Date.parse($(b).attr('data-assessment-request-date'));
       return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
     });
-    $('.evaluation-requests-container').html(cards);
+    $('.evaluation-cards-container').html(cards);
   });
 
   // Sort by assessment request date, descending
   $(document).on('click', '.icon-sort-amount-desc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-request').sort(function (a,b) {
+    var cards = $('.evaluation-card').sort(function (a,b) {
       var a = Date.parse($(a).attr('data-assessment-request-date'));
       var b = Date.parse($(b).attr('data-assessment-request-date'));
       return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? 1 : a > b ? -1 : 0;   
     });
-    $('.evaluation-requests-container').html(cards);
+    $('.evaluation-cards-container').html(cards);
   });
 
   // Sort by student name, ascending
   $(document).on('click', '.icon-sort-alpha-asc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-request').sort(function (a,b) {
-      var a = $(a).find('.evaluation-request-student').text().toLowerCase();
-      var b = $(b).find('.evaluation-request-student').text().toLowerCase();
+    var cards = $('.evaluation-card').sort(function (a,b) {
+      var a = $(a).find('.evaluation-card-student').text().toLowerCase();
+      var b = $(b).find('.evaluation-card-student').text().toLowerCase();
       return a < b ? -1 : a > b ? 1 : 0;
     });
-    $('.evaluation-requests-container').html(cards);
+    $('.evaluation-cards-container').html(cards);
   });
 
   // Sort by student name, descending
   $(document).on('click', '.icon-sort-alpha-desc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-request').sort(function (a,b) {
-      var a = $(a).find('.evaluation-request-student').text().toLowerCase();
-      var b = $(b).find('.evaluation-request-student').text().toLowerCase();
+    var cards = $('.evaluation-card').sort(function (a,b) {
+      var a = $(a).find('.evaluation-card-student').text().toLowerCase();
+      var b = $(b).find('.evaluation-card-student').text().toLowerCase();
       return a < b ? 1 : a > b ? -1 : 0;
     });
-    $('.evaluation-requests-container').html(cards);
+    $('.evaluation-cards-container').html(cards);
   });
   
 }).call(this);

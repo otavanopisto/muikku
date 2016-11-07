@@ -22,6 +22,7 @@
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
         ],
+        contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_reading.css',
         extraPlugins: {
           'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
           'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/'
@@ -76,8 +77,8 @@
             // Render modal
             
             renderDustTemplate("evaluation/evaluation-modal-view.dust", {
-              studentName: $(requestCard).find('.evaluation-request-student').text(),
-              studyProgrammeName: $(requestCard).find('.evaluation-request-study-programme').text(),
+              studentName: $(requestCard).find('.evaluation-card-student').text(),
+              studyProgrammeName: $(requestCard).find('.evaluation-card-study-programme').text(),
               courseName: $(requestCard).find('.workspace-name').text(),
               gradingScales: this._gradingScales||{},
               assessors: staffMembers,
@@ -381,7 +382,7 @@
     },
     
     _confirmAssessmentDeletion: function(callback) {
-      var studentName = $(this._requestCard).find('.evaluation-request-student').text();
+      var studentName = $(this._requestCard).find('.evaluation-card-student').text();
       renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({

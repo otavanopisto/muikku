@@ -48,8 +48,8 @@ body {
   
 }
 
-// FRONTPAGE VIEW WRAPPER
-.evaluation-frontpage-wrapper {
+// VIEW WRAPPER
+.evaluation-wrapper {
   background: #fff;
 }
 
@@ -121,15 +121,13 @@ body {
   z-index:20;
 }
 
-// FRONTPAGE EVALUATION REQUESTS WRAPPER
-.evaluation-requests-wrapper,
-.evaluation-workspace-students-wrapper {
+// FRONTPAGE EVALUATION CARDS WRAPPER
+.evaluation-cards-wrapper {
   padding: 60px 0 0;
 }
 
-// REQUESTS PAGE TITLE
-.evaluation-requests-title,
-.evaluation-workspace-title {
+// CARDS PAGE TITLE
+.evaluation-cards-title {
   margin:25px 15px 0;
   
   h3 {
@@ -143,7 +141,7 @@ body {
   
 }
 
-// REQUESTS SORTING WRAPPER
+// CARDS SORTING WRAPPER
 .evaluation-sorting-wrapper {
   display: inline-block;
   margin: 0 10px;
@@ -169,14 +167,13 @@ body {
   
 }
 
-// REQUESTS CONTAINER
-.evaluation-requests-container,
-.evaluation-workspace-students-container {
+// CARDS CONTAINER
+.evaluation-cards-container {
   vertical-align: top;
 }
 
-// REQUEST
-.evaluation-request {
+// CARD
+.evaluation-card {
   background: #fff;
   border: 1px solid #d7edfb;
   border-radius: 3px;
@@ -195,7 +192,7 @@ body {
     border: 1px solid #3edd2d;
     box-shadow: 0 0 2px rgba(60, 221, 3, 0.2);
     
-    .evaluation-request-card-button.archive-button {
+    .evaluation-card-button.archive-button {
       display: inline-block;
     }
     
@@ -208,38 +205,38 @@ body {
   
 }
 
-.evaluation-request-title {
+.evaluation-card-title {
   background: #ebfbfe;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   padding: 4px 6px;
 }
 
-.evaluation-request-student {
+.evaluation-card-student {
   font-size: 16px;
   font-weight: 600;
 }
 
-.evaluation-request-study-programme {
+.evaluation-card-study-programme {
   font-size: 13px;
   font-style: italic;
 }
 
-.evaluation-request-data {
+.evaluation-card-data {
   font-size: 13px;
   padding: 4px 6px;
   position: relative;
 }
 
-.evaluation-frontpage-wrapper .evaluation-request-data {
+.evaluation-card.frontpage .evaluation-card-data {
   min-height: 180px;
 }
 
-.evaluation-workspace-wrapper .evaluation-request-data {
-  min-height: 138px;
+.evaluation-card.workspace .evaluation-card-data {
+  min-height: 140px;
 }
 
-.evaluation-request-data-row {
+.evaluation-card-data-row {
   padding: 1px 0;
   position: relative;
   
@@ -258,11 +255,11 @@ body {
     color: $link;
   }
   
-  .evaluation-request-data-label {
+  .evaluation-card-data-label {
   
   }
   
-  .evaluation-request-data-text {
+  .evaluation-card-data-text {
     float: right;
     
     &.assignments-status {
@@ -284,7 +281,7 @@ body {
 
 }
 
-.evaluation-request-button-row {
+.evaluation-card-button-row {
   bottom: 0;
   left: 0;
   padding: 6px;
@@ -292,7 +289,7 @@ body {
   right: 0;
   text-align: right;
   
-  .evaluation-request-card-button {
+  .evaluation-card-button {
     color: #fff;
     border-radius: 3px;
     cursor: pointer;

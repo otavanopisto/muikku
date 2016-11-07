@@ -53,7 +53,7 @@
       </div>
     </ui:insert>
   
-    <div class="evaluation-frontpage-wrapper">
+    <div class="evaluation-wrapper">
     
       <input type="hidden" name="workspaceEntityId" id="workspaceEntityId" value="#{evaluationMainViewBackingBean.workspaceEntityId}"/>
       <input type="hidden" name="workspaceName" id="workspaceName" value="#{evaluationMainViewBackingBean.workspaceName}"/>
@@ -67,8 +67,8 @@
       
       </div>
     
-      <div class="evaluation-requests-wrapper">
-        <div class="evaluation-requests-title">
+      <div class="evaluation-cards-wrapper">
+        <div class="evaluation-cards-title">
           <h3>#{i18n.text['plugin.evaluation.evaluationRequestsTitle']}</h3>
           <div class="evaluation-sorting-wrapper">
             <div class="eval-sorting icon-sort-amount-asc selected" title="#{i18n.text['plugin.evaluation.sorting.sortByEvalReqDateAscTitle']}"></div>
@@ -77,7 +77,7 @@
             <div class="eval-sorting icon-sort-alpha-desc" title="#{i18n.text['plugin.evaluation.sorting.sortBySurnameDescTitle']}"></div>
           </div>
         </div>
-        <div class="evaluation-requests-container">
+        <div class="evaluation-cards-container">
 
         </div>
       </div>
