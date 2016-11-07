@@ -41,11 +41,11 @@
  
 
       &.passing {
-        background-color: $item-grade-passing-color;
+        background-color: $item-grade-passing-background-color;
       }
       
       &.non-passing {
-        background-color: $item-grade-failing-color;
+        background-color: $item-grade-failing-background-color;
       }
       
     }
@@ -70,11 +70,11 @@
       padding: 5px 10px;
       
       &.passing {
-        background-color: $item-grade-passing-color;
+        background-color: $item-grade-passing-background-color;
       }
       
       &.non-passing {
-        background-color: $item-grade-failing-color;
+        background-color: $item-grade-failing-background-color;
       }
       
     }
@@ -103,7 +103,7 @@
 }
 
 .tr-user-file{
-  background-color: $environment-file-color;
+  background-color: $environment-file-background-color;
   display:inline-block;
   margin-bottom: 5px;
   padding:5px;
@@ -174,11 +174,11 @@
     color: $item-grade-font-color;
     
     &.passing {
-      background-color: $item-grade-passing-color;
+      background-color: $item-grade-passing-background-color;
     }
     
     &.non-passing {
-      background-color: $item-grade-failing-color;
+      background-color: $item-grade-failing-background-color;
     }
     
   }

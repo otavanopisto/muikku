@@ -90,7 +90,7 @@
   font-size: 15px;
   padding: 5px 0 5px 0;
   &:hover {
-    background-color: $navigation-horizontal-bar-hover-color;     
+    background-color: $navigation-horizontal-bar-hover-background-color;     
   }
 
  &.selected {
@@ -120,7 +120,7 @@
 
 .mf-label-functions {
   bottom: 0;
-  color: $navigation-vertical-bar-deco-color;
+  color: $navigation-vertical-bar-deco-icon-color;
   margin-top: 0;
   padding: 9px 0 0;
   position: absolute;
@@ -132,7 +132,7 @@
 
   }
   &:hover {
-    color: $navigation-vertical-bar-deco-active-color;
+    color: $navigation-vertical-bar-deco-active-icon-color;
     }
   }
 
@@ -403,15 +403,15 @@ ul.mf-tool-label-container {
   }  
 
   &::after {
-    border-color: $environment-border-transparent;
-    border-bottom-color: $navigation-horizontal-bar-special-menu-arrow-color-1;
+    border-color: $environment-border-transparent-color;
+    border-bottom-color: $navigation-horizontal-bar-special-menu-arrow-border-color-1;
     border-width: 7px;
     margin-left: -7px;
   }
   
   &::before {
-    border-color: $environment-border-transparent;
-    border-bottom-color: $navigation-horizontal-bar-special-menu-arrow-color-2;
+    border-color: $environment-border-transparent-color;
+    border-bottom-color: $navigation-horizontal-bar-special-menu-arrow-border-color-2;
     border-width: 8px;
     margin-left: -8px;
   }
@@ -811,7 +811,7 @@ ul.mf-tool-label-container {
 }
 
 .mf-file {
-  background-color: $environment-file-color;
+  background-color: $environment-file-background-color;
   color: $environment-alt-font-color;
   font-weight: 600;
   padding: 0 5px;
@@ -884,13 +884,13 @@ ul.mf-tool-label-container {
       font-size: 14px;
       
       &:focus {
-        background-color: $form-textfield-focus-color;     
+        background-color: $form-textfield-focus-background-color;     
         border: 0;
         box-shadow: none;    
       }
       
       &:hover {
-        background-color: $form-textfield-hover-color;   
+        background-color: $form-textfield-hover-background-color;   
         border: 0;
         box-shadow: none;      
       }
