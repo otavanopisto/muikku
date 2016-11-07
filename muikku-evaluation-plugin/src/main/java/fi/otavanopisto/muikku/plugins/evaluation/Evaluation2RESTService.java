@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,14 +24,17 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssessmentRequest;
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.RestAssignment;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGrade;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceGradingScale;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -78,6 +82,9 @@ public class Evaluation2RESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private EvaluationController evaluationController;
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -138,7 +145,7 @@ public class Evaluation2RESTService {
   @GET
   @Path("/workspaceuser/{WORKSPACEUSERENTITYID}/assessment")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response getWorkspaceStudentAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
+  public Response findWorkspaceStudentAssessment(@PathParam("WORKSPACEUSERENTITYID") Long workspaceUserEntityId) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -184,6 +191,122 @@ public class Evaluation2RESTService {
         workspaceAssessment.getVerbalAssessment(),
         workspaceAssessment.getDate(),
         workspaceAssessment.getPassing());
+    return Response.ok(restAssessment).build();
+  }
+  
+  @GET
+  @Path("/workspace/{WORKSPACEENTITYID}/assignments")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listWorkspaceAssignments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("userEntityId") Long userEntityId) {
+    
+    // Workspace entity
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // User entity (optional)
+    
+    UserEntity userEntity = null;
+    if (userEntityId != null) {
+      userEntity = userEntityController.findUserEntityById(userEntityId);
+      if (userEntity == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+    }
+    
+    // Workspace materials...
+    
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
+    workspaceMaterials.addAll(workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE));
+    
+    // ...to RestAssignments
+    
+    List<RestAssignment> assignments = new ArrayList<RestAssignment>();
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      Long workspaceMaterialEvaluationId = null;
+      Long workspaceMaterialId = workspaceMaterial.getId();
+      Long materialId = workspaceMaterial.getMaterialId();
+      String path = workspaceMaterial.getPath();
+      String title = workspaceMaterial.getTitle();
+      Boolean evaluable = workspaceMaterial.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED; 
+      Date submitted = null;
+      Date evaluated = null;
+      String grade = null;
+      if (userEntity != null) {
+        WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+        if (workspaceMaterialReply != null && workspaceMaterialReply.getState() == WorkspaceMaterialReplyState.SUBMITTED) {
+          submitted = workspaceMaterialReply.getLastModified();
+        }
+        WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+        if (workspaceMaterialEvaluation != null) {
+          workspaceMaterialEvaluationId = workspaceMaterialEvaluation.getId();
+          evaluated = workspaceMaterialEvaluation.getEvaluated();
+          GradingScale gradingScale = gradingController.findGradingScale(
+              workspaceMaterialEvaluation.getGradingScaleSchoolDataSource(), workspaceMaterialEvaluation.getGradingScaleIdentifier());
+          if (gradingScale != null) {
+            GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
+                gradingScale, workspaceMaterialEvaluation.getGradeSchoolDataSource(), workspaceMaterialEvaluation.getGradeIdentifier());
+            if (gradingScaleItem != null) {
+              grade = gradingScaleItem.getName();
+            }
+          }
+        }
+      }
+      assignments.add(new RestAssignment(workspaceMaterialEvaluationId, workspaceMaterialId, materialId, path, title, evaluable, submitted, evaluated, grade));
+    }
+    return Response.ok(assignments).build();
+  }
+
+  @GET
+  @Path("/user/{USERENTITYID}/workspacematerial/{WORKSPACEMATERIALID}/assessment")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response findWorkspaceMaterialEvaluation(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // User entity
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace material
+
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
+    }
+    
+    // Workspace material evaluation
+    
+    WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    if (workspaceMaterialEvaluation == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // WorkspaceMaterialEvaluation to RestAssessment
+    
+    UserEntity assessingUser = userEntityController.findUserEntityById(workspaceMaterialEvaluation.getAssessorEntityId());
+    String assessmentIdentifier = workspaceMaterialEvaluation.getId().toString();
+    String assessingUserIdentifier = assessingUser.getDefaultIdentifier();
+    String gradingScaleIdentifier = new SchoolDataIdentifier(workspaceMaterialEvaluation.getGradingScaleIdentifier(), workspaceMaterialEvaluation.getGradingScaleSchoolDataSource()).toId();
+    String gradeIdentifier = new SchoolDataIdentifier(workspaceMaterialEvaluation.getGradeIdentifier(), workspaceMaterialEvaluation.getGradeSchoolDataSource()).toId();
+
+    RestAssessment restAssessment = new RestAssessment(
+        assessmentIdentifier,
+        assessingUserIdentifier,
+        gradingScaleIdentifier,
+        gradeIdentifier,
+        workspaceMaterialEvaluation.getVerbalAssessment(),
+        workspaceMaterialEvaluation.getEvaluated(),
+        null); // TODO Passing grade
     return Response.ok(restAssessment).build();
   }
 

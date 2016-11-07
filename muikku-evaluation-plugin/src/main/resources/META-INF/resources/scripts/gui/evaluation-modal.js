@@ -94,7 +94,7 @@
               // Workspace assessment editor
 
               var workspaceLiteralEditor = this._evaluationModal.find("#workspaceEvaluateFormLiteralEvaluation")[0]; 
-              CKEDITOR.replace(workspaceLiteralEditor, $.extend(this.options.ckeditor, {
+              CKEDITOR.replace(workspaceLiteralEditor, $.extend({}, this.options.ckeditor, {
                 on: {
                   instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
                 }
@@ -157,49 +157,15 @@
     },
     
     _loadMaterials: function() {
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      var loads = $.map(["EVALUATED", "EXERCISE"], $.proxy(function (assignmentType) {
-        return $.proxy(function (callback) {
-          mApi().workspace.workspaces.materials
-            .read(workspaceEntityId, { assignmentType : assignmentType})
-            .callback(callback)
-        }, this);
-      }, this));
-      
-      async.parallel(loads, $.proxy(function (err, results) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }
-        else {
-          var evaluableAssignments = results[0]||[];
-          var exerciseAssignments = results[1]||[];
-          var assignments = evaluableAssignments.concat(exerciseAssignments);
-          var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-          var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          var batchCalls = $.map(assignments, $.proxy(function (assignment) {
-            return mApi().workspace.workspaces.materials.compositeMaterialReplies.read(workspaceEntityId, assignment.id, {
-              userEntityId: userEntityId
-            });
-          }, this));
-
-          mApi().batch(batchCalls).callback($.proxy(function (err, results) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              for (var i = 0; i < assignments.length; i++) {
-                this.options.assignmentAnswers[assignments[i].materialId] = results[i].answers;
-                assignments[i] = $.extend({}, assignments[i], {
-                  assignmentState: results[i].state,
-                  assignmentDate: results[i].lastModified
-                }); 
-              }
-              this.element.trigger("materialsLoaded", {
-                assignments: assignments
-              });
-            }
-          }, this));
-        }
-      }, this));
+      mApi().evaluation.workspace.assignments
+        .read(workspaceEntityId, { userEntityId : userEntityId})
+        .callback($.proxy(function (err, assignments) {
+          this.element.trigger("materialsLoaded", {
+            assignments: assignments
+          });
+        }, this));
     },
     
     _toggleAssignment: function(assignment) {
@@ -214,26 +180,31 @@
         }
       }
       else {
-        var materialId = $(assignment).attr('data-material-id');
-        var fieldAnswers = {};
-        var userAnswers = this.options.assignmentAnswers[materialId]
-        for (var i = 0, l = userAnswers.length; i < l; i++) {
-          var answer = userAnswers[i];
-          var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-          fieldAnswers[answerKey] = answer.value;
-        }
-        // Material html
-        mApi().materials.html
-          .read(materialId)
-          .callback($.proxy(function (err, htmlMaterial) {
-            $(assignment)
-              .attr('data-material-type', 'html')
-              .attr('data-material-title', htmlMaterial.title)
-              .attr('data-material-content', htmlMaterial.html)
-              .attr('data-view-restricted', htmlMaterial.viewRestrict)
-              .attr('data-loaded', true)
-              .attr('data-open', true);
-            $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
+        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+        var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
+        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+        mApi().workspace.workspaces.materials.compositeMaterialReplies
+          .read(workspaceEntityId, workspaceMaterialId, {userEntityId: userEntityId})
+          .callback($.proxy(function (err, replies) {
+            var fieldAnswers = {};
+            for (var i = 0, l = replies.length; i < l; i++) {
+              var answer = replies[i];
+              var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+              fieldAnswers[answerKey] = answer.value;
+            }
+            var materialId = $(assignment).attr('data-material-id');
+            mApi().materials.html
+              .read(materialId)
+              .callback($.proxy(function (err, htmlMaterial) {
+                $(assignment)
+                  .attr('data-material-type', 'html')
+                  .attr('data-material-title', htmlMaterial.title)
+                  .attr('data-material-content', htmlMaterial.html)
+                  .attr('data-view-restricted', htmlMaterial.viewRestrict)
+                  .attr('data-loaded', true)
+                  .attr('data-open', true);
+                $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
+              }, this));
           }, this));
       }
     },
@@ -252,7 +223,7 @@
       $.each(data.assignments, $.proxy(function(index, assignment) {
         var assignmentWrapper = $('<div>')
           .addClass('assignment-wrapper')
-          .addClass(assignment.assignmentType == 'EVALUATED' ? 'assignment' : 'exercise')
+          .addClass(assignment.evaluable ? 'assignment' : 'exercise')
           .appendTo($('.eval-modal-assignment-content'));
         
         var assignmentTitleWrapper = $('<div>')
@@ -266,7 +237,7 @@
         
         // TODO: Localization
         var assignmentDone = $('<div>');
-        if (assignment.assignmentState == 'SUBMITTED') {
+        if (assignment.submitted) {
           $(assignmentDone)
             .addClass('assignment-done')
             .append($('<span>')
@@ -274,7 +245,7 @@
               .text('Tehty'))
             .append($('<span>')
               .addClass('assignment-done-data')
-              .text(formatDateTime(new Date(moment(assignment.assignmentDate)))))
+              .text(formatDateTime(new Date(moment(assignment.submitted)))))
             .appendTo(assignmentTitleWrapper);
         } else {
           $(assignmentDone)
@@ -291,13 +262,14 @@
           .attr('title', 'Arvioi tehtävä')
           .appendTo(assignmentWrapper);
         $(assignmentEvaluationButton).click($.proxy(function(event) {
-          // TODO Load assignment evaluation, slide open, etc. 
-          $('.eval-modal-assignment-evaluate-container').show();
+          var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+          var workspaceMaterialId = $(assignmentEvaluationButton).closest('.assignment').find('.assignment-content').attr('data-workspace-material-id'); 
+          this._loadMaterialEvaluation(userEntityId, workspaceMaterialId);
         }, this));
         
         var assignmentContent = $('<div>')
           .addClass('assignment-content')
-          .attr('data-workspace-material-id', assignment.id)
+          .attr('data-workspace-material-id', assignment.workspaceMaterialId)
           .attr('data-material-id', assignment.materialId)
           .attr('data-path', assignment.path)
           .attr('data-open', false)
@@ -312,8 +284,28 @@
       this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
-    _loadAssignmentAssessment: function(materialId) {
-      
+    _loadMaterialEvaluation: function(userEntityId, workspaceMaterialId) {
+      mApi().evaluation.user.workspacematerial.assessment
+        .read(userEntityId, workspaceMaterialId)
+        .callback($.proxy(function (err, assessment) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            // Verbal assessment
+            CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+            // Date
+            $('#assignmentEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+            // Assessor
+            $('#assignmentAssessor').val(assessment.assessorIdentifier);
+            // Grade
+            $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+            // Remove assessment button
+            $('.button-delete').show();
+            // Show material evaluation view
+            $('.eval-modal-assignment-evaluate-container').show();
+          }
+        }, this));
     },
     
     _loadAssessment: function(workspaceUserEntityId) {
