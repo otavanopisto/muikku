@@ -196,8 +196,8 @@
           .read(workspaceEntityId, workspaceMaterialId, {userEntityId: userEntityId})
           .callback($.proxy(function (err, replies) {
             var fieldAnswers = {};
-            for (var i = 0, l = replies.length; i < l; i++) {
-              var answer = replies[i];
+            for (var i = 0, l = replies.answers.length; i < l; i++) {
+              var answer = replies.answers[i];
               var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
               fieldAnswers[answerKey] = answer.value;
             }
