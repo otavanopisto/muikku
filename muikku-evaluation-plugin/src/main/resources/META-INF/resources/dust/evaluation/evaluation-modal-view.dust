@@ -1,6 +1,6 @@
 <div class="eval-modal-close icon-close-small"><span class="tooltip"></span></div>
 
-<section class="eval-modal-student-container" id="evaluationStudentContainer">
+<section class="eval-modal-student-container" id="evaluationStudentContainer" data-user-entity-id="{userEntityId}">
   <header class="eval-modal-student-header flex-row flex-align-items-center">
     <div class="eval-modal-student-name">{studentName} ({studyProgrammeName})</div>
   </header>

@@ -1,0 +1,16 @@
+<div class="assignment-wrapper {materialType}" {?evaluationDate}data-evaluated="true"{/evaluationDate}>
+  <div class="assignment-title-wrapper">
+    <div class="assignment-title">{title}</div>
+    <div class="assignment-done">
+      {?submitDate}
+        <span class="assignment-done-label">Tehty</span>
+        <span class="assignment-done-data">{submitDate|formatDate}</span>
+      {:else}
+        <span class="assignment-notdone-label">Ei tehty</span>
+      {/submitDate}
+    </div>
+  </div>
+  <!-- TODO optional {evaluationDate} + {grade} -->
+  <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
+  <div class="assignment-content" data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-path="{path}" data-open="false" data-loaded="false"></div>
+</div>

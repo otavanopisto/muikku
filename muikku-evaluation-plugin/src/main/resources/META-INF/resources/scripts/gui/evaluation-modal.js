@@ -77,6 +77,7 @@
             // Render modal
             
             renderDustTemplate("evaluation/evaluation-modal-view.dust", {
+              userEntityId: $(requestCard).attr('data-user-entity-id'), 
               studentName: $(requestCard).find('.evaluation-card-student').text(),
               studyProgrammeName: $(requestCard).find('.evaluation-card-study-programme').text(),
               courseName: $(requestCard).find('.workspace-name').text(),
@@ -176,7 +177,7 @@
         }, this));
     },
     
-    _toggleAssignment: function(assignment) {
+    toggleAssignment: function(assignment) {
       if ($(assignment).attr('data-loaded') == 'true') {
         if ($(assignment).attr('data-open') == 'true') {
           $(assignment).attr('data-open', false);
@@ -229,72 +230,28 @@
     
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
-        var assignmentWrapper = $('<div>')
-          .addClass('assignment-wrapper')
-          .addClass(assignment.evaluable ? 'assignment' : 'exercise')
-          .attr('data-evaluated', assignment.evaluated)
-          .appendTo($('.eval-modal-assignment-content'));
-        
-        var assignmentTitleWrapper = $('<div>')
-          .addClass('assignment-title-wrapper')
-          .appendTo(assignmentWrapper);
-        
-        var assignmentTitle = $('<div>')
-          .addClass('assignment-title')
-          .text(assignment.title)
-          .appendTo(assignmentTitleWrapper);
-        
-        var assignmentDone = $('<div>');
-        if (assignment.submitted) {
-          $(assignmentDone)
-            .addClass('assignment-done')
-            .append($('<span>')
-              .addClass('assignment-done-label')
-              .text(getLocaleText("plugin.evaluation.evaluationModal.assignmentDoneLabel")))
-            .append($('<span>')
-              .addClass('assignment-done-data')
-              .text(formatDateTime(new Date(moment(assignment.submitted)))))
-            .appendTo(assignmentTitleWrapper);
-        } else {
-          $(assignmentDone)
-            .addClass('assignment-done')
-            .append($('<span>')
-              .addClass('assignment-notdone-label')
-              .text(getLocaleText("plugin.evaluation.evaluationModal.assignmentNotDoneLabel")))
-            .appendTo(assignmentTitleWrapper);
-        }
-        
-        var assignmentEvaluationButton = $('<div>')
-          .addClass('assignment-evaluate-button icon-evaluate')
-          .attr('title', getLocaleText("plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"))
-          .appendTo(assignmentWrapper);
-        $(assignmentEvaluationButton).click($.proxy(function(event) {
-          var assignment = $(assignmentEvaluationButton).closest('.assignment-wrapper');
-          this._activeAssignment = assignment; 
-          var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id'); 
-          $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
-          this._loadMaterialAssessment(userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
-        }, this));
-        
-        var assignmentContent = $('<div>')
-          .addClass('assignment-content')
-          .attr('data-workspace-material-id', assignment.workspaceMaterialId)
-          .attr('data-material-id', assignment.materialId)
-          .attr('data-path', assignment.path)
-          .attr('data-open', false)
-          .attr('data-loaded', false)
-          .appendTo(assignmentWrapper);
-        $(assignmentTitleWrapper).click($.proxy(function(event) {
-          this._toggleAssignment(assignmentContent);
+        renderDustTemplate("evaluation/evaluation-assignment-wrapper.dust", {
+          materialType: assignment.evaluable ? 'assignment' : 'exercise',
+          title: assignment.title,
+          submitDate: assignment.submitted,
+          workspaceMaterialId: assignment.workspaceMaterialId,
+          materialId: assignment.materialId,
+          path: assignment.path,
+          evaluationDate: assignment.evaluated,
+          grade: assignment.grade
+        }, $.proxy(function (html) {
+          $('.eval-modal-assignment-content').append(html);
         }, this));
       }, this));
-      
       // Material's loading animation end
       this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
-    _loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
+    setActiveAssignment: function(assignment) {
+      this._activeAssignment = assignment;
+    },
+    
+    loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
@@ -528,7 +485,7 @@
           }, this));
       }
       else {
-        var scaleAndGrade = $('#workspaceGrade').val().split('@');
+        var scaleAndGrade = $('#assignmentGrade').val().split('@');
         mApi().evaluation.user.workspacematerial.assessment
           .create(userEntityId, workspaceMaterialId, {
             assessorIdentifier: $('#assignmentAssessor').val(),
@@ -548,6 +505,20 @@
           }, this));
       }
     }
+  });
+  
+  $(document).on('click', '.assignment-title-wrapper', function (event) {
+    var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
+    $(document).evaluationModal('toggleAssignment', assignmentContent);
+  });
+
+  $(document).on('click', '.assignment-evaluate-button', function (event) {
+    var assignment = $(event.target).closest('.assignment-wrapper');
+    $(document).evaluationModal('setActiveAssignment', assignment);
+    var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+    var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id');
+    $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
+    $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
   });
 
   $(document).on('afterHtmlMaterialRender', function (event, data) {
