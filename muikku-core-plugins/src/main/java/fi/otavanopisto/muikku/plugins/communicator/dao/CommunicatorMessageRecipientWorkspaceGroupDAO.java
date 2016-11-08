@@ -1,0 +1,53 @@
+package fi.otavanopisto.muikku.plugins.communicator.dao;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
+
+
+public class CommunicatorMessageRecipientWorkspaceGroupDAO extends CorePluginsDAO<CommunicatorMessageRecipientWorkspaceGroup> {
+	
+  private static final long serialVersionUID = 1450192242311134158L;
+
+  public CommunicatorMessageRecipientWorkspaceGroup create(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype) {
+    CommunicatorMessageRecipientWorkspaceGroup workspaceGroup = new CommunicatorMessageRecipientWorkspaceGroup();
+    
+    workspaceGroup.setArchetype(archetype);
+    workspaceGroup.setWorkspaceEntityId(workspaceEntity.getId());
+    
+    getEntityManager().persist(workspaceGroup);
+    
+    return workspaceGroup;
+  }
+ 
+  public List<CommunicatorMessageRecipientWorkspaceGroup> listByMessage(CommunicatorMessage communicatorMessage) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageRecipientWorkspaceGroup> criteria = criteriaBuilder.createQuery(CommunicatorMessageRecipientWorkspaceGroup.class);
+    Root<CommunicatorMessageRecipientWorkspaceGroup> root = criteria.from(CommunicatorMessageRecipientWorkspaceGroup.class);
+    Root<CommunicatorMessageRecipient> root2 = criteria.from(CommunicatorMessageRecipient.class);
+    
+    criteria.select(root).distinct(true);
+    criteria.where(
+        criteriaBuilder.and(
+            root2.get(CommunicatorMessageRecipient_.recipientGroup).in(root),
+            criteriaBuilder.equal(root2.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+}

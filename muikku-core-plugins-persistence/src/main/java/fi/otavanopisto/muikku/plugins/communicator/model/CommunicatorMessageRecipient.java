@@ -57,6 +57,14 @@ public class CommunicatorMessageRecipient implements ContextReference {
     this.trashedByReceiver = trashedByReceiver;
   }
 
+  public CommunicatorMessageRecipientGroup getRecipientGroup() {
+    return recipientGroup;
+  }
+
+  public void setRecipientGroup(CommunicatorMessageRecipientGroup recipientGroup) {
+    this.recipientGroup = recipientGroup;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -67,6 +75,9 @@ public class CommunicatorMessageRecipient implements ContextReference {
   @Column (name = "recipient_id")
   private Long recipient;
 
+  @ManyToOne
+  private CommunicatorMessageRecipientGroup recipientGroup;
+  
   @NotNull
   @Column(nullable = false)
   private Boolean readByReceiver;

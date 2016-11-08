@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>ALTER TABLE CommunicatorMessageRecipient add column recipientGroup_id BIGINT(20)</sql>
+
+  <sql>CREATE TABLE CommunicatorMessageRecipientGroup(
+    id BIGINT(20) PRIMARY KEY AUTO_INCREMENT
+  )</sql>
+
+  <sql>CREATE TABLE CommunicatorMessageRecipientUserGroup(
+    id BIGINT(20) PRIMARY KEY,
+    userGroupEntityId BIGINT(20) NOT NULL,
+    foreign key (id) references CommunicatorMessageRecipientGroup (id)
+  )</sql>
+
+  <sql>CREATE TABLE CommunicatorMessageRecipientWorkspaceGroup(
+    id BIGINT(20) PRIMARY KEY,
+    workspaceEntityId BIGINT(20) NOT NULL,
+    archetype varchar(255) NOT NULL,
+    foreign key (id) references CommunicatorMessageRecipientGroup (id)
+  )</sql>
+
+</update>
