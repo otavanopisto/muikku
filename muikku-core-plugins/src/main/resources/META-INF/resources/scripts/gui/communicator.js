@@ -1183,7 +1183,7 @@
             renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
               this.element.html(text);
               
-              if (message.senderId === MUIKKU_LOGGED_USER_ID) {               
+              if (message.senderId === MUIKKU_LOGGED_USER_ID) {
                 $.each(message.recipients,  $.proxy(function (index, recipient) {
                   var recipientFullName = recipient.firstName + " " + recipient.lastName;
                   
@@ -1455,6 +1455,7 @@
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
+      this.element.on('click', '.cm-message-reply-all-link', $.proxy(this._onReplyAllClick, this));    
     },
     
     loadThread: function (folderId, threadId, callback) {
@@ -1516,8 +1517,22 @@
       
       this.element.closest('.communicator') 
         .communicator('newMessageDialog', {
+          mode: "reply",
           replyThreadId: this._threadId, 
           replyMessageId: messageId 
+        }
+      );
+    },
+    _onReplyAllClick: function (event) {
+      var messageId = $(event.target)
+        .closest('.cm-message')
+        .attr('data-id');
+      
+      this.element.closest('.communicator') 
+        .communicator('newMessageDialog', {
+          mode: "replyall",
+          replyThreadId: this._threadId, 
+          replyMessageId: messageId
         }
       );
     }
