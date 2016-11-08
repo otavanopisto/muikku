@@ -75,12 +75,12 @@
   @include flexbox;
   align-items: center;
   padding: 8px 15px;
-	background: $taskBoxColor;
-	margin: 0 4px 8px 4px;
-	border-radius: 3px;
-	transition: background 0.3s ease-in-out;
-	box-sizing: border-box;
-	height: 56px;
+  background: $taskBoxColor;
+  margin: 0 4px 8px 4px;
+  border-radius: 3px;
+  transition: background 0.3s ease-in-out;
+  box-sizing: border-box;
+  height: 56px;
   line-height: 20px;
   font-size: 16px;
   transition: height 0.2s ease-in-out;
@@ -90,8 +90,8 @@
     background: $taskBoxHoverColor;
   }
   
-  &.term-full-text,
-  &.counterpart-full-text {
+  & .term-full-text,
+  & .counterpart-full-text {
     height: auto;
     min-height: 56px;
     position: absolute;
