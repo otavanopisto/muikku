@@ -1,8 +1,14 @@
 // Environment level variables
 
+$body-background-color: #f6fcff;
+$body-font-color: #2c2c2c;
+
 $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
 $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
+$environment-bottom-bar-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
+$environment-bottom-bar-background-color: #485c64;
+$environment-bottom-bar-font-color: #fff;
 $environment-background-color: #fff;
 $environment-background-dim-color: #ededed;
 $environment-background-light-dim-color: #f9f9f9;
@@ -16,6 +22,7 @@ $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
 $environment-border-transparent: rgba(255, 255, 255, 0);
+$environment-widget-overlay-background-color: #000;
 
 // Items in the content-area  (messages, users, workspaces...)
 
