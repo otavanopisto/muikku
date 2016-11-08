@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.communicator.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
@@ -130,7 +132,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return query.getResultList();
   }
   
-  public List<CommunicatorMessage> listThreadsInInbox(UserEntity recipient, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
+  public List<CommunicatorMessage> listThreadsInInbox(UserEntity recipient, CommunicatorLabel label, boolean onlyUnread, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -150,50 +152,34 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
 
     subQuery.select(criteriaBuilder.greatest(subMessageJoin.get(CommunicatorMessage_.created)));
     
-    if (label != null) {
-      Root<CommunicatorMessageIdLabel> labelRoot = criteria.from(CommunicatorMessageIdLabel.class);
-      Root<CommunicatorMessageIdLabel> subLabelRoot = criteria.from(CommunicatorMessageIdLabel.class);
+    Root<CommunicatorMessageIdLabel> labelRoot = criteria.from(CommunicatorMessageIdLabel.class);
+    Root<CommunicatorMessageIdLabel> subLabelRoot = criteria.from(CommunicatorMessageIdLabel.class);
 
-      subQuery.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.communicatorMessageId), messageJoin.get(CommunicatorMessage_.communicatorMessageId)),
-          criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
-          criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE),
-          criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE),
-          subThreadJoin.in(subLabelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)),
-          criteriaBuilder.equal(subLabelRoot.get(CommunicatorMessageIdLabel_.label), label)
-        )
-      );
-      
-      criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.created), subQuery),
-          criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
-          criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE),
-          criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE),
-          threadJoin.in(labelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)),
-          criteriaBuilder.equal(labelRoot.get(CommunicatorMessageIdLabel_.label), label)
-        )
-      );
-    } else {
-      subQuery.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.communicatorMessageId), messageJoin.get(CommunicatorMessage_.communicatorMessageId)),
-          criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
-          criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE),
-          criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
-        )
-      );
-        
-      criteria.where(
-        criteriaBuilder.and(
-          criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.created), subQuery),
-          criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
-          criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE),
-          criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
-        )
-      );
+    List<Predicate> subQueryPredicates = new ArrayList<Predicate>();
+    subQueryPredicates.add(criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.communicatorMessageId), messageJoin.get(CommunicatorMessage_.communicatorMessageId)));
+    subQueryPredicates.add(criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.recipient), recipient.getId()));
+    subQueryPredicates.add(criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE));
+    subQueryPredicates.add(criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE));
+    if (onlyUnread)
+      subQueryPredicates.add(criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.readByReceiver), Boolean.FALSE));
+    if (label != null) {
+      subQueryPredicates.add(subThreadJoin.in(subLabelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)));
+      subQueryPredicates.add(criteriaBuilder.equal(subLabelRoot.get(CommunicatorMessageIdLabel_.label), label));
+    }      
+    subQuery.where(criteriaBuilder.and(subQueryPredicates.toArray(new Predicate[0])));
+
+    List<Predicate> predicates = new ArrayList<Predicate>();
+    predicates.add(criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.created), subQuery));
+    predicates.add(criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()));
+    predicates.add(criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), Boolean.FALSE));
+    predicates.add(criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE));
+    if (onlyUnread)
+      predicates.add(criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.readByReceiver), Boolean.FALSE));
+    if (label != null) {
+      predicates.add(threadJoin.in(labelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)));
+      predicates.add(criteriaBuilder.equal(labelRoot.get(CommunicatorMessageIdLabel_.label), label));
     }
+    criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     
     criteria.groupBy(threadJoin);
     

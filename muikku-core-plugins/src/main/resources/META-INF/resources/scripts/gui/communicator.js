@@ -37,9 +37,10 @@
     
   });
   
-  var CommunicatorInboxFolderController = function (labelId, options) {
+  var CommunicatorInboxFolderController = function (labelId, isUnreadFolder, options) {
     this._super = CommunicatorFolderController.prototype;
     this._labelId = labelId;
+    this._isUnreadFolder = isUnreadFolder === true;
     CommunicatorFolderController.call(this, arguments); 
   };
   
@@ -59,6 +60,7 @@
     
     loadItems: function (firstResult, maxResults, mainCallback) {
       var params = {
+        onlyUnread: this._isUnreadFolder,
         firstResult: firstResult,
         maxResults: maxResults
       };
@@ -596,6 +598,7 @@
         function (err, labels) {
           this._folderControllers = {
             'inbox': new CommunicatorInboxFolderController(),
+            'unread': new CommunicatorInboxFolderController(undefined, true),
             'sent': new CommunicatorSentFolderController(),
             'trash': new CommunicatorTrashFolderController()
           };
