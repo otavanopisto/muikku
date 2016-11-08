@@ -151,9 +151,6 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     Join<CommunicatorMessage, CommunicatorMessageId> subThreadJoin = subMessageJoin.join(CommunicatorMessage_.communicatorMessageId);
 
     subQuery.select(criteriaBuilder.greatest(subMessageJoin.get(CommunicatorMessage_.created)));
-    
-    Root<CommunicatorMessageIdLabel> labelRoot = criteria.from(CommunicatorMessageIdLabel.class);
-    Root<CommunicatorMessageIdLabel> subLabelRoot = criteria.from(CommunicatorMessageIdLabel.class);
 
     List<Predicate> subQueryPredicates = new ArrayList<Predicate>();
     subQueryPredicates.add(criteriaBuilder.equal(subMessageJoin.get(CommunicatorMessage_.communicatorMessageId), messageJoin.get(CommunicatorMessage_.communicatorMessageId)));
@@ -163,11 +160,14 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     if (onlyUnread)
       subQueryPredicates.add(criteriaBuilder.equal(subQueryRoot.get(CommunicatorMessageRecipient_.readByReceiver), Boolean.FALSE));
     if (label != null) {
+      Root<CommunicatorMessageIdLabel> subLabelRoot = criteria.from(CommunicatorMessageIdLabel.class);
       subQueryPredicates.add(subThreadJoin.in(subLabelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)));
       subQueryPredicates.add(criteriaBuilder.equal(subLabelRoot.get(CommunicatorMessageIdLabel_.label), label));
     }      
     subQuery.where(criteriaBuilder.and(subQueryPredicates.toArray(new Predicate[0])));
 
+    // Main Query
+    
     List<Predicate> predicates = new ArrayList<Predicate>();
     predicates.add(criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.created), subQuery));
     predicates.add(criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()));
@@ -176,6 +176,7 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     if (onlyUnread)
       predicates.add(criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.readByReceiver), Boolean.FALSE));
     if (label != null) {
+      Root<CommunicatorMessageIdLabel> labelRoot = criteria.from(CommunicatorMessageIdLabel.class);
       predicates.add(threadJoin.in(labelRoot.get(CommunicatorMessageIdLabel_.communicatorMessageId)));
       predicates.add(criteriaBuilder.equal(labelRoot.get(CommunicatorMessageIdLabel_.label), label));
     }
