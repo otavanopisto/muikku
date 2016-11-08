@@ -42,6 +42,7 @@
       
       this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
+      this.element.on("workspaceAssessmentSaved", $.proxy(this._onWorkspaceAssessmentSaved, this));
     },
     
     open: function(requestCard, discardOnSave) {
@@ -247,6 +248,19 @@
       this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
     },
     
+    _onWorkspaceAssessmentSaved: function(event, data) {
+      var assessment = data.assessment;
+      this._workspaceAssessmentSaved = true; 
+      if (assessment.passing) {
+        $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+      }
+      else {
+        $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+      }
+      $(this._requestCard).attr('data-evaluated', true);
+      this.close();
+    },
+    
     setActiveAssignment: function(assignment) {
       this._activeAssignment = assignment;
     },
@@ -408,15 +422,9 @@
                   }
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
-                    this._workspaceAssessmentSaved = true; 
-                    if (assessment.passing) {
-                      $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
-                    }
-                    else {
-                      $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
-                    }
-                    $(this._requestCard).attr('data-evaluated', true);
-                    this.close();
+                    this.element.trigger("workspaceAssessmentSaved", {
+                      assessment: assessment
+                    });
                   }
                 }, this));
             }
@@ -438,15 +446,9 @@
             }
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.saveSuccessful"));
-              this._workspaceAssessmentSaved = true;
-              if (assessment.passing) {
-                $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
-              }
-              else {
-                $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
-              }
-              $(this._requestCard).attr('data-evaluated', true);
-              this.close();
+              this.element.trigger("workspaceAssessmentSaved", {
+                assessment: assessment
+              });
             }
           }, this));
       }
