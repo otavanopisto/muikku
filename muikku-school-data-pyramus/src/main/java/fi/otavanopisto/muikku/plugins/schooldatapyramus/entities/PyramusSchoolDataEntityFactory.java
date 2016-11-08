@@ -515,6 +515,7 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
     SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
     SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;
+    SchoolDataIdentifier curriculumIdentifier = transferCredit.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(transferCredit.getCurriculumId()) : null;
     
     return new PyramusTransferCredit(identifier, 
         studentIdentifier, 
@@ -528,7 +529,8 @@ public class PyramusSchoolDataEntityFactory {
         transferCredit.getLength(), 
         lengthUnitIdentifier, 
         schoolIdentifier, 
-        subjectIdentifier);
+        subjectIdentifier,
+        curriculumIdentifier);
   }
 
   private String pyramusHost;

@@ -11,7 +11,8 @@ public abstract class AbstractTransferCredit implements TransferCredit {
   public AbstractTransferCredit(SchoolDataIdentifier identifier, SchoolDataIdentifier studentIdentifier, OffsetDateTime date,
       SchoolDataIdentifier gradeIdentifier, SchoolDataIdentifier gradingScaleIdentifier, String verbalAssessment, 
       SchoolDataIdentifier assessorIdentifier, String courseName, Integer courseNumber, Double length, 
-      SchoolDataIdentifier lengthUnitIdentifier, SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier) {
+      SchoolDataIdentifier lengthUnitIdentifier, SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier,
+      SchoolDataIdentifier curriculumIdentifier) {
     super();
     this.identifier = identifier;
     this.studentIdentifier = studentIdentifier;
@@ -26,6 +27,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
     this.lengthUnitIdentifier = lengthUnitIdentifier;
     this.schoolIdentifier = schoolIdentifier;
     this.subjectIdentifier = subjectIdentifier;
+    this.curriculumIdentifier = curriculumIdentifier;
   }
 
   @Override
@@ -145,6 +147,15 @@ public abstract class AbstractTransferCredit implements TransferCredit {
     this.subjectIdentifier = subjectIdentifier;
   }
 
+  @Override
+  public SchoolDataIdentifier getCurriculumIdentifier() {
+    return curriculumIdentifier;
+  }
+
+  public void setCurriculumIdentifier(SchoolDataIdentifier curriculumIdentifier) {
+    this.curriculumIdentifier = curriculumIdentifier;
+  }
+
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier studentIdentifier;
   private OffsetDateTime date;
@@ -158,6 +169,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
   private SchoolDataIdentifier lengthUnitIdentifier;
   private SchoolDataIdentifier schoolIdentifier;
   private SchoolDataIdentifier subjectIdentifier;
+  private SchoolDataIdentifier curriculumIdentifier;
 
   // TODO: Optionality?
 }
