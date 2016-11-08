@@ -35,9 +35,7 @@
               return Date.parse(a.assessmentRequestDate) > Date.parse(b.assessmentRequestDate);
             });
             for (var i = 0; i < assessmentRequests.length; i++) {
-              if (!workspaceEntityId) {
-                assessmentRequests[i] = $.extend({}, assessmentRequests[i], {showWorkspace: true});
-              }
+              assessmentRequests[i] = $.extend({}, assessmentRequests[i], {workspaceMode: workspaceEntityId});
               renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
                 $(requestContainer).append(html);
               }, this));
