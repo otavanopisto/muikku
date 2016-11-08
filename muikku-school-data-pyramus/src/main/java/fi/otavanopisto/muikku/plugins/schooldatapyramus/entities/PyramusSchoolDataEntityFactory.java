@@ -2,9 +2,11 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -295,6 +297,13 @@ public class PyramusSchoolDataEntityFactory {
 
     String viewLink = String.format("https://%s/courses/viewcourse.page?course=%d", pyramusHost, course.getId());
     
+    Set<SchoolDataIdentifier> curriculumIdentifiers = new HashSet<>();
+    if (course.getCurriculumIds() != null) {
+      for (Long curriculumId : course.getCurriculumIds()) {
+        curriculumIdentifiers.add(identifierMapper.getCurriculumIdentifier(curriculumId));
+      }
+    }
+    
     return new PyramusWorkspace(
         identifierMapper.getWorkspaceIdentifier(course.getId()),
         course.getName(),
@@ -312,7 +321,7 @@ public class PyramusSchoolDataEntityFactory {
         course.getEndDate(), 
         course.getArchived(), 
         courseFeeApplicable,
-        identifierMapper.getCurriculumIdentifier(course.getCurriculumId()));
+        curriculumIdentifiers);
   }
 
   public WorkspaceType createEntity(CourseType courseType) {
@@ -539,6 +548,7 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier lengthUnitIdentifier = transferCredit.getLengthUnitId() != null ? toIdentifier(identifierMapper.getCourseLengthUnitIdentifier(transferCredit.getLengthUnitId())) : null;
     SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
     SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;
+    SchoolDataIdentifier curriculumIdentifier = transferCredit.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(transferCredit.getCurriculumId()) : null;
     
     return new PyramusTransferCredit(identifier, 
         studentIdentifier, 
@@ -552,7 +562,8 @@ public class PyramusSchoolDataEntityFactory {
         transferCredit.getLength(), 
         lengthUnitIdentifier, 
         schoolIdentifier, 
-        subjectIdentifier);
+        subjectIdentifier,
+        curriculumIdentifier);
   }
 
   private String pyramusHost;

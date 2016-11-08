@@ -2,10 +2,13 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -17,12 +20,20 @@ import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 */
+import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
 
 @Dependent
 public class NotificationController {
   
   @Inject
   private Logger logger;
+
+  @Any
+  @Inject
+  private Instance<LogProvider> logProviders;
+  
+  public static final String COLLECTION_NAME = "studentNotifications";
+  public static final String LOG_PROVIDER = "mongo-provider";
   
   /*
   @Inject
@@ -45,6 +56,15 @@ public class NotificationController {
   }
   
   public void sendNotification(String category, String subject, String content, UserEntity recipient) {
+   HashMap<String, Object> map = new HashMap<>();
+   map.put("category", category);
+   map.put("recipient", recipient.getId());
+    
+   LogProvider provider = getProvider(LOG_PROVIDER);
+   
+   if (provider != null) {
+     provider.log(COLLECTION_NAME, map);
+   }
     
    String recipientEmail = getRecipientEmail();
    if (recipientEmail == null) {
@@ -82,4 +102,12 @@ public class NotificationController {
     */
   }
 
+  private LogProvider getProvider(String name) {
+    for (LogProvider provider : logProviders) {
+      if (provider.getName().equals(name)) {
+        return provider;
+      }
+    }
+    return null;
+  }
 }

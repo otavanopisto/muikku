@@ -6,9 +6,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,10 +63,23 @@ public class IndexEntityProcessor {
         Object fieldValue = indexableGetter.invoke(entity);
         if (indexField != null && indexField.toId()) {
           if (fieldValue != null) {
-            if (fieldValue instanceof SchoolDataIdentifier) {
+            if (fieldValue instanceof Collection) {
+              Collection<?> collection = (Collection<?>) fieldValue;
+              Set<String> ids = new HashSet<String>();
+              for (Object o : collection) {
+                if (o != null) {
+                  if (o instanceof SchoolDataIdentifier)
+                    ids.add(((SchoolDataIdentifier) o).toId());
+                  else {
+                    logger.severe(String.format("@Indexable toId for Collection must be Collection<SchoolDataIdentifier> but was Collection<%s>", o.getClass().getName()));
+                  }
+                }
+              }
+              fieldValue = ids;
+            } else if (fieldValue instanceof SchoolDataIdentifier) {
               fieldValue = ((SchoolDataIdentifier) fieldValue).toId();
             } else {
-              logger.severe(String.format("Invalid type %s for @Indexable toId", fieldValue.getClass().getName()));
+              logger.severe(String.format("@Indexable toId must be SchoolDataIdentifier but was %s", fieldValue.getClass().getName()));
             }
           }
         }
