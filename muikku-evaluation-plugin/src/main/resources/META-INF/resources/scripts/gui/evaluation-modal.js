@@ -557,6 +557,8 @@
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.updateSuccessful"));
                     $(this._activeAssignment).attr('data-evaluated', true);
+                    $(this._activeAssignment).find('.evaluation-date').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+                    $(this._activeAssignment).find('.grade').text($('#assignmentGrade option:selected').text());
                     this._toggleMaterialAssessmentView(false);
                   }
                 }, this));
@@ -580,6 +582,8 @@
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.saveSuccessful"));
               $(this._activeAssignment).attr('data-evaluated', true);
+              $(this._activeAssignment).find('.evaluation-date').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+              $(this._activeAssignment).find('.grade').text($('#assignmentGrade option:selected').text());
               this._toggleMaterialAssessmentView(false);
             }
           }, this));

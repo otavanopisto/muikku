@@ -10,7 +10,8 @@
       {/submitDate}
     </div>
   </div>
-  <!-- TODO optional {evaluationDate} + {grade} -->
+  <div class="evaluation-date">{?evaluationDate}{evaluationDate|formatDate}{/evaluationDate}</div>
+  <div class="grade">{?grade}{grade}{/grade}</div>
   {?submitDate}
     <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
   {/submitDate}
