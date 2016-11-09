@@ -92,6 +92,10 @@
   
   & .term-full-text,
   & .counterpart-full-text {
+    padding:8px 15px;
+    top:0;
+    background-color: #b1e8fe;
+    border-radius: 3px;  
     height: auto;
     min-height: 56px;
     position: absolute;
