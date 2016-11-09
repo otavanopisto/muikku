@@ -303,29 +303,38 @@
     },
     
     _toggleMaterialAssessmentView(show) {
-      this._disableModalScrolling();
+      
+      // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
-        var slidePosition = "50%";
+        var slidePosition = 50;
       } else {
-        var slidePosition = "10%"
+        var slidePosition = 2;
       }
+      
       if (show) {
+        this._disableModalScrolling();
         $('.eval-modal-assignment-evaluate-container')
           .show()
+          .css({
+            width: 100 - slidePosition + "%"
+          })
           .animate({
-            left: slidePosition
-        }, 300, "swing", $.proxy(function() {
-          this._enableModalScrolling();  
-        }, this));
+            left: slidePosition + "%"
+        }, 300, "swing", function() {
+          
+        });
       }
       else {
+        this._enableModalScrolling();
         $('.eval-modal-assignment-evaluate-container')
+          .css({
+            width: 100 - slidePosition + "%"
+          })
           .animate({
             left: "100%"
-        }, 250, "swing", $.proxy(function() {
-          $('.eval-modal-assignment-evaluate-container').hide();
-          this._enableModalScrolling();
-        }, this));
+        }, 250, "swing", function() {
+          $('.eval- modal-assignment-evaluate-container').hide();
+        });
       }
     },
     
