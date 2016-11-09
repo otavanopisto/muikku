@@ -63,7 +63,7 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplies;
   }
   
-  public Long getReplyCountByUserEntityAndReplyStateAndWorkspaceMaterials(Long userEntityId, List<WorkspaceMaterialReplyState> replyStates, List<WorkspaceMaterial> materials) {
+  public Long getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(Long userEntityId, List<WorkspaceMaterialReplyState> replyStates, List<WorkspaceMaterial> materials) {
     return workspaceMaterialReplyDAO.countByUserAndStatesAndMaterials(userEntityId, replyStates, materials);
   }
   

@@ -754,7 +754,7 @@ public class Evaluation2RESTService {
           replyStates.add(WorkspaceMaterialReplyState.FAILED);
           replyStates.add(WorkspaceMaterialReplyState.PASSED);
           replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
-          assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStateAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
+          assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
         }
       }
     }
