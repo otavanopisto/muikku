@@ -90,18 +90,18 @@
     background: $taskBoxHoverColor;
   }
   
-  & .term-full-text,
-  & .counterpart-full-text {
+  &.term-full-text,
+   .counterpart-full-text {
     background-color: #b1e8fe;
     border-radius: 3px;  
-    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
     height: auto;
     left: 0;
     min-height: 56px;
     position: absolute;
-    padding:8px 15px;
+    padding: 8px 15px;
     right: 0;
-    top:0;
+    top: 0;
     z-index: 9;
 
   }
