@@ -557,8 +557,8 @@
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.updateSuccessful"));
                     $(this._activeAssignment).attr('data-evaluated', true);
-                    $(this._activeAssignment).find('.evaluation-date').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
-                    $(this._activeAssignment).find('.grade').text($('#assignmentGrade option:selected').text());
+                    $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+                    $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
                     this._toggleMaterialAssessmentView(false);
                   }
                 }, this));
@@ -582,8 +582,15 @@
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.saveSuccessful"));
               $(this._activeAssignment).attr('data-evaluated', true);
-              $(this._activeAssignment).find('.evaluation-date').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
-              $(this._activeAssignment).find('.grade').text($('#assignmentGrade option:selected').text());
+              var evaluationDateElement = $('<div>')
+                .addClass('assignment-evaluated')
+                .append($('<span>').addClass('assignment-evaluated-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentEvaluatedLabel")))
+                .append($('<span>').addClass('assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate'))));
+              var gradeElement = $('<div>')
+                .addClass('assignment-grade')
+                .append($('<span>').addClass('assignment-grade-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentGradeLabel")))
+                .append($('<span>').addClass('assignment-grade-data').text($('#assignmentGrade option:selected').text()));
+              $(this._activeAssignment).find('.assignment-done').after(gradeElement).after(evaluationDateElement);
               this._toggleMaterialAssessmentView(false);
             }
           }, this));

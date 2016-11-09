@@ -9,14 +9,12 @@
         <span class="assignment-notdone-label">{#localize key="plugin.evaluation.evaluationModal.assignmentNotDoneLabel"/}</span>
       {/submitDate}
     </div>
-  
     {?evaluationDate}
       <div class="assignment-evaluated">
         <span class="assignment-evaluated-label">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"/}</span>
         <span class="assignment-evaluated-data">{evaluationDate|formatDate}</span>
       </div>
     {/evaluationDate}
-    
     {?grade}
       <div class="assignment-grade">
         <span class="assignment-grade-label">{#localize key="plugin.evaluation.evaluationModal.assignmentGradeLabel"/}</span>
@@ -24,7 +22,6 @@
       </div>
     {/grade}
   </div>
-  
   {?submitDate}
     <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
   {/submitDate}
