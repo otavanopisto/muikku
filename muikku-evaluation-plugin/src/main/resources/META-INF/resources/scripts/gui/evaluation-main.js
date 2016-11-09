@@ -135,4 +135,8 @@
     $('.evaluation-cards-container').html(cards);
   });
   
+  $(document).on('click', '.eval-home', function(event) {
+    location.href = location.href.split("?")[0];
+  });
+  
 }).call(this);
