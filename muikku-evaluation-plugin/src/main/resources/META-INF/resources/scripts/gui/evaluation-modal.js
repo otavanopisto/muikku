@@ -304,11 +304,16 @@
     
     _toggleMaterialAssessmentView(show) {
       this._disableModalScrolling();
+      if ($(document).width() > 1023) {
+        var slidePosition = "50%";
+      } else {
+        var slidePosition = "10%"
+      }
       if (show) {
         $('.eval-modal-assignment-evaluate-container')
           .show()
           .animate({
-            left: "50%"
+            left: slidePosition
         }, 300, "swing", $.proxy(function() {
           this._enableModalScrolling();  
         }, this));
