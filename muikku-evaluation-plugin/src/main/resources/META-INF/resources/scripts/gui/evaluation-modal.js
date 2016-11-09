@@ -449,7 +449,7 @@
             $('.button-delete').hide();
             $(this._requestCard).removeAttr('data-evaluated');
             $(this._requestCard).removeClass('evaluated-incomplete evaluated-passed');
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.deleteSuccessful"));
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.deleteSuccessful"));
             this.close();
           }
         }, this));
@@ -478,7 +478,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.updateSuccessful"));
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.updateSuccessful"));
                     this.element.trigger("workspaceAssessmentSaved", {
                       assessment: assessment
                     });
@@ -502,7 +502,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.saveSuccessful"));
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
               this.element.trigger("workspaceAssessmentSaved", {
                 assessment: assessment
               });
