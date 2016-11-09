@@ -81,7 +81,7 @@
               userEntityId: $(requestCard).attr('data-user-entity-id'), 
               studentName: $(requestCard).find('.evaluation-card-student').text(),
               studyProgrammeName: $(requestCard).find('.evaluation-card-study-programme').text(),
-              courseName: $(requestCard).find('.workspace-name').text(),
+              courseName: $(requestCard).attr('data-workspace-name'),
               gradingScales: this._gradingScales||{},
               assessors: staffMembers,
               workspaceUserEntityId: $(requestCard).attr('data-workspace-user-entity-id')
