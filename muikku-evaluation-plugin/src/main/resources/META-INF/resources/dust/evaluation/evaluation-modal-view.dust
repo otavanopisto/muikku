@@ -9,11 +9,11 @@
   </div>
 </section>
 
-<section class="eval-modal-evaluate-container" id="evaluationEvaluateContainer">
+<section class="eval-modal-workspace-evaluate-container" id="evaluationEvaluateContainer">
   <header class="eval-modal-evaluate-header flex-row flex-align-items-center">
     <div class="eval-modal-workspace-name">{courseName}</div>
   </header>
-  <div class="eval-modal-evaluate-content">
+  <div class="eval-modal-evaluate-workspace-content">
   
     {>"evaluation/evaluation-evaluate-workspace-form.dust"/}
     
@@ -25,7 +25,7 @@
     <div class="eval-modal-assignment-title"></div>
     <dic class="eval-modal-assignment-close icon-arrow-right"></div>
   </header>
-  <div class="eval-modal-evaluate-content">
+  <div class="eval-modal-evaluate-assignment-content">
     {>"evaluation/evaluation-evaluate-assignment-form.dust"/}
   </div>
 </section>

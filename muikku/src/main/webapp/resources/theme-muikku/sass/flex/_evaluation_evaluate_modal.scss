@@ -43,13 +43,13 @@
   }
   
   &.icon-arrow-right {
-    border: 1px solid #d522c6;
+    border: 1px solid #fff;
     border-radius: 100%;
-    color: #d522c6;
+    color: #fff;
     font-size: 16px;
     height: 16px;
-    margin: 10px;
-    padding: 6px;
+    margin: 12px;
+    padding: 4px;
     width: 16px;
   }
   
@@ -65,7 +65,7 @@
 }
 
 // WORKSPACE INFO & EVALUATION FORMS <section>
-.eval-modal-evaluate-container {
+.eval-modal-workspace-evaluate-container {
   bottom: 0;
   left: 50%;
   position: absolute;
@@ -79,7 +79,7 @@
   bottom: 0;
   box-shadow: -5px 0 30px rgba(0,0,0,0.25);
   left: 100%;
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
   width: 50%;
@@ -99,7 +99,7 @@
 
 // ASSIGNMENT EVALUATION HEADER <header>
 .eval-modal-assignment-evaluate-header {
-  background: #fff;
+  background: #d522c6;
   min-height: 30px;
   padding: 10px 0;
   position: relative;
@@ -123,7 +123,7 @@
 
 .eval-modal-assignment-title {
   box-sizing: border-box;
-  color: #d522c6;
+  color: #fff;
   display: inline-block;
   font-size: 20px;
   font-weight: 400;
@@ -136,7 +136,8 @@
 }
   
 .eval-modal-assignment-content,
-.eval-modal-evaluate-content {
+.eval-modal-evaluate-workspace-content,
+.eval-modal-evaluate-assignment-content {
   bottom: 0;
   left: 0;
   overflow: auto;
@@ -204,7 +205,7 @@
 }
 
 .eval-modal-evaluate-buttonset {
-  padding: 10px 0 0;
+  padding: 0;
   text-align: center;
   text-transform: uppercase;
 }
@@ -216,7 +217,7 @@
   font-size: 16px;
   line-height: 1;
   padding: 8px 12px;
-  margin: 0 0 0 15px;
+  margin: 15px 0 0 15px;
   
   &.button-cancel {
     background: #7391a7;

@@ -1,7 +1,7 @@
 // REQUESTS (min 1280px)
 @media screen and (min-width: 1280px) {
   
-  .evaluation-request {
+  .evaluation-card {
     max-width: 320px;
     width: calc(25% - 20px);
   }
@@ -11,7 +11,7 @@
 // REQUESTS (901px - 1279px)
 @media screen and (min-width: 901px) and (max-width: 1279px) {
   
-  .evaluation-request {
+  .evaluation-card {
     width: calc(33% - 18px);
   }
   
@@ -20,7 +20,7 @@
 // REQUESTS (600px - 900px)
 @media screen and (min-width: 600px) and (max-width: 900px) {
 
-  .evaluation-request {
+  .evaluation-card {
     width: calc(50% - 20px);
   }
   
@@ -29,7 +29,7 @@
 // REQUESTS (max 599px)
 @media screen and (max-width: 599px) {
   
-  .evaluation-requests-title {
+  .evaluation-card-title {
     
     h3 {
       font-size: 20px;
@@ -37,7 +37,7 @@
     
   }
   
-  .evaluation-request-data-row {
+  .evaluation-card-data-row {
     padding: 2px 0;
     position: relative;
     
@@ -47,11 +47,11 @@
   
   }
   
-  .evaluation-request {
+  .evaluation-card {
     width: calc(100% - 20px);
   }
   
-  .evaluation-request-student {
+  .evaluation-card-student {
     font-size: 16px;
     font-weight: 400;
   }
@@ -78,12 +78,12 @@
 @media screen and (max-width: 1023px) {
 
   .eval-modal-student-container,
-  .eval-modal-evaluate-container {
+  .eval-modal-workspace-evaluate-container {
     position: static;
   }
   
   .eval-modal-assignment-content, 
-  .eval-modal-evaluate-content {
+  .eval-modal-evaluate-workspace-content {
     bottom: auto;
     left: auto;
     position: relative;
