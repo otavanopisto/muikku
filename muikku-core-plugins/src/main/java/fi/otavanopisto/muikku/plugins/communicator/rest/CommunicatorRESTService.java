@@ -129,6 +129,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserInboxMessages(
       @QueryParam("labelId") Long labelId,
+      @QueryParam("onlyUnread") @DefaultValue ("false") Boolean onlyUnread,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity();
@@ -144,9 +145,9 @@ public class CommunicatorRESTService extends PluginRESTService {
       
     List<CommunicatorMessage> receivedItems;
     if (label != null)
-      receivedItems = communicatorController.listReceivedItems(user, label, firstResult, maxResults);
+      receivedItems = communicatorController.listReceivedItems(user, label, onlyUnread, firstResult, maxResults);
     else
-      receivedItems = communicatorController.listReceivedItems(user, firstResult, maxResults);
+      receivedItems = communicatorController.listReceivedItems(user, onlyUnread, firstResult, maxResults);
 
     List<CommunicatorThreadRESTModel> result = new ArrayList<CommunicatorThreadRESTModel>();
     
