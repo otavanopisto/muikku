@@ -43,9 +43,9 @@
   }
   
   &.icon-arrow-right {
-    border: 1px solid #fff;
+    border: 1px solid #d522c6;
     border-radius: 100%;
-    color: #fff;
+    color: #d522c6;
     font-size: 16px;
     height: 16px;
     margin: 12px;
@@ -77,7 +77,7 @@
 .eval-modal-assignment-evaluate-container {
   background: #fff;
   bottom: 0;
-  box-shadow: -5px 0 30px rgba(0,0,0,0.25);
+  display: none;
   left: 100%;
   position: fixed;
   right: 0;
@@ -99,7 +99,7 @@
 
 // ASSIGNMENT EVALUATION HEADER <header>
 .eval-modal-assignment-evaluate-header {
-  background: #d522c6;
+  background: #fff;
   min-height: 30px;
   padding: 10px 0;
   position: relative;
@@ -123,7 +123,7 @@
 
 .eval-modal-assignment-title {
   box-sizing: border-box;
-  color: #fff;
+  color: #d522c6;
   display: inline-block;
   font-size: 20px;
   font-weight: 400;

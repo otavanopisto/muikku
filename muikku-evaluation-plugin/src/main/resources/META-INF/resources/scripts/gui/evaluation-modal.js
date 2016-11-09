@@ -307,8 +307,10 @@
       // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
         var slidePosition = 50;
+        var boxShadow = "-5px 0 30px rgba(0,0,0,0.25)";
       } else {
         var slidePosition = 2;
+        var boxShadow = "-5px 0 30px rgba(0,0,0,1)";
       }
       
       if (show) {
@@ -316,24 +318,27 @@
         $('.eval-modal-assignment-evaluate-container')
           .show()
           .css({
-            width: 100 - slidePosition + "%"
+            width: 100 - slidePosition + "%",
           })
           .animate({
             left: slidePosition + "%"
         }, 300, "swing", function() {
-          
+          $(this).css({
+            "box-shadow" : boxShadow
+          });
         });
       }
       else {
         this._enableModalScrolling();
         $('.eval-modal-assignment-evaluate-container')
           .css({
-            width: 100 - slidePosition + "%"
+            width: 100 - slidePosition + "%",
+            "box-shadow" : "none"
           })
           .animate({
             left: "100%"
         }, 250, "swing", function() {
-          $('.eval- modal-assignment-evaluate-container').hide();
+          $('.eval-modal-assignment-evaluate-container').hide();
         });
       }
     },
@@ -550,6 +555,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.updateSuccessful"));
                     $(this._activeAssignment).attr('data-evaluated', true);
                     this._toggleMaterialAssessmentView(false);
                   }
@@ -572,6 +578,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.saveSuccessful"));
               $(this._activeAssignment).attr('data-evaluated', true);
               this._toggleMaterialAssessmentView(false);
             }
