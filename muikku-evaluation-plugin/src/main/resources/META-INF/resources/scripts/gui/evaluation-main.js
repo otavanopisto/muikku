@@ -32,7 +32,9 @@
           else {
             // Default sort by lowest assessment request date first
             assessmentRequests.sort(function (a, b) {
-              return Date.parse(a.assessmentRequestDate) > Date.parse(b.assessmentRequestDate);
+              var a = Date.parse(a.assessmentRequestDate);
+              var b = Date.parse(b.assessmentRequestDate);
+              return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
             });
             for (var i = 0; i < assessmentRequests.length; i++) {
               assessmentRequests[i] = $.extend({}, assessmentRequests[i], {workspaceMode: workspaceEntityId});
@@ -133,6 +135,10 @@
       return a < b ? 1 : a > b ? -1 : 0;
     });
     $('.evaluation-cards-container').html(cards);
+  });
+  
+  $(document).on('click', '.eval-home', function(event) {
+    location.href = location.href.split("?")[0];
   });
   
 }).call(this);

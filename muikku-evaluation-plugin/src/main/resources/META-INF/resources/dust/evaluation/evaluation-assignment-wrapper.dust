@@ -11,6 +11,8 @@
     </div>
   </div>
   <!-- TODO optional {evaluationDate} + {grade} -->
-  <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
+  {?submitDate}
+    <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
+  {/submitDate}
   <div class="assignment-content" data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-path="{path}" data-open="false" data-loaded="false"></div>
 </div>
