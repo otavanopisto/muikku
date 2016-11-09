@@ -757,6 +757,7 @@ public class Evaluation2RESTService {
     UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(compositeAssessmentRequest.getUserIdentifier());
     RestAssessmentRequest restAssessmentRequest = new RestAssessmentRequest();
     restAssessmentRequest.setWorkspaceUserEntityId(workspaceUserEntity == null ? null : workspaceUserEntity.getId());
+    restAssessmentRequest.setWorkspaceUserIdentifier(compositeAssessmentRequest.getCourseStudentIdentifier().toId());
     restAssessmentRequest.setUserEntityId(userEntity == null ? null : userEntity.getId());
     restAssessmentRequest.setAssessmentRequestDate(compositeAssessmentRequest.getAssessmentRequestDate());
     restAssessmentRequest.setEvaluationDate(compositeAssessmentRequest.getEvaluationDate());

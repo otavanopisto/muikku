@@ -249,16 +249,18 @@
     },
     
     _onWorkspaceAssessmentSaved: function(event, data) {
-      var assessment = data.assessment;
-      this._workspaceAssessmentSaved = true; 
-      if (assessment.passing) {
-        $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
-      }
-      else {
-        $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
-      }
-      $(this._requestCard).attr('data-evaluated', true);
-      this.close();
+      this.confirmStudentArchive(this._requestCard, $.proxy(function() {
+        var assessment = data.assessment;
+        this._workspaceAssessmentSaved = true; 
+        if (assessment.passing) {
+          $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+        }
+        else {
+          $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+        }
+        $(this._requestCard).attr('data-evaluated', true);
+        this.close();
+      }, this));
     },
     
     setActiveAssignment: function(assignment) {
@@ -350,6 +352,61 @@
             $('.button-delete').show();
           }
         }, this));
+    },
+
+    confirmStudentArchive: function(card, callback) {
+      var workspaceEntityId = $(card).attr('data-workspace-entity-id');
+      var workspaceUserIdentifier = $(card).attr('data-workspace-user-identifier');
+      var studentName = $(card).find('.evaluation-card-student').text();
+      renderDustTemplate('evaluation/evaluation-archive-student-confirm.dust', {studentName: studentName}, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          resizable : false,
+          width : 560,
+          dialogClass : "evaluation-archive-student-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-remove-text'),
+            'class' : 'remove-button',
+            'click' : function(event) {
+              mApi().workspace.workspaces.students
+                .read(workspaceEntityId, workspaceUserIdentifier)
+                .callback($.proxy(function (err, workspaceUserEntity) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  else {
+                    workspaceUserEntity.archived = true;
+                    mApi().workspace.workspaces.students
+                      .update(workspaceEntityId, workspaceUserIdentifier, workspaceUserEntity)
+                      .callback($.proxy(function (err, html) {
+                        if (err) {
+                          $('.notification-queue').notificationQueue('notification', 'error', err);
+                        }
+                        else {
+                          $(card).remove();
+                          $(this).dialog("destroy").remove();
+                          if (callback) {
+                            callback();
+                          }
+                        }
+                      }, this));
+                  }
+                }, this));
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+              if (callback) {
+                callback();
+              }
+            }
+          } ]
+        });
+      }, this));
     },
     
     _confirmAssessmentDeletion: function(callback) {
@@ -507,6 +564,11 @@
           }, this));
       }
     }
+  });
+
+  $(document).on('click', '.archive-button', function (event) {
+    var card = $(event.target).closest('.evaluation-card');
+    $(document).evaluationModal('confirmStudentArchive', card);
   });
   
   $(document).on('click', '.assignment-title-wrapper', function (event) {

@@ -124,12 +124,21 @@ public class RestAssessmentRequest {
     this.workspaceUserEntityId = workspaceUserEntityId;
   }
 
+  public String getWorkspaceUserIdentifier() {
+    return workspaceUserIdentifier;
+  }
+
+  public void setWorkspaceUserIdentifier(String workspaceUserIdentifier) {
+    this.workspaceUserIdentifier = workspaceUserIdentifier;
+  }
+
   private Long userEntityId;
   private String firstName;
   private String lastName;
   private String studyProgramme;
   private Long workspaceEntityId;
   private Long workspaceUserEntityId;
+  private String workspaceUserIdentifier;
   private String workspaceName;
   private String workspaceNameExtension;
   private String workspaceUrlName;
