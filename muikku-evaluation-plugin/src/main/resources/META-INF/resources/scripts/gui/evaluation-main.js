@@ -14,7 +14,6 @@
       this.element.trigger("loadStart", $('.evaluation-cards-container'));
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       
-      // View title (TODO localize)
       if (workspaceEntityId) {
         $('.evaluation-cards-title h3').text($('#workspaceName').val());
       }
