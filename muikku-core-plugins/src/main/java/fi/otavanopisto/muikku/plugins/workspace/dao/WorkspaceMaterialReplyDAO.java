@@ -50,7 +50,7 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  public Long countByUserAndStateAndMaterials(Long userEntityId, WorkspaceMaterialReplyState replyState, List<WorkspaceMaterial> materials) {
+  public Long countByUserAndStatesAndMaterials(Long userEntityId, List<WorkspaceMaterialReplyState> replyStates, List<WorkspaceMaterial> materials) {
     if (materials == null || materials.isEmpty()) {
       return 0L;
     }
@@ -62,7 +62,7 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.userEntityId), userEntityId),
-        criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.state), replyState),
+        root.get(WorkspaceMaterialReply_.state).in(replyStates),
         root.get(WorkspaceMaterialReply_.workspaceMaterial).in(materials)
       )
     );

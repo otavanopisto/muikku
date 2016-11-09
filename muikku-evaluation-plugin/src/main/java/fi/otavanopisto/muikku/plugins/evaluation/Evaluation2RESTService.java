@@ -272,8 +272,11 @@ public class Evaluation2RESTService {
       String grade = null;
       if (userEntity != null) {
         WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-        if (workspaceMaterialReply != null && workspaceMaterialReply.getState() == WorkspaceMaterialReplyState.SUBMITTED) {
-          submitted = workspaceMaterialReply.getLastModified();
+        if (workspaceMaterialReply != null) {
+          WorkspaceMaterialReplyState replyState = workspaceMaterialReply.getState();
+          if (replyState != WorkspaceMaterialReplyState.UNANSWERED && replyState != WorkspaceMaterialReplyState.WITHDRAWN) {
+            submitted = workspaceMaterialReply.getLastModified();
+          }
         }
         WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
         if (workspaceMaterialEvaluation != null) {
@@ -746,10 +749,12 @@ public class Evaluation2RESTService {
           logger.severe(String.format("UserEntity not found for AssessmentRequest student %s not found", compositeAssessmentRequest.getUserIdentifier()));
         }
         else {
-          assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStateAndWorkspaceMaterials(
-              userEntity.getId(),
-              WorkspaceMaterialReplyState.SUBMITTED,
-              evaluatedAssignments);
+          List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
+          replyStates.add(WorkspaceMaterialReplyState.ANSWERED);
+          replyStates.add(WorkspaceMaterialReplyState.FAILED);
+          replyStates.add(WorkspaceMaterialReplyState.PASSED);
+          replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
+          assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStateAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
         }
       }
     }
