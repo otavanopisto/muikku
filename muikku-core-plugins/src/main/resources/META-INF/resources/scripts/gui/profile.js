@@ -1,4 +1,42 @@
 (function() {
+
+  function changeAddressMunicipality() {
+
+    mApi({async: false}).user.students.addresses.read(MUIKKU_LOGGED_USER).callback(function(err, addresses) {
+      renderDustTemplate(
+          'profile/profile-change-address-hometown.dust',
+          {
+            address: '',
+            hometown: ''
+          },
+          function (text) {
+            var dialog = $(text);
+            $(text).dialog({
+              modal: true, 
+              resizable: false,
+              width: 400,
+              dialogClass: "profile-change-address-hometown-dialog",
+              buttons: [{
+                'text': dialog.data('button-send-text'),
+                'class': 'send-button',
+                'click': function(event) {
+                  
+                  var erronous = false;
+
+                  if (!erronous)
+                    $(this).dialog().remove();
+                }
+              }, {
+                'text': dialog.data('button-cancel-text'),
+                'class': 'cancel-button',
+                'click': function(event) {
+                  $(this).dialog().remove();
+                }
+              }]
+          });
+      });
+    });
+  }
   
   function changePassword() {
     var username = "";
@@ -73,6 +111,10 @@
   
   $(document).on('click', '.profile-change-password', function (event, data) {
     changePassword();
+  });
+
+  $(document).on('click', '.profile-change-address-hometown', function (event, data) {
+    changeAddressMunicipality();
   });
   
 }).call(this);

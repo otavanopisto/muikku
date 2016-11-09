@@ -570,6 +570,37 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(createRestModel(addresses.toArray(new UserAddress[0]))).build();
   }
 
+  @PUT
+  @Path("/students/{ID}/addresses/{ADDRESSID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateStudentAddress(
+      @PathParam("ID") String id,
+      @PathParam("ADDRESSID") String addressId,
+      StudentAddress studentAddress
+  ) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+    
+    if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.UPDATE_STUDENT_ADDRESS)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    return Response.ok().build();
+  }
+
   @GET
   @Path("/students/{ID}/transferCredits")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

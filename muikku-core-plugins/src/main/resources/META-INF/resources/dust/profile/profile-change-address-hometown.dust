@@ -1,0 +1,16 @@
+<div class="profile-change-password-confirm-dialog"
+     title="{#localize key="plugin.profile.changeAddressMunicipality.dialog.title"/}"
+     data-button-send-text="{#localize key="plugin.profile.changeAddressMunicipality.dialog.button.sendLabel"/}"
+     data-button-cancel-text="{#localize key="plugin.profile.changeAddressMunicipality.dialog.button.cancelLabel"/}">
+  {#localize key="plugin.profile.changeAddressMunicipality.dialog.desription"/}
+  
+  <div class="profile-change-address-municipality-dialog-form-wrapper">
+    <form id="profile-change-address-municipality-form" name="profile-change-address-municipality-form">
+      <label for="profile-change-address-municipality-address">{#localize key="plugin.profile.changeAddressMunicipality.dialog.addressField.label"/}</label>
+      <textarea name="address" id="profile-change-address-municipality-address" />{address}</textarea>
+
+      <label for="profile-change-address-municipality-municipality">{#localize key="plugin.profile.changeAddressMunicipality.dialog.municipalityField.label"/}</label>
+      <input type="text" name="municipality" id="profile-change-address-municipality-municipality" value="{municipality}" />
+    </form>
+  </div>
+</div>
