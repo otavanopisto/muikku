@@ -31,14 +31,10 @@ after_script:
 #- if [ $use_sc = true ]; then c=0; while kill -0 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
 env:
   global:
-  - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
-  - secure: HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw=
-  - secure: adbMocvLB0LZo7WyS3BsMyYAhKIUHUEapkIbZ0PgfZmG1BLLKwNpMvhhlOT5e8g1HkC2CPSlFQyfR5wNv4nH5kR0BwbiScA/QZK/Z3dLUWvSp+GvaKhRfW3G6BDPmyfwlDbjyewlG0fchd3gDqrNgiw3nI5asWyyQADkFPaFWU8=
-  - secure: MHUFp5/FFXS8kW2iCl5G5Pr122QmN9FvbRGQX1GwDuNqOtTQHNMsYmcpEit0B5dhLnjl85nuF3IMhYyuw85MJaLlJrRCP1lcWWB5eNCyxsWgWdESmZ17erIifsK0i7QD8ai/yYGf8xtE5kys62T3URqzaK7P2Vyxhv6vgFSd7eI=
-  - secure: cc3anD5A6j9z7m0srEOma8PdZjIkkyGjqKBWB0YorT38yOq1D5A+Tt4dReTxurVdiO6DYiJpcwZQ2kxwzPOgjTnydf+e4fOjxn7KrhKSd491vFtu7lfc2RYyVEYHu9XEE7T10hIqXuTNFRslwBSWq6RQLCJAIKL1CUKrBYyaNb8=
-  - secure: M42u24iv0SCErRMdx8m59k3dp2bC1jRWtaeXXBWd+iK/SZWO3TrA0efUpGm3rP4/1vqTmulQ8WL0G1VkSX2dMXL7iD8SpN/4gORqkC/B7y4zG0/7cjVxsHLCG1ndcuvCIIiCupO9S8f+qWZVv4Kqcf+l2PvXR06mcxNrRB2O8GM=
-  - secure: LZViiGyq2B/NfKRByoaA5AumTd0tpS0AaH03sRebV6MF9kcyeWJC+Idv8EyYttyed9GLQM0Qk6aVvvop3dguJNNOMnrKAFoxN4u09QDG+o8IuQiCzFQmEtXBipP+08lqsgn7wfVBD4MyhWHrmJeatq1C/So4IkaMwaYvq6eo7A4=
-  - secure: QmDnYj3Lb3nMzyKDkGShAU2N3TOt1Bn0ku2KokVD+y3Q7lTdcfdvMCeBiFI7qPDrWU9bPaiTRh0+/sMWLM7J0aFg8e7OljqJrArKSB+i3leTl+/L/x9cplESMjV5u5cjtsUCmGX3ywSfhpwlGzkILVFl3ZE2eI2e2+OoOfZrezY=
+  - secure: "aOQe+UgT52sFJnbyeYfdAcgDu910G6G1UKVV2YIOVrjtR0PvYxwztrMOZjnECBtcxAZqLCA57Ao17yuPj0LXP258jeJbufofeSYe7ZBAi5OUQCvp4UsSFMQKsglxgM6xXrpw9jhr9PJXjYpmv5oPtTynjNCQClYCMIFgPiQyXp0="
+  - secure: "ZwuYi1pzg9afqyNK08retl3QXDJAC1DStoUZHi2FLTMq6c3txN0d+9wvNDihwElpo25g2t77JvuHTOXIrjPjebZL/XqK502Wqp87EYFP1PCi7GiusDGQU2oLNPwhYdaaxXS8UBVCZnOZ4evpDVkQRw7X/U+qRWfNQ3b2S37YVo4="
+  - secure: "ZUGm2KI0kaU+wJAQrZHZYjFIMK3NhzZQOwPui2WtN8r3Fj+u8WCumg8xVTFRV6izy0QTCd5ar9h99Ai5TQ6IO3IxHHZo+M+91m2vt/HHLgn3OX9O+ZeziWBeO1zT8EFhNCKuzNd/3GvnkxGSvH/bd0oTqfLcfQwF/UpQD6HsYlw="
+  - secure: "dmZstaaXxaB6uxPWB6V6jnkaxFL1oOnCnRXF8xvW9e8sda3IKgGcX22TXJbqqpZKZfFHRHWS2FjpkjxcyBacQBpnKGmOqHFvZQwI6Ac5ZdecWbPgJfAP8OJLRdGC13wUhbD44j2qerTC+E3byjRtBhvoZwVSTkvhM9WjPkGJUk0="
   matrix:
   - goals=verify run=always perform_release=true it_profile=rest-it findbugs_skip=false use_sc=false
 
