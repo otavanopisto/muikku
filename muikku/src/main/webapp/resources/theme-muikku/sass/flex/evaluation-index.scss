@@ -89,6 +89,7 @@ body {
     }
     
     &.icon-search {
+      display: none; // Hidden until search is implemented
       font-size: 32px;
       height: 32px;
       padding: 10px;
