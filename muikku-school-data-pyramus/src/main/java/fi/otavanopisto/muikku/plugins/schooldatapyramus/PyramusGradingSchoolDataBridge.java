@@ -337,7 +337,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null;
     }
     else {
-      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE);
+      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
       return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
     }
   }
@@ -457,7 +457,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE);
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
 
