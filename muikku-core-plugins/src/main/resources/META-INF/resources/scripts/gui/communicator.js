@@ -1207,7 +1207,7 @@
                   }, this));
                 }
                 
-                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients | 0)) > 0;
+                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
               }
               
               var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
