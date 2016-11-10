@@ -1185,15 +1185,13 @@
               
               if (this.options.mode == "replyall") {
                 // Add all the recipients
-                if (message.senderId === MUIKKU_LOGGED_USER_ID) {
-                  $.each(message.recipients,  $.proxy(function (index, recipient) {
-                    var recipientFullName = recipient.firstName + " " + recipient.lastName;
-                    
-                    if (recipient.userId != message.senderId) {
-                      this._addRecipient('USER', recipient.userId, recipientFullName);
-                    }
-                  }, this));
-                }
+                $.each(message.recipients,  $.proxy(function (index, recipient) {
+                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
+                  
+                  if (recipient.userId != message.senderId) {
+                    this._addRecipient('USER', recipient.userId, recipientFullName);
+                  }
+                }, this));
                 
                 // Add all the usergroups if the user is allowed to message groups
                 if (this.options.groupMessagingPermission == true) {
@@ -1208,6 +1206,8 @@
                     this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
                   }, this));
                 }
+                
+                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients | 0)) > 0;
               }
               
               var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
@@ -1415,7 +1415,20 @@
           return false;
         }
         
-        if (this.options.replyThreadId) {
+        var replyThreadId = this.options.replyThreadId;
+        if (replyThreadId) {
+          // Replying to a message that was group message but isn't anymore will be directed to new thread
+          if (this.options.replyToGroupMessage) {
+            var len1 = payload.recipientGroupIds.length | 0;
+            var len2 = payload.recipientStudentsWorkspaceIds.length | 0;
+            var len3 = payload.recipientTeachersWorkspaceIds.length | 0;
+            
+            if (len1 + len2 + len3 == 0)
+              replyThreadId = undefined;
+          }
+        }
+        
+        if (replyThreadId) {
           mApi().communicator.messages
           .create(this.options.replyThreadId, payload)
           .callback($.proxy(function (err, result) {
