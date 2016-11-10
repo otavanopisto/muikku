@@ -35,11 +35,16 @@
               var b = Date.parse(b.assessmentRequestDate);
               return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
             });
-            for (var i = 0; i < assessmentRequests.length; i++) {
-              assessmentRequests[i] = $.extend({}, assessmentRequests[i], {workspaceMode: workspaceEntityId});
-              renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
-                $(requestContainer).append(html);
-              }, this));
+            if (assessmentRequests.length == 0) {
+              $(requestContainer).append($('<div>').text('räyh...'));
+            }
+            else {
+              for (var i = 0; i < assessmentRequests.length; i++) {
+                assessmentRequests[i] = $.extend({}, assessmentRequests[i], {workspaceMode: workspaceEntityId});
+                renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
+                  $(requestContainer).append(html);
+                }, this));
+              }
             }
             this.element.trigger("loadEnd", $('.evaluation-cards-container'));
           }
