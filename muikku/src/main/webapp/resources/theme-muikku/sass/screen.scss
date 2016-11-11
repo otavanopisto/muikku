@@ -1,8 +1,6 @@
-/* Lets import all the necessary support files */
-
 @import "fonts";
 @import "textcontent";
-@import "base"; /* Has to be loaded 1st, has all the mixins */
+@import "base";
 @import "animations";
 @import "commons";
 @import "forms";

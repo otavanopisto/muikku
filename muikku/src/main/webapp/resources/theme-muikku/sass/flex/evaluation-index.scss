@@ -215,6 +215,14 @@ body {
     box-shadow: 0 0 2px rgba(0, 204, 255, 0.2);
   }
   
+  &.frontpage .evaluation-card-data {
+    min-height: 180px;
+  }
+  
+  &.workspace .evaluation-card-data {
+    min-height: 140px;
+  }
+  
 }
 
 .evaluation-card-title {
@@ -240,14 +248,6 @@ body {
   position: relative;
 }
 
-.evaluation-card.frontpage .evaluation-card-data {
-  min-height: 180px;
-}
-
-.evaluation-card.workspace .evaluation-card-data {
-  min-height: 140px;
-}
-
 .evaluation-card-data-row {
   padding: 1px 0;
   position: relative;
@@ -262,13 +262,9 @@ body {
   }
 
   a {
+   color: $link;
     font-size: 14px;
     font-weight: 400;
-    color: $link;
-  }
-  
-  .evaluation-card-data-label {
-  
   }
   
   .evaluation-card-data-text {
