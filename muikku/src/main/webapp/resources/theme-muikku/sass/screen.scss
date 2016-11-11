@@ -23,15 +23,9 @@
 @import "dialog";
 @import "connectionlost";
 @import "generic_context-view";
-
-
-/* CKEditor css rules for modals and form element plugins */
-@import "_custom-ckeditor-dialog";
-@import "_custom-ckeditor-selection-checkbox";
-
-/* jQuery ui custom */
-@import "_custom-jqueryui";
-/* Note: All in-development- unfinished-temp-styles are in temp.css */
+@import "custom-ckeditor-dialog";
+@import "custom-ckeditor-selection-checkbox";
+@import "custom-jqueryui";
 
 html {
   height: 100%;
