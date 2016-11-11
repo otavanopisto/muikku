@@ -9,6 +9,7 @@
       this.element.on("loadStart", $.proxy(this._onLoadStart, this));
       this.element.on("loadEnd", $.proxy(this._onLoadEnd, this));
       this.element.on("discardCard", $.proxy(this._onDiscardCard, this));
+      this.element.on("cardStateChange", $.proxy(this._onCardStateChange, this))
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
@@ -38,7 +39,24 @@
             });
             if (assessmentRequests.length > 0) {
               for (var i = 0; i < assessmentRequests.length; i++) {
-                assessmentRequests[i] = $.extend({}, assessmentRequests[i], {workspaceMode: workspaceEntityId});
+                var requestDate = assessmentRequests[i].assessmentRequestDate;
+                var evaluationDate = assessmentRequests[i].evaluationDate;
+                var isRequest = false;
+                var isEvaluated = false;
+                var cardStateClass = '';
+                if ((requestDate && evaluationDate && requestDate > evaluationDate) || (requestDate && !evaluationDate)) {
+                  cardStateClass = 'evaluation-requested';
+                  isRequest = true;
+                }
+                else if (evaluationDate) {
+                  cardStateClass = assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-incomplete';
+                  isEvaluated = true;
+                }
+                assessmentRequests[i] = $.extend({}, assessmentRequests[i], {
+                  workspaceMode: workspaceEntityId,
+                  cardStateClass: cardStateClass,
+                  isRequest: isRequest,
+                  isEvaluated: isEvaluated});
                 renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
                   $(requestContainer).append(html);
                 }, this));
@@ -70,6 +88,45 @@
       $('.evaluation-card[data-workspace-user-entity-id="' + workspaceUserEntityId + '"]').remove();
       if (!$('.evaluation-card').length && workspaceEntityId === undefined) {
         this._showNoCardsMessage();
+      }
+    },
+    _onCardStateChange: function(event, data) {
+      if (data.evaluated) {
+        $(data.card).attr('data-evaluated', true);
+        $(data.card).removeClass('evaluation-requested');
+        if (data.passing) {
+          $(data.card).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+        }
+        else {
+          $(data.card).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+        }
+        $(data.card).find('.request-row').removeClass('highlight');
+        var evaluationRow = $(data.card).find('.evaluation-row');
+        if (evaluationRow.length) {
+          $(evaluationRow).addClass('highlight');
+          $(evaluationRow).find('.evaluation-card-data-text').text(formatDate(data.evaluationDate));
+        }
+        else {
+          evaluationRow = $('<div>')
+            .addClass('evaluation-card-data-row evaluation-row highlight')
+            .append($('<span>').addClass('evaluation-card-data-label').text(getLocaleText('plugin.evaluation.card.evaluatedLabel')))
+            .append($('<span>').addClass('evaluation-card-data-text').text(formatDate(data.evaluationDate)))
+          $(data.card).find('.request-row').after(evaluationRow);
+        }
+        $(data.card).find('.archive-button').show();
+      }
+      else {
+        $(data.card).removeClass('evaluated-passed evaluation-incomplete');
+        $(data.card).find('.archive-button').hide();
+        $(data.card).find('.evaluation-row').remove();
+        $(data.card).removeAttr('data-evaluated');
+        if ($(data.card).attr('data-assessment-request-date')) {
+          $(data.card).find('.request-row').addClass('highlight');
+          $(data.card).addClass('evaluation-requested');
+        }
+        else {
+          $(data.card).removeClass('evaluation-requested');
+        }
       }
     },
     _showNoCardsMessage: function() {

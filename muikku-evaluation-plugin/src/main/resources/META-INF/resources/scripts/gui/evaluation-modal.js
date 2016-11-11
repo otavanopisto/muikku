@@ -252,13 +252,11 @@
       this.confirmStudentArchive(this._requestCard, $.proxy(function(archived) {
         var assessment = data.assessment;
         this._workspaceAssessmentSaved = true; 
-        if (assessment.passing) {
-          $(this._requestCard).removeClass('evaluated-incomplete').addClass('evaluated-passed');
-        }
-        else {
-          $(this._requestCard).removeClass('evaluated-passed').addClass('evaluated-incomplete');
-        }
-        $(this._requestCard).attr('data-evaluated', true);
+        this.element.trigger("cardStateChange", {
+          card: $(this._requestCard),
+          evaluated: true,
+          passing: assessment.passing,
+          evaluationDate: new Date(moment(assessment.assessmentDate))});
         this.close();
       }, this));
     },
@@ -465,8 +463,7 @@
           }
           else {
             $('.button-delete').hide();
-            $(this._requestCard).removeAttr('data-evaluated');
-            $(this._requestCard).removeClass('evaluated-incomplete evaluated-passed');
+            this.element.trigger("cardStateChange", {card: $(this._requestCard), evaluated: false});
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.deleteSuccessful"));
             this.close();
           }
