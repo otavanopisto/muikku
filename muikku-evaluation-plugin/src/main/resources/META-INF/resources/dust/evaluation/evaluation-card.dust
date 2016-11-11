@@ -5,20 +5,18 @@
       <div class="evaluation-card-study-programme">{studyProgramme}</div>
     </div>
     <div class="evaluation-card-data">
-      <div class="evaluation-card-data-row">
+      <div class="evaluation-card-data-row enrollment-row {^isRequest}{^isEvaluated}highlight{/isEvaluated}{/isRequest}">
         <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.joinedWorkspaceLabel"/}</span>
         <span class="evaluation-card-data-text">{enrollmentDate|formatDate}</span>
       </div>
       <div class="evaluation-card-data-row request-row {?isRequest}highlight{/isRequest}">
         <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluationRequestedLabel"/}</span>
-        <span class="evaluation-card-data-text">{assessmentRequestDate|formatDate}</span>
+        <span class="evaluation-card-data-text">{?assessmentRequestDate}{assessmentRequestDate|formatDate}{:else}-{/assessmentRequestDate}</span>
       </div>
-      {?evaluationDate}
-        <div class="evaluation-card-data-row evaluation-row {?isEvaluated}highlight{/isEvaluated}">
-          <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluatedLabel"/}</span>
-          <span class="evaluation-card-data-text">{evaluationDate|formatDate}</span>
-        </div>
-      {/evaluationDate}
+      <div class="evaluation-card-data-row evaluation-row {?isEvaluated}highlight{/isEvaluated}">
+        <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluatedLabel"/}</span>
+        <span class="evaluation-card-data-text">{?evaluationDate}{evaluationDate|formatDate}{:else}-{/evaluationDate}</span>
+      </div>
       <div class="evaluation-card-data-row">
         <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.assignmentsDoneLabel"/}</span>
         <span class="evaluation-card-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
@@ -41,20 +39,18 @@
           <a href="/evaluation2?workspaceEntityId={workspaceEntityId}">{workspaceName}{#workspaceNameExtension} ({workspaceNameExtension}){/workspaceNameExtension}</a>
         </div>
       </div>
-      <div class="evaluation-card-data-row">
+      <div class="evaluation-card-data-row enrollment-row {^isRequest}{^isEvaluated}highlight{/isEvaluated}{/isRequest}">
         <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.joinedWorkspaceLabel"/}</span>
         <span class="evaluation-card-data-text">{enrollmentDate|formatDate}</span>
       </div>
       <div class="evaluation-card-data-row request-row {?isRequest}highlight{/isRequest}">
         <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluationRequestedLabel"/}</span>
-        <span class="evaluation-card-data-text">{assessmentRequestDate|formatDate}</span>
+        <span class="evaluation-card-data-text">{?assessmentRequestDate}{assessmentRequestDate|formatDate}{:else}-{/assessmentRequestDate}</span>
       </div>
-      {?evaluationDate}
-        <div class="evaluation-card-data-row evaluation-row {?isEvaluated}highlight{/isEvaluated}">
-          <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluatedLabel"/}</span>
-          <span class="evaluation-card-data-text">{evaluationDate|formatDate}</span>
-        </div>
-      {/evaluationDate}
+      <div class="evaluation-card-data-row evaluation-row {?isEvaluated}highlight{/isEvaluated}">
+        <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.evaluatedLabel"/}</span>
+        <span class="evaluation-card-data-text">{?evaluationDate}{evaluationDate|formatDate}{:else}-{/evaluationDate}</span>
+      </div>
       <div class="evaluation-card-data-row">
         <span class="evaluation-card-data-label">{#localize key="plugin.evaluation.card.assignmentsDoneLabel"/}</span>
         <span class="evaluation-card-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>

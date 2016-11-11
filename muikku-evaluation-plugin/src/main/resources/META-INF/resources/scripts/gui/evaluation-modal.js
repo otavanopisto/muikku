@@ -49,7 +49,6 @@
       
       this._requestCard = requestCard;
       this._discardOnSave = discardOnSave;
-      this._workspaceAssessmentSaved = false;
       this._activeAssignment = null;
       
       this._evaluationModal = $('<div>')
@@ -152,9 +151,6 @@
     
     close: function() {
       $('body').removeClass('no-scroll');
-      if (this._discardOnSave && this._workspaceAssessmentSaved) {
-        this.element.trigger("discardCard", {workspaceUserEntityId: $(this._requestCard).attr('data-workspace-user-entity-id')});
-      }
       this._evaluationModal.remove();
     },
 
@@ -251,12 +247,16 @@
     _onWorkspaceAssessmentSaved: function(event, data) {
       this.confirmStudentArchive(this._requestCard, $.proxy(function(archived) {
         var assessment = data.assessment;
-        this._workspaceAssessmentSaved = true; 
-        this.element.trigger("cardStateChange", {
-          card: $(this._requestCard),
-          evaluated: true,
-          passing: assessment.passing,
-          evaluationDate: new Date(moment(assessment.assessmentDate))});
+        if (archived === true || this._discardOnSave === true) {
+          this.element.trigger("discardCard", {workspaceUserEntityId: $(this._requestCard).attr('data-workspace-user-entity-id')});          
+        }
+        else {
+          this.element.trigger("cardStateChange", {
+            card: $(this._requestCard),
+            evaluated: true,
+            passing: assessment.passing,
+            evaluationDate: new Date(moment(assessment.assessmentDate))});
+        }
         this.close();
       }, this));
     },
@@ -598,7 +598,7 @@
     var card = $(event.target).closest('.evaluation-card');
     $(document).evaluationModal('confirmStudentArchive', card, $.proxy(function(archived) {
       if (archived) {
-        this.element.trigger("discardCard", {workspaceUserEntityId: $(card).attr('data-workspace-user-entity-id')});
+        $(document).trigger("discardCard", {workspaceUserEntityId: $(card).attr('data-workspace-user-entity-id')});
       }
     }, this));
   });
