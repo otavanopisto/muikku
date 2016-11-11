@@ -1,16 +1,16 @@
-@import "vars.scss";
+@import "vars";
 @import "vars_backup";
-@import "styles.scss";
-@import "custom-ckeditor-styles.scss";
-@import "connect-field.scss";
-@import "organizer-field.scss";
-@import "sorter-field.scss";
-@import "file-field.scss";
-@import "audio-field.scss";
-@import "workspace-materials-defaults.scss"; 
-@import "correct_answers.scss"; 
-@import "ckeditor_theme.scss";
-@import "workspace_print.scss";
+@import "styles";
+@import "custom-ckeditor-styles";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "file-field";
+@import "audio-field";
+@import "workspace-materials-defaults"; 
+@import "correct_answers"; 
+@import "ckeditor_theme";
+@import "workspace_print";
 
 
 .lazy-pdf {

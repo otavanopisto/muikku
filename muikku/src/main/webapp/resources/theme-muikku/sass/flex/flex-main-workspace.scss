@@ -1,14 +1,14 @@
-@import "fonts.scss";
-@import "vars.scss";
+@import "fonts";
+@import "vars";
 @import "vars_backup";
-@import "styles.scss";
-@import "forms.scss";
-@import "animations.scss";
-@import "dialog.scss";
-@import "flex-dialog.scss";
-@import "buttons.scss";
-@import "notif-queue.scss";
-@import "connectionlost.scss";
+@import "styles";
+@import "forms";
+@import "animations";
+@import "dialog";
+@import "flex-dialog";
+@import "buttons";
+@import "notif-queue";
+@import "connectionlost";
 
 html {
   height: 100%;
@@ -369,8 +369,8 @@ article.workspace-materials-view-page {
   
 }
 
-@import "workspace_navigation_wide.scss"; 
-@import "workspace_navigation_narrow.scss"; 
-@import "mobile.scss";
-@import "mobile_workspace.scss";
-@import "tablet.scss";
+@import "workspace_navigation_wide"; 
+@import "workspace_navigation_narrow"; 
+@import "mobile";
+@import "mobile_workspace";
+@import "tablet";

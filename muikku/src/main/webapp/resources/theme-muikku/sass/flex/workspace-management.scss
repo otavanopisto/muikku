@@ -1,9 +1,9 @@
-@import "vars.scss";
+@import "vars";
 @import "vars_backup";
-@import "styles.scss";
-@import "jquery.datepicker.scss";
-@import "workspace-copy-wizard.scss";
-@import "ckeditor_theme_management.scss";
+@import "styles";
+@import "jquery.datepicker";
+@import "workspace-copy-wizard";
+@import "ckeditor_theme_management";
 
 body {
   padding: 60px 0 75px;
