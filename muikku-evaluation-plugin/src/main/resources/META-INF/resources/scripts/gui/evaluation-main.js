@@ -41,8 +41,8 @@
               for (var i = 0; i < assessmentRequests.length; i++) {
                 var requestDate = assessmentRequests[i].assessmentRequestDate;
                 var evaluationDate = assessmentRequests[i].evaluationDate;
-                var isRequest = false;
-                var isEvaluated = false;
+                var isRequest = '';
+                var isEvaluated = '';
                 var cardStateClass = '';
                 if ((requestDate && evaluationDate && requestDate > evaluationDate) || (requestDate && !evaluationDate)) {
                   cardStateClass = 'evaluation-requested';
@@ -100,31 +100,22 @@
         else {
           $(data.card).removeClass('evaluated-passed').addClass('evaluated-incomplete');
         }
+        $(data.card).find('.enrollment-row').removeClass('highlight');
         $(data.card).find('.request-row').removeClass('highlight');
         var evaluationRow = $(data.card).find('.evaluation-row');
-        if (evaluationRow.length) {
-          $(evaluationRow).addClass('highlight');
-          $(evaluationRow).find('.evaluation-card-data-text').text(formatDate(data.evaluationDate));
-        }
-        else {
-          evaluationRow = $('<div>')
-            .addClass('evaluation-card-data-row evaluation-row highlight')
-            .append($('<span>').addClass('evaluation-card-data-label').text(getLocaleText('plugin.evaluation.card.evaluatedLabel')))
-            .append($('<span>').addClass('evaluation-card-data-text').text(formatDate(data.evaluationDate)))
-          $(data.card).find('.request-row').after(evaluationRow);
-        }
-        $(data.card).find('.archive-button').show();
+        $(evaluationRow).addClass('highlight');
+        $(evaluationRow).find('.evaluation-card-data-text').text(formatDate(data.evaluationDate));
       }
       else {
         $(data.card).removeClass('evaluated-passed evaluation-incomplete');
-        $(data.card).find('.archive-button').hide();
-        $(data.card).find('.evaluation-row').remove();
+        $(data.card).find('.evaluation-row .evaluation-card-data-text').text('-');
         $(data.card).removeAttr('data-evaluated');
         if ($(data.card).attr('data-assessment-request-date')) {
           $(data.card).find('.request-row').addClass('highlight');
           $(data.card).addClass('evaluation-requested');
         }
         else {
+          $(data.card).find('.enrollment-row').addClass('highlight');
           $(data.card).removeClass('evaluation-requested');
         }
       }
@@ -159,8 +150,7 @@
 
   $(document).on('click', '.evaluate-button', function (event) {
     var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
-    var requestCard = event.target.closest('.evaluation-card');
-    $(document).evaluationModal('open', requestCard, !workspaceEntityId);
+    $(document).evaluationModal('open', event.target.closest('.evaluation-card'), !workspaceEntityId);
   });
   
   // Sort by assessment request date, ascending
