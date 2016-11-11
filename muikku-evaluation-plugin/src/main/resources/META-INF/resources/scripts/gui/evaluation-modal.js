@@ -153,7 +153,7 @@
     close: function() {
       $('body').removeClass('no-scroll');
       if (this._discardOnSave && this._workspaceAssessmentSaved) {
-        $(this._requestCard).remove();
+        this.element.trigger("discardCard", {workspaceUserEntityId: $(this._requestCard).attr('data-workspace-user-entity-id')});
       }
       this._evaluationModal.remove();
     },
@@ -249,7 +249,7 @@
     },
     
     _onWorkspaceAssessmentSaved: function(event, data) {
-      this.confirmStudentArchive(this._requestCard, $.proxy(function() {
+      this.confirmStudentArchive(this._requestCard, $.proxy(function(archived) {
         var assessment = data.assessment;
         this._workspaceAssessmentSaved = true; 
         if (assessment.passing) {
@@ -404,10 +404,9 @@
                           $('.notification-queue').notificationQueue('notification', 'error', err);
                         }
                         else {
-                          $(card).remove();
                           $(this).dialog("destroy").remove();
                           if (callback) {
-                            callback();
+                            callback(true);
                           }
                         }
                       }, this));
@@ -420,7 +419,7 @@
             'click' : function(event) {
               $(this).dialog("destroy").remove();
               if (callback) {
-                callback();
+                callback(false);
               }
             }
           } ]
@@ -600,7 +599,11 @@
 
   $(document).on('click', '.archive-button', function (event) {
     var card = $(event.target).closest('.evaluation-card');
-    $(document).evaluationModal('confirmStudentArchive', card);
+    $(document).evaluationModal('confirmStudentArchive', card, $.proxy(function(archived) {
+      if (archived) {
+        this.element.trigger("discardCard", {workspaceUserEntityId: $(card).attr('data-workspace-user-entity-id')});
+      }
+    }, this));
   });
   
   $(document).on('click', '.assignment-title-wrapper', function (event) {

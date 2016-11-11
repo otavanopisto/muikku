@@ -8,6 +8,7 @@
       this._loadOperations = 0;
       this.element.on("loadStart", $.proxy(this._onLoadStart, this));
       this.element.on("loadEnd", $.proxy(this._onLoadEnd, this));
+      this.element.on("discardCard", $.proxy(this._onDiscardCard, this));
       this._loadAssessmentRequests();
     },
     _loadAssessmentRequests: function () {
@@ -43,11 +44,8 @@
                 }, this));
               }  
             } else {
-              $(requestContainer).append($('<div>')
-                .addClass('evaluation-well-done-container')
-                .text(getLocaleText("plugin.evaluation.evaluationWellDone")));
+              this._showNoCardsMessage();
             }
-            
             this.element.trigger("loadEnd", $('.evaluation-cards-container'));
           }
         }, this)); 
@@ -65,6 +63,19 @@
       if (this._loadOperations == 0) {
         $(document).find('div.loading').remove();
       }
+    },
+    _onDiscardCard: function(event, data) {
+      var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
+      var workspaceUserEntityId = data.workspaceUserEntityId;
+      $('.evaluation-card[data-workspace-user-entity-id="' + workspaceUserEntityId + '"]').remove();
+      if (!$('.evaluation-card').length && workspaceEntityId === undefined) {
+        this._showNoCardsMessage();
+      }
+    },
+    _showNoCardsMessage: function() {
+      $('.evaluation-cards-container').append($('<div>')
+        .addClass('evaluation-well-done-container')
+        .text(getLocaleText("plugin.evaluation.evaluationWellDone")));
     }
   });
 
