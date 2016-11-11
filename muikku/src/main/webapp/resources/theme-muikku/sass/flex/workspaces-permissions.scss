@@ -1,5 +1,5 @@
-@import "base"; /* Has to be loaded 1st, has all the mixins */
-@import "workspaces"; /* Generic workspace styles */
+@import "base";
+@import "workspaces";
 
 body[class^='workspace'] { 
   
