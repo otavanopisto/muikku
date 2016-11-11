@@ -56,7 +56,7 @@
       this._loadOperations++;
       if (this._loadOperations == 1) {
         var loadingContainer = $('<div>')
-          .addClass('loading')
+          .addClass('loading') 
           .appendTo(target);
       }
     },
