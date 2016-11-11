@@ -311,18 +311,18 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
     for (Long workspaceId : payload.getRecipientTeachersWorkspaceIds()) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-            workspaceEntity, WorkspaceRoleArchetype.TEACHER);
-        
-        for (WorkspaceUserEntity wosu : workspaceUsers) {
-          recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
-        }
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
+          workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      
+      for (WorkspaceUserEntity wosu : workspaceUsers) {
+        recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
+      }
     }      
 
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(payload.getCategoryName());
     
-    fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
-      payload.getCaption(), payload.getContent(), tagList);
+    fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, 
+        null, null, null, categoryEntity, payload.getCaption(), payload.getContent(), tagList);
     Long communicatorMessageId2 = message.getCommunicatorMessageId().getId();
     fi.otavanopisto.muikku.atests.CommunicatorMessage result = new fi.otavanopisto.muikku.atests.CommunicatorMessage(message.getId(), communicatorMessageId2, message.getSender(), payload.getCategoryName(), message.getCaption(), message.getContent(), message.getCreated(), payload.getTags(), payload.getRecipientIds(), payload.getRecipientGroupIds(), payload.getRecipientStudentsWorkspaceIds(), payload.getRecipientTeachersWorkspaceIds());
     
