@@ -21,13 +21,13 @@ if servers is None:
 
 oo_snapshots = ET.SubElement(servers, 'server')
 ET.SubElement(oo_snapshots, 'id').text = 'otavanopisto-snapshots'
-ET.SubElement(oo_snapshots, 'username').text = os.environ['OOSNAP_USERNAME']
-ET.SubElement(oo_snapshots, 'password').text = os.environ['OOSNAP_PASSWORD']
+ET.SubElement(oo_snapshots, 'username').text = os.environ['OOM2_USERNAME']
+ET.SubElement(oo_snapshots, 'password').text = os.environ['OOM2_PASSWORD']
 
 oo_releases = ET.SubElement(servers, 'server')
 ET.SubElement(oo_releases, 'id').text = 'otavanopisto-releases'
-ET.SubElement(oo_releases, 'username').text = os.environ['OOREL_USERNAME']
-ET.SubElement(oo_releases, 'password').text = os.environ['OOREL_PASSWORD']
+ET.SubElement(oo_releases, 'username').text = os.environ['OOM2_USERNAME']
+ET.SubElement(oo_releases, 'password').text = os.environ['OOM2_PASSWORD']
 
 mirrors = settings.find('s:mirrors', {'s': ns})
 if mirrors is None:
