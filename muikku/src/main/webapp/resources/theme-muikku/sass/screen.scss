@@ -1,36 +1,36 @@
 /* Lets import all the necessary support files */
 
-@import "_fonts.scss";
-@import "_textcontent.scss";
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_animations.scss";
-@import "_commons.scss";
-@import "_forms.scss";
-@import "_modal.scss";
-@import "_buttons.scss";
-@import "_widgets.scss"; 
-@import "_notif-queue.scss";
-@import "_mainfunctions.scss";
-@import "_records.scss";
-@import "_calendar.scss";
-@import "_communicator.scss";
-@import "_announcer.scss";
-@import "_guider.scss";
-@import "_discussion.scss";
-@import "_profile.scss";
-@import "_coursepicker.scss";
-@import "_tasktool.scss";
-@import "_dialog.scss";
-@import "_connectionlost.scss";
-@import "_generic_context-view.scss";
+@import "_fonts";
+@import "_textcontent";
+@import "_base"; /* Has to be loaded 1st, has all the mixins */
+@import "_animations";
+@import "_commons";
+@import "_forms";
+@import "_modal";
+@import "_buttons";
+@import "_widgets"; 
+@import "_notif-queue";
+@import "_mainfunctions";
+@import "_records";
+@import "_calendar";
+@import "_communicator";
+@import "_announcer";
+@import "_guider";
+@import "_discussion";
+@import "_profile";
+@import "_coursepicker";
+@import "_tasktool";
+@import "_dialog";
+@import "_connectionlost";
+@import "_generic_context-view";
 
 
 /* CKEditor css rules for modals and form element plugins */
-@import "_custom-ckeditor-dialog.scss";
-@import "_custom-ckeditor-selection-checkbox.scss";
+@import "_custom-ckeditor-dialog";
+@import "_custom-ckeditor-selection-checkbox";
 
 /* jQuery ui custom */
-@import "_custom-jqueryui.scss";
+@import "_custom-jqueryui";
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {

@@ -1,14 +1,14 @@
-@import "_fonts.scss";
-@import "_vars.scss";
-@import "_vars_backup";
-@import "_styles.scss";
-@import "_forms.scss";
-@import "_animations.scss";
-@import "_dialog.scss";
-@import "_flex-dialog.scss";
-@import "_buttons.scss";
-@import "_notif-queue.scss";
-@import "_connectionlost.scss";
+@import "fonts.scss";
+@import "vars.scss";
+@import "vars_backup";
+@import "styles.scss";
+@import "forms.scss";
+@import "animations.scss";
+@import "dialog.scss";
+@import "flex-dialog.scss";
+@import "buttons.scss";
+@import "notif-queue.scss";
+@import "connectionlost.scss";
 
 html {
   height: 100%;
@@ -369,8 +369,8 @@ article.workspace-materials-view-page {
   
 }
 
-@import "_workspace_navigation_wide.scss"; 
-@import "_workspace_navigation_narrow.scss"; 
-@import "_mobile.scss";
-@import "_mobile_workspace.scss";
-@import "_tablet.scss";
+@import "workspace_navigation_wide.scss"; 
+@import "workspace_navigation_narrow.scss"; 
+@import "mobile.scss";
+@import "mobile_workspace.scss";
+@import "tablet.scss";

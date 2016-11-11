@@ -1,22 +1,22 @@
-@import "_vars.scss";
-@import "_vars_backup";
-@import "_styles";
-@import "_animations";
-@import "_fonts";
-@import "_custom-ckeditor-styles";
-@import "_jquery.datepicker";
-@import "_ckeditor_theme_management";
-@import "_draft";
-@import "_dialog";
-@import "_evaluation_evaluate_modal";
-@import "_connect-field";
-@import "_organizer-field";
-@import "_sorter-field";
-@import "_audio-field";
-@import "_file-field";
-@import "_evaluation_material_styles";
-@import "_correct_answers"; 
-@import "_notif-queue";
+@import "vars.scss";
+@import "vars_backup";
+@import "styles";
+@import "animations";
+@import "fonts";
+@import "custom-ckeditor-styles";
+@import "jquery.datepicker";
+@import "ckeditor_theme_management";
+@import "draft";
+@import "dialog";
+@import "evaluation_evaluate_modal";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "audio-field";
+@import "file-field";
+@import "evaluation_material_styles";
+@import "correct_answers"; 
+@import "notif-queue";
 
 body {
   background-color: #fff;
@@ -345,4 +345,4 @@ body {
   z-index:20;
 }
 
-@import "_mobile_evaluation";
+@import "mobile_evaluation";
