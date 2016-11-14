@@ -1,8 +1,11 @@
 package fi.otavanopisto.muikku.plugins.communicator.dao;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -58,6 +61,69 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
     return msg;
   }
 
+  private List<CommunicatorThreadBasicInfo> listUserThreadBasicInfos(UserEntity userEntity, boolean inTrash) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorThreadBasicInfo> criteria = criteriaBuilder.createQuery(CommunicatorThreadBasicInfo.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+    Join<CommunicatorMessageRecipient, CommunicatorMessage> messageJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
+
+    criteria.multiselect(messageJoin.get(CommunicatorMessage_.communicatorMessageId), criteriaBuilder.greatest(messageJoin.get(CommunicatorMessage_.created)));
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(messageJoin.get(CommunicatorMessage_.communicatorMessageId), messageJoin.get(CommunicatorMessage_.communicatorMessageId)),
+        
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), userEntity.getId()),
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.trashedByReceiver), inTrash),
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+      )
+    );
+
+    criteria.groupBy(messageJoin.get(CommunicatorMessage_.communicatorMessageId));
+
+    List<CommunicatorThreadBasicInfo> threads = entityManager.createQuery(criteria).getResultList();
+    
+    Collections.sort(threads, new Comparator<CommunicatorThreadBasicInfo>() {
+      @Override
+      public int compare(CommunicatorThreadBasicInfo o1, CommunicatorThreadBasicInfo o2) {
+        return o2.getLatestThread().compareTo(o1.getLatestThread());
+      }
+    });
+    
+    return threads;
+  }
+  
+  public CommunicatorMessageId findOlderThreadId(UserEntity userEntity, CommunicatorMessageId threadId, boolean inTrash) {
+    List<CommunicatorThreadBasicInfo> threads = listUserThreadBasicInfos(userEntity, inTrash);
+    
+    int index = 0;
+    while ((index < threads.size()) && (!Objects.equals(threadId.getId(), threads.get(index).getThreadId().getId()))) {
+      index++;
+    }
+
+    // Next, older thread
+    if ((index >= 0) && (index < threads.size() - 1))
+      return threads.get(index + 1).getThreadId();
+    else
+      return null;
+  }
+
+  public CommunicatorMessageId findNewerThreadId(UserEntity userEntity, CommunicatorMessageId threadId, boolean inTrash) {
+    List<CommunicatorThreadBasicInfo> threads = listUserThreadBasicInfos(userEntity, inTrash);
+    
+    int index = 0;
+    while ((index < threads.size()) && (!Objects.equals(threadId.getId(), threads.get(index).getThreadId().getId()))) {
+      index++;
+    }
+
+    // Previous, newer thread
+    if ((index > 0) && (index < threads.size()))
+      return threads.get(index - 1).getThreadId();
+    else
+      return null;
+  }
+  
   public List<CommunicatorMessage> listThreadsInTrash(UserEntity user, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -339,4 +405,5 @@ public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> 
   public void delete(CommunicatorMessage e) {
     super.delete(e);
   }
+  
 }

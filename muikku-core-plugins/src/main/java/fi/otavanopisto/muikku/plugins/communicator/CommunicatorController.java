@@ -385,5 +385,13 @@ public class CommunicatorController {
       }
     }
   }
+
+  public CommunicatorMessageId findOlderThreadId(UserEntity userEntity, CommunicatorMessageId threadId, boolean inTrash) {
+    return communicatorMessageDAO.findOlderThreadId(userEntity, threadId, inTrash);
+  }
+  
+  public CommunicatorMessageId findNewerThreadId(UserEntity userEntity, CommunicatorMessageId threadId, boolean inTrash) {
+    return communicatorMessageDAO.findNewerThreadId(userEntity, threadId, inTrash);
+  }
   
 }
