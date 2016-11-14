@@ -662,26 +662,27 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Long courseId = 1l;
     Long teacherRoleId = 7l;
     
-    CourseStaffMember staffMember = new CourseStaffMember(1l, courseId, 4l, teacherRoleId);
-    CourseStaffMember[] staffMembers = { staffMember };
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, 4l, teacherRoleId);
+    CourseStaffMember[] courseStaffMembers = { courseStaffMember };
 
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers", courseId)))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(staffMembers))
+          .withBody(objectMapper.writeValueAsString(courseStaffMembers))
           .withStatus(200)));
     
-    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers/%d", courseId, staffMember.getId())))
+    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers/%d", courseId, courseStaffMember.getId())))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(staffMember))
+          .withBody(objectMapper.writeValueAsString(courseStaffMember))
           .withStatus(200)));
 
-    addPayload(payloads, objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(1l, courseId, staffMember.getId())));
+    addPayload(payloads, objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(
+        courseStaffMember.getId(), courseId, courseStaffMember.getStaffMemberId())));
     
     OffsetDateTime enrolmentTime = OffsetDateTime.of(1999, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseStudent student = new CourseStudent(2l, courseId, 1l, enrolmentTime, false, null, null, false, null, null);
-    CourseStudent[] students = { student };
+    CourseStudent courseStudent = new CourseStudent(2l, courseId, 1l, enrolmentTime, false, null, null, false, null, null);
+    CourseStudent[] students = { courseStudent };
 
     stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students", courseId)))
         .willReturn(aResponse()
@@ -689,13 +690,14 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
           .withBody(objectMapper.writeValueAsString(students))
           .withStatus(200)));
     
-    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students/%d", courseId, student.getId())))
+    stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/students/%d", courseId, courseStudent.getId())))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody(objectMapper.writeValueAsString(student))
+          .withBody(objectMapper.writeValueAsString(courseStudent))
           .withStatus(200)));
     
-    addPayload(payloads, objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(2l, courseId, student.getId())));
+    addPayload(payloads, objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(
+        courseStudent.getId(), courseId, courseStudent.getStudentId())));
   }
   
   private static void addPayload(List<String> payloads, Object obj) throws JsonProcessingException {

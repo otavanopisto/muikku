@@ -8,7 +8,7 @@ public class Student {
   }
 
   public Student(String id, String firstName, String lastName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
-      String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd) {
+      String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -23,6 +23,7 @@ public class Student {
     this.studyStartDate = studyStartDate;
     this.studyEndDate = studyEndDate;
     this.studyTimeEnd = studyTimeEnd;
+    this.curriculumIdentifier = curriculumIdentifier;
   }
   
   public String getId() {
@@ -129,6 +130,14 @@ public class Student {
     this.studyTimeEnd = studyTimeEnd;
   }
 
+  public String getCurriculumIdentifier() {
+    return curriculumIdentifier;
+  }
+
+  public void setCurriculumIdentifier(String curriculumIdentifier) {
+    this.curriculumIdentifier = curriculumIdentifier;
+  }
+
   private String id;
   private String firstName;
   private String lastName;
@@ -142,4 +151,5 @@ public class Student {
   private Date studyStartDate;
   private Date studyEndDate;
   private Date studyTimeEnd;
+  private String curriculumIdentifier;
 }

@@ -3,9 +3,11 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -18,6 +20,15 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.dao.TranscriptOfRecord
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 
 public class TranscriptOfRecordsFileController {
+  
+  private static final Pattern UUID_PATTERN = Pattern.compile(
+      "^" + 
+          "[0-9a-f]{8}-" +
+          "[0-9a-f]{4}-" +
+          "[0-9a-f]{4}-" +
+          "[0-9a-f]{4}-" +
+          "[0-9a-f]{12}" +
+      "$");
   
   @Inject
   private TranscriptOfRecordsFileDAO transcriptOfRecordsFileDAO;
@@ -68,6 +79,20 @@ public class TranscriptOfRecordsFileController {
     return transcriptOfRecordsFileDAO.findById(id);
   }
   
+  public void outputFileToStream(TranscriptOfRecordsFile torFile, OutputStream stream) {
+    String fileUuid = torFile.getFileName();
+    if (!UUID_PATTERN.matcher(fileUuid).matches()) {
+      throw new RuntimeException("File name is not a valid UUID");
+    }
+    File file = Paths.get(getFileUploadBasePath(), fileUuid).toFile();
+    try {
+      FileUtils.copyFile(file, stream);
+    } catch (IOException e) {
+      // Wrap with unchecked exception to adhere to StreamingOutput interface
+      throw new RuntimeException(e);
+    }
+  }
+
   public void delete(TranscriptOfRecordsFile file) {
     transcriptOfRecordsFileDAO.archive(file);
   }

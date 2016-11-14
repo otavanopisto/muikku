@@ -37,9 +37,10 @@
     
   });
   
-  var CommunicatorInboxFolderController = function (labelId, options) {
+  var CommunicatorInboxFolderController = function (labelId, isUnreadFolder, options) {
     this._super = CommunicatorFolderController.prototype;
     this._labelId = labelId;
+    this._isUnreadFolder = isUnreadFolder === true;
     CommunicatorFolderController.call(this, arguments); 
   };
   
@@ -59,6 +60,7 @@
     
     loadItems: function (firstResult, maxResults, mainCallback) {
       var params = {
+        onlyUnread: this._isUnreadFolder,
         firstResult: firstResult,
         maxResults: maxResults
       };
@@ -221,7 +223,8 @@
       this._folderId = this.options.folderId;
       $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
       $('.mf-controls-container').on('click', '.cm-delete-thread', $.proxy(this._onDeleteClick, this));
-      $('.mf-controls-container').on('click', '.cm-mark-unread-thread', $.proxy(this._onMarkUnreadClick, this));
+      $('.mf-controls-container').on('click', '.icon-message-unread', $.proxy(this._onMarkUnreadClick, this));
+      $('.mf-controls-container').on('click', '.icon-message-read', $.proxy(this._onMarkReadClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
       $('.mf-controls-container').on('click', '#newLabelSubmit', $.proxy(this._onCreateLabelClick, this));
       
@@ -246,7 +249,8 @@
         var message = $(input).closest('.cm-message');
         return {
           folderId: message.attr('data-folder-id'),
-          id: message.attr('data-thread-id')
+          id: message.attr('data-thread-id'),
+          unread : message.hasClass("unread")
         };
       });
     },
@@ -357,6 +361,16 @@
         .communicator('markUnreadThreads', selectedThreads);
     },
     
+    _onMarkReadClick: function (event) {
+      if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
+        return;
+      
+      var selectedThreads = this._getSelectedThreads();
+      this.element.closest('.communicator') 
+        .communicator('markReadThreads', selectedThreads);
+    },
+
+    
     _onMessageHeaderClick: function (event) {
       var threadId = $(event.target).closest('.cm-message')
         .attr('data-thread-id');
@@ -368,12 +382,34 @@
     _onThreadSelectionChange: function (event) {
       var selectedThreads = this._getSelectedThreads();
       var communicatorElement = this.element.closest(".communicator");
+      var hasUnread = false;
+      var markMessages = communicatorElement.find(".cm-mark-thread");
+      
+      for(var i = 0; i < selectedThreads.length; i++) {
+        if (selectedThreads[i].unread == true) {
+          hasUnread = true;          
+        }        
+      }
+      
       if (selectedThreads.length === 0) {
         communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").addClass("disabled");
-        communicatorElement.find(".cm-mark-unread-thread").closest(".mf-tool-container").addClass("disabled");
+        markMessages.closest(".mf-tool-container").addClass("disabled");
+        markMessages.attr("title", getLocaleText("plugin.communicator.tool.title.unread"));
+        markMessages.removeClass("icon-message-read");
+        markMessages.addClass("icon-message-unread"); 
       } else {
         communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").removeClass("disabled");
-        communicatorElement.find(".cm-mark-unread-thread").closest(".mf-tool-container").removeClass("disabled");
+        communicatorElement.find(".cm-mark-thread").closest(".mf-tool-container").removeClass("disabled");
+        
+        if(hasUnread == true) {
+          markMessages.attr("title", getLocaleText("plugin.communicator.tool.title.read"));
+          markMessages.removeClass("icon-message-unread");
+          markMessages.addClass("icon-message-read");
+        } else {
+          markMessages.attr("title", getLocaleText("plugin.communicator.tool.title.unread"));          
+          markMessages.removeClass("icon-message-read");
+          markMessages.addClass("icon-message-unread");          
+        }
       }
     },
     
@@ -562,6 +598,7 @@
         function (err, labels) {
           this._folderControllers = {
             'inbox': new CommunicatorInboxFolderController(),
+            'unread': new CommunicatorInboxFolderController(undefined, true),
             'sent': new CommunicatorSentFolderController(),
             'trash': new CommunicatorTrashFolderController()
           };
@@ -681,6 +718,24 @@
         }
       }, this));
     },
+
+    markReadThreads: function (threads) {
+      var calls = $.map(threads, $.proxy(function (thread) {
+        return $.proxy(function (callback) {
+          this._folderControllers[thread.folderId].markAsRead(thread.id, callback);
+        }, this);
+      }, this));
+      
+      async.series(calls, $.proxy(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          mApi().communicator.cacheClear();
+          $(document).trigger("Communicator:messageread");
+          this.reloadFolder();
+        }
+      }, this));
+    },    
     
     createLabel: function (name, colorHex) {
       var colorInt = this.hexToColorInt(colorHex);
@@ -1127,16 +1182,33 @@
             
             renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
               this.element.html(text);
-//              if (message.senderId === MUIKKU_LOGGED_USER_ID) {               
-//                $.each(message.recipients,  $.proxy(function (index, recipient) {
-//                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
-//                  
-//                  if (recipient.userId != message.senderId) {
-//                    this._addRecipient('USER', recipient.userId, recipientFullName);
-//                  }
-//              
-//                }, this));
-//              }
+              
+              if (this.options.mode == "replyall") {
+                // Add all the recipients
+                $.each(message.recipients,  $.proxy(function (index, recipient) {
+                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
+                  
+                  if (recipient.userId != message.senderId) {
+                    this._addRecipient('USER', recipient.userId, recipientFullName);
+                  }
+                }, this));
+                
+                // Add all the usergroups if the user is allowed to message groups
+                if (this.options.groupMessagingPermission == true) {
+                  $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
+                    this._addRecipient('GROUP', recipient.id, recipient.name);
+                  }, this));
+                }
+                
+                // Add all the workspace groups if the user is allowed to message groups
+                if (this.options.groupMessagingPermission == true) {
+                  $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
+                    this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
+                  }, this));
+                }
+                
+                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
+              }
               
               var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
               this._addRecipient('USER', message.sender.id, senderFullName);                       
@@ -1205,6 +1277,7 @@
       var existingWorkspaceIds = this._getExistingWorkspaceIds();
       
       return $.proxy(function (callback) {
+        // coursepicker??
         mApi().coursepicker.workspaces
           .read({
             search: term,
@@ -1342,7 +1415,20 @@
           return false;
         }
         
-        if (this.options.replyThreadId) {
+        var replyThreadId = this.options.replyThreadId;
+        if (replyThreadId) {
+          // Replying to a message that was group message but isn't anymore will be directed to new thread
+          if (this.options.replyToGroupMessage) {
+            var len1 = payload.recipientGroupIds.length | 0;
+            var len2 = payload.recipientStudentsWorkspaceIds.length | 0;
+            var len3 = payload.recipientTeachersWorkspaceIds.length | 0;
+            
+            if (len1 + len2 + len3 == 0)
+              replyThreadId = undefined;
+          }
+        }
+        
+        if (replyThreadId) {
           mApi().communicator.messages
           .create(this.options.replyThreadId, payload)
           .callback($.proxy(function (err, result) {
@@ -1399,6 +1485,7 @@
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
+      this.element.on('click', '.cm-message-reply-all-link', $.proxy(this._onReplyAllClick, this));    
     },
     
     loadThread: function (folderId, threadId, callback) {
@@ -1460,8 +1547,22 @@
       
       this.element.closest('.communicator') 
         .communicator('newMessageDialog', {
+          mode: "reply",
           replyThreadId: this._threadId, 
           replyMessageId: messageId 
+        }
+      );
+    },
+    _onReplyAllClick: function (event) {
+      var messageId = $(event.target)
+        .closest('.cm-message')
+        .attr('data-id');
+      
+      this.element.closest('.communicator') 
+        .communicator('newMessageDialog', {
+          mode: "replyall",
+          replyThreadId: this._threadId, 
+          replyMessageId: messageId
         }
       );
     }
