@@ -287,12 +287,15 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
-    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId, false);
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, false);
 
+    CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, false);
+    CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, false);
+    
     return Response.ok(
-      restModels.restFullMessage(receivedItems)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
     ).build();
   }
 

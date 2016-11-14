@@ -12,6 +12,7 @@ import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
@@ -119,6 +120,14 @@ public class CommunicatorRESTModels {
     }
   }
 
+  public CommunicatorThreadViewRESTModel restThreadViewModel(List<CommunicatorMessage> messages, 
+      CommunicatorMessageId olderThread, CommunicatorMessageId newerThread) {
+    Long olderThreadId = olderThread != null ? olderThread.getId() : null;
+    Long newerThreadId = newerThread != null ? newerThread.getId() : null;
+    List<CommunicatorMessageRESTModel> restMessages = restFullMessage(messages);
+    return new CommunicatorThreadViewRESTModel(olderThreadId, newerThreadId, restMessages);
+  }
+  
   public List<CommunicatorMessageRESTModel> restFullMessage(List<CommunicatorMessage> messages) {
     List<CommunicatorMessageRESTModel> result = new ArrayList<>();
     for (CommunicatorMessage message : messages)

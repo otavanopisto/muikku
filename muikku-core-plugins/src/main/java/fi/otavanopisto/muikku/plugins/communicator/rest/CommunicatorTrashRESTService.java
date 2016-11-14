@@ -100,12 +100,15 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
-    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId, true);
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, true);
 
+    CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, true);
+    CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, true);
+    
     return Response.ok(
-      restModels.restFullMessage(receivedItems)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
     ).build();
   }
 

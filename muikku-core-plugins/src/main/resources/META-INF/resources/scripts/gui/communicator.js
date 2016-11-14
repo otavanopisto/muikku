@@ -73,7 +73,7 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.messages
         .read(threadId)
-        .on("$", $.proxy(function (message, messageCallback) {
+        .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
           message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
           message.senderHasPicture = message.sender.hasImage;
@@ -127,7 +127,7 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.messages
         .read(threadId)
-        .on("$", $.proxy(function (message, messageCallback) {
+        .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
           message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
           message.senderHasPicture = message.sender.hasImage;
@@ -189,7 +189,7 @@
     loadThread: function (threadId, firstResult, maxResults, callback) {
       mApi().communicator.trash
         .read(threadId)
-        .on("$", $.proxy(function (message, messageCallback) {
+        .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
           message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
           message.senderHasPicture = message.sender.hasImage;
@@ -1398,27 +1398,50 @@
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
+      controls.on('click', '.cm-mark-unread-message.icon-arrow-left', $.proxy(this._onNavigateNewerThreadClick, this));
+      controls.on('click', '.cm-mark-unread-message.icon-arrow-right', $.proxy(this._onNavigateOlderThreadClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
     },
     
-    loadThread: function (folderId, threadId, callback) {
+    setOlderThreadId : function (olderThreadId) {
+      this._olderThreadId = olderThreadId;
+    },
+    
+    setNewerThreadId : function (newerThreadId) {
+      this._newerThreadId = newerThreadId;
+    },
+    
+    _onNavigateNewerThreadClick: function (event) {
+      if (this._newerThreadId)
+        this.loadThread(this._folderId, this._newerThreadId)
+    },
+    
+    _onNavigateOlderThreadClick: function (event) {
+      if (this._olderThreadId)
+        this.loadThread(this._folderId, this._olderThreadId)
+    },
+    
+    loadThread: function (folderId, threadId) {
       this._threadId = threadId;
       this._folderId = folderId;
       
       var communicator = $(".communicator").communicator("instance");
       var folderController = communicator.folderController(folderId);
       
-      folderController.loadThread(threadId, 0, 0, $.proxy(function (err, messages) {
+      folderController.loadThread(threadId, 0, 0, $.proxy(function (err, thread) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.showmessage.thread.error'));
         } else {
-          var data = $.map(messages, function (message) {
+          var messages = $.map(thread.messages, function (message) {
             return $.extend(message, {
               folderId: folderId
             });
           });
           
-          renderDustTemplate('communicator/communicator_items_open.dust', data, $.proxy(function(text) {
+          this.setOlderThreadId(thread.olderThreadId);
+          this.setNewerThreadId(thread.newerThreadId);
+          
+          renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
             this.element.html(text);
             
             var communicator = $(".communicator").communicator("instance");
