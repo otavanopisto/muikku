@@ -1183,7 +1183,8 @@
             renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
               this.element.html(text);
               
-              if (message.senderId === MUIKKU_LOGGED_USER_ID) {               
+              if (this.options.mode == "replyall") {
+                // Add all the recipients
                 $.each(message.recipients,  $.proxy(function (index, recipient) {
                   var recipientFullName = recipient.firstName + " " + recipient.lastName;
                   
@@ -1191,6 +1192,22 @@
                     this._addRecipient('USER', recipient.userId, recipientFullName);
                   }
                 }, this));
+                
+                // Add all the usergroups if the user is allowed to message groups
+                if (this.options.groupMessagingPermission == true) {
+                  $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
+                    this._addRecipient('GROUP', recipient.id, recipient.name);
+                  }, this));
+                }
+                
+                // Add all the workspace groups if the user is allowed to message groups
+                if (this.options.groupMessagingPermission == true) {
+                  $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
+                    this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
+                  }, this));
+                }
+                
+                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
               }
               
               var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
@@ -1398,7 +1415,20 @@
           return false;
         }
         
-        if (this.options.replyThreadId) {
+        var replyThreadId = this.options.replyThreadId;
+        if (replyThreadId) {
+          // Replying to a message that was group message but isn't anymore will be directed to new thread
+          if (this.options.replyToGroupMessage) {
+            var len1 = payload.recipientGroupIds.length | 0;
+            var len2 = payload.recipientStudentsWorkspaceIds.length | 0;
+            var len3 = payload.recipientTeachersWorkspaceIds.length | 0;
+            
+            if (len1 + len2 + len3 == 0)
+              replyThreadId = undefined;
+          }
+        }
+        
+        if (replyThreadId) {
           mApi().communicator.messages
           .create(this.options.replyThreadId, payload)
           .callback($.proxy(function (err, result) {
@@ -1455,6 +1485,7 @@
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
+      this.element.on('click', '.cm-message-reply-all-link', $.proxy(this._onReplyAllClick, this));    
     },
     
     loadThread: function (folderId, threadId, callback) {
@@ -1516,8 +1547,22 @@
       
       this.element.closest('.communicator') 
         .communicator('newMessageDialog', {
+          mode: "reply",
           replyThreadId: this._threadId, 
           replyMessageId: messageId 
+        }
+      );
+    },
+    _onReplyAllClick: function (event) {
+      var messageId = $(event.target)
+        .closest('.cm-message')
+        .attr('data-id');
+      
+      this.element.closest('.communicator') 
+        .communicator('newMessageDialog', {
+          mode: "replyall",
+          replyThreadId: this._threadId, 
+          replyMessageId: messageId
         }
       );
     }
