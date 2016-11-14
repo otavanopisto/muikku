@@ -440,15 +440,15 @@ ul.mf-tool-label-container {
   }
 
   &.navigation {
-    background: #84D9FE none repeat scroll 0 0;
+    background: $navigation-horizontal-bar-navigation-background-color none repeat scroll 0 0;
       border-radius: 7px;
-      div::before{color:#fbfbfb;}
+      div::before{color: $navigation-horizontal-bar-navigation-icon-color;}
   }
 
   &.button {
-    background-color: #72d200; 
+    background-color: $navigation-horizontal-bar-special-button-background-color; 
     border: 1px solid $environment-border-selected-color;
-    color: #fff;
+    color: $navigation-horizontal-bar-active-font-color;
     cursor: pointer;
     display: inline-block;    
     padding: 5px 10px;  
