@@ -14,7 +14,7 @@
         .appendTo(document.body);
       this.element.on('mousemove', $.proxy(this._onMouseMove, this));
       this.element.on('mouseout', $.proxy(this._onMouseOut, this));
-      this.element.on('click', $.proxy(this._onTouch, this));
+      this.element.on('touch', $.proxy(this._onTouch, this));
     },
     
     _onTouch: function (event, data) {
