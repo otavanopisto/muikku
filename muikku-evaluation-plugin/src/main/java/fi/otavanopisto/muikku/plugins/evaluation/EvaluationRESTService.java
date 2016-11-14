@@ -815,6 +815,9 @@ public class EvaluationRESTService extends PluginRESTService {
         communicatorController.createMessageId(),
         evaluator,
         Arrays.asList(student),
+        null,
+        null,
+        null,
         category,
         localeController.getText(
             locale,

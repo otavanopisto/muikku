@@ -22,9 +22,14 @@
         this.filters(this._filters);
         this.element.on('click', '.gt-filter-link', $.proxy(this._onFilterLink, this));
         this.element.on('click', '.mf-label-functions', $.proxy(this._onFilterMenuLink, this));
-
         this.element.on('click', '.mf-label-function-edit', $.proxy(this._onFlagEditClick, this));               
         this.element.on('click', '.mf-label-function-delete', $.proxy(this._onFlagDeleteClick, this));               
+        
+        $(document).on('click',function(e){
+          if ( $(e.target).closest('.gt-filters').length === 0 ) {            
+             $('.gt-filters').find('.gt-flag-functions-menu').hide();                              
+          }
+       })
       
       }, this));
     },
@@ -177,13 +182,19 @@
       var menus = $(element).closest('ul').find('.gt-flag-functions-menu');
       var menuPosition = $(element).width() - 10;
       var menuState = menu.css('display') ;     
+
+
       
+
+      
+
       menu.css('left', menuPosition);
       
       menus.hide();
 
       if(menuState == 'none'){
-        menu.show();       
+        menu.addClass("current");
+        menu.show();               
       }else{
         menu.hide();   
         
@@ -192,6 +203,8 @@
 
     _onFilterLink: function (event) {
       var element = $(event.target).closest('.gt-filter-link');
+      $('.current').hide().removeClass('current');   
+      
       if (element.hasClass('selected')) {
         this.removeFilter(element.attr('data-type'), element.attr('data-id'));
       } else {
@@ -748,6 +761,85 @@
     }
   });
   
+  $.widget("custom.guiderFiles", {
+    options: {
+      userIdentifier: null
+    },
+    
+    _create : function() {
+      this._fileAddForm = this.element.find("[data-file-add]");
+      this._fileAddFileInput = this._fileAddForm.find("input[name=upload]");
+      this._fileListElement = this.element.find("[data-file-list]");
+      this._fileRowElementContent = this._fileListElement.html();
+
+      this._setup();
+      
+      this._loadFiles();
+    },
+    
+    _setup : function() {
+      this._fileListElement.empty();
+      
+      this._fileAddFileInput.on('change', $.proxy(this._onFileInputChange, this));
+    },
+    
+    _onFileInputChange : function (event) {
+      for (var i=0; i<event.target.files.length; i++) {
+        var file = event.target.files[i];
+        var formData = new FormData(this._fileAddForm[0]);
+        formData.append('title', file.name);
+        formData.append('description', '');
+        formData.append('userIdentifier', this.options.userIdentifier);
+        $.ajax({
+          url: '/transcriptofrecordsfileupload/',
+          type: 'POST',
+          data: formData,
+          success: $.proxy(function(dataString) {
+            var data = JSON.parse(dataString);
+            this._fileAddForm[0].reset();
+            this._appendFile(file.name, data.id);
+          }, this),
+          error: $.proxy(function(xhr, err) {
+            this._fileAddForm[0].reset();
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }, this),
+          cache: false,
+          contentType: false,
+          processData: false
+        })
+      }
+    },
+    
+    _loadFiles : function() {
+      var userIdentifier = this.options.userIdentifier;
+      mApi().guider.users.files.read(userIdentifier).callback($.proxy(this._onFilesLoaded, this));
+    },
+    
+    _deleteFile: function(elem, fileId) {
+      mApi().guider.files.del(fileId).callback($.proxy(function () {
+        elem.remove();
+      }, this));
+    },
+    
+    _appendFile: function(title, fileId) {
+      var elem = $(this._fileRowElementContent);
+      elem.find("[data-file-name]").text(title);
+      elem.find("[data-file-name]").attr('href', '/rest/guider/files/' + fileId + '/content');
+      elem.find("[data-file-delete]").on('click', $.proxy(function () { this._deleteFile(elem, fileId); }, this));
+      this._fileListElement.append(elem);
+    },
+    
+    _onFilesLoaded: function(err, files) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      } else {
+        for (var i=0; i<files.length; i++) {
+          var file = files[i];
+          this._appendFile(file.title, file.id);
+        }
+      }
+    }
+  });
 
   $.widget("custom.guiderProfile", {
     options: {
@@ -755,6 +847,7 @@
     },
     
     _create : function() {
+
       this.element.addClass('gt-user-view-profile');
       
       this.element.on("click", ".gt-new-flag", $.proxy(this._onNewFlagClick, this));
@@ -770,7 +863,11 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          this._loadUser(flags);
+          this._loadUser(flags, $.proxy(function () {
+            this.element.find(".gt-user-files").guiderFiles({
+              userIdentifier: this.options.userIdentifier
+            });
+          }, this));
         }
       }, this));
     },
@@ -1019,7 +1116,7 @@
       }, this);
     },
     
-    _loadUser: function (flags) {
+    _loadUser: function (flags, callback) {
       this.element.addClass('loading');
       var flagMap = {};
       $.each(flags, function (index, flag) {
@@ -1114,6 +1211,7 @@
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                    callback();
                   }, this));
                 }, this))
               }, this)); 

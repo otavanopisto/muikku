@@ -170,6 +170,7 @@
 }
 
  .gt-data {
+ 
   .gt-course-details-container {
     background-color: $environment-background-color;
     cursor: pointer;    
@@ -180,8 +181,33 @@
     }      
   }  
 }
- 
 
+.gt-user-file-add {
+  
+  span {
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+} 
+
+.gt-user-file {
+  background-color: $environment-file-background-color;
+  color: $environment-alt-font-color;
+  font-weight: 600;
+  padding: 0 5px;
+  
+  & a {
+    color: $environment-alt-font-color;
+  }
+  
+  &:not(:first-child) {
+    margin-top:5px;  
+  }
+}
+
+.gt-user-file-action {
+  text-transform: uppercase;
+}
  
 .gt-course {
   border-left: 3px solid $item-border-color-active; 
@@ -197,12 +223,9 @@
       
       .gt-course-header-name {
         color: $environment-alt-font-color;
-      }
-      
-    }
-    
-  }
-  
+      }      
+    }    
+  }  
 }
 
 .gt-course h4 {
@@ -295,7 +318,7 @@
       border-radius: 5px;
       box-shadow: 0 7px 15px $content-navigation-menu-shadow;
       white-space: nowrap;
-      border: 1px solid $content-navigation-menu-border-1;
+      border: 1px solid $content-navigation-menu-border-color-1;
       z-index: 2;
 
       &::after, 
@@ -311,15 +334,15 @@
       }
       
       &::after {
-        border-color: $environment-border-transparent;
+        border-color: $environment-border-transparent-color;
         border-bottom-color: $item-border-color;
         border-width: 7px;
         margin-left: -7px;
       }
       
       &::before {
-        border-color: $environment-border-transparent;
-        border-bottom-color: $content-navigation-menu-border-1;
+        border-color: $environment-border-transparent-color;
+        border-bottom-color: $content-navigation-menu-border-color-1;
         border-width: 8px;
         margin-left: -8px;
       }
@@ -365,7 +388,7 @@
   }
 
   .gt-add-flag-widget {
-    background: $item-button-add-color;
+    background: $item-button-add-background-color;
     color: $item-button-font-color;
     border-radius: 5px;
     padding: 6px 8px 6px 6px;
@@ -391,7 +414,7 @@
       border-radius: 5px;
       box-shadow: $content-navigation-menu-shadow;
       white-space: nowrap;
-      border: 1px solid $content-navigation-menu-border-1;
+      border: 1px solid $content-navigation-menu-border-color-1;
       z-index: 2;
 
       &::after, 
@@ -407,15 +430,15 @@
       }
       
       &::after {
-        border-color: $environment-border-transparent;
+        border-color: $environment-border-transparent-color;
         border-bottom-color: $item-border-color;
         border-width: 7px;
         margin-left: -7px;
       }
       
       &::before {
-        border-color: $environment-border-transparent;
-        border-bottom-color: $content-navigation-menu-border-1;
+        border-color: $environment-border-transparent-color;
+        border-bottom-color: $content-navigation-menu-border-color-1;
         border-width: 8px;
         margin-left: -8px;
       }
@@ -453,7 +476,7 @@
     }
     
     &:hover {
-      background: $content-navigation-menu-highlight-color;
+      background: $content-navigation-menu-highlight-background-color;
     
       .gt-add-flags-container {
         display: block;
@@ -526,7 +549,7 @@
       }
       
       a.remove {
-        background: $content-navigation-action-remove-color;
+        background: $content-navigation-action-remove-background-color;
         color: $item-grade-font-color;
         display: block;
         font-size: 14px;

@@ -31,6 +31,7 @@
     </div>
   {/studentFlags}
   <div class="gt-user-view-profile-info mf-widget flex-row">
+  
 <!--     <div class="gt-user-details-picture"> -->
 <!--       {?senderHasPicture}  -->
 <!--         <img class="gt-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />  -->
@@ -92,6 +93,29 @@
     </div>
     <div class="clear"></div>  
   </div>
+  
+  <div class="gt-user-view-profile-files mf-widget flex-row">
+    <div class="gt-user-files lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+      <div class="flex-row">
+        <div style="position: relative;height:2em" class="gt-user-file-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center">
+          <div style="position:absolute;left:0;top:0;height:2em;width:100%;"><span>{#localize key="plugin.guider.user.details.files.hint"/}</span></div>
+          <form style="position:absolute;left:0;top:0;opacity:0;height:2em;width:100%" data-file-add>
+            <input style="width:100%;height:100%;cursor:pointer" name="upload" type="file">
+          </form>
+        </div>
+      </div>
+      <div data-file-list>
+        <div class="gt-user-file flex-row">          
+          <div class="gt-user-file-name lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">
+            <a data-file-name></a>
+          </div>
+          <div class="gt-user-file-action lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-4 flex-right">
+            <span style="cursor:pointer" data-file-delete>{#localize key="plugin.guider.user.details.files.file.remove"/}</span>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
   <div class="gt-user-view-profile-data mf-widget flex-row">
      <div class="gt-user-view-profile-data gt-data-container-1 mf-widget-subarea lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
        <div class="flex-row">
@@ -102,4 +126,5 @@
      <div class="clear"></div>
   </div>
 {/student}
+
 

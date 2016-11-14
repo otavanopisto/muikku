@@ -13,9 +13,9 @@ public class PyramusTransferCredit extends AbstractTransferCredit {
   public PyramusTransferCredit(SchoolDataIdentifier identifier, SchoolDataIdentifier studentIdentifier, OffsetDateTime date,
       SchoolDataIdentifier gradeIdentifier, SchoolDataIdentifier gradingScaleIdentifier, String verbalAssessment, SchoolDataIdentifier assessorIdentifier,
       String courseName, Integer courseNumber, Double length, SchoolDataIdentifier lengthUnitIdentifier,
-      SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier) {
+      SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier, SchoolDataIdentifier curriculumIdentifier) {
     super(identifier, studentIdentifier, date, gradeIdentifier, gradingScaleIdentifier, verbalAssessment, assessorIdentifier, courseName,
-        courseNumber, length, lengthUnitIdentifier, schoolIdentifier, subjectIdentifier);
+        courseNumber, length, lengthUnitIdentifier, schoolIdentifier, subjectIdentifier, curriculumIdentifier);
   }
 
   @Override
