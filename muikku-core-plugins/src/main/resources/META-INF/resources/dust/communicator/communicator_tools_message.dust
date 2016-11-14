@@ -11,11 +11,11 @@
     </div>
   </div>
   <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-hide flex-right">
-     <div class="mf-tool-container navigation cm-mark-unread-container">
-      <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread-message icon-arrow-left"></div>
+    <div class="mf-tool-container navigation disabled cm-mark-unread-container">
+      <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-navigate-newer icon-arrow-left"></div>
     </div>
-    <div class="mf-tool-container navigation cm-mark-unread-container">
-      <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread-message icon-arrow-right"></div>
+    <div class="mf-tool-container navigation disabled cm-mark-unread-container">
+      <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-navigate-older icon-arrow-right"></div>
     </div>     
   </div>
 </div> 
