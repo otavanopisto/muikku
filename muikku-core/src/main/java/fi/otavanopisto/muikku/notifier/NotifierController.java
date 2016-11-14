@@ -50,12 +50,13 @@ public class NotifierController {
 
   public void sendNotification(NotifierAction action, UserEntity sender, List<UserEntity> recipients, Map<String, Object> params) {
     for (UserEntity recipient : recipients) {
-      params.put("locale", userEntityController.getLocale(recipient));
       sendNotification(action, sender, recipient, params);
     }
   }
 
   public void sendNotification(NotifierAction action, UserEntity sender, UserEntity recipient, Map<String, Object> params) {
+    params.put("locale", userEntityController.getLocale(recipient));
+    
     NotifierActionEntity actionEntity = findActionEntityByName(action.getName());
     
     NotifierContext context = new NotifierContext();

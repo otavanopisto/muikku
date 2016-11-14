@@ -105,7 +105,7 @@
   
   &::before {
     margin-left: 5px;
-    color: $navigation-bar-icon-color;
+    color: $navigation-vertical-bar-icon-color;
   }
   
 }
@@ -132,7 +132,7 @@
      
     li {
       border-bottom: 1px solid $environment-border-color;
-      border-left: 5px solid $navigation-bar-border-color;
+      border-left: 5px solid $navigation-vertical-bar-border-color;
        
       a {
         font-weight: 300;
@@ -145,7 +145,7 @@
       }
             
       &:hover {
-        border-left: 5px solid $navigation-bar-hover-border-color;     
+        border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
         cursor: pointer;   
       } 
       

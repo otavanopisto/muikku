@@ -12,7 +12,6 @@
           <div class="mf-form-row flex-row flex-align-items-center">
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
-<!--                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.communicator.createmessage.title.recipients"/}</span> -->
                 <div class="cm-message-recipients lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16" id="msgRecipientsContainer"><input id="recipientContent" type="text" name="recipient" placeholder="{#localize key="plugin.communicator.createmessage.title.recipients"/}"></input></div>
                 <div class="cm-message-recipient-search mf-textfield-subelement"></div>
               </div>

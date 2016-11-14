@@ -31,4 +31,5 @@ public interface TransferCredit extends SchoolDataEntity {
 
   public SchoolDataIdentifier getSubjectIdentifier();
 
+  public SchoolDataIdentifier getCurriculumIdentifier();
 }

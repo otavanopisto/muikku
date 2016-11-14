@@ -19,6 +19,7 @@
           { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
           { name: 'tools', items: [ 'Maximize' ] }
         ],
+        contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_reading.css',
         externalPlugins : {
           'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
           'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',

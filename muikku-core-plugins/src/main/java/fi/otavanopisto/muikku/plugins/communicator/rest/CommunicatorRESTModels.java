@@ -10,16 +10,26 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.controller.TagController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 public class CommunicatorRESTModels {
 
@@ -37,6 +47,18 @@ public class CommunicatorRESTModels {
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
   
   /**
    * Returns message sender UserBasicInfo
@@ -127,6 +149,73 @@ public class CommunicatorRESTModels {
     List<CommunicatorMessageRESTModel> restMessages = restFullMessage(messages);
     return new CommunicatorThreadViewRESTModel(olderThreadId, newerThreadId, restMessages);
   }
+
+  public List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients(List<CommunicatorMessageRecipientUserGroup> recipients) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<fi.otavanopisto.muikku.rest.model.UserGroup> result = new ArrayList<fi.otavanopisto.muikku.rest.model.UserGroup>();
+      for (CommunicatorMessageRecipientUserGroup recipient : recipients) {
+        fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient = restUserGroupRecipient(recipient);
+        if (restUserGroupRecipient != null)
+          result.add(restUserGroupRecipient);
+      }
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  public fi.otavanopisto.muikku.rest.model.UserGroup restUserGroupRecipient(CommunicatorMessageRecipientUserGroup userGroup) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserGroupEntity entity = userGroupEntityController.findUserGroupEntityById(userGroup.getUserGroupEntityId());
+      if (entity != null) {
+        Long userCount = userGroupEntityController.getGroupUserCount(entity);
+        UserGroup group = userGroupController.findUserGroup(entity);
+        
+        if (group != null)
+          return new fi.otavanopisto.muikku.rest.model.UserGroup(entity.getId(), group.getName(), userCount);
+      }
+      
+      return null;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  public List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceGroupRecipients(List<CommunicatorMessageRecipientWorkspaceGroup> recipients) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> result = new ArrayList<CommunicatorMessageRecipientWorkspaceGroupRESTModel>();
+      for (CommunicatorMessageRecipientWorkspaceGroup recipient : recipients) {
+        CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient = restWorkspaceGroupRecipient(recipient);
+        if (restWorkspaceGroupRecipient != null)
+          result.add(restWorkspaceGroupRecipient);
+      }
+      return result;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
+  
+  public CommunicatorMessageRecipientWorkspaceGroupRESTModel restWorkspaceGroupRecipient(CommunicatorMessageRecipientWorkspaceGroup workspaceGroup) {
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceGroup.getWorkspaceEntityId());
+      if (workspaceEntity != null) {
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+        if (workspace != null) {
+          return new CommunicatorMessageRecipientWorkspaceGroupRESTModel(workspaceGroup.getWorkspaceEntityId(), 
+              workspaceGroup.getArchetype(), workspace.getName(), workspace.getNameExtension());
+        }
+      }
+      
+      return null;
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
   
   public List<CommunicatorMessageRESTModel> restFullMessage(List<CommunicatorMessage> messages) {
     List<CommunicatorMessageRESTModel> result = new ArrayList<>();
@@ -141,19 +230,20 @@ public class CommunicatorRESTModels {
     UserBasicInfo senderBasicInfo = getSenderBasicInfo(message);
     
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(message);
+    List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(message);
+    List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(message);
     
     Long recipientCount = (long) messageRecipients.size();
 
-    // Max 5 recipients
-    int toIndex = (int) Math.min(recipientCount, 5);
-    List<CommunicatorMessageRecipientRESTModel> restRecipients = recipientCount > 0 ? 
-        restRecipient(messageRecipients.subList(0, toIndex)) : new ArrayList<CommunicatorMessageRecipientRESTModel>();
+    List<CommunicatorMessageRecipientRESTModel> restRecipients = restRecipient(messageRecipients);
+    List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restUserGroupRecipients(userGroupRecipients);
+    List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restWorkspaceGroupRecipients(workspaceGroupRecipients);
     
     return new CommunicatorMessageRESTModel(
         message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), senderBasicInfo, 
         categoryName, message.getCaption(), message.getContent(), message.getCreated(), tagIdsToStr(message.getTags()), 
-        restRecipients, recipientCount);
+        restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount);
   }
 
   public Set<String> tagIdsToStr(Set<Long> tagIds) {

@@ -120,7 +120,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         course.getCreatorId(),
         course.getLastModifierId(),
         course.getSubjectId(),
-        course.getCurriculumId(),
+        course.getCurriculumIds(),
         course.getLength(),
         course.getLengthUnitId(),
         course.getModuleId(),
