@@ -177,8 +177,8 @@
         .callback(mainCallback);
     },
     loadThread: function (threadId, firstResult, maxResults, callback) {
-      mApi().communicator.messages
-        .read(threadId)
+      mApi().communicator.userLabels.messages
+        .read(this._labelId, threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
           message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
