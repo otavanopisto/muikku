@@ -427,7 +427,7 @@ ul.mf-tool-label-container {
   text-align: center;
   width: 37px;
   
-  &:first-child{
+  &:first-child {
     margin:0;
   }
   
@@ -441,8 +441,11 @@ ul.mf-tool-label-container {
 
   &.navigation {
     background: $navigation-horizontal-bar-navigation-background-color none repeat scroll 0 0;
-      border-radius: 7px;
-      div::before{color: $navigation-horizontal-bar-navigation-icon-color;}
+    border-radius: 7px;
+    
+    div::before {
+      color: $navigation-horizontal-bar-navigation-icon-color;
+    }
   }
 
   &.button {
