@@ -35,6 +35,8 @@ import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSelectField
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialSorterFieldAnswerDAO;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswer;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
@@ -304,7 +306,13 @@ public class WorkspaceMaterialFieldChangeListener {
   }
 
   private void deleteFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
-    if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
+    if (answer instanceof WorkspaceMaterialAudioFieldAnswer) {
+      List<WorkspaceMaterialAudioFieldAnswerClip> audioAnswerClips = workspaceMaterialFieldAnswerController.listWorkspaceMaterialAudioFieldAnswerClipsByFieldAnswer((WorkspaceMaterialAudioFieldAnswer) answer);
+      for (WorkspaceMaterialAudioFieldAnswerClip audioAnswerClip : audioAnswerClips) {
+        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(audioAnswerClip);
+      }
+    }
+    else if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
       List<WorkspaceMaterialFileFieldAnswerFile> fileAnswerFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer((WorkspaceMaterialFileFieldAnswer) answer);
       for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {
         workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
