@@ -53,6 +53,17 @@ public class UserController {
   public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier) {
     return userSchoolDataController.listUserAddressses(userIdentifier);
   }
+  
+  public void updateUserAddress(
+      SchoolDataIdentifier addressIdentifier,
+      SchoolDataIdentifier studentIdentifier,
+      String street,
+      String postalCode,
+      String city,
+      String country
+  ) {
+    userSchoolDataController.updateUserAddress(addressIdentifier, studentIdentifier, street, postalCode, city, country);
+  }
 
   public List<UserPhoneNumber> listUserPhoneNumbers(User user) {
     return listUserPhoneNumbers(new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource()));

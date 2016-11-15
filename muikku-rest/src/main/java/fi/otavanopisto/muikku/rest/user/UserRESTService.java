@@ -593,12 +593,27 @@ public class UserRESTService extends AbstractRESTService {
     }
     
     if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.UPDATE_STUDENT_ADDRESS)) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_ADDRESSES)) {
         return Response.status(Status.FORBIDDEN).build();
       }
     }
     
-    return Response.ok().build();
+    List<UserAddress> addresses = userController.listUserAddresses(studentIdentifier);
+    
+    for (UserAddress address : addresses) {
+      if (address.getIdentifier().equals(studentAddress)) {
+        userController.updateUserAddress(
+            address.getIdentifier(),
+            studentIdentifier,
+            studentAddress.getStreet(),
+            studentAddress.getPostalCode(),
+            studentAddress.getCity(),
+            studentAddress.getCountry());
+        return Response.ok().entity(studentAddress).build();
+      }
+    }
+    
+    return Response.status(Status.NOT_FOUND).entity("address not found").build();
   }
 
   @GET
@@ -1272,6 +1287,21 @@ public class UserRESTService extends AbstractRESTService {
     for (UserEmail entity : entities) {
       result.add(new StudentEmail(toId(entity.getUserIdentifier()), entity.getType(), entity.getAddress(), entity.getDefaultAddress()));
     }
+
+    return result;
+  }
+
+  private StudentAddress createRestModel(UserAddress entity) {
+    StudentAddress result = new StudentAddress(
+        toId(entity.getUserIdentifier()), 
+        entity.getStreet(),
+        entity.getPostalCode(),
+        entity.getCity(),
+        entity.getRegion(),
+        entity.getCountry(),
+        entity.getType(),
+        entity.getDefaultAddress()
+    );
 
     return result;
   }

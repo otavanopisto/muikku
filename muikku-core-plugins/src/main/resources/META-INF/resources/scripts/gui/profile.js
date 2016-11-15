@@ -3,10 +3,16 @@
   function changeAddressMunicipality() {
 
     mApi({async: false}).user.students.addresses.read(MUIKKU_LOGGED_USER).callback(function(err, addresses) {
+      var address = null;
+      for (var i=0; i<addresses.length; i++) {
+        if (addresses[i].defaultAddress) {
+          address = addresses[i];
+        }
+      }
       renderDustTemplate(
           'profile/profile-change-address-hometown.dust',
           {
-            address: '',
+            address: address,
             hometown: ''
           },
           function (text) {
@@ -113,7 +119,7 @@
     changePassword();
   });
 
-  $(document).on('click', '.profile-change-address-hometown', function (event, data) {
+  $(document).on('click', '.profile-change-address-municipality', function (event, data) {
     changeAddressMunicipality();
   });
   

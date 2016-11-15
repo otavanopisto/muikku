@@ -685,5 +685,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
   }
 
-
+  @Override
+  public void updateUserAddress(
+      SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier identifier,
+      String street,
+      String postalCode,
+      String city,
+      String country
+  ) {
+    Long addressId = identifierMapper.getPyramusAddressId(identifier.getIdentifier());
+    
+    if (addressId == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Malformed identifier %s", identifier));
+    }
+    
+    try {
+    } catch (PyramusRestClientUnauthorizedException purr) {
+      throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
+    }
+    
+  }
 }
