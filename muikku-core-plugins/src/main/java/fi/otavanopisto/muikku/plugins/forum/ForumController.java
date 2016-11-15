@@ -179,6 +179,10 @@ public class ForumController {
     forumThreadReplyDAO.updateArchived(reply, true);
   }
   
+  public void updateReplyDeleted(ForumThreadReply reply, boolean deleted) {
+    forumThreadReplyDAO.updateDeleted(reply, deleted);
+  }
+  
   public void deleteReply(ForumThreadReply reply) {
     forumThreadReplyDAO.delete(reply);
   }

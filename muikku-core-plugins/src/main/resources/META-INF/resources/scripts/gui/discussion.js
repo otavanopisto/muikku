@@ -446,6 +446,7 @@
       this.element.on("click", ".di-reply-answer-link", $.proxy(this._onReplyAnswerClick, this));
       this.element.on("click", ".di-reply-quote-link", $.proxy(this._onReplyQuoteClick, this));
       this.element.on("click", ".di-reply-edit-link", $.proxy(this._onReplyEditClick, this));
+      this.element.on("click", ".di-reply-delete-link", $.proxy(this._onReplyDeleteClick, this));
       this.element.on("click", ".di-page-link-load-more-replies", $.proxy(this._onMoreRepliesClickClick, this));
     },
     
@@ -630,6 +631,23 @@
         threadId: threadId,
         replyId: replyId
       });
+    },
+    
+    _onReplyDeleteClick: function (event) {
+      var messageElement = $(event.target).closest('.di-message');
+      var repliesElement = $(event.target).closest('.di-replies-container');
+      
+      var areaId = repliesElement.attr('data-area-id');
+      var threadId = repliesElement.attr('data-thread-id');
+      var replyId = messageElement.attr('data-id');
+
+      this.options.ioController.deleteThreadReply(areaId, threadId, replyId, $.proxy(function(err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $('.discussion').discussion('reloadThread');
+        }
+      }, this));
     },
     
     _onReplyAnswerClick: function (event) {

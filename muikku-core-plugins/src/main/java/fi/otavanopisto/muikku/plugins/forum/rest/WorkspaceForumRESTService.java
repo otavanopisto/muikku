@@ -820,10 +820,17 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
     Long parentReplyId = null;
+    String message = entity.getMessage();
     if (entity.getParentReply() != null) {
       parentReplyId = entity.getParentReply().getId();
     }
-    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId(), parentReplyId, entity.getLastModified(), entity.getChildReplyCount());
+    
+    if (entity.getDeleted())
+      message = null;
+    
+    return new ForumThreadReplyRESTModel(entity.getId(), message, entity.getCreator(), entity.getCreated(), 
+        entity.getForumArea().getId(), parentReplyId, entity.getLastModified(), entity.getChildReplyCount(), 
+        entity.getDeleted());
   }
   
   private List<ForumThreadReplyRESTModel> createRestModel(ForumThreadReply... entries) {

@@ -33,11 +33,11 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
       ForumThreadReply parentReply) {
     Date now = new Date();
 
-    return create(forumArea, thread, message, now, creator, now, creator, false, parentReply);
+    return create(forumArea, thread, message, now, creator, now, creator, false, false, parentReply);
   }
 
   public ForumThreadReply create(ForumArea forumArea, ForumThread thread, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
-    return create(forumArea, thread, message, created, creator, lastModified, lastModifier, archived, null);
+    return create(forumArea, thread, message, created, creator, lastModified, lastModifier, false, archived, null);
   }
   
   public ForumThreadReply create(
@@ -48,6 +48,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
       UserEntity creator,
       Date lastModified,
       UserEntity lastModifier,
+      Boolean deleted,
       Boolean archived, 
       ForumThreadReply parentReply) {
     ForumThreadReply reply = new ForumThreadReply();
@@ -59,6 +60,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     reply.setCreator(creator.getId());
     reply.setLastModified(lastModified);
     reply.setLastModifier(lastModifier.getId());
+    reply.setDeleted(deleted);
     reply.setArchived(archived);
     reply.setParentReply(parentReply);
     
@@ -200,6 +202,11 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     return persist(reply);
   }
   
+  public ForumThreadReply updateDeleted(ForumThreadReply reply, boolean deleted) {
+    reply.setDeleted(deleted);
+    return persist(reply);
+  }
+  
   public ForumThreadReply updateArchived(ForumThreadReply reply, Boolean archived){
     reply.setArchived(archived);
     return persist(reply);
@@ -209,4 +216,5 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
   public void delete(ForumThreadReply e) {
     super.delete(e);
   }
+
 }
