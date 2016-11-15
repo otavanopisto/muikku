@@ -29,6 +29,7 @@ if [[ $release = "true" ]]; then
   mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   git add .
   git commit -m "Updated latest snapshot releases"
+  git pull
   git push --set-upstream origin devel
 fi;
 

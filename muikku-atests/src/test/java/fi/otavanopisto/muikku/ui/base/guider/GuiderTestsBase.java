@@ -100,9 +100,9 @@ public class GuiderTestsBase extends AbstractUITest {
       File testFile = getTestFile();
       waitForPresent(".gt-user-files .gt-user-file-add input[type=\"file\"]");
       sendKeys(".gt-user-files .gt-user-file-add input[type=\"file\"]", testFile.getAbsolutePath());
-      waitForPresent(".gt-user-file .gt-user-file-name span");
-      scrollIntoView(".gt-user-file .gt-user-file-name span");
-      assertTextIgnoreCase(".gt-user-file .gt-user-file-name span", testFile.getName());
+      waitForPresent(".gt-user-file .gt-user-file-name a");
+      scrollIntoView(".gt-user-file .gt-user-file-name a");
+      assertTextIgnoreCase(".gt-user-file .gt-user-file-name a", testFile.getName());
       logout();
       mockBuilder.mockLogin(student).build();
       login();
