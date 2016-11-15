@@ -20,7 +20,12 @@
     </div>  
   </div>
   {?deleted}
-    <div class="flex-row">POISTETTUPOISTETTUPOISTETTUPOISTETTUPOISTETTUPOISTETTUPOISTETTUPOISTETTUPOISTETTUPOISTETTU</div>
+    <div class="mf-item-empty-container flex-row flex-align-items-center">
+      <div class="mf-item-empty di-message-removed lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+        <span class="icon-delete"></span>
+        <span>{#localize key="plugin.discussion.infomessage.message.removed"/}</span>
+      </div>   
+    </div>
   {:else}
     <div class="flex-row">
       <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>
