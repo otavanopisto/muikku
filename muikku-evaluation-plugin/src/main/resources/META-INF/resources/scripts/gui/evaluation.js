@@ -708,7 +708,7 @@
           assessors: this.options.assessors,
           workspaceName: this.options.workspaceName,
           studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-          submitDate: new Date(moment(this.options.submitDate)),
+          submitDate: this.options.submitDate ? new Date(moment(this.options.submitDate)) : null,
           assignments: [{
             workspaceMaterialId: workspaceMaterialId,
             materialId: materialId,
