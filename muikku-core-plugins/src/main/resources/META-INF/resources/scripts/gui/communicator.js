@@ -37,15 +37,12 @@
     
   });
   
-  var CommunicatorInboxFolderController = function (labelId, isUnreadFolder, options) {
+  var CommunicatorInboxFolderController = function (options) {
     this._super = CommunicatorFolderController.prototype;
-    this._labelId = labelId;
-    this._isUnreadFolder = isUnreadFolder === true;
     CommunicatorFolderController.call(this, arguments); 
   };
   
   $.extend(CommunicatorInboxFolderController.prototype, CommunicatorFolderController.prototype, {
-    
     removeItems: function (ids, callback) {
       var calls = $.map(ids, function (id) {
         return function (callback) {
@@ -60,14 +57,121 @@
     
     loadItems: function (firstResult, maxResults, mainCallback) {
       var params = {
-        onlyUnread: this._isUnreadFolder,
         firstResult: firstResult,
         maxResults: maxResults
       };
       
-      if (this._labelId)
-        params.labelId = this._labelId;
-        
+      mApi().communicator.items
+        .read(params)
+        .callback(mainCallback);
+    },
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.messages
+        .read(threadId)
+        .on("$.messages", $.proxy(function (message, messageCallback) {
+          message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
+          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderHasPicture = message.sender.hasImage;
+          message.caption = $('<div>').html(message.caption).text();
+          
+          messageCallback();
+        }, this))
+        .callback(callback);
+    },
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.messages.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    markAsRead: function (threadId, callback) {
+      mApi().communicator.items.markasread.create(threadId).callback(callback);    
+    },
+    markAsUnread: function (threadId, callback) {
+      mApi().communicator.items.markasunread.create(threadId).callback(callback);    
+    }
+  });
+  
+  var CommunicatorUnreadFolderController = function (options) {
+    this._super = CommunicatorFolderController.prototype;
+    CommunicatorFolderController.call(this, arguments); 
+  };
+  
+  $.extend(CommunicatorUnreadFolderController.prototype, CommunicatorFolderController.prototype, {
+    removeItems: function (ids, callback) {
+      var calls = $.map(ids, function (id) {
+        return function (callback) {
+          mApi().communicator.items
+            .del(id)
+            .callback(callback);
+        };
+      })
+      
+      async.series(calls, callback);
+    },
+    
+    loadItems: function (firstResult, maxResults, mainCallback) {
+      var params = {
+        onlyUnread: true,
+        firstResult: firstResult,
+        maxResults: maxResults
+      };
+      
+      mApi().communicator.items
+        .read(params)
+        .callback(mainCallback);
+    },
+    loadThread: function (threadId, firstResult, maxResults, callback) {
+      mApi().communicator.unread
+        .read(threadId)
+        .on("$.messages", $.proxy(function (message, messageCallback) {
+          message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
+          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderHasPicture = message.sender.hasImage;
+          message.caption = $('<div>').html(message.caption).text();
+          
+          messageCallback();
+        }, this))
+        .callback(callback);
+    },
+    readThreadMessageCount: function (communicatorMessageId, callback) {
+      mApi().communicator.messages.messagecount
+        .read(communicatorMessageId)
+        .callback(callback);
+    },
+    markAsRead: function (threadId, callback) {
+      mApi().communicator.items.markasread.create(threadId).callback(callback);    
+    },
+    markAsUnread: function (threadId, callback) {
+      mApi().communicator.items.markasunread.create(threadId).callback(callback);    
+    }
+  });
+  
+  var CommunicatorLabelFolderController = function (labelId, options) {
+    this._super = CommunicatorFolderController.prototype;
+    this._labelId = labelId;
+    CommunicatorFolderController.call(this, arguments); 
+  };
+  
+  $.extend(CommunicatorLabelFolderController.prototype, CommunicatorFolderController.prototype, {
+    removeItems: function (ids, callback) {
+      var calls = $.map(ids, function (id) {
+        return function (callback) {
+          mApi().communicator.items
+            .del(id)
+            .callback(callback);
+        };
+      })
+      
+      async.series(calls, callback);
+    },
+    
+    loadItems: function (firstResult, maxResults, mainCallback) {
+      var params = {
+        labelId: this._labelId,
+        firstResult: firstResult,
+        maxResults: maxResults
+      };
+      
       mApi().communicator.items
         .read(params)
         .callback(mainCallback);
@@ -127,7 +231,7 @@
     },
 
     loadThread: function (threadId, firstResult, maxResults, callback) {
-      mApi().communicator.messages
+      mApi().communicator.sentitems
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
@@ -161,7 +265,6 @@
   };
   
   $.extend(CommunicatorTrashFolderController.prototype, CommunicatorFolderController.prototype, {
-    
     removeItems: function (ids, callback) {
       var calls = $.map(ids, function (id) {
         return function (callback) {
@@ -180,9 +283,6 @@
         maxResults: maxResults
       };
       
-      if (this._labelId)
-        params.labelId = this._labelId;
-        
       mApi().communicator.trash
         .read(params)
         .callback(mainCallback);
@@ -598,7 +698,7 @@
         function (err, labels) {
           this._folderControllers = {
             'inbox': new CommunicatorInboxFolderController(),
-            'unread': new CommunicatorInboxFolderController(undefined, true),
+            'unread': new CommunicatorUnreadFolderController(),
             'sent': new CommunicatorSentFolderController(),
             'trash': new CommunicatorTrashFolderController()
           };
@@ -920,8 +1020,7 @@
       }));      
     },
     addLabelControl: function (label, callback) {
-
-      this._folderControllers[ "label-" + label.id ] = new CommunicatorInboxFolderController(label.id);
+      this._folderControllers[ "label-" + label.id ] = new CommunicatorLabelFolderController(label.id);
       
       // Label has id, name, color
       
