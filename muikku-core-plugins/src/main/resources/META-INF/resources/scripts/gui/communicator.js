@@ -1583,8 +1583,8 @@
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
-      controls.on('click', '.cm-navigate-newer', $.proxy(this._onNavigateNewerThreadClick, this));
-      controls.on('click', '.cm-navigate-older', $.proxy(this._onNavigateOlderThreadClick, this));
+      controls.on('click', '.cm-go-previous', $.proxy(this._onNavigateNewerThreadClick, this));
+      controls.on('click', '.cm-go-next', $.proxy(this._onNavigateOlderThreadClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
       this.element.on('click', '.cm-message-reply-all-link', $.proxy(this._onReplyAllClick, this));    
     },
@@ -1592,17 +1592,17 @@
     setOlderThreadId : function (olderThreadId) {
       this._olderThreadId = olderThreadId;
       if (this._olderThreadId)
-        $(".cm-navigate-older").closest(".mf-tool-container").removeClass("disabled");
+        $(".cm-go-next").closest(".mf-tool-container").removeClass("disabled");
       else
-        $(".cm-navigate-older").closest(".mf-tool-container").addClass("disabled");
+        $(".cm-go-next").closest(".mf-tool-container").addClass("disabled");
     },
     
     setNewerThreadId : function (newerThreadId) {
       this._newerThreadId = newerThreadId;
       if (this._newerThreadId)
-        $(".cm-navigate-newer").closest(".mf-tool-container").removeClass("disabled");
+        $(".cm-go-previous").closest(".mf-tool-container").removeClass("disabled");
       else
-        $(".cm-navigate-newer").closest(".mf-tool-container").addClass("disabled");
+        $(".cm-go-previous").closest(".mf-tool-container").addClass("disabled");
     },
     
     _onNavigateNewerThreadClick: function (event) {
