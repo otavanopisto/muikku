@@ -1,5 +1,7 @@
 // Environment level variables
 
+// TODO: Move shadows to _styles.scss
+
 $body-background-color: #f6fcff;
 $body-font-color: #2c2c2c;
 
@@ -9,7 +11,31 @@ $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
 $environment-bottom-bar-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
 $environment-bottom-bar-background-color: #485c64;
 $environment-bottom-bar-font-color: #fff;
+$environment-bottom-bar-link-color: #b3e9ff;
 $environment-background-color: #fff;
+$environment-language-selection-background-color: #2e72a0;
+$environment-language-selection-shadow: 0 0 15px rgba(255,255,255,0.5);
+$environment-language-selection-active-background-color: #fff;
+$environment-language-selection-link-color: #fff;
+$environment-language-selection-language-background-color: #fff;
+$environment-language-selection-language-link-color: #569bca;
+$environment-language-selection-language-link-hover-color: #fff;
+$environment-language-selection-language-background-hover-color: #2e72a0;
+$environment-sign-in-link-color: #fff;
+$environment-sign-in-font-shadow: 0 0 1px #000;
+$environment-logged-in-border-color: #fff;
+$environment-logged-in-background-color: #fff;
+$environment-logged-in-font-color: #3c77a0;
+$environment-static-navigation-gradient-color-start: rgba(36, 108, 162, 0.15);
+$environment-static-navigation-gradient-color-end: rgba(255, 255, 255, 0);
+$environment-static-navigation-background-color: #4594bf;
+$environment-static-navigation-border-top-color: #71c3e1;
+$environment-static-navigation-border-bottom-color: #b2e0ff;
+$environment-static-navigation-active-border-color: #aae3f2;
+$environment-static-navigation-border-color: #66aace;
+$environment-static-navigation-notifier-background-color: #ff0000;
+$environment-static-navigation-notifier-border-color: #ff0000;
+$environment-static-navigation-notifier-font-color: #fff;
 $environment-background-dim-color: #ededed;
 $environment-background-light-dim-color: #f9f9f9;
 $environment-background-highlight-color: #fff8c1;
@@ -23,7 +49,7 @@ $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
 $environment-border-transparent: rgba(255, 255, 255, 0);
 $environment-widget-overlay-background-color: #000;
-
+$environment-frontpage-card-shadow:;
 // Items in the content-area  (messages, users, workspaces...)
 
 $item-header-font-color: #d89828;
