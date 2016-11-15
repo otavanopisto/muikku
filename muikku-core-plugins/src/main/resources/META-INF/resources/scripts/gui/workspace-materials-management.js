@@ -1659,6 +1659,7 @@
       // Documents cannot be created at root
       if (!$(previousMaterial).length) {
         $(newPage).find(".workspace-materials-management-new-page-link").remove();
+        $(newPage).find(".clipboard-material-container").remove();
       }
       
       // Sections can only be created last or above other sections 
