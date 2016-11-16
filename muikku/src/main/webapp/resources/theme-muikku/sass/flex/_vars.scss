@@ -6,7 +6,10 @@ $body-background-color: #f6fcff;
 $body-font-color: #2c2c2c;
 $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
+
+// TODO: Should be environment-icon-color - the fact that an icon is a font is irrelevant
 $environment-icon-font-color: #fff;
+$environment-content-box-shadow: 0 0 15px rgba(216, 230, 235, 0.5);
 $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
 $environment-bottom-bar-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
 $environment-bottom-bar-background-color: #485c64;
@@ -26,6 +29,7 @@ $environment-sign-in-font-shadow: 0 0 1px #000;
 $environment-logged-in-border-color: #fff;
 $environment-logged-in-background-color: #fff;
 $environment-logged-in-font-color: #3c77a0;
+$environment-static-navigation-icon-color: #fff;
 $environment-static-navigation-gradient-color-start: rgba(36, 108, 162, 0.15);
 $environment-static-navigation-gradient-color-end: rgba(255, 255, 255, 0);
 $environment-static-navigation-background-color: #4594bf;
@@ -43,11 +47,15 @@ $environment-background-active-color: #69cff9;
 $environment-background-selected-color: #eee;
 $environment-file-background-color: #34acfd;
 $environment-font-color: #000;
+$environment-link-color: #4290ea;
 $environment-header-font-color: #2c2c2c;
+$environment-page-title-font-color: #374145;
+
 $environment-alt-font-color: #fff; 
 $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
+$environment-border-highlight-color: #ccc;
 $environment-border-transparent-color: rgba(255, 255, 255, 0);
 $environment-button-container-background-color: #ebf6fb;
 $environment-button-background-color: #ed8e00;

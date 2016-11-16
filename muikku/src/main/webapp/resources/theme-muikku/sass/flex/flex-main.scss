@@ -367,7 +367,7 @@ div[class*='dock-static-navi-button'] > a,
 div[class*='dock-static-navi-button'] > div, 
 div[class*='dock-dynamic-navi-button'] > a {
   font-size: 40px;
-  color: #fff;
+  color: $environment-static-navigation-icon-color;
   text-decoration: none;
   @include iconShadow;
   padding: 5px 10px;
@@ -375,7 +375,7 @@ div[class*='dock-dynamic-navi-button'] > a {
   display: inline-block;
   
   &:hover {
-    @include iconShadow(rgba(255,255,190,0.8));
+    @include iconShadow(rgba(255, 255, 190, 0.8));
   }
   
 }
@@ -404,8 +404,8 @@ main.content {
 
 /* After Personalization Box will be redesigned and moved to proper .scss*/
 .box {
-  box-shadow: 0 0 15px rgba(216, 230, 235, 0.5);
-  background: #fff;
+  box-shadow: $environment-content-box-shadow;
+  background: $environment-background-color;
   padding: 15px;
   height: 100%;
   box-sizing: border-box;
@@ -458,7 +458,7 @@ main.content {
 
 /* Headers */
 h1,h2,h3,h4,h5,h6 {
-  color: $header;
+  color: $environment-header-font-color;
   text-transform: uppercase;
   margin: 0 0 0.5em;
   font-weight: 300;
@@ -492,20 +492,15 @@ h6 {
 
 /* Page title for mainfunctions */
 h2.main-functionality-page-title {
-  color: #374145;
+  color: $environment-page-title-font-color;
   font-size: 22px;
   font-weight: 300;
   margin: 0;
   padding: 0 13px 13px;
 }
 
-.subtitle {
-  color: $subTitle;
-  font-weight: 400;
-}
-
 a {
-  color: $link;
+  color: $environment-link-color;
   text-decoration: none;
   
   &:hover {
@@ -526,7 +521,7 @@ sup {
 }
 
 blockquote{
-  border-left: 5px solid #ccc;
+  border-left: 5px solid $environment-border-highlight-color;
   padding-left: 20px;  
 }
 
