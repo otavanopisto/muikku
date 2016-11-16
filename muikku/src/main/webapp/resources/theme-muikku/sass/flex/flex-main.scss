@@ -313,7 +313,7 @@ body {
   z-index: 12;
   position: relative;
   background: -moz-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$environment-static-navigation-gradient-color-start), color-stop(66%, $environment-static-navigation-gradient-color-end));
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $environment-static-navigation-gradient-color-start), color-stop(66%, $environment-static-navigation-gradient-color-end));
   background: -webkit-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
   background: -o-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
   background: -ms-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
@@ -384,7 +384,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 .dock-notification {
   background-color: $environment-static-navigation-notifier-background-color;
   border-radius: 10px;
-  border:1px solid $environment-static-navigation-notifier-border-color;
+  border: 1px solid $environment-static-navigation-notifier-border-color;
   top: 11px;
   color: $environment-static-navigation-notifier-font-color;
   font-size: 15px;
