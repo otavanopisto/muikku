@@ -14,6 +14,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
@@ -139,6 +140,14 @@ public class CommunicatorRESTModels {
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+  }
+
+  public CommunicatorThreadViewRESTModel restThreadViewModel(List<CommunicatorMessage> messages, 
+      CommunicatorMessageId olderThread, CommunicatorMessageId newerThread) {
+    Long olderThreadId = olderThread != null ? olderThread.getId() : null;
+    Long newerThreadId = newerThread != null ? newerThread.getId() : null;
+    List<CommunicatorMessageRESTModel> restMessages = restFullMessage(messages);
+    return new CommunicatorThreadViewRESTModel(olderThreadId, newerThreadId, restMessages);
   }
 
   public List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients(List<CommunicatorMessageRecipientUserGroup> recipients) {
