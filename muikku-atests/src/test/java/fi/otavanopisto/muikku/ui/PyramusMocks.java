@@ -411,7 +411,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.");
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     
     stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
       .willReturn(aResponse()
@@ -448,7 +448,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(courseStudenJson2)
         .withStatus(200)));
 
-    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "");
+    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "", Boolean.TRUE);
     stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student2.getId(), courseStudent2.getCourseId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -905,7 +905,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 //    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, assessorId, assessmentCreated, "Test evaluation.");
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, assessorId, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
     courseAssessments.add(courseAssessment);
     stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
