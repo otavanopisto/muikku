@@ -510,5 +510,13 @@ public class CommunicatorController {
       }
     }
   }
+
+  public CommunicatorMessageId findOlderThreadId(UserEntity userEntity, CommunicatorMessageId threadId, CommunicatorFolderType type, CommunicatorLabel label) {
+    return communicatorMessageDAO.findOlderThreadId(userEntity, threadId, type, label);
+  }
+  
+  public CommunicatorMessageId findNewerThreadId(UserEntity userEntity, CommunicatorMessageId threadId, CommunicatorFolderType type, CommunicatorLabel label) {
+    return communicatorMessageDAO.findNewerThreadId(userEntity, threadId, type, label);
+  }
   
 }
