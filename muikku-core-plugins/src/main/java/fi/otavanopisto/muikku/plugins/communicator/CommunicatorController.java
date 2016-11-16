@@ -106,12 +106,12 @@ public class CommunicatorController {
     return doc.body().html();
   }
 
-  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
-    return communicatorMessageDAO.listThreadsInInbox(userEntity, label, firstResult, maxResults);
+  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, CommunicatorLabel label, boolean onlyUnread, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listThreadsInInbox(userEntity, label, onlyUnread, firstResult, maxResults);
   }
 
-  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
-    return communicatorMessageDAO.listThreadsInInbox(userEntity, null, firstResult, maxResults);
+  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity, boolean onlyUnread, Integer firstResult, Integer maxResults) {
+    return communicatorMessageDAO.listThreadsInInbox(userEntity, null, onlyUnread, firstResult, maxResults);
   }
   
   public List<CommunicatorMessage> listSentItems(UserEntity userEntity, Integer firstResult, Integer maxResults) {
@@ -509,6 +509,14 @@ public class CommunicatorController {
           userEntities.remove(i);
       }
     }
+  }
+
+  public CommunicatorMessageId findOlderThreadId(UserEntity userEntity, CommunicatorMessageId threadId, CommunicatorFolderType type, CommunicatorLabel label) {
+    return communicatorMessageDAO.findOlderThreadId(userEntity, threadId, type, label);
+  }
+  
+  public CommunicatorMessageId findNewerThreadId(UserEntity userEntity, CommunicatorMessageId threadId, CommunicatorFolderType type, CommunicatorLabel label) {
+    return communicatorMessageDAO.findNewerThreadId(userEntity, threadId, type, label);
   }
   
 }

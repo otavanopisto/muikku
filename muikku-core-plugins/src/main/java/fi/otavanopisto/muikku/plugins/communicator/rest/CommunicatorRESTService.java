@@ -46,6 +46,7 @@ import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
@@ -129,6 +130,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
   public Response listUserInboxMessages(
       @QueryParam("labelId") Long labelId,
+      @QueryParam("onlyUnread") @DefaultValue ("false") Boolean onlyUnread,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity();
@@ -144,9 +146,9 @@ public class CommunicatorRESTService extends PluginRESTService {
       
     List<CommunicatorMessage> receivedItems;
     if (label != null)
-      receivedItems = communicatorController.listReceivedItems(user, label, firstResult, maxResults);
+      receivedItems = communicatorController.listReceivedItems(user, label, onlyUnread, firstResult, maxResults);
     else
-      receivedItems = communicatorController.listReceivedItems(user, firstResult, maxResults);
+      receivedItems = communicatorController.listReceivedItems(user, onlyUnread, firstResult, maxResults);
 
     List<CommunicatorThreadRESTModel> result = new ArrayList<CommunicatorThreadRESTModel>();
     
@@ -242,6 +244,25 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
   
+  @GET
+  @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserSentCommunicatorMessagesByMessageId( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+    
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, false);
+
+    CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.SENT, null);
+    CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.SENT, null);
+    
+    return Response.ok(
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+    ).build();
+  }
+  
   @DELETE
   @Path ("/sentitems/{COMMUNICATORMESSAGEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
@@ -255,6 +276,25 @@ public class CommunicatorRESTService extends PluginRESTService {
     communicatorController.trashSentMessages(user, messageId);
     
     return Response.noContent().build();
+  }
+  
+  @GET
+  @Path ("/unread/{COMMUNICATORMESSAGEID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserUnreadCommunicatorMessagesByMessageId( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+    
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, false);
+
+    CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.UNREAD, null);
+    CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.UNREAD, null);
+    
+    return Response.ok(
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+    ).build();
   }
   
   @GET
@@ -290,12 +330,15 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     
-    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+    CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId, false);
+    List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, false);
 
+    CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.INBOX, null);
+    CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.INBOX, null);
+    
     return Response.ok(
-      restModels.restFullMessage(receivedItems)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
     ).build();
   }
 

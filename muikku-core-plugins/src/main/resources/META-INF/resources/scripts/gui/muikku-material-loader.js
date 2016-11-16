@@ -641,6 +641,12 @@
       for (var i = 0; i < termObjects.length; i++) {
         var term = $('<div>').addClass('muikku-term').append(termObjects[i].name).attr('data-term-id', termObjects[i].id).draggable({
           containment: '#' + data.name,
+          start: function (event, ui) {
+            var width = event.target.getBoundingClientRect().width;
+            $(ui.helper).css({
+                'width': Math.ceil(width)
+            });
+          },
           helper: 'clone'
         });
         termsData.append(term);
