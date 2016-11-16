@@ -50,7 +50,6 @@ $environment-font-color: #000;
 $environment-link-color: #4290ea;
 $environment-header-font-color: #2c2c2c;
 $environment-page-title-font-color: #374145;
-
 $environment-alt-font-color: #fff; 
 $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
@@ -80,6 +79,7 @@ $environment-paging-tool-background-color: #36a3ce;
 $environment-paging-tool-font-color: #fff;
 $environment-paging-tool-background-disabled-color: #ededed;
 $environment-paging-tool-font-disabled-color: #dadada;
+$environment-widget-overlay-background-color: #000;
 
 // Forms (bottom bar)
 
@@ -97,8 +97,8 @@ $form-button-cancel-background-color: #7391a7;
 $form-autocomplete-background-color: #f2f5f7;
 $form-autocomplete-border-color: #fff;
 $form-autocomplete-hover-font-color: #006ab1;
-$environment-widget-overlay-background-color: #000;
-// $environment-frontpage-card-shadow:;
+
+
 // Items in the content-area  (messages, users, workspaces...)
 
 $item-background-color: #fff;
