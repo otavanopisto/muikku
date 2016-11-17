@@ -694,7 +694,12 @@ public class WorkspaceForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/workspaces/{WORKSPACEENTITYID}/forumAreas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response archiveReply(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
+  public Response archiveReply(
+      @PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, 
+      @PathParam ("AREAID") Long areaId, 
+      @PathParam ("THREADID") Long threadId, 
+      @PathParam ("REPLYID") Long replyId,
+      @DefaultValue ("false") @QueryParam ("permanent") Boolean permanent) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Workspace entity %d not found", workspaceEntityId)).build();
@@ -712,12 +717,20 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceForumArea %d does not belong to workspace entity %d", forumArea.getId(), workspaceEntity.getId())).build();
     }
 
-    if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity)) {
-      forumController.archiveReply(reply);
-      return Response.noContent().build();
+    if (!permanent) {
+      if (sessionController.hasPermission(MuikkuPermissions.OWNER, reply) || sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity)) {
+        forumController.updateReplyDeleted(reply, true);
+
+        return Response.noContent().build();
+      }
     } else {
-      return Response.status(Status.FORBIDDEN).build();
+      if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity)) {
+        forumController.archiveReply(reply);
+        
+        return Response.noContent().build();
+      }
     }
+    return Response.status(Status.FORBIDDEN).build();
   }
   
   @POST
