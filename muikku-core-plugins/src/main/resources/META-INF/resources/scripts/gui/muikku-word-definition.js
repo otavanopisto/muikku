@@ -7,36 +7,52 @@
     },
     
     _create : function() {
-      if ($('.muikku-word-definition').length == 0) {
-        $('<div>')
-          .addClass('muikku-word-definition')
-          .hide()
-          .appendTo(document.body);
-      }
-
+      this._definition = $('<div>')
+        .addClass('muikku-word-definition')
+        .text(this.element.attr('data-muikku-word-definition'))
+        .hide()
+        .appendTo(document.body);
       this.element.on('mousemove', $.proxy(this._onMouseMove, this));
       this.element.on('mouseout', $.proxy(this._onMouseOut, this));
+      this.element.on('touch', $.proxy(this._onTouch, this));
+    },
+    
+    _onTouch: function (event, data) {
+      if ($(this._definition).is(":visible")) {
+        $(this._definition).hide();
+      }
+      else {
+        $(this._definition)
+          .css({
+            'left': event.pageX + 'px',
+            'top': event.pageY + 'px'
+          })
+          .show();
+      }
     },
     
     _onMouseMove: function (event, data) {
-      $('.muikku-word-definition')
-        .text(this.element.attr('data-muikku-word-definition'))
+      $(this._definition)
         .css({
           'left': event.pageX + 'px',
           'top': event.pageY + 'px'
-        })
-        .show();
+        });
+      if (!$(this._definition).is(':visible')) {
+        $(this._definition).show();
+      }
     },
     
     _onMouseOut: function (event) {
-      $('.muikku-word-definition').hide();
+      if ($(this._definition).is(':visible')) {
+        $(this._definition).hide();
+      }
     },
     
     _destroy: function () {
-      
+      $(this._definition).remove();
+      this._defintion = null;
     }
   });
-  
   
 
 }).call(this);
