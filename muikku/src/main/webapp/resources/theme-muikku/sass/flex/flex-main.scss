@@ -1,15 +1,15 @@
-@import "_fonts";
-@import "_vars";
-@import "_vars_backup";
-@import "_styles";
-@import "_forms";
-@import "_animations";
-@import "_dialog";
-@import "_flex-dialog";
-@import "_buttons";
-@import "_notif-queue";
-@import "_connectionlost";
-@import "_environment_print";
+@import "fonts";
+@import "vars";
+@import "vars_backup";
+@import "styles";
+@import "forms";
+@import "animations";
+@import "dialog";
+@import "flex-dialog";
+@import "buttons";
+@import "notif-queue";
+@import "connectionlost";
+@import "environment_print";
 
 html {
   height: 100%;
@@ -525,5 +525,5 @@ blockquote{
   padding-left: 20px;  
 }
 
-@import "_mobile";
-@import "_tablet";
+@import "mobile";
+@import "tablet";

@@ -65,6 +65,10 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplies;
   }
   
+  public Long getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(Long userEntityId, List<WorkspaceMaterialReplyState> replyStates, List<WorkspaceMaterial> materials) {
+    return workspaceMaterialReplyDAO.countByUserAndStatesAndMaterials(userEntityId, replyStates, materials);
+  }
+  
   private void appendVisibleWorkspaceMaterials(List<WorkspaceMaterial> materials, WorkspaceNode workspaceNode) {
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentAndHidden(workspaceNode, Boolean.FALSE);
     for (WorkspaceNode childNode : childNodes) {

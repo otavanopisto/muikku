@@ -55,8 +55,8 @@ public class NoPassedCoursesNotificationController {
       if (workspaceAssessments != null && !workspaceAssessments.isEmpty()) {
         WorkspaceAssessment assessment = workspaceAssessments.get(0); //TODO: loop and find latest
         if (assessment.getDate().after(since)) {
-          GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleSchoolDataSource(), assessment.getGradingScaleIdentifier());
-          GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeSchoolDataSource(), assessment.getGradeIdentifier());
+          GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleIdentifier());
+          GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeIdentifier());
           if (grade.isPassingGrade()) {
             count++;
           }

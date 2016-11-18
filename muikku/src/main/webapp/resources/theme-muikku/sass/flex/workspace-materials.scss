@@ -1,16 +1,16 @@
-@import "_vars.scss";
-@import "_vars_backup";
-@import "_styles.scss";
-@import "_custom-ckeditor-styles.scss";
-@import "_connect-field.scss";
-@import "_organizer-field.scss";
-@import "_sorter-field.scss";
-@import "_file-field.scss";
-@import "_audio-field.scss";
-@import "_workspace-materials-defaults.scss"; 
-@import "_correct_answers.scss"; 
-@import "_ckeditor_theme.scss";
-@import "_workspace_print.scss";
+@import "vars";
+@import "vars_backup";
+@import "styles";
+@import "custom-ckeditor-styles";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "file-field";
+@import "audio-field";
+@import "workspace-materials-defaults"; 
+@import "correct_answers"; 
+@import "ckeditor_theme";
+@import "workspace_print";
 
 
 .lazy-pdf {
@@ -138,7 +138,7 @@ nav.workspace-materials-toc-wrapper {
   box-sizing: border-box;
   position: absolute;
   top: 40px;
-  bottom: 35px;
+  bottom: 60px;
 }
 
 // TOC ROOT
@@ -218,7 +218,7 @@ nav.workspace-materials-toc-wrapper {
     }
     
     &.assignment {
-      border-left: 2px solid $evaluatedAssignment;
+      border-left: 2px solid $assignment;
       
       // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
       &.submitted,
@@ -230,7 +230,7 @@ nav.workspace-materials-toc-wrapper {
     }
     
     &.exercise {
-      border-left: 2px solid $exerciseAssignment;
+      border-left: 2px solid $exercise;
       
        // Adjust link padding when exercise is "done" so icon has more room
        &.submitted {

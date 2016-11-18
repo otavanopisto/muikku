@@ -4,8 +4,30 @@
     opacity: 0.5;
     cursor: default;
     
+    .icon-delete {
+      display: none;
+    }
+    
+    .muikku-category .muikku-term {
+      padding: 6px 8px;
+    }
+    
     .muikku-terms-data .muikku-term {
       cursor: default;
+      
+      &.term-in-use {
+        background: $taskBoxEditedColor;
+        
+        &:hover {
+          background: $taskBoxEditedColor;
+        } 
+         
+      }
+      
+      &:hover {
+        background: $taskBoxColor;
+      }
+      
     }
     
   }

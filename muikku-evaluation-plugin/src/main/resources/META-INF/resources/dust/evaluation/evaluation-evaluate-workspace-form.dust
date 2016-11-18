@@ -1,0 +1,40 @@
+<div class="evaluation-modal-evaluate-form"> 
+  <input type="hidden" name="workspaceUserEntityId" id="workspaceWorkspaceUserEntityId" value="{workspaceUserEntityId}"/>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.literalAssessmentLabel"/}</label>
+    <textarea id="workspaceEvaluateFormLiteralEvaluation"></textarea>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="evaluationDate">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.assessmentDateLabel"/}</label>
+    <input required="required" type="date" name="evaluationDate" id="workspaceEvaluationDate"/>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="grade">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.assessmentGradeLabel"/}</label>
+    <select name="grade" id="workspaceGrade">
+      {#gradingScales}
+        <optgroup label="{name}">
+        {#grades scaleid=id scaleds=dataSource}
+          <option value="{scaleds}-{scaleid}@{dataSource}-{id}">
+            {name}
+          </option>
+        {/grades}
+        </optgroup>
+      {/gradingScales}
+    </select>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.assessorLabel"/}</label>
+    <select name="assessor" id="workspaceAssessor">
+      {#assessors}
+        <option value="{userIdentifier}">{lastName}, {firstName}</option>
+      {/assessors}
+    </select>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <div class="eval-modal-evaluate-buttonset">
+      <div id="workspaceDeleteButton" class="eval-modal-evaluate-button button-delete" style="display:none;">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.removeAssessmentButtonLabel"/}</div>
+      <div id="workspaceSaveButton" class="eval-modal-evaluate-button button-evaluate-passing">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.evaluateWorkspaceButtonLabel"/}</div>
+      <div id="workspaceCancelButton" class="eval-modal-evaluate-button button-cancel">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.cancelButtonLabel"/}</div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="eval-modal-close icon-close-small"><span class="tooltip"></span></div>
+
+<section class="eval-modal-student-container" id="evaluationStudentContainer" data-user-entity-id="{userEntityId}">
+  <header class="eval-modal-student-header flex-row flex-align-items-center">
+    <div class="eval-modal-student-name">{studentName} ({studyProgrammeName})</div>
+  </header>
+  <div class="eval-modal-assignment-content">
+  
+  </div>
+</section>
+
+<section class="eval-modal-workspace-evaluate-container" id="evaluationEvaluateContainer">
+  <header class="eval-modal-evaluate-header flex-row flex-align-items-center">
+    <div class="eval-modal-workspace-name">{courseName}</div>
+  </header>
+  <div class="eval-modal-evaluate-workspace-content">
+  
+    {>"evaluation/evaluation-evaluate-workspace-form.dust"/}
+    
+  </div>
+</section>
+
+<section class="eval-modal-assignment-evaluate-container" id="evaluationAssignmentEvaluateContainer" style="display:none;">
+  <header class="eval-modal-assignment-evaluate-header flex-row flex-align-items-center">
+    <div class="eval-modal-assignment-title"></div>
+    <dic class="eval-modal-assignment-close icon-arrow-right"></div>
+  </header>
+  <div class="eval-modal-evaluate-assignment-content">
+    {>"evaluation/evaluation-evaluate-assignment-form.dust"/}
+  </div>
+</section>

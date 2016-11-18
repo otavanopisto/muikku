@@ -1003,7 +1003,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       if (user != null) {
         UserEntity userEntity = userEntityController.findUserEntityByUser(user);
-        workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(), 
+        workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
+          workspaceUser.getUserIdentifier().toId(),
           userEntity != null ? userEntity.getId() : null,
           user.getFirstName(), 
           user.getLastName()
