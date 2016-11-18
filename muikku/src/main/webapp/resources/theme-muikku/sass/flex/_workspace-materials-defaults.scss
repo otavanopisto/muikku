@@ -412,7 +412,6 @@ a > img {
 }
 
 .muikku-word-definition {
-  z-index: 9999;
   background: #c4ffd6 none repeat scroll 0 0;
   border: 2px solid #fff;
   border-radius: 3px;
@@ -421,15 +420,17 @@ a > img {
   font-size: 14px;
   font-weight: 300;
   line-height: 1.5em;
+  margin: 10px 0 0;
   max-width: 250px;
   padding: 5px 10px;
   position: absolute;
+  z-index: 20;
 }
     
 mark[data-muikku-word-definition] {
+  background: transparent;
   border-bottom: 1px dashed #007925;
   color: #007925;
-  background: transparent;
   cursor: help;
   font-weight: 400;
   position: relative;

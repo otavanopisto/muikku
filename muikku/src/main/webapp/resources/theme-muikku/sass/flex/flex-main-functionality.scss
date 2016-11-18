@@ -1,6 +1,8 @@
-@import "vars";
-@import "vars_backup";
-@import "styles";
+@import "_vars.scss";
+
+// Todo: Remove this after .mf-button-container has a variable (will be merged in the issue 2426)
+@import "_vars_backup";
+@import "_styles.scss";
 
 .mf-content-master {
   margin: 0 5px;
@@ -598,7 +600,23 @@ ul.mf-tool-label-container {
   
 }
 
+.mf-item-empty-container {
+    min-height:60px;
+}
 
+.mf-item-empty {
+  box-shadow: $item-shadow;
+  background-color: $item-background-color;
+  margin: 0 5px 5px 5px;
+  text-align:center;
+
+  span {
+    color: $item-state-info-font-color;
+   &:not(:first-child){
+    margin-left:10px;
+   }    
+  }  
+}
 
 .mf-item {
   box-shadow: $item-shadow;

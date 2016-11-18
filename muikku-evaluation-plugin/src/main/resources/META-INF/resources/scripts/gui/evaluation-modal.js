@@ -255,7 +255,7 @@
             card: $(this._requestCard),
             evaluated: true,
             passing: assessment.passing,
-            evaluationDate: new Date(moment(assessment.assessmentDate))});
+            evaluationDate: moment(assessment.assessmentDate).toDate()});
         }
         this.close();
       }, this));
@@ -280,7 +280,7 @@
               // Verbal assessment
               CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
               // Date
-              $('#assignmentEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+              $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
               // Assessor
               $('#assignmentAssessor').val(assessment.assessorIdentifier);
               // Grade
@@ -360,7 +360,7 @@
             // Verbal assessment
             CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
             // Date
-            $('#workspaceEvaluationDate').datepicker('setDate', new Date(moment(assessment.assessmentDate)));
+            $('#workspaceEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
             // Assessor
             $('#workspaceAssessor').val(assessment.assessorIdentifier);
             // Grade

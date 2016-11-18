@@ -57,7 +57,7 @@
     return formatTime(new Date());
   }
   
-  function formatTime(d, includeSeconds) {
+  function formatTime(d) {
     // TODO Could use some elegance, surely...
     var val = getLocaleText('timePattern');
     val = val.replace('hh', ('00' + d.getHours()).slice(-2));

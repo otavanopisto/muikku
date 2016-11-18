@@ -9,10 +9,11 @@ public class ForumThreadReplyRESTModel extends ForumMessageRESTModel {
   public ForumThreadReplyRESTModel() {
   }
   
-  public ForumThreadReplyRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId, Long parentReplyId, Date lastModified, Long childReplyCount) {
+  public ForumThreadReplyRESTModel(Long id, String message, Long creator, Date created, Long forumAreaId, Long parentReplyId, Date lastModified, Long childReplyCount, Boolean deleted) {
     super(id, message, creator, created, forumAreaId, lastModified);
     this.parentReplyId = parentReplyId;
     this.childReplyCount = childReplyCount;
+    this.deleted = deleted;
   }
 
   public Long getParentReplyId() {
@@ -31,6 +32,15 @@ public class ForumThreadReplyRESTModel extends ForumMessageRESTModel {
     this.childReplyCount = childReplyCount;
   }
 
+  public Boolean getDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(Boolean deleted) {
+    this.deleted = deleted;
+  }
+
+  private Boolean deleted;
   private Long parentReplyId;
   private Long childReplyCount;
 }

@@ -553,23 +553,36 @@ public class ForumRESTService extends PluginRESTService {
   @DELETE
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response archiveReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) {
+  public Response archiveReply(
+      @PathParam ("AREAID") Long areaId, 
+      @PathParam ("THREADID") Long threadId, 
+      @PathParam ("REPLYID") Long replyId,
+      @DefaultValue ("false") @QueryParam ("permanent") Boolean permanent) {
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
     if (reply == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Forum thread reply (%d) not found", replyId)).build();
     }
-     
+    
     if (!(reply.getForumArea() instanceof EnvironmentForumArea)) {
       logger.severe(String.format("Trying to delete non environment forum thread reply (%d) from environment endpoint", reply.getId()));
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
-    if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES)) {
-      forumController.archiveReply(reply);
-      return Response.noContent().build();
+
+    if (!permanent) {
+      if (sessionController.hasPermission(MuikkuPermissions.OWNER, reply) || sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES)) {
+        forumController.updateReplyDeleted(reply, true);
+        
+        return Response.noContent().build();
+      }
     } else {
-      return Response.status(Status.FORBIDDEN).build();
+      if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES)) {
+        forumController.archiveReply(reply);
+        
+        return Response.noContent().build();
+      }
     }
+    
+    return Response.status(Status.FORBIDDEN).build();
   }
   
   @POST
@@ -653,10 +666,17 @@ public class ForumRESTService extends PluginRESTService {
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
     Long parentReplyId = null;
+    String message = entity.getMessage();
     if (entity.getParentReply() != null) {
       parentReplyId = entity.getParentReply().getId();
     }
-    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId(), parentReplyId, entity.getLastModified(), entity.getChildReplyCount());
+    
+    if (entity.getDeleted()) {
+      message = null;
+    }
+      
+    return new ForumThreadReplyRESTModel(entity.getId(), message, entity.getCreator(), entity.getCreated(), 
+        entity.getForumArea().getId(), parentReplyId, entity.getLastModified(), entity.getChildReplyCount(), entity.getDeleted());
   }
   
   private List<ForumThreadReplyRESTModel> createRestModel(ForumThreadReply... entries) {
