@@ -24,7 +24,7 @@
       else {
         $(this._definition)
           .css({
-            'left': event.pageX + 'px',
+            'left': Math.min(event.pageX, $(window).width() - $(this._definition).outerWidth()) + 'px',
             'top': event.pageY + 'px'
           })
           .show();
@@ -34,7 +34,7 @@
     _onMouseMove: function (event, data) {
       $(this._definition)
         .css({
-          'left': event.pageX + 'px',
+          'left': Math.min(event.pageX, $(window).width() - $(this._definition).outerWidth()) + 'px',
           'top': event.pageY + 'px'
         });
       if (!$(this._definition).is(':visible')) {
