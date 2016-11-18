@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
+  
+  <div class="flex-row lg-flex-hide md-flex-hide flex-align-items-center">
+    <div class="sm-flex-cell-8 sm-flex-cell-first">
+      <div class="login">
+        <div class="bt-generic bt-login">
+          <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+            <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+          </a>
+        </div>
+      </div>  
+    </div>
+    
+    <div class="sm-flex-cell-8  sm-flex-cell-last">
+      <div class="forgot-password">
+        <div class="bt-generic bt-forgotpassword">
+          <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+        </div>
+      </div> 
+    </div>
+  </div>
+  
+</ui:composition>

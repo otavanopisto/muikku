@@ -1,0 +1,121 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="flex-base.xhtml">
+  
+  <ui:define name="body">
+    <ui:insert name="notification-queue">
+      <div class="notification-queue">
+        <div class="notification-queue-items">
+          <ui:insert name="messages">
+            <ui:repeat var="message" value="#{facesContext.messageList}">
+              <ui:fragment rendered="#{message.severity.ordinal eq 0}">
+                <div data-severity="info" class="notification-queue-item notification-queue-item-info"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+              <ui:fragment rendered="#{message.severity.ordinal eq 1}">
+                <div data-severity="warn" class="notification-queue-item notification-queue-item-warn"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+              <ui:fragment rendered="#{message.severity.ordinal eq 2}">
+                <div data-severity="error" class="notification-queue-item notification-queue-item-error"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+              <ui:fragment rendered="#{message.severity.ordinal eq 3}">
+                <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+              </ui:fragment>
+            </ui:repeat>
+            <h:messages globalOnly="false" style="display: none" />
+          </ui:insert>
+        </div>
+      </div>
+    </ui:insert>
+    
+    <ui:insert name="of-navigation">
+	    <nav class="of-navigation">
+	      <div class="of-navigation-wrapper flex-row flex-align-items-center">
+		      <div class="of-site-logo"></div>
+		      <ul class="of-navigation-container flex-row flex-align-items-center flex-justify-content-start">
+		        <li class="of-navigation-item">
+		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.studying']}</a>
+		        </li>
+		        <li class="of-navigation-item">
+		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.news']}</a>
+		        </li>
+		        <li class="of-navigation-item">
+		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.otavanOpisto']}</a>
+		        </li>
+		        <li class="of-navigation-item">
+		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.contact']}</a>
+		        </li>
+		        <li class="of-navigation-item">
+		          <a href="#" class="of-navigation-item-link highlight">#{i18n.text['plugin.navigation.link.openMaterials']}</a>
+		        </li>
+		      </ul>
+		      <div class="of-site-login">
+		        <div class="login">
+              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+              </a>
+            </div>
+            <div class="forgotpassword">
+              <a href="#" class="forgotpassword-link">
+                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+              </a>
+            </div>
+		      </div>
+		      <div class="of-site-locale">
+		        <div class="selected-language">EN</div>
+            <h:form>
+              <div class="language-selection-container" data-visibility-status="hidden">
+                <ui:repeat value="#{i18n.languages}" var="locale">
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+                </ui:repeat>
+              </div>
+            </h:form>
+		      </div>
+	      </div>
+	    </nav>
+	  </ui:insert>
+	  
+	  <ui:insert name="of-header">
+	    <header class="of-header">
+	      <div class="of-header-wrapper">
+		      <div class="of-header-application-buble">
+		        <div class="application-title">#{i18n.text['plugin.header.studentApplicationBuble.title']}</div>
+		        <div class="application-description">#{i18n.text['plugin.header.studentApplicationBuble.description']}</div>
+		        <div class="application-link">#{i18n.text['plugin.header.studentApplicationBuble.link']}</div>
+		      </div>
+		      <div class="of-header-site-desciption"></div>
+		      <div class="of-header-open-materials-buble">
+		        <div class="open-materials-title">#{i18n.text['plugin.header.openMaterialsBuble.title']}</div>
+            <div class="open-materials-description">#{i18n.text['plugin.header.openMaterialsBuble.description']}</div>
+            <div class="open-materials-link">#{i18n.text['plugin.header.openMaterialsBuble.link']}</div>
+		      </div>
+	      </div>
+	    </header>
+	  </ui:insert>
+	  
+	  <ui:insert name="of-announcement">
+	    <div class="of-announcement">
+	    
+	    </div>
+	  </ui:insert>
+    
+    <ui:insert name="main">
+      <main class="of-content">
+        <ui:insert name="main-content">
+          <div class="flex-grid">
+            <ui:insert name="grid-content"></ui:insert>
+          </div>
+        </ui:insert>
+      </main>
+    </ui:insert>
+    
+    <ui:insert name="footer">
+      <footer class="of-footer">
+      
+      </footer>
+    </ui:insert>
+    
+  </ui:define>
+  
+</ui:composition>

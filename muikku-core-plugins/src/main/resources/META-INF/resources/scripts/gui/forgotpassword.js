@@ -7,6 +7,7 @@
         modal: true, 
         resizable: false,
         width: 460,
+        height: 'auto',
         dialogClass: "forgotpassword-dialog",
         beforeClose: function(event, ui) {
           $(this).dialog().remove();          
