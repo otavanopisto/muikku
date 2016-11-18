@@ -171,8 +171,13 @@
             .callback(callback);
         }
       }, this));
-    }
+    },
   
+    deleteThreadReply: function (areaId, threadId, replyId, callback) {
+      mApi().workspace.workspaces.forumAreas.threads.replies
+        .del(this.options.workspaceEntityId, areaId, threadId, replyId)
+        .callback(callback);
+    }
   });
   
   $(document).ready(function() {
