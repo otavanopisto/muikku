@@ -17,6 +17,12 @@
       this.element.attr('data-disabled-hint', getLocaleText('plugin.workspace.audioField.readonlyHint'));
       
       $('<div>')
+        .hide()
+        .addClass('no-clips')
+        .text(getLocaleText('plugin.workspace.audioField.noClips'))
+        .appendTo(this.element);
+      
+      $('<div>')
         .addClass('clips')
         .appendTo(this.element);
       
@@ -38,9 +44,13 @@
         return this.element.attr('data-readonly') == 'readonly';
       } else {
         if (readonly) {
+          if (!this.element.find('.clip[data-id]').length) {
+            this.element.find('.no-clips').show();
+          }
           this.element.attr('data-readonly', 'readonly')
           this.element.find(".controls input[type='file']").attr('disabled', 'disabled');
         } else {
+          this.element.find('.no-clips').hide();
           this.element.removeAttr('data-readonly');
           this.element.find(".controls input[type='file']").removeAttr('disabled');
         }
@@ -57,6 +67,12 @@
           };
         });
       } else {
+        if (this.readonly() && clips.length == 0) {
+          this.element.find('.no-clips').show();
+        }
+        else {
+          this.element.find('.no-clips').hide();
+        }
         var tasks = $.map(clips, $.proxy(function (clip) {
           return $.proxy(function (callback) {
             var preparedClip = this._prepareClip(clip.id);
