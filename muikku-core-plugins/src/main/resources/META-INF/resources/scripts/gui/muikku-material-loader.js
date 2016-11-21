@@ -1285,15 +1285,17 @@
       });
     });
     
-    $('.muikku-connect-field-term, .muikku-connect-field-counterpart').dotdotdot({
-      ellipsis: '...',
-      wrap: 'word',
-      fallbackToLetter: true,
-      lastCharacter: {
-        remove: [ ' ', ',', ';', '.', '!', '?' ],
-        noEllipsis: []
-      }
-    });
+    if (jQuery().dotdotdot) {
+      $('.muikku-connect-field-term, .muikku-connect-field-counterpart').dotdotdot({
+        ellipsis: '...',
+        wrap: 'word',
+        fallbackToLetter: true,
+        lastCharacter: {
+          remove: [ ' ', ',', ';', '.', '!', '?' ],
+          noEllipsis: []
+        }
+      });
+    }
     
     $(data.pageElement).find('table').each(function (index, table) {
       var tableWrapper = $('<div>')
