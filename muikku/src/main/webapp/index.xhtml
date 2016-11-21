@@ -41,7 +41,7 @@
   <ui:define name="grid-content">
     <!--  If user is unauthenticated -->
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <ui:include src="index_unauth.xhtml" />
+      <ui:include src="/index_unauth.xhtml" />
     </ui:fragment>
     
     <!--  If user is authenticated -->

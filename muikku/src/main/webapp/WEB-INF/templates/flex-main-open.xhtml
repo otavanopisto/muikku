@@ -78,18 +78,40 @@
 	  
 	  <ui:insert name="of-header">
 	    <header class="of-header">
-	      <div class="of-header-wrapper">
-		      <div class="of-header-application-buble">
-		        <div class="application-title">#{i18n.text['plugin.header.studentApplicationBuble.title']}</div>
-		        <div class="application-description">#{i18n.text['plugin.header.studentApplicationBuble.description']}</div>
-		        <div class="application-link">#{i18n.text['plugin.header.studentApplicationBuble.link']}</div>
+	      <div class="of-header-wrapper flex-row flex-align-items-center flex-justify-content-center">
+	      
+	        <div class="of-header-application-buble-wrapper lg-flex-cell12-4">
+		        <div class="of-header-application-buble">
+	            <div class="application-title">#{i18n.text['plugin.header.studentApplicationBuble.title']}</div>
+	            <div class="application-description">#{i18n.text['plugin.header.studentApplicationBuble.description']}</div>
+	            <div class="application-link">#{i18n.text['plugin.header.studentApplicationBuble.link']}</div>
+	          </div>
+	        </div>
+	        
+		      <div class="of-header-site-info-wrapper lg-flex-cell12-4">
+		        <div class="of-header-site-info">
+		        
+		          <div class="site-info-logo-wrapper">
+		            <div class="site-info-logo-glow"></div>
+		            <div class="site-info-logo"></div>
+		          </div>
+	            <div class="site-info-organization">Otavan Opiston</div>
+	            <div class="site-info-name">
+	              <div class="site-info-name-firstpart">Muikku</div>
+	              <div class="site-info-name-secondpart">Verkko</div>
+	            </div>
+	            <div class="site-info-description">Otavan Opiston nettilukion ja nettiperuskoulun sähköinen oppimisympäristö</div>
+	          </div>
 		      </div>
-		      <div class="of-header-site-desciption"></div>
-		      <div class="of-header-open-materials-buble">
-		        <div class="open-materials-title">#{i18n.text['plugin.header.openMaterialsBuble.title']}</div>
-            <div class="open-materials-description">#{i18n.text['plugin.header.openMaterialsBuble.description']}</div>
-            <div class="open-materials-link">#{i18n.text['plugin.header.openMaterialsBuble.link']}</div>
-		      </div>
+		      
+		      <div class="of-header-open-materials-buble-wrapper lg-flex-cell12-4">
+			      <div class="of-header-open-materials-buble">
+			        <div class="open-materials-title">#{i18n.text['plugin.header.openMaterialsBuble.title']}</div>
+	            <div class="open-materials-description">#{i18n.text['plugin.header.openMaterialsBuble.description']}</div>
+	            <div class="open-materials-link">#{i18n.text['plugin.header.openMaterialsBuble.link']}</div>
+			      </div>
+			    </div>
+			    
 	      </div>
 	    </header>
 	  </ui:insert>
@@ -111,7 +133,7 @@
     </ui:insert>
     
     <ui:insert name="footer">
-      <footer class="of-footer">
+      <footer id="contact" class="of-footer">
       
       </footer>
     </ui:insert>

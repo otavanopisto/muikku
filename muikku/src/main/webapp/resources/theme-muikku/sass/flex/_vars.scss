@@ -1,10 +1,8 @@
 // Open front page's variables
 
-$of-body-font-family: 'Open Sans',Arial,sans-serif;
+$of-body-font-family: 'Exo 2',Arial,sans-serif;
 $of-body-background-color: #f5f5f5;
 $of-body-font-color: #343333; 
-
-$of-navigation-font-family: 'Exo 2','Open Sans',Arial,sans-serif;
 
 $of-navigation-link-color: #999a9a;
 $of-navigation-link-highlight-color: #0db10d;
@@ -17,22 +15,31 @@ $of-navigation-forgotpassword-link-color: #009fe3;
 $of-navigation-locale-selected-background-color: #494949;
 $of-navigation-locale-selected-text-color: #fff;
 $of-navigation-locale-selection-background-color: #494949;
+$of-navigation-locale-selection-boxshadow-color: rgba(0, 0, 0, 0.3);
 $of-navigation-locale-selection-link-color: #fff;
 $of-navigation-locale-selection-arrow-background-color: #494949; 
-
-$of-header-font-family: 'Exo 2','Open Sans',Arial,sans-serif;
 
 $of-header-background-color: #0189c6;
 $of-header-buble-background-color: #fff;
 $of-header-buble-border-color: #0189c6;
 $of-header-buble-border-hover-color: #ef6000;
-$of-header-buble-boxshadow-color: rgba(0,0,0,0.4);
+$of-header-buble-boxshadow-color: rgba(0, 0, 0, 0.4);
 $of-header-buble-title-font-color: #009fe3;
 $of-header-buble-link-background-color: #ef6000;
 $of-header-buble-link-color: #fff;
 
-$of-announcement-backgrond-color: #454545;
-$of-footer-backgrond-color: #454545;
+$of-header-site-info-text-color: #fff;
+$of-header-site-info-logo-boxshadow-color: rgba(0, 0, 0, 0.2);
+$of-header-site-info-logo-glow-boxshadow-color: rgba(255, 255, 255, 1);
+$of-header-site-info-text-shadow-color: rgba(0, 0, 0, 0.3);
+
+$of-announcement-background-color: #454545;
+
+$of-frontpage-box-background-color: #fff;
+$of-frontpage-box-border-color: #e2e3e3;
+$of-frontpage-section-title-color: #009fe3;
+
+$of-footer-background-color: #454545;
 
 // Environment level variables
 

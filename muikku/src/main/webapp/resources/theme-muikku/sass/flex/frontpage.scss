@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Exo+2:300,400,600,900');
+@import url('https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900');
 @import "_fonts";
 @import "_vars";
 @import "_styles";
@@ -10,25 +10,18 @@ body {
   font-family: $of-body-font-family;
   font-size: 14px;
   font-weight: 300;
-  line-height: 1.5em;  
+  line-height: 1;  
   margin: 0;
-  padding: 70px 0 0;
+  padding: 0;
 }
 
 nav.of-navigation {
   background: $of-body-background-color;
   box-sizing: border-box;
   height: 70px;
-  left: 0;
-  position: fixed;
-  top: 0;
-  right: 0;
+  position: relative;
   width: 100%;
   z-index: 9;
-  
-  a {
-    font-family: $of-navigation-font-family;
-  }
   
   .of-navigation-wrapper {
     margin: 0 auto;
@@ -36,7 +29,7 @@ nav.of-navigation {
   }
   
   .of-site-logo {
-    background: url('/gfx/site-logo.png') no-repeat center center;
+    background: url('/gfx/site-logo-text.png') no-repeat center center;
     box-sizing: border-box;
     flex: 0 0 auto;
     height: 70px;
@@ -64,7 +57,7 @@ nav.of-navigation {
       display: inline-block;
       font-size: 16px;
       font-weight: 400;
-      padding: 21px 5px 24px;
+      padding: 24px 5px 27px;
       text-decoration: none;
       text-transform: uppercase;
       transition: border 0.5s ease-in-out;
@@ -97,7 +90,6 @@ nav.of-navigation {
       border-radius: 2px; 
       color: $of-navigation-login-text-color;
       display: inline-block;
-      font-family: $of-navigation-font-family;
       font-size: 16px;
       font-weight: 400;
       padding: 6px 12px;
@@ -106,6 +98,7 @@ nav.of-navigation {
     }
     
     .forgotpassword {
+      display:none;
     
       .forgotpassword-link {
         color: $of-navigation-forgotpassword-link-color;
@@ -126,11 +119,10 @@ nav.of-navigation {
       box-sizing: border-box;
       color: $of-navigation-locale-selected-text-color;
       cursor: pointer;
-      font-family: $of-navigation-font-family;
       font-size: 16px;
       height: 34px; 
       overflow: hidden;
-      padding: 6px 0;
+      padding: 8px 0;
       text-align: center;
       transition: border-radius 0.1s ease-in-out;
       width: 34px;
@@ -140,6 +132,7 @@ nav.of-navigation {
     .language-selection-container {
       background: $of-navigation-locale-selection-background-color;
       border-radius: 5px;
+      box-shadow: 0 10px 20px $of-navigation-locale-selection-boxshadow-color;
       display: none;
       min-width: 100px;
       position: absolute;
@@ -188,9 +181,7 @@ nav.of-navigation {
 header.of-header {
   background: $of-header-background-color;
   box-sizing: border-box;
-  font-family: $of-header-font-family;
   height: 520px;
-  position: relative;
   width: 100%;
   
   .of-header-wrapper {
@@ -206,26 +197,25 @@ header.of-header {
     border: 6px solid $of-header-buble-border-color;
     border-radius: 100%;
     box-shadow: 0 20px 70px $of-header-buble-boxshadow-color;
-    margin: -146px 0 0 0;
     height: 210px;
-    width: 210px;
     padding: 35px;
-    position: absolute;
+    position: relative;
     text-align: center;
-    top: 50%;
     transition: border-color 0.5s ease-in-out;
+    width: 210px;
     
     &:hover {
       border-color: $of-header-buble-border-hover-color;
     }
+    
   }
   
   .of-header-application-buble {
-    left: 120px;
+    margin: 0 10px 0 auto;
   }
-  
+    
   .of-header-open-materials-buble {
-    right: 120px;
+    margin: 0 auto 0 10px;
   }
   
   .application-title,
@@ -268,15 +258,85 @@ header.of-header {
     text-transform: uppercase;
   }
   
+  .of-header-site-info {
+    color: $of-header-site-info-text-color;
+    margin: 0 auto;
+    max-width: 230px;
+    padding: 10px;
+    text-transform: uppercase;
+  }
+  
+  .site-info-logo-wrapper {
+    height: 92px;
+    margin: 0 auto 40px;
+    position: relative;
+    text-align: center;
+    width: 92px;
+  }
+  
+  .site-info-logo-glow {
+    background: transparent;
+    border-radius: 100%;
+    box-shadow: 0 0 200px 20px $of-header-site-info-logo-glow-boxshadow-color;
+    height:92px;
+    position: absolute;
+    width: 92px;
+    z-index: 1;
+  }
+  
+  .site-info-logo {
+    background: url('/gfx/site-logo.png') no-repeat center center;
+    border-radius: 100%;
+    box-shadow: 0 25px 25px $of-header-site-info-logo-boxshadow-color;
+    height:92px;
+    position: absolute;
+    width: 92px;
+    z-index: 2;
+  }
+  
+  .site-info-organization {
+    font-size: 25px;
+    font-weight: 200;
+    line-height: 0.85;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .site-info-name {
+    font-size:48px;
+    line-height: 0.85;
+    margin: 0 auto;
+    width: 195px;
+  
+    .site-info-name-firstpart {
+      font-weight: 900;
+      text-shadow: 0 5px 10px $of-header-site-info-text-shadow-color;
+    }
+    
+    .site-info-name-secondpart {
+      font-weight: 200;
+      letter-spacing: 5px;
+    }
+  
+  }
+  
+  .site-info-description {
+    font-size: 15px;
+    font-weight: 200;
+    line-height: 1.3em;
+    margin: 15px auto;
+    text-align: center;
+  }
+  
 }
 
 div.of-announcement {
-  background: $of-announcement-backgrond-color;
+  background: $of-announcement-background-color;
   min-height: 50px;
 }
 
 main.of-content {
-  min-height: 500px;
+  min-height: 500px; // REMOVE THIS
   
   .flex-grid {
     max-width: 1260px;  
@@ -284,7 +344,31 @@ main.of-content {
   
 }
 
+.frontpage-section {
+  margin: 70px 0;
+  min-height:300px; // REMOVE THIS
+}
+ 
+h2.frontpage-section-title {
+  color: $of-frontpage-section-title-color;
+  font-size: 38px;
+  font-weight: 200;
+  margin: 0 0 30px 0;
+}
+
+.frontpage-box {
+  background: $of-frontpage-box-background-color;
+  border: 1px solid $of-frontpage-box-border-color;
+  border-radius: 3px;
+  min-height:300px; // REMOVE THIS
+}
+
+.frontpage-videos {
+  background: #000; // REMOVE THIS
+  border-radius: 3px;
+}
+
 footer.of-footer {
-  background: $of-footer-backgrond-color;
+  background: $of-footer-background-color;
   min-height:300px;
 }
