@@ -67,11 +67,11 @@
           };
         });
       } else {
-        if (clips.length > 0) {
-          this.element.find('.no-clips').hide();
+        if (this.readonly() && clips.length == 0) {
+          this.element.find('.no-clips').show();
         }
         else {
-          this.element.find('.no-clips').show();
+          this.element.find('.no-clips').hide();
         }
         var tasks = $.map(clips, $.proxy(function (clip) {
           return $.proxy(function (callback) {
