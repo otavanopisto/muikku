@@ -162,6 +162,7 @@
               if (htmlErr) {
                 $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
               } else {
+                htmlMaterial.title = workspaceMaterial.title;
                 mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterial.id, {
                   userEntityId: this.options.userEntityId
                 })
