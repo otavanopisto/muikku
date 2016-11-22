@@ -54,6 +54,20 @@ public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<Communicator
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<CommunicatorMessageRecipient> listByMessageIncludeGroupRecipients(CommunicatorMessage communicatorMessage) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessageRecipient> criteria = criteriaBuilder.createQuery(CommunicatorMessageRecipient.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.communicatorMessage), communicatorMessage)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public CommunicatorMessageRecipient findByMessageAndRecipient(CommunicatorMessage communicatorMessage,
       UserEntity recipient) {
     EntityManager entityManager = getEntityManager(); 
