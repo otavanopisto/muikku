@@ -305,6 +305,7 @@
         <it.browser>phantomjs</it.browser>
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
+        <it.cargo.stop.timeout>180000</it.cargo.stop.timeout>
         <elasticsearch.http.port>9201</elasticsearch.http.port>
         <elasticsearch.node.port>9301</elasticsearch.node.port>
         <elasticsearch.cluster.name>elasticsearch_atests</elasticsearch.cluster.name>
@@ -360,6 +361,7 @@
                 <it.selenium.version>${selenium-java.version}</it.selenium.version>
                 <it.test.file>${it.test.file}</it.test.file>
                 <it.browser>${it.browser}</it.browser>
+                <it.cargo.stop.timeout>${it.cargo.stop.timeout}</it.cargo.stop.timeout>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -578,6 +580,9 @@
                 <goals>
                   <goal>stop</goal>
                 </goals>
+                <configuration>
+                  <timeout>${it.cargo.stop.timeout}</timeout>
+                </configuration>
               </execution>
             </executions>
           </plugin>
