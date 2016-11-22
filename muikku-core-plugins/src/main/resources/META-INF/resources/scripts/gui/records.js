@@ -30,9 +30,9 @@
       mApi().user.students
         .read({userEntityId: this.options.userEntityId, includeInactiveStudents: true, includeHidden: true })
         .on('$', $.proxy(function (student, callback) {
-          var curriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
+          // var curriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
           
-          async.parallel([this._createStudentWorkspacesLoad(student.id, curriculumIdentifier), this._createStudentTransferCreditsLoad(student.id, curriculumIdentifier)], $.proxy(function (err, results) {
+          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id)], $.proxy(function (err, results) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
@@ -58,25 +58,25 @@
         }, this));
     },
     
-    _createStudentWorkspacesLoad: function (studentIdentifier, curriculumIdentifier) {
+    _createStudentWorkspacesLoad: function (studentIdentifier) {
       return $.proxy(function (callback) {
-        this._loadStudentWorkspaces(studentIdentifier, curriculumIdentifier, $.proxy(function (err, workspaces) {
+        this._loadStudentWorkspaces(studentIdentifier, $.proxy(function (err, workspaces) {
           callback(err, workspaces);
         }, this));
       }, this);
     },
     
-    _createStudentTransferCreditsLoad: function (studentIdentifier, curriculumIdentifier) {
+    _createStudentTransferCreditsLoad: function (studentIdentifier) {
       return $.proxy(function (callback) {
-        this._loadStudentTransferCredits(studentIdentifier, curriculumIdentifier, $.proxy(function (err, transferCredits) {
+        this._loadStudentTransferCredits(studentIdentifier, $.proxy(function (err, transferCredits) {
           callback(err, transferCredits);
         }, this));
       }, this);
     },
     
-    _loadStudentWorkspaces: function (studentIdentifier, curriculumIdentifier, callback) {
+    _loadStudentWorkspaces: function (studentIdentifier, callback) {
       mApi().workspace.workspaces
-        .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, curriculums: curriculumIdentifier, includeUnpublished: true, orderBy: ['alphabet'], maxResults: 500 })
+        .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, includeUnpublished: true, orderBy: ['alphabet'], maxResults: 500 })
         .on('$', $.proxy(function (workspaceEntity, callback) {
           mApi().workspace.workspaces.students.assessments
             .read(workspaceEntity.id, studentIdentifier)
@@ -103,9 +103,9 @@
           }, this));
     },
     
-    _loadStudentTransferCredits: function (studentIdentifier, curriculumIdentifier, callback) {
+    _loadStudentTransferCredits: function (studentIdentifier, callback) {
       mApi().user.students.transferCredits
-        .read(studentIdentifier, { curriculumIdentifier: curriculumIdentifier })
+        .read(studentIdentifier, {})
         .callback($.proxy(function (err, transferCredits) {
           var data = $.map(transferCredits, $.proxy(function (transferCredit) {
             var scaleSchoolDataSource;
