@@ -26,13 +26,13 @@ div.muikku-sorter-items-container {
     border-radius: 3px;
     background: $taskBoxColor;
     box-sizing: border-box;
+    color: $taskBoxTextColor;
     font-size: 16px;
+    line-height: 1;
     margin: 5px 0;
     padding: 6px 8px;
     position: relative;
-    line-height: 1;
     word-wrap: normal;
-    color: $taskBoxTextColor;
   
     &.ui-sortable-handle {
       cursor: move;
@@ -63,17 +63,18 @@ span.muikku-sorter-items-container {
   }
   
   span.muikku-sorter-item {
-    border-radius: 3px;
     background: $taskBoxColor;
+    border-radius: 3px;
     box-sizing: border-box;
+    color: $taskBoxTextColor;
+    display:inline-block;
     font-size: 16px;
+    line-height: 1;
     margin: 5px 3px;
     padding: 6px 8px;
     position: relative;
-    line-height: 1;
+    vertical-align: top;
     word-wrap: normal;
-    color: $taskBoxTextColor;
-    display:inline-block;
     
     &:first-child {
       margin: 5px 3px 5px 6px;

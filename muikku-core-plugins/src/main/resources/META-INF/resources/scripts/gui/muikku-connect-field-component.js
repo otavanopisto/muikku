@@ -140,17 +140,15 @@
 
           if (($(term).attr('title')||"").length > 50) {
             termElement.mouseenter($.proxy(function(e){  
-              termElement
-                .after($('<div>').addClass('term-placeholder'));
-              termElement
+              var childElement = $('<div>')
                 .addClass('term-full-text')
                 .html($(term).attr('title'));
+              termElement.html("").append(childElement);
             }, this));
             
             termElement.mouseleave($.proxy(function(e){
-              termElement.next('.term-placeholder').remove();
               termElement
-                .removeClass('term-full-text')
+                .empty()
                 .html($(term).html());
             }, this));
           }
@@ -182,17 +180,15 @@
           
           if (($(counterpart).attr('title')||"").length > 50) {
             counterpartElement.mouseenter($.proxy(function(e){  
-              counterpartElement
-                .after($('<div>').addClass('counterpart-placeholder'));
-              counterpartElement
+              var childElement = $('<div>')
                 .addClass('counterpart-full-text')
                 .html($(counterpart).attr('title'));
+              counterpartElement.html("").append(childElement);
             }, this));
             
             counterpartElement.mouseleave($.proxy(function(e){
-              counterpartElement.next('.counterpart-placeholder').remove();
               counterpartElement
-                .removeClass('counterpart-full-text')
+                .empty()
                 .html($(counterpart).html());
             }, this));
           }

@@ -1,6 +1,12 @@
 .audio-record.webrtc[data-readonly='readonly'] {
   padding: 0 10px;
 
+  .no-clips {
+    color: #7c7c7c;
+    margin: 8px 0;
+    text-align: center;
+  }
+
   .clip {
     margin: 10px 0;
     
@@ -23,14 +29,11 @@
 .audio-record {
   border: 2px solid #abdbed;
   border-radius: 3px;
-  box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15);
   line-height: 1;
   padding: 5px 10px;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
   
   &.muikku-field-unsaved {
     border: 2px solid #e4e630;
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
     
     &:hover {
       border:2px solid #e4e630;
@@ -40,12 +43,10 @@
   
   &.muikku-field-saving {
     animation: saving-fields 4s ease infinite;
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
   }
 
   &.muikku-field-saved {
     border: 2px solid #9cf3c7;
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
     
     &:hover {
       border: 2px solid #9cf3c7;
@@ -55,18 +56,15 @@
   
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
   }
   
   &[data-readonly="readonly"] {
     background: #fcfcfc !important;
     border: 2px dotted #eaeaea !important;
-    box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
       border: 2px dotted #eee;
-      box-shadow: none;
       color: #555555 !important;
     }
 

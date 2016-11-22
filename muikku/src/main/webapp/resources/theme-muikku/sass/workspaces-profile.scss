@@ -1,6 +1,6 @@
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces.scss"; /* Generic workspace styles */
-@import "_profile.scss"; /* Profile syles */
+@import "base.scss";
+@import "workspaces.scss";
+@import "profile.scss";
 
 body[class^='workspace'] { 
   

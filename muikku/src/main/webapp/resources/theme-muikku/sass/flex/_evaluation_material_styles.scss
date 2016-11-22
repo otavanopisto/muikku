@@ -5,14 +5,7 @@ h2,h3,h4,h5,h6 {
 }
 
 h2 {
-  border-left: 5px solid $evaluatedAssignment;
-  font-size: 20px;
-  margin: 0 100px 0 -5px; 
-  padding: 5px 5px 5px 10px;
-  font-weight: 300; 
-  margin: 0;
-  color: #000;
-  cursor: pointer;
+  font-size: 24px;
 }
 
 h3 {
@@ -32,12 +25,10 @@ h6 {
 }
 
 p {
-  line-height: 22px;
   margin: 10px 0;
 }
 
 .muikku-word-definition {
-  z-index: 9999;
   background: #c4ffd6 none repeat scroll 0 0;
   border: 2px solid #fff;
   border-radius: 3px;
@@ -46,93 +37,30 @@ p {
   font-size: 14px;
   font-weight: 300;
   line-height: 1.5em;
+  margin: 10px 0 0;
   max-width: 250px;
   padding: 5px 10px;
   position: absolute;
+  z-index: 20;
 }
     
 mark[data-muikku-word-definition] {
+  background: transparent;
   border-bottom: 1px dashed #007925;
   color: #007925;
-  background: transparent;
   cursor: help;
   font-weight: 400;
   position: relative;
 }
 
-textarea,
-input[type="text"] {
-  font-family: 'Open Sans', Arial, sans-serif !important;
-  border-radius: 3px;
-  background: #ebf7ff;
-  padding: 5px 10px;
-  margin: 0;
-  font-weight: 300;
-  font-style: italic;
-  border: 0;
-  color: #000;
-  resize: vertical;
-  box-sizing: border-box;
-  
-  &:hover {
-    background: #ebf7ff;
-    border: 0;
-  }
-  
-  &:focus {
-    box-shadow: none;
-    outline: none;
-  }
-  
+// OVERRIDE FOR ORGANIZER, SORTER & CONNECT FIELDS
+.muikku-organizer-field[disabled="disabled"],
+.muikku-sorter-field[data-disabled="true"],
+.muikku-connect-field[disabled="disabled"] {
+  opacity: 1;  
 }
 
-input[type="text"].muikku-text-field {
-  width: auto;
-  margin: 4px 3px;
-}
-
-input[type="checkbox"],
-input[type="radio"] {
-  background: #fff;
-  border: 2px solid #abdbed;
-  border-radius: 3px;
-  box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15);
-  display: inline-block;
-  margin: 0 10px;
-  outline: one; 
-  font-family: 'Open Sans', Arial, sans-serif;
-
-  &:hover {
-    box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15);
-  }
-
-}
-
-/* Select and Option field overrides */
-select {
-  background: #fff;
-  border: 2px solid #abdbed;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
-  outline: none;
-  color: #0061a2;
-  display: inline-block;
-  margin: 4px;
-  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
-  border-radius: 3px;
-  max-width: 100%;
-  word-wrap: break-word;
-  vertical-align: middle;
-  font-family: 'Open Sans', Arial, sans-serif;
-
-  option {
-    background: #fff;
-    font-weight: 300;
-    padding: 4px 8px;
-  }
-  
-}
-
-/* Radio button and Check box wrapper Span */
+// HORZ & VERTZ RADIOBUTTON & CHECKBOX WRAPPER
 span.radiobutton-horizontal,
 span.checkbox-horizontal {
 
@@ -140,9 +68,9 @@ span.checkbox-horizontal {
     display: inline-block;
     
     label {
+      display: inline !important;
       font-weight: 300 !important;
       font-size: 14px !important;
-      display: inline !important;
     }
     
   }
@@ -158,13 +86,83 @@ span.checkbox-vertical {
     display: block;
     
     label {
+      display: inline !important;
       font-weight: 300 !important;
       font-size: 14px !important;
-      display: inline !important;
     }
     
   }
   
+}
+
+// TEXTFIELD & MEMOFIELD
+div.muikku-memo-field {
+  background: #ebf7ff;
+  border-radius: 3px;
+  box-sizing: border-box;  
+  line-height: 1.7em;
+  margin: 4px 0;
+  min-height: 29px;
+  padding: 5px 10px;
+}
+
+div.muikku-text-field {
+  background: #ebf7ff;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 4px 3px;
+  min-height: 29px; 
+  padding: 2px 8px;
+  vertical-align: middle;
+}
+
+// CHECKBOX & RADIOBUTTON
+input[type="checkbox"],
+input[type="radio"] {
+  background: #fff;
+  border: 2px solid #abdbed;
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15);
+  display: inline-block;
+  margin: 0 10px;
+  outline: none; 
+}
+
+input[checked="checked"] {
+  box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
+}
+
+// SELECT & OPTION
+select {
+  background: #fff;
+  border: 2px solid #abdbed;
+  border-radius: 3px;
+  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  color: #000;
+  display: inline-block;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  margin: 4px;
+  max-width: 100%;
+  outline: none;
+  padding: 0 5px;
+  vertical-align: middle;
+  word-wrap: break-word;
+  
+  option {
+    background: #fff;
+    padding: 5px 10px;
+  }
+  
+}
+
+// GENERIC SELECT FIELD
+.muikku-select-field,
+.muikku-checkbox-field {
+  display: inline-block;
+  margin: 0 10px 0 0;
 }
 
 label {
@@ -183,15 +181,15 @@ label {
 }
 
 blockquote {
-  font-family: 'Open Sans', Arial, sans-serif;
-  font-style: italic;
-  padding: 2px 0;
-  border-style: solid;
   border-color: #eee;
+  border-style: solid;
   border-width: 0;
   color: #777;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 22px;
+  font-style: italic;
   margin:0 40px;
+  padding: 2px 0;
 
   p {
     margin: 10px 0;
@@ -200,13 +198,13 @@ blockquote {
 }
 
 img {
-  max-width: 100% !important;
   height: auto !important;
+  max-width: 100% !important;
 }
 
 a > img {
-  cursor: -webkit-zoom-in;
   cursor: -moz-zoom-in;
+  cursor: -webkit-zoom-in;
 }
 
 p {
@@ -223,18 +221,18 @@ em, i {
 }
 
 strong, b {
-  font-weight: 400;
   font-style: inherit;
+  font-weight: 400;
 }
 
 sub {
-  vertical-align: sub;
   font-size: 70%;
+  vertical-align: sub;
 }
 
 sup {
-  vertical-align: super;
   font-size: 70%;
+  vertical-align: super;
 }
 
 p, h1, h2, h3, h4, h5, h6 {
@@ -251,8 +249,8 @@ table {
 td {
   padding: initial;
   margin: initial;
-  width: auto;
   max-width: 100%;
+  width: auto;
 }
 
 a {

@@ -1,14 +1,14 @@
 .cke {
   border: 1px solid #fff !important;
-  box-shadow: none !important;
   border-radius: 5px;
+  box-shadow: none !important;
   
   &[data-readonly="readonly"] {
-  
+    box-shadow: none;
+      
     .cke_inner {
       background: #fcfcfc !important;
       border: 2px dotted #eaeaea !important;
-      box-shadow: none !important;
       color: #7c7c7c !important;
       
       &:hover {
@@ -40,13 +40,10 @@
   
   .cke_inner { /* CKE top, content and bottom wrapper */
     border: 2px solid #abdbed;
-    box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
     border-radius: 3px;
-    transition: border,box-shadow 0.1s,0.2s ease-in-out;
     
     &:hover {
       border-color: #8dd6f1;
-      box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
       
       .cke_top {
         background: #8dd6f1;

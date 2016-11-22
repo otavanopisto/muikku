@@ -35,13 +35,11 @@ dust.onLoad = function(name, callback) {
 };
 
 dust.filters.formatDate = function(value) {
-  var d = new Date(moment(value));
-  return formatDate(d);
+  return formatDate(moment(value).toDate());
 };
 
 dust.filters.formatTime = function(value) {
-  var d = new Date(moment(value));
-  return formatTime(d);
+  return formatTime(moment(value).toDate());
 };
 
 dust.filters.formatPercent = function(value) {

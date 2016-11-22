@@ -87,13 +87,8 @@ public class AssessmentRequestController {
       }
     } else {
       WorkspaceAssessment assessment = workspaceAssessments.get(0);
-      GradingScale gradingScale = gradingController.findGradingScale(
-          assessment.getGradingScaleSchoolDataSource(), 
-          assessment.getGradingScaleIdentifier());
-      GradingScaleItem grade = gradingController.findGradingScaleItem(
-          gradingScale, 
-          assessment.getGradeSchoolDataSource(), 
-          assessment.getGradeIdentifier());
+      GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleIdentifier());
+      GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeIdentifier()); 
 
       if (grade.isPassingGrade())
         return WorkspaceAssessmentState.PASS;

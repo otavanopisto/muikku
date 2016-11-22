@@ -47,7 +47,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
     // Create reply
     
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        creator, new Date(), forumAreaId, null, new Date(), 0l);
+        creator, new Date(), forumAreaId, null, new Date(), 0l, false);
     
     response = asAdmin()
       .contentType("application/json")
@@ -131,7 +131,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
   @Test
   public void testCreateReplyAdmin() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+        1l, new Date(), forumAreaId, null, new Date(), 0l, false);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -147,7 +147,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
   @Test
   public void testCreateReplyManager() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+        1l, new Date(), forumAreaId, null, new Date(), 0l, false);
     
     Response response = asManager()
       .contentType("application/json")
@@ -163,7 +163,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
   @Test
   public void testCreateReplyTeacher() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+        1l, new Date(), forumAreaId, null, new Date(), 0l, false);
     
     Response response = asTeacher()
       .contentType("application/json")
@@ -179,7 +179,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractForumRESTTestsIT {
   @Test
   public void testCreateReplyStudent() throws NoSuchFieldException {
     ForumThreadReplyRESTModel reply = new ForumThreadReplyRESTModel(null, "TestCreateReply",
-        1l, new Date(), forumAreaId, null, new Date(), 0l);
+        1l, new Date(), forumAreaId, null, new Date(), 0l, false);
     
     Response response = asStudent()
       .contentType("application/json")

@@ -1,4 +1,5 @@
 <section class="workspace-materials-view-page material-management-view workspace-materials-management-new lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
   <a href="javascript:void(null)" data-material-type="html" class="workspace-materials-management-new-page-link icon-new-page">{#localize key="plugin.workspace.materialsManagement.newDocument"/}</a>
+  {?clipboardItem}<span class="clipboard-material-container"><a href="javascript:void(null)" class="workspace-materials-management-paste-page-link icon-content_paste">{#localize key="plugin.workspace.materialsManagement.pasteDocument"/}</a><a href="javascript:void(null)" class="workspace-materials-management-clear-clipboard-link icon-delete"></a></span>{/clipboardItem}
   <a href="javascript:void(null)" data-material-type="html" class="workspace-materials-management-new-section-link icon-new-section">{#localize key="plugin.workspace.materialsManagement.newSection"/}</a>
 </section>

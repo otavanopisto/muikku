@@ -19,14 +19,15 @@
 
 // EXAMPLE ANSWERS
 span.muikku-field-examples {
-  border-radius: 3px;
-  padding: 3px;
-  width: auto;
   background: #e2ffe2;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 14px;
   font-style: italic;
   margin: 1px 3px;
-  display: inline-block;
-  font-size: 13px;
+  padding: 3px;
+  vertical-align: middle;
+  width: auto;
   
   span.muikku-field-examples-title {
     font-weight: 600;
@@ -34,74 +35,53 @@ span.muikku-field-examples {
   }
   
   span.muikku-field-example {
-    margin: 3px 0 3px 5px;
-    padding: 0 8px;
     border-left: 1px solid #439ba0;
     display: inline-block;
     line-height: 1.5;
-  }
-  
-}
-
-// WHEN TASK FIELD HAS NO CORRECT ANSWERS SET - EVALUATION ONLY
-select {
-  background: #fff;
-  border: 2px solid #abdbed;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
-  outline: none;
-  color: #0061a2;
-  display: inline-block;
-  margin: 4px;
-  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
-  border-radius: 3px;
-  max-width: 100%;
-  word-wrap: break-word;
-  vertical-align: middle;
-}
-
-input[checked="checked"] {
-  box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
-  
-  &:hover {
-    box-shadow: 0 0 0 3px rgba(123,183,250,0.5);
+    margin: 3px 0 3px 5px;
+    padding: 0 8px;
   }
   
 }
 
 // TEXTFIELD, TEXTAREA, SELECT CORRECT ANSWERS
+div.muikku-text-field.muikku-field-correct-answer,
+div.muikku-memo-field.muikku-field-correct-answer,
 input[type="text"].muikku-field-correct-answer,
 textarea.muikku-field-correct-answer,
 select.muikku-field-correct-answer {
-  box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
   border: 2px solid #00ff2a;
   border-radius: 3px;
+  box-shadow: none;
   
   &:hover {
-    box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
     border: 2px solid #00ff2a;
+    box-shadow: none;
   }
   
 }
 
 // TEXTFIELD, TEXTAREA, SELECT INCORRECT ANSWERS
+div.muikku-text-field.muikku-field-incorrect-answer,
+div.muikku-memo-field.muikku-field-incorrect-answer,
 input[type="text"].muikku-field-incorrect-answer,
 textarea.muikku-field-incorrect-answer,
 select.muikku-field-incorrect-answer {
   border: 2px solid #f64e4e;
-  box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+  box-shadow: none;
   border-radius: 3px;
   
   &:hover {
     border: 2px solid #f64e4e;
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+    box-shadow: none;
   }
   
 }
 
 // CONNECT FIELD CORRECT ANSWERS
 div.muikku-connect-field.muikku-field-correct-answer {
-  box-shadow: none;
   border: none;
+  box-shadow: none;
   
   .muikku-connect-field-counterpart.muikku-connect-field-correct-answer, 
   .muikku-connect-field-term.muikku-connect-field-correct-answer {
@@ -112,8 +92,8 @@ div.muikku-connect-field.muikku-field-correct-answer {
 
 // CONNECT FIELD INCORRECT ANSWERS
 div.muikku-connect-field.muikku-field-incorrect-answer {
-  box-shadow: none;
   border: none;
+  box-shadow: none;
   
   .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer, 
   .muikku-connect-field-term.muikku-connect-field-wrong-answer {
@@ -140,37 +120,37 @@ div.muikku-connect-field.muikku-field-incorrect-answer {
 div.muikku-organizer-field {
   
   .muikku-category.muikku-field-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
     border: 2px solid #00ff2a;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
       border: 2px solid #00ff2a;
+      box-shadow: none;
     }
     
   }
   
   .muikku-category.muikku-field-semi-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
     border: 2px solid #dab33d;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
       border: 2px solid #dab33d;
+      box-shadow: none;
     }
     
   }
   
   .muikku-category.muikku-field-incorrect-answer {
     border: 2px solid #f64e4e;
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
       border: 2px solid #f64e4e;
-      box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+      box-shadow: none;
     }
 
   }
@@ -181,37 +161,37 @@ div.muikku-organizer-field {
 .muikku-sorter-field {
   
   .muikku-sorter-items-container.muikku-field-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.3);
     border: 2px solid #00ff2a;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 2px 3px rgba(0,255,42,0.3);
       border: 2px solid #00ff2a;
+      box-shadow: none;
     }
     
   }
   
   .muikku-sorter-items-container.muikku-field-semi-correct-answer {
-    box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
     border: 2px solid #dab33d;
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(218,153,61,0.3);
       border: 2px solid #dab33d;
+      box-shadow: none;
     }
     
   }
   
   .muikku-sorter-items-container.muikku-field-incorrect-answer {
     border: 2px solid #f64e4e;
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
     border-radius: 3px;
+    box-shadow: none;
     
     &:hover {
       border: 2px solid #f64e4e;
-      box-shadow: 0 0 1px 3px rgba(255,0,0,0.3);
+      box-shadow: none;
     }
 
   }
@@ -235,13 +215,19 @@ div.muikku-organizer-field {
 }
 
 // RADIO BUTTON, CHECKBOX CORRECT ANSWERS
-span.muikku-field-correct-answer {
+span.muikku-checkbox-field.muikku-field-correct-answer,
+span.muikku-select-field.muikku-field-correct-answer {
   box-shadow: none;
   border: none;
   
   input[type="checkbox"],
   input[type="radio"] {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
+    box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
+    
+    &:hover {
+      box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
+    }
+    
   }
   
   &:hover {
@@ -252,13 +238,19 @@ span.muikku-field-correct-answer {
 }
 
 // RADIO BUTTON, CHECKBOX INCORRECT ANSWERS
-span.muikku-field-incorrect-answer {
+span.muikku-checkbox-field.muikku-field-incorrect-answer,
+span.muikku-select-field.muikku-field-incorrect-answer {
   box-shadow: none;
   border: none;
   
   input[type="checkbox"],
   input[type="radio"] {
-    box-shadow: 0 0 1px 3px rgba(255,0,0,0.7);
+    box-shadow: 0 0 0 2px rgba(255,0,0,0.7);
+    
+    &:hover {
+      box-shadow: 0 0 0 2px rgba(255,0,0,0.7);
+    }
+    
   }
   
   &:hover {
@@ -268,12 +260,12 @@ span.muikku-field-incorrect-answer {
   
   input[type="checkbox"].muikku-field-correct-answer-override,
   input[type="radio"].muikku-field-correct-answer-override {
-    box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
+    box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
     border: 2px solid #00ff2a;
     border-radius: 3px;
     
     &:hover {
-      box-shadow: 0 0 1px 3px rgba(0,255,42,0.9);
+      box-shadow: 0 0 0 2px rgba(0,255,42,0.9);
       border: 2px solid #00ff2a;
     }
   

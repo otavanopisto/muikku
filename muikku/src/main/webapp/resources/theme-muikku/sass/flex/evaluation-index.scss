@@ -1,0 +1,344 @@
+@import "vars";
+@import "vars_backup";
+@import "styles";
+@import "animations";
+@import "fonts";
+@import "custom-ckeditor-styles";
+@import "jquery.datepicker";
+@import "ckeditor_theme_management";
+@import "draft";
+@import "dialog";
+@import "evaluation_evaluate_modal";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "audio-field";
+@import "file-field";
+@import "evaluation_material_styles";
+@import "correct_answers"; 
+@import "notif-queue";
+
+body {
+  background-color: #fff;
+  color:#000;
+  font-family:'Open Sans', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height:1.5em; /* Set line-height:1 to element when there's a need to override */
+  margin: 0;
+  min-width: 320px;
+  padding: 0; 
+}
+
+ .no-scroll {
+  overflow: hidden;
+}
+
+.loading {
+  min-height: 200px;
+  position: relative;
+  
+  &::before {
+    @include generic-loader(50px);
+    margin: -25px 0 0 -25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+  
+}
+
+// VIEW WRAPPER
+.evaluation-wrapper {
+  background: #fff;
+}
+
+// NAVIGATION (FRONTPAGE & WORKSPACE VIEWS)
+.evaluation-navigation {
+  background: #7ed9ff;
+  bottom: 0;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  left: 0;
+  height: 60px;
+  padding: 0 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+  
+  // Navigation item
+  .eval-nav-item {
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    margin: 4px;
+    text-align: center;
+    
+    &.icon-filter {
+      font-size: 28px;
+      height: 28px;
+      padding: 12px;
+      width: 28px;
+    }
+    
+    &.icon-home {
+      font-size: 34px;
+      height: 34px;
+      padding: 8px;
+      width: 34px;
+    }
+    
+    &.icon-search {
+      display: none; // Hidden until search is implemented
+      font-size: 32px;
+      height: 32px;
+      padding: 10px;
+      width: 32px;
+    }
+    
+    &:hover {
+      text-shadow: 0 0 15px #fff;
+    }
+    
+  }
+  
+  .eval-search {
+    float: right;
+  }
+   
+}
+
+// FILTER WRAPPER
+.evaluation-filter-wrapper {
+  background: #fff;
+  bottom: 0;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
+  display: none;
+  left: 0;
+  padding:10px;
+  position: fixed;
+  top: 60px;
+  width: 300px;
+  z-index:20;
+}
+
+// FRONTPAGE EVALUATION CARDS WRAPPER
+.evaluation-cards-wrapper {
+  padding: 60px 0 0;
+}
+
+// CARDS PAGE TITLE
+.evaluation-cards-title {
+  margin:25px 15px 0;
+  
+  h3 {
+    font-size: 24px;
+    font-weight: 300;
+    display: inline-block;
+    line-height: 24px;
+    margin: 0 10px 10px 0;
+    padding: 0;
+    text-transform: none;
+  }
+  
+}
+
+// CARDS SORTING WRAPPER
+.evaluation-sorting-wrapper {
+  display: inline-block;
+  margin: 0 10px 10px 0;
+  
+  .eval-sorting {
+    background: #eee;
+    border-radius: 3px;
+    color: #000;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    height: 14px;
+    margin: 0 2px;
+    padding:4px;
+    width: 14px;
+    
+    &.selected {
+      background: #0099ff;
+      color: #fff;
+    }
+    
+  }
+  
+}
+
+// CARDS CONTAINER
+.evaluation-cards-container {
+  vertical-align: top;
+}
+
+// REQUESTS ALL HANDLED CONTAINER
+.evaluation-well-done-container {
+  color: #4c4c4c;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 1.4em;
+  padding: 50px 10px;
+  text-align: center;
+}
+
+// CARD
+.evaluation-card {
+  background: #fff;
+  border: 1px solid #d7edfb;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 10px;
+  vertical-align: top;
+  width: 285px;
+  
+  &.evaluated-incomplete {
+    border: 1px solid #ea7503;
+    box-shadow: 0 0 2px rgba(234, 117, 3, 0.2);
+  }
+  
+  &.evaluated-passed {
+    border: 1px solid #3edd2d;
+    box-shadow: 0 0 2px rgba(60, 221, 3, 0.2);
+    
+    .evaluation-card-button.archive-button {
+      display: inline-block;
+    }
+    
+  }
+  
+  &.evaluation-requested {
+    border: 1px solid #00ccff;
+    box-shadow: 0 0 2px rgba(0, 204, 255, 0.2);
+  }
+  
+  &.frontpage .evaluation-card-data {
+    min-height: 180px;
+  }
+  
+  &.workspace .evaluation-card-data {
+    min-height: 140px;
+  }
+  
+}
+
+.evaluation-card-title {
+  background: #ebfbfe;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  padding: 4px 6px;
+}
+
+.evaluation-card-student {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.evaluation-card-study-programme {
+  font-size: 13px;
+  font-style: italic;
+}
+
+.evaluation-card-data {
+  font-size: 13px;
+  padding: 4px 6px;
+  position: relative;
+}
+
+.evaluation-card-data-row {
+  padding: 1px 0;
+  position: relative;
+  
+  .workspace-name {
+    height: 42px;
+    overflow: hidden;
+  }
+  
+  &.highlight {
+    font-weight: 600;
+  }
+
+  a {
+   color: $link;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  .evaluation-card-data-text {
+    float: right;
+    
+    &.assignments-status {
+      border-radius: 2px;
+      color: #fff;
+      line-height: 1;
+      padding: 4px;
+    }
+    
+    &.not-done {
+      background: #da5760;
+    }
+    
+    &.all-done {
+      background: #63da57;
+    }
+    
+  }
+
+}
+
+.evaluation-card-button-row {
+  bottom: 0;
+  left: 0;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  
+  .evaluation-card-button {
+    color: #fff;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    height: 18px;
+    margin: 0 0 0 8px;
+    width: 18px;
+    padding: 5px;
+    text-align: center;
+    vertical-align: top;
+    
+    &.archive-button {
+      background: #4c4c4c;
+      display: none;
+      font-size: 20px;
+      height: 20px;
+      padding: 4px;
+      width: 20px;
+    }
+    
+    &.evaluate-button {
+      background: #0099ff;
+    }
+    
+  }
+  
+}
+
+// SEARCH WRAPPER 
+.evaluation-search-wrapper {
+  background: #fff;
+  bottom: 0;
+  box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.1);
+  display: none;
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 60px;
+  width: 300px;
+  z-index:20;
+}
+
+@import "mobile_evaluation";
