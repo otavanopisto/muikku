@@ -350,7 +350,8 @@
         return {
           folderId: message.attr('data-folder-id'),
           id: message.attr('data-thread-id'),
-          unread : message.hasClass("unread")
+          unread: message.hasClass("unread"),
+          element: message
         };
       });
     },
@@ -458,7 +459,12 @@
       
       var selectedThreads = this._getSelectedThreads();
       this.element.closest('.communicator') 
-        .communicator('markUnreadThreads', selectedThreads);
+        .communicator('markUnreadThreads', selectedThreads, $.proxy(function () {
+          $.each(selectedThreads, function (idx, thread) {
+            thread.element.addClass("unread");
+          });
+          $('.cm-messages-container').communicatorMessages('updateThreadSelection');
+        }, this));
     },
     
     _onMarkReadClick: function (event) {
@@ -467,10 +473,15 @@
       
       var selectedThreads = this._getSelectedThreads();
       this.element.closest('.communicator') 
-        .communicator('markReadThreads', selectedThreads);
+        .communicator('markReadThreads', selectedThreads, $.proxy(function () {
+          $.each(selectedThreads, function (idx, thread) {
+            thread.element.removeClass("unread");
+          });
+          
+          $('.cm-messages-container').communicatorMessages('updateThreadSelection');
+        }, this));
     },
 
-    
     _onMessageHeaderClick: function (event) {
       var threadId = $(event.target).closest('.cm-message')
         .attr('data-thread-id');
@@ -480,6 +491,10 @@
     },
 
     _onThreadSelectionChange: function (event) {
+      this.updateThreadSelection();
+    },
+    
+    updateThreadSelection: function () {
       var selectedThreads = this._getSelectedThreads();
       var communicatorElement = this.element.closest(".communicator");
       var hasUnread = false;
@@ -801,7 +816,7 @@
       }, this));
     },
 
-    markUnreadThreads: function (threads) {
+    markUnreadThreads: function (threads, successCallback) {
       var calls = $.map(threads, $.proxy(function (thread) {
         return $.proxy(function (callback) {
           this._folderControllers[thread.folderId].markAsUnread(thread.id, callback);
@@ -814,12 +829,12 @@
         } else {
           mApi().communicator.cacheClear();
           $(document).trigger("Communicator:messageread");
-          this.reloadFolder();
+          successCallback();
         }
       }, this));
     },
 
-    markReadThreads: function (threads) {
+    markReadThreads: function (threads, successCallback) {
       var calls = $.map(threads, $.proxy(function (thread) {
         return $.proxy(function (callback) {
           this._folderControllers[thread.folderId].markAsRead(thread.id, callback);
@@ -832,7 +847,7 @@
         } else {
           mApi().communicator.cacheClear();
           $(document).trigger("Communicator:messageread");
-          this.reloadFolder();
+          successCallback();
         }
       }, this));
     },    
