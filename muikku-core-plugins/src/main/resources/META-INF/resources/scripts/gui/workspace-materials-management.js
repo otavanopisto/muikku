@@ -1574,6 +1574,13 @@
     }, this));
   });
   
+  $(document).on('click', '.copy-material', function (event, data) {
+    var section = $(this).closest('section');
+    var materialData = $('.workspaceEntityId').val() + '/' + $(section).attr('data-workspace-material-id'); 
+    localStorage.setItem('muikku-clipboard-material', materialData);
+    $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.materialCopiedToClipboardMessage", $(section).attr('data-material-title')));
+  });
+  
   $(document).on('click', '.change-assignment', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
     var assignmentType = $(page).attr('data-assignment-type');
@@ -1641,7 +1648,7 @@
     var previousMaterial = $(this).parent().prevAll('.workspace-materials-view-page').first();
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
     
-    renderDustTemplate('workspace/materials-management-new.dust', { }, $.proxy(function (text) {
+    renderDustTemplate('workspace/materials-management-new.dust', {clipboardItem: localStorage.getItem('muikku-clipboard-material')}, $.proxy(function (text) {
       var newPage = $(text);
       $(this).parent().after(newPage);
       var uploader = createFileUploader();
@@ -1652,6 +1659,7 @@
       // Documents cannot be created at root
       if (!$(previousMaterial).length) {
         $(newPage).find(".workspace-materials-management-new-page-link").remove();
+        $(newPage).find(".clipboard-material-container").remove();
       }
       
       // Sections can only be created last or above other sections 
@@ -1753,6 +1761,105 @@
         }
       });
       
+      $(newPage).find('.workspace-materials-management-paste-page-link').one('click', function (event) {
+        event.preventDefault();
+        var clipboardMaterial = localStorage.getItem('muikku-clipboard-material');
+        var clipboardData = clipboardMaterial.split('/');
+        var sourceWorkspaceEntityId = clipboardData[0];
+        var sourceWorkspaceMaterialId = clipboardData[1];
+        var targetNodeId = null;
+        var targetNextSiblingId = null;
+        var previousMaterial = $(this).closest('section').prevAll('.workspace-materials-view-page').first();
+        var nextMaterial = $(this).closest('section').nextAll('.workspace-materials-view-page').first();
+        if (!$(nextMaterial).length) {
+          if (!$(previousMaterial).length) {
+            targetNodeId = $('.workspaceRootFolderId').val();  
+          }
+          else if ($(previousMaterial).attr('data-material-type') == 'folder') {
+            targetNodeId = $(previousMaterial).attr('data-workspace-material-id');
+          }
+          else {
+            targetNodeId = $(previousMaterial).attr('data-parent-id');
+          }
+        }
+        else {
+          if ($(nextMaterial).attr('data-material-type') == 'folder') {
+            if ($(previousMaterial).attr('data-material-type') == 'folder') {
+              targetNodeId = $(previousMaterial).attr('data-workspace-material-id');
+            }
+            else {
+              targetNodeId = $(previousMaterial).attr('data-parent-id');
+            }
+          }
+          else {
+            targetNodeId = $(nextMaterial).attr('data-parent-id');
+            targetNextSiblingId = $(nextMaterial).attr('data-workspace-material-id');
+          }
+        }
+        var targetWorkspaceEntityId = $('.workspaceEntityId').val();
+        mApi().workspace.workspaces.materials
+          .create(targetWorkspaceEntityId, {
+            parentId: targetNodeId,
+            nextSiblingId: targetNextSiblingId
+          }, {
+            sourceNodeId: sourceWorkspaceMaterialId,
+            targetNodeId: targetNodeId,
+            sourceWorkspaceEntityId: sourceWorkspaceEntityId,
+            targetWorkspaceEntityId: targetWorkspaceEntityId,
+            copyOnlyChildren: false,
+            cloneMaterials: true,
+            updateLinkedMaterials: true
+          })
+          .callback($.proxy(function (err, workspaceMaterial) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
+            }
+            else {
+              mApi().materials.html
+                .read(workspaceMaterial.materialId)
+                .callback($.proxy(function (err, htmlMaterial) {
+                  newPage.removeClass('workspace-materials-management-new');
+                  newPage.attr({
+                    'id': 'page-' + workspaceMaterial.id,
+                    'data-path': workspaceMaterial.path,
+                    'data-material-content': htmlMaterial.html,
+                    'data-view-restricted': htmlMaterial.viewRestrict,
+                    'data-material-title': workspaceMaterial.title,
+                    'data-parent-id': workspaceMaterial.parentId,
+                    'data-material-id': workspaceMaterial.materialId,
+                    'data-material-type': 'html',
+                    'data-workspace-material-id': workspaceMaterial.id,
+                    'data-assignment-type': workspaceMaterial.assignmentType,
+                    'data-correct-answers': workspaceMaterial.correctAnswers,
+                  });
+      
+                  var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="' + workspaceMaterial.id + '" />');
+                  newPageTocItem.append('<a href="#page-' + workspaceMaterial.id + '">' + workspaceMaterial.title + '</a>');
+                  newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
+                  
+                  if (workspaceMaterial.nextSiblingId) {
+                    newPageTocItem.insertBefore('li.workspace-materials-toc-item[data-workspace-node-id="' + workspaceMaterial.nextSiblingId + '"]');
+                  }
+                  else {
+                    var section = $('ul[data-workspace-node-id="' + workspaceMaterial.parentId + '"]');
+                    section.append(newPageTocItem);
+                  }
+                  var tocSection = newPageTocItem.closest('.workspace-materials-toc-section');
+                  if (tocSection) {
+                    tocSection.sortable('refresh');
+                  }
+                  newPage.empty();
+                  $(document).muikkuMaterialLoader('loadMaterial', newPage);
+                }, this));
+            }
+          }, this));
+      });
+
+      $(newPage).find('.workspace-materials-management-clear-clipboard-link').one('click', function (event) {
+        event.preventDefault();
+        localStorage.removeItem('muikku-clipboard-material');
+        $(this).closest('.clipboard-material-container').remove();
+      });
       
       $(newPage).find('.workspace-materials-management-new-section-link').one('click', function (event) {
         event.preventDefault();

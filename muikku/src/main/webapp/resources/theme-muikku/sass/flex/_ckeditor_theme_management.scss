@@ -1,6 +1,6 @@
 .cke {
-  border: 1px solid #abdbed !important;
-  box-shadow: none !important;
+  border: 1px solid #abdbed;
+  box-shadow: none;
   border-radius: 0;
   
   .cke_inner { /* CKE top, content and bottom wrapper */
@@ -31,11 +31,11 @@
           }
           
           a.cke_button_on {
-              background: #9ed7ff;
-              background-image: none;
-              box-shadow: none;
-              border: 0;
-            }
+            background: #9ed7ff;
+            background-image: none;
+            box-shadow: none;
+            border: 0;
+          }
           
         }
         

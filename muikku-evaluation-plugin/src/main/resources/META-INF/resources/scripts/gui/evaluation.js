@@ -192,11 +192,11 @@
                     var studentElement = $(this.options.triggeringElement.element);
                     if(studentElement.hasClass('workspace-evaluated')){
                       studentElement.find('.workspace-evaluated-date')
-                        .text(formatDate(new Date(moment(result.evaluated))));
+                        .text(formatDate(moment(result.evaluated).toDate()));
                     } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
-                        .text(formatDate(new Date(moment(result.evaluated))));
+                        .text(formatDate(moment(result.evaluated).toDate()));
                       if(studentElement.find('.workspace-evaluation-requested-date').length > 0){
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
                       }else{
@@ -234,11 +234,11 @@
                     var studentElement = $(this.options.triggeringElement.element);
                     if(studentElement.hasClass('workspace-evaluated')){
                       studentElement.find('.workspace-evaluated-date')
-                        .text(formatDate(new Date(moment(result.evaluated))));
+                        .text(formatDate(moment(result.evaluated).toDate()));
                     } else {
                       var evaluatedDate = $('<div>')
                         .addClass('workspace-evaluated-date')
-                        .text(formatDate(new Date(moment(result.evaluated))));
+                        .text(formatDate(moment(result.evaluated).toDate()));
                       if(studentElement.find('.workspace-evaluation-requested-date').length > 0){
                         studentElement.find('.workspace-evaluation-requested-date').after(evaluatedDate);
                       }else{
@@ -622,7 +622,7 @@
                       this.options.triggeringElement.element.addClass('assignment-reviewed-non-passing');
                     }
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
-                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(moment(result.evaluated))));
+                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(moment(result.evaluated).toDate()));
                     this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.assignmentEvaluationDialog.evaluation.updateSuccessful"));
                     this.element.remove();
@@ -654,7 +654,7 @@
                       this.options.triggeringElement.element.addClass('assignment-reviewed-non-passing');
                     }
                     this.options.triggeringElement.element.find('.evaluation-assignment-evaluated-date')
-                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(moment(result.evaluated))));
+                      .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(moment(result.evaluated).toDate()));
                     this._loader.remove();
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.assignmentEvaluationDialog.evaluation.successful"));
                     this.element.remove();
@@ -708,7 +708,7 @@
           assessors: this.options.assessors,
           workspaceName: this.options.workspaceName,
           studentStudyProgrammeName: this.options.studentStudyProgrammeName,
-          submitDate: new Date(moment(this.options.submitDate)),
+          submitDate: this.options.submitDate ? moment(this.options.submitDate).toDate() : null,
           assignments: [{
             workspaceMaterialId: workspaceMaterialId,
             materialId: materialId,
@@ -1010,14 +1010,14 @@
                 .attr('data-evaluation-date', workspaceAssessmentRequest.date)
                 .attr('title', getLocaleText("plugin.evaluation.studentGrid.assessmentRequested.label"))
                 .addClass('workspace-evaluation-requested-date')
-                .text(formatDate(new Date(moment(workspaceAssessmentRequest.date))))
+                .text(formatDate(moment(workspaceAssessmentRequest.date).toDate()))
                 .prependTo(studentElement);
               }else{
                 var evaluationDateElement = studentElement.find('.workspace-evaluation-requested-date');
                 var oldDate = evaluationDateElement.attr('data-evaluation-date');
                 if(workspaceAssessmentRequest.date > oldDate){
                   evaluationDateElement.attr('data-evaluation-date', workspaceAssessmentRequest.date);
-                  evaluationDateElement.text(formatDate(new Date(moment(workspaceAssessmentRequest.date))));
+                  evaluationDateElement.text(formatDate(moment(workspaceAssessmentRequest.date).toDate()));
                 }
               }
             }
@@ -1231,7 +1231,7 @@
                   materialId: this.options.materialId,
                   studentEntityId: workspaceStudent.evaluationStudent('studentEntityId'),
                   evaluationId: this.options.evaluation ? this.options.evaluation.id : null,
-                  evaluationDate: this.options.evaluation ? new Date(moment(this.options.evaluation.evaluated)) : null,
+                  evaluationDate: this.options.evaluation ? moment(this.options.evaluation.evaluated).toDate() : null,
                   evaluationGradeId: this.options.evaluation ? this.options.evaluation.gradeIdentifier+'/'+this.options.evaluation.gradeSchoolDataSource+'@'+this.options.evaluation.gradingScaleIdentifier+'/'+this.options.evaluation.gradingScaleSchoolDataSource : null,
                   verbalAssessment: this.options.evaluation ? this.options.evaluation.verbalAssessment : null,
                   workspaceEntityId: workspaceEntityId,
@@ -1289,7 +1289,7 @@
       if (evaluation && evaluation.evaluated) {
         this.options.evaluation = evaluation;
         this.element.find('.evaluation-assignment-evaluated-date')
-          .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(new Date(moment(evaluation.evaluated))));   
+          .text(getLocaleText("plugin.evaluation.evaluationGrid.evaluated.label") + " " + formatDate(moment(evaluation.evaluated).toDate()));   
       }          
 
       switch (reply.state) {
@@ -1304,7 +1304,7 @@
           this.element.addClass('assignment-submitted');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(moment(reply.submitted))))
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(moment(reply.submitted).toDate()))
               .attr('data-submit-date', reply.submitted);   
           }
         break;
@@ -1316,7 +1316,7 @@
           this.element.addClass('assignment-reviewed-non-passing');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(moment(reply.submitted))))
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(moment(reply.submitted).toDate()))
               .attr('data-submit-date', reply.submitted);
           }
         break;
@@ -1325,7 +1325,7 @@
           this.element.addClass('assignment-evaluated');
           if (reply.submitted) {
             this.element.find('.evaluation-assignment-submitted-date')
-              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(new Date(moment(reply.submitted))))
+              .text(getLocaleText("plugin.evaluation.evaluationGrid.submitted.label") + " " + formatDate(moment(reply.submitted).toDate()))
               .attr('data-submit-date', reply.submitted);
           }
         break;
@@ -1352,7 +1352,7 @@
       this.element.addClass('evaluation-student-wrapper');
       this.element.append($('<div>').addClass('evaluation-student-picture'));
       this.element.append($('<div>').addClass('evaluation-student-name-plate').append($('<span class="evaluation-student-name">').text(this._displayName)).append($('<span class="evaluation-student-studyprogramme">').text(this._studyProgrammeName)));
-      this.element.prepend($('<div>').addClass('workspace-student-joined-date').text(formatDate(new Date(moment(this.options.enrolmentTime)))).attr("title", getLocaleText("plugin.evaluation.studentGrid.joined.label")));
+      this.element.prepend($('<div>').addClass('workspace-student-joined-date').text(formatDate(moment(this.options.enrolmentTime).toDate())).attr("title", getLocaleText("plugin.evaluation.studentGrid.joined.label")));
       
       if (this.options.assessment) {
         this.element.removeClass('workspace-evaluation-requested');
@@ -1360,7 +1360,7 @@
         var evaluatedDate = $('<div>')
           .addClass('workspace-evaluated-date')
           .attr('title', getLocaleText("plugin.evaluation.studentGrid.evaluated.label"))
-          .text(formatDate(new Date(moment(this.options.assessment.evaluated))));
+          .text(formatDate(moment(this.options.assessment.evaluated).toDate()));
         
         evaluatedDate.prependTo(this.element);
         
@@ -1426,7 +1426,7 @@
                   workspaceName: workspaceName,
                   gradingScales: gradingScales,
                   assessors: assessors,
-                  evaluationDate: this.options.assessment ? new Date(moment(this.options.assessment.evaluated)) : null,
+                  evaluationDate: this.options.assessment ? moment(this.options.assessment.evaluated).toDate() : null,
                   evaluationGradeId: this.options.assessment ? this.options.assessment.gradeIdentifier + '/' + this.options.assessment.gradeSchoolDataSource+'@'+this.options.assessment.gradingScaleIdentifier+'/'+this.options.assessment.gradingScaleSchoolDataSource : null,
                   assessorEntityId: this.options.assessment ? this.options.assessment.assessorEntityId : null,
                   verbalAssessment: this.options.assessment ? this.options.assessment.verbalAssessment : null,

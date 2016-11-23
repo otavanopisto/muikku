@@ -16,6 +16,8 @@ import fi.otavanopisto.muikku.dao.grading.GradingScaleItemEntityDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.grading.GradingScaleEntity;
 import fi.otavanopisto.muikku.model.grading.GradingScaleItemEntity;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -36,7 +38,13 @@ public class GradingController {
 	private GradingScaleEntityDAO gradingScaleEntityDAO;
 	
 	@Inject
-	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO; 
+	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
+	
+	/* CompositeGradingScale */
+	
+	public List<CompositeGradingScale> listCompositeGradingScales() {
+	  return gradingSchoolDataController.listCompositeGradingScales();
+	}
 
 	/* GradingScaleEntity */
 
@@ -76,6 +84,10 @@ public class GradingController {
     return gradingSchoolDataController.findGradingScale(schoolDataSource, identifier);
   }
 
+  public GradingScale findGradingScale(SchoolDataIdentifier identifier) {
+    return gradingSchoolDataController.findGradingScale(identifier.getDataSource(), identifier.getIdentifier());
+  }
+
 	public List<GradingScale> listGradingScales() {
 		return gradingSchoolDataController.listGradingScales();
 	}
@@ -88,6 +100,10 @@ public class GradingController {
 	
 	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
+  }
+
+	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, SchoolDataIdentifier identifier) {
+    return gradingSchoolDataController.findGradingScaleItem(identifier.getDataSource(), gradingScale, identifier.getIdentifier());
   }
 
 	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
@@ -117,7 +133,7 @@ public class GradingController {
       SchoolDataIdentifier workspaceAssesmentIdentifier) {
     return gradingSchoolDataController.findWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
   }
-	
+  
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
     return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
   }
@@ -175,6 +191,14 @@ public class GradingController {
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequests(SchoolDataIdentifier studentIdentifier) {
     return gradingSchoolDataController.listAssessmentRequestsByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+  }
+  
+  public List<CompositeAssessmentRequest> listAssessmentRequestsByWorkspace(SchoolDataIdentifier workspaceIdentifier, List<String> workspaceStudentIdentifiers) {
+    return gradingSchoolDataController.listCompositeAssessmentRequestsByWorkspace(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), workspaceStudentIdentifiers);
+  }
+
+  public List<CompositeAssessmentRequest> listAssessmentRequestsByStaffMember(SchoolDataIdentifier staffMemberIdentifier) {
+    return gradingSchoolDataController.listCompositeAssessmentRequestsByStaffMember(staffMemberIdentifier.getDataSource(), staffMemberIdentifier.getIdentifier());
   }
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequestsSince(SchoolDataIdentifier studentIdentifier, Date date) {

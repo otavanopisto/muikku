@@ -15,6 +15,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGrade;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
@@ -22,6 +24,9 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.GradingSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -52,6 +57,28 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+  }
+
+  @Override
+  public List<CompositeGradingScale> listCompositeGradingScales() {
+    List<CompositeGradingScale> localGradingScales = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale>();
+    fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[] restGradingScales = pyramusClient.get(
+        "/composite/gradingScales/",
+        fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[].class);
+    for (int i = 0; i < restGradingScales.length; i++) {
+      List<CompositeGrade> localGrades = new ArrayList<CompositeGrade>();
+      List<fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade> restGrades = restGradingScales[i].getGrades();
+      for (fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade restGrade : restGrades) {
+        SchoolDataIdentifier gradeIdentifier = identifierMapper.getGradeIdentifier(restGrade.getGradeId());
+        localGrades.add(new PyramusCompositeGrade(gradeIdentifier.getIdentifier(), restGrade.getGradeName()));
+      }
+      SchoolDataIdentifier gradingScaleIdentifier = identifierMapper.getGradingScaleIdentifier(restGradingScales[i].getScaleId());
+      localGradingScales.add(new PyramusCompositeGradingScale(
+        gradingScaleIdentifier.getIdentifier(),
+        restGradingScales[i].getScaleName(),
+        localGrades));
+    }
+    return localGradingScales;
   }
 
 	@Override
@@ -125,7 +152,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier,
       String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
-    
+
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
@@ -169,7 +196,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment);
+    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
     WorkspaceAssessment workspaceAssessment = entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
     updateParticipationTypeByGrade(courseStudentId, courseId, grade);
     
@@ -254,7 +281,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment);
+    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, gradeId, gradingScaleId, assessingUserId, fromDateToOffsetDateTime(date), verbalAssessment, grade.getPassingGrade());
     updateParticipationTypeByGrade(courseStudentId, courseId, grade);
     
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
@@ -310,7 +337,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null;
     }
     else {
-      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE);
+      CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
       return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
     }
   }
@@ -366,6 +393,41 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/assessmentRequests/", studentId), CourseAssessmentRequest[].class));
   }
   
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByWorkspace(String workspaceIdentifier) {
+    return listCompositeAssessmentRequestsByWorkspace(workspaceIdentifier, new ArrayList<String>());
+  }
+
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByWorkspace(String workspaceIdentifier, List<String> workspaceStudentIdentifiers) {
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    if (courseId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus course", workspaceIdentifier));
+      return null; 
+    }
+    StringBuffer courseStudentIds = new StringBuffer();
+    for (String workspaceStudentIdentifier : workspaceStudentIdentifiers) {
+      if (courseStudentIds.length() > 0) {
+        courseStudentIds.append(",");
+      }
+      courseStudentIds.append(identifierMapper.getPyramusCourseStudentId(workspaceStudentIdentifier));
+    }
+    fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[] compositeAssessmentRequests = pyramusClient.get(
+        String.format("/composite/course/%d/assessmentRequests?courseStudentIds=%s", courseId, courseStudentIds),
+        fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[].class); 
+    return entityFactory.createEntity(compositeAssessmentRequests);
+  }
+  
+  public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByStaffMember(String identifier) {
+    Long staffMemberId = identifierMapper.getPyramusStaffId(identifier);
+    if (staffMemberId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus staff member", identifier));
+      return null; 
+    }
+    fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[] compositeAssessmentRequests = pyramusClient.get(
+        String.format("/composite/staffMembers/%d/assessmentRequests/", staffMemberId),
+        fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest[].class); 
+    return entityFactory.createEntity(compositeAssessmentRequests);
+  }
+  
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
@@ -395,7 +457,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE);
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
 

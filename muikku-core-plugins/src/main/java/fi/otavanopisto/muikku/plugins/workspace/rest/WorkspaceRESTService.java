@@ -69,6 +69,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFiel
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
@@ -1002,7 +1003,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       if (user != null) {
         UserEntity userEntity = userEntityController.findUserEntityByUser(user);
-        workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(), 
+        workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
+          workspaceUser.getUserIdentifier().toId(),
           userEntity != null ? userEntity.getId() : null,
           user.getFirstName(), 
           user.getLastName()
@@ -1120,6 +1122,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       // Copy
       
+      WorkspaceNode createdNode = null;
+      WorkspaceMaterial createdMaterial = null;
       if (copyOnlyChildren) {
         List<WorkspaceNode> sourceChildren = workspaceMaterialController.listWorkspaceNodesByParent(sourceNode);
         for (WorkspaceNode sourceChild : sourceChildren) {
@@ -1127,12 +1131,22 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       else {
-        workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials);
+        createdNode = workspaceMaterialController.cloneWorkspaceNode(sourceNode, targetNode, cloneMaterials);
+        if (createdNode.getType() == WorkspaceNodeType.MATERIAL) {
+          createdMaterial = workspaceMaterialController.findWorkspaceMaterialById(createdNode.getId());
+          if (entity != null && entity.getNextSiblingId() != null) {
+            WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
+            if (nextSibling == null) {
+              return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not exist").build();
+            }
+            workspaceMaterialController.moveAbove(createdNode, nextSibling);
+          }
+        }
       }
       
       // Done
       
-      return Response.noContent().build();
+      return createdMaterial == null ? Response.noContent().build() : Response.ok(createRestModel(createdMaterial)).build(); 
       
     } else {
       if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {

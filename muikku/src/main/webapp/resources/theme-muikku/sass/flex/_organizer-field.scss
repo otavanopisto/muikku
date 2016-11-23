@@ -4,8 +4,30 @@
     opacity: 0.5;
     cursor: default;
     
+    .icon-delete {
+      display: none;
+    }
+    
+    .muikku-category .muikku-term {
+      padding: 6px 8px;
+    }
+    
     .muikku-terms-data .muikku-term {
       cursor: default;
+      
+      &.term-in-use {
+        background: $taskBoxEditedColor;
+        
+        &:hover {
+          background: $taskBoxEditedColor;
+        } 
+         
+      }
+      
+      &:hover {
+        background: $taskBoxColor;
+      }
+      
     }
     
   }
@@ -27,14 +49,14 @@
       background: $taskBoxColor;
       border-radius: 3px;
       box-sizing: border-box;
-      font-size: 16px;
-      margin: 2px 4px 0 0;
-      display: inline-block;
-      padding: 6px 8px;
-      position: relative;
-      line-height: 1;
-      cursor: move;
       color: $taskBoxTextColor;
+      cursor: move;
+      display: inline-block;
+      font-size: 16px;
+      line-height: 1;
+      margin: 2px 4px 0 0;
+      padding: 6px;
+      position: relative;
       word-wrap: normal;
       
       &.term-in-use {
@@ -49,7 +71,7 @@
         z-index: 99;
         background: $selectedtaskBoxColor; 
         color: $selectedTaskBoxTextColor;
-        padding: 6px 7px;
+        padding: 6px;
         height: auto !important;
       }
       

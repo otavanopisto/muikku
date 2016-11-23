@@ -159,6 +159,10 @@
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
         
+        $("<div>")
+          .addClass("correct-answers-count-container")
+          .insertAfter(buttonWrapper);
+        
         this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
       }
     },
@@ -412,13 +416,7 @@
     checkExercises: function (requestAnswers) {
       var correctAnswersDisplay = this.correctAnswers();
 
-      var correctAnswersCountContainer = this.element.find('.correct-answers-count-container');
-      if (correctAnswersCountContainer.length == 0) {
-        correctAnswersCountContainer = $("<div>")
-          .addClass("correct-answers-count-container")
-          .appendTo(this.element);
-      }
-      correctAnswersCountContainer.empty();
+      this.element.find('.correct-answers-count-container').empty();
       
       var fields = this.element.find('.muikku-field');
       var correctAnswerCount = 0;

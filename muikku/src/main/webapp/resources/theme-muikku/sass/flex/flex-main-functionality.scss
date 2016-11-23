@@ -1,4 +1,6 @@
 @import "_vars.scss";
+
+// Todo: Remove this after .mf-button-container has a variable (will be merged in the issue 2426)
 @import "_vars_backup";
 @import "_styles.scss";
 
@@ -7,7 +9,7 @@
 }
 
 .mf-button-container {
-  background-color: $mainFuncSb; 
+  background-color: $environment-button-container-background-color; 
 }
 
 .mf-primary-function {
@@ -427,12 +429,35 @@ ul.mf-tool-label-container {
   text-align: center;
   width: 37px;
   
+  &:first-child {
+    margin:0;
+  }
+  
   &.default {
     background: $navigation-horizontal-bar-default-button-background-color none repeat scroll 0 0;
   }
 
   &.special {
     background: $navigation-horizontal-bar-special-button-background-color none repeat scroll 0 0;
+  }
+
+  &.navigation {
+    background: $navigation-horizontal-bar-navigation-background-color none repeat scroll 0 0;
+    border-radius: 7px;
+    
+    div::before {
+      color: $navigation-horizontal-bar-navigation-icon-color;
+    }
+  }
+
+  &.button {
+    background-color: $navigation-horizontal-bar-special-button-background-color; 
+    border: 1px solid $environment-border-selected-color;
+    color: $navigation-horizontal-bar-active-font-color;
+    cursor: pointer;
+    display: inline-block;    
+    padding: 5px 10px;  
+    width: auto;
   }
   
   &.disabled {
@@ -575,7 +600,23 @@ ul.mf-tool-label-container {
   
 }
 
+.mf-item-empty-container {
+    min-height:60px;
+}
 
+.mf-item-empty {
+  box-shadow: $item-shadow;
+  background-color: $item-background-color;
+  margin: 0 5px 5px 5px;
+  text-align:center;
+
+  span {
+    color: $item-state-info-font-color;
+   &:not(:first-child){
+    margin-left:10px;
+   }    
+  }  
+}
 
 .mf-item {
   box-shadow: $item-shadow;
