@@ -162,7 +162,7 @@ public class PyramusMock {
       public Builder addStudentGroup(Long id, String name, String description, Long creatorId, boolean archived) {
         OffsetDateTime date = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         List<String> tags = new ArrayList<>();
-        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, archived));
+        pmock.studentGroups.add(new StudentGroup(id, name, description, date, creatorId, date, creatorId, date, tags, false, archived));
         return this;
       }
       

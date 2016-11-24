@@ -411,7 +411,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withStatus(200)));
     
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.");
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     
     stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseStudent.getCourseId())))
       .willReturn(aResponse()
@@ -448,7 +448,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(courseStudenJson2)
         .withStatus(200)));
 
-    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "");
+    CourseAssessment courseAssessment2 = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, 4l, assessmentCreated, "", Boolean.TRUE);
     stubFor(get(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", student2.getId(), courseStudent2.getCourseId())))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -625,8 +625,8 @@ public class PyramusMocks extends AbstractPyramusMocks {
     OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     OffsetDateTime lastmodified = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-    StudentGroup studentGroupStudents = new StudentGroup((long) 1, "Opiskelijat", "Spring 2015 Students", begin, (long) 1, created, (long) 1, lastmodified, null, false);
-    StudentGroup studentGroupAnother = new StudentGroup((long) 2, "Opiskelijat 2", "Spring 2015 Students 2", begin, (long) 1, created, (long) 1, lastmodified, null, false);
+    StudentGroup studentGroupStudents = new StudentGroup((long) 1, "Opiskelijat", "Spring 2015 Students", begin, (long) 1, created, (long) 1, lastmodified, null, false, false);
+    StudentGroup studentGroupAnother = new StudentGroup((long) 2, "Opiskelijat 2", "Spring 2015 Students 2", begin, (long) 1, created, (long) 1, lastmodified, null, false, false);
     StudentGroup[] studentGroupArray = {studentGroupStudents, studentGroupAnother};
     String studentGroupsJson = objectMapper.writeValueAsString(studentGroupArray);
     stubFor(get(urlMatching("/1/students/studentGroups"))
@@ -905,7 +905,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 //    CourseStudent courseStudent = new CourseStudent(3l, 1l, 1l, OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), false, null, null, null, null, null);
     OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, assessorId, assessmentCreated, "Test evaluation.");
+    CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, assessorId, assessmentCreated, "Test evaluation.", Boolean.TRUE);
     List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
     courseAssessments.add(courseAssessment);
     stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))

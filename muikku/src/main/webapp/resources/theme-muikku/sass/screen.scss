@@ -1,37 +1,29 @@
-/* Lets import all the necessary support files */
-
-@import "_fonts.scss";
-@import "_textcontent.scss";
-@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_animations.scss";
-@import "_commons.scss";
-@import "_forms.scss";
-@import "_modal.scss";
-@import "_buttons.scss";
-@import "_widgets.scss"; 
-@import "_notif-queue.scss";
-@import "_mainfunctions.scss";
-@import "_records.scss";
-@import "_calendar.scss";
-@import "_communicator.scss";
-@import "_announcer.scss";
-@import "_guider.scss";
-@import "_discussion.scss";
-@import "_profile.scss";
-@import "_coursepicker.scss";
-@import "_tasktool.scss";
-@import "_dialog.scss";
-@import "_connectionlost.scss";
-@import "_generic_context-view.scss";
-
-
-/* CKEditor css rules for modals and form element plugins */
-@import "_custom-ckeditor-modal.scss";
-@import "_custom-ckeditor-selection-checkbox.scss";
-
-/* jQuery ui custom */
-@import "_custom-jqueryui.scss";
-/* Note: All in-development- unfinished-temp-styles are in temp.css */
+@import "fonts";
+@import "textcontent";
+@import "base";
+@import "animations";
+@import "commons";
+@import "forms";
+@import "modal";
+@import "buttons";
+@import "widgets"; 
+@import "notif-queue";
+@import "mainfunctions";
+@import "records";
+@import "calendar";
+@import "communicator";
+@import "announcer";
+@import "guider";
+@import "discussion";
+@import "profile";
+@import "coursepicker";
+@import "tasktool";
+@import "dialog";
+@import "connectionlost";
+@import "generic_context-view";
+@import "custom-ckeditor-dialog";
+@import "custom-ckeditor-selection-checkbox";
+@import "custom-jqueryui";
 
 html {
   height: 100%;

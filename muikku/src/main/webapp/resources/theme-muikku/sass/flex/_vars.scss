@@ -47,11 +47,46 @@ $of-footer-background-color: #494949;
 
 // Environment level variables
 
+// TODO: Move shadows to _styles.scss
+
+$body-background-color: #f6fcff;
+$body-font-color: #2c2c2c;
 $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
+
+// TODO: Should be environment-icon-color - the fact that an icon is a font is irrelevant
 $environment-icon-font-color: #fff;
+$environment-content-box-shadow: 0 0 15px rgba(216, 230, 235, 0.5);
 $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
+$environment-bottom-bar-box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
+$environment-bottom-bar-background-color: #485c64;
+$environment-bottom-bar-font-color: #fff;
+$environment-bottom-bar-link-color: #b3e9ff;
 $environment-background-color: #fff;
+$environment-language-selection-background-color: #2e72a0;
+$environment-language-selection-shadow: 0 0 15px rgba(255,255,255,0.5);
+$environment-language-selection-active-background-color: #fff;
+$environment-language-selection-link-color: #fff;
+$environment-language-selection-language-background-color: #fff;
+$environment-language-selection-language-link-color: #569bca;
+$environment-language-selection-language-link-hover-color: #fff;
+$environment-language-selection-language-background-hover-color: #2e72a0;
+$environment-sign-in-link-color: #fff;
+$environment-sign-in-font-shadow: 0 0 1px #000;
+$environment-logged-in-border-color: #fff;
+$environment-logged-in-background-color: #fff;
+$environment-logged-in-font-color: #3c77a0;
+$environment-static-navigation-icon-color: #fff;
+$environment-static-navigation-gradient-color-start: rgba(36, 108, 162, 0.15);
+$environment-static-navigation-gradient-color-end: rgba(255, 255, 255, 0);
+$environment-static-navigation-background-color: #4594bf;
+$environment-static-navigation-border-top-color: #71c3e1;
+$environment-static-navigation-border-bottom-color: #b2e0ff;
+$environment-static-navigation-active-border-color: #aae3f2;
+$environment-static-navigation-border-color: #66aace;
+$environment-static-navigation-notifier-background-color: #ff0000;
+$environment-static-navigation-notifier-border-color: #ff0000;
+$environment-static-navigation-notifier-font-color: #fff;
 $environment-background-dim-color: #ededed;
 $environment-background-light-dim-color: #f9f9f9;
 $environment-background-highlight-color: #fff8c1;
@@ -59,12 +94,16 @@ $environment-background-active-color: #69cff9;
 $environment-background-selected-color: #eee;
 $environment-file-background-color: #34acfd;
 $environment-font-color: #000;
+$environment-link-color: #4290ea;
 $environment-header-font-color: #2c2c2c;
+$environment-page-title-font-color: #374145;
 $environment-alt-font-color: #fff; 
 $environment-font-disabled-color: #aaa;
 $environment-border-color: #ededed;
 $environment-border-selected-color: #dadada;
+$environment-border-highlight-color: #ccc;
 $environment-border-transparent-color: rgba(255, 255, 255, 0);
+$environment-button-container-background-color: #ebf6fb;
 $environment-button-background-color: #ed8e00;
 $environment-button-gradient-start-color: rgba(253, 167, 38, 1);
 $environment-button-gradient-end-color: rgba(237, 142, 0, 1);
@@ -87,6 +126,7 @@ $environment-paging-tool-background-color: #36a3ce;
 $environment-paging-tool-font-color: #fff;
 $environment-paging-tool-background-disabled-color: #ededed;
 $environment-paging-tool-font-disabled-color: #dadada;
+$environment-widget-overlay-background-color: #000;
 
 // Forms (bottom bar)
 
@@ -104,6 +144,7 @@ $form-button-cancel-background-color: #7391a7;
 $form-autocomplete-background-color: #f2f5f7;
 $form-autocomplete-border-color: #fff;
 $form-autocomplete-hover-font-color: #006ab1;
+
 
 // Items in the content-area  (messages, users, workspaces...)
 
@@ -160,6 +201,8 @@ $navigation-vertical-bar-active-background-color: #eee;
 $navigation-horizontal-bar-button-icon-color: #fff;
 $navigation-horizontal-bar-default-button-background-color: #0099ff;
 $navigation-horizontal-bar-default-button-background-hover-color: #0065cb;
+$navigation-horizontal-bar-navigation-background-color: #84d9fe;
+$navigation-horizontal-bar-navigation-icon-color: #fbfbfb;
 $navigation-horizontal-bar-special-background-color: #99eb36;
 $navigation-horizontal-bar-special-button-background-color: #72d200;
 $navigation-horizontal-bar-special-menu-link-font-color: #72d200;

@@ -1,21 +1,21 @@
-@import "_fonts.scss";
-@import "_vars.scss";
-@import "_vars_backup";
-@import "_styles.scss";
-@import "_forms.scss";
-@import "_custom-ckeditor-styles.scss";
-@import "_custom-ckeditor-modal.scss";
-@import "_connect-field.scss";
-@import "_organizer-field.scss";
-@import "_sorter-field.scss";
-@import "_file-field.scss";
-@import "_audio-field.scss";
-@import "_workspace-materials-defaults.scss"; 
-@import "_correct_answers.scss"; 
-@import "_notif-queue.scss";
-@import "_connectionlost.scss";
-@import "_ckeditor_theme_management.scss";
-@import "_dialog.scss";
+@import "fonts";
+@import "vars";
+@import "vars_backup";
+@import "styles";
+@import "forms";
+@import "custom-ckeditor-styles";
+@import "custom-ckeditor-dialog";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "file-field";
+@import "audio-field";
+@import "workspace-materials-defaults"; 
+@import "correct_answers"; 
+@import "notif-queue";
+@import "connectionlost";
+@import "ckeditor_theme_management";
+@import "dialog";
 
 body {
   background: #4f6677;
@@ -305,12 +305,12 @@ nav.workspace-waterials-management-nav {
     text-decoration: none;
     
     &.assignment {
-      border-left: 2px solid $evaluatedAssignment;
+      border-left: 2px solid $assignment;
       margin: 1px 0 0;
     }
     
     &.exercise {
-      border-left: 2px solid $exerciseAssignment;
+      border-left: 2px solid $exercise;
       margin: 1px 0 0;
     }
     
@@ -402,22 +402,24 @@ nav.workspace-waterials-management-nav {
   text-align: center;
 
   a.workspace-materials-management-new-page-link {
+    background: #fff;
     color: #0099ff;
+    display: inline-block;
+    font-family: 'Open Sans', Arial, sans-serif !important;
+    font-size: 16px;
+    margin: 0 10px;
     text-decoration: none;
     text-transform: uppercase;
-    font-size: 16px;
-    transition: color 0.3s ease-in-out;
-    font-family: 'Open Sans', Arial, sans-serif !important;
-    display: inline-block;
-    background: #fff;
     text-align: center;
-    margin: 0 10px;
+    transition: color 0.3s ease-in-out;
+    vertical-align: top;
+    width: 130px;
 
     &:hover {
-      color: #0e1d27;
+      color: #2c95c0;
       
       &.icon-new-page::before {
-        color: #1e5274;
+        color: #2c95c0;
       }
 
     }
@@ -433,22 +435,24 @@ nav.workspace-waterials-management-nav {
   }
   
   a.workspace-materials-management-new-section-link {
+    background: #fff;
     color: #0099ff;
+    display: inline-block;
+    font-family: 'Open Sans', Arial, sans-serif !important;
+    font-size: 16px;
+    margin: 0 10px;
+    text-align: center;
     text-decoration: none;
     text-transform: uppercase;
-    font-size: 16px;
     transition: color 0.3s ease-in-out;
-    font-family: 'Open Sans', Arial, sans-serif !important;
-    display: inline-block;
-    background: #fff;
-    text-align: center;
-    margin: 0 10px;
+    vertical-align: top;
+    width: 130px;
 
     &:hover {
-      color: #0e1d27;
+      color: #2c95c0;
       
       &.icon-new-section::before {
-        color: #1e5274;
+        color: #2c95c0;
       }
       
     }
@@ -461,6 +465,54 @@ nav.workspace-waterials-management-nav {
       display: block;
     }
     
+  }
+  
+  .clipboard-material-container {
+    display: inline-block;
+    position: relative;
+    vertical-align: top;
+    
+    .workspace-materials-management-clear-clipboard-link {
+      color: #de3211;
+      position: absolute;
+      right: 30px;
+      text-decoration: none;
+      top: 5px;
+    }
+    
+  }
+  
+  a.workspace-materials-management-paste-page-link {
+    background: #fff;
+    color: #0099ff;
+    display: inline-block;
+    font-family: 'Open Sans', Arial, sans-serif !important;
+    font-size: 16px;
+    margin: 0 10px;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s ease-in-out;
+    vertical-align: top;
+    width: 130px;
+
+    &:hover {
+      color: #2c95c0;
+      
+      &.icon-content_paste::before {
+        color: #2c95c0;
+      }
+
+    }
+
+    &.icon-content_paste::before {
+      font-family: "muikku";
+      transition: color 0.5s ease-in-out;
+      font-size: 60px;
+      color: #82c8f7;
+      display: block;
+    }
+
   }
   
   &:hover {
@@ -737,11 +789,11 @@ nav.workspace-waterials-management-nav {
   
   // Special cases for assignment type links
   &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type {
-    background: $evaluatedAssignment;
+    background: $assignment;
   }
 
   &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type {
-    background: $exerciseAssignment;
+    background: $exercise;
   }
 
   &[data-correct-answers="ALWAYS"] .workspace-materials-management-view-page-controls span.correct-answers-settings {

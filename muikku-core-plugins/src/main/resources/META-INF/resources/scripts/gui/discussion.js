@@ -16,8 +16,8 @@
         } else {
           var user = results[0];
           var area = results[1];
-          var d = new Date(moment(thread.created));
-          var ud = new Date(moment(thread.updated));          
+          var d = moment(thread.created).toDate();
+          var ud = moment(thread.updated).toDate();          
           // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
@@ -52,8 +52,8 @@
             var reply = replies[index];
 
             // TODO: remove pretty dates
-            var d = new Date(moment(reply.created));
-            var ld = new Date(moment(reply.lastModified));
+            var d = moment(reply.created).toDate();
+            var ld = moment(reply.lastModified).toDate();
             
             return {
               creatorFullName: user.firstName + ' ' + user.lastName,
@@ -64,7 +64,7 @@
               userRandomNo: (user.id % 6) + 1,
               nameLetter: user.firstName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
-              replyParentTime: reply.parentReplyId ? formatDate(new Date(moment(replyCreatedMap[reply.parentReplyId]))) + ' ' + formatTime(new Date(moment(replyCreatedMap[reply.parentReplyId]))) : null
+              replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
             }; 
           }));
         }
@@ -446,6 +446,7 @@
       this.element.on("click", ".di-reply-answer-link", $.proxy(this._onReplyAnswerClick, this));
       this.element.on("click", ".di-reply-quote-link", $.proxy(this._onReplyQuoteClick, this));
       this.element.on("click", ".di-reply-edit-link", $.proxy(this._onReplyEditClick, this));
+      this.element.on("click", ".di-reply-delete-link", $.proxy(this._onReplyDeleteClick, this));
       this.element.on("click", ".di-page-link-load-more-replies", $.proxy(this._onMoreRepliesClickClick, this));
     },
     
@@ -630,6 +631,23 @@
         threadId: threadId,
         replyId: replyId
       });
+    },
+    
+    _onReplyDeleteClick: function (event) {
+      var messageElement = $(event.target).closest('.di-message');
+      var repliesElement = $(event.target).closest('.di-replies-container');
+      
+      var areaId = repliesElement.attr('data-area-id');
+      var threadId = repliesElement.attr('data-thread-id');
+      var replyId = messageElement.attr('data-id');
+
+      this.options.ioController.deleteThreadReply(areaId, threadId, replyId, $.proxy(function(err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $('.discussion').discussion('reloadThread');
+        }
+      }, this));
     },
     
     _onReplyAnswerClick: function (event) {
