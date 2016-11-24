@@ -57,6 +57,8 @@ import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -83,6 +85,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Path("/user")
 @Produces("application/json")
 @Consumes("application/json")
+@RestCatchSchoolDataExceptions
 public class UserRESTService extends AbstractRESTService {
 
   @Inject
@@ -378,6 +381,32 @@ public class UserRESTService extends AbstractRESTService {
         .tag(tag)
         .build();
   }
+
+  @PUT
+  @Path("/students/{ID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response updateStudent(
+      @PathParam("ID") String id,
+      Student student) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    User user = userController.findUserByIdentifier(studentIdentifier);
+    
+    // TODO: update other fields too
+    
+    user.setMunicipality(student.getMunicipality());
+    
+    userController.updateUser(user);
+    
+    return Response.ok().entity(student).build();
+  }
   
   @GET
   @Path("/students/{ID}/flags")
@@ -601,10 +630,10 @@ public class UserRESTService extends AbstractRESTService {
     List<UserAddress> addresses = userController.listUserAddresses(studentIdentifier);
     
     for (UserAddress address : addresses) {
-      if (address.getIdentifier().equals(studentAddress)) {
+      if (address.getIdentifier().toId().equals(studentAddress.getIdentifier())) {
         userController.updateUserAddress(
-            address.getIdentifier(),
             studentIdentifier,
+            address.getIdentifier(),
             studentAddress.getStreet(),
             studentAddress.getPostalCode(),
             studentAddress.getCity(),
@@ -1291,26 +1320,13 @@ public class UserRESTService extends AbstractRESTService {
     return result;
   }
 
-  private StudentAddress createRestModel(UserAddress entity) {
-    StudentAddress result = new StudentAddress(
-        toId(entity.getUserIdentifier()), 
-        entity.getStreet(),
-        entity.getPostalCode(),
-        entity.getCity(),
-        entity.getRegion(),
-        entity.getCountry(),
-        entity.getType(),
-        entity.getDefaultAddress()
-    );
-
-    return result;
-  }
-
   private List<StudentAddress> createRestModel(UserAddress[] entities) {
     List<StudentAddress> result = new ArrayList<>();
     
     for (UserAddress entity : entities) {
-      result.add(new StudentAddress(toId(entity.getUserIdentifier()), 
+      result.add(new StudentAddress(
+          toId(entity.getIdentifier()),
+          toId(entity.getUserIdentifier()), 
           entity.getStreet(),
           entity.getPostalCode(),
           entity.getCity(),

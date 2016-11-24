@@ -55,14 +55,18 @@ public class UserController {
   }
   
   public void updateUserAddress(
-      SchoolDataIdentifier addressIdentifier,
       SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier addressIdentifier,
       String street,
       String postalCode,
       String city,
       String country
   ) {
-    userSchoolDataController.updateUserAddress(addressIdentifier, studentIdentifier, street, postalCode, city, country);
+    userSchoolDataController.updateUserAddress(studentIdentifier, addressIdentifier, street, postalCode, city, country);
+  }
+
+  public void updateUser(User user) {
+    userSchoolDataController.updateUser(user);
   }
 
   public List<UserPhoneNumber> listUserPhoneNumbers(User user) {

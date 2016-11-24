@@ -2,44 +2,84 @@
 
   function changeAddressMunicipality() {
 
-    mApi({async: false}).user.students.addresses.read(MUIKKU_LOGGED_USER).callback(function(err, addresses) {
-      var address = null;
-      for (var i=0; i<addresses.length; i++) {
-        if (addresses[i].defaultAddress) {
-          address = addresses[i];
-        }
+    mApi().user.students.read(MUIKKU_LOGGED_USER).callback(function (err, oldStudent) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+        return;
       }
-      renderDustTemplate(
-          'profile/profile-change-address-hometown.dust',
-          {
-            address: address,
-            hometown: ''
-          },
-          function (text) {
-            var dialog = $(text);
-            $(text).dialog({
-              modal: true, 
-              resizable: false,
-              width: 400,
-              dialogClass: "profile-change-address-hometown-dialog",
-              buttons: [{
-                'text': dialog.data('button-send-text'),
-                'class': 'send-button',
-                'click': function(event) {
-                  
-                  var erronous = false;
-
-                  if (!erronous)
+      mApi().user.students.addresses.read(MUIKKU_LOGGED_USER).callback(function(err, addresses) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+          return;
+        }
+        var address = null;
+        for (var i=0; i<addresses.length; i++) {
+          if (addresses[i].defaultAddress) {
+            address = addresses[i];
+          }
+        }
+        renderDustTemplate(
+            'profile/profile-change-address-hometown.dust',
+            {
+              address: address,
+              municipality: oldStudent.municipality
+            },
+            function (text) {
+              var dialog = $(text);
+              $(text).dialog({
+                modal: true, 
+                resizable: false,
+                width: 400,
+                dialogClass: "profile-change-address-hometown-dialog",
+                buttons: [{
+                  'text': dialog.data('button-send-text'),
+                  'class': 'send-button',
+                  'click': function(event) {
+                    var that = this;
+                    function updateAddress() {
+                      address.street = $(that).find('input[name="street"]').val();
+                      address.postalCode = $(that).find('input[name="postalCode"]').val();
+                      address.city = $(that).find('input[name="city"]').val();
+                      address.country = $(that).find('input[name="country"]').val();
+                      mApi().user.students.addresses.update(MUIKKU_LOGGED_USER, address.identifier, address).callback(function (err, address) {
+                        if (err) {
+                          $('.notification-queue').notificationQueue('notification', 'error', err);
+                          return;
+                        }
+                        
+                        $(that).dialog().remove();
+                        window.location.reload();
+                      });
+                    }
+                    mApi().user.students.read(MUIKKU_LOGGED_USER).callback(function (err, student) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                        return;
+                      }
+                      var municipality = $(that).find('input[name="municipality"]').val();
+                      if (municipality && municipality !== "") {
+                        mApi().user.students.update(MUIKKU_LOGGED_USER, student).callback(function (err, student) {
+                          if (err) {
+                            $('.notification-queue').notificationQueue('notification', 'error', err);
+                            return;
+                          }
+                          
+                          updateAddress();
+                        });
+                      } else {
+                        updateAddress();
+                      }
+                    });
+                  }
+                }, {
+                  'text': dialog.data('button-cancel-text'),
+                  'class': 'cancel-button',
+                  'click': function(event) {
                     $(this).dialog().remove();
-                }
-              }, {
-                'text': dialog.data('button-cancel-text'),
-                'class': 'cancel-button',
-                'click': function(event) {
-                  $(this).dialog().remove();
-                }
-              }]
-          });
+                  }
+                }]
+            });
+        });
       });
     });
   }

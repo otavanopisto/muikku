@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +21,9 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDa
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
@@ -267,11 +268,32 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public User updateUser(User user) {
-    if (!StringUtils.isNumeric(user.getIdentifier())) {
-      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
+    Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+    
+    // This updates only the municipality field, add other fields as necessary
+    
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException("User is not a Pyramus student");
     }
+    
+    Student student = pyramusClient.get(String.format("/students/students/%d", studentId), Student.class);
+    Municipality[] municipalities = pyramusClient.get("/students/municipalities", Municipality[].class);
 
-    throw new SchoolDataBridgeInternalException("Not implemented");
+    // There's no search endpoint in Pyramus REST, and the municipality field is text, so we need to do this
+    boolean municipalityFound = false;
+    for (Municipality municipality : Arrays.asList(municipalities)) {
+      if (StringUtils.equalsIgnoreCase(municipality.getName(), user.getMunicipality())) {
+        student.setMunicipalityId(municipality.getId());
+        municipalityFound = true;
+        break;
+      }
+    }
+    if (!municipalityFound) {
+      throw new SchoolDataBridgeInternalException("Municipality not found");
+    }
+    
+    pyramusClient.put(String.format("/students/students/%d", studentId), student);
+    return user;
   }
 
   @Override
@@ -695,15 +717,28 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       String country
   ) {
     Long addressId = identifierMapper.getPyramusAddressId(identifier.getIdentifier());
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier.getIdentifier());
     
     if (addressId == null) {
       throw new SchoolDataBridgeInternalException(String.format("Malformed identifier %s", identifier));
     }
+
+    if (studentId == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Malformed identifier %s", studentIdentifier));
+    }
     
     try {
+      Address address = pyramusClient.get(String.format("/students/students/%d/addresses/%d", studentId, addressId), Address.class);
+      if (address == null) {
+        throw new SchoolDataBridgeInternalException(String.format("Address %d of student %d not found", addressId, studentId));
+      }
+      address.setStreetAddress(street);
+      address.setPostalCode(postalCode);
+      address.setCity(city);
+      address.setCountry(country);
+      pyramusClient.put(String.format("/students/students/%d/addresses/%s", studentId, addressId), address);
     } catch (PyramusRestClientUnauthorizedException purr) {
       throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
     }
-    
   }
 }

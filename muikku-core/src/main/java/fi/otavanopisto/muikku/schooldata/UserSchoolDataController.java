@@ -293,10 +293,20 @@ public class UserSchoolDataController {
     
     return null;
   }
+  
+  public void updateUser(User user) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        schoolDataBridge.updateUser(user);
+      }
+    }
+  }
 	
 	public void updateUserAddress(
-	    SchoolDataIdentifier addressIdentifier,
 	    SchoolDataIdentifier studentIdentifier,
+	    SchoolDataIdentifier addressIdentifier,
 	    String street,
 	    String postalCode,
 	    String city,
@@ -307,8 +317,8 @@ public class UserSchoolDataController {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
         schoolDataBridge.updateUserAddress(
-            addressIdentifier,
             studentIdentifier,
+            addressIdentifier,
             street,
             postalCode,
             city,
