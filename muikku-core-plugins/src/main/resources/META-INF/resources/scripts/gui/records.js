@@ -94,7 +94,6 @@
                   workspaceEntity.passed = assessment.passed;
                 }
               }
-              
               callback();
             }, this));
           }, this))
@@ -153,8 +152,7 @@
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, passed, evaluated, verbalAssessment) {
       this._clear();
-      this.element.addClass('loading');     
-
+      this.element.addClass('loading');
       mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
           if (workspaceMaterial) {
@@ -200,6 +198,7 @@
                 else {
                   renderDustTemplate('/records/records_item_open.dust', { 
                     assignments: assignments,
+                    workspaceEntityId : workspaceEntityId,
                     workspaceName : workspaceEntityName,
                     workspaceDescription : workspaceEntityDescription,
                     workspaceGrade: grade, 
@@ -235,10 +234,27 @@
       }
     },
     _onEvaluationClick: function(event){
-      var container = $(event.target).parents('.tr-task-evaluated').find('.content-container'); 
-      
-      container.toggle();
-      
+      var container = $(event.target).parents('.tr-task-evaluated').find('.content-container');
+      var materialContainer = $(container).find('.material');
+      if ($(materialContainer).attr('data-material-content')) {
+        var workspaceEntityId = $(materialContainer).attr('data-workspace-entity-id');
+        var workspaceMaterialId = $(materialContainer).attr('data-workspace-material-id');
+        mApi().workspace.workspaces.materials.compositeMaterialReplies
+          .read(workspaceEntityId, workspaceMaterialId, {userEntityId: this.options.userEntityId})
+          .callback($.proxy(function (err, replies) {
+            var fieldAnswers = {};
+            for (var i = 0, l = replies.answers.length; i < l; i++) {
+              var answer = replies.answers[i];
+              var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+              fieldAnswers[answerKey] = answer.value;
+            }
+            $('[data-grades]').muikkuMaterialLoader('loadMaterial', $(materialContainer)[0], fieldAnswers);
+            container.toggle();
+          }, this));
+      }
+      else {
+        container.toggle();
+      }
     },    
     _load: function(){
       this.element.empty();      
@@ -258,6 +274,10 @@
     $('[data-grades]').records({
       'userEntityId': MUIKKU_LOGGED_USER_ID,
       'studentIdentifier': MUIKKU_LOGGED_USER
+    }).muikkuMaterialLoader({
+      prependTitle: false,
+      readOnlyFields: true,
+      fieldlessMode: true
     });
     $('[data-files]').recordFiles({
     });
