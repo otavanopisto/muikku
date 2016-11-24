@@ -31,46 +31,50 @@
     
     <ui:insert name="of-navigation">
 	    <nav class="of-navigation">
-	      <div class="of-navigation-wrapper flex-row flex-align-items-center">
-		      <div class="of-site-logo"></div>
-		      <ul class="of-navigation-container flex-row flex-align-items-center flex-justify-content-start">
-		        <li class="of-navigation-item">
-		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.studying']}</a>
-		        </li>
-		        <li class="of-navigation-item">
-		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.news']}</a>
-		        </li>
-		        <li class="of-navigation-item">
-		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.otavanOpisto']}</a>
-		        </li>
-		        <li class="of-navigation-item">
-		          <a href="#" class="of-navigation-item-link">#{i18n.text['plugin.navigation.link.contact']}</a>
-		        </li>
-		        <li class="of-navigation-item">
-		          <a href="#" class="of-navigation-item-link highlight">#{i18n.text['plugin.navigation.link.openMaterials']}</a>
-		        </li>
-		      </ul>
-		      <div class="of-site-login">
-		        <div class="login">
-              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-              </a>
-            </div>
-            <div class="forgotpassword">
-              <a href="#" class="forgotpassword-link">
-                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-              </a>
-            </div>
+	      <div class="of-navigation-wrapper">
+		      <div class="of-site-logo md-flex-hide sm-flex-hide"></div>
+		      <div class="of-site-links">
+			      <ul class="of-links-container">
+			        <li class="of-link-item">
+			          <a href="#"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+			        </li>
+			        <li class="of-link-item">
+			          <a href="#"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+			        </li>
+			        <li class="of-link-item">
+			          <a href="#"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+			        </li>
+			        <li class="of-link-item">
+			          <a href="#"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
+			        </li>
+			        <li class="of-link-item">
+			          <a href="#" class="highlight"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
+			        </li>
+			      </ul>
 		      </div>
-		      <div class="of-site-locale">
-		        <div class="selected-language">EN</div>
-            <h:form>
-              <div class="language-selection-container" data-visibility-status="hidden">
-                <ui:repeat value="#{i18n.languages}" var="locale">
-                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
-                </ui:repeat>
-              </div>
-            </h:form>
+		      <div class="of-site-secondary-links">
+			      <div class="of-site-login">
+			        <div class="login">
+	              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+	                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+	              </a>
+	            </div>
+	            <div class="forgotpassword">
+	              <a href="#" class="forgotpassword-link">
+	                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+	              </a>
+	            </div>
+			      </div>
+			      <div class="of-site-locale">
+			        <div class="selected-language">EN</div>
+	            <h:form>
+	              <div class="language-selection-container" data-visibility-status="hidden">
+	                <ui:repeat value="#{i18n.languages}" var="locale">
+	                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+	                </ui:repeat>
+	              </div>
+	            </h:form>
+			      </div>
 		      </div>
 	      </div>
 	    </nav>
@@ -78,9 +82,9 @@
 	  
 	  <ui:insert name="of-header">
 	    <header class="of-header">
-	      <div class="of-header-wrapper flex-row flex-align-items-center flex-justify-content-center">
+	      <div class="of-header-wrapper">
 	      
-	        <div class="of-header-application-buble-wrapper lg-flex-cell12-4">
+	        <div class="of-header-application-buble-wrapper">
 		        <div class="of-header-application-buble">
 	            <div class="application-title">#{i18n.text['plugin.header.studentApplicationBuble.title']}</div>
 	            <div class="application-description">#{i18n.text['plugin.header.studentApplicationBuble.description']}</div>
@@ -88,13 +92,9 @@
 	          </div>
 	        </div>
 	        
-		      <div class="of-header-site-info-wrapper lg-flex-cell12-4">
+		      <div class="of-header-site-info-wrapper">
 		        <div class="of-header-site-info">
-		        
-		          <div class="site-info-logo-wrapper">
-		            <div class="site-info-logo-glow"></div>
-		            <div class="site-info-logo"></div>
-		          </div>
+		          <div class="site-info-logo"></div>
 	            <div class="site-info-organization">Otavan Opiston</div>
 	            <div class="site-info-name">
 	              <div class="site-info-name-firstpart">Muikku</div>
@@ -104,7 +104,7 @@
 	          </div>
 		      </div>
 		      
-		      <div class="of-header-open-materials-buble-wrapper lg-flex-cell12-4">
+		      <div class="of-header-open-materials-buble-wrapper">
 			      <div class="of-header-open-materials-buble">
 			        <div class="open-materials-title">#{i18n.text['plugin.header.openMaterialsBuble.title']}</div>
 	            <div class="open-materials-description">#{i18n.text['plugin.header.openMaterialsBuble.description']}</div>
