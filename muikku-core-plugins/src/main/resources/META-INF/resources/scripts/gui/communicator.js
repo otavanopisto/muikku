@@ -1302,7 +1302,7 @@
                 $.each(message.recipients,  $.proxy(function (index, recipient) {
                   var recipientFullName = recipient.firstName + " " + recipient.lastName;
                   
-                  if (recipient.userId != message.senderId) {
+                  if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
                     this._addRecipient('USER', recipient.userId, recipientFullName);
                   }
                 }, this));
