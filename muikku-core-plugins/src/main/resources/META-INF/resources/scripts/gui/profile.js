@@ -58,6 +58,7 @@
                       }
                       var municipality = $(that).find('input[name="municipality"]').val();
                       if (municipality && municipality !== "") {
+                        student.municipality = municipality;
                         mApi().user.students.update(MUIKKU_LOGGED_USER, student).callback(function (err, student) {
                           if (err) {
                             $('.notification-queue').notificationQueue('notification', 'error', err);
