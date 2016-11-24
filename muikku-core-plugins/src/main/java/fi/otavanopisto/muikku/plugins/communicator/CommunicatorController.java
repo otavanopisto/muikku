@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -37,7 +36,6 @@ import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageRecipi
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.otavanopisto.muikku.plugins.communicator.dao.CommunicatorUserLabelDAO;
-import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
@@ -92,9 +90,6 @@ public class CommunicatorController {
   @Inject
   private CommunicatorMessageRecipientWorkspaceGroupDAO communicatorMessageRecipientWorkspaceGroupDAO;
   
-  @Inject
-  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
-
   private String clean(String html) {
     Document doc = Jsoup.parseBodyFragment(html);
     doc = new Cleaner(
@@ -153,7 +148,6 @@ public class CommunicatorController {
       if (!recipientIds.contains(recipient.getId())) {
         recipientIds.add(recipient.getId());
         communicatorMessageRecipientDAO.create(message, recipient, null);
-        communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
       }
     }
     
@@ -171,7 +165,6 @@ public class CommunicatorController {
               if (!recipientIds.contains(recipient.getId())) {
                 recipientIds.add(recipient.getId());
                 communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
-                communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
               }
             }
           }
@@ -195,7 +188,6 @@ public class CommunicatorController {
               if (!recipientIds.contains(recipient.getId())) {
                 recipientIds.add(recipient.getId());
                 communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
-                communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
               }
             }
           }
@@ -217,7 +209,6 @@ public class CommunicatorController {
               if (!recipientIds.contains(recipient.getId())) {
                 recipientIds.add(recipient.getId());
                 communicatorMessageRecipientDAO.create(message, recipient, groupRecipient);
-                communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getId()));
               }
             }
           }
@@ -253,10 +244,26 @@ public class CommunicatorController {
     return communicatorMessageRecipientDAO.findByMessageAndRecipient(communicatorMessage, recipient);
   }
 
+  /**
+   * Lists only the individual message recipients
+   * 
+   * @param communicatorMessage message of which to list the recipients for
+   * @return a list of recipients
+   */
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
     return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
   }
 
+  /**
+   * Lists all CommunicatorMessageRecipients, no matter if they are added by group or as individuals
+   * 
+   * @param communicatorMessage message of which to list the recipients for
+   * @return a list of recipients
+   */
+  public List<CommunicatorMessageRecipient> listAllCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
+    return communicatorMessageRecipientDAO.listByMessageIncludeGroupRecipients(communicatorMessage);
+  }
+    
   public List<CommunicatorMessageRecipientUserGroup> listCommunicatorMessageUserGroupRecipients(CommunicatorMessage communicatorMessage) {
     return communicatorMessageRecipientUserGroupDAO.listByMessage(communicatorMessage);
   }

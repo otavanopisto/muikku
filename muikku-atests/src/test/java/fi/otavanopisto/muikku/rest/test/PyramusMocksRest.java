@@ -602,7 +602,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
     Long creatorId = 1l;
     Long groupId = 2l;
     
-    StudentGroup studentGroup = new StudentGroup(groupId, "Group1", "", begin, creatorId, begin, creatorId, begin, null, false);
+    StudentGroup studentGroup = new StudentGroup(groupId, "Group1", "", begin, creatorId, begin, creatorId, begin, null, false, false);
     StudentGroup[] studentGroups = new StudentGroup[] { studentGroup };
     
     stubFor(get(urlEqualTo("/1/students/studentGroups"))

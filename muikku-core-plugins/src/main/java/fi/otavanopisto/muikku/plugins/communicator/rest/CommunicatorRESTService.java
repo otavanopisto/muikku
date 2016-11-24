@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
@@ -124,6 +125,9 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @Inject
   private CommunicatorRESTModels restModels;
+  
+  @Inject
+  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
   
   @GET
   @Path ("/items")
@@ -435,9 +439,21 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
     
+    sendNewMessageNotifications(message);
+    
     return Response.ok(
       restModels.restFullMessage(message)
     ).build();
+  }
+
+  private void sendNewMessageNotifications(CommunicatorMessage message) {
+    List<CommunicatorMessageRecipient> recipients = communicatorController.listAllCommunicatorMessageRecipients(message);
+    
+    for (CommunicatorMessageRecipient recipient : recipients) {
+      // Don't notify the sender in case he sent message to himself
+      if (recipient.getRecipient() != message.getSender())
+        communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getRecipient()));
+    }
   }
 
   @POST
@@ -580,6 +596,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, userGroupRecipients, workspaceStudentRecipients, workspaceTeacherRecipients, categoryEntity, 
         newMessage.getCaption(), newMessage.getContent(), tagList);
 
+    sendNewMessageNotifications(message);
+    
     return Response.ok(
       restModels.restFullMessage(message)
     ).build();
