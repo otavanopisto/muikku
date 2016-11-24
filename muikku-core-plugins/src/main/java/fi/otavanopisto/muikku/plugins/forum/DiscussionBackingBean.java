@@ -41,7 +41,10 @@ public class DiscussionBackingBean {
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (EnvironmentForumArea forumArea : forumAreas) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea)));
+      AreaPermission areaPermission = new AreaPermission(
+          sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES, forumArea),
+          sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea));
+      areaPermissions.put(forumArea.getId(), areaPermission );
     }
     
     try {
@@ -66,7 +69,8 @@ public class DiscussionBackingBean {
   
   public static class AreaPermission {
     
-    public AreaPermission(Boolean removeThread) {
+    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+      this.editMessages = editMessages;
       this.removeThread = removeThread;
     }
 
@@ -74,7 +78,12 @@ public class DiscussionBackingBean {
       return removeThread;
     }
     
-    private Boolean removeThread;
+    public Boolean getEditMessages() {
+      return editMessages;
+    }
+
+    private final Boolean editMessages;
+    private final Boolean removeThread;
   }
   
 }
