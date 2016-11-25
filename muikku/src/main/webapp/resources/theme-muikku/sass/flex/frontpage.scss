@@ -414,10 +414,9 @@ h2.frontpage-section-title {
 // VIDEOS SECTION
 
 .frontpage-videos {
-  background: #000; // REMOVE THIS
   border-radius: 3px;
   flex: 1 1 calc(100% - 20px);
-  min-height: 600px; // REMOVE THIS
+  max-width: calc(100% - 20px);
 }
 
 // NEWS SECTION
@@ -432,6 +431,7 @@ h2.frontpage-section-title {
 
 .frontpage-images {
   flex: 1 1 calc(50% - 20px);
+  max-width: calc(100% - 20px);
 }
 
 .frontpage-posts {
@@ -447,44 +447,117 @@ footer.of-footer {
 
 // CAROUSEL
 
-.carousel {
+.carousel-videos-wrapper {
   
-  .carousel-image {
+  .carousel-video-container {
+  
+    .carousel-video.ar169 { // Aspect Ratio 16:9
+      position: relative;
+      padding-bottom: 56.25%;
+      padding-top: 30px;
+      height: 0;
+      overflow: hidden;
+    }
     
+    .carousel-video.ar43 { // Aspect Ratio 4:3
+      position: relative;
+      padding-bottom: 75%;
+      padding-top: 30px;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .carousel-video.ar11 { // Aspect Ratio 1:1
+      position: relative;
+      padding-bottom: 100%;
+      padding-top: 30px;
+      height: 0;
+      overflow: hidden;
+    }
+    
+    .carousel-video iframe,  
+    .carousel-video object,  
+    .carousel-video embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .carousel-description {
+    
+    }
+  
   }
   
-  .carousel-video {
-    
-  }
+}
+
+.carousel-images-wrapper {
+
+  .carousel-image-container {
   
-  .carousel-description {
+    .carousel-image {
     
+    }
+    
+    .carousel-description {
+    
+    }
+  
   }
   
 }
 
 // CAROUSEL CONTROLS
 
-.carousel-controls-wrapper {
+.carousel-video-controls-wrapper,
+.carousel-images-controls-wrapper {
   margin: 10px;  
   width: calc(100% - 20px);
 }
 
-.carousel-controls {
+ul.carousel-video-controls {
   @include flexbox;
   justify-content: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
   
-  .controls-dot {
-    background: $of-carousel-dot-background-color;
-    border-radius: 100%;
-    height:13px;
-    margin: 0 10px;
-    width:13px;
+  li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  
+    button {
+      background: $of-carousel-dot-background-color;
+      border: 0;
+      border-radius: 100%;
+      cursor: pointer;
+      height: 15px;
+      font-size: 0;
+      list-style-type: none;
+      margin: 0 10px;
+      outline: none;
+      padding: 0;
+      transition: background 0.3s ease-in-out;
+      width: 15px;
+      
+      &:hover {
+        background: $of-carousel-active-dot-background-color;
+      }
+      
+    }
     
-    &.active {
-      background: $of-carousel-active-dot-background-color;
+    &.slick-active {
+    
+      button {
+        background: $of-carousel-active-dot-background-color;
+      }
+    
     }
     
   }
   
 }
+
