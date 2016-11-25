@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -61,6 +62,9 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private SessionController sessionController;
@@ -754,12 +758,28 @@ public class EvaluationRESTService extends PluginRESTService {
       GradingScale gradingScale = gradingController.findGradingScale(
           evaluation.getGradingScaleSchoolDataSource(),
           evaluation.getGradingScaleIdentifier());
-      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
-          gradingScale,
-          evaluation.getGradeSchoolDataSource(),
-          evaluation.getGradeIdentifier());
-      grade = gradingScaleItem.getName();
-      passingGrade = gradingScaleItem.isPassingGrade();
+      if (gradingScale == null) {
+        logger.severe(String.format("Grading scale %s-%s not found for evaluation %d",
+            evaluation.getGradingScaleSchoolDataSource(),
+            evaluation.getGradingScaleIdentifier(),
+            evaluation.getId()));
+      }
+      else {
+        GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
+            gradingScale,
+            evaluation.getGradeSchoolDataSource(),
+            evaluation.getGradeIdentifier());
+        if (gradingScaleItem == null) {
+          logger.severe(String.format("Grading scale item %s-%s not found for evaluation %d",
+              evaluation.getGradeSchoolDataSource(),
+              evaluation.getGradeIdentifier(),
+              evaluation.getId()));
+        }
+        else {
+          grade = gradingScaleItem.getName();
+          passingGrade = gradingScaleItem.isPassingGrade();
+        }
+      }
     }
 
     return new WorkspaceMaterialEvaluation(
