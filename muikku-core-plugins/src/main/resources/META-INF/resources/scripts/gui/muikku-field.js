@@ -159,12 +159,12 @@
           .text(getLocaleText('plugin.workspace.materialsLoader.showAnswers'))
           .click($.proxy(this._onShowAnswersButtonClick, this));
         
-        $("<div>")
-          .addClass("correct-answers-count-container")
-          .insertAfter(buttonWrapper);
-        
         this.element.on('fieldAnswerSaved', '.muikku-field', $.proxy(this._onFieldAnswerSaved, this));
       }
+
+      $("<div>")
+        .addClass("correct-answers-count-container")
+        .appendTo(this.element);
     },
     
     applyState: function (readonly) {
