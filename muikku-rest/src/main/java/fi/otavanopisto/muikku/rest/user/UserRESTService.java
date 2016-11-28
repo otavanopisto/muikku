@@ -946,12 +946,12 @@ public class UserRESTService extends AbstractRESTService {
 					UserEntity userEntity = userEntityController
 					    .findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
 					
-				  if (userEntity != null) {
+          if (userEntity != null) {
 					  String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
 					  Date studyStartDate = getDateResult(o.get("studyStartDate"));
 					  Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
 	          
-					  ret.add(new fi.otavanopisto.muikku.rest.model.User(
+            ret.add(new fi.otavanopisto.muikku.rest.model.User(
               userEntity.getId(), 
               (String) o.get("firstName"),
               (String) o.get("lastName"), 
