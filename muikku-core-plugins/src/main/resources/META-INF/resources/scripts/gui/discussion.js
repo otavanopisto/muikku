@@ -10,7 +10,7 @@
     loadThreadDetails: function(thread, callback) {
       var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
       
-      async.parallel(tasks, function (err, results) {
+      async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           callback(err);
         } else {
@@ -43,7 +43,7 @@
             canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
           }));
         }
-      });
+      }, this));
     },
     
     loadThreadRepliesDetails: function(replies, callback) {
@@ -56,11 +56,11 @@
         return this._createUserInfoLoad(reply.creator);
       }, this));
       
-      async.parallel(calls, function (err, users) {
+      async.parallel(calls, $.proxy(function (err, users) {
         if (err) {
           callback(err);
         } else {
-          callback(null, $.map(users, function (user, index) {
+          callback(null, $.map(users, $.proxy(function (user, index) {
             var reply = replies[index];
 
             // TODO: remove pretty dates
@@ -90,9 +90,9 @@
               isReply: reply.parentReplyId ? true : false,
               replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
             }; 
-          }));
+          }, this)));
         }
-      });
+      }, this));
     },
     
     _createUserInfoLoad: function (userEntityId) {
