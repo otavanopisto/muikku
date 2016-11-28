@@ -57,4 +57,8 @@ public interface User extends SchoolDataEntity {
   public boolean hasEvaluationFees();
   
   public String getCurriculumIdentifier();
+  
+  public void setNickName(String nickName);
+
+  public String getNickName();  
 }
