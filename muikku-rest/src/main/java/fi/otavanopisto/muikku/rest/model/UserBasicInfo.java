@@ -7,7 +7,8 @@ public class UserBasicInfo {
 
   public UserBasicInfo(Long id,
               String firstName,
-              String lastName, 
+              String lastName,
+              String nickName, 
               String studyProgrammeName,
               boolean hasImage, 
               boolean hasEvaluationFees,
@@ -16,6 +17,7 @@ public class UserBasicInfo {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.nickName = nickName;
     this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
     this.hasEvaluationFees = hasEvaluationFees;
@@ -78,9 +80,18 @@ public class UserBasicInfo {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
+  public String getNickName() {
+    return nickName;
+  }
+
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
+  private String nickName;
   private String studyProgrammeName;
   private boolean hasImage;
   private boolean hasEvaluationFees;

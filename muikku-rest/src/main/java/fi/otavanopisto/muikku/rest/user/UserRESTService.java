@@ -321,7 +321,7 @@ public class UserRESTService extends AbstractRESTService {
   @GET
   @Path("/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
-  public Response findUser(@Context Request request, @PathParam("ID") String id) {
+  public Response findStudent(@Context Request request, @PathParam("ID") String id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -952,15 +952,19 @@ public class UserRESTService extends AbstractRESTService {
 					  Date studyStartDate = getDateResult(o.get("studyStartDate"));
 	          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
 	          
-						ret.add(new fi.otavanopisto.muikku.rest.model.User(userEntity
-								.getId(), (String) o.get("firstName"),
-								(String) o.get("lastName"), hasImage,
-								(String) o.get("nationality"), (String) o
-										.get("language"), (String) o
-										.get("municipality"), (String) o
-										.get("school"), emailAddress,
-										studyStartDate,
-										studyTimeEnd));
+						ret.add(new fi.otavanopisto.muikku.rest.model.User(
+						    userEntity.getId(), 
+						    (String) o.get("firstName"),
+								(String) o.get("lastName"), 
+								(String) o.get("nickName"), 
+								hasImage,
+								(String) o.get("nationality"),
+								(String) o.get("language"), 
+								(String) o.get("municipality"), 
+								(String) o.get("school"), 
+								emailAddress,
+								studyStartDate,
+								studyTimeEnd));
 					}
 				}
 
@@ -1055,7 +1059,7 @@ public class UserRESTService extends AbstractRESTService {
       // TODO: User image
       boolean hasImage = false;
       return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
           .cacheControl(cacheControl)
           .tag(tag)
           .build();
@@ -1141,7 +1145,7 @@ public class UserRESTService extends AbstractRESTService {
 		Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
 		
 		return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-				user.getFirstName(), user.getLastName(), hasImage,
+				user.getFirstName(), user.getLastName(), user.getNickName(), hasImage,
 				user.getNationality(), user.getLanguage(),
 				user.getMunicipality(), user.getSchool(), emailAddress,
 				startDate, endDate);
