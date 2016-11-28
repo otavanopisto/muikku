@@ -74,7 +74,10 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (WorkspaceForumArea forumArea : forumController.listWorkspaceForumAreas(workspaceEntity)) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, workspaceEntity)));
+      AreaPermission areaPermission = new AreaPermission(
+          sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity),
+          sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity));
+      areaPermissions.put(forumArea.getId(), areaPermission);
     }
 
     canCreateArea = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity);
@@ -135,7 +138,8 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
 
   public static class AreaPermission {
     
-    public AreaPermission(Boolean removeThread) {
+    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+      this.editMessages = editMessages;
       this.removeThread = removeThread;
     }
 
@@ -143,7 +147,13 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
       return removeThread;
     }
     
-    private Boolean removeThread;
+    public Boolean getEditMessages() {
+      return editMessages;
+    }
+
+    private final Boolean editMessages;
+    private final Boolean removeThread;
   }
-    private String workspaceName;
+  
+  private String workspaceName;
 }
