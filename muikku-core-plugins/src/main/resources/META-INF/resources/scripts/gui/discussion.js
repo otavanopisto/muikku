@@ -17,16 +17,28 @@
           var user = results[0];
           var area = results[1];
           var d = moment(thread.created).toDate();
-          var ud = moment(thread.updated).toDate();          
+          var ud = moment(thread.updated).toDate();
+          
+          var creatorFullName;
+          
+          if (this.options.showFullNamePermission) {
+            creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+          } else {
+            if (user.nickName)
+              creatorFullName = user.nickName + ' ' + user.lastName;
+            else
+              creatorFullName = user.firstName + ' ' + user.lastName;
+          }
+          
           // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
+            creatorFullName: creatorFullName,
             prettyDate: formatDate(d) + ' ' + formatTime(d),
             prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
             prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
             userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1),
+            nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
             canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
           }));
@@ -55,14 +67,25 @@
             var d = moment(reply.created).toDate();
             var ld = moment(reply.lastModified).toDate();
             
+            var creatorFullName;
+            
+            if (this.options.showFullNamePermission) {
+              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+            } else {
+              if (user.nickName)
+                creatorFullName = user.nickName + ' ' + user.lastName;
+              else
+                creatorFullName = user.firstName + ' ' + user.lastName;
+            }
+            
             return {
-              creatorFullName: user.firstName + ' ' + user.lastName,
+              creatorFullName: creatorFullName,
               isEdited: reply.lastModified == reply.created ? false : true,
               canEdit: reply.creator === MUIKKU_LOGGED_USER_ID ? true : false,
               prettyDate: formatDate(d) + ' ' + formatTime(d),
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
-              nameLetter: user.firstName.substring(0,1),
+              nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
               replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
             }; 
