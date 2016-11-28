@@ -12,6 +12,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
@@ -60,6 +62,12 @@ public abstract class AbstractIntegrationTest {
         }
       }
     }
+  }
+  
+  public Date date(int year, int month, int date) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(year, month, date, 0, 0, 0);
+    return calendar.getTime();
   }
   
   @After
