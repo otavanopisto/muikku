@@ -21,13 +21,13 @@
           
           var creatorFullName;
           
-          if (this.options.showFullNamePermission) {
-            creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
-          } else {
-            if (user.nickName)
-              creatorFullName = user.nickName + ' ' + user.lastName;
+          if (user.nickName) {
+            if (this.options.showFullNamePermission)
+              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
             else
-              creatorFullName = user.firstName + ' ' + user.lastName;
+              creatorFullName = user.nickName + ' ' + user.lastName;
+          } else {
+            creatorFullName = user.firstName + ' ' + user.lastName;
           }
           
           // TODO: remove prettyDates...
@@ -69,14 +69,14 @@
             var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
             
             var creatorFullName;
-            
-            if (this.options.showFullNamePermission) {
-              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
-            } else {
-              if (user.nickName)
-                creatorFullName = user.nickName + ' ' + user.lastName;
+
+            if (user.nickName) {
+              if (this.options.showFullNamePermission)
+                creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
               else
-                creatorFullName = user.firstName + ' ' + user.lastName;
+                creatorFullName = user.nickName + ' ' + user.lastName;
+            } else {
+              creatorFullName = user.firstName + ' ' + user.lastName;
             }
             
             return {
