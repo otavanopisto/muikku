@@ -134,8 +134,8 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
             WorkspaceAssessment assessment = workspaceAssessments.get(0); //TODO: loop and find latest
             Date assessmentDate = assessment.getDate();
             if (assessmentDate != null && assessmentDate.before(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant()))) {
-              GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleSchoolDataSource(), assessment.getGradingScaleIdentifier());
-              GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeSchoolDataSource(), assessment.getGradeIdentifier());
+              GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleIdentifier());
+              GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeIdentifier());
               
               if (!grade.isPassingGrade()) {  
                 WorkspaceAssessmentRequest latestAssesmentRequest = null;

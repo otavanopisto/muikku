@@ -1,5 +1,5 @@
-@import "_custom-ckeditor-styles.scss";
-@import "_fonts.scss";
+@import "custom-ckeditor-styles";
+@import "fonts";
 
 body {
   font-family:'Open Sans', Arial, sans-serif;
@@ -277,10 +277,12 @@ mark[data-muikku-word-definition] {
     font-weight: 300;
     left: -10px;
     line-height: 1.5em;
+    margin: 10px 0 0;
     max-width: 400px;
     min-width: 200px;
     padding: 5px 10px;
     position: absolute;
+    z-index: 20;
   }
 
 }

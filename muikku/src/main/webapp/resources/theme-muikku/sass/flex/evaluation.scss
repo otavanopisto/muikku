@@ -1,18 +1,24 @@
-@import "_vars";
-@import "_vars_backup";
-@import "_styles";
-@import "_custom-ckeditor-styles";
-@import "_connect-field";
-@import "_organizer-field";
-@import "_sorter-field";
-@import "_audio-field";
-@import "_file-field";
-@import "_jquery.datepicker";
-@import "_evaluation_material_styles"; 
-@import "_correct_answers"; 
-@import "_ckeditor_theme.scss";
-@import "_draft";
-@import "_dialog";
+
+// This is used also in ToR 
+
+@import "vars";
+@import "vars_backup";
+@import "styles";
+@import "custom-ckeditor-styles";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "audio-field";
+@import "file-field";
+@import "correct_answers"; 
+@import "jquery.datepicker";
+@import "evaluation_material_styles_backup";
+@import "ckeditor_theme";
+@import "draft";
+@import "dialog";
+
+
+
 
 body.evaluation {
   background: none;
@@ -791,7 +797,7 @@ body.evaluation {
                 .evaluation-assignment-title-container {
                 
                   > h2 {
-                    border-left: 5px solid $evaluatedAssignment;
+                    border-left: 5px solid $assignment;
                   }
                   
                 }
@@ -807,7 +813,7 @@ body.evaluation {
                 .evaluation-assignment-title-container {
                 
                   > h2 {
-                    border-left: 5px solid $exerciseAssignment;
+                    border-left: 5px solid $exercise;
                   }
                   
                 }

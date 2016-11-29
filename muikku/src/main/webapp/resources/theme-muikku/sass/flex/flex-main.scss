@@ -1,15 +1,15 @@
-@import "_fonts";
-@import "_vars";
-@import "_vars_backup";
-@import "_styles";
-@import "_forms";
-@import "_animations";
-@import "_dialog";
-@import "_flex-dialog";
-@import "_buttons";
-@import "_notif-queue";
-@import "_connectionlost";
-@import "_environment_print";
+@import "fonts";
+@import "vars";
+@import "vars_backup";
+@import "styles";
+@import "forms";
+@import "animations";
+@import "dialog";
+@import "flex-dialog";
+@import "buttons";
+@import "notif-queue";
+@import "connectionlost";
+@import "environment_print";
 
 html {
   height: 100%;
@@ -19,15 +19,15 @@ html {
 body {
   margin: 0;
   padding: 0 0 50px;
-  font-family: 'Open Sans', Arial, sans-serif;
+  font-family: $environment-font-family;
   font-size: 14px;
   font-weight: 300;
   line-height: 1.5em;
   background-image: url('/gfx/main-background.png'), url('/gfx/main-background-slice.png');
-  background-color: #f6fcff;
+  background-color: $body-background-color;
   background-repeat: no-repeat,repeat-x;
   background-position: top center, top left;
-  color: $content;
+  color: $body-font-color;
 }
 
 .disable-page-scrolling {
@@ -36,7 +36,7 @@ body {
 }
 
 .ui-widget-overlay {
-  background: #000;
+  background: $environment-widget-overlay-background-color;
   opacity: 0.5;
   height: 100%;
   left: 0;
@@ -47,7 +47,7 @@ body {
 
 [class^="icon-"] span, [class*=" icon-"] span {
   display: inline-block;
-  font-family: 'Open Sans', Arial, sans-serif !important;
+  font-family: $environment-font-family !important;
   padding-left: 4px;
   vertical-align: top;
 }
@@ -61,7 +61,7 @@ body {
   max-width: $siteWidth;
   margin: 0 auto;
   height: 120px;
-  color: #fff;
+  color: $environment-alt-font-color;
   position: relative;  
 }
 
@@ -80,13 +80,13 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  box-shadow: -5px 0 5px rgba(0, 0, 0, 0.2);
+  box-shadow: $environment-bottom-bar-box-shadow;
   z-index: 999;
   min-width: 310px;
   padding:0 5px;
   
   .footer-custom-bg {
-    background: #485c64;
+    background: $environment-bottom-bar-background-color;
     bottom: 0;
     left: 0;
     position: absolute;
@@ -106,7 +106,7 @@ body {
     left: 0;
     bottom: 0;
     right: 0;
-    background: $btBarBgr;
+    background: $environment-bottom-bar-background-color;
     z-index: 1;
   }
   
@@ -125,7 +125,7 @@ body {
 #helpdesk {
   font-weight: 400;
   font-size: 14px;
-  color: $footerText;
+  color: $environment-bottom-bar-font-color;
 }
 
 #guides {
@@ -133,7 +133,7 @@ body {
   font-size: 14px;
   
   a {
-    color: $footerLink;
+    color: $environment-bottom-bar-link-color;
   }
   
 }
@@ -155,8 +155,8 @@ body {
   padding: 5px 0 0;
   
   .forgotpassword-link {
-    color: $forgotPasswordLink;
-    text-shadow: 0 0 1px #000;
+    color: $environment-sign-in-link-color;
+    text-shadow: $environment-sign-in-font-shadow;
   }
   
 }
@@ -166,7 +166,7 @@ body {
   float: right;
   position: relative;
   margin: 0 10px 0 0;
-  background: #2e72a0;
+  background: $environment-language-selection-background-color;
   height: 48px;
   width: 48px;
   box-sizing: border-box;
@@ -176,7 +176,7 @@ body {
   text-align: center;
   padding: 0;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(255,255,255,0.5);
+  box-shadow: $environment-language-selection-shadow;
   transition: border-radius 0.1s ease-in-out;
   
   &:hover,
@@ -184,17 +184,17 @@ body {
   &:active {
     border-radius: 5px;
     box-shadow: none;
-    background: #fff;
+    background: $environment-language-selection-active-background-color;
     overflow: visible;
     
     .language-container {
       position: absolute;
-      background: #fff; 
+      background: $environment-language-selection-language-background-color; 
       border-radius: none;
       border-radius: 5px;
       
       a {
-        color: #569bca;
+        color: $environment-language-selection-language-link-color;
         line-height: 1;
         
         &:first-of-type {
@@ -208,8 +208,8 @@ body {
         }
         
         &:hover {
-          color: #fff;
-          background: #2e72a0;
+          color: $environment-language-selection-language-link-hover-color;
+          background: $environment-language-selection-language-background-hover-color;
           text-decoration: none;
         }
         
@@ -222,7 +222,7 @@ body {
   a {  
     text-decoration: none; 
     padding: 12px 10px;  
-    color: #fff;   
+    color: $environment-language-selection-link-color;   
     font-size: 22px;
     font-weight: 300;
     display: block;
@@ -239,7 +239,7 @@ body {
   font-weight: 400;
 
   .lu-picture {
-    border: 2px solid #fff;
+    border: 2px solid $environment-logged-in-border-color;
     height: 48px;
     width: 48px; 
     position: relative;
@@ -250,14 +250,13 @@ body {
     margin: 0 5px 0 auto;
     z-index: 15;
     background-size: 100% auto;
-    border: 2px solid #fff;
     background-image: url('/gfx/default-user-picture.jpg');
     overflow: hidden;
   }
   
   .lu-info-container {
-    border: 2px solid #fff;
-    background: #fff;
+    border: 2px solid $environment-logged-in-border-color;
+    background: $environment-logged-in-background-color;
     height: 48px;
     display: inline-block;
     box-sizing: border-box;
@@ -266,7 +265,7 @@ body {
   
     .lu-user-name {
       @include no-select;
-      color: #3c77a0;
+      color: $environment-logged-in-font-color;
       text-transform: uppercase;
       min-width: 100px;
       padding: 13px 6px 14px 20px;
@@ -274,7 +273,7 @@ body {
       height: 1.5em;
       
       a {
-        color: #3c77a0;
+        color: $environment-logged-in-font-color;
         text-decoration: none;
       }
       
@@ -298,7 +297,7 @@ body {
     }
 
     a[class*="lu-action"] {
-      color: #3C77A0;
+      color: $environment-logged-in-font-color;
       font-size: 21px;
       text-decoration: none;
     }
@@ -313,17 +312,17 @@ body {
   min-width: 320px;
   z-index: 12;
   position: relative;
-  background: -moz-linear-gradient(top, rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
-  background: -webkit-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: -o-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: -ms-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: linear-gradient(to bottom, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -moz-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $environment-static-navigation-gradient-color-start), color-stop(66%, $environment-static-navigation-gradient-color-end));
+  background: -webkit-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
+  background: -o-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
+  background: -ms-linear-gradient(top, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
+  background: linear-gradient(to bottom, $environment-static-navigation-gradient-color-start 0%, $environment-static-navigation-gradient-color-end 66%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0);
 }
 
 .static-navigation-bg {
-  background: $naviBgColor;
+  background: $environment-static-navigation-background-color;
   position: absolute;
   left: 0;
   top: 0;
@@ -331,8 +330,8 @@ body {
   right: 0;
   opacity: 0.8;
   z-index: 13;
-  border-top: 1px solid $naviBorderTop;
-  border-bottom: 1px solid $naviBorderBottom;
+  border-top: 1px solid $environment-static-navigation-border-top-color;
+  border-bottom: 1px solid $environment-static-navigation-border-bottom-color;
 }
 
 #staticNavigation {
@@ -351,16 +350,16 @@ div[class*="dock-static-navi"] {
   margin-right: 15px;
   
   &.active-trail {
-    border-bottom: 3px solid #aae3f2;
+    border-bottom: 3px solid $environment-static-navigation-active-border-color;
     
     &:hover {
-      border-bottom: 3px solid #aae3f2;
+      border-bottom: 3px solid $environment-static-navigation-active-border-color;
     }
     
   }
   
   &:hover {
-    border-bottom: 3px solid #66aace;
+    border-bottom: 3px solid $environment-static-navigation-border-color;
   }
 }
 
@@ -368,7 +367,7 @@ div[class*='dock-static-navi-button'] > a,
 div[class*='dock-static-navi-button'] > div, 
 div[class*='dock-dynamic-navi-button'] > a {
   font-size: 40px;
-  color: #fff;
+  color: $environment-static-navigation-icon-color;
   text-decoration: none;
   @include iconShadow;
   padding: 5px 10px;
@@ -376,18 +375,18 @@ div[class*='dock-dynamic-navi-button'] > a {
   display: inline-block;
   
   &:hover {
-    @include iconShadow(rgba(255,255,190,0.8));
+    @include iconShadow(rgba(255, 255, 190, 0.8));
   }
   
 }
 
 /* Navigation Icons Notifier */
 .dock-notification {
-  background-color: #ff0000;
+  background-color: $environment-static-navigation-notifier-background-color;
   border-radius: 10px;
-  border:1px solid #fff;
+  border: 1px solid $environment-static-navigation-notifier-border-color;
   top: 11px;
-  color: #ffffff;
+  color: $environment-static-navigation-notifier-font-color;
   font-size: 15px;
   font-weight: bold;
   height: 16px;
@@ -405,8 +404,8 @@ main.content {
 
 /* After Personalization Box will be redesigned and moved to proper .scss*/
 .box {
-  box-shadow: 0 0 15px rgba(216, 230, 235, 0.5);
-  background: #fff;
+  box-shadow: $environment-content-box-shadow;
+  background: $environment-background-color;
   padding: 15px;
   height: 100%;
   box-sizing: border-box;
@@ -459,7 +458,7 @@ main.content {
 
 /* Headers */
 h1,h2,h3,h4,h5,h6 {
-  color: $header;
+  color: $environment-header-font-color;
   text-transform: uppercase;
   margin: 0 0 0.5em;
   font-weight: 300;
@@ -493,20 +492,16 @@ h6 {
 
 /* Page title for mainfunctions */
 h2.main-functionality-page-title {
-  color: #374145;
+  color: $environment-page-title-font-color;
   font-size: 22px;
   font-weight: 300;
   margin: 0;
   padding: 0 13px 13px;
-}
-
-.subtitle {
-  color: $subTitle;
-  font-weight: 400;
+  border-left:none;
 }
 
 a {
-  color: $link;
+  color: $environment-link-color;
   text-decoration: none;
   
   &:hover {
@@ -527,9 +522,9 @@ sup {
 }
 
 blockquote{
-  border-left: 5px solid #ccc;
+  border-left: 5px solid $environment-border-highlight-color;
   padding-left: 20px;  
 }
 
-@import "_mobile";
-@import "_tablet";
+@import "mobile";
+@import "tablet";

@@ -18,7 +18,9 @@ import javax.ws.rs.core.Response.Status;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
@@ -219,6 +221,31 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
     }
   }
 
+  @GET
+  @Path ("/userLabels/{USERLABELID}/messages/{COMMUNICATORMESSAGEID}")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserUnreadCommunicatorMessagesByMessageId( 
+      @PathParam ("USERLABELID") Long userLabelId,
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
+    
+    if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
+      CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+      
+      List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(userEntity, threadId, false);
+  
+      CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(userEntity, threadId, CommunicatorFolderType.LABEL, userLabel);
+      CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(userEntity, threadId, CommunicatorFolderType.LABEL, userLabel);
+      
+      return Response.ok(
+        restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+      ).build();
+    } else {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+  }
+  
   private boolean canAccessLabel(UserEntity userEntity, CommunicatorLabel label) {
     if (label instanceof CommunicatorUserLabel) {
       // No access if not logged in

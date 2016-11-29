@@ -1,0 +1,316 @@
+.eval-modal {
+  background: #fff;
+  left: 0;
+  height: 100%;
+  min-width: 320px;
+  overflow: auto;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 30;
+}
+
+.eval-modal-close {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 31;
+  
+  &:hover {
+    text-shadow: 0 0 15px #fff;
+  }
+  
+  &.icon-close-small {
+    color: #fff;
+    font-size: 30px;
+    height: 30px;
+    padding: 10px;
+    width: 30px;
+  }
+  
+}
+
+.eval-modal-assignment-close {
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 31;
+  
+  &:hover {
+    text-shadow: 0 0 15px #fff;
+  }
+  
+  &.icon-arrow-right {
+    border: 1px solid #d522c6;
+    border-radius: 100%;
+    color: #d522c6;
+    font-size: 16px;
+    height: 16px;
+    margin: 12px;
+    padding: 4px;
+    width: 16px;
+  }
+  
+}
+
+// STUDENT INFO & ASSIGNMENTS <section>
+.eval-modal-student-container {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 50%;
+  top: 0;
+}
+
+// WORKSPACE INFO & EVALUATION FORMS <section>
+.eval-modal-workspace-evaluate-container {
+  bottom: 0;
+  left: 50%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+// ASSIGNMENT EVALUATION FORM <section>
+.eval-modal-assignment-evaluate-container {
+  background: #fff;
+  bottom: 0;
+  display: none;
+  left: 100%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 50%;
+  z-index: 99999;
+}
+
+// STUDENT & WORKSPACE HEADER'S <header>
+.eval-modal-student-header,
+.eval-modal-evaluate-header {
+  background: #3786bf;
+  min-height: 30px;
+  padding: 10px 0;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+}
+
+// ASSIGNMENT EVALUATION HEADER <header>
+.eval-modal-assignment-evaluate-header {
+  background: #fff;
+  min-height: 30px;
+  padding: 10px 0;
+  position: relative;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.eval-modal-student-name,
+.eval-modal-workspace-name {
+  box-sizing: border-box;
+  color: #fff;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 1.5em;
+  overflow: hidden;
+  padding: 0 50px 0 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.eval-modal-assignment-title {
+  box-sizing: border-box;
+  color: #d522c6;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.5em;
+  overflow: hidden;
+  padding: 0 50px 0 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+  
+.eval-modal-assignment-content,
+.eval-modal-evaluate-workspace-content,
+.eval-modal-evaluate-assignment-content {
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+
+// EVALUATE FORM
+.evaluation-modal-evaluate-form {
+  
+  .cke {
+    border: 2px solid #abdbed;
+    box-shadow: none;
+    border-radius: 3px;
+  }
+  
+  label {
+    display: block;
+    margin: 0;
+    text-transform: uppercase;
+  }
+  
+  input[type="text"],
+  input[type="date"] {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 5px;
+  }
+  
+  textarea {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    padding: 5px;
+    width: 100%;
+  }
+  
+  select {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 14px;
+    padding: 0 5px;
+    
+    option {
+      padding: 5px 10px;
+    }
+    
+  }
+  
+}
+
+.evaluation-modal-evaluate-form-row {
+  margin: 5px 0 15px; 
+}
+
+.eval-modal-evaluate-buttonset {
+  padding: 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.eval-modal-evaluate-button {
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  padding: 8px 12px;
+  margin: 15px 0 0 15px;
+  
+  &.button-cancel {
+    background: #7391a7;
+  }
+  
+  &.button-evaluate-passing {
+    background: #27b91c;
+  }
+  
+  &.button-delete {
+    background: #d50b36;
+  }
+  
+  &.button-evaluate-nonpassing {
+    background: #ea7503;
+  }
+  
+}
+
+// ASSIGNMENTS & EXERCISES
+.assignment-wrapper {
+  border-bottom: 1px solid #f8f8f8;
+  padding: 8px 0;
+  position: relative;
+}
+
+.assignment-content {
+  font-size: 16px;
+}
+  
+.assignment-wrapper.assignment .assignment-title-wrapper {
+  border-left: 3px solid $assignment;
+  cursor: pointer;
+  padding: 2px 50px 2px 8px;
+}
+
+.assignment-wrapper.exercise .assignment-title-wrapper {
+  border-left: 3px solid $exercise;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+
+.assignment-title,
+.exercise-title {
+  font-size: 20px;
+  padding: 0 0 4px 0;  
+}
+
+.assignment-done,
+.assignment-evaluated,
+.assignment-grade {
+  font-size: 13px;
+  font-style: italic;
+  display: inline-block;
+  margin: 0 15px 0 0;
+}
+
+.assignment-done-label,
+.assignment-evaluated-label,
+.assignment-grade-label {
+  color: #27b91c;
+  font-weight: 400;
+  padding: 0 4px 0 0;
+}
+
+.assignment-done-data {
+
+}
+
+.assignment-notdone-label {
+  color: #000;
+  font-weight: 300;
+  padding: 0 4px 0 0;
+}
+
+.assignment-evaluate-button {
+  color: #fff;
+  background: #0099ff;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+  padding: 5px;
+  position: absolute;
+  right: 10px;
+  top: 18px;
+  text-align: center;
+  vertical-align: top;
+  z-index: 9;
+}
+
+.assignment-wrapper.exercise .assignment-evaluate-button {
+  display: none;
+}

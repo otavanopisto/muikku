@@ -32,7 +32,9 @@ public class WorkspaceMaterialReplyController {
   
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, 
       UserEntity userEntity, Long numberOfTries, Date created, Date lastModified) {
-    return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, null, null);
+    Date submitted = state == WorkspaceMaterialReplyState.SUBMITTED ? new Date() : null;
+    Date withdrawn = state == WorkspaceMaterialReplyState.WITHDRAWN ? new Date() : null;
+    return workspaceMaterialReplyDAO.create(workspaceMaterial, state, userEntity.getId(), numberOfTries, created, lastModified, submitted, withdrawn);
   }
   
   public WorkspaceMaterialReply createWorkspaceMaterialReply(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialReplyState state, UserEntity userEntity) {
@@ -61,6 +63,10 @@ public class WorkspaceMaterialReplyController {
       }
     }
     return workspaceMaterialReplies;
+  }
+  
+  public Long getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(Long userEntityId, List<WorkspaceMaterialReplyState> replyStates, List<WorkspaceMaterial> materials) {
+    return workspaceMaterialReplyDAO.countByUserAndStatesAndMaterials(userEntityId, replyStates, materials);
   }
   
   private void appendVisibleWorkspaceMaterials(List<WorkspaceMaterial> materials, WorkspaceNode workspaceNode) {

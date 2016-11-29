@@ -5,9 +5,10 @@ public class WorkspaceStaffMember {
   public WorkspaceStaffMember() {
   }
 
-  public WorkspaceStaffMember(String id, Long userEntityId, String firstName, String lastName) {
+  public WorkspaceStaffMember(String id, String userIdentifier, Long userEntityId, String firstName, String lastName) {
     super();
     this.id = id;
+    this.userIdentifier = userIdentifier;
     this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -45,7 +46,16 @@ public class WorkspaceStaffMember {
     this.lastName = lastName;
   }
 
+  public String getUserIdentifier() {
+    return userIdentifier;
+  }
+
+  public void setUserIdentifier(String userIdentifier) {
+    this.userIdentifier = userIdentifier;
+  }
+
   private String id;
+  private String userIdentifier;
   private Long userEntityId;
   private String firstName;
   private String lastName;

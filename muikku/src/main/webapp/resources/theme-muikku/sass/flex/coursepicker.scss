@@ -1,6 +1,6 @@
-@import "_vars.scss";
-@import "_animations.scss";
-@import "_styles.scss";
+@import "vars";
+@import "animations";
+@import "styles";
 
 /* Coursepicker (.cp-*) */
 
@@ -63,11 +63,11 @@
 }
 
 .cp-course-education-type {
-    background: $item-header-label-color none repeat scroll 0 0;
-    border-radius: 2px;
-    font-style: normal;
-    padding: 6px;
-    text-transform: uppercase;
+  background: $item-header-label-background-color none repeat scroll 0 0;
+  border-radius: 2px;
+  font-style: normal;
+  padding: 6px;
+  text-transform: uppercase;
 }
 
 .cp-course-details-close {

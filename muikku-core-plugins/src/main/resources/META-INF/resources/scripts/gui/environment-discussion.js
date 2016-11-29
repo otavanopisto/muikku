@@ -3,7 +3,7 @@
 
   var EnvironmentDiscussionIOController = function (options) {
     this._super = DiscussionIOController.prototype;
-    DiscussionIOController.call(this, arguments); 
+    DiscussionIOController.apply(this, arguments); 
   };
   
   $.extend(EnvironmentDiscussionIOController.prototype, DiscussionIOController.prototype, {
@@ -171,15 +171,22 @@
             .callback(callback);
         }
       }, this));
-    }
+    },
     
+    deleteThreadReply: function (areaId, threadId, replyId, callback) {
+      mApi().forum.areas.threads.replies
+        .del(areaId, threadId, replyId)
+        .callback(callback);
+    }
   });
   
   $(document).ready(function() {
     $('#discussion').discussion({
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
       lockStickyPermission: $.parseJSON($('input[name="lockStickyPermission"]').val()),
-      ioController: new EnvironmentDiscussionIOController()
+      ioController: new EnvironmentDiscussionIOController({
+        showFullNamePermission: $.parseJSON($('input[name="showFullNamePermission"]').val())        
+      })
     });
     
     webshim.polyfill('forms');

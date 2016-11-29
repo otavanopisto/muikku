@@ -10,28 +10,40 @@
     loadThreadDetails: function(thread, callback) {
       var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
       
-      async.parallel(tasks, function (err, results) {
+      async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           callback(err);
         } else {
           var user = results[0];
           var area = results[1];
-          var d = new Date(moment(thread.created));
-          var ud = new Date(moment(thread.updated));          
+          var d = moment(thread.created).toDate();
+          var ud = moment(thread.updated).toDate();
+          
+          var creatorFullName;
+          
+          if (user.nickName) {
+            if (this.options.showFullNamePermission)
+              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+            else
+              creatorFullName = user.nickName + ' ' + user.lastName;
+          } else {
+            creatorFullName = user.firstName + ' ' + user.lastName;
+          }
+          
           // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
+            creatorFullName: creatorFullName,
             prettyDate: formatDate(d) + ' ' + formatTime(d),
             prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
             prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
             userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1),
+            nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
             canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
           }));
         }
-      });
+      }, this));
     },
     
     loadThreadRepliesDetails: function(replies, callback) {
@@ -44,31 +56,43 @@
         return this._createUserInfoLoad(reply.creator);
       }, this));
       
-      async.parallel(calls, function (err, users) {
+      async.parallel(calls, $.proxy(function (err, users) {
         if (err) {
           callback(err);
         } else {
-          callback(null, $.map(users, function (user, index) {
+          callback(null, $.map(users, $.proxy(function (user, index) {
             var reply = replies[index];
 
             // TODO: remove pretty dates
-            var d = new Date(moment(reply.created));
-            var ld = new Date(moment(reply.lastModified));
+            var d = moment(reply.created).toDate();
+            var ld = moment(reply.lastModified).toDate();
+            var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
+            
+            var creatorFullName;
+
+            if (user.nickName) {
+              if (this.options.showFullNamePermission)
+                creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+              else
+                creatorFullName = user.nickName + ' ' + user.lastName;
+            } else {
+              creatorFullName = user.firstName + ' ' + user.lastName;
+            }
             
             return {
-              creatorFullName: user.firstName + ' ' + user.lastName,
+              creatorFullName: creatorFullName,
               isEdited: reply.lastModified == reply.created ? false : true,
-              canEdit: reply.creator === MUIKKU_LOGGED_USER_ID ? true : false,
+              canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
               prettyDate: formatDate(d) + ' ' + formatTime(d),
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
-              nameLetter: user.firstName.substring(0,1),
+              nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
-              replyParentTime: reply.parentReplyId ? formatDate(new Date(moment(replyCreatedMap[reply.parentReplyId]))) + ' ' + formatTime(new Date(moment(replyCreatedMap[reply.parentReplyId]))) : null
+              replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
             }; 
-          }));
+          }, this)));
         }
-      });
+      }, this));
     },
     
     _createUserInfoLoad: function (userEntityId) {
@@ -302,6 +326,10 @@
       return this.options.areaPermissions[areaId] && this.options.areaPermissions[areaId].removeThread;
     },
     
+    mayEditMessages: function (areaId) {
+      return this.options.areaPermissions[areaId] && this.options.areaPermissions[areaId].editMessages;
+    },
+    
     _updateHash: function () {
       if (this._allAreas) {
         if (this._areaId && this._threadId) {
@@ -446,6 +474,7 @@
       this.element.on("click", ".di-reply-answer-link", $.proxy(this._onReplyAnswerClick, this));
       this.element.on("click", ".di-reply-quote-link", $.proxy(this._onReplyQuoteClick, this));
       this.element.on("click", ".di-reply-edit-link", $.proxy(this._onReplyEditClick, this));
+      this.element.on("click", ".di-reply-delete-link", $.proxy(this._onReplyDeleteClick, this));
       this.element.on("click", ".di-page-link-load-more-replies", $.proxy(this._onMoreRepliesClickClick, this));
     },
     
@@ -630,6 +659,23 @@
         threadId: threadId,
         replyId: replyId
       });
+    },
+    
+    _onReplyDeleteClick: function (event) {
+      var messageElement = $(event.target).closest('.di-message');
+      var repliesElement = $(event.target).closest('.di-replies-container');
+      
+      var areaId = repliesElement.attr('data-area-id');
+      var threadId = repliesElement.attr('data-thread-id');
+      var replyId = messageElement.attr('data-id');
+
+      this.options.ioController.deleteThreadReply(areaId, threadId, replyId, $.proxy(function(err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $('.discussion').discussion('reloadThread');
+        }
+      }, this));
     },
     
     _onReplyAnswerClick: function (event) {

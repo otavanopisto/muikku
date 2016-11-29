@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -61,6 +62,9 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private SessionController sessionController;
@@ -754,12 +758,28 @@ public class EvaluationRESTService extends PluginRESTService {
       GradingScale gradingScale = gradingController.findGradingScale(
           evaluation.getGradingScaleSchoolDataSource(),
           evaluation.getGradingScaleIdentifier());
-      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
-          gradingScale,
-          evaluation.getGradeSchoolDataSource(),
-          evaluation.getGradeIdentifier());
-      grade = gradingScaleItem.getName();
-      passingGrade = gradingScaleItem.isPassingGrade();
+      if (gradingScale == null) {
+        logger.severe(String.format("Grading scale %s-%s not found for evaluation %d",
+            evaluation.getGradingScaleSchoolDataSource(),
+            evaluation.getGradingScaleIdentifier(),
+            evaluation.getId()));
+      }
+      else {
+        GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(
+            gradingScale,
+            evaluation.getGradeSchoolDataSource(),
+            evaluation.getGradeIdentifier());
+        if (gradingScaleItem == null) {
+          logger.severe(String.format("Grading scale item %s-%s not found for evaluation %d",
+              evaluation.getGradeSchoolDataSource(),
+              evaluation.getGradeIdentifier(),
+              evaluation.getId()));
+        }
+        else {
+          grade = gradingScaleItem.getName();
+          passingGrade = gradingScaleItem.isPassingGrade();
+        }
+      }
     }
 
     return new WorkspaceMaterialEvaluation(
@@ -778,21 +798,19 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   private fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry) {
-    UserEntity assessor = userEntityController.findUserEntityByDataSourceAndIdentifier(entry.getAssessingUserSchoolDataSource(), entry.getAssessingUserIdentifier());
-    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleSchoolDataSource(), entry.getGradingScaleIdentifier());
-    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeSchoolDataSource(), entry.getGradeIdentifier());
-    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(entry.getWorkspaceUserIdentifier(), entry.getWorkspaceUserSchoolDataSource());
-    SchoolDataIdentifier assessmentIdentifier = new SchoolDataIdentifier(entry.getIdentifier(), entry.getSchoolDataSource());
+    UserEntity assessor = userEntityController.findUserEntityByUserIdentifier(entry.getAssessingUserIdentifier());
+    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleIdentifier());
+    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeIdentifier());
     
     return new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment(
-      assessmentIdentifier.toId(),
+      entry.getIdentifier().toId(),
       entry.getDate(),
       assessor != null ? assessor.getId() : null,
-      workspaceUserIdentifier.toId(),
-      entry.getGradingScaleIdentifier(),
-      entry.getGradingScaleSchoolDataSource(),
-      entry.getGradeIdentifier(),
-      entry.getGradeSchoolDataSource(),
+      entry.getWorkspaceUserIdentifier().toId(),
+      entry.getGradingScaleIdentifier().getIdentifier(),
+      entry.getGradingScaleIdentifier().getDataSource(),
+      entry.getGradeIdentifier().getIdentifier(),
+      entry.getGradeIdentifier().getDataSource(),
       entry.getVerbalAssessment(),
       grade.isPassingGrade()
     ); 
@@ -815,6 +833,9 @@ public class EvaluationRESTService extends PluginRESTService {
         communicatorController.createMessageId(),
         evaluator,
         Arrays.asList(student),
+        null,
+        null,
+        null,
         category,
         localeController.getText(
             locale,

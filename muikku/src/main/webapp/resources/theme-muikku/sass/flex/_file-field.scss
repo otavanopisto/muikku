@@ -1,6 +1,5 @@
 .muikku-file-input-field-file {
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 5px 0;
   position: relative;
 }
 
@@ -33,15 +32,15 @@
 }
 
 .muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
-  display: block;
-  text-decoration: none;
-  position: absolute; 
-  top: 0;
-  right: 10px;
-  font-weight: 400 !important;
-  position: absolute;
   color: #fff !important;
+  display: block;
   font-size: 14px;
+  font-weight: 400 !important;
+  position: absolute; 
+  right: 10px;
+  top: 0;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 .muikku-file-input-field-file-progress {
@@ -63,26 +62,20 @@
 }
 
 .muikku-file-input-field-file-uploader-container {
-  position: relative;
-  padding: 20px;
   background: #fff;
   border: 2px solid #abdbed;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
-  text-transform: uppercase;
-  color: #186089;
+  outline: none;
+  padding: 5px 10px;
+  position: relative;
   
   &[data-readonly="readonly"] {
     background: #fcfcfc !important;
     border: 2px dotted #eaeaea !important;
-    box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
       border: 2px dotted #eee;
-      box-shadow: none;
       color: #555555 !important;
     }
 
@@ -90,7 +83,6 @@
   
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
   }
   
   a {
@@ -133,8 +125,8 @@
 }
 
 .muikku-file-input-field-file-uploader-container span {
-  text-align: center;  
   display: block;
+  text-align: center;  
 }
 
 .muikku-file-input-field-file-removed-permanently {

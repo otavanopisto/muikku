@@ -68,7 +68,7 @@
             "dateFormat": getLocaleText('datePattern')
           });
           if (details.beginDate) {
-            dateField.datepicker('setDate', new Date(moment(details.beginDate)));
+            dateField.datepicker('setDate', moment(details.beginDate).toDate());
           }
 
           dateField = this.element.find('*[name="endDate"]'); 
@@ -76,7 +76,7 @@
             "dateFormat": getLocaleText('datePattern')
           });
           if (details.endDate) {
-            dateField.datepicker('setDate', new Date(moment(details.endDate))); 
+            dateField.datepicker('setDate', moment(details.endDate).toDate()); 
           }
           
           this.element.on('keydown', '.workspace-material-producer-add', $.proxy(this._onMaterialProducerKeyDown, this));

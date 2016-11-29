@@ -3,24 +3,26 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 import java.util.Date;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 
 public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
   
   public PyramusWorkspaceAssessment(String identifier, String workSpaceUserIdentifier, String assessingUserIdentifier, String gradeIdentifier, String gradingScaleIdentifier,
-      String verbalAssessment, Date date) {
+      String verbalAssessment, Date date, Boolean passing) {
     super();
-    this.identifier = identifier;
-    this.workSpaceUserIdentifier = workSpaceUserIdentifier;
-    this.assessingUserIdentifier = assessingUserIdentifier;
-    this.gradeIdentifier = gradeIdentifier;
-    this.gradingScaleIdentifier = gradingScaleIdentifier;
+    this.identifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.workSpaceUserIdentifier = new SchoolDataIdentifier(workSpaceUserIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.assessingUserIdentifier = new SchoolDataIdentifier(assessingUserIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.gradeIdentifier = new SchoolDataIdentifier(gradeIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    this.gradingScaleIdentifier = new SchoolDataIdentifier(gradingScaleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     this.verbalAssessment = verbalAssessment;
     this.date = date;
+    this.passing = passing;
   }
 
   @Override
-  public String getIdentifier() {
+  public SchoolDataIdentifier getIdentifier() {
     return identifier;
   }
 
@@ -30,45 +32,25 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
   }
 
   @Override
-  public String getWorkspaceUserIdentifier() {
+  public SchoolDataIdentifier getWorkspaceUserIdentifier() {
     return workSpaceUserIdentifier;
   }
 
   @Override
-  public String getWorkspaceUserSchoolDataSource() {
-    return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
-
-  @Override
-  public String getAssessingUserIdentifier() {
+  public SchoolDataIdentifier getAssessingUserIdentifier() {
     return assessingUserIdentifier;
   }
 
   @Override
-  public String getAssessingUserSchoolDataSource() {
-    return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
-
-  @Override
-  public String getGradeIdentifier() {
+  public SchoolDataIdentifier getGradeIdentifier() {
     return gradeIdentifier;
-  }
-
-  @Override
-  public String getGradeSchoolDataSource() {
-    return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
   }
   
   @Override
-  public String getGradingScaleIdentifier() {
+  public SchoolDataIdentifier getGradingScaleIdentifier() {
     return gradingScaleIdentifier;
   }
 
-  @Override
-  public String getGradingScaleSchoolDataSource() {
-    return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
-  
   @Override
   public String getVerbalAssessment() {
     return verbalAssessment;
@@ -79,12 +61,18 @@ public class PyramusWorkspaceAssessment implements WorkspaceAssessment {
     return date;
   }
 
-  private String identifier;
-  private String workSpaceUserIdentifier;
-  private String assessingUserIdentifier;
-  private String gradeIdentifier;
-  private String gradingScaleIdentifier;
+  @Override
+  public Boolean getPassing() {
+    return passing;
+  }
+
+  private SchoolDataIdentifier identifier;
+  private SchoolDataIdentifier workSpaceUserIdentifier;
+  private SchoolDataIdentifier assessingUserIdentifier;
+  private SchoolDataIdentifier gradeIdentifier;
+  private SchoolDataIdentifier gradingScaleIdentifier;
   private String verbalAssessment;
   private Date date;
+  private Boolean passing;
   
 }

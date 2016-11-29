@@ -7,10 +7,6 @@
   min-height: 500px;
 }
 
-.js-lazyyt {
-  margin: 10px 0;
-}
-
 // TASK FIELD SAVED LABEL
 .muikku-field-save-state-label {
   position: absolute;
@@ -71,24 +67,20 @@ input[type="url"] {
   border-radius: 3px;
   display: inline-block;
   padding: 4px 8px;
-  transition: border,box-shadow 0.2s,0.2s ease-in-out;
   outline: none;
-  font-size: 17px;
-  color: #0061a2;
+  font-size: 16px;
+  color: #000;
   max-width: 100%;
-  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   box-sizing: border-box;
   margin: 4px 3px;
   
   &[readonly="readonly"] {
     background: #fcfcfc !important;
     border: 2px dotted #eaeaea !important;
-    box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
       border: 2px dotted #eee;
-      box-shadow: none;
       color: #555555 !important;
     }
 
@@ -97,7 +89,7 @@ input[type="url"] {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
+    box-shadow: none;
     
     span.muikku-text-field-hint {
       display: block;
@@ -146,12 +138,10 @@ textarea {
   border-radius: 3px;
   display: inline-block;
   padding: 4px 8px;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
   color: #4c4c4c;
   width: 100%;
   max-width: 100%;
-  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   box-sizing: border-box;
   text-align: left;
   margin: 0;
@@ -160,12 +150,10 @@ textarea {
   &[readonly="readonly"] {
     background: #fcfcfc !important;
     border: 2px dotted #eaeaea !important;
-    box-shadow: none !important;
     color: #7c7c7c !important;
     
     &:hover {
       border: 2px dotted #eee !important;
-      box-shadow: none !important;
       color: #555555 !important;
     }
     
@@ -174,7 +162,7 @@ textarea {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.75);
+    box-shadow: none;
   }
 
 }
@@ -183,13 +171,12 @@ textarea {
 select {
   background: #fff;
   border: 2px solid #abdbed;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
-  color: #0061a2;
+  color: #000;
   display: inline-block;
   margin: 4px;
-  box-shadow: 0 0 0 3px rgba(215,215,215,0.15);
   border-radius: 3px;
+  padding: 0 5px;
   max-width: 100%;
   word-wrap: break-word;
   vertical-align: middle;
@@ -197,17 +184,14 @@ select {
   &:focus,
   &:hover {
     border: 2px solid #8dd6f1;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.85);
   }
   
   &[disabled="disabled"] {
     border: 2px solid #cae1fc;
-    box-shadow: 0 0 0 3px rgba(202,225,252,0.15);
     color: #7c7c7c;
     
     &:hover {
       border: 2px solid #cae1fc;
-      box-shadow: 0 0 0 3px rgba(202,225,252,0.15);
       color: #7c7c7c;
     }
 
@@ -216,7 +200,7 @@ select {
   option {
     background: #fff;
     font-weight: 300;
-    padding: 4px 8px;
+    padding: 5px 10px;
   }
   
 }
@@ -248,34 +232,14 @@ input[type="radio"],
 input[type="checkbox"] {
   margin: 0 10px;
   background: #fff;
-  transition: border,box-shadow 0.1s,0.2s ease-in-out;
   outline: none;
   display: inline-block;
-  box-shadow: 0 0 1px 3px rgba(215,215,215,0.15);
   border-radius: 3px;
   display: inline-block;
+  box-shadow: 0 0 0 2px rgba(0,153,255,0.4);
   
-  &:focus,
-  &:hover,
-  &:checked {
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
-  }
-    
-  &[disabled="disabled"] {
-  
-    &:checked {
-      box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
-      
-      &:hover {
-        box-shadow: 0 0 1px 3px rgba(202,225,252,0.85);
-      }
-      
-    }
-  
-    &:hover {
-      box-shadow: 0 0 1px 3px rgba(215,215,215,0.15);
-    }
-  
+  &:hover {
+    box-shadow: 0 0 0 2px rgba(0,153,255,0.6);
   }
   
 }
@@ -287,7 +251,6 @@ select {
 
   &.muikku-field-unsaved {
     border: 2px solid #e4e630;
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
     
     &:hover {
       border:2px solid #e4e630;
@@ -296,12 +259,10 @@ select {
   
   &.muikku-field-saving {
     animation: saving-fields 4s ease infinite;
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
   }
 
   &.muikku-field-saved {
     border: 2px solid #9cf3c7;
-    box-shadow: 0 0 1px 3px rgba(202,225,252,0.25);
     
     &:hover {
       border: 2px solid #9cf3c7;
@@ -319,10 +280,10 @@ select {
   
     input[type="checkbox"],
     input[type="radio"] {
-      box-shadow: 0 0 1px 3px #e4e630;
+      box-shadow: 0 0 0 2px #e4e630;
       
       &:hover {
-        box-shadow: 0 0 1px 3px #e4e630;
+        box-shadow: 0 0 0 2px #e4e630;
       }
     
     }
@@ -334,7 +295,7 @@ select {
     input[type="checkbox"],
     input[type="radio"] {
       animation: saving-checkbox-radio 4s ease infinite;
-      box-shadow: 0 0 1px 3px #e4e630;
+      box-shadow: 0 0 0 2px #e4e630;
     }
     
   }
@@ -343,10 +304,10 @@ select {
   
     input[type="checkbox"],
     input[type="radio"] {
-      box-shadow: 0 0 1px 3px #9cf3c7;
+      box-shadow: 0 0 0 2px #9cf3c7;
     
       &:hover {
-        box-shadow: 0 0 1px 3px #9cf3c7;
+        box-shadow: 0 0 0 2px #9cf3c7;
       }
       
     }
@@ -447,7 +408,6 @@ a > img {
 }
 
 .muikku-word-definition {
-  z-index: 9999;
   background: #c4ffd6 none repeat scroll 0 0;
   border: 2px solid #fff;
   border-radius: 3px;
@@ -456,22 +416,20 @@ a > img {
   font-size: 14px;
   font-weight: 300;
   line-height: 1.5em;
+  margin: 10px 0 0;
   max-width: 250px;
   padding: 5px 10px;
   position: absolute;
+  z-index: 20;
 }
     
 mark[data-muikku-word-definition] {
+  background: transparent;
   border-bottom: 1px dashed #007925;
   color: #007925;
-  background: transparent;
   cursor: help;
   font-weight: 400;
   position: relative;
-}
-
-.muikku-file-input-field-file-uploader-container {
-  font-size: 14px;
 }
 
 // DOCUMENT
@@ -706,22 +664,22 @@ sup {
       
       // Check Exercise
       &.muikku-check-exercises {
-        background: $exerciseAssignment;
+        background: $exercise;
       }
       
       // Submit Assignment
       &.muikku-submit-assignment {
-        background: $evaluatedAssignment;
+        background: $assignment;
       }
       
       // Withdraw Assingment
       &.muikku-withdraw-assignment {
-        background: darken($evaluatedAssignment,10%);
+        background: darken($assignment, 10%);
       }
       
       // Update Assignment
       &.muikku-update-assignment {
-        background: lighten($evaluatedAssignment,5%);
+        background: lighten($assignment, 5%);
       }
       
     }
@@ -776,11 +734,11 @@ sup {
     position: relative;
     
     &.assignment {
-      background: $evaluatedAssignment;
+      background: $assignment;
     }
     
     &.exercise {
-      background: $exerciseAssignment;
+      background: $exercise;
     }
     
     // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"

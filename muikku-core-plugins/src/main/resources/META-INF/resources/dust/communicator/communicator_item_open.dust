@@ -5,15 +5,24 @@
             <div class="cm-message-details-sender flex-row flex-align-items-center">
               <div class="mf-item-header-content-primary cm-message-header-content-primary">
                 <span>{senderFullName}</span>
+                <span class="icon-arrow-right cm-message-recipient-arrow"></span>
                 {?recipients}
-                  <span class="icon-arrow-right cm-message-recipient-arrow"></span>
                   {#recipients}
                     <span class="cm-message-recipient-name">{firstName} {lastName}</span>
                   {/recipients}
-                  {@gt key=recipientCount value=5}
-                    <span class="cm-message-recipient-name">...</span>
-                  {/gt}
                 {/recipients}
+                
+                {?userGroupRecipients}
+                  {#userGroupRecipients}
+                    <span class="cm-message-recipient-name">{name}</span>
+                  {/userGroupRecipients}
+                {/userGroupRecipients}
+                
+                {?workspaceRecipients}
+                  {#workspaceRecipients}
+                    <span class="cm-message-recipient-name">{workspaceName}</span>
+                  {/workspaceRecipients}
+                {/workspaceRecipients}
               </div>        
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary">{created|formatDate} {created|formatTime}</div>    
             </div>
@@ -23,6 +32,7 @@
               <div class="cm-message-content-tools">
                 <div class="cm-message-content-tools-container">
                   <div id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>{#localize key="plugin.communicator.reply"/}</span></div>
+                  <div id="{id}" class="cm-message-tool cm-message-reply-all-link mf-item-tool"><span>{#localize key="plugin.communicator.replyAll"/}</span></div>
                 </div>
                 <div class="cm-message-content-tools-reply-container"></div>
               </div>
@@ -34,5 +44,3 @@
       <input type="hidden" name="communicatorMessageId" value="{id}"/>
       <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>  
     </div >
-
-

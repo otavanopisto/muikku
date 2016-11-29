@@ -20,6 +20,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
@@ -78,7 +79,7 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student",
         WorkspaceRoleArchetype.STUDENT);
   }
-
+  
   public User createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember staffMember) {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
 
@@ -91,6 +92,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStaffIdentifier(staffMember.getId()),
         staffMember.getFirstName(),
         staffMember.getLastName(),
+        null,
         displayName,
         null,
         null,
@@ -138,6 +140,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStudentIdentifier(student.getId()),
         student.getFirstName(),
         student.getLastName(),
+        student.getNickname(),
         displayName.toString(),
         studyProgrammeName,
         nationality,
@@ -350,7 +353,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
         gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
-        courseAssessment.getVerbalAssessment(), courseAssessmentDate);
+        courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
   }
 
   public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
@@ -363,6 +366,38 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return result;
+  }
+  
+  public List<CompositeAssessmentRequest> createEntity(fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest... assessmentRequests) {
+    List<CompositeAssessmentRequest> result = new ArrayList<>();
+    
+    if (assessmentRequests != null) {
+      for (fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
+        result.add(createEntity(assessmentRequest));
+      }
+    }
+    
+    return result;
+  }
+
+  public CompositeAssessmentRequest createEntity(fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest assessmentRequest) {
+    if (assessmentRequest == null) {
+      logger.severe("Attempted to translate null assessment request into school data entity");
+      return null;
+    }
+    return new PyramusCompositeAssessmentRequest(
+      identifierMapper.getWorkspaceStudentIdentifier(assessmentRequest.getCourseStudentId()),
+      assessmentRequest.getUserId() == null ? null : identifierMapper.getStudentIdentifier(assessmentRequest.getUserId()),
+      assessmentRequest.getFirstName(),
+      assessmentRequest.getLastName(),
+      assessmentRequest.getStudyProgramme(),
+      assessmentRequest.getCourseId() == null ? null : identifierMapper.getWorkspaceIdentifier(assessmentRequest.getCourseId()),
+      assessmentRequest.getCourseName(),
+      assessmentRequest.getCourseNameExtension(),
+      assessmentRequest.getCourseEnrollmentDate(),
+      assessmentRequest.getAssessmentRequestDate(),
+      assessmentRequest.getEvaluationDate(),
+      assessmentRequest.getPassing());
   }
 
   public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {

@@ -1,7 +1,10 @@
 package fi.otavanopisto.muikku.plugins.search;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -12,8 +15,11 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchIndexer;
+import fi.otavanopisto.muikku.users.UserController;
 
 public class WorkspaceIndexer {
   
@@ -32,6 +38,9 @@ public class WorkspaceIndexer {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private UserController userController;
+  
   @Inject
   private SearchIndexer indexer;
 
@@ -75,6 +84,25 @@ public class WorkspaceIndexer {
         extra.put("subject", subject.getName());
       }
       
+      List<WorkspaceUser> staffMembers = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
+      Set<IndexedWorkspaceUser> indexedWorkspaceStaffMembers = new HashSet<IndexedWorkspaceUser>();
+      
+      for (WorkspaceUser staffMember : staffMembers) {
+        // TODO: more efficient name fetching
+        User staffMemberUser = userController.findUserByIdentifier(staffMember.getUserIdentifier());
+        
+        if (staffMemberUser != null) {
+          indexedWorkspaceStaffMembers.add(new IndexedWorkspaceUser(staffMember.getUserIdentifier(), 
+              staffMemberUser.getFirstName(), staffMemberUser.getLastName()));
+        } else {
+          String userId = staffMember.getUserIdentifier() != null ? staffMember.getUserIdentifier().toId() : "NULL";
+          
+          logger.warning(String.format("Couldn't find staffmember #%s in workspace %s", userId, 
+              workspace.getIdentifier(), workspace.getSchoolDataSource()));
+        }
+      }
+      extra.put("staffMembers", indexedWorkspaceStaffMembers);
+      
       indexer.index(Workspace.class.getSimpleName(), workspace, extra);
     } catch (Exception e) {
       logger.warning(String.format("could not index workspace #%s/%s", workspace.getIdentifier(), workspace.getSchoolDataSource()));
@@ -82,3 +110,4 @@ public class WorkspaceIndexer {
   }
   
 }
+

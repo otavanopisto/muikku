@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.util.Date;
 
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+
 public interface WorkspaceAssessment extends SchoolDataEntity {
 	
   /**
@@ -9,70 +11,35 @@ public interface WorkspaceAssessment extends SchoolDataEntity {
    * 
    * @return identifier of workspace assessment
    */
-	public String getIdentifier();
-	
-	/**
-   * Returns school data source of workspace assessment 
-   * 
-   * @return school data source of workspace assessment
-   */
-  public String getSchoolDataSource();
+	public SchoolDataIdentifier getIdentifier();
 	
   /**
    * Returns identifier of workspace user
    * 
    * @return identifier of workspace user
    */
-	public String getWorkspaceUserIdentifier();
-
-	/**
-   * Returns school data source of workspace user
-   * 
-   * @return school data source of workspace user
-   */
-	public String getWorkspaceUserSchoolDataSource();
+	public SchoolDataIdentifier getWorkspaceUserIdentifier();
   
 	/**
 	 * Returns identifier of assessing user
 	 * 
 	 * @return identifier of assessing user
 	 */
-  public String getAssessingUserIdentifier();
-  
-  /**
-   * Returns school data source of assessing user
-   * 
-   * @return school data source of assessing user
-   */
-  public String getAssessingUserSchoolDataSource();
+  public SchoolDataIdentifier getAssessingUserIdentifier();
 	
   /**
    * Returns identifier of grade
    * 
    * @return identifier of grade
    */
-	public String getGradeIdentifier();
-	
+	public SchoolDataIdentifier getGradeIdentifier();
+
 	/**
-   * Returns school data source of grade
-   * 
-   * @return school data source of grade
-   */
-  public String getGradeSchoolDataSource();
-  
-  /**
    * Returns identifier of grading scale
    * 
    * @return identifier of gradign scale
    */
-  public String getGradingScaleIdentifier();
-
-  /**
-   * Return the data source of grading scale
-   * 
-   * @return school data source of grading scale
-   */
-  public String getGradingScaleSchoolDataSource();
+  public SchoolDataIdentifier getGradingScaleIdentifier();
   
 	/**
 	 * Returns verbal assessment
@@ -87,5 +54,7 @@ public interface WorkspaceAssessment extends SchoolDataEntity {
    * @return assessment date
    */
   public Date getDate();
+  
+  public Boolean getPassing();
 	
 }

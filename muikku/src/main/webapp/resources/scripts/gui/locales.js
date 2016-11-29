@@ -66,11 +66,16 @@
     return val;
   }
   
+  function formatDateTime(d) {
+    return formatDate(d) + ' ' + formatTime(d);
+  }
+  
   window.getLocaleText = getLocaleText;
   window.getLocale = getLocale;
   window.getCurrentDate = getCurrentDate;
   window.formatDate = formatDate;
   window.getCurrentTime = getCurrentTime;
   window.formatTime = formatTime;
+  window.formatDateTime = formatDateTime;
 
 }).call(this);

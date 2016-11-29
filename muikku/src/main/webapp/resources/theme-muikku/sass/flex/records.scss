@@ -1,5 +1,16 @@
-@import "_vars.scss";
-@import "_styles.scss";
+@import "vars";
+@import "styles";
+
+// These are for task styles
+@import "vars_backup";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "audio-field";
+@import "file-field";
+@import "_evaluation_material_styles";
+@import "correct_answers"; 
+
 
 /* Transcript of records (.tr-*) */
 
@@ -41,11 +52,11 @@
  
 
       &.passing {
-        background-color: $item-grade-passing-color;
+        background-color: $item-grade-passing-background-color;
       }
       
       &.non-passing {
-        background-color: $item-grade-failing-color;
+        background-color: $item-grade-failing-background-color;
       }
       
     }
@@ -70,11 +81,11 @@
       padding: 5px 10px;
       
       &.passing {
-        background-color: $item-grade-passing-color;
+        background-color: $item-grade-passing-background-color;
       }
       
       &.non-passing {
-        background-color: $item-grade-failing-color;
+        background-color: $item-grade-failing-background-color;
       }
       
     }
@@ -103,7 +114,7 @@
 }
 
 .tr-user-file{
-  background-color: $environment-file-color;
+  background-color: $environment-file-background-color;
   display:inline-block;
   margin-bottom: 5px;
   padding:5px;
@@ -125,6 +136,14 @@
   font-weight:300;
 }
 
+
+.tr-task-content-container{
+  padding: 15px;  
+}
+
+.tr-task-content{
+  background-color: #fff;  
+}
 
 .tr-task-not-evaluated {
   span:not(:first-child) {
@@ -174,11 +193,11 @@
     color: $item-grade-font-color;
     
     &.passing {
-      background-color: $item-grade-passing-color;
+      background-color: $item-grade-passing-background-color;
     }
     
     &.non-passing {
-      background-color: $item-grade-failing-color;
+      background-color: $item-grade-failing-background-color;
     }
     
   }

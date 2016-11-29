@@ -79,12 +79,12 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
-    canPublish = sessionController.hasCoursePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity);
+    canPublish = sessionController.hasWorkspacePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity);
     workspaceEntityId = workspaceEntity.getId();
     published = workspaceEntity.getPublished();
     
     if (!published) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
     	  return NavigationRules.NOT_FOUND;
       }
     }

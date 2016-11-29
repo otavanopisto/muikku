@@ -171,8 +171,13 @@
             .callback(callback);
         }
       }, this));
-    }
+    },
   
+    deleteThreadReply: function (areaId, threadId, replyId, callback) {
+      mApi().workspace.workspaces.forumAreas.threads.replies
+        .del(this.options.workspaceEntityId, areaId, threadId, replyId)
+        .callback(callback);
+    }
   });
   
   $(document).ready(function() {
@@ -180,6 +185,7 @@
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
       lockStickyPermission: $.parseJSON($('input[name="lockStickyPermission"]').val()),
       ioController: new WorkspaceDiscussionIOController({
+        showFullNamePermission: $.parseJSON($('input[name="showFullNamePermission"]').val()),
         workspaceEntityId: $("input[name='workspaceEntityId']").val()
       })
     });
