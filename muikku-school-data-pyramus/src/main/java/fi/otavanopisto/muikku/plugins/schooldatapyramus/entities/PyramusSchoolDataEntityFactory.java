@@ -512,7 +512,9 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public UserAddress createEntity(SchoolDataIdentifier userIdentifier, Address address, ContactType contactType) {
-    return new PyramusUserAddress(userIdentifier, 
+    return new PyramusUserAddress(
+      identifierMapper.getAddressIdentifier(address.getId()),
+      userIdentifier, 
       address.getStreetAddress(), 
       address.getPostalCode(), 
       address.getCity(), 

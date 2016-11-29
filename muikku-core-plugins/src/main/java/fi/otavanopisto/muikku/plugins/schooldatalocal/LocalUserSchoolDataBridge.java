@@ -535,5 +535,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     // TODO Auto-generated method stub
     return null;
   }
-  
+
+  @Override
+  public void updateUserAddress(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier identifier, String street,
+      String postalCode, String city, String country) {
+    // TODO Auto-generated method stub
+    
+  }
 }

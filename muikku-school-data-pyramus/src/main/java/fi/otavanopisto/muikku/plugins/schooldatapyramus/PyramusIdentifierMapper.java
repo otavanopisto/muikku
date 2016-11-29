@@ -334,6 +334,18 @@ public class PyramusIdentifierMapper {
   public String getEmailIdentifier(Long emailId) {
     return emailId != null ? emailId.toString() : null;
   }
+
+  public SchoolDataIdentifier getAddressIdentifier(Long addressId) {
+    if (addressId == null) {
+      return null;
+    } else {
+      return new SchoolDataIdentifier(String.valueOf(addressId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    }
+  }
+
+  public Long getPyramusAddressId(String identifier) {
+    return NumberUtils.createLong(identifier);
+  }
   
   public Long getPyramusEmailId(String emailIdentifier) {
     return NumberUtils.createLong(emailIdentifier);

@@ -5,9 +5,10 @@ public class StudentAddress {
   public StudentAddress() {
   }
 
-  public StudentAddress(String studentIdentifier, String street, String postalCode, String city, String region,
+  public StudentAddress(String identifier, String studentIdentifier, String street, String postalCode, String city, String region,
       String country, String type, Boolean defaultAddress) {
     super();
+    this.identifier = identifier;
     this.studentIdentifier = studentIdentifier;
     this.street = street;
     this.postalCode = postalCode;
@@ -81,7 +82,16 @@ public class StudentAddress {
   public void setDefaultAddress(Boolean defaultAddress) {
     this.defaultAddress = defaultAddress;
   }
+  
+  public String getIdentifier() {
+    return identifier;
+  }
+  
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
 
+  private String identifier;
   private String studentIdentifier;
   private String street;
   private String postalCode;
