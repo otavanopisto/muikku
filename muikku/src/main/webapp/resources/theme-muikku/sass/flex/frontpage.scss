@@ -409,6 +409,83 @@ h2.frontpage-section-title {
     flex: 1 1 calc(33% - 20px);
   }
   
+  .studying-image {
+  
+    img {
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px;
+      height: auto;
+      width: 100%;
+    }
+  
+  }
+  
+  .studying-title {
+    font-size: 26px;
+    padding: 20px 40px 10px;
+    text-transform: uppercase;
+  }
+  
+  .studying-description {
+    font-weight: 400;
+    line-height:1.15; 
+    padding: 20px 40px;
+  }
+  
+  .studying-read-more {
+    padding: 20px 40px;
+    
+    .studying-read-more-link {
+      border-radius: 2px;
+      color: $of-studying-read-more-link-color;
+      display: inline-block;
+      font-size: 14px;
+      padding: 6px 12px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+  
+  }
+  
+  // Read More link background for Nettilukio
+  &.nettilukio {
+  
+    .studying-title {
+      color: $of-studying-nettilukio-color;
+    }
+  
+    .studying-read-more-link {
+      background: $of-studying-nettilukio-color;
+    }
+  
+  }
+  
+  // Read More link background for Nettiperuskoulu
+  &.nettiperuskoulu {
+  
+    .studying-title {
+      color: $of-studying-nettiperuskoulu-color;
+    }
+  
+    .studying-read-more-link {
+      background: $of-studying-nettiperuskoulu-color;
+    }
+  
+  }
+  
+  // Read More link background for Aineopiskelu
+  &.aineopiskelu {
+  
+    .studying-title {
+      color: $of-studying-aineopiskelu-color;
+    }
+  
+    .studying-read-more-link {
+      background: $of-studying-aineopiskelu-color;
+    }
+  
+  }
+  
 }
 
 // VIDEOS SECTION
@@ -450,8 +527,45 @@ h2.frontpage-section-title {
   padding: 30px;
 }
 
+.organization-wrapper {
+  @include flexbox;
+  flex-flow: row wrap;  
+}
+
 .organization-some-box {
   flex: 1 1 calc(33.3333% - 30px);
+  
+  .organization-some-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+  }
+
+  .some-icon {
+    display: inline-block;
+    margin: 5px 10px 5px 0;
+    
+    a {
+      background: $of-organization-some-icon-background-color;
+      border-radius: 100%;
+      color: $of-organization-some-icon-text-color;
+      display: inline-block;
+      font-size: 20px;
+      height:20px;
+      padding: 10px;
+      text-decoration: none;
+      transition: background 0.3s ease-in-out;
+      width:20px;
+      
+      &:hover {
+        background: $of-organization-some-icon-hover-background-color;
+      }
+      
+    }
+    
+  }
+
 }
 
 .organization-description-box {
@@ -499,7 +613,81 @@ h2.frontpage-section-title {
 
 footer.of-footer {
   background: $of-footer-background-color;
-  min-height:300px;
+}
+
+.frontpage-footer-container {
+  align-items: stretch;
+  box-sizing: border-box;
+  @include flexbox;
+  flex-flow: row wrap;
+  margin: 0 auto;
+  max-width: 1260px;
+}
+
+.contact-info-container {
+  box-sizing: border-box;
+  flex: 1 1 calc(50% - 20px);
+  margin: 10px;
+  padding: 0 30px;
+  
+  h2 {
+    color: $of-footer-text-color;
+    font-size: 40px;
+    font-weight: 300;
+    margin: 25px 0;
+  }
+  
+  .contact-info-row {
+    color: $of-footer-text-color;
+    
+    span {
+      display: inline-block;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 10px 10px 10px 0;
+      vertical-align: top;
+    }
+    
+    span:first-child {
+      display: inline-block;
+      margin: 10px 15px 10px 0;
+      min-width: 20px;
+      text-align: center;
+    }
+    
+    span:last-child {
+      display: inline-block;
+      font-weight: 300;
+      margin: 10px 0;
+    }
+    
+  }
+  
+  .footer-legal-info-container {
+    margin: 25px 0 0;
+    
+    .legal-info {
+      color: $of-footer-text-color;
+      display: inline-block;
+      margin: 5px 20px 0 5px;
+      text-transform: uppercase;
+    }
+    
+  }
+  
+}
+
+.logo-container {
+  box-sizing: border-box;
+  flex: 1 1 calc(50% - 20px);
+  margin: 10px;
+  padding: 0 30px;
+  text-align: right;
+  
+  .footer-logo {
+    margin: 20px 0;
+  }
+  
 }
 
 // CAROUSEL
