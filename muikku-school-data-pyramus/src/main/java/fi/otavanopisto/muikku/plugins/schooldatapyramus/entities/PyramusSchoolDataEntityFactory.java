@@ -428,7 +428,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public UserGroup createEntity(StudentGroup studentGroup) {
     return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()),
-        studentGroup.getName());
+        studentGroup.getName(), studentGroup.getGuidanceGroup());
   }
 
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {
@@ -439,6 +439,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     return result;
   }
+
 
   public GroupUser createEntity(StudentGroupStudent studentGroupStudent) {
     return new PyramusGroupUser(identifierMapper.getStudentGroupStudentIdentifier(studentGroupStudent.getId()),
@@ -455,6 +456,16 @@ public class PyramusSchoolDataEntityFactory {
     if (studentGroupStudents != null) {
       for (StudentGroupStudent studentGroupStudent : studentGroupStudents) {
         results.add(createEntity(studentGroupStudent));
+      }
+    }
+    return results;
+  }
+
+  public List<GroupUser> createEntities(StudentGroupUser... studentGroupUsers) {
+    List<GroupUser> results = new ArrayList<>();
+    if (studentGroupUsers != null) {
+      for (StudentGroupUser studentGroupUser : studentGroupUsers) {
+        results.add(createEntity(studentGroupUser));
       }
     }
     return results;

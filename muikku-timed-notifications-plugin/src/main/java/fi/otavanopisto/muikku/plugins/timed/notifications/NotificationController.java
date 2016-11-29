@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.timed.notifications;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,12 +16,16 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 /*
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 */
 import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 @Dependent
 public class NotificationController {
@@ -51,6 +56,12 @@ public class NotificationController {
   @Inject
   private PluginSettingsController pluginSettingsController;
   
+  @Inject
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   private String getRecipientEmail() {
     return pluginSettingsController.getPluginSetting("timed-notifications", "dryRunRecipientEmail");
   }
@@ -59,6 +70,17 @@ public class NotificationController {
    HashMap<String, Object> map = new HashMap<>();
    map.put("category", category);
    map.put("recipient", recipient.getId());
+   
+   UserEntity guidanceCounselor = null;
+   List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(recipient);
+   
+   for (UserGroupEntity userGroupEntity : userGroupEntities) {
+     UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
+     
+     if (userGroup.isGuidanceGroup()) {
+       
+     }
+   }
     
    LogProvider provider = getProvider(LOG_PROVIDER);
    
