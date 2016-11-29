@@ -37,11 +37,15 @@ public class DiscussionBackingBean {
   public String init() {
     List<EnvironmentForumArea> forumAreas = forumController.listEnvironmentForums();
     lockStickyPermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES);
-    
+    showFullNamePermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_SHOW_FULL_NAMES);
+        
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (EnvironmentForumArea forumArea : forumAreas) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea)));
+      AreaPermission areaPermission = new AreaPermission(
+          sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES, forumArea),
+          sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea));
+      areaPermissions.put(forumArea.getId(), areaPermission );
     }
     
     try {
@@ -57,16 +61,22 @@ public class DiscussionBackingBean {
     return lockStickyPermission;
   }
   
+  public Boolean getShowFullNamePermission() {
+    return showFullNamePermission;
+  }
+  
   public String getAreaPermissions() {
     return areaPermissions;
   }
   
   private String areaPermissions;
   private Boolean lockStickyPermission;
+  private Boolean showFullNamePermission;
   
   public static class AreaPermission {
     
-    public AreaPermission(Boolean removeThread) {
+    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+      this.editMessages = editMessages;
       this.removeThread = removeThread;
     }
 
@@ -74,7 +84,12 @@ public class DiscussionBackingBean {
       return removeThread;
     }
     
-    private Boolean removeThread;
+    public Boolean getEditMessages() {
+      return editMessages;
+    }
+
+    private final Boolean editMessages;
+    private final Boolean removeThread;
   }
   
 }

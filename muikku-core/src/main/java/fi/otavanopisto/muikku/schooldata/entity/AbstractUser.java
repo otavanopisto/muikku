@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 
 public abstract class AbstractUser implements User {
   
-  public AbstractUser(String identifier, String firstName, String lastName, String displayName,
+  public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
       boolean startedStudies, boolean finishedStudies, boolean active, boolean evaluationFees, String curriculumIdentifier) {
@@ -12,6 +12,7 @@ public abstract class AbstractUser implements User {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.nickName = nickName;
     this.displayName = displayName;
     this.studyProgrammeName = studyProgrammeName;
     this.nationality = nationality;
@@ -182,6 +183,14 @@ public abstract class AbstractUser implements User {
     this.curriculumIdentifier = curriculumIdentifier;
   }
 
+  public String getNickName() {
+    return nickName;
+  }
+
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+
   private String identifier;
   private String firstName;
   private String lastName;
@@ -200,4 +209,5 @@ public abstract class AbstractUser implements User {
   private boolean active;
   private boolean evaluationFees;
   private String curriculumIdentifier;
+  private String nickName;
 }

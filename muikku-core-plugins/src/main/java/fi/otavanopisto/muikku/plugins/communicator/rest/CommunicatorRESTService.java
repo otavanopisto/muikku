@@ -658,6 +658,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
+          user.getNickName(),
           user.getStudyProgrammeName(),
           hasPicture,
           user.hasEvaluationFees(),

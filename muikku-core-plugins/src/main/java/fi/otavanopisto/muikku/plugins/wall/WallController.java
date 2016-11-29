@@ -303,7 +303,7 @@ public class WallController {
     if (wall instanceof WorkspaceWall) {
       WorkspaceWall courseWall = (WorkspaceWall) wall;
 
-      return sessionController.hasCoursePermission(WallPermissions.WALL_WRITECOURSEWALL, 
+      return sessionController.hasWorkspacePermission(WallPermissions.WALL_WRITECOURSEWALL, 
           workspaceController.findWorkspaceEntityById(courseWall.getWorkspace()));
     }
 
