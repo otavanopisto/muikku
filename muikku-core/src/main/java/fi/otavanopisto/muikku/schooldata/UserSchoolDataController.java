@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -277,6 +278,17 @@ public class UserSchoolDataController {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
         return schoolDataBridge.listGroupUsersByGroup(userGroup.getIdentifier());
+      }
+    }
+    return null;
+  }
+
+  public List<GroupUser> listGroupUsersByGroupAndType(UserGroup userGroup, GroupUserType type){
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.listGroupUsersByGroupAndType(userGroup.getIdentifier(), type);
       }
     }
     return null;

@@ -1,6 +1,7 @@
 // RUNNING IN DRY RUN MODE - REMOVE DRY RUN FUNCTIONALITY AFTER VERIFIED 
 package fi.otavanopisto.muikku.plugins.timed.notifications;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,10 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 */
 import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
@@ -62,6 +66,9 @@ public class NotificationController {
   @Inject
   private UserGroupEntityController userGroupEntityController;
   
+  @Inject
+  private UserEntityController userEntityController;
+  
   private String getRecipientEmail() {
     return pluginSettingsController.getPluginSetting("timed-notifications", "dryRunRecipientEmail");
   }
@@ -74,11 +81,18 @@ public class NotificationController {
    UserEntity guidanceCounselor = null;
    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(recipient);
    
+   userGroupEntities:
    for (UserGroupEntity userGroupEntity : userGroupEntities) {
      UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
      
      if (userGroup.isGuidanceGroup()) {
+       List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
        
+       for (GroupUser groupUser : groupUsers) {
+         User user = userGroupController.findUserByGroupUser(groupUser);
+         guidanceCounselor = userEntityController.findUserEntityByUser(user);
+         break userGroupEntities;
+       }
      }
    }
     
@@ -102,6 +116,12 @@ public class NotificationController {
          "SENT TO: " + recipient.getDefaultIdentifier() + "<br/><br/><br/>" + content);
    }
    
+   ArrayList<UserEntity> recipients = new ArrayList<>(); 
+   recipients.add(recipient);
+   if (guidanceCounselor != null) {
+     recipients.add(guidanceCounselor);
+   }
+   
    /*
    
    String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(recipient, Boolean.FALSE);
@@ -118,7 +138,7 @@ public class NotificationController {
         category,
         subject,
         content,
-        Arrays.asList(recipient)
+        recipients
     );
 
     */
