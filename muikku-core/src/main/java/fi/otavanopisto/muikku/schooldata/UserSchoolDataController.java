@@ -305,12 +305,12 @@ public class UserSchoolDataController {
   }
 	
 	public void updateUserAddress(
-	    SchoolDataIdentifier studentIdentifier,
-	    SchoolDataIdentifier addressIdentifier,
-	    String street,
-	    String postalCode,
-	    String city,
-	    String country
+      SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier addressIdentifier,
+      String street,
+      String postalCode,
+      String city,
+      String country
   ) throws SchoolDataBridgeUnauthorizedException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(addressIdentifier.getDataSource());
     if (schoolDataSource != null) {
