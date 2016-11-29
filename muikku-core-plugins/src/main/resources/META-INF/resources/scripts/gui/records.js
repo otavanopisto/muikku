@@ -32,7 +32,7 @@
         .on('$', $.proxy(function (student, callback) {
           // var curriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
           
-          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id)], $.proxy(function (err, results) {
+          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id), this._createCurriculumsLoad()], $.proxy(function (err, results) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
@@ -40,6 +40,8 @@
               var studentCurriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
               var studentWorkspaces = results[0];
               var studentTransferCredits = results[1];
+              var curriculums = results[2] || [];
+              curriculums.push({identifier: "default", name: undefined});
               
               if (studentWorkspaces) {
                 studentWorkspaces = studentWorkspaces.reduce(function(workspacesByCurriculum, workspace) {
@@ -88,19 +90,15 @@
                 }, {});
               }
               
-              // TODO: Load these from server and give the proper name to studentCurriculums.curriculumName
-              var curriculums = ["default", "PYRAMUS-10", "PYRAMUS-11"];
-              
               var studentCurriculums = [];
-              
               $.each(curriculums, function(index, curriculum) {
-                var workspaces = studentWorkspaces ? studentWorkspaces[curriculum] : undefined;
-                var transferCredits = studentTransferCredits ? studentTransferCredits[curriculum] : undefined;
+                var workspaces = studentWorkspaces ? studentWorkspaces[curriculum.identifier] : undefined;
+                var transferCredits = studentTransferCredits ? studentTransferCredits[curriculum.identifier] : undefined;
                 
                 if (workspaces || transferCredits) {
                   studentCurriculums.push({
-                    curriculumId: curriculum,
-                    curriculumName: "ASDASD",
+                    curriculumId: curriculum.identifier,
+                    curriculumName: curriculum.name,
                     workspaces: workspaces,
                     transferCredits: transferCredits
                   });
@@ -146,6 +144,14 @@
         this._loadStudentTransferCredits(studentIdentifier, $.proxy(function (err, transferCredits) {
           callback(err, transferCredits);
         }, this));
+      }, this);
+    },
+
+    _createCurriculumsLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().coursepicker.curriculums
+          .read()
+          .callback(callback);
       }, this);
     },
     
