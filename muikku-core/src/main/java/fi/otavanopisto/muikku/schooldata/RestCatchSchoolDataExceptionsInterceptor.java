@@ -21,7 +21,7 @@ public class RestCatchSchoolDataExceptionsInterceptor implements Serializable {
     } catch (SchoolDataBridgeUnauthorizedException ex) {
       return Response.status(Status.FORBIDDEN).build();
     } catch (SchoolDataBridgeException ex) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
     } 
   }
 }

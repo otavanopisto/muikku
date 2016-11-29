@@ -4,8 +4,18 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractUserAddress implements UserAddress {
   
-  public AbstractUserAddress(SchoolDataIdentifier userIdentifier, String street, String postalCode, String city, String region, String country, String type, Boolean defaultAddress) {
+  public AbstractUserAddress(
+      SchoolDataIdentifier identifier,
+      SchoolDataIdentifier userIdentifier,
+      String street,
+      String postalCode,
+      String city,
+      String region,
+      String country,
+      String type,
+      Boolean defaultAddress) {
     super();
+    this.identifier = identifier;
     this.userIdentifier = userIdentifier;
     this.street = street;
     this.postalCode = postalCode;
@@ -80,7 +90,17 @@ public abstract class AbstractUserAddress implements UserAddress {
   public Boolean getDefaultAddress() {
     return defaultAddress;
   }
+  
+  @Override
+  public SchoolDataIdentifier getIdentifier() {
+    return identifier;
+  }
+  
+  public void setIdentifier(SchoolDataIdentifier identifier) {
+    this.identifier = identifier;
+  }
 
+  private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier userIdentifier;
   private String street;
   private String postalCode;
