@@ -19,7 +19,6 @@ import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -48,9 +47,6 @@ public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBacki
 
   @Inject
   private NavigationController navigationController;
-  
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private SessionController sessionController;
@@ -69,13 +65,13 @@ public class WorkspaceMaterialsReadingBackingBean extends AbstractWorkspaceBacki
     }
     
     if (!workspaceEntity.getPublished()) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
         return NavigationRules.NOT_FOUND;
       }
     }
     
     if (workspaceEntity.getAccess() != WorkspaceAccess.ANYONE) {
-      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_MATERIALS, workspaceEntity)) {
         if (!sessionController.isLoggedIn()) {
           return navigationController.requireLogin();
         } else {
