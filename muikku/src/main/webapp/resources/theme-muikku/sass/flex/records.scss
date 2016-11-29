@@ -1,6 +1,17 @@
 @import "vars";
 @import "styles";
 
+// These are for task styles
+@import "vars_backup";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "audio-field";
+@import "file-field";
+@import "_evaluation_material_styles";
+@import "correct_answers"; 
+
+
 /* Transcript of records (.tr-*) */
 
 .tr-content-main {
