@@ -113,6 +113,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String FORUM_LOCK_OR_STICKIFY_MESSAGES = "FORUM_LOCK_OR_STICKIFY_MESSAGES";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String FORUM_SHOW_FULL_NAMES = "FORUM_SHOW_FULL_NAMES";
+  
   // Workspace forum messages
   
   @Scope (PermissionScope.WORKSPACE)

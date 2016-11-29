@@ -10,28 +10,40 @@
     loadThreadDetails: function(thread, callback) {
       var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
       
-      async.parallel(tasks, function (err, results) {
+      async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           callback(err);
         } else {
           var user = results[0];
           var area = results[1];
           var d = moment(thread.created).toDate();
-          var ud = moment(thread.updated).toDate();          
+          var ud = moment(thread.updated).toDate();
+          
+          var creatorFullName;
+          
+          if (user.nickName) {
+            if (this.options.showFullNamePermission)
+              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+            else
+              creatorFullName = user.nickName + ' ' + user.lastName;
+          } else {
+            creatorFullName = user.firstName + ' ' + user.lastName;
+          }
+          
           // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
+            creatorFullName: creatorFullName,
             prettyDate: formatDate(d) + ' ' + formatTime(d),
             prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
             prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
             userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1),
+            nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
             canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
           }));
         }
-      });
+      }, this));
     },
     
     loadThreadRepliesDetails: function(replies, callback) {
@@ -44,11 +56,11 @@
         return this._createUserInfoLoad(reply.creator);
       }, this));
       
-      async.parallel(calls, function (err, users) {
+      async.parallel(calls, $.proxy(function (err, users) {
         if (err) {
           callback(err);
         } else {
-          callback(null, $.map(users, function (user, index) {
+          callback(null, $.map(users, $.proxy(function (user, index) {
             var reply = replies[index];
 
             // TODO: remove pretty dates
@@ -56,20 +68,31 @@
             var ld = moment(reply.lastModified).toDate();
             var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
             
+            var creatorFullName;
+
+            if (user.nickName) {
+              if (this.options.showFullNamePermission)
+                creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+              else
+                creatorFullName = user.nickName + ' ' + user.lastName;
+            } else {
+              creatorFullName = user.firstName + ' ' + user.lastName;
+            }
+            
             return {
-              creatorFullName: user.firstName + ' ' + user.lastName,
+              creatorFullName: creatorFullName,
               isEdited: reply.lastModified == reply.created ? false : true,
               canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
               prettyDate: formatDate(d) + ' ' + formatTime(d),
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
-              nameLetter: user.firstName.substring(0,1),
+              nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
               replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
             }; 
-          }));
+          }, this)));
         }
-      });
+      }, this));
     },
     
     _createUserInfoLoad: function (userEntityId) {

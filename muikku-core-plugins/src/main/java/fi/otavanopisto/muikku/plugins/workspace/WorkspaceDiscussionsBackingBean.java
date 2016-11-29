@@ -70,6 +70,7 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     workspaceName = workspaceBackingBean.getWorkspaceName();
 
     lockStickyPermission = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity);
+    showFullNamePermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_SHOW_FULL_NAMES);
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
@@ -117,6 +118,10 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     return lockStickyPermission;
   }
 
+  public Boolean getShowFullNamePermission() {
+    return showFullNamePermission;
+  }
+  
   public boolean getCanCreateArea() {
     return canCreateArea;
   }
@@ -132,6 +137,7 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
   private Long workspaceEntityId;
   private String areaPermissions;
   private Boolean lockStickyPermission;
+  private Boolean showFullNamePermission;
   private boolean canCreateArea = false;
   private boolean canUpdateArea = false;
   private boolean canDeleteArea = false;
