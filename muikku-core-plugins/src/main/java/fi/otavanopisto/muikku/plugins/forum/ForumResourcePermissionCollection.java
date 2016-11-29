@@ -126,12 +126,12 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   public static final String FORUM_WRITE_WORKSPACE_MESSAGES = "FORUM_WRITE_WORKSPACE_MESSAGES";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER } )
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FORUM_DELETE_WORKSPACE_MESSAGES = "FORUM_DELETE_WORKSPACE_MESSAGES";
 
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER } )
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String FORUM_EDIT_WORKSPACE_MESSAGES = "FORUM_EDIT_WORKSPACE_MESSAGES";
 

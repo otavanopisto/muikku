@@ -54,11 +54,12 @@
             // TODO: remove pretty dates
             var d = moment(reply.created).toDate();
             var ld = moment(reply.lastModified).toDate();
+            var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
             
             return {
               creatorFullName: user.firstName + ' ' + user.lastName,
               isEdited: reply.lastModified == reply.created ? false : true,
-              canEdit: reply.creator === MUIKKU_LOGGED_USER_ID ? true : false,
+              canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
               prettyDate: formatDate(d) + ' ' + formatTime(d),
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
@@ -300,6 +301,10 @@
     
     mayRemoveThread: function (areaId) {
       return this.options.areaPermissions[areaId] && this.options.areaPermissions[areaId].removeThread;
+    },
+    
+    mayEditMessages: function (areaId) {
+      return this.options.areaPermissions[areaId] && this.options.areaPermissions[areaId].editMessages;
     },
     
     _updateHash: function () {

@@ -99,7 +99,7 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
 
-    if (sessionController.hasCoursePermission(WallPermissions.WALL_READALLCOURSEMESSAGES, workspaceEntity)) {
+    if (sessionController.hasWorkspacePermission(WallPermissions.WALL_READALLCOURSEMESSAGES, workspaceEntity)) {
       entries.addAll(wallEntryDAO.listEntriesByWall(workspaceWall));
     } else {
       entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(workspaceWall, sessionController.getLoggedUserEntity()));

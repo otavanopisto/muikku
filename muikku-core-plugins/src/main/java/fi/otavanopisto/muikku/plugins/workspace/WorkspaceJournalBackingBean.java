@@ -108,18 +108,18 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
 
-    if (studentId != null && !sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)){
+    if (studentId != null && !sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)){
       return NavigationRules.ACCESS_DENIED;
     }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
     posters = new HashMap<Long, String>();
-    canListAllEntries = sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+    canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     workspaceStudents = prepareWorkspaceStudents();
     journalEntries = prepareJournalEntries();
     
@@ -270,13 +270,13 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (studentId == null) {
-      if (sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+      if (sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
         return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
       } else {
         return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
       }
     } else {
-      if (sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+      if (sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
         UserEntity studentEntity = userEntityController.findUserEntityById(studentId);
         return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, studentEntity);
       } else {
