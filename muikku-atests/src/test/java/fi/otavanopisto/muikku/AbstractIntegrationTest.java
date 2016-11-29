@@ -66,7 +66,7 @@ public abstract class AbstractIntegrationTest {
   
   public Date date(int year, int month, int date) {
     Calendar calendar = Calendar.getInstance();
-    calendar.set(year, month, date, 0, 0, 0);
+    calendar.set(1900 + year, month, date, 0, 0, 0);
     return calendar.getTime();
   }
   
