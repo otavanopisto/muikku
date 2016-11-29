@@ -1,12 +1,15 @@
 package fi.otavanopisto.muikku.ui.base.announcer;
 
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+import static org.junit.Assert.assertTrue;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import fi.otavanopisto.muikku.TestUtilities;
@@ -16,8 +19,6 @@ import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
-import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertTrue;
 
 public class AnnouncerTestsBase extends AbstractUITest {
 
@@ -99,7 +100,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -113,7 +114,6 @@ public class AnnouncerTestsBase extends AbstractUITest {
     }
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   public void announcementListTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -123,7 +123,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -156,7 +156,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         List<Long> userGroups = new ArrayList<>();
         userGroups.add(2l);
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, false, userGroups);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -182,7 +182,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         List<Long> userGroups = new ArrayList<>();
         userGroups.add(2l);
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, false, userGroups);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, false, userGroups);
         logout();
         mockBuilder.mockLogin(student);
         login();
