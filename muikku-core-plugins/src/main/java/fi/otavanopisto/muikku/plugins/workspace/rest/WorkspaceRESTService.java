@@ -8,10 +8,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -248,12 +250,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create local copy of workspace %s", sourceWorkspaceId)).build();
     }
-   
+
     return Response
-        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription()))
+        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace)))
         .build();
   }
 
+  private Set<String> convertWorkspaceCurriculumIds(Workspace workspace) {
+    Set<String> curriculumIdentifiers = new HashSet<String>(); 
+    if (workspace.getCurriculumIdentifiers() != null)
+      workspace.getCurriculumIdentifiers().forEach((SchoolDataIdentifier id) -> curriculumIdentifiers.add(id.toId()));
+    return curriculumIdentifiers;
+  }
+  
   private WorkspaceEntity findCopiedWorkspaceEntity(Workspace workspace) {
     WorkspaceEntity result = null;
     
@@ -413,8 +422,20 @@ public class WorkspaceRESTService extends PluginRESTService {
               String description = (String) result.get("description");
               String nameExtension = (String) result.get("nameExtension");
               
+              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
+              Set<String> curriculumIdentifiers = new HashSet<String>();
+              if (curriculumIdentifiersObject instanceof Collection) {
+                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
+                for (Object o : curriculumIdentifierCollection) {
+                  if (o instanceof String)
+                    curriculumIdentifiers.add((String) o);
+                  else
+                    logger.warning("curriculumIdentifier not of type String");
+                }
+              }
+              
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
               }
             }
           }
@@ -475,7 +496,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
   }
   
   @GET
@@ -716,7 +737,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
   }
   
   @GET
@@ -1715,10 +1736,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description) {
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, Set<String> curriculumIdentifiers) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
-    
+
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
         workspaceEntity.getUrlName(),
         workspaceEntity.getAccess(),
@@ -1729,7 +1750,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         description, 
         workspaceEntity.getDefaultMaterialLicense(),
         numVisits, 
-        lastVisit);
+        lastVisit,
+        curriculumIdentifiers);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
