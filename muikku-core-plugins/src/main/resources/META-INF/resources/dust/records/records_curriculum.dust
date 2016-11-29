@@ -1,4 +1,4 @@
-<div>Opetussuunnitelman mukaiset kurssit {curriculumId} - {curriculumName}</div>
+<div>Opetussuunnitelman {curriculumName} mukaiset suoritukset (curriculumName voi olla tyhjä, jos id="default")</div>
 
 <div class="tr-study-programme-accomplishments lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
   {#workspaces}
