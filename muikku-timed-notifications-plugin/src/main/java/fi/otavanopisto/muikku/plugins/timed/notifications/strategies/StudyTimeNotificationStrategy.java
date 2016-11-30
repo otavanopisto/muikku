@@ -27,7 +27,9 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
@@ -48,6 +50,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserController userController;
   
   @Inject
   private LocaleController localeController;
@@ -89,11 +94,13 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     }
     
     for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiers(searchResult)) {
-      
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
+
       if (studentEntity != null) {
+        User student = userController.findUserByIdentifier(studentIdentifier);
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         Map<String, Object> templateModel = new HashMap<>();
+        templateModel.put("internetixStudent", student.hasEvaluationFees());
         templateModel.put("locale", studentLocale);
         templateModel.put("localeHelper", jadeLocaleHelper);
         String notificationContent = renderNotificationTemplate("study-time-notification", templateModel);

@@ -1,1 +1,4 @@
-p= localeHelper.text(locale, "plugin.timednotifications.notification.studytime.content")
+if internetixStudent
+  p= localeHelper.text(locale, "plugin.timednotifications.notification.studytime.content.internetix")
+else
+  p= localeHelper.text(locale, "plugin.timednotifications.notification.studytime.content")

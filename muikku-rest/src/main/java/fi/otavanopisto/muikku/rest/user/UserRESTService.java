@@ -57,6 +57,7 @@ import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -83,6 +84,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Path("/user")
 @Produces("application/json")
 @Consumes("application/json")
+@RestCatchSchoolDataExceptions
 public class UserRESTService extends AbstractRESTService {
 
   @Inject
@@ -378,6 +380,32 @@ public class UserRESTService extends AbstractRESTService {
         .tag(tag)
         .build();
   }
+
+  @PUT
+  @Path("/students/{ID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response updateStudent(
+      @PathParam("ID") String id,
+      Student student) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    User user = userController.findUserByIdentifier(studentIdentifier);
+    
+    // TODO: update other fields too
+    
+    user.setMunicipality(student.getMunicipality());
+    
+    userController.updateUser(user);
+    
+    return Response.ok().entity(student).build();
+  }
   
   @GET
   @Path("/students/{ID}/flags")
@@ -568,6 +596,52 @@ public class UserRESTService extends AbstractRESTService {
     });
     
     return Response.ok(createRestModel(addresses.toArray(new UserAddress[0]))).build();
+  }
+
+  @PUT
+  @Path("/students/{ID}/addresses/{ADDRESSID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateStudentAddress(
+      @PathParam("ID") String id,
+      @PathParam("ADDRESSID") String addressId,
+      StudentAddress studentAddress
+  ) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+    
+    if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_ADDRESSES)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<UserAddress> addresses = userController.listUserAddresses(studentIdentifier);
+    
+    for (UserAddress address : addresses) {
+      if (address.getIdentifier().toId().equals(studentAddress.getIdentifier())) {
+        userController.updateUserAddress(
+            studentIdentifier,
+            address.getIdentifier(),
+            studentAddress.getStreet(),
+            studentAddress.getPostalCode(),
+            studentAddress.getCity(),
+            studentAddress.getCountry());
+        return Response.ok().entity(studentAddress).build();
+      }
+    }
+    
+    return Response.status(Status.NOT_FOUND).entity("address not found").build();
   }
 
   @GET
@@ -1252,7 +1326,9 @@ public class UserRESTService extends AbstractRESTService {
     List<StudentAddress> result = new ArrayList<>();
     
     for (UserAddress entity : entities) {
-      result.add(new StudentAddress(toId(entity.getUserIdentifier()), 
+      result.add(new StudentAddress(
+          toId(entity.getIdentifier()),
+          toId(entity.getUserIdentifier()), 
           entity.getStreet(),
           entity.getPostalCode(),
           entity.getCity(),

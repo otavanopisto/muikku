@@ -1,3 +1,6 @@
+
+// This is used also in ToR 
+
 @import "vars";
 @import "vars_backup";
 @import "styles";
@@ -7,12 +10,15 @@
 @import "sorter-field";
 @import "audio-field";
 @import "file-field";
+@import "correct_answers"; 
 @import "jquery.datepicker";
 @import "evaluation_material_styles_backup";
-@import "correct_answers"; 
 @import "ckeditor_theme";
 @import "draft";
 @import "dialog";
+
+
+
 
 body.evaluation {
   background: none;
