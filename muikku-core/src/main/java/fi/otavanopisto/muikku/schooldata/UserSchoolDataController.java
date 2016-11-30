@@ -294,6 +294,39 @@ public class UserSchoolDataController {
     return null;
   }
   
+  public void updateUser(User user) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        schoolDataBridge.updateUser(user);
+      }
+    }
+  }
+	
+	public void updateUserAddress(
+      SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier addressIdentifier,
+      String street,
+      String postalCode,
+      String city,
+      String country
+  ) throws SchoolDataBridgeUnauthorizedException {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(addressIdentifier.getDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        schoolDataBridge.updateUserAddress(
+            studentIdentifier,
+            addressIdentifier,
+            street,
+            postalCode,
+            city,
+            country);
+      }
+    }
+	}
+  
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
     if (schoolDataSource != null) {

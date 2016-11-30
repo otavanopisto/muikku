@@ -52,7 +52,7 @@ public class WorkspaceUsersBackingBean extends AbstractWorkspaceBackingBean {
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
   
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_WORKSPACE_MEMBERS, workspaceEntity)) {
       return NavigationRules.NOT_FOUND;
     }
 

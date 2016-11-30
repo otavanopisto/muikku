@@ -434,6 +434,8 @@ public class ElasticSearchProvider implements SearchProvider {
                 .should(prefixQuery("name", words[i]))
                 .should(prefixQuery("description", words[i]))
                 .should(prefixQuery("subject", words[i]))
+                .should(prefixQuery("staffMembers.firstName", words[i]))
+                .should(prefixQuery("staffMembers.lastName", words[i]))
                 );
           }
         }

@@ -3,6 +3,8 @@ package fi.otavanopisto.muikku.schooldata.entity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public interface UserAddress extends SchoolDataEntity {
+
+	public SchoolDataIdentifier getIdentifier();
 	
 	public SchoolDataIdentifier getUserIdentifier();
 

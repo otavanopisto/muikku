@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.announcer;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -20,7 +19,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
-import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -38,9 +36,6 @@ public class WorkspaceAnnouncementsViewBackingBean {
   private Long announcementId;
   
   @Inject
-  private Logger logger;
-
-  @Inject
   private SessionController sessionController;
 
   @Inject
@@ -48,9 +43,6 @@ public class WorkspaceAnnouncementsViewBackingBean {
   
   @Inject
   private NavigationController navigationController;
-
-  @Inject
-  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private AnnouncementController announcementController;

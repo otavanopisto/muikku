@@ -185,6 +185,7 @@
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
       lockStickyPermission: $.parseJSON($('input[name="lockStickyPermission"]').val()),
       ioController: new WorkspaceDiscussionIOController({
+        showFullNamePermission: $.parseJSON($('input[name="showFullNamePermission"]').val()),
         workspaceEntityId: $("input[name='workspaceEntityId']").val()
       })
     });

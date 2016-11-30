@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.rest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import javax.inject.Inject;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -16,15 +15,10 @@ import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 
-import fi.otavanopisto.muikku.session.SessionControllerDelegate;
-
 //@Provider
 @ServerInterceptor
 public class ContextInterceptor implements PreProcessInterceptor {
   
-  @Inject
-  private SessionControllerDelegate sessionControllerDelegate;
-
   @Override
   public ServerResponse preProcess(HttpRequest request, ResourceMethodInvoker methodInvoker) throws Failure, WebApplicationException {
     Method method = methodInvoker.getMethod();
