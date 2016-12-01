@@ -96,7 +96,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
       Long numThreads = forumController.getThreadCount(forum);
 
      result.add(new WorkspaceForumAreaRESTModel(forum.getId(), forum.getWorkspace(), forum.getName(), 
-          forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
+          forum.getDescription(), forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
     }
     
     return Response.ok(
@@ -138,7 +138,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         CacheControl cacheControl = new CacheControl();
         cacheControl.setMustRevalidate(true);
         
-        ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), 
+        ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getDescription(),
             forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, numThreads); 
         
         return Response
@@ -233,12 +233,12 @@ public class WorkspaceForumRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Name is required").build();
       }
       
-      WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
+      WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getDescription(), newForum.getGroupId());
       
       Long numThreads = forumController.getThreadCount(workspaceForumArea);
       
       WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
-          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), 
+          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), workspaceForumArea.getDescription(),
           workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null, numThreads); 
       
       return Response.ok(result).build();

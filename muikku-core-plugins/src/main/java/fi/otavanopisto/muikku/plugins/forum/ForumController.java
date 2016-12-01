@@ -94,26 +94,26 @@ public class ForumController {
     return forumThreadReplyDAO.findById(threadReplyId);
   }
 
-  public EnvironmentForumArea createEnvironmentForumArea(String name, Long groupId) {
+  public EnvironmentForumArea createEnvironmentForumArea(String name, String description, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
     ForumAreaGroup group = groupId != null ? findForumAreaGroup(groupId) : null;
-    EnvironmentForumArea forumArea = environmentForumAreaDAO.create(name, group, false, owner, rights);
+    EnvironmentForumArea forumArea = environmentForumAreaDAO.create(name, description, group, false, owner, rights);
     return forumArea;
   }
   
-  public WorkspaceForumArea createWorkspaceForumArea(WorkspaceEntity workspace, String name, Long groupId) {
+  public WorkspaceForumArea createWorkspaceForumArea(WorkspaceEntity workspace, String name, String description, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
     ForumAreaGroup group = groupId != null ? findForumAreaGroup(groupId) : null;
-    WorkspaceForumArea forumArea = workspaceForumAreaDAO.create(workspace, name, group, false, owner, rights);
+    WorkspaceForumArea forumArea = workspaceForumAreaDAO.create(workspace, name, description, group, false, owner, rights);
     return forumArea;
   }
   
   public void copyWorkspaceForumAreas(WorkspaceEntity sourceWorkspace, WorkspaceEntity targetWorkspace) {
     List<WorkspaceForumArea> forumAreas = listWorkspaceForumAreas(sourceWorkspace);
     for (WorkspaceForumArea forumArea : forumAreas) {
-      createWorkspaceForumArea(targetWorkspace, forumArea.getName(), forumArea.getGroup() == null ? null : forumArea.getGroup().getId());
+      createWorkspaceForumArea(targetWorkspace, forumArea.getName(), forumArea.getDescription(), forumArea.getGroup() == null ? null : forumArea.getGroup().getId());
     }
   }
 
