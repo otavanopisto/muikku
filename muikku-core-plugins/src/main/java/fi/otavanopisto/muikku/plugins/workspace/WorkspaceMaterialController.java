@@ -743,24 +743,16 @@ public class WorkspaceMaterialController {
   public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
     final List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
     List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
-
     Collections.sort(workspaceMaterials, new Comparator<WorkspaceMaterial>() {
-      
       @Override
       public int compare(WorkspaceMaterial o1, WorkspaceMaterial o2) {
-        int result = getParentIndex(o1.getParent()) - getParentIndex(o2.getParent());
+        int result = o1.getParent().getOrderNumber() - o2.getParent().getOrderNumber();
         if (result == 0) {
           result = o1.getOrderNumber().compareTo(o2.getOrderNumber());
         }
-        
         return result;
       }
-      
-      private int getParentIndex(WorkspaceNode parent) {
-        return folders.indexOf(parent);
-      }
     });
-    
     return workspaceMaterials;
   }
 
