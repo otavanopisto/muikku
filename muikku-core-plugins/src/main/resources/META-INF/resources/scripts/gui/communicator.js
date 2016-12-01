@@ -768,6 +768,10 @@
           }
         }
       , this));
+      
+      this.loadSignatures($.proxy(function (err, signatures) {
+        // Store the signatures etc....
+      }, this));
     },
     
     loadFolder: function (id) {
@@ -917,6 +921,30 @@
       $.each(labelItems, function(idx, itm) {
         labelContainer.append(itm);
       });
+    },
+
+    loadSignatures: function (callback) {
+      mApi().communicator.signatures.read().callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+    
+    createSignature: function (name, signature, callback) {
+      mApi().communicator.signatures.create({ name: name, signature: signature }).callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+
+    updateSignature: function (id, name, signature, callback) {
+      mApi().communicator.signatures.update(id, { name: name, signature: signature }).callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+
+    deleteSignature: function (id, callback) {
+      mApi().communicator.signatures.del(id).callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
     },
     
     _onLabelMenuOpenClick : function(event){
