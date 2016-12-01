@@ -139,13 +139,21 @@ public class PyramusWebhookServlet extends HttpServlet {
         break;      
         case COURSE_STUDENT_CREATE:
         case COURSE_STUDENT_UPDATE:
-        case COURSE_STUDENT_ARCHIVE:
           WebhookCourseStudentData courseStudentData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
           if (courseStudentData == null) {
             return;  
           }
           
           pyramusUpdater.updateCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
+        break;
+        case COURSE_STUDENT_ARCHIVE:
+          // Course student archived in Pyramus is considered gone for good whereas workspace user archived in Muikku
+          // can still be unarchived from the user interface. Thus archived course students have to be deleted in Muikku
+          courseStudentData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
+          if (courseStudentData == null) {
+            return;  
+          }
+          pyramusUpdater.removeCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
         break;
         case PERSON_ARCHIVE:
         case PERSON_CREATE:

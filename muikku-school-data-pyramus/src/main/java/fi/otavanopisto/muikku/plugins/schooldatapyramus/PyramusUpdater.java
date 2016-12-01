@@ -628,6 +628,15 @@ public class PyramusUpdater {
     
     return false;
   }
+  
+  public void removeCourseStudent(Long courseStudentId, Long courseId, Long studentId) {
+    String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudentId);
+    SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+    if (workspaceUserEntity != null) {
+      workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+    }
+  }
 
   private boolean isStudentActive(Long studentId) {
     Student student = pyramusClient.get().get(String.format("/students/students/%d", studentId), Student.class);
