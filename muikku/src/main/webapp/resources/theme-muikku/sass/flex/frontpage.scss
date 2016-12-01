@@ -47,7 +47,7 @@ nav.of-navigation {
     flex: 1 1 auto;
   }
   
-  .of-site-secondary-links {
+  .of-site-alternate-links {
     align-items: center;
     @include flexbox;
     flex: 0 0 auto;
@@ -64,6 +64,11 @@ nav.of-navigation {
     @include flexbox;
     flex-flow: row wrap;
     height: 100%;
+    
+    &.secondary-links {
+      display: none;
+    }
+    
   }
   
   li.of-link-item {
@@ -84,6 +89,11 @@ nav.of-navigation {
       
       > span {
         align-self: center;
+      }
+      
+      > span.icon-navicon {
+        display: inline-block;
+        font-size: 26px;
       }
       
       &:hover {
@@ -368,7 +378,6 @@ main.of-content {
   @include flexbox;
   flex-flow: row wrap;
   margin: 70px 0;
-  min-height:300px; // REMOVE THIS
 }
  
 // SECTION TITLE
@@ -390,7 +399,6 @@ h2.frontpage-section-title {
   border-radius: 3px;
   box-sizing: border-box;
   margin: 10px;
-  min-height: 300px; // REMOVE THIS
 }
 
 // STUDYING SECTION
@@ -629,7 +637,7 @@ footer.of-footer {
   box-sizing: border-box;
   flex: 1 1 calc(50% - 20px);
   margin: 10px;
-  padding: 0 30px;
+  padding: 0 30px 30px 30px;
   
   h2 {
     color: $of-footer-text-color;
@@ -686,7 +694,7 @@ footer.of-footer {
   text-align: right;
   
   .footer-logo {
-    margin: 20px 0;
+    margin: 40px 0;
   }
   
 }
@@ -819,3 +827,4 @@ ul.carousel-image-controls {
   
 }
 
+@import "mobile_frontpage";

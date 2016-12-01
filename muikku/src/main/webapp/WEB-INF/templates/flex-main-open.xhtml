@@ -32,8 +32,9 @@
     <ui:insert name="of-navigation">
 	    <nav class="of-navigation">
 	      <div class="of-navigation-wrapper">
-		      <div class="of-site-logo md-flex-hide sm-flex-hide"></div>
-		      <div class="of-site-links">
+		      <div class="of-site-logo"></div>
+		      
+		      <div class="of-site-links wide-navigation">
 			      <ul class="of-links-container">
 			        <li class="of-link-item">
 			          <a href="#"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
@@ -52,7 +53,58 @@
 			        </li>
 			      </ul>
 		      </div>
-		      <div class="of-site-secondary-links">
+		      
+		      <div class="of-site-links narrow-navigation">
+            <ul class="of-links-container primary-links">
+              <li class="of-link-item">
+                <a href="#"><span class="icon-navicon"></span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#" class="highlight"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
+              </li>
+            </ul>
+            <ul class="of-links-container secondary-links">
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+              </li>
+            </ul>
+          </div>
+          
+          <div class="of-site-links mobile-navigation">
+            <ul class="of-links-container primary-links">
+              <li class="of-link-item">
+                <a href="#"><span class="icon-navicon"></span></a>
+              </li>
+            </ul>
+            <ul class="of-links-container secondary-links">
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
+              </li>
+              <li class="of-link-item">
+                <a href="#" class="highlight"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
+              </li>
+            </ul>
+          </div>
+		      
+		      <div class="of-site-alternate-links">
 			      <div class="of-site-login">
 			        <div class="login">
 	              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
@@ -146,8 +198,8 @@
             </div>
           </div>
           <div class="logo-container">
-            <div class="footer-logo"><img src="/gfx/alku_uudelle.jpg" alt="" title="" /></div>
-            <div class="footer-logo"><img src="/gfx/footer_logo.jpg" alt="" title="" /></div>
+            <div class="footer-logo slogan"><img src="/gfx/alku_uudelle.jpg" alt="" title="" /></div>
+            <div class="footer-logo logo"><img src="/gfx/footer_logo.jpg" alt="" title="" /></div>
           </div>
         </div>
       </footer>

@@ -8,7 +8,16 @@
       dotsClass: "carousel-video-controls",
       fade: true,
       speed: 750,
-      waitForAnimate: false
+      waitForAnimate: false,
+      responsive: [
+                   {
+                     breakpoint: 769,
+                     settings: {
+                       adaptiveHeight: true,
+                       fade: false
+                     }
+                   }
+                 ]
     });
   });
   
@@ -21,7 +30,16 @@
       fade: true,
       speed: 750,
       swipeToSlide: true,
-      waitForAnimate: false
+      waitForAnimate: false,
+      responsive: [
+                   {
+                     breakpoint: 769,
+                     settings: {
+                       adaptiveHeight: true,
+                       fade: false
+                     }
+                   }
+                 ]
     });
   });
 
