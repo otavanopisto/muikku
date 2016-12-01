@@ -121,6 +121,10 @@ public class ForumController {
     return forumAreaDAO.updateForumArea(forumArea, name);
   }
 
+  public ForumArea updateForumAreaDescription(ForumArea forumArea, String description) {
+    return forumAreaDAO.updateDescription(forumArea, description);
+  }
+
   public void archiveArea(ForumArea forumArea) {
     forumAreaDAO.updateArchived(forumArea, true);
   }

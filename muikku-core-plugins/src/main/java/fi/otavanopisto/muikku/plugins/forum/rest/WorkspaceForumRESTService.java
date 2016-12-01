@@ -177,6 +177,7 @@ public class WorkspaceForumRESTService extends PluginRESTService {
 
       if (sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_UPDATEWORKSPACEFORUM, workspaceEntity)) {
         forumController.updateForumAreaName(forumArea, restModel.getName());
+        forumController.updateForumAreaDescription(forumArea, restModel.getDescription());
         return Response.noContent().build();
       } else {
         return Response.status(Status.FORBIDDEN).build();

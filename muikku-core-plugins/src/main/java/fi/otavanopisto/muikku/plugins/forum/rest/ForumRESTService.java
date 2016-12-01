@@ -201,6 +201,7 @@ public class ForumRESTService extends PluginRESTService {
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_UPDATEENVIRONMENTFORUM)) {
         
         forumController.updateForumAreaName(forumArea, restModel.getName());
+        forumController.updateForumAreaDescription(forumArea, restModel.getDescription());
         
         return Response
             .noContent()
