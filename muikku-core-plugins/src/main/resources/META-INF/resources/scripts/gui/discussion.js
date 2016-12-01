@@ -831,7 +831,9 @@
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
-        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), $.proxy(function(err, result) {
+        var description = undefined;
+        
+        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), description, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
           } else {        
@@ -882,8 +884,9 @@
       if (form.checkValidity()) {
         var areaId = this.element.find("select[name='forumAreaId']").val();
         var name = this.element.find('input[name="name"]').val();
+        var description = undefined;
         
-        this.options.ioController.updateArea(areaId, name, $.proxy(function(err, result) {
+        this.options.ioController.updateArea(areaId, name, description, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.editarea', err));
           } else {
