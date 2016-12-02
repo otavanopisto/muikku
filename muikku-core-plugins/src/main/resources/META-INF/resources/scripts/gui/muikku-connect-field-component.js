@@ -167,22 +167,24 @@
             .attr('data-field-value', $(counterpart).data('muikku-connect-field-option-name'))
             .html($(counterpart).html());
           
-          counterpartElement.click($.proxy(function(e){
+          var counterPartClickHandler = $.proxy(function(e){
             if(typeof(this.options.meta.selectedTerm) !== 'undefined' && this.options.meta.selectedTerm !== null){
+              this._swapElements(this.options.meta.selectedTerm, $(e.target).closest('.muikku-connect-field-counterpart'));
               counterpartElement
                 .removeClass('counterpart-full-text')
                 .html($(counterpart).html())
                 .next('.counterpart-placeholder')
                 .remove();
-              this._swapElements(this.options.meta.selectedTerm, $(e.target).closest('.muikku-connect-field-counterpart'));
             }
-          }, this));
+          }, this);
+          counterpartElement.click(counterPartClickHandler);
           
           if (($(counterpart).attr('title')||"").length > 50) {
             counterpartElement.mouseenter($.proxy(function(e){  
               var childElement = $('<div>')
                 .addClass('counterpart-full-text')
                 .html($(counterpart).attr('title'));
+              childElement.click(counterPartClickHandler);
               counterpartElement.html("").append(childElement);
             }, this));
             
