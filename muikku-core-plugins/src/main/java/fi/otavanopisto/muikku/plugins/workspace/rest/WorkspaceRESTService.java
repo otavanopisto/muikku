@@ -113,7 +113,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
-  
+
   @Inject
   private Logger logger;
 
@@ -2122,9 +2122,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listJournalEntries(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @QueryParam("userEntityId") Long userEntityId,
-      @QueryParam("workspaceStudentId") String workspaceStudentId
-  ) {
-    
+      @QueryParam("workspaceStudentId") String workspaceStudentId,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("25") Integer maxResults) {
     // Workspace
     
     List<WorkspaceJournalEntry> entries = new ArrayList<>();
@@ -2137,7 +2137,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
-      entries = workspaceJournalController.listEntries(workspaceEntity);
+      entries = workspaceJournalController.listEntries(workspaceEntity, firstResult, maxResults);
     }
     else {
       if (userEntityId != null) {
@@ -2180,14 +2180,19 @@ public class WorkspaceRESTService extends PluginRESTService {
           userEntity = userEntityFromWorkspaceUser;
         }
       }
-      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity, firstResult, maxResults);
     }
     
     for (WorkspaceJournalEntry entry : entries) {
+      UserEntity entryUserEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
+      User user = userController.findUserByUserEntityDefaults(entryUserEntity);
+      
       result.add(new WorkspaceJournalEntryRESTModel(
           entry.getId(),
           entry.getWorkspaceEntityId(),
           entry.getUserEntityId(),
+          user.getFirstName(),
+          user.getLastName(),
           entry.getHtml(),
           entry.getTitle(),
           entry.getCreated()

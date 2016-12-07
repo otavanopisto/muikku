@@ -30,7 +30,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     return persist(journalEntry);
   }
 
-  public List<WorkspaceJournalEntry> listByWorkspaceEntityId(Long workspaceEntityId) {
+  public List<WorkspaceJournalEntry> listByWorkspaceEntityId(WorkspaceEntity workspaceEntity, int firstResult, int maxResults) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -39,17 +39,22 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
+        criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntity.getId()),
         criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
       )
     );
       
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
 
-    return entityManager.createQuery(criteria).getResultList();
+    TypedQuery<WorkspaceJournalEntry> query = entityManager.createQuery(criteria);
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
   }
   
-  public List<WorkspaceJournalEntry> listByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId){
+  public List<WorkspaceJournalEntry> listByWorkspaceEntityIdAndUserEntityId(WorkspaceEntity workspaceEntity, UserEntity userEntity, 
+      int firstResult, int maxResults) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -58,17 +63,21 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntityId),
-            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntityId),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntity.getId()),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntity.getId()),
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
         )
     );
     criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
 
-    return entityManager.createQuery(criteria).getResultList();
+    TypedQuery<WorkspaceJournalEntry> query = entityManager.createQuery(criteria);
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
   }
   
-  public WorkspaceJournalEntry findLatestByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId){
+  public WorkspaceJournalEntry findLatestByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -90,7 +99,24 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     return getSingleResult(query);
   }
   
-  public long countByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId){
+  public long countByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntity.getId()),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
+        )
+    );
+
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+  
+  public long countByWorkspaceEntityIdAndUserEntityId(Long workspaceEntityId, Long userEntityId) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
