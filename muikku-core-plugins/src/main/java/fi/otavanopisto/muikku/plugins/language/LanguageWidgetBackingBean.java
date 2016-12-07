@@ -30,6 +30,11 @@ public class LanguageWidgetBackingBean {
   public String load() {
     return null;
   }
+  
+  public String getLanguage() {
+    Locale locale = localSessionController.getLocale();
+    return locale == null || locale.getLanguage() == null ? "FI" : locale.getLanguage().toUpperCase();
+  }
 
   public String setLanguage(String language){
     Locale locale = LocaleUtils.toLocale(language);
