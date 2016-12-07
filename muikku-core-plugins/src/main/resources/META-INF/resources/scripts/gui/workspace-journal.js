@@ -1,4 +1,71 @@
 (function() {
+  'use strict';
+
+  $.widget("custom.journal", {
+    _create : function() {
+      this._student = undefined;
+      this.loadPage(this.options.workspaceId, this._student, 1);
+
+      $(document).on('change', '#studentSelectField', $.proxy(this._onStudentSelectFieldChange, this));
+      this.element.on('click', '.workspace-journal-load-more-button:not(.disabled)', $.proxy(this._onLoadMoreClick, this));
+    },
+    
+    loadPage: function(workspaceId, userEntityId, page) {
+      var firstResult = (page - 1) * this.options.pageSize;
+      this._page = page;
+      
+      var params = { 
+        firstResult: firstResult, 
+        maxResults: this.options.pageSize 
+      };
+      
+      if (userEntityId)
+        params["userEntityId"] = userEntityId;
+      
+      mApi().workspace.workspaces.journal.read(workspaceId, params).callback(
+        $.proxy(function(err, journalEntries) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            var template = this.options.canListAllEntries ? 'journal/journalentries_teacher.dust' : 'journal/journalentries_my.dust';
+            
+            renderDustTemplate(template, journalEntries, function(text) {
+              $("#journalEntries").append(text);
+            });
+          }
+        }, this));
+    },
+    getPage: function() {
+      return this._page;
+    },
+    clearResults: function() {
+      $("#journalEntries").empty();
+    },
+    _onStudentSelectFieldChange: function() {
+      var selectedStudent = $("#studentSelectField").val();
+      this._student = selectedStudent;
+      this.clearResults();
+      this.loadPage(this.options.workspaceId, this._student, 1);
+    },
+    _onLoadMoreClick: function() {
+      this.loadPage(this.options.workspaceId, this._student, this.getPage() + 1);
+    }
+  });
+  
+  $(document).ready(function() {
+    $('.journal').journal({
+      workspaceId: $("input[name='workspaceEntityId']").val(),
+      canListAllEntries: $('.journal').attr('data-canListAllEntries') == 'true',
+      pageSize: 20,
+      groupMessagingPermission: $('.journal').attr('data-daadaa') == 'true'
+    });
+  });
+
+}).call(this);
+
+
+
+(function() {
 
   function confirmJournalEntryDeleteRequest(id) {
     renderDustTemplate(
@@ -53,7 +120,7 @@
     openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId,sendJournalEntry);
   };
 
- function editJournalEntry(element) {
+  function editJournalEntry(element) {
     var id = element.attr('data-entry-id');
     var workspaceId = $("input[name='workspaceEntityId']").val();
     openInSN('/workspace/workspace-journal-edit-entry.dust',
@@ -78,7 +145,7 @@
     view.show();
     form.parent().hide();
   }
-
+  
   $(document).on('click', '.cancel-entry-edit-btn', function(event) {
     event.preventDefault();
     cancelJournalEntryEdit($(this).parent().parent().parent());
@@ -97,9 +164,5 @@
   $(document).on('click', '.journal-edit-button', function(event) {
     editJournalEntry($(this).closest('.workspace-single-journal-entry'));
   });
-
-  $(document).on('change', '#studentSelectField', function() {
-    $("#studentSelectForm")[0].submit();
-  })
 
 }).call(this);
