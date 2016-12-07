@@ -1273,7 +1273,7 @@
     $(data.pageElement).find("iframe[data-url^='//www.youtube.com']").each(function(index, object) {
       $(object).removeAttr('height').removeAttr('width');
       $(object).width($(object).parent().width());
-      $(object).height($(object).width() / 16 * 9);
+      $(object).height(Math.round($(object).width() / 16 * 9));
     });
 
     /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
