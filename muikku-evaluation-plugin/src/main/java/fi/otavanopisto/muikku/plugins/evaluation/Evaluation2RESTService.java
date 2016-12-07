@@ -274,7 +274,7 @@ public class Evaluation2RESTService {
         WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
         if (workspaceMaterialReply != null) {
           WorkspaceMaterialReplyState replyState = workspaceMaterialReply.getState();
-          if (replyState != WorkspaceMaterialReplyState.UNANSWERED && replyState != WorkspaceMaterialReplyState.WITHDRAWN) {
+          if (replyState == WorkspaceMaterialReplyState.SUBMITTED || replyState == WorkspaceMaterialReplyState.PASSED || replyState == WorkspaceMaterialReplyState.FAILED) {
             submitted = workspaceMaterialReply.getLastModified();
           }
         }
