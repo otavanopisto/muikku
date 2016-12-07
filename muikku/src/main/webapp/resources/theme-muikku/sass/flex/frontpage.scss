@@ -227,19 +227,19 @@ header.of-header {
     position: relative;
   }
   
-  .of-header-application-buble-wrapper,
+  .of-header-application-bubble-wrapper,
   .of-header-site-info-wrapper,
-  .of-header-open-materials-buble-wrapper {
+  .of-header-open-materials-bubble-wrapper {
     box-sizing: border-box;
     flex: 1 1 calc(33.3333%);
   }
   
-  .of-header-application-buble,
-  .of-header-open-materials-buble {
-    background: $of-header-buble-background-color;
-    border: 6px solid $of-header-buble-border-color;
+  .of-header-application-bubble,
+  .of-header-open-materials-bubble {
+    background: $of-header-bubble-background-color;
+    border: 6px solid $of-header-bubble-border-color;
     border-radius: 100%;
-    box-shadow: 0 20px 60px $of-header-buble-boxshadow-color;
+    box-shadow: 0 20px 60px $of-header-bubble-boxshadow-color;
     height: 210px;
     padding: 35px;
     position: relative;
@@ -248,22 +248,22 @@ header.of-header {
     width: 210px;
     
     &:hover {
-      border-color: $of-header-buble-border-hover-color;
+      border-color: $of-header-bubble-border-hover-color;
     }
     
   }
   
-  .of-header-application-buble {
+  .of-header-application-bubble {
     margin: 0 10px 0 auto;
   }
     
-  .of-header-open-materials-buble {
+  .of-header-open-materials-bubble {
     margin: 0 auto 0 10px;
   }
   
   .application-title,
   .open-materials-title {
-    color: $of-header-buble-title-font-color;
+    color: $of-header-bubble-title-font-color;
     font-size: 24px;
     font-weight: 900;
     left: 45px;
@@ -281,10 +281,10 @@ header.of-header {
   
   .application-link a,
   .open-materials-link a {
-    background: $of-header-buble-link-background-color;
+    background: $of-header-bubble-link-background-color;
     border-radius: 5px;
     bottom: 50px;
-    color: $of-header-buble-link-color;
+    color: $of-header-bubble-link-color;
     cursor: pointer;
     display: inline-block;
     font-size: 14px;

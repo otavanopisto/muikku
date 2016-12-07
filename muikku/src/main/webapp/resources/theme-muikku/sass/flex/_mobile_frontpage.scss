@@ -36,8 +36,13 @@
 
 }
 
-// PORTRAIT & LANDSCAPE PAD
+// LANDSCAPE PAD
 @media screen and (min-width: 769px) and (max-width: 1024px) {
+  
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
   
   .of-site-logo {
     display: none;
@@ -58,8 +63,13 @@
 
 }
 
-// MOBILE
+// PAD PORTRAIT
 @media screen and (max-width: 768px) {
+  
+  body {
+    max-width: 768px;
+    overflow-x: hidden;
+  }
 
   .of-site-logo {
     display: none;
@@ -109,6 +119,11 @@
 
 // MOBILE
 @media screen and (max-width: 767px) {
+  
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
 
   .of-site-logo {
     display: none;
