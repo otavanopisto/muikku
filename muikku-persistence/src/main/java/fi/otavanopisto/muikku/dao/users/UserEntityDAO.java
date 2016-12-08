@@ -69,4 +69,9 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     userEntity.setArchived(archived);
     return persist(userEntity);
   }
+
+  public UserEntity updateUpdatedByStudent(UserEntity userEntity, Boolean updatedByStudent) {
+    userEntity.setUpdatedByStudent(updatedByStudent);
+    return persist(userEntity);
+  }
 }

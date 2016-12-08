@@ -391,12 +391,22 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    
     if (studentIdentifier == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
     }
+    if (!(Objects.equals(studentIdentifier.getIdentifier(), loggedUserIdentifier.getIdentifier()) &&
+        Objects.equals(studentIdentifier.getDataSource(), loggedUserIdentifier.getDataSource()))) {
+      return Response.status(Status.FORBIDDEN).entity("Trying to modify non-logged-in student").build();
+    }
     
     User user = userController.findUserByIdentifier(studentIdentifier);
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+    
+    userEntityController.markAsUpdatedByStudent(userEntity);
     
     // TODO: update other fields too
     
@@ -630,6 +640,8 @@ public class UserRESTService extends AbstractRESTService {
     
     for (UserAddress address : addresses) {
       if (address.getIdentifier().toId().equals(studentAddress.getIdentifier())) {
+        userEntityController.markAsUpdatedByStudent(studentEntity);
+
         userController.updateUserAddress(
             studentIdentifier,
             address.getIdentifier(),
