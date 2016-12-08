@@ -7,7 +7,7 @@
       this.loadPage(this.options.workspaceId, this._student, 1);
 
       $(document).on('change', '#studentSelectField', $.proxy(this._onStudentSelectFieldChange, this));
-      this.element.on('click', '.workspace-journal-load-more-button:not(.disabled)', $.proxy(this._onLoadMoreClick, this));
+      this.element.on('click', '.wj-page-link-load-more:not(.disabled)', $.proxy(this._onLoadMoreClick, this));
     },
     
     loadPage: function(workspaceId, userEntityId, page) {
@@ -32,6 +32,11 @@
             renderDustTemplate(template, journalEntries, function(text) {
               $("#journalEntries").append(text);
             });
+            
+            if (journalEntries && (journalEntries.length < this.options.pageSize))
+              $('.wj-page-link-load-more').addClass('disabled');
+            else
+              $('.wj-page-link-load-more').removeClass('disabled');
           }
         }, this));
     },
