@@ -20,6 +20,7 @@
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-journal.css"/>   
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>          
   </ui:define>
   
   <ui:define name="grid-content">
@@ -66,7 +67,7 @@
       </div>
     </form>
     
-    <div class="journal workspace-journal-content-wrapper flex-row" data-canListAllEntries="#{workspaceJournalBackingBean.canListAllEntries}" data-myJournal="#{workspaceJournalBackingBean.myJournal}">
+    <div class="journal workspace-journal-content-wrapper flex-row flex-align-items-center" data-canListAllEntries="#{workspaceJournalBackingBean.canListAllEntries}" data-myJournal="#{workspaceJournalBackingBean.myJournal}">
       <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
         <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
           <div class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
@@ -78,10 +79,11 @@
         </ui:fragment>
       </ui:fragment>
 
-      <div id="journalEntries">
+      <div id="journalEntries" class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
       </div>
-
-      <div class="mf-paging-tool mf-page-link-load-more wj-page-link-load-more disabled">#{i18n.text['plugin.workspace.journal.loadMoreEntries']}</div>
+      <div class="workspace-journal-paging-toolbar lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="mf-paging-tool mf-page-link-load-more wj-page-link-load-more disabled">#{i18n.text['plugin.workspace.journal.loadMoreEntries']}</div>
+      </div>
     </div>
   </ui:define>
 </ui:composition>

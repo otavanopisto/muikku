@@ -78,6 +78,7 @@
   background: #fff;
   padding: 20px;
   
+  
   .workspace-journal-no-entries {
     box-sizing: border-box;
     font-size: 22px;
@@ -138,7 +139,9 @@
     }
   
   }
-  
+  .workspace-journal-paging-toolbar {
+    text-align:center;
+  }
   .workspace-journal-header-container {
     padding: 5px 0;
     border-bottom: 2px solid #f8f8f8;
