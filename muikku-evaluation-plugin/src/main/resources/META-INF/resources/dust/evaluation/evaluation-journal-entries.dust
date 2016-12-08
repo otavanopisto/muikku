@@ -1,0 +1,7 @@
+{#journalEntries}
+  <div>
+    <h3>{title}</h3>
+    <div>{created|formatDate} {created|formatTime}</div>
+    <div>{content|s}</div>
+  </div>
+{/journalEntries}
