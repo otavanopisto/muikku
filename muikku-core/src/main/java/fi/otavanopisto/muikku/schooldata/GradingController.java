@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.schooldata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -170,6 +171,24 @@ public class GradingController {
 
   public void deleteWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceAssesmentIdentifier) {
     gradingSchoolDataController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
+    // #2716: When workspace assessment is removed, restore latest workspace assessment request
+    List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+    requests.sort(new Comparator<WorkspaceAssessmentRequest>() {
+      public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
+        return o2.getDate().compareTo(o1.getDate()); // latest request first
+      }
+    });
+    // Update should cause the school data source to treat the request as active again (i.e. not handled)
+    WorkspaceAssessmentRequest latestRequest = requests.isEmpty() ? null : requests.get(0);
+    updateWorkspaceAssessmentRequest(
+        latestRequest.getSchoolDataSource(),
+        latestRequest.getIdentifier(),
+        latestRequest.getWorkspaceUserIdentifier(),
+        latestRequest.getWorkspaceUserSchoolDataSource(),
+        workspaceIdentifier.getIdentifier(),
+        studentIdentifier.getIdentifier(),
+        latestRequest.getRequestText(),
+        latestRequest.getDate());
   }
 
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
