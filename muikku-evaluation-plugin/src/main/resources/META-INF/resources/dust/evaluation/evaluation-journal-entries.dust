@@ -1,7 +1,12 @@
 {#journalEntries}
-  <div>
-    <h3>{title}</h3>
-    <div>{created|formatDate} {created|formatTime}</div>
-    <div>{content|s}</div>
+  <div class="journal-entry">
+    <div class="journal-entry-title-wrapper">
+      <div class="journal-entry-title">{title}</div>
+      <div class="journal-entry-date">
+        <span class="journal-entry-written-label">{#localize key="plugin.evaluation.evaluationModal.journalEntry.writtenLabel"/}</span>
+        <span class="journal-entry-wrutten-data">{created|formatDate} - {created|formatTime}</span>
+      </div>
+    </div>
+    <div class="journal-entry-content">{content|s}</div>
   </div>
 {/journalEntries}
