@@ -11,20 +11,20 @@
         <div class="cm-message-create-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="mf-form-row flex-row flex-align-items-center">
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-              <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
+              <div class="mf-form-element-subcontainer flex-row flex-align-items-center">
                 <div class="cm-message-recipients lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16" id="msgRecipientsContainer"><input id="recipientContent" type="text" name="recipient" placeholder="{#localize key="plugin.communicator.createmessage.title.recipients"/}"></input></div>
                 <div class="cm-message-recipient-search mf-textfield-subelement"></div>
               </div>
             </div>      
           </div>
-          <div class="mf-form-row flex-row flex-align-items-center">
+          <div class="mf-form-row flex-row no-margin-left no-margin-right flex-align-items-center">
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-              <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
+              <div class="mf-textfield-subcontainer no-margin-left no-margin-right flex-row flex-align-items-center">
 <!--                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2">{#localize key="plugin.communicator.createmessage.title.subject"/}</span> -->
                 {?replyMessage}
-                  <input class="mf-textfield-subject lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16" type="text" name="caption" maxlength="255" required="required" placeholder="{#localize key="plugin.communicator.createmessage.title.subject"/}" value="{#localize key="plugin.communicator.createmessage.title.replySubject" arg0=replyMessage.caption/}"></input>
+                  <input class="mf-textfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-left no-margin-right" type="text" name="caption" maxlength="255" required="required" placeholder="{#localize key="plugin.communicator.createmessage.title.subject"/}" value="{#localize key="plugin.communicator.createmessage.title.replySubject" arg0=replyMessage.caption/}"></input>
                 {:else}
-                  <input class="mf-textfield-subject lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16" type="text" name="caption" maxlength="255" required="required" placeholder="{#localize key="plugin.communicator.createmessage.title.subject"/}"></input>
+                  <input class="mf-textfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-left no-margin-right" type="text" name="caption" maxlength="255" required="required" placeholder="{#localize key="plugin.communicator.createmessage.title.subject"/}"></input>
                 {/replyMessage}
               </div>  
             </div>      
