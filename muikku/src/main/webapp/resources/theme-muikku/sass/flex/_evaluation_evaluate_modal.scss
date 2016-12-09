@@ -135,7 +135,7 @@
   width: 100%;
 }
   
-.eval-modal-assignment-content,
+.eval-modal-materials-content,
 .eval-modal-evaluate-workspace-content,
 .eval-modal-evaluate-assignment-content {
   bottom: 0;
@@ -238,6 +238,12 @@
 }
 
 // ASSIGNMENTS & EXERCISES
+.eval-modal-assignments-title {
+  font-size: 22px;
+  font-weight: 400;
+  padding: 10px;
+}
+
 .assignment-wrapper {
   border-bottom: 1px solid #f8f8f8;
   padding: 8px 0;
@@ -263,7 +269,7 @@
 .assignment-title,
 .exercise-title {
   font-size: 20px;
-  padding: 0 0 4px 0;  
+  padding: 0 0 4px;  
 }
 
 .assignment-done,
@@ -281,10 +287,6 @@
   color: #27b91c;
   font-weight: 400;
   padding: 0 4px 0 0;
-}
-
-.assignment-done-data {
-
 }
 
 .assignment-notdone-label {
@@ -321,4 +323,44 @@
 
 .assignment-wrapper.exercise .assignment-evaluate-button {
   display: none;
+}
+
+// JOURNAL ENTRIES
+.eval-modal-journal-entries-title {
+  font-size: 22px;
+  font-weight: 400;
+  padding: 30px 10px 10px;
+}
+
+.journal-entry {
+  border-bottom: 1px solid #f8f8f8;
+  padding: 8px 0;
+  position: relative;
+}
+
+.journal-entry-title-wrapper {
+  border-left: 3px solid $journal;
+  padding: 2px 8px;
+  position: relative;
+}
+
+.journal-entry-title {
+  font-size: 20px;
+  padding: 0 0 4px;
+}
+
+.journal-entry-date {
+  display: inline-block;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.journal-entry-written-label {
+  color: #27b91c;
+  font-weight: 400;
+  padding: 0 4px 0 0;
+}
+
+.journal-entry-content {
+  padding: 10px 8px;
 }

@@ -92,7 +92,7 @@
               
               // Material's loading animation start
               
-              this.element.trigger("loadStart", $('.eval-modal-assignment-content'));
+              this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
               
               // Workspace assessment editor
 
@@ -162,6 +162,25 @@
       this.element.trigger("dialogReady");
     },
     
+    _loadJournalEntries: function() {
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      
+      mApi().workspace.workspaces.journal.read(workspaceEntityId, {userEntityId: userEntityId})
+        .callback($.proxy(function (err, journalEntries) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            renderDustTemplate('/evaluation/evaluation-journal-entries.dust', { 
+              journalEntries: journalEntries
+            }, $.proxy(function(text) {
+              this.element.find('.eval-modal-journal-entries-content').append(text);
+            }, this));
+          }
+        }, this));
+    },
+    
     _loadMaterials: function() {
       var userEntityId = $(this._requestCard).attr('data-user-entity-id');
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
@@ -223,6 +242,7 @@
         $('#workspaceEvaluationDate').datepicker('setDate', new Date());
       }
       this._loadMaterials();
+      this._loadJournalEntries();
     },
     
     _onMaterialsLoaded: function(event, data) {
@@ -237,11 +257,11 @@
           evaluationDate: assignment.evaluated,
           grade: assignment.grade
         }, $.proxy(function (html) {
-          $('.eval-modal-assignment-content').append(html);
+          $('.eval-modal-assignments-content').append(html);
         }, this));
       }, this));
       // Material's loading animation end
-      this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
+      this.element.trigger("loadEnd", $('.eval-modal-assignments-content'));
     },
     
     _onWorkspaceAssessmentSaved: function(event, data) {
