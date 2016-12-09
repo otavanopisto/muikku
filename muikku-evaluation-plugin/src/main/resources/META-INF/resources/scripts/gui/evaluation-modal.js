@@ -135,7 +135,7 @@
                 this._saveMaterialAssessment();
               }, this));
               $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
-                this._toggleMaterialAssessmentView(false);
+                this.toggleMaterialAssessmentView(false);
               }, this));
               
               // Discard modal button (top right)  
@@ -261,8 +261,13 @@
       }, this));
     },
     
-    setActiveAssignment: function(assignment) {
-      this._activeAssignment = assignment;
+    activeAssignment: function(val) {
+      if (val) {
+        this._activeAssignment = val;
+      }
+      else {
+        return this._activeAssignment;
+      }
     },
     
     loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
@@ -286,7 +291,7 @@
               // Grade
               $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
               // Show material evaluation view
-              this._toggleMaterialAssessmentView(true);
+              this.toggleMaterialAssessmentView(true);
             }
           }, this));
       }
@@ -296,11 +301,11 @@
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').prop('selectedIndex', 0);
         $('#assignmentGrade').prop('selectedIndex', 0);
-        this._toggleMaterialAssessmentView(true);
+        this.toggleMaterialAssessmentView(true);
       }
     },
     
-    _toggleMaterialAssessmentView(show) {
+    toggleMaterialAssessmentView: function(show) {
       
       // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
@@ -555,7 +560,7 @@
                     $(this._activeAssignment).attr('data-evaluated', true);
                     $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
                     $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
-                    this._toggleMaterialAssessmentView(false);
+                    this.toggleMaterialAssessmentView(false);
                   }
                 }, this));
             }
@@ -587,7 +592,7 @@
                 .append($('<span>').addClass('assignment-grade-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentGradeLabel")))
                 .append($('<span>').addClass('assignment-grade-data').text($('#assignmentGrade option:selected').text()));
               $(this._activeAssignment).find('.assignment-done').after(gradeElement).after(evaluationDateElement);
-              this._toggleMaterialAssessmentView(false);
+              this.toggleMaterialAssessmentView(false);
             }
           }, this));
       }
@@ -609,12 +614,18 @@
   });
 
   $(document).on('click', '.assignment-evaluate-button', function (event) {
-    var assignment = $(event.target).closest('.assignment-wrapper');
-    $(document).evaluationModal('setActiveAssignment', assignment);
-    var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
-    var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id');
-    $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
-    $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
+    var oldAssignment = $(document).evaluationModal('activeAssignment');
+    var newAssignment = $(event.target).closest('.assignment-wrapper');
+    if (!oldAssignment || newAssignment[0] !== oldAssignment[0]) {
+      $(document).evaluationModal('activeAssignment', newAssignment);
+      var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+      var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
+      $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
+      $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
+    }
+    else {
+      $(document).evaluationModal('toggleMaterialAssessmentView', true);
+    }
   });
 
   $(document).on('afterHtmlMaterialRender', function (event, data) {
