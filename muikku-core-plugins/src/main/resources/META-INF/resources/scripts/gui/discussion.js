@@ -390,6 +390,7 @@
           if (!area.groupId) {
             $('<option>')
               .attr('value', area.id)
+              .attr('data-description', area.description)
               .text(area.name) 
               .appendTo(areaSelect);
           }
@@ -404,6 +405,16 @@
     },
     
     _loadThreads: function (areaId) {
+      
+      var option = this.element.find('select[name="areas"] option:selected');
+      var description = option.attr('data-description');
+      var descriptionContainer =  this.element.find('.di-thread-description-container');
+      if(description){
+        $(descriptionContainer).show();
+        this.element.find('.di-thread-description').text(description);
+      }else{
+        $(descriptionContainer).hide();
+      }
       this.element.find('.di-thread')
         .hide();
 
@@ -465,7 +476,6 @@
     _create : function() {
       this._firstResult = 0;
       this._replies = []; 
-      
       this.element.on("click", ".icon-goback", $.proxy(this._onBackClick, this));
       this.element.on("click", ".di-remove-thread-link", $.proxy(this._onRemoveClick, this));
       this.element.on("click", ".di-message-reply-link", $.proxy(this._onMessageReplyClick, this));
@@ -491,6 +501,7 @@
     },
     
     loadThread: function (areaId, threadId) {
+      $('.di-thread-description-container').hide();      
       this.element
         .html('')
         .addClass('loading');
