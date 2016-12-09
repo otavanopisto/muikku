@@ -313,6 +313,14 @@
   z-index: 9;
 }
 
+.assignment-wrapper[data-evaluated="true"] {
+  
+  .assignment-evaluate-button {
+    background: #3edd2d;
+  }
+  
+}
+
 .assignment-wrapper.exercise .assignment-evaluate-button {
   display: none;
 }
