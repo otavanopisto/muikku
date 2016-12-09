@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.dao.grading.GradingScaleEntityDAO;
@@ -173,14 +174,14 @@ public class GradingController {
     gradingSchoolDataController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
     // #2716: When workspace assessment is removed, restore latest workspace assessment request
     List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
-    requests.sort(new Comparator<WorkspaceAssessmentRequest>() {
-      public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
-        return o2.getDate().compareTo(o1.getDate()); // latest request first
-      }
-    });
-    // Update should cause the school data source to treat the request as active again (i.e. not handled)
-    WorkspaceAssessmentRequest latestRequest = requests.isEmpty() ? null : requests.get(0);
-    if (latestRequest != null) {
+    if (CollectionUtils.isNotEmpty(requests)) {
+      requests.sort(new Comparator<WorkspaceAssessmentRequest>() {
+        public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
+          return o2.getDate().compareTo(o1.getDate()); // latest request first
+        }
+      });
+      // Update should cause the school data source to treat the request as active again (i.e. not handled)
+      WorkspaceAssessmentRequest latestRequest = requests.get(0);
       updateWorkspaceAssessmentRequest(
           latestRequest.getSchoolDataSource(),
           latestRequest.getIdentifier(),
