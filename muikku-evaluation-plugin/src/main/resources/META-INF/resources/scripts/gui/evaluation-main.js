@@ -210,13 +210,11 @@
     var cards = $('.evaluation-card').sort(function (c1, c2) {
       var a = $(c1).find('.workspace-name').text().toLowerCase();
       var b = $(c2).find('.workspace-name').text().toLowerCase();
-      var result = a.localeCompare(b);
-      if (result == 0) {
+      if (a == b) {
         a = $(c1).find('.evaluation-card-student').text().toLowerCase();
         b = $(c2).find('.evaluation-card-student').text().toLowerCase();
-        result = a.localeCompare(b);
       }
-      return result;
+      return a.localeCompare(b);
     });
     $('.evaluation-cards-container').html(cards);
   });
@@ -228,13 +226,11 @@
     var cards = $('.evaluation-card').sort(function (c1, c2) {
       var a = $(c1).find('.workspace-name').text().toLowerCase();
       var b = $(c2).find('.workspace-name').text().toLowerCase();
-      var result = b.localeCompare(a);
-      if (result == 0) {
+      if (a == b) {
         a = $(c1).find('.evaluation-card-student').text().toLowerCase();
         b = $(c2).find('.evaluation-card-student').text().toLowerCase();
-        result = b.localeCompare(a);
       }
-      return result;
+      return b.localeCompare(a);
     });
     $('.evaluation-cards-container').html(cards);
   });
