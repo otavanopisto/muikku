@@ -180,15 +180,17 @@ public class GradingController {
     });
     // Update should cause the school data source to treat the request as active again (i.e. not handled)
     WorkspaceAssessmentRequest latestRequest = requests.isEmpty() ? null : requests.get(0);
-    updateWorkspaceAssessmentRequest(
-        latestRequest.getSchoolDataSource(),
-        latestRequest.getIdentifier(),
-        latestRequest.getWorkspaceUserIdentifier(),
-        latestRequest.getWorkspaceUserSchoolDataSource(),
-        workspaceIdentifier.getIdentifier(),
-        studentIdentifier.getIdentifier(),
-        latestRequest.getRequestText(),
-        latestRequest.getDate());
+    if (latestRequest != null) {
+      updateWorkspaceAssessmentRequest(
+          latestRequest.getSchoolDataSource(),
+          latestRequest.getIdentifier(),
+          latestRequest.getWorkspaceUserIdentifier(),
+          latestRequest.getWorkspaceUserSchoolDataSource(),
+          workspaceIdentifier.getIdentifier(),
+          studentIdentifier.getIdentifier(),
+          latestRequest.getRequestText(),
+          latestRequest.getDate());
+    }
   }
 
   public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier,
