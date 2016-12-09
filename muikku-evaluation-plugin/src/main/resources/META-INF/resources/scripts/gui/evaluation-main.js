@@ -18,6 +18,8 @@
       
       if (workspaceEntityId) {
         $('.evaluation-cards-title h3').text($('#workspaceName').val());
+        $('.icon-sort-workspace-alpha-asc').hide();
+        $('.icon-sort-workspace-alpha-desc').hide();
       }
       else {
         $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
@@ -157,9 +159,9 @@
   $(document).on('click', '.icon-sort-amount-asc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (a,b) {
-      var a = Date.parse($(a).attr('data-assessment-request-date'));
-      var b = Date.parse($(b).attr('data-assessment-request-date'));
+    var cards = $('.evaluation-card').sort(function (c1, c2) {
+      var a = Date.parse($(c1).attr('data-assessment-request-date'));
+      var b = Date.parse($(c2).attr('data-assessment-request-date'));
       return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
     });
     $('.evaluation-cards-container').html(cards);
@@ -169,9 +171,9 @@
   $(document).on('click', '.icon-sort-amount-desc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (a,b) {
-      var a = Date.parse($(a).attr('data-assessment-request-date'));
-      var b = Date.parse($(b).attr('data-assessment-request-date'));
+    var cards = $('.evaluation-card').sort(function (c1, c2) {
+      var a = Date.parse($(c1).attr('data-assessment-request-date'));
+      var b = Date.parse($(c2).attr('data-assessment-request-date'));
       return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? 1 : a > b ? -1 : 0;   
     });
     $('.evaluation-cards-container').html(cards);
@@ -181,10 +183,10 @@
   $(document).on('click', '.icon-sort-alpha-asc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (a,b) {
-      var a = $(a).find('.evaluation-card-student').text().toLowerCase();
-      var b = $(b).find('.evaluation-card-student').text().toLowerCase();
-      return a < b ? -1 : a > b ? 1 : 0;
+    var cards = $('.evaluation-card').sort(function (c1, c2) {
+      var a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+      var b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+      return a.localeCompare(b);
     });
     $('.evaluation-cards-container').html(cards);
   });
@@ -193,14 +195,50 @@
   $(document).on('click', '.icon-sort-alpha-desc', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (a,b) {
-      var a = $(a).find('.evaluation-card-student').text().toLowerCase();
-      var b = $(b).find('.evaluation-card-student').text().toLowerCase();
-      return a < b ? 1 : a > b ? -1 : 0;
+    var cards = $('.evaluation-card').sort(function (c1, c2) {
+      var a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+      var b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+      return b.localeCompare(a);
     });
     $('.evaluation-cards-container').html(cards);
   });
   
+  // Sort by workspace name (student name as secondary), ascending
+  $(document).on('click', '.icon-sort-workspace-alpha-asc', function (event) {
+    $('.eval-sorting').removeClass('selected');
+    $(event.target).addClass('selected');
+    var cards = $('.evaluation-card').sort(function (c1, c2) {
+      var a = $(c1).find('.workspace-name').text().toLowerCase();
+      var b = $(c2).find('.workspace-name').text().toLowerCase();
+      var result = a.localeCompare(b);
+      if (result == 0) {
+        a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+        b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+        result = a.localeCompare(b);
+      }
+      return result;
+    });
+    $('.evaluation-cards-container').html(cards);
+  });
+
+  // Sort by workspace name (student name as secondary), descending
+  $(document).on('click', '.icon-sort-workspace-alpha-desc', function (event) {
+    $('.eval-sorting').removeClass('selected');
+    $(event.target).addClass('selected');
+    var cards = $('.evaluation-card').sort(function (c1, c2) {
+      var a = $(c1).find('.workspace-name').text().toLowerCase();
+      var b = $(c2).find('.workspace-name').text().toLowerCase();
+      var result = b.localeCompare(a);
+      if (result == 0) {
+        a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+        b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+        result = b.localeCompare(a);
+      }
+      return result;
+    });
+    $('.evaluation-cards-container').html(cards);
+  });
+
   $(document).on('click', '.eval-home', function(event) {
     location.href = location.href.split("?")[0];
   });
