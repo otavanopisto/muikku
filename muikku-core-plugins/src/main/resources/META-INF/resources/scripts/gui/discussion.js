@@ -881,6 +881,8 @@
             var areaSelect = this.element.find("select[name='forumAreaId']");
             areaSelect.val(this.options.areaId)
             this.element.find('input[name="name"]').val(areaSelect.find(':selected').text());
+            var test = areaSelect.find(':selected').attr('data-description');
+            this.element.find('textarea[name="description"]').val(test);
           }
           
           if (callback) {
