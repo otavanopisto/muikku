@@ -305,7 +305,7 @@
       }
     },
     
-    toggleMaterialAssessmentView(show) {
+    toggleMaterialAssessmentView: function(show) {
       
       // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
