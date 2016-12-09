@@ -831,7 +831,7 @@
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
-        var description = undefined;
+        var description = $('#textDescription').val();
         
         this.options.ioController.createArea(this.element.find('input[name="name"]').val(), description, $.proxy(function(err, result) {
           if (err) {
@@ -884,7 +884,7 @@
       if (form.checkValidity()) {
         var areaId = this.element.find("select[name='forumAreaId']").val();
         var name = this.element.find('input[name="name"]').val();
-        var description = undefined;
+        var description = $('#textDescription').val();
         
         this.options.ioController.updateArea(areaId, name, description, $.proxy(function(err, result) {
           if (err) {
