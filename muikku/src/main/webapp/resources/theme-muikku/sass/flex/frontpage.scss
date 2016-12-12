@@ -46,13 +46,17 @@ nav.of-navigation {
   }
   
   .of-site-links {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
   }
   
   .of-site-alternate-links {
+    flex: 0 0 auto;
+  }
+  
+  .of-site-alternate-links-container {
     align-items: center;
     @include flexbox;
-    flex: 0 0 auto;
+    min-height: 70px;
   }
   
   ul, li {
@@ -82,7 +86,7 @@ nav.of-navigation {
       box-sizing: border-box;
       color: $of-navigation-link-color;
       @include flexbox;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 400;
       text-align: center;
       text-decoration: none;
@@ -115,26 +119,40 @@ nav.of-navigation {
   }
   
   .of-site-login {
-    margin: 2px 10px 0;
-    text-align: right;
+    flex: 0 0 auto;
+    margin: 0;
   
-    .login-link {
-      background: $of-navigation-login-background-color;
-      border-radius: 2px; 
-      color: $of-navigation-login-text-color;
+    .login {
       display: inline-block;
-      font-size: 16px;
-      font-weight: 400;
-      padding: 6px 12px;
-      text-decoration: none;
-      text-transform: uppercase;
-    }
+      margin: 7px 0 0;
+      vertical-align: top;
     
+      .login-link {
+        background: $of-navigation-login-background-color;
+        border-radius: 2px; 
+        color: $of-navigation-login-text-color;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: 400;
+        padding: 6px 12px;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+    
+    }
+  
     .forgotpassword {
-      margin: 4px 0 0;
+      display: inline-block;
     
       .forgotpassword-link {
+        border-radius: 2px; 
         color: $of-navigation-forgotpassword-link-color;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 400;
+        max-width: 70px;
+        padding: 6px 12px;
+        text-decoration: none;
       }
     
     }
@@ -142,7 +160,7 @@ nav.of-navigation {
   }
   
   .of-site-locale {
-    margin: 0 10px 0;
+    margin: 0 10px 0 5px;
     position: relative;
     
     .selected-language {

@@ -105,28 +105,31 @@
           </div>
 		      
 		      <div class="of-site-alternate-links">
-			      <div class="of-site-login">
-			        <div class="login">
-	              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-	                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-	              </a>
-	            </div>
-	            <div class="forgotpassword">
-	              <a href="#" class="forgotpassword-link">
-	                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-	              </a>
-	            </div>
+		        <div class="of-site-alternate-links-container">
+				      <div class="of-site-login">
+				        <div class="login">
+		              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+		                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+		              </a>
+		            </div>
+		            <div class="forgotpassword">
+		              <a href="#" class="forgotpassword-link">
+		                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+		              </a>
+		            </div>
+				      </div>
+				      <div class="of-site-locale">
+				        <div class="selected-language">#{languageWidgetBackingBean.language}</div>
+		            <h:form>
+		              <div class="language-selection-container" data-visibility-status="hidden">
+		                <ui:repeat value="#{i18n.languages}" var="locale">
+		                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+		                </ui:repeat>
+		              </div>
+		            </h:form>
+				      </div>
 			      </div>
-			      <div class="of-site-locale">
-			        <div class="selected-language">#{languageWidgetBackingBean.language}</div>
-	            <h:form>
-	              <div class="language-selection-container" data-visibility-status="hidden">
-	                <ui:repeat value="#{i18n.languages}" var="locale">
-	                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
-	                </ui:repeat>
-	              </div>
-	            </h:form>
-			      </div>
+			      
 		      </div>
 	      </div>
 	    </nav>
@@ -147,10 +150,12 @@
 		      <div class="of-header-site-info-wrapper">
 		        <div class="of-header-site-info">
 		          <div class="site-info-logo"></div>
-	            <div class="site-info-organization">Otavan Opiston</div>
-	            <div class="site-info-name">
-	              <div class="site-info-name-firstpart">Muikku</div>
-	              <div class="site-info-name-secondpart">Verkko</div>
+		          <div class="site-info-wrapper">
+		            <div class="site-info-organization">Otavan Opiston</div>
+		            <div class="site-info-name">
+		              <div class="site-info-name-firstpart">Muikku</div>
+		              <div class="site-info-name-secondpart">Verkko</div>
+		            </div>
 	            </div>
 	            <div class="site-info-description">Otavan Opiston nettilukion ja nettiperuskoulun sähköinen oppimisympäristö</div>
 	          </div>

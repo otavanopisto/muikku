@@ -142,12 +142,116 @@
     padding: 0 10px;
   }
   
+  header.of-header {
+  background: url('/gfx/of-site-header-background-mobile.jpg') no-repeat center center $of-header-background-color;
+    background-size: cover;
+    height: auto;
+    padding: 15px;
+    
+    .of-header-wrapper {
+      flex-flow: row wrap;
+      height: auto;
+    }
+    
+    .of-header-application-bubble-wrapper {
+      flex: 1 1 calc(100% - 30px);
+      order: 2;
+    }
+    
+    .of-header-site-info-wrapper {
+      flex: 1 0 50%;
+      order: 1;
+    }
+    
+    .of-header-open-materials-bubble-wrapper {
+      flex: 1 1 calc(100% - 30px);
+      order: 3;
+    }
+    
+    .of-header-site-info {
+      margin: 10px auto 0;
+      padding: 0;
+      text-align: center;
+    }
+    
+    .of-header-application-bubble,
+    .of-header-open-materials-bubble {
+      border: 0;
+      border-radius: 10px;
+      height: auto;
+      margin: 10px auto;
+      padding: 10px;
+      width: auto;
+    }
+    
+    .application-title, 
+    .open-materials-title {
+      left: auto;
+      font-size: 20px;
+      position: relative;
+      right: auto;
+      top: auto;
+    }
+    
+    .application-description, 
+    .open-materials-description {
+      margin: 10px 0;
+    }
+    
+    .application-link a,
+    .open-materials-link a {
+      bottom: auto;
+      font-size: 12px;
+      left: auto;
+      margin: 5px 0 0;
+      position: relative;
+      right: auto;
+    }
+    
+    .site-info-logo {
+      background-size: cover;
+      height: 72px;
+      width: 72px;
+    }
+    
+    .site-info-logo,
+    .site-info-wrapper {
+      display: inline-block;
+      margin: 0 5px;
+      vertical-align: middle;
+    }
+    
+    .site-info-organization {
+      font-size: 17px;
+      text-align: left;
+    }
+    
+    .site-info-name {
+      font-size: 32px;
+      text-align: left;
+      width: auto;
+      
+      .site-info-name-secondpart {
+        font-weight: 300;
+        letter-spacing: 3px;
+        
+      }
+      
+    }
+    
+    .site-info-description {
+      font-weight: 300;
+    }
+    
+  }
+  
   .frontpage-section {
     margin: 25px 0;
   }
   
   h2.frontpage-section-title {
     font-size: 26px;
+    font-weight: 300;
     margin: 0 10px 10px;
   }
   
@@ -238,6 +342,5 @@
   .logo-container {
     display: none;
   }
-
 
 }
