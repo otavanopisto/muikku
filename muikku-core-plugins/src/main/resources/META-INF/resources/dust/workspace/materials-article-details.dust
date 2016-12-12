@@ -10,6 +10,6 @@
 {?license}
   <div class="license-override">
     <span class="material-license-label">{#localize key="plugin.workspace.materials.licenseLabel"/}:</span>
-    <span class="material-license"><a href="{license}" target="top">{license}</a></span>
+    <span class="material-license">{?licenseIsUrl}<a href="{license}" target="top">{license}</a>{:else}{license}{/licenseIsUrl}</span>
   </div>
 {/license}
