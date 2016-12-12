@@ -581,6 +581,11 @@
                     $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
                     $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
                     this.toggleMaterialAssessmentView(false);
+                    var assignmentContent = $(this._activeAssignment).find('.assignment-content');
+                    if ($(assignmentContent).attr('data-open') == 'true') {
+                      $(assignmentContent).attr('data-open', false);
+                      $(assignmentContent).hide();
+                    }
                   }
                 }, this));
             }
@@ -613,6 +618,11 @@
                 .append($('<span>').addClass('assignment-grade-data').text($('#assignmentGrade option:selected').text()));
               $(this._activeAssignment).find('.assignment-done').after(gradeElement).after(evaluationDateElement);
               this.toggleMaterialAssessmentView(false);
+              var assignmentContent = $(this._activeAssignment).find('.assignment-content');
+              if ($(assignmentContent).attr('data-open') == 'true') {
+                $(assignmentContent).attr('data-open', false);
+                $(assignmentContent).hide();
+              }
             }
           }, this));
       }
