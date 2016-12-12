@@ -40,7 +40,7 @@ import fi.otavanopisto.security.LoggedIn;
 @LoggedIn
 public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
 
-  public static int PAGE_SIZE = 20;
+  public static int PAGE_SIZE = 25;
   
   public static final class UserView {
     private final User user;
@@ -216,9 +216,7 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
   }
   
   public Long getPage() {
-    if (page == null)
-      return 1l;
-    return page;
+    return page == null ? 1l : page;
   }
 
   public void setPage(Long page) {

@@ -151,7 +151,7 @@
   }
   
   .workspace-journal-poster-image {
-    @incude border(2px,#fff,solid);
+    @include border(2px,#fff,solid);
     background-image: url("/gfx/default-user-picture.jpg");
     background-position: center center;
     background-size: cover;
