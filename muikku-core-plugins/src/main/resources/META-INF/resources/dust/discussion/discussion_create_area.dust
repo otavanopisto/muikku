@@ -7,12 +7,17 @@
           <div class="mf-form-row flex-row">
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
-                <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2 ">{#localize key="plugin.discussion.createarea.name"/}</span>
-                <input required="required" class="mf-texfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14"type="text" value="" name="name" maxlength="105"></input>
+<!--                 <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2 "></span> -->
+                <input required="required" class="mf-texfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" placeholder="{#localize key="plugin.discussion.createarea.name"/}" type="text" value="" name="name" maxlength="105"></input>
               </div>
             </div>     
           </div>
-       </div>   
+          <div class="mf-form-row flex-row">
+            <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+              <textarea id="textDescription" name="description"></textarea>
+            </div>
+           </div>           
+         </div>   
        </div>
        <div class="mf-toolbar flex-row">
         <input type="submit" name="send" value='{#localize key="plugin.discussion.createarea.send"/}'/>

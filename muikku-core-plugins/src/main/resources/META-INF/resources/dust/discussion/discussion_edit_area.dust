@@ -10,7 +10,7 @@
               <select id="forumAreaIdSelect" name="forumAreaId" required="required">
                <option value="">{#localize key="plugin.discussion.editarea.selectarea"/}</option>
                {#.}
-                  <option value="{id}">{name}</option>
+                  <option value="{id}" data-description="{description}">{name}</option>
                {:else}
                  <option value="">{#localize key="plugin.discussion.selectarea.empty" /}</option>
                {/.}
@@ -18,13 +18,17 @@
             </div>   
             <div class="mf-textfield  lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
-                <span class="mf-textfield-title lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-4">{#localize key="plugin.discussion.editarea.newname"/}</span>
-                <input required="required" class="mf-textfield-subject lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-12" type="text" value="" name="name" maxlength="105"></input>                
+                <input required="required" class="mf-textfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" placeholder="{#localize key="plugin.discussion.editarea.newname"/}" type="text" value="" name="name" maxlength="105"></input>                
               </div>
             </div>  
           </div>
        </div>   
        </div>
+      <div class="mf-form-row flex-row">
+        <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+           <textarea id="textDescription" name="description"></textarea>
+        </div>
+       </div>        
        <div class="mf-toolbar flex-row">
         <input type="submit" name="send" value='{#localize key="plugin.discussion.editarea.send"/}'/>
         <input type="submit" name="cancel" value='{#localize key="plugin.discussion.editarea.cancel"/}'/>

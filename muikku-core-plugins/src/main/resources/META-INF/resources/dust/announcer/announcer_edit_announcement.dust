@@ -6,7 +6,7 @@
           <div class="an-announcement-create-body lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div class="mf-form-row flex-row">
               <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                <div class="mf-textfield-subcontainer flex-row">
+                <div class="mf-form-element-subcontainer  flex-row">
                   <div class="mf-textfield-subelement an-date-field lg-flex-cell-3 md-flex-cell-4 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
                     <span class="mf-textfield-title ">{#localize key="plugin.announcer.editannouncement.startdate.label"/}</span>
                     <input required="required" id="startDate" class="mf-textfield-date" type="text" name="startDate"></input>
@@ -19,7 +19,7 @@
                 </div>
                 <div class="mf-form-row flex-row">
                   <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">                
-                    <div class="mf-textfield-subcontainer">
+                    <div class="mf-form-element-subcontainer">
                       <input required="required" class="mf-textfield-subject" type="text" name="caption" placeholder="{#localize key="plugin.announcer.editannouncement.title.label"/}" maxlength="255"></input>
                     </div>
                   </div>  
@@ -29,7 +29,7 @@
             {#showTargetGroups}
             <div class="mf-form-row flex-row">
               <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                <div class="mf-textfield-subcontainer">
+                <div class="mf-form-element-subcontainer ">
                  <div class="an-announcement-recipients" id="msgTargetGroupsContainer"><input id="targetGroupContent" placeholder="{#localize key="plugin.announcer.createannouncement.target.label"/}" type="text"></input></div>
                 </div>                   
               </div>                     
