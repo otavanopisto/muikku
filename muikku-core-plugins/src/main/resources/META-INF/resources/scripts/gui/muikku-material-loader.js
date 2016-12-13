@@ -444,9 +444,13 @@
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
       var memoFieldElement;
       if (data.fieldlessMode) {
+        var value = data.value;
+        if (value && !data.meta.richedit) {
+          value = value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+        }
         memoFieldElement = $('<div>')
           .addClass('muikku-memo-field')
-          .html(data.value);
+          .html(value);
       }
       else {
         memoFieldElement = $('<textarea>')
