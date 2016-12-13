@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -39,7 +41,7 @@ import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class NewEvaluationTestsBase extends AbstractUITest {
-
+  
   @Test
   @TestEnvironments (
     browsers = {
@@ -56,8 +58,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     Builder mockBuilder = mocker();
     try{
       mockBuilder.addStudent(student).addStaffMember(admin).mockLogin(admin).build();
-      
-      Long courseId = 1l;
+      Long courseId = 2l;
       
       login();
       
@@ -73,66 +74,63 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
         .build();
+
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+        "Test", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "EVALUATED");
       
       try {
-        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
-          "EVALUATED");
-        
-        Long assessorId = getUserEntityIdForIdentifier(String.format("STAFF-%s", admin.getId()));
-        
-        logout();
-        mockBuilder.mockLogin(student).build();
-        login();
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-          
-          assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-          assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-          waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-          waitForPresentAndVisible(".notification-queue-item-success");
-          waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
-          mockBuilder
-            .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false)
-            .mockCompositeGradingScales()
-            .mockCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student)
-            .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId());
-          
-          logout();
-          mockBuilder.mockLogin(admin).build();
-          login();
-          navigate(String.format("/evaluation2"), true);
-          waitAndClick(".evaluate-button");          
-          waitAndClick(".cke_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
-          selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
-          
-          mockBuilder
-          .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId())
-          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true);
-        
-          mockBuilder.mockCourseAssessments(courseStudent, admin);          
-          waitAndClick("#workspaceSaveButton");
-          waitForPresent(".notification-queue-item-success");
-          waitAndClick(".remove-button .ui-button-text");
-          assertVisible(".evaluation-well-done-container");
-        }finally{
-          deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
-        }
+      logout();
+      mockBuilder.mockLogin(student).build();
+      login();
+    
+      navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+      waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
+      
+      assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+      assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
+      assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+      sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+      waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+      waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
+      waitForPresentAndVisible(".notification-queue-item-success");
+      waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+      mockBuilder
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false)
+        .mockCompositeGradingScales()
+        .mockCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student)
+        .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId());
+      
+      logout();
+      mockBuilder.mockLogin(admin).build();
+      login();
+      navigate(String.format("/evaluation2"), true);
+      waitAndClick(".evaluate-button");          
+      waitAndClick(".cke_contents");
+      getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+      selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
+      
+      mockBuilder
+      .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId())
+      .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true);
+    
+      mockBuilder.mockCourseAssessments(courseStudent, admin);          
+      waitAndClick("#workspaceSaveButton");
+      waitForPresent(".notification-queue-item-success");
+      waitAndClick(".remove-button .ui-button-text");
+      assertVisible(".evaluation-well-done-container");
       } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
       }
     } finally {
       mockBuilder.wiremockReset();
     }
   }
+  
   
   @Test
   @TestEnvironments (
@@ -156,6 +154,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       login();
       
       Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
@@ -167,64 +166,62 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStaffMember(courseId, courseStaffMember)
         .addCourseStudent(courseId, courseStudent)
         .build();
+   
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
-      try {
-        WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
-        
-        WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
-          "Test", "text/html;editor=CKEditor", 
-          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
-          "EVALUATED");
-        
-        Long assessorId = getUserEntityIdForIdentifier(String.format("STAFF-%s", admin.getId()));
-        
+      WorkspaceHtmlMaterial htmlMaterial = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+        "Test exercise", "text/html;editor=CKEditor", 
+        "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+        "EVALUATED");
+      try{        
         logout();
         mockBuilder.mockLogin(student).build();
         login();
-        try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
-          waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
-          
-          assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
-          assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
-          assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
-          waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
-          waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
-          waitForPresentAndVisible(".notification-queue-item-success");
-          waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
-          mockBuilder
-            .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false)
-            .mockCompositeGradingScales()
-            .mockCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student)
-            .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId());
-          
-          logout();
-          mockBuilder.mockLogin(admin).build();
-          login();
-          navigate(String.format("/evaluation2"), true);
-          waitAndClick(".evaluate-button");          
-          waitAndClick(".cke_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
-          selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
-          
-          mockBuilder
-          .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, true, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId())
-          .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello! I'd like to get assessment.", false, true);
+  
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
-          mockBuilder.mockCourseAssessments(courseStudent, admin);          
-          waitAndClick("#workspaceSaveButton");
-          waitForPresent(".notification-queue-item-success");
-          waitAndClick(".remove-button .ui-button-text");
-          assertVisible(".evaluation-well-done-container");
-        }finally{
+        assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
+        assertValue(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "");
+        assertClassNotPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        sendKeys(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "field value");
+        waitClassPresent(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitAndClick(String.format("#page-%d .muikku-submit-assignment", htmlMaterial.getId()));
+        waitForPresentAndVisible(".notification-queue-item-success");
+        waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
+        mockBuilder
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false)
+        .mockCompositeGradingScales()
+        .mockCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student)
+        .mockStaffCompositeCourseAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId());
+        
+        logout();
+        mockBuilder.mockLogin(admin).build();
+        login();
+        navigate(String.format("/evaluation2"), true);
+        waitAndClick(".evaluate-button");
+        waitAndClick(".assignment-title-wrapper");
+        waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
+        assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
+        waitAndClick(".assignment-evaluate-button");
+        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
+        sleep(500);
+        click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
+        getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+        
+        selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
+  
+        waitAndClick("#assignmentSaveButton");
+        waitForPresent(".notification-queue-item-success");
+        waitForPresentAndVisible(".assignment-wrapper .assignment-evaluated-label");
+        waitForPresentAndVisible(".assignment-wrapper .assignment-grade .assignment-grade-data");          
+        assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
+        } finally {
           deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
+          deleteWorkspace(workspace.getId());
         }
       } finally {
-        deleteWorkspace(workspace.getId());
-      }
-    } finally {
-      mockBuilder.wiremockReset();
+        mockBuilder.wiremockReset();
     }
   }  
   

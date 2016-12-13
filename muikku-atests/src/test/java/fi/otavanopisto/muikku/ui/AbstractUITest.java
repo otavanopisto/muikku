@@ -435,7 +435,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
     waitForVisible(selector);
-    assertVisible(selector);
   }
    
   protected void takeScreenshot() throws WebDriverException, IOException {
