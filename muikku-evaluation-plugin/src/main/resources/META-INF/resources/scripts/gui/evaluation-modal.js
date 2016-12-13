@@ -24,7 +24,10 @@
         ],
         contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_reading.css',
         extraPlugins: {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
           'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
           'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/'
         }
       }
@@ -98,6 +101,7 @@
 
               var workspaceLiteralEditor = this._evaluationModal.find("#workspaceEvaluateFormLiteralEvaluation")[0]; 
               CKEDITOR.replace(workspaceLiteralEditor, $.extend({}, this.options.ckeditor, {
+                draftKey: ['workspace-evaluation-draft', workspaceEntityId, $(requestCard).attr('data-user-entity-id')].join('-'),
                 on: {
                   instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
                 }
@@ -116,6 +120,7 @@
                 }, this));
               }, this));
               $('#workspaceSaveButton').click($.proxy(function(event) {
+                CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
                 this._saveAssessment();
               }, this));
               $('#workspaceCancelButton').click($.proxy(function(event) {
@@ -124,14 +129,13 @@
               
               // Assignment assessment editor
 
-              var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
-              CKEDITOR.replace(assignmentLiteralEditor, this.options.ckeditor);
               var assignmentDateEditor = $(this._evaluationModal).find('#assignmentEvaluationDate'); 
               $(assignmentDateEditor)
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
               $('#assignmentSaveButton').click($.proxy(function(event) {
+                CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.discardDraft();
                 this._saveMaterialAssessment();
               }, this));
               $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
@@ -291,6 +295,13 @@
     },
     
     loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
+      if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
+        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy();
+      }
+      var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+      CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
+        draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
+      }));
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
