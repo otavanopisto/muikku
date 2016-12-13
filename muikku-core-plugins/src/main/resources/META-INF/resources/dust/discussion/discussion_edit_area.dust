@@ -26,7 +26,7 @@
        </div>
       <div class="mf-form-row flex-row">
         <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-           <textarea id="textDescription" name="description"></textarea>
+           <textarea id="textDescription" name="description" maxlength="4096"></textarea>
         </div>
        </div>        
        <div class="mf-toolbar flex-row">
