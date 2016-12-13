@@ -151,13 +151,13 @@
               containment: 'parent',
               revert: 'invalid',
               zIndex: 100,
-              start: $.proxy(function(event, ui) {
+              start: $.proxy(function(event) {
                 this.draggedElement = event.target;
               }, this)
             })
             .droppable({
               accept: '.muikku-connect-field-counterpart',
-              drop: $.proxy(function(event, ui) {
+              drop: $.proxy(function(event) {
                 // Source and target counterparts
                 var sourceElement = this.draggedElement;
                 var targetElement = event.target;
