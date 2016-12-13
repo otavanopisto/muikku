@@ -1597,6 +1597,7 @@
       this._threadId = null;
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
+      controls.on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessageClick, this));      
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
       controls.on('click', '.cm-go-previous', $.proxy(this._onNavigateNewerThreadClick, this));
       controls.on('click', '.cm-go-next', $.proxy(this._onNavigateOlderThreadClick, this));
@@ -1677,6 +1678,62 @@
       this.element.closest('.communicator') 
         .communicator('deleteThread', this._folderId, this._threadId);
     },
+    _onAddLabelToMessageClick: function (event) {  
+      var clickedLabel = $(event.target).closest('.mf-label-link');
+      var lId = $(clickedLabel).attr('data-label-id');
+      var isSelectedInAll = $(event.target).closest('.mf-label-link').hasClass('selected-in-all') ? true : false;
+      var addLabelChanges = [];
+      var removeLabelChanges = [];
+//      var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
+      var messageThread = $('.cm-thread-container').closest('mf-item');
+       
+      $.each(checkedMessageThreads, function(key, value) {
+        var inputElement = $(value);
+        var labelElement = inputElement.closest('.cm-message').find('.cm-message-label[data-label-id=' + lId + ']');
+
+        var messageId = inputElement.attr('value');
+        var messageLabelId = labelElement.attr('data-message-label-id');        
+        
+        if (labelElement.length) {
+          if(isSelectedInAll == true){
+            mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.remove"));
+              } else {
+                var communicator = $(".communicator").communicator("instance");
+                var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
+                var labelElement = messageThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
+                              
+                labelElement.remove();
+              }
+            }, this));
+          }
+        } else {
+          mApi().communicator.messages.labels.create(messageId, { labelId: lId }).callback($.proxy(function (err, label) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
+            } else {
+              var communicator = $(".communicator").communicator("instance");
+              var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
+              
+              label["colorHex"] = communicator.colorIntToHex(label.labelColor);
+              
+              renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
+                messageThreadElement.find('.cm-message-header-content-secondary').append($(text));
+              }, this));
+            }
+          }, this));
+        }
+      });
+      
+      if(isSelectedInAll === true){
+        $(clickedLabel).removeClass('selected-in-all');
+      }else{
+        $(clickedLabel).removeClass('selected').addClass('selected-in-all');       
+      }
+
+      
+    },    
     
     _onMarkUnreadClick: function (event) {
       var threads = [
