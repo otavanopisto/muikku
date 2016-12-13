@@ -123,6 +123,20 @@
   body {
     max-width: 100%;
     overflow-x: hidden;
+    padding: 70px 0 0;
+  }
+  
+  nav.of-navigation {
+    box-shadow: 0 2px 5px $of-navigation-mobile-shadow-color;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    
+    li.of-link-item {
+      padding: 10px;
+    }
+    
   }
 
   .of-site-logo {
