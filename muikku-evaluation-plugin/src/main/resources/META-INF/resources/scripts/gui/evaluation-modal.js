@@ -155,6 +155,9 @@
     
     close: function() {
       $('body').removeClass('no-scroll');
+      for (var name in CKEDITOR.instances) {
+        CKEDITOR.instances[name].destroy(true);
+      }
       this._evaluationModal.remove();
     },
 
@@ -296,7 +299,7 @@
     
     loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
       if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
-        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy();
+        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy(true);
       }
       var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
       CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
