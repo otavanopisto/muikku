@@ -286,6 +286,7 @@
         meta: data.meta,
         readonly: data.readOnlyFields||false,
         trackChange: false,
+        fieldlessMode: data.fieldlessMode,
         isReadonly: function () {
           return $(this.element).attr('disabled') == 'disabled' || $(this.element).attr('readonly') == 'readonly';
         },
@@ -336,6 +337,18 @@
         },
         hasDisplayableAnswers: function() {
           return this.options.meta.rightAnswers && this.options.meta.rightAnswers.length > 0; 
+        },
+        answer: function (val) {
+          if (val !== undefined) {
+            if (this.options.fieldlessMode) {
+              $(this.element).text(val);
+            }
+            else {
+              $(this.element).val(val);
+            }
+          } else {
+            return this.options.fieldlessMode ? $(this.element).text() : $(this.element).val();
+          }
         },
         canCheckAnswer: function() {
           var meta = this.options.meta;
@@ -431,9 +444,13 @@
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
       var memoFieldElement;
       if (data.fieldlessMode) {
+        var value = data.value;
+        if (value && !data.meta.richedit) {
+          value = value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+        }
         memoFieldElement = $('<div>')
           .addClass('muikku-memo-field')
-          .html(data.value);
+          .html(value);
       }
       else {
         memoFieldElement = $('<textarea>')
@@ -1270,6 +1287,12 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     
+    $(data.pageElement).find("iframe[data-url^='//www.youtube.com']").each(function(index, object) {
+      $(object).removeAttr('height').removeAttr('width');
+      $(object).width($(object).parent().width());
+      $(object).height(Math.round($(object).width() / 16 * 9));
+    });
+
     /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
     $(data.pageElement)
       .append($('<div>').addClass('clear'));
