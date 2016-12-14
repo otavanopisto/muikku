@@ -123,6 +123,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
+
             renderDustTemplate('/records/records_studyprogrammes.dust', { students: result }, $.proxy(function(text) {
               this.element.append(text);
               this.element.removeClass('loading');
