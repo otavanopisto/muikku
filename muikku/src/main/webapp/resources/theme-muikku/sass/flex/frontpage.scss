@@ -16,15 +16,19 @@ body {
   font-weight: 300;
   line-height: 1;  
   margin: 0;
-  padding: 0;
+  padding: 70px 0 0;
 }
 
 // NAVIGATION
 
 nav.of-navigation {
   background: $of-body-background-color;
+  box-shadow: 0 0 10px $of-navigation-shadow-color;
   box-sizing: border-box;
-  position: relative;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
   width: 100%;
   z-index: 9;
   

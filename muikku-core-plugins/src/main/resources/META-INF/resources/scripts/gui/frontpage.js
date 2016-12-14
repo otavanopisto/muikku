@@ -43,6 +43,43 @@
     });
   });
   
+  $(document).on('click', '.nav-link', function (event, data) {
+    event.preventDefault();
+    var anchor = $(this).attr('href');
+    scrollToSection(anchor);
+  });
+  
+  function scrollToSection(anchor) {
+    var topOffset = 90;
+    var scrollTop = $(anchor).offset().top - topOffset;
+    
+    $('html, body').stop().animate({
+      scrollTop : scrollTop
+    }, {
+      duration : 500,
+      easing : "easeInOutQuad",
+      complete : function() {
+        if ($('.of-navigation').attr('data-status') == 'open') {
+          $('.of-navigation')
+            .find('.narrow-navigation, .mobile-navigation')
+            .children('.secondary-links')
+            .animate({
+              opacity: 0
+            }, 50, function() {
+              $(this).hide();
+            });
+        
+          $('.of-navigation').animate({
+            height: "70px"
+            }, 100, function() {
+              $(this).removeAttr('data-status');
+          });
+        }
+      }
+    });
+    
+  }
+  
   $(document).on('click', '.show-more-nav-desktop', function (event, data) {
     event.preventDefault();
     
