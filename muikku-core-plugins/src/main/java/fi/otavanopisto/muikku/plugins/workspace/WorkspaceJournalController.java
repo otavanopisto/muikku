@@ -19,12 +19,12 @@ public class WorkspaceJournalController {
     workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
   }
 
-  public List<WorkspaceJournalEntry> listEntries(WorkspaceEntity workspaceEntity) {
-    return workspaceJournalEntryDAO.listByWorkspaceEntityId(workspaceEntity.getId());
+  public List<WorkspaceJournalEntry> listEntries(WorkspaceEntity workspaceEntity, int firstResult, int maxResults) {
+    return workspaceJournalEntryDAO.listByWorkspaceEntityId(workspaceEntity, firstResult, maxResults);
   }
   
-  public List<WorkspaceJournalEntry> listEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity){
-    return workspaceJournalEntryDAO.listByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
+  public List<WorkspaceJournalEntry> listEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity, int firstResult, int maxResults) {
+    return workspaceJournalEntryDAO.listByWorkspaceEntityIdAndUserEntityId(workspaceEntity, userEntity, firstResult, maxResults);
   }
 
   public long countEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {

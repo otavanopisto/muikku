@@ -4,8 +4,12 @@
   <header class="eval-modal-student-header flex-row flex-align-items-center">
     <div class="eval-modal-student-name">{studentName} ({studyProgrammeName})</div>
   </header>
-  <div class="eval-modal-assignment-content">
-  
+  <div class="eval-modal-materials-content">
+    <div class="eval-modal-assignments-title">{#localize key="plugin.evaluation.evaluationModal.assignmentsTitle"/}</div>
+    <div class="eval-modal-assignments-content"></div>
+    <div class="eval-modal-journal-entries-title">{#localize key="plugin.evaluation.evaluationModal.journalTitle"/}</div>
+    <div class="eval-modal-journal-entries-content"></div>
+    
   </div>
 </section>
 

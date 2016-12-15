@@ -74,9 +74,9 @@
 }
 
 .workspace-journal-content-wrapper {
-  min-height: 500px;
   background: #fff;
   padding: 20px;
+  
   
   .workspace-journal-no-entries {
     box-sizing: border-box;
@@ -138,7 +138,9 @@
     }
   
   }
-  
+  .workspace-journal-paging-toolbar {
+    text-align:center;
+  }
   .workspace-journal-header-container {
     padding: 5px 0;
     border-bottom: 2px solid #f8f8f8;
@@ -149,16 +151,17 @@
   }
   
   .workspace-journal-poster-image {
-    @incude border(2px,#fff,solid);
-    box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
-    height: 48px;   
-    box-sizing: border-box; 
-    display: inline-block;
-    border-radius: 24px;
-    z-index: 15;
+    background-image: url("/gfx/default-user-picture.jpg");
+    background-position: center center;
+    background-size: cover;
     background-size: 100% auto;
     border: 2px solid #fff;
-    overflow: hidden;
+    border-radius: 24px;
+  	box-shadow: 0 0 1px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box; 
+    display: inline-block;
+    height: 48px;   
+    z-index: 15;
   
     img {
       width: 100%;
