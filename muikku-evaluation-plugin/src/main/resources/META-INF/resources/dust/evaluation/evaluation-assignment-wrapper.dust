@@ -4,7 +4,7 @@
     <div class="assignment-done">
       {?submitDate}
         <span class="assignment-done-label">{#localize key="plugin.evaluation.evaluationModal.assignmentDoneLabel"/}</span>
-        <span class="assignment-done-data">{submitDate|formatDate}</span>
+        <span class="assignment-done-data">{submitDate|formatDate} - {submitDate|formatTime}</span>
       {:else}
         <span class="assignment-notdone-label">{#localize key="plugin.evaluation.evaluationModal.assignmentNotDoneLabel"/}</span>
       {/submitDate}
