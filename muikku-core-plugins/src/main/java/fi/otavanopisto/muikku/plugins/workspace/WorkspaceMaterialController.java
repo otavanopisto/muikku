@@ -30,7 +30,6 @@ import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -43,8 +42,8 @@ import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
-import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialProducer;
+import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.otavanopisto.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
@@ -744,24 +743,16 @@ public class WorkspaceMaterialController {
   public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
     final List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
     List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
-
     Collections.sort(workspaceMaterials, new Comparator<WorkspaceMaterial>() {
-      
       @Override
       public int compare(WorkspaceMaterial o1, WorkspaceMaterial o2) {
-        int result = getParentIndex(o1.getParent()) - getParentIndex(o2.getParent());
+        int result = o1.getParent().getOrderNumber() - o2.getParent().getOrderNumber();
         if (result == 0) {
           result = o1.getOrderNumber().compareTo(o2.getOrderNumber());
         }
-        
         return result;
       }
-      
-      private int getParentIndex(WorkspaceNode parent) {
-        return folders.indexOf(parent);
-      }
     });
-    
     return workspaceMaterials;
   }
 
@@ -998,26 +989,13 @@ public class WorkspaceMaterialController {
           NodeList iframeList = document.getElementsByTagName("iframe");
           for (int i = iframeList.getLength() -1 ; i >= 0; i--) {
             Element iframe = (Element) iframeList.item(i);
-            String src = iframe.getAttribute("src");
-            if (StringUtils.contains(src, "youtube")) {
-              String youtubeId = src.substring(src.lastIndexOf('/') + 1);
-              iframe.removeAttribute("src");
-              Element youtubeDiv = document.createElement("div");
-              youtubeDiv.setAttribute("class", "js-lazyyt");
-              youtubeDiv.setAttribute("data-youtube-id", youtubeId);
-              youtubeDiv.setAttribute("data-ratio", "16:9");
-              Node iframeParent = iframe.getParentNode();
-              iframeParent.replaceChild(youtubeDiv, iframe);
+            iframe.setAttribute("data-url", iframe.getAttribute("src"));
+            iframe.removeAttribute("src");
+            if (iframe.hasAttribute("class")) {
+              iframe.setAttribute("class", iframe.getAttribute("class") + " lazyFrame");
             }
             else {
-              iframe.setAttribute("data-url", iframe.getAttribute("src"));
-              iframe.removeAttribute("src");
-              if (iframe.hasAttribute("class")) {
-                iframe.setAttribute("class", iframe.getAttribute("class") + " lazyFrame");
-              }
-              else {
-                iframe.setAttribute("class", "lazyFrame");
-              }
+              iframe.setAttribute("class", "lazyFrame");
             }
           }
 

@@ -1,0 +1,29 @@
+{#.}
+
+  <div class="workspace-single-journal-entry lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" data-entry-id="{id}">
+    <div class="workspace-journal-entry-view flex-row">
+      <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="flex-row">
+          <div class="workspace-journal-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div class="workspace-journal-poster-container flex-row flex-align-items-center">
+              <div class="workspace-journal-poster-image lg-flex-cell-1 md-flex-cell-1 sm-flex-hide"></div>
+              <div class="workspace-journal-poster-name lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">{firstName} {lastName}</div>
+              <div class="workspace-journal-entry-meta lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full lg-flex-right md-flex-right sm-flex-left">
+                <div class="workspace-journal-dateTime">{created|formatDate} {created|formatTime}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-row">
+          <div class="workspace-journal-content-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div class="workspace-journal-title">{title}</div>
+            <div class="workspace-journal-content">
+              {content|s}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{/.}

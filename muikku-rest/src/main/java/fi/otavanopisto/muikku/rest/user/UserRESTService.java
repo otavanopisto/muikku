@@ -57,6 +57,7 @@ import fi.otavanopisto.muikku.rest.model.StudentEmail;
 import fi.otavanopisto.muikku.rest.model.StudentPhoneNumber;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -83,6 +84,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Path("/user")
 @Produces("application/json")
 @Consumes("application/json")
+@RestCatchSchoolDataExceptions
 public class UserRESTService extends AbstractRESTService {
 
   @Inject
@@ -321,7 +323,7 @@ public class UserRESTService extends AbstractRESTService {
   @GET
   @Path("/students/{ID}")
   @RESTPermit (handling = Handling.INLINE)
-  public Response findUser(@Context Request request, @PathParam("ID") String id) {
+  public Response findStudent(@Context Request request, @PathParam("ID") String id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
     }
@@ -377,6 +379,42 @@ public class UserRESTService extends AbstractRESTService {
         .cacheControl(cacheControl)
         .tag(tag)
         .build();
+  }
+
+  @PUT
+  @Path("/students/{ID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response updateStudent(
+      @PathParam("ID") String id,
+      Student student) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    if (!(Objects.equals(studentIdentifier.getIdentifier(), loggedUserIdentifier.getIdentifier()) &&
+        Objects.equals(studentIdentifier.getDataSource(), loggedUserIdentifier.getDataSource()))) {
+      return Response.status(Status.FORBIDDEN).entity("Trying to modify non-logged-in student").build();
+    }
+    
+    User user = userController.findUserByIdentifier(studentIdentifier);
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+    
+    userEntityController.markAsUpdatedByStudent(userEntity);
+    
+    // TODO: update other fields too
+    
+    user.setMunicipality(student.getMunicipality());
+    
+    userController.updateUser(user);
+    
+    return Response.ok().entity(student).build();
   }
   
   @GET
@@ -568,6 +606,54 @@ public class UserRESTService extends AbstractRESTService {
     });
     
     return Response.ok(createRestModel(addresses.toArray(new UserAddress[0]))).build();
+  }
+
+  @PUT
+  @Path("/students/{ID}/addresses/{ADDRESSID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response updateStudentAddress(
+      @PathParam("ID") String id,
+      @PathParam("ADDRESSID") String addressId,
+      StudentAddress studentAddress
+  ) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    if (studentIdentifier == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
+    }
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+    if (studentEntity == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Could not find user entity for identifier %s", id)).build();
+    }
+    
+    if (!studentEntity.getId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_STUDENT_ADDRESSES)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    List<UserAddress> addresses = userController.listUserAddresses(studentIdentifier);
+    
+    for (UserAddress address : addresses) {
+      if (address.getIdentifier().toId().equals(studentAddress.getIdentifier())) {
+        userEntityController.markAsUpdatedByStudent(studentEntity);
+
+        userController.updateUserAddress(
+            studentIdentifier,
+            address.getIdentifier(),
+            studentAddress.getStreet(),
+            studentAddress.getPostalCode(),
+            studentAddress.getCity(),
+            studentAddress.getCountry());
+        return Response.ok().entity(studentAddress).build();
+      }
+    }
+    
+    return Response.status(Status.NOT_FOUND).entity("address not found").build();
   }
 
   @GET
@@ -944,23 +1030,26 @@ public class UserRESTService extends AbstractRESTService {
 				for (Map<String, Object> o : results) {
 					String[] id = ((String) o.get("id")).split("/", 2);
 					UserEntity userEntity = userEntityController
-							.findUserEntityByDataSourceAndIdentifier(id[1],
-									id[0]);
+					    .findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
 					
-					if (userEntity != null) {
-					  String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
-					  Date studyStartDate = getDateResult(o.get("studyStartDate"));
-	          Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
+          if (userEntity != null) {
+            String emailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, true);
+            Date studyStartDate = getDateResult(o.get("studyStartDate"));
+            Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
 	          
-						ret.add(new fi.otavanopisto.muikku.rest.model.User(userEntity
-								.getId(), (String) o.get("firstName"),
-								(String) o.get("lastName"), hasImage,
-								(String) o.get("nationality"), (String) o
-										.get("language"), (String) o
-										.get("municipality"), (String) o
-										.get("school"), emailAddress,
-										studyStartDate,
-										studyTimeEnd));
+            ret.add(new fi.otavanopisto.muikku.rest.model.User(
+              userEntity.getId(), 
+              (String) o.get("firstName"),
+              (String) o.get("lastName"), 
+              (String) o.get("nickName"), 
+              hasImage,
+              (String) o.get("nationality"),
+              (String) o.get("language"), 
+              (String) o.get("municipality"), 
+              (String) o.get("school"), 
+              emailAddress,
+              studyStartDate,
+              studyTimeEnd));
 					}
 				}
 
@@ -1055,7 +1144,7 @@ public class UserRESTService extends AbstractRESTService {
       // TODO: User image
       boolean hasImage = false;
       return Response
-          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
+          .ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), user.getNickName(), user.getStudyProgrammeName(), hasImage, user.hasEvaluationFees(), user.getCurriculumIdentifier()))
           .cacheControl(cacheControl)
           .tag(tag)
           .build();
@@ -1141,7 +1230,7 @@ public class UserRESTService extends AbstractRESTService {
 		Date endDate = user.getStudyTimeEnd() != null ? Date.from(user.getStudyTimeEnd().toInstant()) : null;
 		
 		return new fi.otavanopisto.muikku.rest.model.User(userEntity.getId(),
-				user.getFirstName(), user.getLastName(), hasImage,
+				user.getFirstName(), user.getLastName(), user.getNickName(), hasImage,
 				user.getNationality(), user.getLanguage(),
 				user.getMunicipality(), user.getSchool(), emailAddress,
 				startDate, endDate);
@@ -1249,7 +1338,9 @@ public class UserRESTService extends AbstractRESTService {
     List<StudentAddress> result = new ArrayList<>();
     
     for (UserAddress entity : entities) {
-      result.add(new StudentAddress(toId(entity.getUserIdentifier()), 
+      result.add(new StudentAddress(
+          toId(entity.getIdentifier()),
+          toId(entity.getUserIdentifier()), 
           entity.getStreet(),
           entity.getPostalCode(),
           entity.getCity(),

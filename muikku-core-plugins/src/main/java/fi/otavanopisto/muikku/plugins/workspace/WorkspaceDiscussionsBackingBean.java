@@ -70,11 +70,15 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     workspaceName = workspaceBackingBean.getWorkspaceName();
 
     lockStickyPermission = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_WORKSPACE_MESSAGES, workspaceEntity);
+    showFullNamePermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_SHOW_FULL_NAMES);
     
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (WorkspaceForumArea forumArea : forumController.listWorkspaceForumAreas(workspaceEntity)) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, workspaceEntity)));
+      AreaPermission areaPermission = new AreaPermission(
+          sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_EDIT_WORKSPACE_MESSAGES, workspaceEntity),
+          sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_DELETE_WORKSPACE_MESSAGES, workspaceEntity));
+      areaPermissions.put(forumArea.getId(), areaPermission);
     }
 
     canCreateArea = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity);
@@ -114,6 +118,10 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
     return lockStickyPermission;
   }
 
+  public Boolean getShowFullNamePermission() {
+    return showFullNamePermission;
+  }
+  
   public boolean getCanCreateArea() {
     return canCreateArea;
   }
@@ -129,13 +137,15 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
   private Long workspaceEntityId;
   private String areaPermissions;
   private Boolean lockStickyPermission;
+  private Boolean showFullNamePermission;
   private boolean canCreateArea = false;
   private boolean canUpdateArea = false;
   private boolean canDeleteArea = false;
 
   public static class AreaPermission {
     
-    public AreaPermission(Boolean removeThread) {
+    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+      this.editMessages = editMessages;
       this.removeThread = removeThread;
     }
 
@@ -143,7 +153,13 @@ public class WorkspaceDiscussionsBackingBean extends AbstractWorkspaceBackingBea
       return removeThread;
     }
     
-    private Boolean removeThread;
+    public Boolean getEditMessages() {
+      return editMessages;
+    }
+
+    private final Boolean editMessages;
+    private final Boolean removeThread;
   }
-    private String workspaceName;
+  
+  private String workspaceName;
 }

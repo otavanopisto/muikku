@@ -92,6 +92,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStaffIdentifier(staffMember.getId()),
         staffMember.getFirstName(),
         staffMember.getLastName(),
+        null,
         displayName,
         null,
         null,
@@ -139,6 +140,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getStudentIdentifier(student.getId()),
         student.getFirstName(),
         student.getLastName(),
+        student.getNickname(),
         displayName.toString(),
         studyProgrammeName,
         nationality,
@@ -510,7 +512,9 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public UserAddress createEntity(SchoolDataIdentifier userIdentifier, Address address, ContactType contactType) {
-    return new PyramusUserAddress(userIdentifier, 
+    return new PyramusUserAddress(
+      identifierMapper.getAddressIdentifier(address.getId()),
+      userIdentifier, 
       address.getStreetAddress(), 
       address.getPostalCode(), 
       address.getCity(), 

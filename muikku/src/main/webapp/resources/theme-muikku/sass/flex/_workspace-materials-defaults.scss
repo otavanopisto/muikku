@@ -7,10 +7,6 @@
   min-height: 500px;
 }
 
-.js-lazyyt {
-  margin: 10px 0;
-}
-
 // TASK FIELD SAVED LABEL
 .muikku-field-save-state-label {
   position: absolute;
@@ -599,12 +595,12 @@ label {
 }
 
 ul {
-  list-style-position: inside;
+  list-style-position: outside;
 }
 
 ol {
   list-style-type: decimal;
-  list-style-position: inside;
+  list-style-position: outside;
 }
 
 ul, ol {

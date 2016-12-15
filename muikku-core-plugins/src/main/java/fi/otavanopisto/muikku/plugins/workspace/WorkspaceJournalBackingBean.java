@@ -39,6 +39,8 @@ import fi.otavanopisto.security.LoggedIn;
 @Join(path = "/workspace/{workspaceUrlName}/journal", to = "/jsf/workspace/journal.jsf")
 @LoggedIn
 public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
+
+  public static int PAGE_SIZE = 25;
   
   public static final class UserView {
     private final User user;
@@ -72,6 +74,10 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
   @Matches("\\d+")
   private Long studentId;
 
+  @Parameter
+  @Matches("\\d+")
+  private Long page;
+  
   @Inject
   private SessionController sessionController;
 
@@ -108,18 +114,18 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity)) {
       return NavigationRules.ACCESS_DENIED;
     }
 
-    if (studentId != null && !sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)){
+    if (studentId != null && !sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)){
       return NavigationRules.ACCESS_DENIED;
     }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
     posters = new HashMap<Long, String>();
-    canListAllEntries = sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
+    canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     workspaceStudents = prepareWorkspaceStudents();
     journalEntries = prepareJournalEntries();
     
@@ -209,6 +215,14 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
     return studentId;
   }
   
+  public Long getPage() {
+    return page == null ? 1l : page;
+  }
+
+  public void setPage(Long page) {
+    this.page = page;
+  }
+  
   public boolean isMyJournal() {
     return studentId == null;
   }
@@ -267,23 +281,23 @@ public class WorkspaceJournalBackingBean extends AbstractWorkspaceBackingBean {
   }
 
   private List<WorkspaceJournalEntry> prepareJournalEntries() {
+    int page = getPage().intValue() - 1;
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (studentId == null) {
-      if (sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
-        return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+      if (sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+        return workspaceJournalController.listEntries(workspaceEntity, page, PAGE_SIZE);
       } else {
-        return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+        return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity, page, PAGE_SIZE);
       }
     } else {
-      if (sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+      if (sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
         UserEntity studentEntity = userEntityController.findUserEntityById(studentId);
-        return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, studentEntity);
+        return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, studentEntity, page, PAGE_SIZE);
       } else {
         return Arrays.asList();
       }
     }
-
   }
 
   private Long workspaceEntityId;

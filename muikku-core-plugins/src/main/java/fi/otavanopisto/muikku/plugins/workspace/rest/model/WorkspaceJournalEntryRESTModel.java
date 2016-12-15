@@ -8,12 +8,14 @@ public class WorkspaceJournalEntryRESTModel {
     super();
   }
 
-  public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String html, String title,
-      Date created) {
+  public WorkspaceJournalEntryRESTModel(Long id, Long workspaceEntityId, Long userEntityId, String firstName, String lastName, 
+      String html, String title, Date created) {
     super();
     this.id = id;
     this.workspaceEntityId = workspaceEntityId;
     this.userEntityId = userEntityId;
+    this.firstName = firstName;
+    this.lastName = lastName;
     this.content = html;
     this.title = title;
     this.created = created;
@@ -66,9 +68,25 @@ public class WorkspaceJournalEntryRESTModel {
   public void setCreated(Date created) {
     this.created = created;
   }
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
   private Long id;
   private Long workspaceEntityId;
   private Long userEntityId;
+  private String firstName;
+  private String lastName;
   private String content;
   private String title;
   private Date created;

@@ -1,0 +1,28 @@
+{#.}
+
+  <div class="workspace-single-journal-entry lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" data-entry-id="{id}">
+    <div class="workspace-journal-entry-view flex-row">
+      <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="flex-row">
+          <div class="workspace-journal-title lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">{title}</div>
+          <div class="workspace-journal-entry-meta lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last lg-flex-right md-flex-right sm-flex-left">
+            <div class="workspace-journal-dateTime">{created|formatDate} {created|formatTime}</div>
+          </div>
+        </div>
+        <div class="flex-row">
+          <div class="workspace-journal-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            {content|s}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex-row">
+      <div class="workspace-journal-footer lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <button class="journal-edit-button">{#localize key="plugin.workspace.journal.editEntryButton.label"/}</button>
+        <button data-entry-id="{id}" class="journal-delete-button">{#localize key="plugin.workspace.journal.deleteEntryButton.label"/}</button>
+      </div>
+    </div>
+  </div>
+  
+{/.}
