@@ -304,7 +304,8 @@ public class UserRESTService extends AbstractRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
-            (String) o.get("curriculumIdentifier")));
+            (String) o.get("curriculumIdentifier"),
+            userEntity.getUpdatedByStudent()));
         }
       }
     }
@@ -372,7 +373,8 @@ public class UserRESTService extends AbstractRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
-        user.getCurriculumIdentifier());
+        user.getCurriculumIdentifier(),
+        userEntity.getUpdatedByStudent());
     
     return Response
         .ok(student)
