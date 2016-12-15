@@ -144,11 +144,11 @@ public class CommunicatorRESTModels {
   }
 
   public CommunicatorThreadViewRESTModel restThreadViewModel(List<CommunicatorMessage> messages, 
-      CommunicatorMessageId olderThread, CommunicatorMessageId newerThread) {
+      CommunicatorMessageId olderThread, CommunicatorMessageId newerThread, List<CommunicatorMessageIdLabelRESTModel> labels) {
     Long olderThreadId = olderThread != null ? olderThread.getId() : null;
     Long newerThreadId = newerThread != null ? newerThread.getId() : null;
     List<CommunicatorMessageRESTModel> restMessages = restFullMessage(messages);
-    return new CommunicatorThreadViewRESTModel(olderThreadId, newerThreadId, restMessages);
+    return new CommunicatorThreadViewRESTModel(olderThreadId, newerThreadId, restMessages, labels);
   }
 
   public List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients(List<CommunicatorMessageRecipientUserGroup> recipients) {
