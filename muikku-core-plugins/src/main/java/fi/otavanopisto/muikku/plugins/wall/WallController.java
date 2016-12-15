@@ -71,9 +71,6 @@ public class WallController {
   @Inject
   private UserEntityController userEntityController;
 
-//  @Inject
-//  private EnvironmentUserController environmentUserController; 
-
   @Inject
   private WallEntryReplyDAO wallEntryReplyDAO;
   
@@ -84,59 +81,6 @@ public class WallController {
   @Any
   private Instance<WallEntryProvider> wallEntryProviders;
 
-//  @Inject
-//  private EnvironmentForumAreaDAO forumAreaDAO_TEMP;
-//  
-//  @Inject
-//  private ForumThreadDAO forumThreadDAO_TEMP;
-//  
-//  @Inject
-//  private ResourceRightsController resourceRightsController_TEMP;
-  
-//  public void TEST_DATA() {
-//    Random R = new Random();
-//    
-//    
-//    List<Workspace> workspaces = workspaceController.listWorkspaces();
-//    
-//    Workspace workspace = workspaces.get(R.nextInt(workspaces.size()));
-//    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-//    WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
-//    
-//    List<EnvironmentUser> users = environmentUserController.listEnvironmentUsers();
-//    
-//    EnvironmentUser environmentUser = users.get(R.nextInt(users.size()));
-//    UserEntity userEntity = environmentUser.getUser();
-//    
-//    int r = R.nextInt(24180);
-//    
-//    switch (R.nextInt(4)) {
-//      case 1:
-//        // Guidance Request
-//      break;
-//
-//      case 2:
-//        // Forum message
-//        ForumArea forumArea = forumAreaDAO_TEMP.findById(1l);
-//        if (forumArea == null) {
-//          ResourceRights rights = resourceRightsController_TEMP.create();
-//          forumArea = forumAreaDAO_TEMP.create("Foorumi.", null, false, sessionController.getLoggedUserEntity(), rights);
-//        }
-//          
-//        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity, false, false);
-//      break;
-//      
-//      case 3:
-//        // Assessment request
-//        
-////        assessmentRequestController.create(workspaceEntity, userEntity, new Date(), "Arvioi mut, beibe! #" + r);
-//      break;
-//
-//      default:
-//        wallEntryDAO.create(wall, "Hei mä postaan #" + r, WallEntryVisibility.PUBLIC, userEntity);
-//    }
-//  }
-  
   
 //  public WallEntryTextItem createWallEntryTextItem(AbstractWallEntry entry, String text, UserEntity user) {
 //    return wallEntryTextItemDAO.create(entry, text, user);
