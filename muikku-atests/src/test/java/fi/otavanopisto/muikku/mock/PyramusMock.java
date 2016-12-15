@@ -672,9 +672,8 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled) throws JsonProcessingException {
+      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
         List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
-        OffsetDateTime date = OffsetDateTime.now();
         CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
         assessmentRequests.add(assessmentRequest);
         
@@ -731,11 +730,8 @@ public class PyramusMock {
         return this;
       }
       
-      public Builder mockCompositeCourseAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent) throws JsonProcessingException {
-        OffsetDateTime date = OffsetDateTime.now();
+      public Builder addCompositeCourseAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, OffsetDateTime date) {
         OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
-
-        List<CompositeAssessmentRequest> assessmentRequests = new ArrayList<CompositeAssessmentRequest>();
 
         CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
         
@@ -752,22 +748,31 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(courseStudent.getId());
-        assessmentRequests.add(assessmentRequest);
-        
-        stubFor(get(urlEqualTo(String.format("/1/composite/course/%d/assessmentRequests", course.getId())))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
-            .withStatus(200)));
-        
+                
+        if(pmock.compositeCourseAssessmentRequests.containsKey(courseId)){
+          pmock.compositeCourseAssessmentRequests.get(courseId).add(assessmentRequest);
+        }else{
+          ArrayList<CompositeAssessmentRequest> assessmentRequests = new ArrayList<>();
+          assessmentRequests.add(assessmentRequest);
+          pmock.compositeCourseAssessmentRequests.put(courseId, assessmentRequests);
+        }
         return this;
       }
       
-      public Builder mockStaffCompositeCourseAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, Long staffMemberId) throws JsonProcessingException {
-        OffsetDateTime date = OffsetDateTime.now();
-        OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+      public Builder mockCompositeCourseAssessmentRequests() throws JsonProcessingException {        
+        for (Long courseId : pmock.compositeCourseAssessmentRequests.keySet()) {
+          stubFor(get(urlEqualTo(String.format("/1/composite/course/%d/assessmentRequests", courseId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeCourseAssessmentRequests.get(courseId)))
+              .withStatus(200)));
+        }
 
-        List<CompositeAssessmentRequest> assessmentRequests = new ArrayList<CompositeAssessmentRequest>();
+        return this;
+      }
+      
+      public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date) {
+        OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
 
         CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
         
@@ -785,14 +790,25 @@ public class PyramusMock {
         assessmentRequest.setLastName(courseStudent.getLastName());
         assessmentRequest.setStudyProgramme("Test Study Programme");
         assessmentRequest.setUserId(courseStudent.getId());
-        assessmentRequests.add(assessmentRequest);
-
-        stubFor(get(urlEqualTo(String.format("/1/composite/staffMembers/%d/assessmentRequests/", staffMemberId)))
-          .willReturn(aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
-            .withStatus(200)));
-        
+                
+        if(pmock.compositeStaffAssessmentRequests.containsKey(staffMemberId)){
+          pmock.compositeStaffAssessmentRequests.get(staffMemberId).add(assessmentRequest);
+        }else{
+          ArrayList<CompositeAssessmentRequest> assessmentRequests = new ArrayList<>();
+          assessmentRequests.add(assessmentRequest);
+          pmock.compositeStaffAssessmentRequests.put(staffMemberId, assessmentRequests);
+        }
+        return this;
+      }
+      
+      public Builder mockStaffCompositeCourseAssessmentRequests() throws JsonProcessingException {
+        for (Long staffMemberId : pmock.compositeStaffAssessmentRequests.keySet()) {
+          stubFor(get(urlEqualTo(String.format("/1/composite/staffMembers/%d/assessmentRequests/", staffMemberId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeStaffAssessmentRequests.get(staffMemberId)))
+              .withStatus(200)));
+        }
         return this;
       }
 
@@ -1037,5 +1053,6 @@ public class PyramusMock {
   private HashMap<Long, List<Object>> studentGroupUsers = new HashMap<>();
   private List<StudentGroup> studentGroups = new ArrayList<>();
   private List<String> payloads = new ArrayList<>();
-
+  private HashMap<Long, List<CompositeAssessmentRequest>> compositeCourseAssessmentRequests = new HashMap<>();
+  private HashMap<Long, List<CompositeAssessmentRequest>> compositeStaffAssessmentRequests = new HashMap<>();
 }
