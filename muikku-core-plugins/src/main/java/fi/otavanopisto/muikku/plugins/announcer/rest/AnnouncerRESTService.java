@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.announcer.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -213,45 +214,28 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Path("/announcements")
   @RESTPermit(handling=Handling.INLINE)
   public Response listAnnouncements(
-      @QueryParam("onlyActive") @DefaultValue("false") boolean onlyActive,
-      @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
+      @QueryParam("hideEnvironmentAnnouncements") @DefaultValue("false") boolean hideEnvironmentAnnouncements,
       @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("false") boolean hideWorkspaceAnnouncements,
-      @QueryParam("workspaceEntityId") Long workspaceEntityId
+      @QueryParam("workspaceEntityId") Long workspaceEntityId,
+      @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
+      @QueryParam("showExpired") @DefaultValue("false") boolean showExpired      
   ) {
-    if (!onlyActive && workspaceEntityId == null && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
-      return Response.status(Status.FORBIDDEN).entity("You're not allowed to list unarchived announcements").build();
-    }
-    
+    UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
     List<Announcement> announcements = null;
 
-    if (workspaceEntityId == null && hideWorkspaceAnnouncements) {
-      if (onlyActive) {
-        if (onlyMine) {
-          UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-          announcements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(currentUserEntity);
-        } else {
-          announcements = announcementController.listActiveEnvironmentAnnouncements();
-        }
-      } else {
-        announcements = announcementController.listUnarchivedEnvironmentAnnouncements();
-      }
-    }
+    // List announcements from environment level, including environment announcements and optionally workspace announcements
     
-    if (workspaceEntityId == null && !hideWorkspaceAnnouncements) {
-      if (onlyActive) {
-        if (onlyMine) {
-          UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-          if (sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
-            announcements = announcementController.listAllActiveEnvironmentAnnouncementsAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity); //TODO: maybe a bit bad practice since query was "onlyMine"
-          } else {
-            announcements = announcementController.listActiveEnvironmentAndWorkspaceAnnouncementsByTargetedUserEntity(currentUserEntity);
-          }
-        } else {
-          announcements = announcementController.listActiveAnnouncements();
-        }
-      } else {
-        announcements = announcementController.listUnarchivedAnnouncements();
+    if (workspaceEntityId == null) {
+      // If expired announcements are requested, the user needs permission to do so.
+      if (showExpired && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)) {
+        return Response.status(Status.FORBIDDEN).entity("You're not allowed to list expired announcements").build();
       }
+      
+      boolean includeGroups = true;
+      boolean includeWorkspaces = !hideWorkspaceAnnouncements;
+      boolean includeEnvironment = !hideEnvironmentAnnouncements;
+      announcements = announcementController.listAnnouncements(
+          includeGroups, includeWorkspaces, includeEnvironment, showExpired, currentUserEntity, onlyMine);
     }
 
     if (workspaceEntityId != null) {
@@ -264,11 +248,10 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to list workspace announcements").build();
       }
       
-      if (onlyActive) {
-        announcements = announcementController.listActiveByWorkspaceEntity(workspaceEntity);
-      } else {
-        announcements = announcementController.listUnarchivedByWorkspaceEntity(workspaceEntity);
-      }
+      boolean includeEnvironment = !hideEnvironmentAnnouncements;
+      List<WorkspaceEntity> workspaceEntities = Arrays.asList(workspaceEntity);
+      announcements = announcementController.listAnnouncements(
+          workspaceEntities, includeEnvironment, showExpired, currentUserEntity, onlyMine);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
