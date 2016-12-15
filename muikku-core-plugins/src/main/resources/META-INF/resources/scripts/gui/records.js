@@ -40,12 +40,12 @@
               var studentCurriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
               var studentWorkspaces = results[0];
               var studentTransferCredits = results[1];
-              var curriculums = results[2] || [];
+              var curriculums = results[2].slice() || [];
               curriculums.push({identifier: "default", name: undefined});
               
               if (studentWorkspaces) {
                 studentWorkspaces = studentWorkspaces.reduce(function(workspacesByCurriculum, workspace) {
-                  var curriculum;
+                  var curriculum = undefined;
                   
                   // If student doesn't have curriculum set, all credits are valid so they go to default curriculum
                   if (!studentCurriculumIdentifier)
@@ -104,7 +104,7 @@
                   });
                 }
               });
-
+              
               // Sort curriculums so that the current curriculum is on top
               studentCurriculums.sort($.proxy(function (curriculum1, curriculum2) {
                 return curriculum1.curriculumId == studentCurriculumIdentifier ? -1 : curriculum2.curriculumId == studentCurriculumIdentifier ? 1 : 0;
@@ -123,7 +123,6 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
-
             renderDustTemplate('/records/records_studyprogrammes.dust', { students: result }, $.proxy(function(text) {
               this.element.append(text);
               this.element.removeClass('loading');
