@@ -138,13 +138,12 @@
     
                     mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
                       'requestText': message
-                    }).callback(function(err, result) {
+                    }).callback(function(err) {
                       if (err) {
                         $('.notification-queue').notificationQueue('notification', 'error', err);
-                      } else {
-                        
+                      }
+                      else {
                         var evalButton = $('.workspace-dock-navi-button-evaluation');
-    
                         evalButton
                           .children('.icon-assessment-' + evalButton.attr('data-state'))
                             .removeClass('icon-assessment-' + evalButton.attr('data-state'))
@@ -152,7 +151,6 @@
                             .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
                             .children('span')
                               .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-                      
                         evalButton.attr('data-state', 'pending');
                         $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
                       }
@@ -164,7 +162,7 @@
                 }, {
                   'text': dialog.data('button-cancel-text'),
                   'class': 'cancel-button',
-                  'click': function(event) {
+                  'click': function() {
                     $(this).dialog("destroy");
                   }
                 }]
