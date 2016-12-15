@@ -68,6 +68,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -946,6 +947,39 @@ public class WorkspaceRESTService extends PluginRESTService {
       userArchived);
     
   }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/evaluatedAssignmentInfo")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getEvaluatedAssignmentInfo(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    Map<String, Long> result = new HashMap<String, Long>();
+    
+    // Workspace and user
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    // Total number of evaluated assignments
+    
+    List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+        workspaceEntity,
+        WorkspaceMaterialAssignmentType.EVALUATED);
+    result.put("assignmentsTotal", new Long(evaluatedAssignments.size()));
+    
+    // Done number of evaluated assignments  
+
+    List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
+    replyStates.add(WorkspaceMaterialReplyState.FAILED);
+    replyStates.add(WorkspaceMaterialReplyState.PASSED);
+    replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
+    Long assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
+    result.put("assignmentsDone", assignmentsDone);
+    
+    return Response.ok(result).build();
+}
   
   @GET
   @Path("/workspaces/{ID}/feeInfo")
