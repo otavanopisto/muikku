@@ -38,11 +38,7 @@ public class AnnouncementsViewBackingBean {
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
     }
-    if (sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
-      activeAnnouncements = announcementController.listActiveEnvironmentAnnouncements();
-    } else {
-      activeAnnouncements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(loggedUserEntity);
-    }
+    activeAnnouncements = announcementController.listAnnouncements(true, true, true, false, loggedUserEntity, false);
     return null;
   }
 
