@@ -137,7 +137,7 @@
       if (this.options.announcement) {
         data.announcement = this.options.announcement;
         dustFile = '/announcer/announcer_edit_announcement.dust';
-      }
+      } 
       
       renderDustTemplate(dustFile, data, $.proxy(function (text) {
         this.element.html(text);
@@ -168,6 +168,9 @@
           this._setContent("");
           this._setStartDate(start);
           this._setEndDate(end);
+          
+          if (this.options.workspaceEntityId)
+            this._addTargetWorkspaceWithId(this.options.workspaceEntityId);          
         }
 
         if (callback) {
