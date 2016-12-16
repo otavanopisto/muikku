@@ -148,13 +148,13 @@
           this._setStartDate(data.announcement.startDate);
           this._setEndDate(data.announcement.endDate);
           
-          for (var i = 0; i < data.announcement.userGroupEntityIds.length; i++) {
-            var userGroupEntityId = data.announcement.userGroupEntityIds[i];
+          for (var ugi = 0; ugi < data.announcement.userGroupEntityIds.length; ugi++) {
+            var userGroupEntityId = data.announcement.userGroupEntityIds[ugi];
             this._addTargetGroupWithId(userGroupEntityId);
           }
           
-          for (var i = 0; i < data.announcement.workspaceEntityIds.length; i++) {
-            var workspaceEntityId = data.announcement.workspaceEntityIds[i];
+          for (var wsi = 0; wsi < data.announcement.workspaceEntityIds.length; wsi++) {
+            var workspaceEntityId = data.announcement.workspaceEntityIds[wsi];
             this._addTargetWorkspaceWithId(workspaceEntityId);
           }
         } else {
@@ -253,11 +253,11 @@
         case "WORKSPACE":
           var targetWorkspaceIds = this._getTargetWorkspaceIds();
           if (targetWorkspaceIds.indexOf(id) == -1) {
-            var parameters = {
+            var workspace = {
               id: id,
               name: label
             };
-            renderDustTemplate('announcer/announcer_targetworkspace.dust', parameters, $.proxy(function (text) {
+            renderDustTemplate('announcer/announcer_targetworkspace.dust', workspace, $.proxy(function (text) {
               this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
             }, this));
           }
@@ -266,12 +266,12 @@
         case "GROUP":
           var targetGroupIds = this._getTargetGroupIds();
           if (targetGroupIds.indexOf(id) == -1) {
-            var parameters = {
+            var group = {
               id: id,
               name: label
             };
 
-            renderDustTemplate('announcer/announcer_targetgroup.dust', parameters, $.proxy(function (text) {
+            renderDustTemplate('announcer/announcer_targetgroup.dust', group, $.proxy(function (text) {
               this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
             }, this));
           }
@@ -296,13 +296,13 @@
       if (!this.options.showTargetGroups)
         return [];
       
-  	  var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
-  	  var existingIds = new Array();
-  	  if(inputs.length > 0){
-  	    for(var i = 0; i < inputs.length; i++) {
-  	      existingIds.push($(inputs[i]).val()); 
-  	    }
-  	  }
+      var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
+      var existingIds = new Array();
+      if (inputs.length > 0) {
+        for (var i = 0; i < inputs.length; i++) {
+          existingIds.push($(inputs[i]).val());
+        }
+      }
 
       return $.proxy(function (callback) {
         mApi().usergroup.groups
