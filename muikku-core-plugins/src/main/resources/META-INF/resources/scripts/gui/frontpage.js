@@ -125,7 +125,7 @@
     
     if ($('.of-navigation').attr('data-status') != 'open') {
       $('.of-navigation').animate({
-        height: "50vh",
+        height: "200px",
         background: '#fff'
         }, 250, function() {
           $(this).attr('data-status', 'open');
