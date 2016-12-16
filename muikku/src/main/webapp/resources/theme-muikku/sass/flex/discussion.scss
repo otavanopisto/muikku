@@ -40,6 +40,14 @@
   
 }
 
+.di-thread-description-container {
+  display: none;
+}
+
+.di-thread-description {
+  padding: 10px;  
+}
+
 .di-search-result-container {
   background-color: $environment-background-color;
   box-shadow: $environment-box-shadow;

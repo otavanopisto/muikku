@@ -780,7 +780,6 @@ public class Evaluation2RESTService {
         }
         else {
           List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
-          replyStates.add(WorkspaceMaterialReplyState.ANSWERED);
           replyStates.add(WorkspaceMaterialReplyState.FAILED);
           replyStates.add(WorkspaceMaterialReplyState.PASSED);
           replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);

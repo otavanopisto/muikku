@@ -1323,7 +1323,10 @@
           var a = $('<a>')
             .attr('href', src)
             .magnificPopup({
-              type: 'image'
+              type: 'image',
+              image: {
+                verticalFit: false
+              }
             })
             .insertBefore(img);
           
