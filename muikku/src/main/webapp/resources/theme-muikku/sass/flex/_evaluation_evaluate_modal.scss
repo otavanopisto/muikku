@@ -276,17 +276,30 @@
 .assignment-evaluated,
 .assignment-grade {
   font-size: 13px;
-  font-style: italic;
   display: inline-block;
   margin: 0 15px 0 0;
+}
+
+.assignment-grade {
+  
 }
 
 .assignment-done-label,
 .assignment-evaluated-label,
 .assignment-grade-label {
-  color: #27b91c;
   font-weight: 400;
   padding: 0 4px 0 0;
+}
+
+.assignment-grade-data {
+  background: #c9f8bb;
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 15px;
+  margin: 0 0 0 5px;
+  min-width: 16px;
+  padding: 3px 6px;
+  text-align: center;
 }
 
 .assignment-notdone-label {
