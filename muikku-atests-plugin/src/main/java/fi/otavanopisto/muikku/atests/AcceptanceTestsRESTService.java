@@ -535,7 +535,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Mandatory name is missing").build(); 
     }
     
-    return Response.ok(createRestEntity(forumController.createWorkspaceForumArea(workspaceEntity, payload.getName(), group.getId()))).build();
+    return Response.ok(createRestEntity(forumController.createWorkspaceForumArea(workspaceEntity, payload.getName(), payload.getDescription(), group.getId()))).build();
   }
 
   @DELETE
@@ -830,7 +830,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (StringUtils.isBlank(payload.getName())) {
       return Response.status(Status.BAD_REQUEST).entity("Mandatory name is missing").build(); 
     }
-    return Response.ok(createRestEntity(forumController.createEnvironmentForumArea(payload.getName(), group.getId()))).build();
+    return Response.ok(createRestEntity(forumController.createEnvironmentForumArea(payload.getName(), payload.getDescription(), group.getId()))).build();
   }
 
   @DELETE
@@ -917,11 +917,11 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   }
 
   private fi.otavanopisto.muikku.atests.Discussion createRestEntity(WorkspaceForumArea entity) {
-    return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getGroup().getId());
+    return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getDescription(), entity.getGroup().getId());
   }
   
   private fi.otavanopisto.muikku.atests.Discussion createRestEntity(EnvironmentForumArea entity) {
-    return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getGroup().getId());
+    return new fi.otavanopisto.muikku.atests.Discussion(entity.getId(), entity.getName(), entity.getDescription(), entity.getGroup().getId());
   }
   
   private fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial createRestEntity(WorkspaceMaterial workspaceMaterial, HtmlMaterial htmlMaterial) {

@@ -1292,7 +1292,8 @@ public class UserRESTService extends AbstractRESTService {
         transferCredit.getLength(), 
         toId(transferCredit.getLengthUnitIdentifier()), 
         toId(transferCredit.getSchoolIdentifier()), 
-        toId(transferCredit.getSubjectIdentifier()));
+        toId(transferCredit.getSubjectIdentifier()),
+        toId(transferCredit.getCurriculumIdentifier()));
   }
   
   private String toId(SchoolDataIdentifier identifier) {

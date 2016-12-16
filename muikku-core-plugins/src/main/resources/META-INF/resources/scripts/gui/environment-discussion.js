@@ -8,10 +8,11 @@
   
   $.extend(EnvironmentDiscussionIOController.prototype, DiscussionIOController.prototype, {
     
-    createArea: function (name, callback) {
+    createArea: function (name, description, callback) {
       mApi().forum.areas
         .create({
-          name: name
+          name: name,
+          description: description
         })
         .callback(callback);
     },
@@ -28,10 +29,11 @@
         .callback(callback);
     },
     
-    updateArea: function (areaId, name, callback) {
+    updateArea: function (areaId, name, description, callback) {
       mApi().forum.areas
         .update(areaId, {
-          name: name
+          name: name,
+          description: description
         })
         .callback(callback);
     },
