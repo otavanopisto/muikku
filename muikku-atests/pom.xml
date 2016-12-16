@@ -581,7 +581,7 @@
                   <goal>stop</goal>
                 </goals>
                 <configuration>
-                  <timeout>0</timeout>
+                  <timeout>${it.cargo.stop.timeout}</timeout>
                 </configuration>
               </execution>
             </executions>

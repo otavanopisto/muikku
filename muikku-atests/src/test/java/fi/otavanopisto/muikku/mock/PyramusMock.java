@@ -741,7 +741,7 @@ public class PyramusMock {
         assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));
         assessmentRequest.setEvaluationDate(null);
         assessmentRequest.setPassing(null);
-        assessmentRequest.setCourseId(course.getId());
+        assessmentRequest.setCourseId(courseId);
         assessmentRequest.setCourseName(course.getName());
         assessmentRequest.setCourseNameExtension(course.getNameExtension());
         assessmentRequest.setFirstName(courseStudent.getFirstName());
@@ -783,7 +783,7 @@ public class PyramusMock {
         assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));        
         assessmentRequest.setEvaluationDate(null);
         assessmentRequest.setPassing(null);
-        assessmentRequest.setCourseId(course.getId());
+        assessmentRequest.setCourseId(courseId);
         assessmentRequest.setCourseName(course.getName());
         assessmentRequest.setCourseNameExtension(course.getNameExtension());
         assessmentRequest.setFirstName(courseStudent.getFirstName());
