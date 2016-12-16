@@ -5,7 +5,7 @@ $(function() {
           $('.notification-queue').notificationQueue('notification', 'error',
               err);
         }
-        if (/* ! */student.updatedByStudent) {
+        if (student.updatedByStudent) {
           mApi().user.students.addresses.read(MUIKKU_LOGGED_USER).callback(
               function(err, addresses) {
                 if (err) {
@@ -37,13 +37,18 @@ $(function() {
                             'text' : dialog.data('button-confirm-text'),
                             'class' : 'send-button',
                             'click' : function(event) {
-                              $(this).dialog().remove();
+                              mApi().user.students.addresses.update(MUIKKU_LOGGED_USER,
+                                  address.identifier,
+                                  address).callback(function (err, address) {
+                                $(this).dialog().remove();
+                              });
                             }
                           },
                           {
                             'text' : dialog.data('button-ok-text'),
                             'class' : 'cancel-button',
                             'click' : function(event) {
+                              window.location.href = "/profile";
                             }
                           }
                         ]
