@@ -1723,8 +1723,6 @@
     _onAddLabelToMessageClick: function (event) {  
       var clickedLabel = $(event.target).closest('.mf-label-message-link');
       var lId = $(clickedLabel).attr('data-label-id');
-      var addLabelChanges = [];
-      var removeLabelChanges = [];
       var messageThread = $('.cm-thread-container').find('.cm-message:first-child');
       var messageThreads = $('.cm-thread-container').find('.cm-message');
       var labelElement = messageThread.find('.cm-message-label[data-label-id=' + lId + ']');
