@@ -1705,7 +1705,6 @@
       });
       
       $.each(labelObjs, function(key, value){
-        var label = {};
         var lName = $(value).attr('data-folder-name');
         var lStyle = $(value).find('.cm-label-name').attr('style');
         var lId = $(value).attr('data-label-id');
@@ -1715,8 +1714,7 @@
       });
 
       renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
-        $(".mf-tool-label-container").html(text);
-        
+        $(".mf-tool-label-container").html(text);        
         $('#communicatorNewlabelField').on('input', $.proxy( $(".cm-messages-container").communicatorMessages._onLabelFilterInputChange, this));
       }, this));
       
@@ -1739,7 +1737,6 @@
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.remove"));
             } else {
-              var communicator = $(".communicator").communicator("instance");
               var thisThreadElement = $('.cm-message[data-thread-id="' + messageThreadId + '"]');
               var thisLabel = thisThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
               thisLabel.remove();
@@ -1752,10 +1749,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
             } else {
               var communicator = $(".communicator").communicator("instance");
-              var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
-              
               label["hexColor"] = communicator.colorIntToHex(label.labelColor);
-              
               renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
                 $(clickedLabel).addClass('selected');    
                 messageThreads.find('.cm-message-header').append($(text));
