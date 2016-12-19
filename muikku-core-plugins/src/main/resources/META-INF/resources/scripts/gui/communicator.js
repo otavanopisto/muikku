@@ -1726,9 +1726,8 @@
       var messageThread = $('.cm-thread-container').find('.cm-message:first-child');
       var messageThreads = $('.cm-thread-container').find('.cm-message');
       var labelElement = messageThread.find('.cm-message-label[data-label-id=' + lId + ']');
-
-        var messageThreadId = messageThread.attr('data-thread-id');
-        var messageLabelId = labelElement.attr('data-message-label-id');        
+      var messageThreadId = messageThread.attr('data-thread-id');
+      var messageLabelId = labelElement.attr('data-message-label-id');        
         
         if (labelElement.length) {
           mApi().communicator.messages.labels.del(messageThreadId, messageLabelId).callback($.proxy(function (err, results) {
