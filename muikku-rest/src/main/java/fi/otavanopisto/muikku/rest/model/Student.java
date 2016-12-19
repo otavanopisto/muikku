@@ -8,7 +8,8 @@ public class Student {
   }
 
   public Student(String id, String firstName, String lastName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
-      String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier) {
+      String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier,
+      boolean updatedByStudent) {
     super();
     this.id = id;
     this.firstName = firstName;
@@ -24,6 +25,7 @@ public class Student {
     this.studyEndDate = studyEndDate;
     this.studyTimeEnd = studyTimeEnd;
     this.curriculumIdentifier = curriculumIdentifier;
+    this.updatedByStudent = updatedByStudent;
   }
   
   public String getId() {
@@ -137,6 +139,14 @@ public class Student {
   public void setCurriculumIdentifier(String curriculumIdentifier) {
     this.curriculumIdentifier = curriculumIdentifier;
   }
+  
+  public boolean isUpdatedByStudent() {
+    return updatedByStudent;
+  }
+  
+  public void setUpdatedByStudent(boolean updatedByStudent) {
+    this.updatedByStudent = updatedByStudent;
+  }
 
   private String id;
   private String firstName;
@@ -152,4 +162,5 @@ public class Student {
   private Date studyEndDate;
   private Date studyTimeEnd;
   private String curriculumIdentifier;
+  private boolean updatedByStudent;
 }

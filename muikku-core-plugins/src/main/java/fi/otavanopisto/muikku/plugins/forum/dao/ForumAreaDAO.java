@@ -24,4 +24,9 @@ public class ForumAreaDAO extends CorePluginsDAO<ForumArea> {
     forumArea.setName(name);
     return persist(forumArea);
   }
+
+  public ForumArea updateDescription(ForumArea forumArea, String description) {
+    forumArea.setDescription(description);
+    return persist(forumArea);
+  }
 }

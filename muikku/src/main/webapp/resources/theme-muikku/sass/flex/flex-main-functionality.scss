@@ -869,7 +869,6 @@ ul.mf-tool-label-container {
       
   .mf-form-row {
     position: relative;
-    margin: 2px 0 3px 0;
     
     &.hidden {
       display: none;
@@ -896,8 +895,7 @@ ul.mf-tool-label-container {
     position: relative;
     top: 0;
       
-    .mf-form-element-subcontainer, 
-    .mf-textfield-subcontainer {
+    .mf-form-element-subcontainer {
       border: 2px solid $form-textfield-subcontainer-border-color;
       border-radius: 3px;
       background-color: $form-textfield-subcontainer-background-color;
@@ -925,13 +923,11 @@ ul.mf-tool-label-container {
       
       &:focus {
         background-color: $form-textfield-focus-background-color;     
-        border: 0;
         box-shadow: none;    
       }
       
       &:hover {
         background-color: $form-textfield-hover-background-color;   
-        border: 0;
         box-shadow: none;      
       }
     }
