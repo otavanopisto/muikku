@@ -5,7 +5,7 @@ $(function() {
           $('.notification-queue').notificationQueue('notification', 'error',
               err);
         }
-        if (student.updatedByStudent) {
+        if (student && !student.updatedByStudent) {
           mApi().user.students.addresses.read(MUIKKU_LOGGED_USER).callback(
               function(err, addresses) {
                 if (err) {
@@ -40,7 +40,12 @@ $(function() {
                               mApi().user.students.addresses.update(MUIKKU_LOGGED_USER,
                                   address.identifier,
                                   address).callback(function (err, address) {
-                                $(this).dialog().remove();
+                                if (err) {
+                                  $('.notification-queue').notificationQueue('notification',
+                                      'error', err);
+                                } else {
+                                  window.location.href = "/";
+                                }
                               });
                             }
                           },
