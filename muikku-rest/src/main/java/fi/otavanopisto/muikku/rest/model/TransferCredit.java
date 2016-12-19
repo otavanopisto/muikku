@@ -9,7 +9,8 @@ public class TransferCredit {
 
   public TransferCredit(String identifier, String studentIdentifier, OffsetDateTime date, String gradeIdentifier,
       String gradingScaleIdentifier, String verbalAssessment, String assessorIdentifier, String courseName,
-      Integer courseNumber, Double length, String lengthUnitIdentifier, String schoolIdentifier, String subjectIdentifier) {
+      Integer courseNumber, Double length, String lengthUnitIdentifier, String schoolIdentifier, String subjectIdentifier,
+      String curriculumIdentifier) {
     super();
     this.identifier = identifier;
     this.studentIdentifier = studentIdentifier;
@@ -24,6 +25,7 @@ public class TransferCredit {
     this.lengthUnitIdentifier = lengthUnitIdentifier;
     this.schoolIdentifier = schoolIdentifier;
     this.subjectIdentifier = subjectIdentifier;
+    this.curriculumIdentifier = curriculumIdentifier;
   }
 
   public String getIdentifier() {
@@ -130,6 +132,14 @@ public class TransferCredit {
     this.subjectIdentifier = subjectIdentifier;
   }
 
+  public String getCurriculumIdentifier() {
+    return curriculumIdentifier;
+  }
+
+  public void setCurriculumIdentifier(String curriculumIdentifier) {
+    this.curriculumIdentifier = curriculumIdentifier;
+  }
+
   private String identifier;
   private String studentIdentifier;
   private OffsetDateTime date;
@@ -143,4 +153,5 @@ public class TransferCredit {
   private String lengthUnitIdentifier;
   private String schoolIdentifier;
   private String subjectIdentifier;
+  private String curriculumIdentifier;
 }

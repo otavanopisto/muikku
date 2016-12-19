@@ -38,4 +38,11 @@ public class AnnouncerBackingBean {
     return null;
   }
 
+  public boolean getCanPublishEnvironment() {
+    return sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT);
+  }
+  
+  public boolean getCanPublishGroups() {
+    return sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT);
+  }
 }

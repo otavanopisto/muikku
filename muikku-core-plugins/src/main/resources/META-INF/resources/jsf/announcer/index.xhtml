@@ -29,7 +29,7 @@
   </ui:define>  
   
   <ui:define name="mf-content-master"> 
-    <div id="announcer">
+    <div id="announcer" data-penv="#{announcerBackingBean.canPublishEnvironment}" data-pworks="true" data-pgroups="#{announcerBackingBean.canPublishGroups}">
       <h2 class="main-functionality-page-title">#{i18n.text['plugin.announcer.pageTitle']}</h2>
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
