@@ -10,7 +10,7 @@
       <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread-message icon-message-unread"></div>
     </div>
     <div class="mf-tool-container special cm-add-label-container md-flex-hide sm-flex-hide">
-      <div title="{#localize key="plugin.communicator.tool.title.labels"/}" class="mf-tool cm-add-label-menu icon-tags">
+      <div title="{#localize key="plugin.communicator.tool.title.labels"/}" class="mf-tool cm-add-label-message-menu icon-tags">
       </div>
       <div class="mf-tool-menu cm-label-menu">
         <div class="mf-tool-menu-content cm-label-menu-content">

@@ -385,7 +385,7 @@
           $.each(items, function (ind, item) {
             if (item.labels) {
               for (var i = 0, l = item.labels.length; i < l; i++) {
-                item.labels[i]["colorHex"] = communicator.colorIntToHex(item.labels[i].labelColor);
+                item.labels[i]["hexColor"] = communicator.colorIntToHex(item.labels[i].labelColor);
               }
             }
           });
@@ -627,7 +627,7 @@
               var communicator = $(".communicator").communicator("instance");
               var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
               
-              label["colorHex"] = communicator.colorIntToHex(label.labelColor);
+              label["hexColor"] = communicator.colorIntToHex(label.labelColor);
               
               renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
                 messageThreadElement.find('.cm-message-header-content-secondary').append($(text));
@@ -640,7 +640,7 @@
       if(isSelectedInAll === true){
         $(clickedLabel).removeClass('selected-in-all');
       }else{
-        $(clickedLabel).removeClass('selected').addClass('selected-in-all');       
+        $(clickedLabel).removeClass('selected').addClass('selected-in-all');    
       }
 
       
@@ -658,10 +658,10 @@
       var communicator = $('.communicator').communicator("instance");
       var name =  $('#communicatorNewlabelField').val();
       var color = Math.round(Math.random() * 16777215);
-      var colorHex = communicator.colorIntToHex(color);
+      var hexColor = communicator.colorIntToHex(color);
       if (name != '') {
         if (labels.indexOf(name) == -1) {
-          communicator.createLabel(name, colorHex);
+          communicator.createLabel(name, hexColor);
         } else {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.alreadyexists"));
         }
@@ -852,8 +852,8 @@
       }, this));
     },    
     
-    createLabel: function (name, colorHex) {
-      var colorInt = this.hexToColorInt(colorHex);
+    createLabel: function (name, hexColor) {
+      var colorInt = this.hexToColorInt(hexColor);
       var label = {
         name: name,
         color: colorInt
@@ -870,8 +870,8 @@
       }, this));
     },
     
-    updateLabel: function (id, name, colorHex) {
-      var colorInt = this.hexToColorInt(colorHex);
+    updateLabel: function (id, name, hexColor) {
+      var colorInt = this.hexToColorInt(hexColor);
       var label = {
         id: id,
         name: name,
@@ -948,7 +948,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           var label = results;
-          label.colorHex =  communicator.colorIntToHex(label.color);
+          label.hexColor =  communicator.colorIntToHex(label.color);
           renderDustTemplate('communicator/communicator_label_edit.dust', label, $.proxy(function(text) {
             this._dialog = $(text);      
             $(this._dialog).dialog(
@@ -1597,7 +1597,8 @@
       this._threadId = null;
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
-      controls.on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessageClick, this));      
+      controls.on('click', '.mf-label-message-link', $.proxy(this._onAddLabelToMessageClick, this));    
+      controls.on('click', '.cm-add-label-message-menu', $.proxy(this._onAddLabelMenuClick, this));     
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
       controls.on('click', '.cm-go-previous', $.proxy(this._onNavigateNewerThreadClick, this));
       controls.on('click', '.cm-go-next', $.proxy(this._onNavigateOlderThreadClick, this));
@@ -1651,11 +1652,18 @@
               folderId: folderId
             });
           });
+
+          var labels = $.map(thread.labels, function (label) {
+            return $.extend(label, {
+              hexColor: communicator.colorIntToHex(label.labelColor)
+            });
+          });
+          
           
           this.setOlderThreadId(thread.olderThreadId);
           this.setNewerThreadId(thread.newerThreadId);
           
-          renderDustTemplate('communicator/communicator_items_open.dust', messages, $.proxy(function(text) {
+          renderDustTemplate('communicator/communicator_items_open.dust', {messages: messages, labels : labels}, $.proxy(function(text) {
             this.element.html(text);
             
             var communicator = $(".communicator").communicator("instance");
@@ -1678,62 +1686,84 @@
       this.element.closest('.communicator') 
         .communicator('deleteThread', this._folderId, this._threadId);
     },
+    _onAddLabelMenuClick: function (event) {
+      
+      var labelObjs = $('.cm-categories').find('.mf-label');      
+      var labels = [];
+      var messageLabels = [];
+      var labelOccurrances = {};
+      var threadLabels = $(".cm-thread-container").find('.cm-message-label');
+
+      $.each(threadLabels, function(key, label) {
+        var labelId = $(label).attr('data-label-id');
+        if( messageLabels.indexOf(labelId) == -1){
+          messageLabels.push(labelId);
+          labelOccurrances[labelId] = 1; 
+        }else{  
+          labelOccurrances[labelId]++;
+        }
+      });
+      
+      $.each(labelObjs, function(key, value){
+        var label = {};
+        var lName = $(value).attr('data-folder-name');
+        var lStyle = $(value).find('.cm-label-name').attr('style');
+        var lId = $(value).attr('data-label-id');
+        var lSelected = messageLabels.indexOf(lId) == -1 ? false : true; 
+        labels.push({name: lName, id: lId, selected: lSelected, style: lStyle, thread : true });
+        
+      });
+
+      renderDustTemplate('communicator/communicator_label_link.dust', labels, $.proxy(function (text) {
+        $(".mf-tool-label-container").html(text);
+        
+        $('#communicatorNewlabelField').on('input', $.proxy( $(".cm-messages-container").communicatorMessages._onLabelFilterInputChange, this));
+      }, this));
+      
+      $(event.target).closest('.mf-tool-container').find('.cm-label-menu').toggle();
+    },
     _onAddLabelToMessageClick: function (event) {  
-      var clickedLabel = $(event.target).closest('.mf-label-link');
+      var clickedLabel = $(event.target).closest('.mf-label-message-link');
       var lId = $(clickedLabel).attr('data-label-id');
-      var isSelectedInAll = $(event.target).closest('.mf-label-link').hasClass('selected-in-all') ? true : false;
       var addLabelChanges = [];
       var removeLabelChanges = [];
-//      var checkedMessageThreads = $('.cm-messages-pages').find('input[name="messageSelect"]:checked');
-      var messageThread = $('.cm-thread-container').closest('mf-item');
-       
-      $.each(checkedMessageThreads, function(key, value) {
-        var inputElement = $(value);
-        var labelElement = inputElement.closest('.cm-message').find('.cm-message-label[data-label-id=' + lId + ']');
+      var messageThread = $('.cm-thread-container').find('.cm-message:first-child');
+      var messageThreads = $('.cm-thread-container').find('.cm-message');
+      var labelElement = messageThread.find('.cm-message-label[data-label-id=' + lId + ']');
 
-        var messageId = inputElement.attr('value');
+        var messageThreadId = messageThread.attr('data-thread-id');
         var messageLabelId = labelElement.attr('data-message-label-id');        
         
         if (labelElement.length) {
-          if(isSelectedInAll == true){
-            mApi().communicator.messages.labels.del(messageId, messageLabelId).callback($.proxy(function (err, results) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.remove"));
-              } else {
-                var communicator = $(".communicator").communicator("instance");
-                var messageThreadElement = $('.cm-message[data-thread-id="' + messageId + '"]');
-                var labelElement = messageThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
-                              
-                labelElement.remove();
-              }
-            }, this));
-          }
+          mApi().communicator.messages.labels.del(messageThreadId, messageLabelId).callback($.proxy(function (err, results) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.remove"));
+            } else {
+              var communicator = $(".communicator").communicator("instance");
+              var thisThreadElement = $('.cm-message[data-thread-id="' + messageThreadId + '"]');
+              var thisLabel = thisThreadElement.find('.cm-message-label[data-label-id=' + lId + ']');
+              thisLabel.remove();
+              $(clickedLabel).removeClass('selected');
+            }
+          }, this));
         } else {
-          mApi().communicator.messages.labels.create(messageId, { labelId: lId }).callback($.proxy(function (err, label) {
+          mApi().communicator.messages.labels.create(messageThreadId, { labelId: lId }).callback($.proxy(function (err, label) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
             } else {
               var communicator = $(".communicator").communicator("instance");
               var messageThreadElement = $('.cm-message[data-thread-id="' + label.messageThreadId + '"]');
               
-              label["colorHex"] = communicator.colorIntToHex(label.labelColor);
+              label["hexColor"] = communicator.colorIntToHex(label.labelColor);
               
               renderDustTemplate('communicator/communicator_item_label.dust', label, $.proxy(function (text) {
-                messageThreadElement.find('.cm-message-header-content-secondary').append($(text));
+                $(clickedLabel).addClass('selected');    
+                messageThreads.find('.cm-message-header').append($(text));
               }, this));
             }
           }, this));
         }
-      });
-      
-      if(isSelectedInAll === true){
-        $(clickedLabel).removeClass('selected-in-all');
-      }else{
-        $(clickedLabel).removeClass('selected').addClass('selected-in-all');       
-      }
-
-      
-    },    
+     },    
     
     _onMarkUnreadClick: function (event) {
       var threads = [
