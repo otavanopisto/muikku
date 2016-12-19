@@ -205,12 +205,12 @@
         if ($(assignment).attr('data-open') == 'true') {
           $(assignment).attr('data-open', false);
           $(assignment).hide();
-          $(assignment).prev('.assignment-literal-evaluation').hide();
+          $(assignment).prev('.assignment-literal-evaluation-wrapper').hide();
         }
         else {
           $(assignment).attr('data-open', true);
           $(assignment).show();
-          $(assignment).prev('.assignment-literal-evaluation').show();
+          $(assignment).prev('.assignment-literal-evaluation-wrapper').show();
         }
       }
       else {
@@ -238,7 +238,7 @@
                   .attr('data-loaded', true)
                   .attr('data-open', true);
                 $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
-                $(assignment).prev('.assignment-literal-evaluation').show();
+                $(assignment).prev('.assignment-literal-evaluation-wrapper').show();
               }, this));
           }, this));
       }
@@ -603,7 +603,7 @@
                     if ($(assignmentContent).attr('data-open') == 'true') {
                       $(assignmentContent).attr('data-open', false);
                       $(assignmentContent).hide();
-                      $(assignmentContent).prev('.assignment-literal-evaluation').hide();
+                      $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
                     }
                     $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
                   }
@@ -642,7 +642,7 @@
               if ($(assignmentContent).attr('data-open') == 'true') {
                 $(assignmentContent).attr('data-open', false);
                 $(assignmentContent).hide();
-                $(assignmentContent).prev('.assignment-literal-evaluation').hide();
+                $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
               }
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
             }

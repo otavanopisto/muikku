@@ -250,6 +250,32 @@
   position: relative;
 }
 
+.assignment-literal-evaluation-wrapper {
+  border-left: 3px solid #ce01bd;
+  padding: 0 10px;
+}
+
+.assignment-literal-evaluation-label {
+  font-weight: 400;
+  padding: 10px 0 0;
+}
+
+.assignment-literal-evaluation {
+  background: #ecfeea;
+  border-radius: 3px;
+  margin: 5px 0 10px 0;
+  padding: 10px;
+  
+  p {
+    margin: 0 0 10px 0;
+  }
+  
+  p:last-child {
+    margin: 0;
+  }
+  
+}
+
 .assignment-content {
   font-size: 16px;
 }
