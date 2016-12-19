@@ -44,7 +44,7 @@
       });
   
       mApi().announcer.announcements
-        .read({onlyActive: "true", workspaceEntityId: workspaceEntityId})
+        .read({ hideEnvironmentAnnouncements: true, workspaceEntityId: workspaceEntityId })
         .callback($.proxy(function(err, result) {
           if (err) {
             $(".notification-queue").notificationQueue('notification','error', err);

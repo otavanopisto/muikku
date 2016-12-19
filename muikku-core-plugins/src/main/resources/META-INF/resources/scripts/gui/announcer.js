@@ -41,6 +41,7 @@
     
     options: {
       showTargetGroups: true,
+      showTargetWorkspaces: true,
       announcement: null,
       ckeditor: {
         toolbar: [
@@ -81,7 +82,7 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
-        
+
         var autocomplete = this.element.find('input#targetGroupContent').autocomplete({
           open: function(event, ui) {
             $(event.target).perfectScrollbar({
@@ -90,11 +91,10 @@
             });
           },  
           source: $.proxy(function (request, response) {
-            this._searchTargetGroups(request.term, function (err, results) {
+            this._searchTargets(request.term, function (err, results) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-            	  
                 response(results);
               }
             });
@@ -102,7 +102,7 @@
           select: $.proxy(function (event, ui) {
             var item = ui.item;
             if (!item.existing) {
-              this._addTargetGroup(item.label, item.id);
+              this._addTarget(item.category, item.label, item.id);
               $(event.target).val("");
             }
             return false;
@@ -137,11 +137,7 @@
       if (this.options.announcement) {
         data.announcement = this.options.announcement;
         dustFile = '/announcer/announcer_edit_announcement.dust';
-      }
-      
-      if (this.options.showTargetGroups) {
-        data.showTargetGroups = true;
-      }
+      } 
       
       renderDustTemplate(dustFile, data, $.proxy(function (text) {
         this.element.html(text);
@@ -152,11 +148,14 @@
           this._setStartDate(data.announcement.startDate);
           this._setEndDate(data.announcement.endDate);
           
-          if (data.showTargetGroups) {
-            for (var i=0; i<data.announcement.userGroupEntityIds.length; i++) {
-              var userGroupEntityId = data.announcement.userGroupEntityIds[i];
-              this._addTargetGroupWithId(userGroupEntityId);
-            }
+          for (var ugi = 0; ugi < data.announcement.userGroupEntityIds.length; ugi++) {
+            var userGroupEntityId = data.announcement.userGroupEntityIds[ugi];
+            this._addTargetGroupWithId(userGroupEntityId);
+          }
+          
+          for (var wsi = 0; wsi < data.announcement.workspaceEntityIds.length; wsi++) {
+            var workspaceEntityId = data.announcement.workspaceEntityIds[wsi];
+            this._addTargetWorkspaceWithId(workspaceEntityId);
           }
         } else {
           var start = new Date();
@@ -169,6 +168,9 @@
           this._setContent("");
           this._setStartDate(start);
           this._setEndDate(end);
+          
+          if (this.options.workspaceEntityId)
+            this._addTargetWorkspaceWithId(this.options.workspaceEntityId);          
         }
 
         if (callback) {
@@ -221,61 +223,139 @@
       });
     },
      
+    _getTargetWorkspaceIds: function () {
+      return $.map(this.element.find('input[name="workspaceEntityIds"]'), function (elem) {
+        return Number($(elem).val());
+      });
+    },
+     
     _addTargetGroupWithId: function (id) {
       mApi().usergroup.groups.read(id).callback($.proxy(function (err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          this._addTargetGroup(result.name + " (" + result.userCount + ")", result.id);
+          this._addTarget("GROUP", result.name + " (" + result.userCount + ")", result.id);
+        }
+      }, this));
+    },
+    _addTargetWorkspaceWithId: function (id) {
+      mApi().workspace.workspaces.read(id).callback($.proxy(function (err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._addTarget("WORKSPACE", result.name + (result.nameExtension ? ' (' + result.nameExtension + ')' : ''), result.id);
         }
       }, this));
     },
 
-    _addTargetGroup: function (label, id) {
-      var parameters = {
-        id: id,
-        name: label
-      };
-
-      var targetGroupIds = this._getTargetGroupIds();
-      if (targetGroupIds.indexOf(id) !== -1) {
-        return;
-      }
-      
-      
-
-      renderDustTemplate('announcer/announcer_targetgroup.dust', parameters, $.proxy(function (text) {
-        this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
-      }, this));
-    },
-    
-    _searchTargetGroups: function (term, callback) {
-	  var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
-	  var existingIds = new Array();
-	  if(inputs.length > 0){
-	    for(var i = 0; i < inputs.length; i++) {
-	      existingIds.push($(inputs[i]).val()); 
-	    }
-	  }
-
-      mApi().usergroup.groups
-        .read({ 'searchString' : term })
-        .callback(function(err, results) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, $.map(results||[], function (result) {
-             if(!(existingIds.indexOf(result.id.toString()) > -1)){
-                return {
-                  label : result.name + " (" + result.userCount + ")",
-                  id: result.id,
-                }
-              }
-            }));
+    _addTarget: function (category, label, id) {
+      switch (category) {
+        case "WORKSPACE":
+          var targetWorkspaceIds = this._getTargetWorkspaceIds();
+          if (targetWorkspaceIds.indexOf(id) == -1) {
+            var workspace = {
+              id: id,
+              name: label
+            };
+            renderDustTemplate('announcer/announcer_targetworkspace.dust', workspace, $.proxy(function (text) {
+              this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
+            }, this));
           }
-        });
+        break;
+        
+        case "GROUP":
+          var targetGroupIds = this._getTargetGroupIds();
+          if (targetGroupIds.indexOf(id) == -1) {
+            var group = {
+              id: id,
+              name: label
+            };
+
+            renderDustTemplate('announcer/announcer_targetgroup.dust', group, $.proxy(function (text) {
+              this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
+            }, this));
+          }
+          
+        break;
+      }
+    },
+
+    _searchTargets: function (term, callback) {
+      var tasks = [this._searchTargetGroups(term), this._searchTargetWorkspaces(term)];
+
+      async.parallel(tasks, function (err, results) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, _.flatMap(results)); 
+        }
+      });
     },
     
+    _searchTargetGroups: function (term) {
+      if (!this.options.showTargetGroups)
+        return [];
+      
+      var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
+      var existingIds = new Array();
+      if (inputs.length > 0) {
+        for (var i = 0; i < inputs.length; i++) {
+          existingIds.push($(inputs[i]).val());
+        }
+      }
+
+      return $.proxy(function (callback) {
+        mApi().usergroup.groups
+          .read({ 'searchString' : term })
+          .callback(function(err, results) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, $.map(results||[], function (result) {
+               if(!(existingIds.indexOf(result.id.toString()) > -1)){
+                  return {
+                    label : result.name + " (" + result.userCount + ")",
+                    id: result.id,
+                    category: "GROUP"
+                  }
+                }
+              }));
+            }
+          });
+      });
+    },
+    
+    _searchTargetWorkspaces: function (term) {
+      if (!this.options.showTargetWorkspaces)
+        return [];
+      
+      var targetWorkspaceIds = this._getTargetWorkspaceIds();
+
+      return $.proxy(function (callback) {
+        // coursepicker??
+        mApi().coursepicker.workspaces
+          .read({
+            search: term,
+            myWorkspaces: true,
+          })
+          .callback($.proxy(function (err, results) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, $.map(results||[], function (result) {
+                if(targetWorkspaceIds.indexOf(result.id) == -1){
+                  return {
+                    label : result.name + (result.nameExtension ? ' (' + result.nameExtension + ')' : ''),
+                    id: result.id,
+                    category: "WORKSPACE"
+                  }
+                }
+              }));
+            }
+          }, this));
+      });
+    },
+
     _discardDraft: function () {
       try {
         this._contentsEditor.pauseDrafting();
@@ -323,6 +403,7 @@
         };
         
         payload.userGroupEntityIds = this._getTargetGroupIds();
+        payload.workspaceEntityIds = this._getTargetWorkspaceIds();
           
         if (payload.userGroupEntityIds.length > 0) {
           payload.publiclyVisible = false;
@@ -330,14 +411,6 @@
           payload.publiclyVisible = true;
         }
         
-        if (this.options.workspaceEntityId != null) {
-          payload.userGroupEntityIds = [];
-          payload.workspaceEntityIds = [this.options.workspaceEntityId];
-          payload.publiclyVisible = true;
-        } else {
-          payload.workspaceEntityIds = [];
-        }
-            
         if (!(this.options.announcement)) {
           mApi().announcer.announcements
           .create(payload)
@@ -406,6 +479,7 @@
       var dialog = $('<div>')
         .announcementCreateEditDialog({
           workspaceEntityId: this.options.workspaceEntityId,
+          showTargetWorkspaces: true,
           showTargetGroups: ! (this.options.workspaceEntityId)
         });
 
@@ -425,6 +499,7 @@
           var dialog = $('<div>').announcementCreateEditDialog({
             workspaceEntityId: this.options.workspaceEntityId,
             announcement: announcement,
+            showTargetWorkspaces: true,
             showTargetGroups: ! (this.options.workspaceEntityId)
           });
 
@@ -435,26 +510,26 @@
     },    
     
     _loadAnnouncements: function () {
-        var options = {};
+      var options = {};
+
+      options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
       
-        if (this.options.workspaceEntityId != null) {
-          options.workspaceEntityId = this.options.workspaceEntityId;
-        } else {
-          options.hideWorkspaceAnnouncements = true;
-        }
-      
-        mApi().announcer.announcements
-          .read(options)
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $(".notification-queue").notificationQueue('notification', 'error', err);
-            } else {
-              renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
-                var element = $(text);
-                $('.an-announcements-view-container').append(element);
-              }, this));
-            }
-          }, this));
+      if (this.options.workspaceEntityId != null) {
+        options.workspaceEntityId = this.options.workspaceEntityId;
+      }
+    
+      mApi().announcer.announcements
+        .read(options)
+        .callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification', 'error', err);
+          } else {
+            renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
+              var element = $(text);
+              $('.an-announcements-view-container').append(element);
+            }, this));
+          }
+        }, this));
     },
     
     _onArchiveAnnouncementsClick: function (event) {
@@ -500,6 +575,11 @@
     webshim.polyfill('forms');
 
     var options = {};
+    
+    options.permissions = {};
+    options.permissions.environment = $('#announcer').attr('data-penv') == "true";
+    options.permissions.workspaces = $('#announcer').attr('data-pworks') == "true";
+    options.permissions.groups = $('#announcer').attr('data-pgroups') == "true";
     
     if ($("#workspaceEntityId").val() != null) {
       options.workspaceEntityId = Number($("#workspaceEntityId").val());

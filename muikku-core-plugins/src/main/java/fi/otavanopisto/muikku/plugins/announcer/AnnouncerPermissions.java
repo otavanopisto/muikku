@@ -47,21 +47,17 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   public static final String LIST_ALL_ANNOUNCEMENTS = "LIST_ALL_ANNOUNCEMENTS";
 
-  @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String LIST_UNARCHIVED_ANNOUNCEMENTS = "LIST_UNARCHIVED_ANNOUNCEMENTS";
-  
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
   @DefaultWorkspacePermissionRoles( { WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT } )
   public static final String LIST_WORKSPACE_ANNOUNCEMENTS = "LIST_WORKSPACE_ANNOUNCEMENTS";
-  
+
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String FIND_ANNOUNCEMENT = "FIND_ANNOUNCEMENT";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String ANNOUNCER_TOOL = "ANNOUNCER_TOOL";
 
   @Scope (PermissionScope.WORKSPACE)
