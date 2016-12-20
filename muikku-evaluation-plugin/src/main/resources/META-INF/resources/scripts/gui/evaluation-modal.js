@@ -321,13 +321,9 @@
               // Grade
               $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
               // Show material evaluation view
-              this.toggleMaterialAssessmentView(true);
-              // CKEditor draft workaround :|
-              var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
-              var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
-              CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
-                draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
-              }));
+              this.toggleMaterialAssessmentView(true, $.proxy(function() {
+                this._createAssignmentEditor(workspaceMaterialId);
+              }, this));
             }
           }, this));
       }
@@ -337,17 +333,22 @@
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').prop('selectedIndex', 0);
         $('#assignmentGrade').prop('selectedIndex', 0);
-        this.toggleMaterialAssessmentView(true);
-        // CKEditor draft workaround :|
-        var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
-        var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
-        CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
-          draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
-        }));
+        this.toggleMaterialAssessmentView(true, $.proxy(function() {
+          this._createAssignmentEditor(workspaceMaterialId);
+        }, this));
       }
     },
     
-    toggleMaterialAssessmentView: function(show) {
+    // CKEditor draft workaround :|
+    _createAssignmentEditor: function(workspaceMaterialId) {
+      var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+      var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+      CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
+        draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
+      }));
+    },
+    
+    toggleMaterialAssessmentView: function(show, callback) {
       
       // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
@@ -371,6 +372,9 @@
           $(this).css({
             "box-shadow" : boxShadow
           });
+          if (callback) {
+            callback();
+          }
         });
       }
       else {
@@ -384,6 +388,9 @@
             left: "100%"
         }, 250, "swing", function() {
           $('.eval-modal-assignment-evaluate-container').hide();
+          if (callback) {
+            callback();
+          }
         });
       }
     },
