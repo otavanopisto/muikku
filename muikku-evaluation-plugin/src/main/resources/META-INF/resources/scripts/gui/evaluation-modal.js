@@ -121,7 +121,7 @@
               }, this));
               $('#workspaceSaveButton').click($.proxy(function(event) {
                 CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
-                this._saveAssessment();
+                this._saveWorkspaceAssessment();
               }, this));
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
@@ -305,10 +305,6 @@
       if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
         CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy(true);
       }
-      var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
-      CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
-        draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
-      }));
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
@@ -321,7 +317,7 @@
             else {
               $('#assignmentAssessmentId').val(assessment.identifier);
               // Verbal assessment
-              CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+              $('#assignmentEvaluateFormLiteralEvaluation').val(assessment.verbalAssessment);
               // Date
               $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
               // Assessor
@@ -329,21 +325,34 @@
               // Grade
               $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
               // Show material evaluation view
-              this.toggleMaterialAssessmentView(true);
+              this.toggleMaterialAssessmentView(true, $.proxy(function() {
+                this._createAssignmentEditor(workspaceMaterialId);
+              }, this));
             }
           }, this));
       }
       else {
         $('#assignmentAssessmentId').val('');
-        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData('');
+        $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').prop('selectedIndex', 0);
         $('#assignmentGrade').prop('selectedIndex', 0);
-        this.toggleMaterialAssessmentView(true);
+        this.toggleMaterialAssessmentView(true, $.proxy(function() {
+          this._createAssignmentEditor(workspaceMaterialId);
+        }, this));
       }
     },
     
-    toggleMaterialAssessmentView: function(show) {
+    // CKEditor draft workaround :|
+    _createAssignmentEditor: function(workspaceMaterialId) {
+      var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+      var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+      CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
+        draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
+      }));
+    },
+    
+    toggleMaterialAssessmentView: function(show, callback) {
       
       // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
@@ -367,6 +376,9 @@
           $(this).css({
             "box-shadow" : boxShadow
           });
+          if (callback) {
+            callback();
+          }
         });
       }
       else {
@@ -380,6 +392,9 @@
             left: "100%"
         }, 250, "swing", function() {
           $('.eval-modal-assignment-evaluate-container').hide();
+          if (callback) {
+            callback();
+          }
         });
       }
     },
@@ -513,7 +528,7 @@
         }, this));
     },
 
-    _saveAssessment: function() {
+    _saveWorkspaceAssessment: function() {
       var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
         mApi().evaluation.workspaceuser.assessment
