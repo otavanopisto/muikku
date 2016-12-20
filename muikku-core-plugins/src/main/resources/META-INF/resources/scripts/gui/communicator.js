@@ -1494,19 +1494,24 @@
     
     _onSendClick: function (event) {
       this.element.addClass('loading');
-      
+
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
+        var buttonElement = $(event.target);
+        buttonElement.attr('disabled','disabled');
+        
         var caption = this.element.find('input[name="caption"]').val();
         var content = this._contentsEditor.getData();
 
         if (!caption || !caption.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
+          buttonElement.removeAttr('disabled');
           return false;
         }
         
         if (!content || !content.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nomessage'));
+          buttonElement.removeAttr('disabled');
           return false;
         }
         
@@ -1526,6 +1531,7 @@
             
         if (!payload.recipientIds.length && !payload.recipientGroupIds.length && !payload.recipientStudentsWorkspaceIds.length && !payload.recipientTeachersWorkspaceIds.length) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.norecipients'));
+          buttonElement.removeAttr('disabled');
           return false;
         }
         
@@ -1550,6 +1556,7 @@
             
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
+              buttonElement.removeAttr('disabled');
             } else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
               this.element.removeClass('loading');
@@ -1564,6 +1571,7 @@
               
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.infomessage.newMessage.error'));
+                buttonElement.removeAttr('disabled');
               } else {
                 $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.communicator.infomessage.newMessage.success'));
                 this.element.removeClass('loading');
