@@ -121,7 +121,7 @@
               }, this));
               $('#workspaceSaveButton').click($.proxy(function(event) {
                 CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
-                this._saveAssessment();
+                this._saveWorkspaceAssessment();
               }, this));
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
@@ -301,10 +301,6 @@
       if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
         CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy(true);
       }
-      var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
-      CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
-        draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
-      }));
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
@@ -317,7 +313,7 @@
             else {
               $('#assignmentAssessmentId').val(assessment.identifier);
               // Verbal assessment
-              CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+              $('#assignmentEvaluateFormLiteralEvaluation').val(assessment.verbalAssessment);
               // Date
               $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
               // Assessor
@@ -326,16 +322,28 @@
               $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
               // Show material evaluation view
               this.toggleMaterialAssessmentView(true);
+              // CKEditor draft workaround :|
+              var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+              var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+              CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
+                draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
+              }));
             }
           }, this));
       }
       else {
         $('#assignmentAssessmentId').val('');
-        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData('');
+        $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').prop('selectedIndex', 0);
         $('#assignmentGrade').prop('selectedIndex', 0);
         this.toggleMaterialAssessmentView(true);
+        // CKEditor draft workaround :|
+        var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+        var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+        CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
+          draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
+        }));
       }
     },
     
@@ -359,11 +367,11 @@
           })
           .animate({
             left: slidePosition + "%"
-        }, 300, "swing", function() {
-          $(this).css({
+        }, 300, "swing", $.proxy(function() {
+          $('#evaluationAssignmentEvaluateContainer').css({
             "box-shadow" : boxShadow
           });
-        });
+        }, this));
       }
       else {
         this._enableModalScrolling();
@@ -509,7 +517,7 @@
         }, this));
     },
 
-    _saveAssessment: function() {
+    _saveWorkspaceAssessment: function() {
       var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
         mApi().evaluation.workspaceuser.assessment
