@@ -367,11 +367,11 @@
           })
           .animate({
             left: slidePosition + "%"
-        }, 300, "swing", $.proxy(function() {
-          $('#evaluationAssignmentEvaluateContainer').css({
+        }, 300, "swing", function() {
+          $(this).css({
             "box-shadow" : boxShadow
           });
-        }, this));
+        });
       }
       else {
         this._enableModalScrolling();
