@@ -9,6 +9,18 @@
     <div class="mf-tool-container special cm-mark-unread-container">
       <div title="{#localize key="plugin.communicator.tool.title.unread"/}" class="mf-tool cm-mark-unread-message icon-message-unread"></div>
     </div>
+    <div class="mf-tool-container special cm-add-label-container md-flex-hide sm-flex-hide">
+      <div title="{#localize key="plugin.communicator.tool.title.labels"/}" class="mf-tool cm-add-label-message-menu icon-tags">
+      </div>
+      <div class="mf-tool-menu cm-label-menu">
+        <div class="mf-tool-menu-content cm-label-menu-content">
+          <div class="mf-tool-textfield-container cm-label-textfield-container"><input id="communicatorNewlabelField" class="filter" type="text" name="communicatorNewlabelField" placeholder="{#localize key="plugin.communicator.label.create.textfield.placeholder"/}" /></div>
+          <div class="mf-tool-action-container cm-label-action-container"><a id="newLabelSubmit" href="#">{#localize key="plugin.communicator.label.create"/}</a></div>
+          <ul class="mf-tool-label-container">
+          </ul>
+         </div>
+      </div>
+    </div>
   </div>
   <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-hide flex-right">
      <div class="mf-tool-container navigation cm-go-previous-container">

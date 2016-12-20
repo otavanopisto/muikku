@@ -235,11 +235,14 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       
       List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(userEntity, threadId, false);
   
+      List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(userEntity, threadId);
+      List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+
       CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(userEntity, threadId, CommunicatorFolderType.LABEL, userLabel);
       CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(userEntity, threadId, CommunicatorFolderType.LABEL, userLabel);
       
       return Response.ok(
-        restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+        restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)
       ).build();
     } else {
       return Response.status(Status.NOT_FOUND).build();
