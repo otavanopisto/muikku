@@ -17,19 +17,15 @@ $(document).ready(function(){
             announcement.link = "announcements?announcementId=" + announcement.id;
             callback(null, announcement);
           } else {
-            var workspaceEntityId = announcement.workspaceEntityIds[0];
-            mApi().workspace.workspaces.read(workspaceEntityId)
-              .callback(function (err, result) {
-                if (err) {
-                  callback(err);
-                } else {
-                  announcement.workspaceName = result.name;
-                  announcement.link =
-                    "workspace/" + result.urlName +
-                    "/announcements?announcementId=" + announcement.id;
-                  callback(null, announcement);
-                }
-              });
+            var workspace = announcement.workspaces[0];
+            var workspaceNames = $.map(announcement.workspaces, function(workspace) {
+              return workspace.name;
+            });
+            
+            announcement.workspaceName = workspaceNames.join(", ");
+            announcement.link = "workspace/" + workspace.urlName +
+              "/announcements?announcementId=" + announcement.id;
+            callback(null, announcement);
           }
         },
         function(err, result) {

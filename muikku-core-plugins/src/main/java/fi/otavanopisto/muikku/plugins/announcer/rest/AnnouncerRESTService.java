@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -31,6 +32,8 @@ import fi.otavanopisto.muikku.plugins.announcer.AnnouncerPermissions;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.session.local.LocalSession;
@@ -47,6 +50,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   private static final long serialVersionUID = 1L;
 
   @Inject
+  private Logger logger;
+
+  @Inject
   private AnnouncementController announcementController;
   
   @Inject
@@ -59,6 +65,9 @@ public class AnnouncerRESTService extends PluginRESTService {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private WorkspaceRESTModelController workspaceRESTModelController;
+  
   private Date currentDate() {
     Calendar cal = Calendar.getInstance();
     cal.setTime(new Date());
@@ -202,11 +211,8 @@ public class AnnouncerRESTService extends PluginRESTService {
       announcementController.addAnnouncementWorkspace(newAnnouncement, workspaceEntity);
     }
     
-    return Response.ok(
-        createRESTModel(
-            newAnnouncement,
-            announcementController.listAnnouncementUserGroups(newAnnouncement),
-            announcementController.listAnnouncementWorkspaces(newAnnouncement)))
+    return Response
+        .ok(createRESTModel(newAnnouncement))
         .build();
   }
   
@@ -256,10 +262,7 @@ public class AnnouncerRESTService extends PluginRESTService {
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
-      AnnouncementRESTModel restModel = createRESTModel(
-          announcement,
-          announcementController.listAnnouncementUserGroups(announcement),
-          announcementController.listAnnouncementWorkspaces(announcement));
+      AnnouncementRESTModel restModel = createRESTModel(announcement);
       restModels.add(restModel);
     }
 
@@ -275,17 +278,12 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
     }
     
-    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
-    
-    return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
+    return Response.ok(createRESTModel(announcement)).build();
   }
 
-  private AnnouncementRESTModel createRESTModel(
-      Announcement announcement,
-      List<AnnouncementUserGroup> userGroups,
-      List<AnnouncementWorkspace> workspaces
-  ) {
+  private AnnouncementRESTModel createRESTModel(Announcement announcement) {
+    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
       
     AnnouncementRESTModel restModel = new AnnouncementRESTModel();
     restModel.setPublisherUserEntityId(announcement.getPublisherUserEntityId());
@@ -298,17 +296,25 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setPubliclyVisible(announcement.getPubliclyVisible());
 
     List<Long> userGroupEntityIds = new ArrayList<>();
-    for (AnnouncementUserGroup announcementUserGroup : userGroups) {
+    for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {
       userGroupEntityIds.add(announcementUserGroup.getUserGroupEntityId());
     }
     restModel.setUserGroupEntityIds(userGroupEntityIds);
 
     List<Long> workspaceEntityIds = new ArrayList<>();
-    for (AnnouncementWorkspace announcementWorkspace : workspaces) {
+    List<WorkspaceBasicInfo> workspaceBasicInfos = new ArrayList<>();
+    for (AnnouncementWorkspace announcementWorkspace : announcementWorkspaces) {
       workspaceEntityIds.add(announcementWorkspace.getWorkspaceEntityId());
+      
+      WorkspaceBasicInfo workspaceBasicInfo = workspaceRESTModelController.workspaceBasicInfo(announcementWorkspace.getWorkspaceEntityId());
+      if (workspaceBasicInfo != null)
+        workspaceBasicInfos.add(workspaceBasicInfo);
+      else
+        logger.warning(String.format("Logged user couldn't find workspace basic info for workspace"));
     }
     restModel.setWorkspaceEntityIds(workspaceEntityIds);
-
+    restModel.setWorkspaces(workspaceBasicInfos);
+    
     Date date = currentDate();
     if (date.before(announcement.getStartDate())) {
       restModel.setTemporalStatus(AnnouncementTemporalStatus.UPCOMING);
