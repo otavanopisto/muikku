@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -13,19 +12,13 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.events.CourseEntityEvent;
 import fi.otavanopisto.muikku.events.CourseUserEvent;
 import fi.otavanopisto.muikku.events.Created;
 import fi.otavanopisto.muikku.events.UserEntityEvent;
-import fi.otavanopisto.muikku.model.security.ResourceRights;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
-import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
-import fi.otavanopisto.muikku.plugins.forum.dao.ForumThreadDAO;
-import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.wall.dao.EnvironmentWallDAO;
 import fi.otavanopisto.muikku.plugins.wall.dao.UserWallDAO;
 import fi.otavanopisto.muikku.plugins.wall.dao.UserWallSubscriptionDAO;
@@ -41,9 +34,7 @@ import fi.otavanopisto.muikku.plugins.wall.model.WallEntryReply;
 import fi.otavanopisto.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.otavanopisto.muikku.plugins.wall.model.WorkspaceWall;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -81,9 +72,6 @@ public class WallController {
   private UserEntityController userEntityController;
 
   @Inject
-  private EnvironmentUserController environmentUserController; 
-
-  @Inject
   private WallEntryReplyDAO wallEntryReplyDAO;
   
   @Inject
@@ -93,59 +81,6 @@ public class WallController {
   @Any
   private Instance<WallEntryProvider> wallEntryProviders;
 
-  @Inject
-  private EnvironmentForumAreaDAO forumAreaDAO_TEMP;
-  
-  @Inject
-  private ForumThreadDAO forumThreadDAO_TEMP;
-  
-  @Inject
-  private ResourceRightsController resourceRightsController_TEMP;
-  
-  public void TEST_DATA() {
-    Random R = new Random();
-    
-    
-    List<Workspace> workspaces = workspaceController.listWorkspaces();
-    
-    Workspace workspace = workspaces.get(R.nextInt(workspaces.size()));
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-    WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
-    
-    List<EnvironmentUser> users = environmentUserController.listEnvironmentUsers();
-    
-    EnvironmentUser environmentUser = users.get(R.nextInt(users.size()));
-    UserEntity userEntity = environmentUser.getUser();
-    
-    int r = R.nextInt(24180);
-    
-    switch (R.nextInt(4)) {
-      case 1:
-        // Guidance Request
-      break;
-
-      case 2:
-        // Forum message
-        ForumArea forumArea = forumAreaDAO_TEMP.findById(1l);
-        if (forumArea == null) {
-          ResourceRights rights = resourceRightsController_TEMP.create();
-          forumArea = forumAreaDAO_TEMP.create("Foorumi.", null, false, sessionController.getLoggedUserEntity(), rights);
-        }
-          
-        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity, false, false);
-      break;
-      
-      case 3:
-        // Assessment request
-        
-//        assessmentRequestController.create(workspaceEntity, userEntity, new Date(), "Arvioi mut, beibe! #" + r);
-      break;
-
-      default:
-        wallEntryDAO.create(wall, "Hei mä postaan #" + r, WallEntryVisibility.PUBLIC, userEntity);
-    }
-  }
-  
   
 //  public WallEntryTextItem createWallEntryTextItem(AbstractWallEntry entry, String text, UserEntity user) {
 //    return wallEntryTextItemDAO.create(entry, text, user);

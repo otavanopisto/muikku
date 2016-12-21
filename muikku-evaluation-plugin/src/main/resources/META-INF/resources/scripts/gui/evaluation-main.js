@@ -60,10 +60,23 @@
                   isRequest: isRequest,
                   isEvaluated: isEvaluated});
                 renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
-                  $(requestContainer).append(html);
+                  var card = $(html).appendTo(requestContainer); 
+                  $(card).find('.evaluate-button').on('click', function() {
+                    var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
+                    $(document).evaluationModal('open', $(this).closest('.evaluation-card'), !workspaceEntityId);
+                  });
+                  $(card).find('.archive-button').on('click', function (event) {
+                    var archiveCard = $(event.target).closest('.evaluation-card');
+                    $(document).evaluationModal('confirmStudentArchive', archiveCard, $.proxy(function(archived) {
+                      if (archived) {
+                        $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
+                      }
+                    }, this));
+                  });
                 }, this));
               }  
-            } else {
+            }
+            else {
               this._showNoCardsMessage();
             }
             this.element.trigger("loadEnd", $('.evaluation-cards-container'));
@@ -150,13 +163,8 @@
       }, this)); 
   });
 
-  $(document).on('click', '.evaluate-button', function (event) {
-    var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
-    $(document).evaluationModal('open', event.target.closest('.evaluation-card'), !workspaceEntityId);
-  });
-  
   // Sort by assessment request date, ascending
-  $(document).on('click', '.icon-sort-amount-asc', function (event) {
+  $('.icon-sort-amount-asc').on('click', function(event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-card').sort(function (c1, c2) {
@@ -168,7 +176,7 @@
   });
 
   // Sort by assessment request date, descending
-  $(document).on('click', '.icon-sort-amount-desc', function (event) {
+  $('.icon-sort-amount-desc').on('click', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-card').sort(function (c1, c2) {
@@ -180,7 +188,7 @@
   });
 
   // Sort by student name, ascending
-  $(document).on('click', '.icon-sort-alpha-asc', function (event) {
+  $('.icon-sort-alpha-asc').on('click', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-card').sort(function (c1, c2) {
@@ -192,7 +200,7 @@
   });
 
   // Sort by student name, descending
-  $(document).on('click', '.icon-sort-alpha-desc', function (event) {
+  $('.icon-sort-alpha-desc').on('click', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-card').sort(function (c1, c2) {
@@ -204,7 +212,7 @@
   });
   
   // Sort by workspace name (student name as secondary), ascending
-  $(document).on('click', '.icon-sort-workspace-alpha-asc', function (event) {
+  $('.icon-sort-workspace-alpha-asc').on('click', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-card').sort(function (c1, c2) {
@@ -220,7 +228,7 @@
   });
 
   // Sort by workspace name (student name as secondary), descending
-  $(document).on('click', '.icon-sort-workspace-alpha-desc', function (event) {
+  $('.icon-sort-workspace-alpha-desc').on('click', function (event) {
     $('.eval-sorting').removeClass('selected');
     $(event.target).addClass('selected');
     var cards = $('.evaluation-card').sort(function (c1, c2) {
@@ -235,7 +243,7 @@
     $('.evaluation-cards-container').html(cards);
   });
 
-  $(document).on('click', '.eval-home', function(event) {
+  $('.eval-home').on('click', function (event) {
     location.href = location.href.split("?")[0];
   });
   

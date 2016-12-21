@@ -8,10 +8,11 @@ public class CommunicatorThreadViewRESTModel {
   }
   
   public CommunicatorThreadViewRESTModel(Long olderThreadId, Long newerThreadId, 
-      List<CommunicatorMessageRESTModel> messages) {
+      List<CommunicatorMessageRESTModel> messages, List<CommunicatorMessageIdLabelRESTModel> labels) {
     this.olderThreadId = olderThreadId;
     this.newerThreadId = newerThreadId;
     this.messages = messages;
+    this.labels = labels;
   }
   
   public Long getOlderThreadId() {
@@ -38,7 +39,16 @@ public class CommunicatorThreadViewRESTModel {
     this.messages = messages;
   }
 
+  public List<CommunicatorMessageIdLabelRESTModel> getLabels() {
+    return labels;
+  }
+
+  public void setLabels(List<CommunicatorMessageIdLabelRESTModel> labels) {
+    this.labels = labels;
+  }
+
   private Long olderThreadId;
   private Long newerThreadId;
   private List<CommunicatorMessageRESTModel> messages;
+  private List<CommunicatorMessageIdLabelRESTModel> labels;
 }

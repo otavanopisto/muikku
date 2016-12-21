@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 
@@ -9,7 +10,7 @@ public class Workspace {
   public Workspace() {
   }
 
-  public Workspace(Long id, String urlName, WorkspaceAccess access, Boolean archived, Boolean published, String name, String nameExtension, String description, String materialDefaultLicense, Long numVisits, Date lastVisit) {
+  public Workspace(Long id, String urlName, WorkspaceAccess access, Boolean archived, Boolean published, String name, String nameExtension, String description, String materialDefaultLicense, Long numVisits, Date lastVisit, Set<String> curriculumIdentifiers) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -22,6 +23,7 @@ public class Workspace {
     this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
+    this.curriculumIdentifiers = curriculumIdentifiers;
   }
 
   public Long getId() {
@@ -112,6 +114,14 @@ public class Workspace {
     this.nameExtension = nameExtension;
   }
 
+  public Set<String> getCurriculumIdentifiers() {
+    return curriculumIdentifiers;
+  }
+
+  public void setCurriculumIdentifiers(Set<String> curriculumIdentifiers) {
+    this.curriculumIdentifiers = curriculumIdentifiers;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -123,4 +133,5 @@ public class Workspace {
   private WorkspaceAccess access;
   private String materialDefaultLicense;
   private Boolean published;
+  private Set<String> curriculumIdentifiers;
 }

@@ -73,6 +73,14 @@ public class ForumArea implements ResourceEntity, OwnedEntity, ArchivableEntity 
     this.version = version;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -80,6 +88,9 @@ public class ForumArea implements ResourceEntity, OwnedEntity, ArchivableEntity 
   @NotEmpty
   private String name;
 
+  @Column(length = 4096)
+  private String description;
+  
   @ManyToOne
   private ForumAreaGroup group;
   

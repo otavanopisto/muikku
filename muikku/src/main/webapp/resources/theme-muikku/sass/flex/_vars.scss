@@ -80,6 +80,8 @@ $environment-paging-tool-font-color: #fff;
 $environment-paging-tool-background-disabled-color: #ededed;
 $environment-paging-tool-font-disabled-color: #dadada;
 $environment-widget-overlay-background-color: #000;
+$environment-subtitle-font-color: #757575;
+$environment-items-title-font-color: #757575;
 
 // Forms (bottom bar)
 
@@ -106,7 +108,7 @@ $item-markup-border-color-1: #32acf6;
 $item-markup-border-color-2: #f90ae3;
 $item-markup-border-color-3: #5dc005;
 $item-shadow: 0 0 15px rgba(216, 230, 235, 0.2);
-$item-header-font-color: #d89828;
+$item-header-hidden-font-color: #d89828;
 $item-header-secondary-font-color: #cecece;
 $item-header-icon-font-color: #3f639a;
 $item-header-label-background-color: #daf5ff;
@@ -159,6 +161,7 @@ $navigation-horizontal-bar-default-button-background-hover-color: #0065cb;
 $navigation-horizontal-bar-navigation-background-color: #84d9fe;
 $navigation-horizontal-bar-navigation-icon-color: #fbfbfb;
 $navigation-horizontal-bar-special-background-color: #99eb36;
+$navigation-horizontal-bar-special-accented-background-color: #72b322;
 $navigation-horizontal-bar-special-button-background-color: #72d200;
 $navigation-horizontal-bar-special-menu-link-font-color: #72d200;
 $navigation-horizontal-bar-special-menu-input-border-color: #ccc;
