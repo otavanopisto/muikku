@@ -268,7 +268,27 @@
           grade: assignment.grade,
           literalEvaluation: assignment.literalEvaluation
         }, $.proxy(function (html) {
-          $('.eval-modal-assignments-content').append(html);
+          var material = $(html).appendTo('.eval-modal-assignments-content');
+          // Toggle material open/closed
+          $(material).find('.assignment-title').on('click', function (event) {
+            var assignmentContent = $(event.target).closest('.assignment').find('.assignment-content');
+            $(document).evaluationModal('toggleAssignment', assignmentContent);
+          });
+          // Evaluate material
+          $(material).find('.assignment-evaluate-button').on('click', function (event) {
+            var oldAssignment = $(document).evaluationModal('activeAssignment');
+            var newAssignment = $(event.target).closest('.assignment-wrapper');
+            if (!oldAssignment || newAssignment[0] !== oldAssignment[0]) {
+              $(document).evaluationModal('activeAssignment', newAssignment);
+              var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+              var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
+              $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
+              $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
+            }
+            else {
+              $(document).evaluationModal('toggleMaterialAssessmentView', true);
+            }
+          });
         }, this));
       }, this));
       // Material's loading animation end
@@ -663,35 +683,6 @@
             }
           }, this));
       }
-    }
-  });
-
-  $(document).on('click', '.archive-button', function (event) {
-    var card = $(event.target).closest('.evaluation-card');
-    $(document).evaluationModal('confirmStudentArchive', card, $.proxy(function(archived) {
-      if (archived) {
-        $(document).trigger("discardCard", {workspaceUserEntityId: $(card).attr('data-workspace-user-entity-id')});
-      }
-    }, this));
-  });
-  
-  $(document).on('click', '.assignment-title-wrapper', function (event) {
-    var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
-    $(document).evaluationModal('toggleAssignment', assignmentContent);
-  });
-
-  $(document).on('click', '.assignment-evaluate-button', function (event) {
-    var oldAssignment = $(document).evaluationModal('activeAssignment');
-    var newAssignment = $(event.target).closest('.assignment-wrapper');
-    if (!oldAssignment || newAssignment[0] !== oldAssignment[0]) {
-      $(document).evaluationModal('activeAssignment', newAssignment);
-      var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
-      var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
-      $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
-      $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
-    }
-    else {
-      $(document).evaluationModal('toggleMaterialAssessmentView', true);
     }
   });
 
