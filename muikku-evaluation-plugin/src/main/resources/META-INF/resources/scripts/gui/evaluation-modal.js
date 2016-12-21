@@ -138,6 +138,17 @@
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
               }, this));
+              $('.workspace-evaluation-form-activate-button').click($.proxy(function(event) {
+                $('.workspace-evaluation-form-activate-button, .workspace-evaluation-form-overlay').animate({
+                  opacity: 0
+                }, {
+                  duration: 300,
+                  complete: function (){
+                    this.remove();
+                    $('.eval-modal-evaluate-workspace-content').removeAttr('style');
+                  }
+                });
+              }, this));
               
               // Assignment assessment editor
 

@@ -171,14 +171,22 @@
   line-height: 26px;
   left: 50%;
   margin: -80px;
+  opacity: 1;
   padding: 44px 20px;
   position: absolute;
   text-align: center;
   text-transform: uppercase;
   top: 50%;
+  transition: all 0.3s ease-in-out;
   width: 180px;
   vertical-align: middle;
   z-index: 9999;
+  
+  &:hover {
+    background: #1eae0e;
+    border: 5px solid #3edd2d;
+  }
+  
 }
 
 // EVALUATE FORM
