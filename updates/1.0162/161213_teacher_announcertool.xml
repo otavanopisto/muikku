@@ -11,8 +11,22 @@
   <sql>
     insert into RolePermission (permission_id, role_id) 
     values (
+      (select id from permission where name = 'ANNOUNCER_TOOL' and scope = 'ENVIRONMENT'), 
+      (select id from RoleEntity where name = 'USER'));
+  </sql>
+
+  <sql>
+    insert into RolePermission (permission_id, role_id) 
+    values (
       (select id from permission where name = 'FIND_ANNOUNCEMENT' and scope = 'ENVIRONMENT'), 
       (select id from RoleEntity where name = 'TEACHER'));
+  </sql>
+
+  <sql>
+    insert into RolePermission (permission_id, role_id) 
+    values (
+      (select id from permission where name = 'FIND_ANNOUNCEMENT' and scope = 'ENVIRONMENT'), 
+      (select id from RoleEntity where name = 'USER'));
   </sql>
 
 </update>
