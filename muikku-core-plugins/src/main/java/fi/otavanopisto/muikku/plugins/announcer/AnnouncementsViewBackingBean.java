@@ -12,6 +12,8 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
@@ -38,7 +40,11 @@ public class AnnouncementsViewBackingBean {
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
     }
-    activeAnnouncements = announcementController.listAnnouncements(true, true, true, false, loggedUserEntity, false);
+    AnnouncementEnvironmentRestriction environment = 
+        sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
+            AnnouncementEnvironmentRestriction.PUBLICANDGROUP : AnnouncementEnvironmentRestriction.PUBLIC;
+    AnnouncementTimeFrame timeFrame = AnnouncementTimeFrame.CURRENT;
+    activeAnnouncements = announcementController.listAnnouncements(true, true, environment, timeFrame, loggedUserEntity, false);
     return null;
   }
 

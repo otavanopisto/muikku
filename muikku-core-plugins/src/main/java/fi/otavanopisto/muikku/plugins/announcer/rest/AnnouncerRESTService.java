@@ -29,6 +29,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncementController;
 import fi.otavanopisto.muikku.plugins.announcer.AnnouncerPermissions;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
@@ -222,26 +224,24 @@ public class AnnouncerRESTService extends PluginRESTService {
   public Response listAnnouncements(
       @QueryParam("hideEnvironmentAnnouncements") @DefaultValue("false") boolean hideEnvironmentAnnouncements,
       @QueryParam("hideWorkspaceAnnouncements") @DefaultValue("false") boolean hideWorkspaceAnnouncements,
+      @QueryParam("hideGroupAnnouncements") @DefaultValue("false") boolean hideGroupAnnouncements,
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
-      @QueryParam("showExpired") @DefaultValue("false") boolean showExpired      
+      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame      
   ) {
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
     List<Announcement> announcements = null;
-
-    // List announcements from environment level, including environment announcements and optionally workspace announcements
     
+    AnnouncementEnvironmentRestriction environment = 
+        hideEnvironmentAnnouncements ? AnnouncementEnvironmentRestriction.NONE :
+            sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
+                AnnouncementEnvironmentRestriction.PUBLICANDGROUP : AnnouncementEnvironmentRestriction.PUBLIC;
+
     if (workspaceEntityId == null) {
-      // If expired announcements are requested, the user needs permission to do so.
-      if (showExpired && !sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ALL_ANNOUNCEMENTS)) {
-        return Response.status(Status.FORBIDDEN).entity("You're not allowed to list expired announcements").build();
-      }
-      
-      boolean includeGroups = true;
+      boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
-      boolean includeEnvironment = !hideEnvironmentAnnouncements;
       announcements = announcementController.listAnnouncements(
-          includeGroups, includeWorkspaces, includeEnvironment, showExpired, currentUserEntity, onlyMine);
+          includeGroups, includeWorkspaces, environment, timeFrame, currentUserEntity, onlyMine);
     }
 
     if (workspaceEntityId != null) {
@@ -254,10 +254,9 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to list workspace announcements").build();
       }
       
-      boolean includeEnvironment = !hideEnvironmentAnnouncements;
       List<WorkspaceEntity> workspaceEntities = Arrays.asList(workspaceEntity);
-      announcements = announcementController.listAnnouncements(
-          workspaceEntities, includeEnvironment, showExpired, currentUserEntity, onlyMine);
+      announcements = announcementController.listWorkspaceAnnouncements(
+          workspaceEntities, environment, timeFrame, currentUserEntity, onlyMine);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
