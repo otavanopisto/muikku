@@ -93,6 +93,18 @@
               
               this._evaluationModal.append(html);
               
+              this._evaluationModal
+                .find('.eval-modal-evaluate-workspace-content')
+                .css({
+                  'overflow-y': 'hidden'
+                })
+                .append($('<div>')
+                  .addClass('workspace-evaluation-form-overlay'))
+                .append($('<div>')
+                  .addClass('workspace-evaluation-form-activate-button')
+                  .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayButtonLabel"))
+                );
+              
               // Material's loading animation start
               
               this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
