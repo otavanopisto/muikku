@@ -130,6 +130,18 @@ public class AnnouncementController {
     return announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
   }
 
+  /**
+   * Lists announcement workspaces that are published to workspaces the user is part of
+   * 
+   * @param announcement
+   * @param userEntity
+   * @return
+   */
+  public List<AnnouncementWorkspace> listAnnouncementWorkspaces(Announcement announcement, UserEntity userEntity) {
+    List<WorkspaceEntity> workspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
+    return announcementWorkspaceDAO.listByAnnouncementAndWorkspacesAndArchived(announcement, workspaces, Boolean.FALSE);
+  }
+  
   public void archive(Announcement announcement) {
     announcementDAO.updateArchived(announcement, Boolean.TRUE);
   }

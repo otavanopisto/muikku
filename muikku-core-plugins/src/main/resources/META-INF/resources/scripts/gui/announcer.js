@@ -518,6 +518,7 @@
     _loadAnnouncements: function () {
       var options = {};
 
+      options.onlyEditable = true;
       options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
       
       if (this.options.workspaceEntityId != null) {

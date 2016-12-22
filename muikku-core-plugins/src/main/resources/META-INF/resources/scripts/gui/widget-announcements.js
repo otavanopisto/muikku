@@ -17,14 +17,16 @@ $(document).ready(function(){
             announcement.link = "announcements?announcementId=" + announcement.id;
             callback(null, announcement);
           } else {
-            var workspace = announcement.workspaces[0];
             var workspaceNames = $.map(announcement.workspaces, function(workspace) {
               return workspace.name;
             });
-            
             announcement.workspaceName = workspaceNames.join(", ");
-            announcement.link = "workspace/" + workspace.urlName +
-              "/announcements?announcementId=" + announcement.id;
+
+            var workspace = announcement.workspaces[0];
+            if (workspace) {
+              announcement.link = "workspace/" + workspace.urlName +
+                "/announcements?announcementId=" + announcement.id;
+            }
             callback(null, announcement);
           }
         },
