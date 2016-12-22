@@ -105,11 +105,14 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
     
     List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, true);
 
+    List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, threadId);
+    List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+
     CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.TRASH, null);
     CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.TRASH, null);
     
     return Response.ok(
-      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)
     ).build();
   }
 
