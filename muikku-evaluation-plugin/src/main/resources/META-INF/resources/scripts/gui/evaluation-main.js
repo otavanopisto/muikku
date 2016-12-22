@@ -230,7 +230,6 @@
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       var workspaceUserEntityId = data.workspaceUserEntityId;
       var card = $('.evaluation-card[data-workspace-user-entity-id="' + workspaceUserEntityId + '"]');
-      this._resetImportance(card);
       $(card).remove();
       if (!$('.evaluation-card').length && workspaceEntityId === undefined) {
         this._showNoCardsMessage();
@@ -251,6 +250,7 @@
         var evaluationRow = $(data.card).find('.evaluation-row');
         $(evaluationRow).addClass('highlight');
         $(evaluationRow).find('.evaluation-card-data-text').text(formatDate(data.evaluationDate));
+        this._resetImportance(data.card);
       }
       else {
         $(data.card).removeClass('evaluated-passed evaluation-incomplete');
