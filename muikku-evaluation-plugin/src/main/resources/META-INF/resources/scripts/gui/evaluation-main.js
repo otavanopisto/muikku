@@ -230,6 +230,7 @@
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       var workspaceUserEntityId = data.workspaceUserEntityId;
       var card = $('.evaluation-card[data-workspace-user-entity-id="' + workspaceUserEntityId + '"]');
+      this._resetImportance(card);
       $(card).remove();
       if (!$('.evaluation-card').length && workspaceEntityId === undefined) {
         this._showNoCardsMessage();
