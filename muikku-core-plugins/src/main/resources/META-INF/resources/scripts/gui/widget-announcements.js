@@ -13,22 +13,15 @@ $(document).ready(function(){
             err);
       } else {
         async.map(result, function(announcement, callback) {
-          if (announcement.workspaceEntityIds.length === 0) {
-            announcement.link = "announcements?announcementId=" + announcement.id;
-            callback(null, announcement);
-          } else {
+          if (announcement.workspaces.length > 0) {
             var workspaceNames = $.map(announcement.workspaces, function(workspace) {
               return workspace.name;
             });
             announcement.workspaceName = workspaceNames.join(", ");
-
-            var workspace = announcement.workspaces[0];
-            if (workspace) {
-              announcement.link = "workspace/" + workspace.urlName +
-                "/announcements?announcementId=" + announcement.id;
-            }
-            callback(null, announcement);
           }
+          
+          announcement.link = "announcements?announcementId=" + announcement.id;
+          callback(null, announcement);
         },
         function(err, result) {
           if (err) {

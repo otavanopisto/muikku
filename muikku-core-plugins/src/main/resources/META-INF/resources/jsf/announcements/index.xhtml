@@ -31,6 +31,11 @@
                       <f:convertDateTime type="date" dateStyle="short" />
                     </h:outputText>
                   </div>
+                  <div class="article-datetime">
+                    <ui:repeat value="#{announcementsViewBackingBean.currentAnnouncementWorkspaces}" var="announcementWorkspace" varStatus="loop">
+                      <h:outputText value="#{announcementWorkspace.name}" />#{!loop.last ? ', ' : ''}
+                    </ui:repeat>
+                  </div>
                 </header>
                 <div class="article-context">
                   <h:outputText value="#{announcementsViewBackingBean.currentAnnouncement.content}" escape="false" />
