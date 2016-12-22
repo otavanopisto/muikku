@@ -1,4 +1,5 @@
-    <div class="mf-item cm-message open{?isOwner} owner{/isOwner} flex-row" data-folder-id={folderId} data-id="{id}" data-thread-id="{communicatorMessageId}">
+    
+   <div class="mf-item cm-message open{?isOwner} owner{/isOwner} flex-row" data-folder-id={folderId} data-id="{id}" data-thread-id="{communicatorMessageId}">
       <div class="mf-item-details cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
         <div class="cm-message-details-container flex-row">       
           <div class="mf-item-description cm-message-details lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
@@ -24,9 +25,15 @@
                   {/workspaceRecipients}
                 {/workspaceRecipients}
               </div>        
-              <div class="mf-item-header-content-secondary cm-message-header-content-secondary">{created|formatDate} {created|formatTime}</div>    
+              <div class="mf-item-header-content-secondary cm-message-header-content-secondary">             
+               {created|formatDate} {created|formatTime}
+              </div>    
             </div>
-            <div class="cm-message-header">{caption}</div>
+            <div class="cm-message-header">{caption}
+              {#labels}
+                {>"communicator/communicator_item_label.dust"/}
+              {/labels}
+            </div>
             <div class="mf-item-content cm-message-content">     
               <div class="mf-item-content-text cm-message-content-text">{content|s}</div>          
               <div class="cm-message-content-tools">
