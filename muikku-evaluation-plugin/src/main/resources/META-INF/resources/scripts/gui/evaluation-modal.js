@@ -93,6 +93,18 @@
               
               this._evaluationModal.append(html);
               
+              this._evaluationModal
+                .find('.eval-modal-evaluate-workspace-content')
+                .css({
+                  'overflow-y': 'hidden'
+                })
+                .append($('<div>')
+                  .addClass('workspace-evaluation-form-overlay'))
+                .append($('<div>')
+                  .addClass('workspace-evaluation-form-activate-button')
+                  .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayButtonLabel"))
+                );
+              
               // Material's loading animation start
               
               this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
@@ -125,6 +137,17 @@
               }, this));
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
+              }, this));
+              $('.workspace-evaluation-form-activate-button').click($.proxy(function(event) {
+                $('.workspace-evaluation-form-activate-button, .workspace-evaluation-form-overlay').animate({
+                  opacity: 0
+                }, {
+                  duration: 300,
+                  complete: function (){
+                    this.remove();
+                    $('.eval-modal-evaluate-workspace-content').removeAttr('style');
+                  }
+                });
               }, this));
               
               // Assignment assessment editor
