@@ -71,7 +71,8 @@
     &.usergroup {
 
       &::before {
-        color: $target-workspace-icon-color;
+        color: $target-group-icon-color;
+
       }
            
     }
@@ -79,7 +80,7 @@
     &.workspace {
 
       &::before {
-         color: $target-group-icon-color;
+        color: $target-workspace-icon-color;
       }     
     
     }     

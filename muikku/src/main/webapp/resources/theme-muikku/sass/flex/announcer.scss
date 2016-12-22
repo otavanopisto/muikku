@@ -58,13 +58,24 @@
       font-family: $environment-icon-family;
     }     
 
+    
     &.usergroup {
 
       &::before {
         color: $target-group-icon-color;
-      }     
 
+      }
+           
     }
+      
+    &.workspace {
+
+      &::before {
+        color: $target-workspace-icon-color;
+      }     
+    
+    } 
+
     
     &:hover {
       color: $target-remove-font-color;
