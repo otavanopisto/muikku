@@ -44,13 +44,17 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     return persist(announcement);
   }
 
-  public List<Announcement> listAnnouncements(List<UserGroupEntity> userGroupEntities, List<WorkspaceEntity> workspaceEntities, 
-      boolean includeEnvironment, boolean showExpired) {
-    return listAnnouncements(userGroupEntities, workspaceEntities, includeEnvironment, showExpired, null);
+  public List<Announcement> listAnnouncements(List<UserGroupEntity> userGroupEntities, 
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame) {
+    return listAnnouncements(userGroupEntities, workspaceEntities, environment, timeFrame, null);
   }
   
-  public List<Announcement> listAnnouncements(List<UserGroupEntity> userGroupEntities, List<WorkspaceEntity> workspaceEntities, 
-      boolean includeEnvironment, boolean showExpired, UserEntity announcementOwner) {
+  public List<Announcement> listAnnouncements(
+      List<UserGroupEntity> userGroupEntities, 
+      List<WorkspaceEntity> workspaceEntities, 
+      AnnouncementEnvironmentRestriction environment, 
+      AnnouncementTimeFrame timeFrame, 
+      UserEntity announcementOwner) {
     EntityManager entityManager = getEntityManager();
     Date currentDate = onlyDateFields(new Date());
     
@@ -62,12 +66,28 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     List<Predicate> predicates = new ArrayList<Predicate>();
     predicates.add(criteriaBuilder.equal(root.get(Announcement_.archived), Boolean.FALSE));
     
-    // Show only active
-    if (!showExpired) {
-      predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate));
-      predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate));
+    switch (timeFrame) {
+      case ALL:
+        // No restrictions here
+      break;
+      case CURRENTANDUPCOMING:
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate));
+      break;
+      case CURRENTANDEXPIRED:
+        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate));
+      break;
+      case CURRENT:
+        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.startDate), currentDate));
+        predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(Announcement_.endDate), currentDate));
+      break;
+      case UPCOMING:
+        predicates.add(criteriaBuilder.greaterThan(root.get(Announcement_.startDate), currentDate));
+      break;
+      case EXPIRED:
+        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.endDate), currentDate));
+      break;
     }
-
+    
     if (announcementOwner != null) {
       predicates.add(criteriaBuilder.equal(root.get(Announcement_.publisherUserEntityId), announcementOwner.getId()));
     }
@@ -78,15 +98,25 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     /**
      * Environment announcements: 
      * - All announcements which are not tied to a workspace
-     * - Publicly visible  (if you see them through group, it's handled below)
+     * - Publicly visible and/or group (when requested)
      */
-    if (includeEnvironment) {
-      groupPredicates.add(
-          criteriaBuilder.and(
-              criteriaBuilder.not(criteriaBuilder.in(root).value(subqueryWorkspaceAnnouncements(criteriaBuilder, criteria))),
-              criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), Boolean.TRUE)
-          )
-      );
+    switch (environment) {
+      case NONE:
+        // No environment announcements added
+      break;
+      case PUBLIC:
+        groupPredicates.add(
+            criteriaBuilder.and(
+                criteriaBuilder.not(criteriaBuilder.in(root).value(subqueryWorkspaceAnnouncements(criteriaBuilder, criteria))),
+                criteriaBuilder.equal(root.get(Announcement_.publiclyVisible), Boolean.TRUE)
+            )
+        );
+      break;
+      case PUBLICANDGROUP:
+        groupPredicates.add(
+            criteriaBuilder.not(criteriaBuilder.in(root).value(subqueryWorkspaceAnnouncements(criteriaBuilder, criteria)))
+        );
+      break;
     }
 
     /**

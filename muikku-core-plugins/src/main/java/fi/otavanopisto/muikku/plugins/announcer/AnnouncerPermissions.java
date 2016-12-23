@@ -43,9 +43,13 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   @DefaultWorkspacePermissionRoles( { WorkspaceRoleArchetype.TEACHER } )
   public static final String DELETE_WORKSPACE_ANNOUNCEMENT = "DELETE_WORKSPACE_ANNOUNCEMENT";
   
+  /**
+   * By default group announcements are shown only to group users, but 
+   * with this permission roles may be permitted to list them too.
+   */
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )
-  public static final String LIST_ALL_ANNOUNCEMENTS = "LIST_ALL_ANNOUNCEMENTS";
+  public static final String LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS = "LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS";
 
   @Scope (PermissionScope.WORKSPACE)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER } )

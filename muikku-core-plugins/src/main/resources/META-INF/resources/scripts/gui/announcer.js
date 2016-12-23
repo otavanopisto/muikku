@@ -40,8 +40,11 @@
   $.widget("custom.announcementCreateEditDialog", {
     
     options: {
-      showTargetGroups: true,
-      showTargetWorkspaces: true,
+      permissions: {
+        environment: false,
+        workspaces: false,
+        groups: false
+      },
       announcement: null,
       ckeditor: {
         toolbar: [
@@ -293,8 +296,8 @@
     },
     
     _searchTargetGroups: function (term) {
-      if (!this.options.showTargetGroups)
-        return [];
+      if (!this.options.permissions.groups)
+        return function (callback) { callback(null, []); };
       
       var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
       var existingIds = new Array();
@@ -326,8 +329,8 @@
     },
     
     _searchTargetWorkspaces: function (term) {
-      if (!this.options.showTargetWorkspaces)
-        return [];
+      if (!this.options.permissions.workspaces)
+        return function (callback) { callback(null, []); };
       
       var targetWorkspaceIds = this._getTargetWorkspaceIds();
 
@@ -411,6 +414,11 @@
           payload.publiclyVisible = true;
         }
         
+        if (!this.options.permissions.environment && (payload.workspaceEntityIds.length == 0)) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.workspaceNeeded'));
+          return false;
+        }
+        
         if (!(this.options.announcement)) {
           mApi().announcer.announcements
           .create(payload)
@@ -479,8 +487,7 @@
       var dialog = $('<div>')
         .announcementCreateEditDialog({
           workspaceEntityId: this.options.workspaceEntityId,
-          showTargetWorkspaces: true,
-          showTargetGroups: ! (this.options.workspaceEntityId)
+          permissions: this.options.permissions
         });
 
       $("#socialNavigation")
@@ -499,8 +506,7 @@
           var dialog = $('<div>').announcementCreateEditDialog({
             workspaceEntityId: this.options.workspaceEntityId,
             announcement: announcement,
-            showTargetWorkspaces: true,
-            showTargetGroups: ! (this.options.workspaceEntityId)
+            permissions: this.options.permissions
           });
 
           $("#socialNavigation")
@@ -512,6 +518,7 @@
     _loadAnnouncements: function () {
       var options = {};
 
+      options.onlyEditable = true;
       options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
       
       if (this.options.workspaceEntityId != null) {

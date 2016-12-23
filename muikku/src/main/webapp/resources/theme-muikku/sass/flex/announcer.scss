@@ -58,19 +58,30 @@
       font-family: $environment-icon-family;
     }     
 
+    
     &.usergroup {
 
       &::before {
-        color: $target-group-icon-color;
-      }     
+        color: $target-group-color;
 
+      }
+           
     }
+      
+    &.workspace {
+
+      &::before {
+        color: $target-workspace-color;
+      }     
+    
+    } 
+
     
     &:hover {
       color: $target-remove-font-color;
       
       &::before {
-        color: $target-remove-icon-color;
+        color: $target-remove-color;
       }
       
     }      
@@ -85,9 +96,14 @@
     box-sizing: border-box;
     display: inline-block;
     max-height: 330px;
+    border-left: 3px solid $target-group-color;
     overflow: hidden;
     vertical-align: top;
     width: 286px;
+
+    &.workspace{
+      border-left: 3px solid $target-workspace-color;
+    }
     
     &.ACTIVE {
       
@@ -128,7 +144,7 @@
 
 .an-announcement-topic{
   border-bottom: 1px solid $environment-border-color;
-  color: $environment-font-color;
+  color: $target-group-color;
   font-size: 20px;
   font-weight: 300;
   overflow: hidden;
@@ -137,6 +153,9 @@
   padding-top: 10px;
   text-overflow: ellipsis;  
   white-space: nowrap;
+  &.workspace {
+    color: $target-workspace-color;
+  }
 }
 
 .an-announcement-content{
