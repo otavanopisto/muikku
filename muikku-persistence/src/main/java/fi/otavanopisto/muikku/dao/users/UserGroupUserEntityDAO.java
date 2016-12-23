@@ -115,6 +115,11 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     return persist(userGroupUserEntity);
   }
 
+  public UserGroupUserEntity updateUserGroupEntity(UserGroupUserEntity userGroupUserEntity, UserGroupEntity userGroupEntity) {
+    userGroupUserEntity.setUserGroupEntity(userGroupEntity);
+    return persist(userGroupUserEntity);
+  }
+
   public void delete(UserGroupUserEntity userGroupUserEntity) {
     super.delete(userGroupUserEntity);
   }
