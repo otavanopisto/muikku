@@ -468,19 +468,37 @@
     }
     
   });
+
+  $.widget("custom.announcerCategories", {
+    _create : function() {
+      this.element.on('click', '.an-category', $.proxy(this._onCategoryClick, this));
+     },
+     
+     _onCategoryClick: function (event) {
+       var folderId = $(event.target).closest('.an-category').attr('data-folder-id');
+       
+       $('.an-announcements-view-container').announcer("setCategory", folderId);
+     },
+  });
   
   $.widget("custom.announcer", {
      options: {
+       category: "active",
        workspaceEntityId: null,
        outerContainer: ".mf-content-master"
      },
     
     _create : function() {
-     $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
-     this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
-     this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+      $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
+      this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
+      this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
      
-     this._loadAnnouncements();
+      this._loadAnnouncements();
+    },
+    
+    setCategory: function (category) {
+      this.options.category = category;
+      this._loadAnnouncements();
     },
     
     _onCreateAnnouncementClick: function () {
@@ -517,9 +535,25 @@
     
     _loadAnnouncements: function () {
       var options = {};
-
       options.onlyEditable = true;
       options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
+
+      switch (this.options.category) {
+        case "past":
+          options.timeFrame = "EXPIRED";
+        break;
+        case "archived":
+          options.timeFrame = "ALL";
+          options.onlyArchived = true;
+        break;
+        case "mine":
+          options.timeFrame = "ALL";
+          options.onlyMine = true;
+        break;
+        default:
+          options.timeFrame = "CURRENTANDUPCOMING";
+        break;
+      }
       
       if (this.options.workspaceEntityId != null) {
         options.workspaceEntityId = this.options.workspaceEntityId;
@@ -533,7 +567,7 @@
           } else {
             renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
               var element = $(text);
-              $('.an-announcements-view-container').append(element);
+              $('.an-announcements-view-container').html(element);
             }, this));
           }
         }, this));
@@ -593,6 +627,7 @@
     }
     
     $('.an-announcements-view-container').announcer(options);
+    $('.an-categories').announcerCategories({});
   });
 
 }).call(this);

@@ -69,7 +69,8 @@ public class AnnouncementController {
   }
   
   public List<Announcement> listAnnouncements(boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, boolean userAsOwner) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, 
+      boolean userAsOwner, boolean onlyArchived) {
     List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserEntity(user) : Collections.emptyList();
     List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(user) : Collections.emptyList();
     
@@ -78,19 +79,22 @@ public class AnnouncementController {
         workspaceEntities,
         environment, 
         timeFrame, 
-        userAsOwner ? user : null);
+        userAsOwner ? user : null,
+        onlyArchived);
     
     return announcements;
   }
 
   public List<Announcement> listWorkspaceAnnouncements(List<WorkspaceEntity> workspaceEntities, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, boolean userAsOwner) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, 
+      boolean userAsOwner, boolean onlyArchived) {
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         Collections.emptyList(),
         workspaceEntities, 
         environment, 
         timeFrame, 
-        userAsOwner ? user : null);
+        userAsOwner ? user : null,
+        onlyArchived);
     
     return announcements;
   }
@@ -111,7 +115,7 @@ public class AnnouncementController {
     }
     
     List<Announcement> result = new ArrayList<>(announcementDAO.listAnnouncements(
-        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT));
+        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false));
     
     Collections.sort(result, new Comparator<Announcement>() {
       public int compare(Announcement o1, Announcement o2) {
