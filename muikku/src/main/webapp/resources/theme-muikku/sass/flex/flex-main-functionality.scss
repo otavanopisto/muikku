@@ -999,8 +999,8 @@ ul.mf-tool-label-container {
       }
             
       &:hover {
-        cursor: pointer;   
         border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
+        cursor: pointer;   
       } 
       
       &.selected {
