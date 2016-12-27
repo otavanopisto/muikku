@@ -980,8 +980,8 @@ ul.mf-tool-label-container {
    
   ul {
     list-style-type: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
      
     li {
       border-bottom: 1px solid $environment-border-color;
@@ -1010,14 +1010,13 @@ ul.mf-tool-label-container {
         a {
           font-weight: normal;
         }
-        
       }
+      
       &::before {
         color: $navigation-vertical-bar-icon-color;
         margin-left: 5px;
       } 
  
-       
     }
   
   }
