@@ -988,18 +988,19 @@ ul.mf-tool-label-container {
       border-left: 5px solid $navigation-vertical-bar-border-color;
        
       a {
-        font-weight: 300;
-        text-decoration: none;
-        height: 30px;
+        box-sizing: border-box;
         color: $environment-font-color;
         display: inline-block;
-        box-sizing: border-box;
-        padding-top: 8px;      
+        font-family: "Open Sans",Arial,sans-serif;
+        font-weight: 300;
+        height: 30px;
+        padding-top: 8px;
+        text-decoration: none;
       }
             
       &:hover {
-        border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
         cursor: pointer;   
+        border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
       } 
       
       &.selected {
@@ -1012,8 +1013,8 @@ ul.mf-tool-label-container {
         
       }
       &::before {
-        margin-left: 5px;
         color: $navigation-vertical-bar-icon-color;
+        margin-left: 5px;
       } 
  
        
