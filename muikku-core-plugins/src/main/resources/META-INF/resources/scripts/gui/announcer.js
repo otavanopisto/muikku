@@ -470,15 +470,25 @@
   });
 
   $.widget("custom.announcerCategories", {
+    options: {
+      currentCategory: "active"
+    },
+  
     _create : function() {
       this.element.on('click', '.an-category', $.proxy(this._onCategoryClick, this));
-     },
+      this._refreshSelection();
+    },
      
-     _onCategoryClick: function (event) {
-       var folderId = $(event.target).closest('.an-category').attr('data-folder-id');
-       
-       $('.an-announcements-view-container').announcer("setCategory", folderId);
-     },
+    _onCategoryClick: function (event) {
+      this.options.currentCategory = $(event.target).closest('.an-category').attr('data-folder-id');
+      $('.an-announcements-view-container').announcer("setCategory", this.options.currentCategory);
+      this._refreshSelection();
+    },
+     
+    _refreshSelection: function () {
+      this.element.find('.an-category').removeClass("selected");
+      this.element.find('.an-category[data-folder-id="' + this.options.currentCategory + '"]').addClass("selected");       
+    }
   });
   
   $.widget("custom.announcer", {
@@ -618,6 +628,7 @@
     var options = {};
     
     options.permissions = {};
+    options.category = "active";
     options.permissions.environment = $('#announcer').attr('data-penv') == "true";
     options.permissions.workspaces = $('#announcer').attr('data-pworks') == "true";
     options.permissions.groups = $('#announcer').attr('data-pgroups') == "true";
@@ -627,7 +638,9 @@
     }
     
     $('.an-announcements-view-container').announcer(options);
-    $('.an-categories').announcerCategories({});
+    $('.an-categories').announcerCategories({
+      currentCategory: options.category
+    });
   });
 
 }).call(this);
