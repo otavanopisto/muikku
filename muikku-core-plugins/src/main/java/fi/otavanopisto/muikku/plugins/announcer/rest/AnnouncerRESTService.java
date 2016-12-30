@@ -20,10 +20,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -34,6 +40,7 @@ import fi.otavanopisto.muikku.plugins.announcer.AnnouncerPermissions;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
@@ -402,4 +409,34 @@ public class AnnouncerRESTService extends PluginRESTService {
     announcementController.archive(announcement);
     return Response.noContent().build();
   }
+  
+  @GET
+  @Path("/attachment/{ATTACHMENTNAME}")
+  @RESTPermit(handling = Handling.UNSECURED)
+  public Response getMessageAttachment(@PathParam ("ATTACHMENTNAME") String attachmentName, @Context Request request) {
+    if (StringUtils.isBlank(attachmentName)) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    
+    AnnouncementAttachment announcementAttachment = announcementController.findAttachmentByName(attachmentName);
+    if (announcementAttachment == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    EntityTag tag = new EntityTag(announcementAttachment.getName());
+    ResponseBuilder builder = request.evaluatePreconditions(tag);
+    if (builder != null) {
+      return builder.build();
+    }
+
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
+    
+    return Response.ok(announcementAttachment.getContent())
+        .cacheControl(cacheControl)
+        .tag(tag)
+        .type(announcementAttachment.getContentType())
+        .build();
+  }
+  
 }
