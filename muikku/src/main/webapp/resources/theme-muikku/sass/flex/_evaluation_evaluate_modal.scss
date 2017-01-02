@@ -373,20 +373,20 @@
 }
 
 .assignment-evaluate-button {
-  color: $evaluation-modal-assignment-evaluate-button-font-color;
   background: $evaluation-requested-color;
   border-radius: 3px;
+  color: $evaluation-modal-assignment-evaluate-button-font-color;
   cursor: pointer;
   display: inline-block;
   font-size: 18px;
   height: 18px;
-  width: 18px;
   padding: 5px;
   position: absolute;
   right: 10px;
   top: 18px;
   text-align: center;
   vertical-align: top;
+  width: 18px;
   z-index: 9;
 }
 
