@@ -237,6 +237,7 @@
       
       a {
         font-weight: 300;
+
         text-decoration: none;
         color: $environment-font-color;
         display: inline-block;
@@ -974,9 +975,10 @@ ul.mf-tool-label-container {
 
 }
 
+// Needs to be unified with mf-list*
+
 .mf-categories {
   background-color: $environment-background-color;
-  
    
   ul {
     list-style-type: none;
@@ -986,15 +988,20 @@ ul.mf-tool-label-container {
     li {
       border-bottom: 1px solid $environment-border-color;
       border-left: 5px solid $navigation-vertical-bar-border-color;
-       
+
+      &::before {
+        margin-left: 5px;
+        color: $navigation-vertical-bar-icon-color;
+      } 
       a {
-        font-weight: 300;
-        text-decoration: none;
-        height: 30px;
-        color: $environment-font-color;
-        display: inline-block;
         box-sizing: border-box;
+        color: $environment-font-color;
+        font-family: $environment-font-family;        
+        display: inline-block;
+        font-weight: 300;
+        height: 30px;
         padding-top: 8px;      
+        text-decoration: none;
       }
             
       &:hover {
@@ -1011,11 +1018,6 @@ ul.mf-tool-label-container {
         }
         
       }
-      &::before {
-        margin-left: 5px;
-        color: $navigation-vertical-bar-icon-color;
-      } 
- 
        
     }
   
