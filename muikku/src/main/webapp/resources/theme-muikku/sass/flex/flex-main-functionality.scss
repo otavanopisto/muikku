@@ -982,7 +982,16 @@ ul.mf-tool-label-container {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    
+  }
+  li {
+    border-bottom: 1px solid $environment-border-color;
+    border-left: 5px solid $navigation-vertical-bar-border-color;
+
+    div::before{
+      margin-left: 5px;        
+      margin-right: 5px;        
+    }
+
     a {
       box-sizing: border-box;
       color: $environment-font-color;
@@ -993,32 +1002,22 @@ ul.mf-tool-label-container {
       padding-top: 8px;      
       text-decoration: none;
     }
-     
-    li {
-      border-bottom: 1px solid $environment-border-color;
-      border-left: 5px solid $navigation-vertical-bar-border-color;
 
-      div::before{
-        margin-left: 5px;        
-        margin-right: 5px;        
-      }
-
-      &::before {
-        margin-left: 5px;
-        color: $navigation-vertical-bar-icon-color;
-      } 
-            
-      &:hover {
-        border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
-        cursor: pointer;   
-      } 
-      
-      &.selected {
-        background-color: $environment-background-selected-color;
-        border-left: 5px solid $environment-border-selected-color;
-      }
-      &.selected  a {
-          font-weight: normal;
+    &::before {
+      margin-left: 5px;
+      color: $navigation-vertical-bar-icon-color;
+    } 
+          
+    &:hover {
+      border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
+      cursor: pointer;   
+    } 
+    
+    &.selected {
+      background-color: $environment-background-selected-color;
+      border-left: 5px solid $environment-border-selected-color;
+      a{
+        font-weight: normal;      
       }
     }
   }
