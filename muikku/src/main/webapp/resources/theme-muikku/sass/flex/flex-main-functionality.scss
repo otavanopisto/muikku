@@ -986,7 +986,10 @@ ul.mf-tool-label-container {
     li {
       border-bottom: 1px solid $environment-border-color;
       border-left: 5px solid $navigation-vertical-bar-border-color;
-
+      div::before{
+        margin-left: 5px;        
+        margin-right: 5px;        
+      }
       &::before {
         margin-left: 5px;
         color: $navigation-vertical-bar-icon-color;
