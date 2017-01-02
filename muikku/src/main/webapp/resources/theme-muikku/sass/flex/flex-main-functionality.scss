@@ -1013,10 +1013,9 @@ ul.mf-tool-label-container {
       &.selected {
         background-color: $environment-background-selected-color;
         border-left: 5px solid $environment-border-selected-color;
-        
-        a {
+      }
+      &.selected  a {
           font-weight: normal;
-        }
       }
     }
   }
