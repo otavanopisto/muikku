@@ -3,7 +3,10 @@ package fi.otavanopisto.muikku.plugins.announcer.rest;
 import java.util.Date;
 import java.util.List;
 
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
+
 public class AnnouncementRESTModel {
+  
   public Long getId() {
     return id;
   }
@@ -100,6 +103,14 @@ public class AnnouncementRESTModel {
     this.temporalStatus = temporalStatus;
   }
 
+  public List<WorkspaceBasicInfo> getWorkspaces() {
+    return workspaces;
+  }
+
+  public void setWorkspaces(List<WorkspaceBasicInfo> workspaces) {
+    this.workspaces = workspaces;
+  }
+
   private Long id;
   private Long publisherUserEntityId;
   private String caption;
@@ -113,4 +124,5 @@ public class AnnouncementRESTModel {
   private Boolean publiclyVisible;
   private AnnouncementTemporalStatus temporalStatus;
 
+  private List<WorkspaceBasicInfo> workspaces;
 }

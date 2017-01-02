@@ -63,7 +63,7 @@
     &.user {
 
       &::before {
-        color: $target-user-icon-color;
+        color: $target-user-color;
       }     
         
     }
@@ -71,7 +71,9 @@
     &.usergroup {
 
       &::before {
-        color: $target-workspace-icon-color;
+        color: 
+$target-group-color;
+
       }
            
     }
@@ -79,7 +81,7 @@
     &.workspace {
 
       &::before {
-         color: $target-group-icon-color;
+        color: $target-workspace-color;
       }     
     
     }     
@@ -88,7 +90,8 @@
       color: $target-remove-font-color;
       
       &::before {
-        color: $target-group-icon-color;
+        color: 
+$target-group-color;
       }
       
     } 

@@ -1,12 +1,14 @@
 package fi.otavanopisto.muikku.plugins.announcer.dao;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
@@ -46,6 +48,27 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(AnnouncementWorkspace_.announcement), announcement),
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<AnnouncementWorkspace> listByAnnouncementAndWorkspacesAndArchived(Announcement announcement, 
+      List<WorkspaceEntity> workspaces, Boolean archived) {
+    List<Long> workspaceEntityIds = workspaces.stream().map((WorkspaceEntity workspace) -> workspace.getId()).collect(Collectors.toList());
+    
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<AnnouncementWorkspace> criteria = criteriaBuilder.createQuery(AnnouncementWorkspace.class);
+    Root<AnnouncementWorkspace> root = criteria.from(AnnouncementWorkspace.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(AnnouncementWorkspace_.announcement), announcement),
+        root.get(AnnouncementWorkspace_.workspaceEntityId).in(workspaceEntityIds),
         criteriaBuilder.equal(root.get(AnnouncementWorkspace_.archived), archived)
       )
     );
