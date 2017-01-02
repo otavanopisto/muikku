@@ -361,17 +361,17 @@ body {
   }
   
   .evaluation-card-button {
-    color: $evaluation-card-button-font-color;
     border-radius: 3px;
+    color: $evaluation-card-button-font-color;
     cursor: pointer;
     display: inline-block;
     font-size: 18px;
     height: 18px;
     margin: 0 0 0 8px;
-    width: 18px;
     padding: 5px;
     text-align: center;
     vertical-align: top;
+    width: 18px;
     
     &.archive-button {
       background: $evaluation-archive-color;
