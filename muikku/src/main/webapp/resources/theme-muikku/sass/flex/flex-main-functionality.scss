@@ -131,9 +131,7 @@
   top: 0;
   z-index: 99;
   width: 25px;
-   > div {
-
-  }
+  
   &:hover {
     color: $navigation-vertical-bar-deco-active-icon-color;
     }
@@ -982,8 +980,8 @@ ul.mf-tool-label-container {
    
   ul {
     list-style-type: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
      
     li {
       border-bottom: 1px solid $environment-border-color;
@@ -1016,13 +1014,9 @@ ul.mf-tool-label-container {
         a {
           font-weight: normal;
         }
-        
       }
-       
     }
-  
   }
-  
 } 
 
 /* jQuert Ui overrides for mainfunctions */

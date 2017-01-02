@@ -58,7 +58,7 @@ public class AnnouncementsViewBackingBean {
         sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
             AnnouncementEnvironmentRestriction.PUBLICANDGROUP : AnnouncementEnvironmentRestriction.PUBLIC;
     AnnouncementTimeFrame timeFrame = AnnouncementTimeFrame.CURRENT;
-    activeAnnouncements = announcementController.listAnnouncements(true, true, environment, timeFrame, loggedUserEntity, false);
+    activeAnnouncements = announcementController.listAnnouncements(true, true, environment, timeFrame, loggedUserEntity, false, false);
     return null;
   }
 
