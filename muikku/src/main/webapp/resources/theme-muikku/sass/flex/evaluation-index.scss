@@ -199,6 +199,11 @@ body {
   &.evaluated-incomplete {
     border: 1px solid $evaluation-incomplete-color;
     box-shadow: 0 0 2px $evaluation-incomplete-boxshadow-color;
+    
+    .evaluation-card-button.evaluate-button {
+      background: $evaluation-incomplete-color;
+    }
+    
   }
   
   &.evaluated-passed {
