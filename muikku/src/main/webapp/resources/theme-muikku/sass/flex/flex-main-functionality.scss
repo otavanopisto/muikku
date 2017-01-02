@@ -982,28 +982,31 @@ ul.mf-tool-label-container {
     list-style-type: none;
     margin: 0;
     padding: 0;
+    
+    a {
+      box-sizing: border-box;
+      color: $environment-font-color;
+      font-family: $environment-font-family;        
+      display: inline-block;
+      font-weight: 300;
+      height: 30px;
+      padding-top: 8px;      
+      text-decoration: none;
+    }
      
     li {
       border-bottom: 1px solid $environment-border-color;
       border-left: 5px solid $navigation-vertical-bar-border-color;
+
       div::before{
         margin-left: 5px;        
         margin-right: 5px;        
       }
+
       &::before {
         margin-left: 5px;
         color: $navigation-vertical-bar-icon-color;
       } 
-      a {
-        box-sizing: border-box;
-        color: $environment-font-color;
-        font-family: $environment-font-family;        
-        display: inline-block;
-        font-weight: 300;
-        height: 30px;
-        padding-top: 8px;      
-        text-decoration: none;
-      }
             
       &:hover {
         border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
