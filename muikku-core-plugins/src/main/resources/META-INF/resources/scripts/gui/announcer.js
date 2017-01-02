@@ -576,8 +576,7 @@
             $(".notification-queue").notificationQueue('notification', 'error', err);
           } else {
             renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
-              var element = $(text);
-              $('.an-announcements-view-container').html(element);
+              $('.an-announcements-view-container').html(text);
             }, this));
           }
         }, this));
