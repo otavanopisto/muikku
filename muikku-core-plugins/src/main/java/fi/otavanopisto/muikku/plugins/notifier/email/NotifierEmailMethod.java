@@ -5,6 +5,8 @@ import java.util.List;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -47,7 +49,8 @@ public class NotifierEmailMethod implements NotifierMethod {
       UserEntity userEntity = context.getRecipient();
       SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
       List<String> addresses = userEmailEntityController.getUserEmailAddresses(identifier);
-      mailer.sendMail(message.getEmailMimeType(context), systemSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
+      if (CollectionUtils.isNotEmpty(addresses))
+        mailer.sendMail(message.getEmailMimeType(context), systemSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
     }
   }
 

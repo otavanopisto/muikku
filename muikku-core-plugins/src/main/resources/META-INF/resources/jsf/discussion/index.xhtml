@@ -31,6 +31,7 @@
     <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
     <input type="hidden" name="areaPermissions" value="#{discussionBackingBean.areaPermissions}"/>
     <input type="hidden" name="lockStickyPermission" value="#{discussionBackingBean.lockStickyPermission}"/>
+    <input type="hidden" name="showFullNamePermission" value="#{discussionBackingBean.showFullNamePermission}"/>
     <div id="discussion">
       <h2 class="main-functionality-page-title">#{i18n.text['plugin.forum.pageTitle']}</h2>
       <ui:insert name="mf-content-functions">
@@ -134,7 +135,12 @@
         <div class="mf-content-area flex-row">
           <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div class="di-content-main">
-              <div class="di-threads flex-row"></div>
+              <div class="di-thread-description-container mf-item flex-row">
+                <div class="di-thread-description lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                </div>
+              </div>        
+              <div class="di-threads flex-row">
+              </div>
               <div class="di-thread flex-row"></div>
             </div>          
           </div>

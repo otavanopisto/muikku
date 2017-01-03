@@ -9,7 +9,8 @@ public class User {
 
   public User(Long id,
               String firstName,
-              String lastName, 
+              String lastName,
+              String nickName, 
               boolean hasImage,
               String nationality,
               String language,
@@ -23,6 +24,7 @@ public class User {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.nickName = nickName;
     this.hasImage = hasImage;
     this.nationality = nationality;
     this.language = language;
@@ -121,9 +123,18 @@ public class User {
     this.studyTimeEnd = studyTimeEnd;
   }
 
+  public String getNickName() {
+    return nickName;
+  }
+
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
+  private String nickName;
   private boolean hasImage;
   private String nationality;
   private String language;

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class RestAssignment {
   
-  public RestAssignment(Long workspaceMaterialEvaluationId, Long workspaceMaterialId, Long materialId, String path, String title, Boolean evaluable, Date submitted, Date evaluated, String grade) {
+  public RestAssignment(Long workspaceMaterialEvaluationId, Long workspaceMaterialId, Long materialId, String path, String title, Boolean evaluable, Date submitted, Date evaluated, String grade, String literalEvaluation) {
     this.workspaceMaterialEvaluationId = workspaceMaterialEvaluationId;
     this.workspaceMaterialId = workspaceMaterialId;
     this.materialId = materialId;
@@ -14,6 +14,7 @@ public class RestAssignment {
     this.submitted = submitted;
     this.evaluated = evaluated;
     this.grade = grade;
+    this.setLiteralEvaluation(literalEvaluation);
   }
 
   public Long getWorkspaceMaterialEvaluationId() {
@@ -88,6 +89,14 @@ public class RestAssignment {
     this.path = path;
   }
 
+  public String getLiteralEvaluation() {
+    return literalEvaluation;
+  }
+
+  public void setLiteralEvaluation(String literalEvaluation) {
+    this.literalEvaluation = literalEvaluation;
+  }
+
   private Long workspaceMaterialEvaluationId;
   private Long workspaceMaterialId;
   private Long materialId;
@@ -97,4 +106,5 @@ public class RestAssignment {
   private Date submitted;
   private Date evaluated;
   private String grade;
+  private String literalEvaluation;
 }

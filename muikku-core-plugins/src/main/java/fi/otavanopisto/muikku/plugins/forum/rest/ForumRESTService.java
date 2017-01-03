@@ -139,7 +139,7 @@ public class ForumRESTService extends PluginRESTService {
     
     for (EnvironmentForumArea forum : forums) {
       Long numThreads = forumController.getThreadCount(forum);
-      result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
+      result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getDescription(), forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
     }
     
     return Response.ok(result).build();
@@ -171,7 +171,7 @@ public class ForumRESTService extends PluginRESTService {
         cacheControl.setMustRevalidate(true);
         
         ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), 
-            forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, numThreads); 
+            forumArea.getDescription(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, numThreads); 
         
         return Response
             .ok(result)
@@ -201,6 +201,7 @@ public class ForumRESTService extends PluginRESTService {
       if (sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_UPDATEENVIRONMENTFORUM)) {
         
         forumController.updateForumAreaName(forumArea, restModel.getName());
+        forumController.updateForumAreaDescription(forumArea, restModel.getDescription());
         
         return Response
             .noContent()
@@ -240,9 +241,9 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public Response createForumArea(ForumAreaRESTModel newForum) {
-    EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getGroupId());
+    EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getDescription(), newForum.getGroupId());
     
-    ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, 0l); 
+    ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getDescription(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, 0l); 
     
     return Response.ok(result).build();
   }

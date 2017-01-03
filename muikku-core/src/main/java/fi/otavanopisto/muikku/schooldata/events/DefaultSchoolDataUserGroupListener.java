@@ -120,6 +120,13 @@ public class DefaultSchoolDataUserGroupListener {
   }  
 
   public void onSchoolDataUserGroupUserUpdatedEvent(@Observes SchoolDataUserGroupUserUpdatedEvent event) {
+    UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getUserGroupDataSource(), event.getUserGroupIdentifier());
+    
+    if ((userGroupUserEntity != null) && (userGroupEntity != null)) {
+      userGroupEntityController.updateUserGroupEntity(userGroupUserEntity, userGroupEntity);
+    } else
+      logger.warning(String.format("Couldn't find userGroupUserEntity (%s) or userGroupEntity (%s)", event.getIdentifier(), event.getUserGroupIdentifier()));
   }  
   
   private Map<String, Long> discoveredUserGroups;

@@ -40,6 +40,14 @@
   
 }
 
+.di-thread-description-container {
+  display: none;
+}
+
+.di-thread-description {
+  padding: 10px;  
+}
+
 .di-search-result-container {
   background-color: $environment-background-color;
   box-shadow: $environment-box-shadow;
@@ -372,7 +380,8 @@
         }
   
         .di-reply-to-decor {
-          color: $target-group-icon-color;
+          color: 
+$target-group-color;
           font-size: 15px;
           margin-left: 30px !important;
           margin-right: 31px;           
@@ -390,7 +399,7 @@
         
           &::before {
             content: "-";
-            margin-right: 5 px;
+            margin-right: 5px;
             color: $environment-font-color;
           }
           

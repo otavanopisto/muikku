@@ -262,8 +262,11 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.SENT, null);
     CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.SENT, null);
     
+    List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, threadId);
+    List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+    
     return Response.ok(
-      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)
     ).build();
   }
   
@@ -293,11 +296,14 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, false);
 
+    List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, threadId);
+    List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+
     CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.UNREAD, null);
     CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.UNREAD, null);
     
     return Response.ok(
-      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)
     ).build();
   }
   
@@ -338,11 +344,14 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, threadId, false);
 
+    List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, threadId);
+    List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+
     CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(user, threadId, CommunicatorFolderType.INBOX, null);
     CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(user, threadId, CommunicatorFolderType.INBOX, null);
     
     return Response.ok(
-      restModels.restThreadViewModel(receivedItems, olderThread, newerThread)
+      restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)
     ).build();
   }
 
@@ -658,6 +667,7 @@ public class CommunicatorRESTService extends PluginRESTService {
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
+          user.getNickName(),
           user.getStudyProgrammeName(),
           hasPicture,
           user.hasEvaluationFees(),

@@ -830,7 +830,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected Discussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    Discussion payload = new Discussion(null, name, groupId);
+    Discussion payload = new Discussion(null, name, null, groupId);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -908,7 +908,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected Discussion createDiscussion(Long groupId, String name) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    Discussion payload = new Discussion(null, name, groupId);
+    Discussion payload = new Discussion(null, name, null, groupId);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)

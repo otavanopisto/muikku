@@ -8,10 +8,11 @@
   
   $.extend(WorkspaceDiscussionIOController.prototype, DiscussionIOController.prototype, {
 
-    createArea: function (name, callback) {
+    createArea: function (name, description, callback) {
       mApi().workspace.workspaces.forumAreas
         .create(this.options.workspaceEntityId, {
-          name: name
+          name: name,
+          description: description
         })
         .callback(callback);
     },
@@ -28,10 +29,11 @@
         .callback(callback);
     },
     
-    updateArea: function (areaId, name, callback) {
+    updateArea: function (areaId, name, description, callback) {
       mApi().workspace.workspaces.forumAreas
         .update(this.options.workspaceEntityId, areaId, {
-          name: name
+          name: name,
+          description: description
         })
         .callback(callback);
     },
@@ -185,6 +187,7 @@
       areaPermissions: $.parseJSON($('input[name="areaPermissions"]').val()),
       lockStickyPermission: $.parseJSON($('input[name="lockStickyPermission"]').val()),
       ioController: new WorkspaceDiscussionIOController({
+        showFullNamePermission: $.parseJSON($('input[name="showFullNamePermission"]').val()),
         workspaceEntityId: $("input[name='workspaceEntityId']").val()
       })
     });

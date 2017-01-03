@@ -1,6 +1,17 @@
 @import "vars";
 @import "styles";
 
+// These are for task styles
+@import "vars_backup";
+@import "connect-field";
+@import "organizer-field";
+@import "sorter-field";
+@import "audio-field";
+@import "file-field";
+@import "_evaluation_material_styles";
+@import "correct_answers"; 
+
+
 /* Transcript of records (.tr-*) */
 
 .tr-content-main {
@@ -24,8 +35,30 @@
 
 .tr-study-programme-name {
   padding-left: 5px;
+  h3 {  
+    color:#32acf6;
+    font-weight:700;
+  }
 }
 
+.tr-study-programme-studies {
+  padding: 5px 15px; 
+}
+
+.tr-transfer-credits-title {
+  padding-left: 5px;
+  font-weight: 700;
+  color: $environment-items-title-font-color;
+}
+
+
+.tr-curriculum-title {
+  span {
+    font-weight: 700;
+    font-size: 16px;
+  }
+  
+}
 .tr-item-header-details {
  
   .tr-item-header-detail {
@@ -125,6 +158,14 @@
   font-weight:300;
 }
 
+
+.tr-task-content-container{
+  padding: 15px;  
+}
+
+.tr-task-content{
+  background-color: #fff;  
+}
 
 .tr-task-not-evaluated {
   span:not(:first-child) {

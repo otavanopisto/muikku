@@ -488,7 +488,7 @@ public class CoursePickerRESTService extends PluginRESTService {
 
       return
           workspaceUserEntity == null &&
-          sessionController.hasCoursePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+          sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
     } else
       return false;
   }

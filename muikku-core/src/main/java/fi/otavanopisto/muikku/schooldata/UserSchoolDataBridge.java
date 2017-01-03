@@ -228,6 +228,15 @@ public interface UserSchoolDataBridge {
   public String findUsername(String userIdentifier);
 	
   public List<UserAddress> listUserAddresses(SchoolDataIdentifier userIdentifier);
+
+  void updateUserAddress(
+      SchoolDataIdentifier studentIdentifier,
+      SchoolDataIdentifier identifier,
+      String street,
+      String postalCode,
+      String city,
+      String country);
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier);
+
 }

@@ -7,9 +7,10 @@ public class ForumAreaRESTModel {
     
   }
   
-  public ForumAreaRESTModel(Long id, String name, Long groupId, Long numThreads) {
+  public ForumAreaRESTModel(Long id, String name, String description, Long groupId, Long numThreads) {
     this.id = id;
     this.name = name;
+    this.description = description;
     this.groupId = groupId;
     this.numThreads = numThreads;
   }
@@ -46,8 +47,17 @@ public class ForumAreaRESTModel {
     this.numThreads = numThreads;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   private Long id;
   private String name;
+  private String description;
   private Long groupId;
   private Long numThreads;
 }

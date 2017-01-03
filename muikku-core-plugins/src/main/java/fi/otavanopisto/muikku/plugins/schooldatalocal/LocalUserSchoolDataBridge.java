@@ -426,7 +426,8 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			return new LocalUserImpl(
 			    localUser.getId().toString(), 
 			    localUser.getFirstName(), 
-			    localUser.getLastName(), 
+			    localUser.getLastName(),
+			    null,
 			    localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)",
 			    null,
 			    null,
@@ -542,4 +543,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
   
+  public void updateUserAddress(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier identifier, String street,
+      String postalCode, String city, String country) {
+    // TODO Auto-generated method stub
+    
+  }
 }

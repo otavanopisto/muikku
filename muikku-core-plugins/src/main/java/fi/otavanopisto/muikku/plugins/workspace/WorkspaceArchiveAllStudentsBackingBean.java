@@ -60,7 +60,7 @@ public class WorkspaceArchiveAllStudentsBackingBean {
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
   
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.ARCHIVE_ALL_WORKSPACE_STUDENTS, workspaceEntity)) {
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ARCHIVE_ALL_WORKSPACE_STUDENTS, workspaceEntity)) {
       return NavigationRules.NOT_FOUND;
     }
     

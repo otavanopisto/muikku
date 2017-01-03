@@ -19,17 +19,18 @@ public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
   
 	private static final long serialVersionUID = 8627800028194294719L;
 
-	public WorkspaceForumArea create(WorkspaceEntity workspace, String name, ForumAreaGroup group,
+	public WorkspaceForumArea create(WorkspaceEntity workspace, String name, String description, ForumAreaGroup group,
 	    Boolean archived, UserEntity owner, ResourceRights rights) {
     WorkspaceForumArea forumArea = new WorkspaceForumArea();
     
     forumArea.setWorkspace(workspace.getId());
     forumArea.setName(name);
+    forumArea.setDescription(description);
     forumArea.setArchived(archived);
     forumArea.setGroup(group);
     forumArea.setOwner(owner.getId());
     forumArea.setRights(rights.getId());
-
+    
     getEntityManager().persist(forumArea);
     
     return forumArea;

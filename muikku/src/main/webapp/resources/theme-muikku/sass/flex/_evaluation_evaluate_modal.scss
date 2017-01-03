@@ -135,7 +135,7 @@
   width: 100%;
 }
   
-.eval-modal-assignment-content,
+.eval-modal-materials-content,
 .eval-modal-evaluate-workspace-content,
 .eval-modal-evaluate-assignment-content {
   bottom: 0;
@@ -145,6 +145,48 @@
   position: absolute;
   right: 0;
   top: 50px;
+}
+
+// EVALUATE FORM DISABLES OVERLAY
+.workspace-evaluation-form-overlay {
+  background: #fff;
+  bottom: 0;
+  left: 0;
+  opacity: 0.9;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 9998;
+}
+
+.workspace-evaluation-form-activate-button {
+  background: #3786bf;
+  border: 5px solid #4da3e1;
+  border-radius: 100%;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  height: 180px;
+  line-height: 26px;
+  left: 50%;
+  margin: -80px;
+  opacity: 1;
+  padding: 44px 20px;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  top: 50%;
+  transition: all 0.3s ease-in-out;
+  width: 180px;
+  vertical-align: middle;
+  z-index: 9999;
+  
+  &:hover {
+    background: #1eae0e;
+    border: 5px solid #3edd2d;
+  }
+  
 }
 
 // EVALUATE FORM
@@ -238,10 +280,41 @@
 }
 
 // ASSIGNMENTS & EXERCISES
+.eval-modal-assignments-title {
+  font-size: 22px;
+  font-weight: 400;
+  padding: 10px;
+}
+
 .assignment-wrapper {
   border-bottom: 1px solid #f8f8f8;
   padding: 8px 0;
   position: relative;
+}
+
+.assignment-literal-evaluation-wrapper {
+  border-left: 3px solid #ce01bd;
+  padding: 0 10px;
+}
+
+.assignment-literal-evaluation-label {
+  font-weight: 400;
+}
+
+.assignment-literal-evaluation {
+  background: #ecfeea;
+  border-radius: 3px;
+  margin: 5px 0 10px;
+  padding: 10px;
+  
+  p {
+    margin: 0 0 10px;
+  }
+  
+  p:last-child {
+    margin: 0;
+  }
+  
 }
 
 .assignment-content {
@@ -263,28 +336,37 @@
 .assignment-title,
 .exercise-title {
   font-size: 20px;
-  padding: 0 0 4px 0;  
+  padding: 0 0 4px;  
 }
 
 .assignment-done,
 .assignment-evaluated,
 .assignment-grade {
   font-size: 13px;
-  font-style: italic;
   display: inline-block;
   margin: 0 15px 0 0;
+}
+
+.assignment-grade {
+  
 }
 
 .assignment-done-label,
 .assignment-evaluated-label,
 .assignment-grade-label {
-  color: #27b91c;
   font-weight: 400;
   padding: 0 4px 0 0;
 }
 
-.assignment-done-data {
-
+.assignment-grade-data {
+  background: #c9f8bb;
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 15px;
+  margin: 0 0 0 5px;
+  min-width: 16px;
+  padding: 3px 6px;
+  text-align: center;
 }
 
 .assignment-notdone-label {
@@ -311,6 +393,54 @@
   z-index: 9;
 }
 
+.assignment-wrapper[data-evaluated="true"] {
+  
+  .assignment-evaluate-button {
+    background: #3edd2d;
+  }
+  
+}
+
 .assignment-wrapper.exercise .assignment-evaluate-button {
   display: none;
+}
+
+// JOURNAL ENTRIES
+.eval-modal-journal-entries-title {
+  font-size: 22px;
+  font-weight: 400;
+  padding: 30px 10px 10px;
+}
+
+.journal-entry {
+  border-bottom: 1px solid #f8f8f8;
+  padding: 8px 0;
+  position: relative;
+}
+
+.journal-entry-title-wrapper {
+  border-left: 3px solid $journal;
+  padding: 2px 8px;
+  position: relative;
+}
+
+.journal-entry-title {
+  font-size: 20px;
+  padding: 0 0 4px;
+}
+
+.journal-entry-date {
+  display: inline-block;
+  font-size: 13px;
+  font-style: italic;
+}
+
+.journal-entry-written-label {
+  color: #27b91c;
+  font-weight: 400;
+  padding: 0 4px 0 0;
+}
+
+.journal-entry-content {
+  padding: 10px 8px;
 }

@@ -10,28 +10,40 @@
     loadThreadDetails: function(thread, callback) {
       var tasks = [this._createUserInfoLoad(thread.creator), this._createLoadArea(thread.forumAreaId)];
       
-      async.parallel(tasks, function (err, results) {
+      async.parallel(tasks, $.proxy(function (err, results) {
         if (err) {
           callback(err);
         } else {
           var user = results[0];
           var area = results[1];
           var d = moment(thread.created).toDate();
-          var ud = moment(thread.updated).toDate();          
+          var ud = moment(thread.updated).toDate();
+          
+          var creatorFullName;
+          
+          if (user.nickName) {
+            if (this.options.showFullNamePermission)
+              creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+            else
+              creatorFullName = user.nickName + ' ' + user.lastName;
+          } else {
+            creatorFullName = user.firstName + ' ' + user.lastName;
+          }
+          
           // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
-            creatorFullName: user.firstName + ' ' + user.lastName,
+            creatorFullName: creatorFullName,
             prettyDate: formatDate(d) + ' ' + formatTime(d),
             prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
             prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
             userRandomNo: (user.id % 6) + 1,
-            nameLetter: user.firstName.substring(0,1),
+            nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
             canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
           }));
         }
-      });
+      }, this));
     },
     
     loadThreadRepliesDetails: function(replies, callback) {
@@ -44,31 +56,43 @@
         return this._createUserInfoLoad(reply.creator);
       }, this));
       
-      async.parallel(calls, function (err, users) {
+      async.parallel(calls, $.proxy(function (err, users) {
         if (err) {
           callback(err);
         } else {
-          callback(null, $.map(users, function (user, index) {
+          callback(null, $.map(users, $.proxy(function (user, index) {
             var reply = replies[index];
 
             // TODO: remove pretty dates
             var d = moment(reply.created).toDate();
             var ld = moment(reply.lastModified).toDate();
+            var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
+            
+            var creatorFullName;
+
+            if (user.nickName) {
+              if (this.options.showFullNamePermission)
+                creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+              else
+                creatorFullName = user.nickName + ' ' + user.lastName;
+            } else {
+              creatorFullName = user.firstName + ' ' + user.lastName;
+            }
             
             return {
-              creatorFullName: user.firstName + ' ' + user.lastName,
+              creatorFullName: creatorFullName,
               isEdited: reply.lastModified == reply.created ? false : true,
-              canEdit: reply.creator === MUIKKU_LOGGED_USER_ID ? true : false,
+              canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
               prettyDate: formatDate(d) + ' ' + formatTime(d),
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
-              nameLetter: user.firstName.substring(0,1),
+              nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
               replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
             }; 
-          }));
+          }, this)));
         }
-      });
+      }, this));
     },
     
     _createUserInfoLoad: function (userEntityId) {
@@ -302,6 +326,10 @@
       return this.options.areaPermissions[areaId] && this.options.areaPermissions[areaId].removeThread;
     },
     
+    mayEditMessages: function (areaId) {
+      return this.options.areaPermissions[areaId] && this.options.areaPermissions[areaId].editMessages;
+    },
+    
     _updateHash: function () {
       if (this._allAreas) {
         if (this._areaId && this._threadId) {
@@ -362,6 +390,7 @@
           if (!area.groupId) {
             $('<option>')
               .attr('value', area.id)
+              .attr('data-description', area.description)
               .text(area.name) 
               .appendTo(areaSelect);
           }
@@ -376,6 +405,16 @@
     },
     
     _loadThreads: function (areaId) {
+      
+      var option = this.element.find('select[name="areas"] option:selected');
+      var description = option.attr('data-description');
+      var descriptionContainer =  this.element.find('.di-thread-description-container');
+      if(description){
+        $(descriptionContainer).show();
+        this.element.find('.di-thread-description').text(description);
+      }else{
+        $(descriptionContainer).hide();
+      }
       this.element.find('.di-thread')
         .hide();
 
@@ -437,7 +476,6 @@
     _create : function() {
       this._firstResult = 0;
       this._replies = []; 
-      
       this.element.on("click", ".icon-goback", $.proxy(this._onBackClick, this));
       this.element.on("click", ".di-remove-thread-link", $.proxy(this._onRemoveClick, this));
       this.element.on("click", ".di-message-reply-link", $.proxy(this._onMessageReplyClick, this));
@@ -463,6 +501,7 @@
     },
     
     loadThread: function (areaId, threadId) {
+      $('.di-thread-description-container').hide();      
       this.element
         .html('')
         .addClass('loading');
@@ -803,7 +842,9 @@
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
-        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), $.proxy(function(err, result) {
+        var description = $('#textDescription').val();
+        
+        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), description, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
           } else {        
@@ -840,6 +881,8 @@
             var areaSelect = this.element.find("select[name='forumAreaId']");
             areaSelect.val(this.options.areaId)
             this.element.find('input[name="name"]').val(areaSelect.find(':selected').text());
+            var test = areaSelect.find(':selected').attr('data-description');
+            this.element.find('textarea[name="description"]').val(test);
           }
           
           if (callback) {
@@ -854,8 +897,9 @@
       if (form.checkValidity()) {
         var areaId = this.element.find("select[name='forumAreaId']").val();
         var name = this.element.find('input[name="name"]').val();
+        var description = $('#textDescription').val();
         
-        this.options.ioController.updateArea(areaId, name, $.proxy(function(err, result) {
+        this.options.ioController.updateArea(areaId, name, description, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.editarea', err));
           } else {
