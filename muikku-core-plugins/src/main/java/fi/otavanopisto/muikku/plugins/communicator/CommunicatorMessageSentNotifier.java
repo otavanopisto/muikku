@@ -48,8 +48,7 @@ public class CommunicatorMessageSentNotifier {
   private NotifierController notifierController;
   
   @Asynchronous
-  @Lock(LockType.READ)
-  @AccessTimeout(value = 10, unit = TimeUnit.MINUTES)
+  @AccessTimeout(value = 30, unit = TimeUnit.MINUTES)
   @Transactional (value = TxType.REQUIRES_NEW)
   public void onCommunicatorMessageSent(@Observes (during = TransactionPhase.AFTER_COMPLETION) CommunicatorMessageSent event) {
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(event.getCommunicatorMessageId());
