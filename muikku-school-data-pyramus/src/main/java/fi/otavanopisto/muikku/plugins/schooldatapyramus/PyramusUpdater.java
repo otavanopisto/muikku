@@ -1049,6 +1049,7 @@ public class PyramusUpdater {
     Student student = pyramusClient.get().get(String.format("/students/students/%d", studentId), Student.class);
     if (student != null) {
       updatePerson(student.getPersonId());
+      updateStudyProgrammeMember(student);
     } else {
       identifierRemoved(toIdentifier(identifierMapper.getStudentIdentifier(studentId)));
     }

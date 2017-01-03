@@ -288,6 +288,7 @@ public class Evaluation2RESTService {
       Date submitted = null;
       Date evaluated = null;
       String grade = null;
+      String literalEvaluation = null;
       if (userEntity != null) {
         WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
         if (workspaceMaterialReply != null) {
@@ -309,9 +310,10 @@ public class Evaluation2RESTService {
               grade = gradingScaleItem.getName();
             }
           }
+          literalEvaluation = workspaceMaterialEvaluation.getVerbalAssessment();
         }
       }
-      assignments.add(new RestAssignment(workspaceMaterialEvaluationId, workspaceMaterialId, materialId, path, title, evaluable, submitted, evaluated, grade));
+      assignments.add(new RestAssignment(workspaceMaterialEvaluationId, workspaceMaterialId, materialId, path, title, evaluable, submitted, evaluated, grade, literalEvaluation));
     }
     return Response.ok(assignments).build();
   }

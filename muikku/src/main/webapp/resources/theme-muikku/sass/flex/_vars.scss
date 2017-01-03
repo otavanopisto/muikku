@@ -8,6 +8,7 @@ $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
 
 // TODO: Should be environment-icon-color - the fact that an icon is a font is irrelevant
+
 $environment-icon-font-color: #fff;
 $environment-content-box-shadow: 0 0 15px rgba(216, 230, 235, 0.5);
 $environment-box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
@@ -100,7 +101,6 @@ $form-autocomplete-background-color: #f2f5f7;
 $form-autocomplete-border-color: #fff;
 $form-autocomplete-hover-font-color: #006ab1;
 
-
 // Items in the content-area  (messages, users, workspaces...)
 
 $item-background-color: #fff;
@@ -137,8 +137,6 @@ $item-tool-button-goto-background-color: #068feb;
 $item-tool-link-font-color: #068feb;
 $item-label-font-color: #4c4c4c;
 
-
-
 // Vertical navigation bar seen in mainfunctions (labels, folders...)
 
 $navigation-vertical-bar-icon-color: #dadada;
@@ -161,6 +159,7 @@ $navigation-horizontal-bar-default-button-background-hover-color: #0065cb;
 $navigation-horizontal-bar-navigation-background-color: #84d9fe;
 $navigation-horizontal-bar-navigation-icon-color: #fbfbfb;
 $navigation-horizontal-bar-special-background-color: #99eb36;
+$navigation-horizontal-bar-special-accented-background-color: #72b322;
 $navigation-horizontal-bar-special-button-background-color: #72d200;
 $navigation-horizontal-bar-special-menu-link-font-color: #72d200;
 $navigation-horizontal-bar-special-menu-input-border-color: #ccc;
@@ -172,7 +171,6 @@ $navigation-horizontal-bar-hover-background-color: #eee;
 $navigation-horizontal-bar-border-color: #fff;
 $navigation-horizontal-bar-disabled-button-background-color: #ededed;
 $navigation-horizontal-bar-disabled-button-font-color: #dadada;
-
 
 // This navigation is inside of the content area 
 
@@ -205,8 +203,112 @@ $user-picture-font-color: #fff;
 // Target (user, group, workspace...) - fe. a recipient
 
 $target-font-color: #777;
-$target-user-icon-color: #ff9600;
-$target-workspace-icon-color: #0012ff;
-$target-group-icon-color: #049a00;
-$target-remove-icon-color: #d80000;
+$target-user-color: #ff9600;
+$target-workspace-color: #0012ff;
+$target-group-color: #049a00;
+$target-remove-color: #d80000;
 $target-remove-font-color: #d80000;
+
+// Evaluation Basic 
+
+$evaluation-passed-color: #2ed31c;
+$evaluation-incomplete-color: #ea7503;
+$evaluation-requested-color: #0099ff;
+$evaluation-archive-color: #4c4c4c;
+$evaluation-delete-color: #d50b36;
+$evaluation-cancel-color: #7391a7;
+$evaluation-assignment-color: #ce01bd;
+$evaluation-exercise-color: #ff9900;
+$evaluation-journal-color: #0effe6;
+
+$evaluation-incomplete-boxshadow-color: rgba(234, 117, 3, 0.2);
+$evaluation-passed-boxshadow-color: rgba(60, 221, 3, 0.2);
+$evaluation-requested-boxshadow-color: rgba(0, 204, 255, 0.2);
+
+// Evaluation Body and Main View
+
+$evaluation-background-color: #fff;
+$evaluation-view-background-color: #fff;
+
+// Evaluation Navigation
+
+$evaluation-navigation-background-color: #7ed9ff;
+$evaluation-navigation-boxshadow-color: rgba(0, 0, 0, 0.1);
+$evaluation-navigation-item-font-color: #fff;
+$evaluation-navigation-item-textshadow-color: #fff; // Highlight effect
+
+// Evaluation Filer
+
+$evaluation-filter-wrapper-background-color: #fff;
+$evaluation-filter-wrapper-background-boxshadow-color: rgba(0, 0, 0, 0.1);
+
+// Evaluation Sorting
+
+$evaluation-sorting-item-nonactive-background-color: #eee;
+$evaluation-sorting-item-nonactive-font-color: #000;
+$evaluation-sorting-item-active-background-color: #0099ff;
+$evaluation-sorting-item-active-font-color: #fff;
+
+// Evaluation Welldone
+
+$evaluation-welldone-font-color: #4c4c4c; // When all requests has been handled this text appears
+
+// Evaluation Cards
+
+$evaluation-card-background-color: #fff;
+$evaluation-card-border-color: #d7edfb;
+$evaluation-card-title-background: #ebfbfe;
+$evaluation-card-assignment-status-font-color: #fff;
+$evaluation-card-assignment-status-notdone-background-color: #da5760;
+$evaluation-card-assignment-status-done-background-color: #63da57;
+$evaluation-important-star-font-color: #0099ff;
+$evaluation-important-star-active-font-color: #fff;
+$evaluation-important-star-active-background-color: #ff0000;
+$evaluation-unimportant-star-font-color: #0099ff;
+$evaluation-unimportant-star-active-font-color: #fff;
+$evaluation-unimportant-star-active-background-color: #666;
+$evaluation-card-button-font-color: #fff;
+
+// Evaluation Filer
+
+$evaluation-search-wrapper-background-color: #fff;
+$evaluation-search-wrapper-background-boxshadow-color: rgba(0, 0, 0, 0.1);
+
+// Evaluation Modal
+
+$evaluation-modal-background-color: #fff;
+$evaluation-modal-close-font-color: #fff;
+$evaluation-modal-close-textshadow-color: #fff;
+$evaluation-modal-assignment-close-font-color: #d522c6;
+$evaluation-modal-assignment-close-border-color: #d522c6;
+$evaluation-modal-assignment-close-textshadow-color: #fff;
+$evaluation-modal-header-background-color: #3786bf;
+$evaluation-modal-header-font-color: #fff;
+
+// Evaluation Modal - Workspace Evaluation Overlay
+
+$evaluation-modal-workspace-evaluation-form-overlay-background-color: #fff;
+$evaluation-modal-workspace-evaluation-form-activate-button-background-color: #3786bf;
+$evaluation-modal-workspace-evaluation-form-activate-button-font-color: #fff;
+
+// Evaluation Modal - Forms
+
+$evaluation-modal-texteditor-border-color: #abdbed;
+$evaluation-modal-textfield-background-color: #fff;
+$evaluation-modal-textfield-border-color: #abdbed;
+$evaluation-modal-memofield-background-color: #fff;
+$evaluation-modal-memofield-border-color: #abdbed;
+$evaluation-modal-select-background-color: #fff;
+$evaluation-modal-select-border-color: #abdbed;
+$evaluation-modal-button-font-color: #fff;
+
+// Evaluation Modal - Assignment Evaluation 
+
+$evaluation-modal-assignment-evaluation-background-color: #fff;
+$evaluation-modal-assignment-evaluation-header-background-color: #fff;
+
+// Evaluation Modal Assignment & Journal Listing
+
+$evaluation-modal-seperator-border-color: #f8f8f8;
+$evaluation-modal-assignment-evaluate-button-font-color: #fff;
+$evaluation-modal-assignment-evaluated-grade-info-background-color: #c9f8bb;

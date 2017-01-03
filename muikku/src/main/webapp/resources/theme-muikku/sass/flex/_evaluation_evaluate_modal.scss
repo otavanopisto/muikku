@@ -1,5 +1,5 @@
 .eval-modal {
-  background: #fff;
+  background: $evaluation-modal-background-color;
   left: 0;
   height: 100%;
   min-width: 320px;
@@ -18,11 +18,11 @@
   z-index: 31;
   
   &:hover {
-    text-shadow: 0 0 15px #fff;
+    text-shadow: 0 0 15px $evaluation-modal-close-textshadow-color;
   }
   
   &.icon-close-small {
-    color: #fff;
+    color: $evaluation-modal-close-font-color;
     font-size: 30px;
     height: 30px;
     padding: 10px;
@@ -39,13 +39,13 @@
   z-index: 31;
   
   &:hover {
-    text-shadow: 0 0 15px #fff;
+    text-shadow: 0 0 15px $evaluation-modal-assignment-close-textshadow-color;
   }
   
   &.icon-arrow-right {
-    border: 1px solid #d522c6;
+    border: 1px solid $evaluation-assignment-color;
     border-radius: 100%;
-    color: #d522c6;
+    color: $evaluation-assignment-color;
     font-size: 16px;
     height: 16px;
     margin: 12px;
@@ -75,7 +75,7 @@
 
 // ASSIGNMENT EVALUATION FORM <section>
 .eval-modal-assignment-evaluate-container {
-  background: #fff;
+  background: $evaluation-modal-assignment-evaluation-background-color;
   bottom: 0;
   display: none;
   left: 100%;
@@ -89,7 +89,7 @@
 // STUDENT & WORKSPACE HEADER'S <header>
 .eval-modal-student-header,
 .eval-modal-evaluate-header {
-  background: #3786bf;
+  background: $evaluation-modal-header-background-color;
   min-height: 30px;
   padding: 10px 0;
   position: relative;
@@ -99,7 +99,7 @@
 
 // ASSIGNMENT EVALUATION HEADER <header>
 .eval-modal-assignment-evaluate-header {
-  background: #fff;
+  background: $evaluation-modal-assignment-evaluation-header-background-color;
   min-height: 30px;
   padding: 10px 0;
   position: relative;
@@ -110,7 +110,7 @@
 .eval-modal-student-name,
 .eval-modal-workspace-name {
   box-sizing: border-box;
-  color: #fff;
+  color: $evaluation-modal-header-font-color;
   display: inline-block;
   font-size: 20px;
   line-height: 1.5em;
@@ -123,7 +123,7 @@
 
 .eval-modal-assignment-title {
   box-sizing: border-box;
-  color: #d522c6;
+  color: $evaluation-assignment-color;
   display: inline-block;
   font-size: 20px;
   font-weight: 400;
@@ -147,11 +147,51 @@
   top: 50px;
 }
 
+// EVALUATE FORM DISABLES OVERLAY
+.workspace-evaluation-form-overlay {
+  background: $evaluation-modal-workspace-evaluation-form-overlay-background-color;
+  bottom: 0;
+  left: 0;
+  opacity: 0.9;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 9998;
+}
+
+.workspace-evaluation-form-activate-button {
+  background: $evaluation-requested-color;
+  border-radius: 100%;
+  box-sizing: border-box;
+  color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
+  cursor: pointer;
+  font-size: 18px;
+  height: 180px;
+  line-height: 26px;
+  left: 50%;
+  margin: -80px;
+  opacity: 1;
+  padding: 44px 20px;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  top: 50%;
+  transition: all 0.3s ease-in-out;
+  width: 180px;
+  vertical-align: middle;
+  z-index: 9999;
+  
+  &:hover {
+    background: $evaluation-passed-color;
+  }
+  
+}
+
 // EVALUATE FORM
 .evaluation-modal-evaluate-form {
   
   .cke {
-    border: 2px solid #abdbed;
+    border: 2px solid $evaluation-modal-texteditor-border-color;
     box-shadow: none;
     border-radius: 3px;
   }
@@ -164,31 +204,31 @@
   
   input[type="text"],
   input[type="date"] {
-    background: #fff;
-    border: 2px solid #abdbed;
+    background: $evaluation-modal-textfield-background-color;
+    border: 2px solid $evaluation-modal-textfield-border-color;
     border-radius: 3px;
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: $environment-font-family;
     font-size: 14px;
     font-weight: 300;
     padding: 5px;
   }
   
   textarea {
-    background: #fff;
-    border: 2px solid #abdbed;
+    background: $evaluation-modal-memofield-background-color;
+    border: 2px solid $evaluation-modal-memofield-border-color;
     border-radius: 3px;
     box-sizing: border-box;
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: $environment-font-family;
     font-size: 14px;
     padding: 5px;
     width: 100%;
   }
   
   select {
-    background: #fff;
-    border: 2px solid #abdbed;
+    background: $evaluation-modal-select-background-color;
+    border: 2px solid $evaluation-modal-select-border-color;
     border-radius: 3px;
-    font-family: 'Open Sans', Arial, sans-serif;
+    font-family: $environment-font-family;
     font-size: 14px;
     padding: 0 5px;
     
@@ -211,7 +251,7 @@
 }
 
 .eval-modal-evaluate-button {
-  color: #fff;
+  color: $evaluation-modal-button-font-color;
   cursor: pointer;
   display: inline-block;
   font-size: 16px;
@@ -220,19 +260,19 @@
   margin: 15px 0 0 15px;
   
   &.button-cancel {
-    background: #7391a7;
+    background: $evaluation-cancel-color;
   }
   
   &.button-evaluate-passing {
-    background: #27b91c;
+    background: $evaluation-passed-color;
   }
   
   &.button-delete {
-    background: #d50b36;
+    background: $evaluation-delete-color;
   }
   
   &.button-evaluate-nonpassing {
-    background: #ea7503;
+    background: $evaluation-incomplete-color;
   }
   
 }
@@ -245,9 +285,34 @@
 }
 
 .assignment-wrapper {
-  border-bottom: 1px solid #f8f8f8;
+  border-bottom: 1px solid $evaluation-modal-seperator-border-color;
   padding: 8px 0;
   position: relative;
+}
+
+.assignment-literal-evaluation-wrapper {
+  border-left: 3px solid $evaluation-assignment-color;
+  padding: 0 10px;
+}
+
+.assignment-literal-evaluation-label {
+  font-weight: 400;
+}
+
+.assignment-literal-evaluation {
+  background: $evaluation-assignment-color;
+  border-radius: 3px;
+  margin: 5px 0 10px;
+  padding: 10px;
+  
+  p {
+    margin: 0 0 10px;
+  }
+  
+  p:last-child {
+    margin: 0;
+  }
+  
 }
 
 .assignment-content {
@@ -255,13 +320,13 @@
 }
   
 .assignment-wrapper.assignment .assignment-title-wrapper {
-  border-left: 3px solid $assignment;
+  border-left: 3px solid $evaluation-assignment-color;
   cursor: pointer;
   padding: 2px 50px 2px 8px;
 }
 
 .assignment-wrapper.exercise .assignment-title-wrapper {
-  border-left: 3px solid $exercise;
+  border-left: 3px solid $evaluation-exercise-color;
   cursor: pointer;
   padding: 2px 8px;
 }
@@ -292,7 +357,7 @@
 }
 
 .assignment-grade-data {
-  background: #c9f8bb;
+  background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
   border-radius: 5px;
   display: inline-block;
   font-size: 15px;
@@ -303,33 +368,32 @@
 }
 
 .assignment-notdone-label {
-  color: #000;
   font-weight: 300;
   padding: 0 4px 0 0;
 }
 
 .assignment-evaluate-button {
-  color: #fff;
-  background: #0099ff;
+  background: $evaluation-requested-color;
   border-radius: 3px;
+  color: $evaluation-modal-assignment-evaluate-button-font-color;
   cursor: pointer;
   display: inline-block;
   font-size: 18px;
   height: 18px;
-  width: 18px;
   padding: 5px;
   position: absolute;
   right: 10px;
   top: 18px;
   text-align: center;
   vertical-align: top;
+  width: 18px;
   z-index: 9;
 }
 
 .assignment-wrapper[data-evaluated="true"] {
   
   .assignment-evaluate-button {
-    background: #3edd2d;
+    background: $evaluation-passed-color;
   }
   
 }
@@ -346,13 +410,13 @@
 }
 
 .journal-entry {
-  border-bottom: 1px solid #f8f8f8;
+  border-bottom: 1px solid $evaluation-modal-seperator-border-color;
   padding: 8px 0;
   position: relative;
 }
 
 .journal-entry-title-wrapper {
-  border-left: 3px solid $journal;
+  border-left: 3px solid $evaluation-journal-color;
   padding: 2px 8px;
   position: relative;
 }
@@ -369,7 +433,6 @@
 }
 
 .journal-entry-written-label {
-  color: #27b91c;
   font-weight: 400;
   padding: 0 4px 0 0;
 }

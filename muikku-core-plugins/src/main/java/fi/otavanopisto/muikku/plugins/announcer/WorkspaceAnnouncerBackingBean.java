@@ -111,8 +111,15 @@ public class WorkspaceAnnouncerBackingBean {
     this.workspaceEntityId = workspaceEntityId;
   }
 
+  public boolean getCanPublishEnvironment() {
+    return sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT);
+  }
+  
+  public boolean getCanPublishGroups() {
+    return sessionController.hasEnvironmentPermission(AnnouncerPermissions.CREATE_ANNOUNCEMENT);
+  }
+
   private String workspaceName;
   private String workspaceNameExtension;
   private Long workspaceEntityId;
-
 }

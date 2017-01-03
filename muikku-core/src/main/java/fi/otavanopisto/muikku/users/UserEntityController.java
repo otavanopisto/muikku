@@ -19,10 +19,12 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserEmailEntityDAO;
 import fi.otavanopisto.muikku.dao.users.UserEntityDAO;
+import fi.otavanopisto.muikku.dao.users.UserEntityPropertyDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEmailEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -36,6 +38,9 @@ public class UserEntityController implements Serializable {
 
   @Inject
   private UserEntityDAO userEntityDAO;
+
+  @Inject
+  private UserEntityPropertyDAO userEntityPropertyDAO;
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
@@ -62,6 +67,26 @@ public class UserEntityController implements Serializable {
   
   public UserEntity findUserEntityById(Long id) {
     return userEntityDAO.findById(id);
+  }
+  
+  public UserEntityProperty getUserEntityPropertyByKey(UserEntity userEntity, String key) {
+    return userEntityPropertyDAO.findByUserEntityAndKey(userEntity, key);
+  }
+  
+  public UserEntityProperty setUserEntityProperty(UserEntity userEntity, String key, String value) {
+    UserEntityProperty userEntityProperty = getUserEntityPropertyByKey(userEntity, key);
+    if (userEntityProperty == null) {
+      userEntityProperty = userEntityPropertyDAO.create(userEntity, key, value);
+    }
+    else {
+      if (StringUtils.isEmpty(value)) {
+        userEntityPropertyDAO.delete(userEntityProperty);
+      }
+      else {
+        userEntityPropertyDAO.updateValue(userEntityProperty, value);
+      }
+    }
+    return userEntityProperty;
   }
 
   public UserEntity findUserEntityByUser(User user) {
