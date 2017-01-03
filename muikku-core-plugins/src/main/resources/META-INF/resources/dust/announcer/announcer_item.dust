@@ -1,4 +1,4 @@
-<div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full mf-item an-announcement {@gt key=workspaceEntityIds.length value=0}workspace{/gt} {temporalStatus}" data-announcement-id="{id}">
+<div class="lg-flex-cell-12 md-flex-cell-8 sm-flex-cell-full mf-item an-announcement {@gt key=workspaceEntityIds.length value=0}workspace{/gt} {temporalStatus}" data-announcement-id="{id}">
   <div class="mf-item-header-container an-announcement-header-container default">
     <div class="mf-item-select an-announcement-select"><input type="checkbox" class="an-select" value="{id}" /></div>
     <div class="mf-item-header-label {@gt key=workspaceEntityIds.length value=0}workspace{/gt} an-announcement-dates"><span>{startDate|formatDate}</span> - <span>{endDate|formatDate}</span></div>
