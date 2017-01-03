@@ -28,8 +28,10 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotifi
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
@@ -47,6 +49,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserController userController;
   
   @Inject
   private LocaleController localeController;
@@ -148,6 +153,22 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       if (studentIdentifier == null) {
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
+      }
+      
+      User student = userController.findUserByIdentifier(studentIdentifier);
+      
+      if (student != null) {
+        if (student.getStudyStartDate() == null) {
+          logger.info(String.format("Skipping student id %s with no study start date", studentId));
+          continue;
+        }
+        
+        OffsetDateTime thresholdDateTime = OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS);
+        
+        if (student.getStudyStartDate().isAfter(thresholdDateTime)) {
+          logger.info(String.format("Skipping student id %s that just started studies", studentId));
+          continue;
+        }
       }
 
       List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listStudentAssessmentRequestsSince(studentIdentifier, since);
