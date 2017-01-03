@@ -148,5 +148,12 @@
     }
     
   }
+  footer .workspace-material-producers-label,
+  footer .workspace-material-producers,
+  footer .workspace-material-license-label,
+  footer .workspace-material-license {
+    display: block;
+    word-wrap: break-word;
+  }
 
 }
