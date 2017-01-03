@@ -2,23 +2,14 @@ package fi.otavanopisto.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -43,12 +34,10 @@ import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorAttachmentController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorFolderType;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
@@ -64,7 +53,6 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
-import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -86,9 +74,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   @BaseUrl
   private String baseUrl;
-  
-  @Inject
-  private Logger logger;
  
   @Inject
   private SessionController sessionController;
@@ -110,12 +95,6 @@ public class CommunicatorRESTService extends PluginRESTService {
 
   @Inject
   private TagController tagController;
-
-  @Inject
-  private CommunicatorNewInboxMessageNotification communicatorNewInboxMessageNotification;
-  
-  @Inject
-  private NotifierController notifierController;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -461,7 +440,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     for (CommunicatorMessageRecipient recipient : recipients) {
       // Don't notify the sender in case he sent message to himself
       if (recipient.getRecipient() != message.getSender())
-        communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getRecipient()));
+        communicatorMessageSentEvent.fire(new CommunicatorMessageSent(message.getId(), recipient.getRecipient(), baseUrl));
     }
   }
 
@@ -923,28 +902,4 @@ public class CommunicatorRESTService extends PluginRESTService {
     return false;
   }
 
-  @Transactional (value = TxType.REQUIRES_NEW)
-  public void onCommunicatorMessageSent(@Observes (during = TransactionPhase.AFTER_COMPLETION) CommunicatorMessageSent event) {
-    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(event.getCommunicatorMessageId());
-    UserEntity sender = userEntityController.findUserEntityById(communicatorMessage.getSender());
-    UserEntity recipient = userEntityController.findUserEntityById(event.getRecipientUserEntityId());
-
-    if ((communicatorMessage != null) && (sender != null) && (recipient != null)) {
-      if (!Objects.equals(sender.getId(), recipient.getId())) {
-        Map<String, Object> params = new HashMap<String, Object>();
-        User senderUser = userController.findUserByUserEntityDefaults(sender);
-        params.put("sender", String.format("%s %s", senderUser.getFirstName(), senderUser.getLastName()));
-        params.put("subject", communicatorMessage.getCaption());
-        params.put("content", communicatorMessage.getContent());
-        params.put("url", String.format("%s/communicator", baseUrl));
-        //TODO Hash paramters cannot be utilized in redirect URLs
-        //params.put("url", String.format("%s/communicator#inbox/%d", baseUrl, message.getCommunicatorMessageId().getId()));
-        
-        notifierController.sendNotification(communicatorNewInboxMessageNotification, sender, recipient, params);
-      }
-    } else {
-      logger.log(Level.SEVERE, String.format("Communicator couldn't send notifications as some entity was not found"));
-    }
-  }
-  
 }
