@@ -246,6 +246,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
       @QueryParam("onlyEditable") @DefaultValue("false") boolean onlyEditable,
+      @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
       @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame      
   ) {
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
@@ -260,7 +261,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       boolean includeGroups = !hideGroupAnnouncements;
       boolean includeWorkspaces = !hideWorkspaceAnnouncements;
       announcements = announcementController.listAnnouncements(
-          includeGroups, includeWorkspaces, environment, timeFrame, currentUserEntity, onlyMine);
+          includeGroups, includeWorkspaces, environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
     }
 
     if (workspaceEntityId != null) {
@@ -275,7 +276,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       
       List<WorkspaceEntity> workspaceEntities = Arrays.asList(workspaceEntity);
       announcements = announcementController.listWorkspaceAnnouncements(
-          workspaceEntities, environment, timeFrame, currentUserEntity, onlyMine);
+          workspaceEntities, environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
