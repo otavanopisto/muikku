@@ -992,9 +992,7 @@ ul.mf-tool-label-container {
     }
     
   }
-  .mf-category-item-plain {
-   padding-left: 7px;
-  }
+
        
   ul {
     list-style-type: none;
@@ -1018,10 +1016,14 @@ ul.mf-tool-label-container {
       display: inline-block;
       font-weight: 300;
       height: 30px;
-      padding-top: 4px;      
+      padding-top: 8px;      
       text-decoration: none;
+      &.mf-category-item-plain {
+        padding-left: 7px;
+        padding-top: 4px;
+      }
     }
-
+    
     &::before {
       margin-left: 5px;
       color: $navigation-vertical-bar-icon-color;
