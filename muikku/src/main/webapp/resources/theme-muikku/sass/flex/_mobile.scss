@@ -93,61 +93,58 @@
     padding: 7px 5px 20px;
     height: 35px;
     cursor: pointer;
-
-    &:hover {
       
-      /* Navigation More Container */
-      .navmore-container {
+    /* Navigation More Container */
+    .navmore-container {
+      background: #fff;
+      box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.1);
+      cursor: default;
+      display: none;
+      min-height: 100vh;
+      padding: 0;
+      position: fixed;
+      right: 0;
+      top: 61px;
+      width: 0%;
+      
+      div[class*="dock-static-navi"] {
+        margin: 5px 0;
         display: block;
-        padding: 0;
-        background: #fff;
-        box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.1);
-        min-height: 100vh;
-        position: fixed;
-        right: 0;
-        top: 61px;
-        cursor: default;
+        float: none;
         
-        div[class*="dock-static-navi"] {
-          margin: 5px 0;
+        > a {
+          padding: 5px;
+          font-size: 18px;
+          height: 1em;
+          color: #416c7c;
+          text-shadow: none;
           display: block;
-          float: none;
+          padding: 10px 20px 10px 10px;
           
-          > a {
-            padding: 5px;
-            font-size: 18px;
-            height: 1em;
-            color: #416c7c;
-            text-shadow: none;
-            display: block;
-            padding: 10px 20px 10px 10px;
-            
-            &:hover,
-            &:focus,
-            &:active {
-              background: #c5eaf8;
-            }
-            
-            &.icon-user {
-              font-size: 16px;
-            }
-            
-            > span {
-              text-transform: uppercase;
-              font-size: 16px;
-              color: #5c5c5c;
-              display: inline-block;
-              vertical-align: top;
-              padding: 0 0 0 10px;
-              font-weight: 300;
-            }
-          
-           &:hover {
-             text-shadow: none;
-           }
-          
+          &:hover,
+          &:focus,
+          &:active {
+            background: #c5eaf8;
           }
           
+          &.icon-user {
+            font-size: 16px;
+          }
+          
+          > span {
+            text-transform: uppercase;
+            font-size: 16px;
+            color: #5c5c5c;
+            display: inline-block;
+            vertical-align: top;
+            padding: 0 0 0 10px;
+            font-weight: 300;
+          }
+        
+         &:hover {
+           text-shadow: none;
+         }
+        
         }
         
       }
