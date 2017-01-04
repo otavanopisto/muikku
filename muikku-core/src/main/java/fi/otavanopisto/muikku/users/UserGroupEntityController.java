@@ -162,6 +162,10 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
   }
 
+  public UserGroupUserEntity updateUserGroupEntity(UserGroupUserEntity userGroupUserEntity, UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.updateUserGroupEntity(userGroupUserEntity, userGroupEntity);
+  }
+
   public UserGroupEntity archiveUserGroupEntity(UserGroupEntity userGroupEntity) {
     return userGroupEntityDAO.updateArchived(userGroupEntity, Boolean.TRUE);
   }
