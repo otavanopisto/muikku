@@ -29,6 +29,7 @@ import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -537,6 +538,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   @Override
+  public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
   public void updateUserAddress(SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier identifier, String street,
       String postalCode, String city, String country) {
     // TODO Auto-generated method stub
