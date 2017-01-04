@@ -8,19 +8,18 @@
           <div class="cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
           <div class="cm-message-header-container">
             {?sent}
-              {?recipients}
-                <div class="cm-message-recipients cm-message-header-content-primary">
-                  <span>({recipientCount})</span>
-                  {#recipients}
-                  	{@lt key=$idx value=3}
-                      <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
-                    {/lt}
-                  {/recipients}
-                  {@gt key=recipients.length value=3}
-                    <span class="cm-message-recipient-name">...</span>
-                  {/gt}
-                </div>
-              {/recipients}
+              <div class="cm-message-recipients cm-message-header-content-primary">
+                <span>({recipientCount})</span>
+                {#recipients}
+                  <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                {/recipients}
+                {#userGroupRecipients}
+                  <span class="cm-message-recipient-name" title="{name}">{name}</span>
+                {/userGroupRecipients}
+                {#workspaceRecipients}
+                  <span class="cm-message-recipient-name" title="{name}">{name}</span>
+                {/workspaceRecipients}
+              </div>
             {:else}
               <div class="cm-message-sender cm-message-header-content-primary">
                 <span class="cm-message-sender-name" title="{sender.firstName} {sender.lastName}">{sender.firstName} {sender.lastName}</span>
