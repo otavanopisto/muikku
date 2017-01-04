@@ -10,16 +10,20 @@
           <div class="cm-message-header-container">
             {?sent}
               <div class="cm-message-recipients cm-message-header-content-primary lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                <span>({recipientCount})</span>
-                {#recipients}
-                  <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
-                {/recipients}
-                {#userGroupRecipients}
-                  <span class="cm-message-recipient-name" title="{name}">{name}</span>
-                {/userGroupRecipients}
-                {#workspaceRecipients}
-                  <span class="cm-message-recipient-name" title="{name}">{name}</span>
-                {/workspaceRecipients}
+                <div class="cm-message-recipients-cell">
+                 <div class="cm-message-recipients-wrapper">
+                  <span>({recipientCount})</span>
+                  {#recipients}
+                    <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                  {/recipients}
+                  {#userGroupRecipients}
+                    <span class="cm-message-recipient-name" title="{name}">{name}</span>
+                  {/userGroupRecipients}
+                  {#workspaceRecipients}
+                    <span class="cm-message-recipient-name" title="{name}">{name}</span>
+                  {/workspaceRecipients}
+                  </div>
+                </div>
               </div>
             {:else}
               <div class="cm-message-sender cm-message-header-content-primary">

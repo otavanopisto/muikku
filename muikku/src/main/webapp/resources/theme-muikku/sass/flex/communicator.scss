@@ -313,10 +313,23 @@ $target-group-color;
   .cm-message-recipients {
     color: #000;
     margin: 0 0 0 5px;
-    max-width: calc(100% - 170px);
+    width: calc(100% - 170px);
     overflow: hidden;
     vertical-align: bottom;
-    height: 25px;
+    display:table;
+    table-layout: fixed;
+
+    div.cm-message-recipients-cell{
+      display: table-cell;
+    }    
+    div.cm-message-recipients-wrapper {
+      overflow: hidden; 
+      white-space: nowrap; 
+      text-overflow: ellipsis; 
+      word-break: break-all; 
+      word-wrap: break-word;    
+    }
+    
     .cm-message-recipient-name {
       padding: 0 5px;
     }
