@@ -8,15 +8,19 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementAttachmentDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementUserGroupDAO;
 import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementWorkspaceDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementAttachment;
 import fi.otavanopisto.muikku.plugins.announcer.model.AnnouncementUserGroup;
 import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -38,6 +42,9 @@ public class AnnouncementController {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private AnnouncementAttachmentDAO announcementAttachmentDAO;
   
   public Announcement createAnnouncement(UserEntity publisher, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible) {
     return announcementDAO.create(
@@ -69,7 +76,8 @@ public class AnnouncementController {
   }
   
   public List<Announcement> listAnnouncements(boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, boolean userAsOwner) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, 
+      boolean userAsOwner, boolean onlyArchived) {
     List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserEntity(user) : Collections.emptyList();
     List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(user) : Collections.emptyList();
     
@@ -78,19 +86,22 @@ public class AnnouncementController {
         workspaceEntities,
         environment, 
         timeFrame, 
-        userAsOwner ? user : null);
+        userAsOwner ? user : null,
+        onlyArchived);
     
     return announcements;
   }
 
   public List<Announcement> listWorkspaceAnnouncements(List<WorkspaceEntity> workspaceEntities, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, boolean userAsOwner) {
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, 
+      boolean userAsOwner, boolean onlyArchived) {
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         Collections.emptyList(),
         workspaceEntities, 
         environment, 
         timeFrame, 
-        userAsOwner ? user : null);
+        userAsOwner ? user : null,
+        onlyArchived);
     
     return announcements;
   }
@@ -111,7 +122,7 @@ public class AnnouncementController {
     }
     
     List<Announcement> result = new ArrayList<>(announcementDAO.listAnnouncements(
-        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT));
+        Collections.emptyList(), workspaceEntities, AnnouncementEnvironmentRestriction.NONE, AnnouncementTimeFrame.CURRENT, false));
     
     Collections.sort(result, new Comparator<Announcement>() {
       public int compare(Announcement o1, Announcement o2) {
@@ -172,6 +183,14 @@ public class AnnouncementController {
     for (AnnouncementWorkspace announcementWorkspace : announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE)) {
       announcementWorkspaceDAO.delete(announcementWorkspace);
     }
+  }
+
+  public AnnouncementAttachment createAttachement(String contentType, byte[] content) {
+    return announcementAttachmentDAO.create(RandomStringUtils.randomAlphanumeric(64), contentType, content);
+  }
+  
+  public AnnouncementAttachment findAttachmentByName(String name){
+    return announcementAttachmentDAO.findByName(name);
   }
   
 }

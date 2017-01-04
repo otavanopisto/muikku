@@ -47,6 +47,7 @@
       },
       announcement: null,
       ckeditor: {
+        uploadUrl: '/announcerAttachmentUploadServlet',
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'links', items: [ 'Link' ] },
@@ -57,9 +58,15 @@
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         extraPlugins: {
-          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
+          'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
+          'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.2/plugin.min.js'
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
+          'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
+          'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
         }
       }
     },
@@ -468,19 +475,47 @@
     }
     
   });
+
+  $.widget("custom.announcerCategories", {
+    options: {
+      currentCategory: "active"
+    },
+  
+    _create : function() {
+      this.element.on('click', '.an-category', $.proxy(this._onCategoryClick, this));
+      this._refreshSelection();
+    },
+     
+    _onCategoryClick: function (event) {
+      this.options.currentCategory = $(event.target).closest('.an-category').attr('data-folder-id');
+      $('.an-announcements-view-container').announcer("setCategory", this.options.currentCategory);
+      this._refreshSelection();
+    },
+     
+    _refreshSelection: function () {
+      this.element.find('.an-category').removeClass("selected");
+      this.element.find('.an-category[data-folder-id="' + this.options.currentCategory + '"]').addClass("selected");       
+    }
+  });
   
   $.widget("custom.announcer", {
      options: {
+       category: "active",
        workspaceEntityId: null,
        outerContainer: ".mf-content-master"
      },
     
     _create : function() {
-     $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
-     this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
-     this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+      $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
+      this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
+      this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
      
-     this._loadAnnouncements();
+      this._loadAnnouncements();
+    },
+    
+    setCategory: function (category) {
+      this.options.category = category;
+      this._loadAnnouncements();
     },
     
     _onCreateAnnouncementClick: function () {
@@ -517,9 +552,25 @@
     
     _loadAnnouncements: function () {
       var options = {};
-
       options.onlyEditable = true;
       options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
+
+      switch (this.options.category) {
+        case "past":
+          options.timeFrame = "EXPIRED";
+        break;
+        case "archived":
+          options.timeFrame = "ALL";
+          options.onlyArchived = true;
+        break;
+        case "mine":
+          options.timeFrame = "ALL";
+          options.onlyMine = true;
+        break;
+        default:
+          options.timeFrame = "CURRENTANDUPCOMING";
+        break;
+      }
       
       if (this.options.workspaceEntityId != null) {
         options.workspaceEntityId = this.options.workspaceEntityId;
@@ -532,8 +583,7 @@
             $(".notification-queue").notificationQueue('notification', 'error', err);
           } else {
             renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
-              var element = $(text);
-              $('.an-announcements-view-container').append(element);
+              $('.an-announcements-view-container').html(text);
             }, this));
           }
         }, this));
@@ -584,6 +634,7 @@
     var options = {};
     
     options.permissions = {};
+    options.category = "active";
     options.permissions.environment = $('#announcer').attr('data-penv') == "true";
     options.permissions.workspaces = $('#announcer').attr('data-pworks') == "true";
     options.permissions.groups = $('#announcer').attr('data-pgroups') == "true";
@@ -593,6 +644,9 @@
     }
     
     $('.an-announcements-view-container').announcer(options);
+    $('.an-categories').announcerCategories({
+      currentCategory: options.category
+    });
   });
 
 }).call(this);

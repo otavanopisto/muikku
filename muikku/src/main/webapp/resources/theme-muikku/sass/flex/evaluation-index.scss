@@ -20,9 +20,9 @@
 @import "notif-queue";
 
 body {
-  background-color: #fff;
+  background-color: $evaluation-background-color;
   color:#000;
-  font-family:'Open Sans', Arial, sans-serif;
+  font-family: $environment-font-family;
   font-size: 14px;
   font-weight: 300;
   line-height:1.5em; /* Set line-height:1 to element when there's a need to override */
@@ -51,14 +51,14 @@ body {
 
 // VIEW WRAPPER
 .evaluation-wrapper {
-  background: #fff;
+  background: $evaluation-view-background-color;
 }
 
 // NAVIGATION (FRONTPAGE & WORKSPACE VIEWS)
 .evaluation-navigation {
-  background: #7ed9ff;
+  background: $evaluation-navigation-background-color;
   bottom: 0;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 5px $evaluation-navigation-boxshadow-color;
   left: 0;
   height: 60px;
   padding: 0 10px;
@@ -69,7 +69,7 @@ body {
   
   // Navigation item
   .eval-nav-item {
-    color: #fff;
+    color: $evaluation-navigation-item-font-color;
     cursor: pointer;
     float: left;
     margin: 4px;
@@ -98,7 +98,7 @@ body {
     }
     
     &:hover {
-      text-shadow: 0 0 15px #fff;
+      text-shadow: 0 0 15px $evaluation-navigation-item-textshadow-color;
     }
     
   }
@@ -111,9 +111,9 @@ body {
 
 // FILTER WRAPPER
 .evaluation-filter-wrapper {
-  background: #fff;
+  background: $evaluation-filter-wrapper-background-color;
   bottom: 0;
-  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 20px $evaluation-filter-wrapper-background-boxshadow-color;
   display: none;
   left: 0;
   padding:10px;
@@ -150,9 +150,9 @@ body {
   margin: 0 10px 10px 0;
   
   .eval-sorting {
-    background: #eee;
+    background: $evaluation-sorting-item-nonactive-background-color;
     border-radius: 3px;
-    color: #000;
+    color: $evaluation-sorting-item-nonactive-font-color;
     cursor: pointer;
     display: inline-block;
     font-size: 14px;
@@ -162,8 +162,8 @@ body {
     width: 14px;
     
     &.selected {
-      background: #0099ff;
-      color: #fff;
+      background: $evaluation-sorting-item-active-background-color;
+      color: $evaluation-sorting-item-active-font-color;
     }
     
   }
@@ -177,7 +177,7 @@ body {
 
 // REQUESTS ALL HANDLED CONTAINER
 .evaluation-well-done-container {
-  color: #4c4c4c;
+  color: $evaluation-welldone-font-color;
   font-size: 20px;
   font-style: italic;
   line-height: 1.4em;
@@ -187,8 +187,8 @@ body {
 
 // CARD
 .evaluation-card {
-  background: #fff;
-  border: 1px solid #d7edfb;
+  background: $evaluation-card-background-color;
+  border: 1px solid $evaluation-card-border-color;
   border-radius: 3px;
   box-sizing: border-box;
   display: inline-block;
@@ -197,23 +197,32 @@ body {
   width: 285px;
   
   &.evaluated-incomplete {
-    border: 1px solid #ea7503;
-    box-shadow: 0 0 2px rgba(234, 117, 3, 0.2);
+    border: 1px solid $evaluation-incomplete-color;
+    box-shadow: 0 0 2px $evaluation-incomplete-boxshadow-color;
+    
+    .evaluation-card-button.evaluate-button {
+      background: $evaluation-incomplete-color;
+    }
+    
   }
   
   &.evaluated-passed {
-    border: 1px solid #3edd2d;
-    box-shadow: 0 0 2px rgba(60, 221, 3, 0.2);
+    border: 1px solid $evaluation-passed-color;
+    box-shadow: 0 0 2px $evaluation-passed-boxshadow-color;
     
     .evaluation-card-button.archive-button {
       display: inline-block;
     }
     
+    .evaluation-card-button.evaluate-button {
+      background: $evaluation-passed-color;
+    }
+    
   }
   
   &.evaluation-requested {
-    border: 1px solid #00ccff;
-    box-shadow: 0 0 2px rgba(0, 204, 255, 0.2);
+    border: 1px solid $evaluation-requested-color;
+    box-shadow: 0 0 2px $evaluation-requested-boxshadow-color;
   }
   
   &.frontpage .evaluation-card-data {
@@ -227,7 +236,7 @@ body {
 }
 
 .evaluation-card-title {
-  background: #ebfbfe;
+  background: $evaluation-card-title-background;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
   padding: 4px 6px;
@@ -273,17 +282,17 @@ body {
     
     &.assignments-status {
       border-radius: 2px;
-      color: #fff;
+      color: $evaluation-card-assignment-status-font-color;
       line-height: 1;
       padding: 4px;
     }
     
     &.not-done {
-      background: #da5760;
+      background: $evaluation-card-assignment-status-notdone-background-color;
     }
     
     &.all-done {
-      background: #63da57;
+      background: $evaluation-card-assignment-status-done-background-color;
     }
     
   }
@@ -318,14 +327,14 @@ body {
     .evaluation-important-button {
     
       &.icon-star::before {
-        color: #0099ff;
+        color: $evaluation-important-star-font-color;
       }
       
       &.active {
-        background: #ff0000;
+        background: $evaluation-important-star-active-background-color;
       
         &.icon-star::before {
-          color: #fff;
+          color: $evaluation-important-star-active-font-color;
         }
       
       }
@@ -335,14 +344,14 @@ body {
     .evaluation-unimportant-button {
     
       &.icon-star-empty::before {
-        color: #0099ff;
+        color: $evaluation-unimportant-star-font-color;
       }
       
       &.active {
-        background: #666;
+        background: $evaluation-unimportant-star-active-background-color;
       
         &.icon-star-empty::before {
-          color: #fff;
+          color: $evaluation-unimportant-star-active-font-color;
         }
       
       }
@@ -352,20 +361,20 @@ body {
   }
   
   .evaluation-card-button {
-    color: #fff;
     border-radius: 3px;
+    color: $evaluation-card-button-font-color;
     cursor: pointer;
     display: inline-block;
     font-size: 18px;
     height: 18px;
     margin: 0 0 0 8px;
-    width: 18px;
     padding: 5px;
     text-align: center;
     vertical-align: top;
+    width: 18px;
     
     &.archive-button {
-      background: #4c4c4c;
+      background: $evaluation-archive-color;
       display: none;
       font-size: 20px;
       height: 20px;
@@ -374,7 +383,7 @@ body {
     }
     
     &.evaluate-button {
-      background: #0099ff;
+      background: $evaluation-requested-color;
     }
     
   }
@@ -383,9 +392,9 @@ body {
 
 // SEARCH WRAPPER 
 .evaluation-search-wrapper {
-  background: #fff;
+  background: $evaluation-search-wrapper-background-color;
   bottom: 0;
-  box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: -5px 5px 20px $evaluation-search-wrapper-background-boxshadow-color;
   display: none;
   padding: 10px;
   position: fixed;

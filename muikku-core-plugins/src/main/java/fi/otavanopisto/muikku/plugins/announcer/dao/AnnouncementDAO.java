@@ -45,8 +45,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
   }
 
   public List<Announcement> listAnnouncements(List<UserGroupEntity> userGroupEntities, 
-      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame) {
-    return listAnnouncements(userGroupEntities, workspaceEntities, environment, timeFrame, null);
+      List<WorkspaceEntity> workspaceEntities, AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, boolean archived) {
+    return listAnnouncements(userGroupEntities, workspaceEntities, environment, timeFrame, null, archived);
   }
   
   public List<Announcement> listAnnouncements(
@@ -54,7 +54,8 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
       List<WorkspaceEntity> workspaceEntities, 
       AnnouncementEnvironmentRestriction environment, 
       AnnouncementTimeFrame timeFrame, 
-      UserEntity announcementOwner) {
+      UserEntity announcementOwner,
+      boolean archived) {
     EntityManager entityManager = getEntityManager();
     Date currentDate = onlyDateFields(new Date());
     
@@ -64,7 +65,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
     criteria.select(root).distinct(true);
     
     List<Predicate> predicates = new ArrayList<Predicate>();
-    predicates.add(criteriaBuilder.equal(root.get(Announcement_.archived), Boolean.FALSE));
+    predicates.add(criteriaBuilder.equal(root.get(Announcement_.archived), archived));
     
     switch (timeFrame) {
       case ALL:
