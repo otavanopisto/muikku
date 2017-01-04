@@ -5,10 +5,11 @@
       <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
 
         <div class="cm-message-header flex-row no-margin-top no-margin-bottom">
+         
           <div class="cm-message-select"><input type="checkbox"  name="messageSelect" value="{communicatorMessageId}" /></div>
           <div class="cm-message-header-container">
             {?sent}
-              <div class="cm-message-recipients cm-message-header-content-primary">
+              <div class="cm-message-recipients cm-message-header-content-primary lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                 <span>({recipientCount})</span>
                 {#recipients}
                   <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>

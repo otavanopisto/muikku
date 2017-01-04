@@ -311,15 +311,12 @@ $target-group-color;
   }
   
   .cm-message-recipients {
-    color: $environment-font-color;
-    display: inline-block;
+    color: #000;
     margin: 0 0 0 5px;
     max-width: calc(100% - 170px);
     overflow: hidden;
-    text-overflow: ellipsis;
     vertical-align: bottom;
-    white-space: nowrap;
-    
+    height: 25px;
     .cm-message-recipient-name {
       padding: 0 5px;
     }
