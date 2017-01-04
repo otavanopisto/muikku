@@ -6,27 +6,27 @@
             <div class="cm-message-details-sender flex-row flex-align-items-center">
               <div class="mf-item-header-content-primary cm-message-recipients cm-message-header-content-primary">
                 <div class="cm-message-recipients-cell">
-                 <div class="cm-message-recipients-wrapper">              
-                <span>{senderFullName}</span>
-                <span class="icon-arrow-right cm-message-recipient-arrow"></span>
-                {?recipients}
-                  {#recipients}
-                    <span class="cm-message-recipient-name">{firstName} {lastName}</span>
-                  {/recipients}
-                {/recipients}
-                
-                {?userGroupRecipients}
-                  {#userGroupRecipients}
-                    <span class="cm-message-recipient-name">{name}</span>
-                  {/userGroupRecipients}
-                {/userGroupRecipients}
-                
-                {?workspaceRecipients}
-                  {#workspaceRecipients}
-                    <span class="cm-message-recipient-name">{workspaceName}</span>
-                  {/workspaceRecipients}
-                {/workspaceRecipients}
-                </div>
+                  <div class="cm-message-recipients-wrapper">              
+                    <span>{senderFullName}</span>
+                    <span class="icon-arrow-right cm-message-recipient-arrow"></span>
+                    {?recipients}
+                      {#recipients}
+                        <span class="cm-message-recipient-name">{firstName} {lastName}</span>
+                      {/recipients}
+                    {/recipients}
+                    
+                    {?userGroupRecipients}
+                      {#userGroupRecipients}
+                        <span class="cm-message-recipient-name">{name}</span>
+                      {/userGroupRecipients}
+                    {/userGroupRecipients}
+                    
+                    {?workspaceRecipients}
+                      {#workspaceRecipients}
+                        <span class="cm-message-recipient-name">{workspaceName}</span>
+                      {/workspaceRecipients}
+                    {/workspaceRecipients}
+                  </div>
                 </div>
               </div>        
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary">             
