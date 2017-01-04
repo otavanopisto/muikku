@@ -1,7 +1,7 @@
 {#filters}
   {?data}
-    <div class="mf-list-title"><span>{title}</span></div>
-    <ul class="mf-list-content gt-filters"> 
+    <div class="mf-category-title"><span>{title}</span></div>
+    <ul class="mf-categpry-content gt-filters"> 
       {#data}
         <li class="mf-label" id="{type}-{id}">
           {@eq key=type value="flag"}
