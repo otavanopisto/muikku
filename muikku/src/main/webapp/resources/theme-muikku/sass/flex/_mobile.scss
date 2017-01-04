@@ -88,11 +88,11 @@
   }
   
   /* Navigation More Icon Wrapper */
-  div[class*='dock-static-navi-button'] > div {
-    font-size: 35px;
-    padding: 7px 5px 20px;
-    height: 35px;
+  div.icon-navicon {
     cursor: pointer;
+    font-size: 35px;
+    height: 35px;
+    padding: 7px 5px 20px;
       
     /* Navigation More Container */
     .navmore-container {
@@ -106,47 +106,41 @@
       right: 0;
       top: 61px;
       width: 0%;
+    }
       
-      div[class*="dock-static-navi"] {
-        margin: 5px 0;
+    div[class*="dock-static-navi"] {
+      display: block;
+      float: none;
+      margin: 5px 0;
+      
+      > a {
+        color: #416c7c;
         display: block;
-        float: none;
+        font-size: 18px;
+        height: 1em;
+        padding: 10px 20px 10px 10px;
+        text-shadow: none;
         
-        > a {
-          padding: 5px;
-          font-size: 18px;
-          height: 1em;
-          color: #416c7c;
-          text-shadow: none;
-          display: block;
-          padding: 10px 20px 10px 10px;
-          
-          &:hover,
-          &:focus,
-          &:active {
-            background: #c5eaf8;
-          }
-          
-          &.icon-user {
-            font-size: 16px;
-          }
-          
-          > span {
-            text-transform: uppercase;
-            font-size: 16px;
-            color: #5c5c5c;
-            display: inline-block;
-            vertical-align: top;
-            padding: 0 0 0 10px;
-            font-weight: 300;
-          }
-        
-         &:hover {
-           text-shadow: none;
-         }
-        
+        &:hover,
+        &:focus,
+        &:active {
+          background: #c5eaf8;
         }
         
+        &.icon-user {
+          font-size: 16px;
+        }
+        
+        > span {
+          color: #5c5c5c;
+          display: inline-block;
+          font-weight: 300;
+          font-size: 16px;
+          padding: 0 0 0 10px;
+          text-transform: uppercase;
+          vertical-align: top;
+        }
+      
       }
       
     }
@@ -155,28 +149,27 @@
   
   .login,
   .forgot-password {
-    float: none;
     display: inline-block;
+    float: none;
     margin: 0;
     width: 100%;
   }
   
   .bt-generic.bt-login,
   .bt-generic.bt-forgotpassword {
+    border-radius: 2px;
+    float: none;
     font-size: 1em;
     padding: 0;
-    float: none;
-    width: 100%;
     text-align: center;
-    border-radius: 2px;
+    width: 100%;    
   }
   
   .bt-generic.bt-login a,
   .bt-generic.bt-forgotpassword span {
+    display: inline-block;
     padding: 10px;
     text-decoration: none;
-    display: inline-block;
-    
   }
  
   .bt-main-functionality  {
@@ -187,8 +180,8 @@
     }
     
     .bt-main-functionality-decoration {
-      padding: 3px 1px;
       font-size: 2em;
+      padding: 3px 1px;
     }
   
   } 
@@ -236,8 +229,8 @@
         }
         
         .ui-dialog-titlebar-close {
-          width: 30px;
           height: 30px;
+          width: 30px;
         
           &::before {
             font-size: 30px;
@@ -278,16 +271,16 @@
       }
       
       .cm-message-header-count {
-        margin: 0 5px 0 0;
         display: inline-block;
+        margin: 0 5px 0 0;
         
         .cm-message-replies {
-          font-weight: 400;
-          width: 100%;
           background-color: $hlBgr;
-          text-align: center;
-          padding: 2px;
           font-size: 13px;
+          font-weight: 400;
+          padding: 2px;
+          text-align: center;
+          width: 100%;
         }
         
       }
