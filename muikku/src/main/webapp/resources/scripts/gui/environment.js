@@ -29,6 +29,10 @@
     reloadMessageCount();
   });
   
+  $(document).on("Communicator:threaddeleted", function (event) {
+    reloadMessageCount();
+  });
+  
   $(document).ready(function () {
     reloadMessageCount();
   });
