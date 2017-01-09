@@ -7,13 +7,8 @@
           {@eq key=type value="flag"}
             <div class="mf-label-functions icon-arrow-down md-flex-hide sm-flex-hide"></div>
           {/eq}
-          <div class="mf-label-name cm-label-name "{iconClass}" {?color}style="color:{color}"{/color}>
-            <a class="gt-filter-link" data-type="{type}" data-id="{id}">
-              {?color}
-                <span class="{iconClass}" style="color: {color}"></span>
-              {:else}
-                <span class="{iconClass}"></span>
-              {/color}
+          <div class="mf-label-name cm-label-name">
+            <a class="gt-filter-link {?iconClass}{iconClass}{:else}mf-category-item-plain{/iconClass}" {?color}style="color:{color}"{/color} data-type="{type}" data-id="{id}">
               <span>{name}{?nameExtension} ({nameExtension}){/nameExtension}</span>
             </a>
           </div>          
