@@ -409,10 +409,12 @@ main.content {
   padding: 15px;
   height: 100%;
   box-sizing: border-box;
-  &.break-word ul li{
+  
+  &.break-word ul li {
     word-break: break-all;
     word-wrap: break-word;
-  }  
+  }
+    
   .empty {
     font-style: italic;
   }
