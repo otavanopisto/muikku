@@ -93,7 +93,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       mockBuilder.mockLogin(admin).build();
       login();
       navigate(String.format("/evaluation2"), true);
-      waitAndClick(".evaluate-button");          
+      waitAndClick(".evaluate-button");
+      waitAndClick(".workspace-evaluation-form-activate-button");
+      waitForPresentAndVisible(".cke_contents");
       waitAndClick(".cke_contents");
       getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
       selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
@@ -236,6 +238,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       Long courseId = 3l;
       
       login();
+      
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
 
       OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
       OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
