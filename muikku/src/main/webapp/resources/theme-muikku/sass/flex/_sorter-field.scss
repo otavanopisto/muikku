@@ -1,8 +1,8 @@
 div.muikku-sorter-field {
   
   &[data-disabled="true"] {
-    opacity: 0.5;
     cursor: default;
+    opacity: 0.5;
     
     .muikku-sorter-item:hover {
       background: $taskBoxColor;
@@ -16,8 +16,8 @@ span.muikku-sorter-field {
   display: inline-block;
   
   &[data-disabled="true"] {
-    opacity: 0.5;
     cursor: default;
+    opacity: 0.5;
     
     .muikku-sorter-item:hover {
       background: $taskBoxColor;
