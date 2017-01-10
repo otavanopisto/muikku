@@ -87,7 +87,8 @@
   
 }
 
-.mf-label-link {
+.mf-label-link, 
+.mf-label-message-link {
   cursor: pointer;
   font-size: 15px;
   padding: 5px 0 5px 0;
@@ -104,7 +105,7 @@
   }
 
   &.selected-in-all {
-    background-color: $navigation-horizontal-bar-special-background-color;
+    background-color: $navigation-horizontal-bar-special-accented-background-color;
     color: $navigation-horizontal-bar-active-font-color;
     span {
       color: $navigation-horizontal-bar-active-font-color;
@@ -130,9 +131,7 @@
   top: 0;
   z-index: 99;
   width: 25px;
-   > div {
-
-  }
+  
   &:hover {
     color: $navigation-vertical-bar-deco-active-icon-color;
     }
@@ -236,6 +235,7 @@
       
       a {
         font-weight: 300;
+
         text-decoration: none;
         color: $environment-font-color;
         display: inline-block;
@@ -869,7 +869,6 @@ ul.mf-tool-label-container {
       
   .mf-form-row {
     position: relative;
-    margin: 2px 0 3px 0;
     
     &.hidden {
       display: none;
@@ -896,8 +895,7 @@ ul.mf-tool-label-container {
     position: relative;
     top: 0;
       
-    .mf-form-element-subcontainer, 
-    .mf-textfield-subcontainer {
+    .mf-form-element-subcontainer {
       border: 2px solid $form-textfield-subcontainer-border-color;
       border-radius: 3px;
       background-color: $form-textfield-subcontainer-background-color;
@@ -925,13 +923,11 @@ ul.mf-tool-label-container {
       
       &:focus {
         background-color: $form-textfield-focus-background-color;     
-        border: 0;
         box-shadow: none;    
       }
       
       &:hover {
         background-color: $form-textfield-hover-background-color;   
-        border: 0;
         box-shadow: none;      
       }
     }
@@ -976,6 +972,58 @@ ul.mf-tool-label-container {
   }
 
 }
+
+// Needs to be unified with mf-list*
+
+.mf-categories {
+  background-color: $environment-background-color;
+   
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+    
+  li {
+    border-bottom: 1px solid $environment-border-color;
+    border-left: 5px solid $navigation-vertical-bar-border-color;
+
+    div::before {
+      margin-left: 5px;        
+      margin-right: 5px;        
+    }
+
+    a {
+      box-sizing: border-box;
+      color: $environment-font-color;
+      font-family: $environment-font-family;        
+      display: inline-block;
+      font-weight: 300;
+      height: 30px;
+      padding-top: 8px;      
+      text-decoration: none;
+    }
+
+    &::before {
+      margin-left: 5px;
+      color: $navigation-vertical-bar-icon-color;
+    } 
+          
+    &:hover {
+      border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
+      cursor: pointer;   
+    } 
+    
+    &.selected {
+      background-color: $environment-background-selected-color;
+      border-left: 5px solid $environment-border-selected-color;
+      
+      a {
+        font-weight: normal;      
+      }
+    }
+  }
+} 
 
 /* jQuert Ui overrides for mainfunctions */
 

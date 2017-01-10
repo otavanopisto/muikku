@@ -16,7 +16,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   @Before
   public void before() {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -33,7 +33,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
   
   @Test
   public void testCreateEnvironmentForumAdmin() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -48,7 +48,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
   
   @Test
   public void testCreateEnvironmentForumManager() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asManager()
       .contentType("application/json")
@@ -63,7 +63,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
   
   @Test
   public void testCreateEnvironmentForumTeacher() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asTeacher()
       .contentType("application/json")
@@ -78,7 +78,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
   
   @Test
   public void testCreateEnvironmentForumStudent() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     asStudent()
       .contentType("application/json")
@@ -165,7 +165,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   @Test
   public void testDeleteForumAreaAdmin() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -186,7 +186,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   @Test
   public void testDeleteForumAreaManager() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -205,7 +205,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   @Test
   public void testDeleteForumAreaTeacher() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
@@ -224,7 +224,7 @@ public class ForumPermissionsTestsIT extends AbstractForumRESTTestsIT {
 
   @Test
   public void testDeleteForumAreaStudent() throws NoSuchFieldException {
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")

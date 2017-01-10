@@ -5,10 +5,11 @@ public class Discussion {
   public Discussion() {
   }
 
-  public Discussion(Long id, String name, Long groupId) {
+  public Discussion(Long id, String name, String description, Long groupId) {
     super();
     this.id = id;
     this.name = name;
+    this.description = description;
     this.groupId = groupId;
   }
 
@@ -36,7 +37,16 @@ public class Discussion {
     this.groupId = groupId;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   private Long id;
   private String name;
+  private String description;
   private Long groupId;
 }

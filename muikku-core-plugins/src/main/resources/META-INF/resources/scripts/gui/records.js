@@ -32,12 +32,85 @@
         .on('$', $.proxy(function (student, callback) {
           // var curriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
           
-          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id)], $.proxy(function (err, results) {
+          async.parallel([this._createStudentWorkspacesLoad(student.id), this._createStudentTransferCreditsLoad(student.id), this._createCurriculumsLoad()], $.proxy(function (err, results) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
-              student.workspaces = results[0];
-              student.transferCredits = results[1];
+              var DEFAULT_CURRICULUM = "default";
+              var studentCurriculumIdentifier = student.curriculumIdentifier ? student.curriculumIdentifier : undefined;
+              var studentWorkspaces = results[0];
+              var studentTransferCredits = results[1];
+              var curriculums = results[2].slice() || [];
+              curriculums.push({identifier: "default", name: undefined});
+              
+              if (studentWorkspaces) {
+                studentWorkspaces = studentWorkspaces.reduce(function(workspacesByCurriculum, workspace) {
+                  var curriculum = undefined;
+                  
+                  // If student doesn't have curriculum set, all credits are valid so they go to default curriculum
+                  if (!studentCurriculumIdentifier)
+                    curriculum = DEFAULT_CURRICULUM;
+                  else if (workspace.curriculumIdentifiers && (workspace.curriculumIdentifiers.length > 0)) {
+                    // Student has curriculum, credit has curriculum(s)
+                    
+                    for (var currInd = 0, currLen = workspace.curriculumIdentifiers.length; currInd < currLen; currInd++) {
+                      var workspaceCurriculum = workspace.curriculumIdentifiers[currInd];
+                      workspacesByCurriculum[workspaceCurriculum] = workspacesByCurriculum[workspaceCurriculum] || [];
+                      workspacesByCurriculum[workspaceCurriculum].push(workspace);
+                    }
+                  } else
+                    // Student has curriculum but credit doesn't so add the credit to current curriculum
+                    curriculum = studentCurriculumIdentifier;
+
+                  if (curriculum) {
+                    workspacesByCurriculum[curriculum] = workspacesByCurriculum[curriculum] || [];
+                    workspacesByCurriculum[curriculum].push(workspace);
+                  }
+                  return workspacesByCurriculum;
+                }, {});
+              }
+              
+              if (studentTransferCredits) {
+                studentTransferCredits = studentTransferCredits.reduce(function(transferCreditsByCurriculum, transferCredit) {
+                  var curriculum;
+                  
+                  // If student doesn't have curriculum set, all transfercredits are valid so they go to default curriculum
+                  if (!studentCurriculumIdentifier)
+                    curriculum = DEFAULT_CURRICULUM;
+                  else if (transferCredit.curriculumIdentifier)
+                    // Student has curriculum, transfercredit has curriculum
+                    curriculum = transferCredit.curriculumIdentifier;
+                  else
+                    // Student has curriculum but transfercredit doesn't so add the transfercredit to current curriculum
+                    curriculum = studentCurriculumIdentifier;
+                    
+                  transferCreditsByCurriculum[curriculum] = transferCreditsByCurriculum[curriculum] || [];
+                  transferCreditsByCurriculum[curriculum].push(transferCredit);
+                  return transferCreditsByCurriculum;
+                }, {});
+              }
+              
+              var studentCurriculums = [];
+              $.each(curriculums, function(index, curriculum) {
+                var workspaces = studentWorkspaces ? studentWorkspaces[curriculum.identifier] : undefined;
+                var transferCredits = studentTransferCredits ? studentTransferCredits[curriculum.identifier] : undefined;
+                
+                if (workspaces || transferCredits) {
+                  studentCurriculums.push({
+                    curriculumId: curriculum.identifier,
+                    curriculumName: curriculum.name,
+                    workspaces: workspaces,
+                    transferCredits: transferCredits
+                  });
+                }
+              });
+              
+              // Sort curriculums so that the current curriculum is on top
+              studentCurriculums.sort($.proxy(function (curriculum1, curriculum2) {
+                return curriculum1.curriculumId == studentCurriculumIdentifier ? -1 : curriculum2.curriculumId == studentCurriculumIdentifier ? 1 : 0;
+              }, this));
+              
+              student.curriculums = studentCurriculums;
               callback();
             }
           }, this));
@@ -71,6 +144,14 @@
         this._loadStudentTransferCredits(studentIdentifier, $.proxy(function (err, transferCredits) {
           callback(err, transferCredits);
         }, this));
+      }, this);
+    },
+
+    _createCurriculumsLoad: function () {
+      return $.proxy(function (callback) {
+        mApi().coursepicker.curriculums
+          .read()
+          .callback(callback);
       }, this);
     },
     

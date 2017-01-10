@@ -40,9 +40,14 @@
   $.widget("custom.announcementCreateEditDialog", {
     
     options: {
-      showTargetGroups: true,
+      permissions: {
+        environment: false,
+        workspaces: false,
+        groups: false
+      },
       announcement: null,
       ckeditor: {
+        uploadUrl: '/announcerAttachmentUploadServlet',
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'links', items: [ 'Link' ] },
@@ -53,9 +58,15 @@
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         extraPlugins: {
-          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
+          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
+          'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
+          'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.2/plugin.min.js'
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
+          'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
+          'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
         }
       }
     },
@@ -81,7 +92,7 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
-        
+
         var autocomplete = this.element.find('input#targetGroupContent').autocomplete({
           open: function(event, ui) {
             $(event.target).perfectScrollbar({
@@ -90,11 +101,10 @@
             });
           },  
           source: $.proxy(function (request, response) {
-            this._searchTargetGroups(request.term, function (err, results) {
+            this._searchTargets(request.term, function (err, results) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-            	  
                 response(results);
               }
             });
@@ -102,7 +112,7 @@
           select: $.proxy(function (event, ui) {
             var item = ui.item;
             if (!item.existing) {
-              this._addTargetGroup(item.label, item.id);
+              this._addTarget(item.category, item.label, item.id);
               $(event.target).val("");
             }
             return false;
@@ -137,11 +147,7 @@
       if (this.options.announcement) {
         data.announcement = this.options.announcement;
         dustFile = '/announcer/announcer_edit_announcement.dust';
-      }
-      
-      if (this.options.showTargetGroups) {
-        data.showTargetGroups = true;
-      }
+      } 
       
       renderDustTemplate(dustFile, data, $.proxy(function (text) {
         this.element.html(text);
@@ -152,11 +158,14 @@
           this._setStartDate(data.announcement.startDate);
           this._setEndDate(data.announcement.endDate);
           
-          if (data.showTargetGroups) {
-            for (var i=0; i<data.announcement.userGroupEntityIds.length; i++) {
-              var userGroupEntityId = data.announcement.userGroupEntityIds[i];
-              this._addTargetGroupWithId(userGroupEntityId);
-            }
+          for (var ugi = 0; ugi < data.announcement.userGroupEntityIds.length; ugi++) {
+            var userGroupEntityId = data.announcement.userGroupEntityIds[ugi];
+            this._addTargetGroupWithId(userGroupEntityId);
+          }
+          
+          for (var wsi = 0; wsi < data.announcement.workspaceEntityIds.length; wsi++) {
+            var workspaceEntityId = data.announcement.workspaceEntityIds[wsi];
+            this._addTargetWorkspaceWithId(workspaceEntityId);
           }
         } else {
           var start = new Date();
@@ -169,6 +178,9 @@
           this._setContent("");
           this._setStartDate(start);
           this._setEndDate(end);
+          
+          if (this.options.workspaceEntityId)
+            this._addTargetWorkspaceWithId(this.options.workspaceEntityId);          
         }
 
         if (callback) {
@@ -221,61 +233,139 @@
       });
     },
      
+    _getTargetWorkspaceIds: function () {
+      return $.map(this.element.find('input[name="workspaceEntityIds"]'), function (elem) {
+        return Number($(elem).val());
+      });
+    },
+     
     _addTargetGroupWithId: function (id) {
       mApi().usergroup.groups.read(id).callback($.proxy(function (err, result) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          this._addTargetGroup(result.name + " (" + result.userCount + ")", result.id);
+          this._addTarget("GROUP", result.name + " (" + result.userCount + ")", result.id);
+        }
+      }, this));
+    },
+    _addTargetWorkspaceWithId: function (id) {
+      mApi().workspace.workspaces.read(id).callback($.proxy(function (err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._addTarget("WORKSPACE", result.name + (result.nameExtension ? ' (' + result.nameExtension + ')' : ''), result.id);
         }
       }, this));
     },
 
-    _addTargetGroup: function (label, id) {
-      var parameters = {
-        id: id,
-        name: label
-      };
-
-      var targetGroupIds = this._getTargetGroupIds();
-      if (targetGroupIds.indexOf(id) !== -1) {
-        return;
-      }
-      
-      
-
-      renderDustTemplate('announcer/announcer_targetgroup.dust', parameters, $.proxy(function (text) {
-        this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
-      }, this));
-    },
-    
-    _searchTargetGroups: function (term, callback) {
-	  var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
-	  var existingIds = new Array();
-	  if(inputs.length > 0){
-	    for(var i = 0; i < inputs.length; i++) {
-	      existingIds.push($(inputs[i]).val()); 
-	    }
-	  }
-
-      mApi().usergroup.groups
-        .read({ 'searchString' : term })
-        .callback(function(err, results) {
-          if (err) {
-            callback(err);
-          } else {
-            callback(null, $.map(results||[], function (result) {
-             if(!(existingIds.indexOf(result.id.toString()) > -1)){
-                return {
-                  label : result.name + " (" + result.userCount + ")",
-                  id: result.id,
-                }
-              }
-            }));
+    _addTarget: function (category, label, id) {
+      switch (category) {
+        case "WORKSPACE":
+          var targetWorkspaceIds = this._getTargetWorkspaceIds();
+          if (targetWorkspaceIds.indexOf(id) == -1) {
+            var workspace = {
+              id: id,
+              name: label
+            };
+            renderDustTemplate('announcer/announcer_targetworkspace.dust', workspace, $.proxy(function (text) {
+              this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
+            }, this));
           }
-        });
+        break;
+        
+        case "GROUP":
+          var targetGroupIds = this._getTargetGroupIds();
+          if (targetGroupIds.indexOf(id) == -1) {
+            var group = {
+              id: id,
+              name: label
+            };
+
+            renderDustTemplate('announcer/announcer_targetgroup.dust', group, $.proxy(function (text) {
+              this.element.find('#msgTargetGroupsContainer').prepend($.parseHTML(text));
+            }, this));
+          }
+          
+        break;
+      }
+    },
+
+    _searchTargets: function (term, callback) {
+      var tasks = [this._searchTargetGroups(term), this._searchTargetWorkspaces(term)];
+
+      async.parallel(tasks, function (err, results) {
+        if (err) {
+          callback(err);
+        } else {
+          callback(null, _.flatMap(results)); 
+        }
+      });
     },
     
+    _searchTargetGroups: function (term) {
+      if (!this.options.permissions.groups)
+        return function (callback) { callback(null, []); };
+      
+      var inputs = $("#msgTargetGroupsContainer").find("input[name='userGroupEntityIds']");
+      var existingIds = new Array();
+      if (inputs.length > 0) {
+        for (var i = 0; i < inputs.length; i++) {
+          existingIds.push($(inputs[i]).val());
+        }
+      }
+
+      return $.proxy(function (callback) {
+        mApi().usergroup.groups
+          .read({ 'searchString' : term })
+          .callback(function(err, results) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, $.map(results||[], function (result) {
+               if(!(existingIds.indexOf(result.id.toString()) > -1)){
+                  return {
+                    label : result.name + " (" + result.userCount + ")",
+                    id: result.id,
+                    category: "GROUP"
+                  }
+                }
+              }));
+            }
+          });
+      });
+    },
+    
+    _searchTargetWorkspaces: function (term) {
+      if (!this.options.permissions.workspaces)
+        return function (callback) { callback(null, []); };
+      
+      var targetWorkspaceIds = this._getTargetWorkspaceIds();
+
+      return $.proxy(function (callback) {
+        // coursepicker??
+        mApi().coursepicker.workspaces
+          .read({
+            search: term,
+            myWorkspaces: true,
+          })
+          .callback($.proxy(function (err, results) {
+            if (err) {
+              callback(err);
+            } else {
+              callback(null, $.map(results||[], function (result) {
+                if(targetWorkspaceIds.indexOf(result.id) == -1){
+                  return {
+                    label : result.name + (result.nameExtension ? ' (' + result.nameExtension + ')' : ''),
+                    id: result.id,
+                    category: "WORKSPACE"
+                  }
+                }
+              }));
+            }
+          }, this));
+      });
+    },
+
     _discardDraft: function () {
       try {
         this._contentsEditor.pauseDrafting();
@@ -323,6 +413,7 @@
         };
         
         payload.userGroupEntityIds = this._getTargetGroupIds();
+        payload.workspaceEntityIds = this._getTargetWorkspaceIds();
           
         if (payload.userGroupEntityIds.length > 0) {
           payload.publiclyVisible = false;
@@ -330,14 +421,11 @@
           payload.publiclyVisible = true;
         }
         
-        if (this.options.workspaceEntityId != null) {
-          payload.userGroupEntityIds = [];
-          payload.workspaceEntityIds = [this.options.workspaceEntityId];
-          payload.publiclyVisible = true;
-        } else {
-          payload.workspaceEntityIds = [];
+        if (!this.options.permissions.environment && (payload.workspaceEntityIds.length == 0)) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.workspaceNeeded'));
+          return false;
         }
-            
+        
         if (!(this.options.announcement)) {
           mApi().announcer.announcements
           .create(payload)
@@ -387,26 +475,54 @@
     }
     
   });
+
+  $.widget("custom.announcerCategories", {
+    options: {
+      currentCategory: "active"
+    },
+  
+    _create : function() {
+      this.element.on('click', '.an-category', $.proxy(this._onCategoryClick, this));
+      this._refreshSelection();
+    },
+     
+    _onCategoryClick: function (event) {
+      this.options.currentCategory = $(event.target).closest('.an-category').attr('data-folder-id');
+      $('.an-announcements-view-container').announcer("setCategory", this.options.currentCategory);
+      this._refreshSelection();
+    },
+     
+    _refreshSelection: function () {
+      this.element.find('.an-category').removeClass("selected");
+      this.element.find('.an-category[data-folder-id="' + this.options.currentCategory + '"]').addClass("selected");       
+    }
+  });
   
   $.widget("custom.announcer", {
      options: {
+       category: "active",
        workspaceEntityId: null,
        outerContainer: ".mf-content-master"
      },
     
     _create : function() {
-     $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
-     this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
-     this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
+      $(this.options.outerContainer).on('click', '.an-new-announcement', $.proxy(this._onCreateAnnouncementClick, this));
+      this.element.on('click', '.an-announcement-edit-link', $.proxy(this._onEditAnnouncementClick, this));
+      this.element.on('click', '.an-announcements-tool.archive', $.proxy(this._onArchiveAnnouncementsClick, this));
      
-     this._loadAnnouncements();
+      this._loadAnnouncements();
+    },
+    
+    setCategory: function (category) {
+      this.options.category = category;
+      this._loadAnnouncements();
     },
     
     _onCreateAnnouncementClick: function () {
       var dialog = $('<div>')
         .announcementCreateEditDialog({
           workspaceEntityId: this.options.workspaceEntityId,
-          showTargetGroups: ! (this.options.workspaceEntityId)
+          permissions: this.options.permissions
         });
 
       $("#socialNavigation")
@@ -425,7 +541,7 @@
           var dialog = $('<div>').announcementCreateEditDialog({
             workspaceEntityId: this.options.workspaceEntityId,
             announcement: announcement,
-            showTargetGroups: ! (this.options.workspaceEntityId)
+            permissions: this.options.permissions
           });
 
           $("#socialNavigation")
@@ -435,26 +551,42 @@
     },    
     
     _loadAnnouncements: function () {
-        var options = {};
+      var options = {};
+      options.onlyEditable = true;
+      options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
+
+      switch (this.options.category) {
+        case "past":
+          options.timeFrame = "EXPIRED";
+        break;
+        case "archived":
+          options.timeFrame = "ALL";
+          options.onlyArchived = true;
+        break;
+        case "mine":
+          options.timeFrame = "ALL";
+          options.onlyMine = true;
+        break;
+        default:
+          options.timeFrame = "CURRENTANDUPCOMING";
+        break;
+      }
       
-        if (this.options.workspaceEntityId != null) {
-          options.workspaceEntityId = this.options.workspaceEntityId;
-        } else {
-          options.hideWorkspaceAnnouncements = true;
-        }
-      
-        mApi().announcer.announcements
-          .read(options)
-          .callback($.proxy(function(err, result) {
-            if (err) {
-              $(".notification-queue").notificationQueue('notification', 'error', err);
-            } else {
-              renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
-                var element = $(text);
-                $('.an-announcements-view-container').append(element);
-              }, this));
-            }
-          }, this));
+      if (this.options.workspaceEntityId != null) {
+        options.workspaceEntityId = this.options.workspaceEntityId;
+      }
+    
+      mApi().announcer.announcements
+        .read(options)
+        .callback($.proxy(function(err, result) {
+          if (err) {
+            $(".notification-queue").notificationQueue('notification', 'error', err);
+          } else {
+            renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
+              $('.an-announcements-view-container').html(text);
+            }, this));
+          }
+        }, this));
     },
     
     _onArchiveAnnouncementsClick: function (event) {
@@ -501,11 +633,20 @@
 
     var options = {};
     
+    options.permissions = {};
+    options.category = "active";
+    options.permissions.environment = $('#announcer').attr('data-penv') == "true";
+    options.permissions.workspaces = $('#announcer').attr('data-pworks') == "true";
+    options.permissions.groups = $('#announcer').attr('data-pgroups') == "true";
+    
     if ($("#workspaceEntityId").val() != null) {
       options.workspaceEntityId = Number($("#workspaceEntityId").val());
     }
     
     $('.an-announcements-view-container').announcer(options);
+    $('.an-categories').announcerCategories({
+      currentCategory: options.category
+    });
   });
 
 }).call(this);

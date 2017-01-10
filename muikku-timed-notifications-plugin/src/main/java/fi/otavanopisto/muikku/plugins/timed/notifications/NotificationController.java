@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.timed.notifications;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,10 +18,16 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 
 @Dependent
 public class NotificationController {
@@ -46,6 +54,15 @@ public class NotificationController {
   @Inject
   private PluginSettingsController pluginSettingsController;
   
+  @Inject
+  private UserGroupController userGroupController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
   private String getRecipientEmail() {
     return pluginSettingsController.getPluginSetting("timed-notifications", "dryRunRecipientEmail");
   }
@@ -60,6 +77,24 @@ public class NotificationController {
    HashMap<String, Object> map = new HashMap<>();
    map.put("category", category);
    map.put("recipient", recipient.getId());
+   
+   UserEntity guidanceCounselor = null;
+   List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(recipient);
+   
+   userGroupEntities:
+   for (UserGroupEntity userGroupEntity : userGroupEntities) {
+     UserGroup userGroup = userGroupController.findUserGroup(userGroupEntity);
+     
+     if (userGroup.isGuidanceGroup()) {
+       List<GroupUser> groupUsers = userGroupController.listUserGroupStaffMembers(userGroup);
+       
+       for (GroupUser groupUser : groupUsers) {
+         User user = userGroupController.findUserByGroupUser(groupUser);
+         guidanceCounselor = userEntityController.findUserEntityByUser(user);
+         break userGroupEntities;
+       }
+     }
+   }
     
    LogProvider provider = getProvider(LOG_PROVIDER);
    
@@ -82,6 +117,11 @@ public class NotificationController {
            "SENT TO: " + recipient.getDefaultIdentifier() + "<br/><br/><br/>" + content);
      }
    } else {
+     ArrayList<UserEntity> recipients = new ArrayList<>(); 
+     recipients.add(recipient);
+     if (guidanceCounselor != null) {
+       recipients.add(guidanceCounselor);
+     }
      String studentEmail = userEmailEntityController.getUserDefaultEmailAddress(recipient, Boolean.FALSE);
      if (studentEmail != null) {
        mailer.sendMail(MailType.HTML, Arrays.asList(studentEmail), subject, content);
@@ -96,9 +136,9 @@ public class NotificationController {
           category,
           subject,
           content,
-          Arrays.asList(recipient)
+          recipients
       );
-    }
+   }
   }
 
   private LogProvider getProvider(String name) {
