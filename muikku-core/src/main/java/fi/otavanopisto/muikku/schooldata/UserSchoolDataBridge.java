@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.schooldata;
 import java.util.List;
 
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -215,6 +216,8 @@ public interface UserSchoolDataBridge {
 	public GroupUser findGroupUser(String groupIdentifier, String identifier);
 	
 	public List<GroupUser> listGroupUsersByGroup(String groupIdentifier);
+
+	public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type);
 
   public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword);
 
