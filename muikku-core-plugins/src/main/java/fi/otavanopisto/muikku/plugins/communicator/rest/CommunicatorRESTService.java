@@ -47,6 +47,8 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCate
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientUserGroup;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipientWorkspaceGroup;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
@@ -213,13 +215,19 @@ public class CommunicatorRESTService extends PluginRESTService {
       List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
       
       List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(sentItem);
+      List<CommunicatorMessageRecipientUserGroup> userGroupRecipients = communicatorController.listCommunicatorMessageUserGroupRecipients(sentItem);
+      List<CommunicatorMessageRecipientWorkspaceGroup> workspaceGroupRecipients = communicatorController.listCommunicatorMessageWorkspaceGroupRecipients(sentItem);
+
       List<CommunicatorMessageRecipientRESTModel> restRecipients = restModels.restRecipient(messageRecipients);
-      Long recipientCount = (long) messageRecipients.size();
+      List<fi.otavanopisto.muikku.rest.model.UserGroup> restUserGroupRecipients = restModels.restUserGroupRecipients(userGroupRecipients);
+      List<CommunicatorMessageRecipientWorkspaceGroupRESTModel> restWorkspaceRecipients = restModels.restWorkspaceGroupRecipients(workspaceGroupRecipients);
+
+      Long recipientCount = (long) messageRecipients.size() + userGroupRecipients.size() + workspaceGroupRecipients.size();
       
       result.add(new CommunicatorSentThreadRESTModel(
           sentItem.getId(), sentItem.getCommunicatorMessageId().getId(), sentItem.getSender(), senderBasicInfo, categoryName, 
           sentItem.getCaption(), sentItem.getCreated(), tagIdsToStr(sentItem.getTags()), hasUnreadMsgs, latestMessageDate, 
-          messageCountInThread, restLabels, restRecipients, recipientCount));
+          messageCountInThread, restLabels, restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount));
     }
     
     return Response.ok(

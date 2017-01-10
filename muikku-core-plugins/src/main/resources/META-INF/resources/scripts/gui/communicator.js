@@ -813,6 +813,7 @@
     deleteThreads: function (threads) {
       this._removeThreads(threads, $.proxy(function () {
         this.reloadFolder();
+        $(document).trigger("Communicator:threaddeleted");
       }, this));
     },
 
