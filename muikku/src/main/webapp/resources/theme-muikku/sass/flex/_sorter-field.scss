@@ -1,4 +1,19 @@
-.muikku-sorter-field {
+div.muikku-sorter-field {
+  
+  &[data-disabled="true"] {
+    opacity: 0.5;
+    cursor: default;
+    
+    .muikku-sorter-item:hover {
+      background: $taskBoxColor;
+    }
+    
+  }
+  
+}
+
+span.muikku-sorter-field {
+  display: inline-block;
   
   &[data-disabled="true"] {
     opacity: 0.5;
@@ -53,6 +68,7 @@ div.muikku-sorter-items-container {
 }
 
 span.muikku-sorter-items-container {
+  display: inline-block;
 	
   &.capitalize {
     
