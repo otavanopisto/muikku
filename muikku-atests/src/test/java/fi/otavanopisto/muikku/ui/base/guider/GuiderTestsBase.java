@@ -61,7 +61,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", true);
-      waitAndClick(String.format("a.gt-filter-link[data-id~=\"2\"]", workspace.getId()));
+      waitAndClick(String.format("a.gt-filter-link[data-id~=\"%d\"]", workspace.getId()));
       waitForPresent(".gt-user .gt-user-meta-topic>span");
       assertText(".gt-user .gt-user-meta-topic>span", "Second User (Test Study Programme)");
     } finally {
