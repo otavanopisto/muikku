@@ -185,27 +185,25 @@
               this._swapElements(this.options.meta.selectedTerm, $(e.target).closest('.muikku-connect-field-counterpart'));
               counterpartElement
                 .removeClass('counterpart-full-text')
-                .html($(counterpart).html())
-                .next('.counterpart-placeholder')
-                .remove();
+                .html($(counterpart).html());
             }
           }, this);
           counterpartElement.click(counterPartClickHandler);
           
           if (($(counterpart).attr('title')||"").length > 50) {
-            counterpartElement.mouseenter($.proxy(function(e){  
+            $(counterpartElement).on('mouseenter', function(e) {
               var childElement = $('<div>')
                 .addClass('counterpart-full-text')
                 .html($(counterpart).attr('title'));
               childElement.click(counterPartClickHandler);
               counterpartElement.html("").append(childElement);
-            }, this));
+            });
             
-            counterpartElement.mouseleave($.proxy(function(e){
+            $(counterpartElement).on('mouseleave', function(e) {
               counterpartElement
                 .empty()
                 .html($(counterpart).html());
-            }, this));
+            });
           }
 
           this._element.find('.muikku-connect-field-counterparts').append(counterpartElement);
