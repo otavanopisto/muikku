@@ -301,16 +301,16 @@
       // #2421: Show evaluation
       
       if (state == 'FAILED' || state == 'PASSED') {
+        var buttonClass = state == 'FAILED' ? 'failed' : 'passed';
         $('<button>')
           .addClass('muikku-show-evaluation-button')
+          .addClass(buttonClass)
           .text(getLocaleText('plugin.workspace.materialsLoader.showEvaluation'))
           .insertAfter(this.element.find('.muikku-assignment-button'))
           .click($.proxy(function() {
             var evaluationContainer = this.element.find('.evaluation-container');
             if (evaluationContainer.attr('data-loaded') == 'true') {
-              if (evaluationContainer.attr('data-open') == 'false') {
-                this._toggleEvaluationContainer();
-              }
+              this._toggleEvaluationContainer();
             }
             else {
               mApi().workspace.users.materials.evaluation

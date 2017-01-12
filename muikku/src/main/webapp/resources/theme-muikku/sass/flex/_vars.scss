@@ -7,6 +7,12 @@ $body-font-color: #2c2c2c;
 $environment-icon-family: 'muikku';
 $environment-font-family: 'Open Sans',Arial,sans-serif;
 
+// Assignments, Exercises and Journal - Colors
+
+$assignment-color: #ce01bd;
+$exercise-color: #ff9900;
+$journal-color: #0effe6;
+
 // TODO: Should be environment-icon-color - the fact that an icon is a font is irrelevant
 
 $environment-icon-font-color: #fff;
@@ -309,9 +315,4 @@ $evaluation-modal-assignment-evaluation-header-background-color: #fff;
 $evaluation-modal-seperator-border-color: #f8f8f8;
 $evaluation-modal-assignment-evaluate-button-font-color: #fff;
 $evaluation-modal-assignment-evaluated-grade-info-background-color: #c9f8bb;
-
-// Assignments - Colors
-
-$assignment-color: #ce01bd;
-$exercise-color: #ff9900;
-$journal-color: #0effe6;
+$evaluation-modal-assignment-evaluated-literal-background-color: #e2ffe2;

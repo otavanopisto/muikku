@@ -28,6 +28,7 @@
 .math-wrapper {
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 // WRAPPER FOR TEXTFIELDS
@@ -692,7 +693,15 @@ sup {
     
     // Show Assignment's Evaluation
     &.muikku-show-evaluation-button {
-      background: #000;
+      
+      &.failed {
+        background: $evaluation-incomplete-color;
+      }
+      
+      &.passed {
+        background: $evaluation-passed-color;
+      }
+      
     }
      
   }
@@ -701,6 +710,49 @@ sup {
 
 
 .evaluation-container {
+
+  .assignment-grade-container,
+  .assignment-date-container,
+  .assignment-literal-container {
+    margin: 10px 0; 
+  }
+  
+  .assignment-literal-label,
+  .assignment-grade-label,
+  .assignment-date-label {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
+  .assignment-grade-label,
+  .assignment-date-label {
+    display: inline-block;
+    padding: 0 10px 0 0;
+  }
+  
+  .assignment-grade-data {
+    background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0 0 0 5px;
+    min-width: 16px;
+    padding: 3px 6px;
+    text-align: center;
+  }
+  
+  .assignment-literal-data {
+    background: $evaluation-modal-assignment-evaluated-literal-background-color;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 1px 10px;
+    
+    p {
+     margin: 10px 0;
+    }
+ 
+  }
+  
   
   
 }

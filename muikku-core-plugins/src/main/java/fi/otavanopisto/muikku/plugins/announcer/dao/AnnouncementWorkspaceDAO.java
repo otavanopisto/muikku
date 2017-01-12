@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
@@ -55,8 +57,10 @@ public class AnnouncementWorkspaceDAO extends CorePluginsDAO<AnnouncementWorkspa
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<AnnouncementWorkspace> listByAnnouncementAndWorkspacesAndArchived(Announcement announcement, 
-      List<WorkspaceEntity> workspaces, Boolean archived) {
+  public List<AnnouncementWorkspace> listByAnnouncementAndWorkspacesAndArchived(Announcement announcement, List<WorkspaceEntity> workspaces, Boolean archived) {
+    if (CollectionUtils.isEmpty(workspaces)) {
+      return listByAnnouncementAndArchived(announcement, archived);
+    }
     List<Long> workspaceEntityIds = workspaces.stream().map((WorkspaceEntity workspace) -> workspace.getId()).collect(Collectors.toList());
     
     EntityManager entityManager = getEntityManager();
