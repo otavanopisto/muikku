@@ -217,9 +217,6 @@ $evaluation-requested-color: #0099ff;
 $evaluation-archive-color: #4c4c4c;
 $evaluation-delete-color: #d50b36;
 $evaluation-cancel-color: #7391a7;
-$evaluation-assignment-color: #ce01bd;
-$evaluation-exercise-color: #ff9900;
-$evaluation-journal-color: #0effe6;
 
 $evaluation-incomplete-boxshadow-color: rgba(234, 117, 3, 0.2);
 $evaluation-passed-boxshadow-color: rgba(60, 221, 3, 0.2);
@@ -312,3 +309,9 @@ $evaluation-modal-assignment-evaluation-header-background-color: #fff;
 $evaluation-modal-seperator-border-color: #f8f8f8;
 $evaluation-modal-assignment-evaluate-button-font-color: #fff;
 $evaluation-modal-assignment-evaluated-grade-info-background-color: #c9f8bb;
+
+// Assignments - Colors
+
+$assignment-color: #ce01bd;
+$exercise-color: #ff9900;
+$journal-color: #0effe6;

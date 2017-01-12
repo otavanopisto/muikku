@@ -43,9 +43,9 @@
   }
   
   &.icon-arrow-right {
-    border: 1px solid $evaluation-assignment-color;
+    border: 1px solid $assignment-color;
     border-radius: 100%;
-    color: $evaluation-assignment-color;
+    color: $assignment-color;
     font-size: 16px;
     height: 16px;
     margin: 12px;
@@ -123,7 +123,7 @@
 
 .eval-modal-assignment-title {
   box-sizing: border-box;
-  color: $evaluation-assignment-color;
+  color: $assignment-color;
   display: inline-block;
   font-size: 20px;
   font-weight: 400;
@@ -291,7 +291,7 @@
 }
 
 .assignment-literal-evaluation-wrapper {
-  border-left: 3px solid $evaluation-assignment-color;
+  border-left: 3px solid $assignment-color;
   padding: 0 10px;
 }
 
@@ -300,7 +300,7 @@
 }
 
 .assignment-literal-evaluation {
-  background: $evaluation-assignment-color;
+  background: $assignment-color;
   border-radius: 3px;
   margin: 5px 0 10px;
   padding: 10px;
@@ -320,13 +320,13 @@
 }
   
 .assignment-wrapper.assignment .assignment-title-wrapper {
-  border-left: 3px solid $evaluation-assignment-color;
+  border-left: 3px solid $assignment-color;
   cursor: pointer;
   padding: 2px 50px 2px 8px;
 }
 
 .assignment-wrapper.exercise .assignment-title-wrapper {
-  border-left: 3px solid $evaluation-exercise-color;
+  border-left: 3px solid $exercise-color;
   cursor: pointer;
   padding: 2px 8px;
 }
@@ -416,7 +416,7 @@
 }
 
 .journal-entry-title-wrapper {
-  border-left: 3px solid $evaluation-journal-color;
+  border-left: 3px solid $journal-color;
   padding: 2px 8px;
   position: relative;
 }

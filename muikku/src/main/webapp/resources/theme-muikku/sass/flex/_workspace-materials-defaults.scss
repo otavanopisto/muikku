@@ -664,22 +664,22 @@ sup {
       
       // Check Exercise
       &.muikku-check-exercises {
-        background: $exercise;
+        background: $exercise-color;
       }
       
       // Submit Assignment
       &.muikku-submit-assignment {
-        background: $assignment;
+        background: $assignment-color;
       }
       
       // Withdraw Assingment
       &.muikku-withdraw-assignment {
-        background: darken($assignment, 10%);
+        background: darken($assignment-color, 10%);
       }
       
       // Update Assignment
       &.muikku-update-assignment {
-        background: lighten($assignment, 5%);
+        background: lighten($assignment-color, 5%);
       }
       
     }
@@ -690,8 +690,19 @@ sup {
       background: $exerciseCorrectAnswersOnRequest;
     }
     
+    // Show Assignment's Evaluation
+    &.muikku-show-evaluation-button {
+      background: #000;
+    }
+     
   }
+  
+}
 
+
+.evaluation-container {
+  
+  
 }
   
 .workspace-materials-view-page {
