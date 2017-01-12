@@ -56,6 +56,18 @@
       }
     }
   };
+  
+  $(document).on('click', '#workspaceNavigationWrapperBuble', function (event) {
+    
+    if ($(this).attr('data-nav-visibility-state') == 'open') {
+      $(this).find('.navmore-container').hide();
+      $(this).attr('data-nav-visibility-state', 'close');
+    } else {
+      $(this).find('.navmore-container').show();
+      $(this).attr('data-nav-visibility-state', 'open');
+    }
+    
+  });
 
   $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
     

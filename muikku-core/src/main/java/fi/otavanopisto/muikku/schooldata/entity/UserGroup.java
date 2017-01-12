@@ -10,6 +10,8 @@ public interface UserGroup extends SchoolDataEntity {
 	
 	public String getName();
 	
+	public boolean isGuidanceGroup();
+	
   @IndexId
   public String getSearchId();
 	

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -150,7 +151,12 @@ public class AnnouncementController {
    */
   public List<AnnouncementWorkspace> listAnnouncementWorkspaces(Announcement announcement, UserEntity userEntity) {
     List<WorkspaceEntity> workspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
-    return announcementWorkspaceDAO.listByAnnouncementAndWorkspacesAndArchived(announcement, workspaces, Boolean.FALSE);
+    if (CollectionUtils.isEmpty(workspaces)) {
+      return announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
+    }
+    else {
+      return announcementWorkspaceDAO.listByAnnouncementAndWorkspacesAndArchived(announcement, workspaces, Boolean.FALSE);
+    }
   }
   
   public void archive(Announcement announcement) {
