@@ -165,6 +165,13 @@
       $("<div>")
         .addClass("correct-answers-count-container")
         .appendTo(this.element);
+
+      $("<div>")
+        .addClass("evaluation-container")
+        .attr('data-loaded', 'false')
+        .attr('data-open', 'false')
+        .appendTo(this.element)
+        .hide();
     },
     
     applyState: function (readonly) {
@@ -290,6 +297,41 @@
       if (stateOptions['check-answers']) {
         this.checkExercises();
       }
+
+      // #2421: Show evaluation
+      
+      if (state == 'FAILED' || state == 'PASSED') {
+        $('<button>')
+          .addClass('muikku-show-evaluation-button')
+          .text('Näytä arvio (LOKALISOI)')
+          .insertAfter(this.element.find('.muikku-assignment-button'))
+          .click($.proxy(function() {
+            var evaluationContainer = this.element.find('.evaluation-container');
+            if (evaluationContainer.attr('data-loaded') == 'true') {
+              if (evaluationContainer.attr('data-open') == 'false') {
+                this._toggleEvaluationContainer();
+              }
+            }
+            else {
+              mApi().workspace.users.materials.evaluation
+                .read(MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
+                .callback($.proxy(function (err, evaluation) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', 'Arvioinnin haku epäonnistui (LOKALISOI)', err);
+                  }
+                  else {
+                    evaluationContainer.attr('data-loaded', 'true')
+                    evaluationContainer.append(evaluation.verbalAssessment);
+                    evaluationContainer.append(evaluation.grade);
+                    evaluationContainer.append(formatDate(moment(evaluation.assessmentDate).toDate()));
+                    if (evaluationContainer.attr('data-open') == 'false') {
+                      this._toggleEvaluationContainer();
+                    }
+                  }
+                }, this));
+            }
+          }, this));
+      }
       
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(this.element).attr('data-workspace-material-id') + '"]');
       if (tocItem) {
@@ -325,6 +367,18 @@
         }
       }
 
+    },
+    
+    _toggleEvaluationContainer: function() {
+      var evaluationContainer = this.element.find('.evaluation-container');
+      if (evaluationContainer.attr('data-open') == 'false') {
+        evaluationContainer.attr('data-open', 'true');
+        evaluationContainer.show();
+      }
+      else {
+        evaluationContainer.attr('data-open', 'false');
+        evaluationContainer.hide();
+      }
     },
     
     _hasDisplayableAnswers: function() {
