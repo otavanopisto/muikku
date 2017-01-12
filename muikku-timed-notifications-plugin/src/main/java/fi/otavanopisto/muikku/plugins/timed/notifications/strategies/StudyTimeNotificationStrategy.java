@@ -83,7 +83,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       return;
     }
     
-    Date studyTimeEnds = Date.from(OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant());
+    OffsetDateTime studyTimeEndsOdt = OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT);
+    Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     
@@ -98,6 +99,11 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
 
       if (studentEntity != null) {
         User student = userController.findUserByIdentifier(studentIdentifier);
+        
+        if (student.getStudyStartDate() == null || student.getStudyStartDate().isBefore(studyTimeEndsOdt)) {
+          continue;
+        }
+        
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("internetixStudent", student.hasEvaluationFees());
