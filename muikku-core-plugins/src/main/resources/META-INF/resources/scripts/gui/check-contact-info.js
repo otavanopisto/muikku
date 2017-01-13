@@ -31,6 +31,7 @@ $(function() {
                         modal : true,
                         resizable : false,
                         width : 400,
+                        position: {my: 'top', at: 'top', of: $('#staticNavigationWrapper')},
                         dialogClass : "check-contact-info-dialog",
                         buttons : [
                           {
@@ -58,7 +59,6 @@ $(function() {
                           }
                         ]
                       })
-                      .position({my: "top", at: "bottom", of: "#header"});
                     });
               });
         }
