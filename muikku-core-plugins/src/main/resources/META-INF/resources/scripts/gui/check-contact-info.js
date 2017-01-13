@@ -57,7 +57,8 @@ $(function() {
                             }
                           }
                         ]
-                      });
+                      })
+                      .position({my: "top", at: "bottom", of: "#header"});
                     });
               });
         }
