@@ -409,7 +409,11 @@ main.content {
   padding: 15px;
   height: 100%;
   box-sizing: border-box;
-  max-width: 309px;    
+  
+  &.box-max-width ul li {
+    max-width: 279px;
+  }
+    
   .empty {
     font-style: italic;
   }
