@@ -893,12 +893,13 @@ sup {
 }
 
 footer.article-details {
-  margin: 0 -20px -10px;
-  padding: 5px 20px;
   border-top: 2px solid #e6f2c4;
+  clear: both;
   font-size: 13px;
   line-height: 1.2em;
-  
+  margin: 0 -20px -10px;
+  padding: 5px 20px; 
+   
   .producers-override {
     margin: 10px 0;
   
