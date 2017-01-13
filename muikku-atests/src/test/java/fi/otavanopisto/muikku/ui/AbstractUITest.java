@@ -435,7 +435,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
     waitForVisible(selector);
-    assertVisible(selector);
   }
    
   protected void takeScreenshot() throws WebDriverException, IOException {
@@ -630,6 +629,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   
+  protected void waitUntilTextRemovedFromElement(final String selector, String textToRemove) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          String text = getWebDriver().findElement(By.cssSelector(selector)).getText();
+          return !text.equalsIgnoreCase(textToRemove);
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+    
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
