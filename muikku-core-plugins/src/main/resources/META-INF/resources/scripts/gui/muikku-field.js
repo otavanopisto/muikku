@@ -317,7 +317,7 @@
                 .read(MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
                 .callback($.proxy(function (err, evaluation) {
                   if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', 'Arvioinnin haku epäonnistui (LOKALISOI)', err);
+                    $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.evaluation.fail'), err);
                   }
                   else {
                     evaluationContainer.attr('data-loaded', 'true')
