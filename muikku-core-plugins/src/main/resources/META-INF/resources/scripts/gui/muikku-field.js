@@ -165,6 +165,13 @@
       $("<div>")
         .addClass("correct-answers-count-container")
         .appendTo(this.element);
+
+      $("<div>")
+        .addClass("evaluation-container")
+        .attr('data-loaded', 'false')
+        .attr('data-open', 'false')
+        .appendTo(this.element)
+        .hide();
     },
     
     applyState: function (readonly) {
@@ -290,6 +297,65 @@
       if (stateOptions['check-answers']) {
         this.checkExercises();
       }
+
+      // #2421: Show evaluation
+      
+      if (state == 'FAILED' || state == 'PASSED') {
+        var buttonClass = state == 'FAILED' ? 'failed' : 'passed';
+        $('<button>')
+          .addClass('muikku-show-evaluation-button')
+          .addClass(buttonClass)
+          .text(getLocaleText('plugin.workspace.materialsLoader.showEvaluation'))
+          .insertAfter(this.element.find('.muikku-assignment-button'))
+          .click($.proxy(function() {
+            var evaluationContainer = this.element.find('.evaluation-container');
+            if (evaluationContainer.attr('data-loaded') == 'true') {
+              this._toggleEvaluationContainer();
+            }
+            else {
+              mApi().workspace.users.materials.evaluation
+                .read(MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
+                .callback($.proxy(function (err, evaluation) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.evaluation.fail'), err);
+                  }
+                  else {
+                    evaluationContainer.attr('data-loaded', 'true')
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-literal-container')
+                          .append($('<div>')
+                          .addClass('assignment-literal-label')
+                          .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.literal.label')))
+                          .append($('<div>')
+                          .addClass('assignment-literal-data')
+                          .html(evaluation.verbalAssessment))
+                    );
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-grade-container')
+                          .append($('<span>')
+                          .addClass('assignment-grade-label')
+                          .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.grade.label')))
+                          .append($('<span>')
+                          .addClass('assignment-grade-data')
+                          .html(evaluation.grade))
+                    );
+                    evaluationContainer.append($('<div>')
+                        .addClass('assignment-date-container')
+                          .append($('<span>')
+                          .addClass('assignment-date-label')
+                          .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.date.label')))
+                          .append($('<span>')
+                          .addClass('assignment-date-data')
+                          .html(formatDate(moment(evaluation.assessmentDate).toDate())))
+                    );
+                    if (evaluationContainer.attr('data-open') == 'false') {
+                      this._toggleEvaluationContainer();
+                    }
+                  }
+                }, this));
+            }
+          }, this));
+      }
       
       var tocItem = $('.workspace-materials-toc-item[data-workspace-material-id="' + $(this.element).attr('data-workspace-material-id') + '"]');
       if (tocItem) {
@@ -325,6 +391,20 @@
         }
       }
 
+    },
+    
+    _toggleEvaluationContainer: function() {
+      var evaluationContainer = this.element.find('.evaluation-container');
+      if (evaluationContainer.attr('data-open') == 'false') {
+        evaluationContainer.attr('data-open', 'true');
+        evaluationContainer.show();
+        this.element.find('.muikku-show-evaluation-button').text(getLocaleText('plugin.workspace.materialsLoader.hideEvaluation'));
+      }
+      else {
+        evaluationContainer.attr('data-open', 'false');
+        evaluationContainer.hide();
+        this.element.find('.muikku-show-evaluation-button').text(getLocaleText('plugin.workspace.materialsLoader.showEvaluation'));
+      }
     },
     
     _hasDisplayableAnswers: function() {
