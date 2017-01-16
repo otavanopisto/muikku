@@ -1,13 +1,19 @@
 package fi.otavanopisto.muikku.mock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +37,9 @@ import fi.otavanopisto.muikku.mock.model.MockLoggable;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.mock.model.MockStudent;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
+import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
+import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -51,6 +60,9 @@ import fi.otavanopisto.pyramus.rest.model.StudyProgrammeCategory;
 import fi.otavanopisto.pyramus.rest.model.Subject;
 import fi.otavanopisto.pyramus.rest.model.UserCredentials;
 import fi.otavanopisto.pyramus.rest.model.WhoAmI;
+import fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade;
+import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -128,7 +140,6 @@ public class PyramusMock {
         return this;
       }
       
-//    TODO: CourseAssessments
       public Builder addStaffMembers(List<MockStaffMember> staffMembers) {
         OffsetDateTime birthday = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         for(MockStaffMember mockStaffMember : staffMembers) {
@@ -661,6 +672,186 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder mockAssessmentRequests(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, OffsetDateTime date) throws JsonProcessingException {
+        List<CourseAssessmentRequest> assessmentRequests = new ArrayList<CourseAssessmentRequest>();
+        CourseAssessmentRequest assessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
+        assessmentRequests.add(assessmentRequest);
+        
+        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId)))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
+            .withStatus(200)));
+        
+        stubFor(get(urlEqualTo(String.format("/1/students/%d/assessmentRequests/", studentId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequests))
+              .withStatus(200)));
+        
+        stubFor(get(urlEqualTo(String.format("/1/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, assessmentRequest.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(assessmentRequest))
+              .withStatus(200)));
+              
+        return this;
+      }
+
+      @SuppressWarnings({ "unchecked", "rawtypes" })
+      public Builder mockCompositeGradingScales() throws JsonProcessingException {
+        List<CompositeGradingScale> compositeGradingScales = new ArrayList<CompositeGradingScale>();
+
+        GradingScale gradingScale;
+
+        Iterator it = pmock.gradingScales.entrySet().iterator();
+        while (it.hasNext()) {
+          Map.Entry gsPair = (Map.Entry)it.next();
+          gradingScale = (GradingScale) gsPair.getKey();
+          List<CompositeGrade> compositeGrades = new ArrayList<CompositeGrade>();
+
+          List<Grade> grades = (List<Grade>) gsPair.getValue();
+
+          for (Grade grade : grades) {
+            compositeGrades.add(new CompositeGrade(grade.getId(), grade.getName()));          
+          }
+          compositeGradingScales.add(new CompositeGradingScale(
+              gradingScale.getId(),
+              gradingScale.getName(),
+              compositeGrades));
+        }
+        
+        stubFor(get(urlEqualTo("/1/composite/gradingScales/"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(compositeGradingScales))
+              .withStatus(200)));
+              
+        return this;
+      }
+      
+      public Builder addCompositeCourseAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, OffsetDateTime date) {
+        OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+
+        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
+        
+        CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
+        assessmentRequest.setCourseStudentId(courseStudentId);
+        assessmentRequest.setAssessmentRequestDate(Date.from(courseAssessmentRequest.getCreated().toInstant()));
+        assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));
+        assessmentRequest.setEvaluationDate(null);
+        assessmentRequest.setPassing(null);
+        assessmentRequest.setCourseId(courseId);
+        assessmentRequest.setCourseName(course.getName());
+        assessmentRequest.setCourseNameExtension(course.getNameExtension());
+        assessmentRequest.setFirstName(courseStudent.getFirstName());
+        assessmentRequest.setLastName(courseStudent.getLastName());
+        assessmentRequest.setStudyProgramme("Test Study Programme");
+        assessmentRequest.setUserId(courseStudent.getId());
+                
+        if(pmock.compositeCourseAssessmentRequests.containsKey(courseId)){
+          pmock.compositeCourseAssessmentRequests.get(courseId).add(assessmentRequest);
+        }else{
+          ArrayList<CompositeAssessmentRequest> assessmentRequests = new ArrayList<>();
+          assessmentRequests.add(assessmentRequest);
+          pmock.compositeCourseAssessmentRequests.put(courseId, assessmentRequests);
+        }
+        return this;
+      }
+      
+      public Builder mockCompositeCourseAssessmentRequests() throws JsonProcessingException {        
+        for (Long courseId : pmock.compositeCourseAssessmentRequests.keySet()) {
+          stubFor(get(urlEqualTo(String.format("/1/composite/course/%d/assessmentRequests", courseId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeCourseAssessmentRequests.get(courseId)))
+              .withStatus(200)));
+        }
+
+        return this;
+      }
+      
+      public Builder addStaffCompositeAssessmentRequest(Long studentId, Long courseId, Long courseStudentId, String requestText, boolean archived, boolean handled, Course course, MockStudent courseStudent, Long staffMemberId, OffsetDateTime date) {
+        OffsetDateTime enrollmemnt = OffsetDateTime.of(2010, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+
+        CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(1l, courseStudentId, date, requestText, archived, handled);
+        
+        CompositeAssessmentRequest assessmentRequest = new CompositeAssessmentRequest();
+
+        assessmentRequest.setCourseStudentId(courseStudentId);
+        assessmentRequest.setAssessmentRequestDate(Date.from(courseAssessmentRequest.getCreated().toInstant()));
+        assessmentRequest.setCourseEnrollmentDate(Date.from(enrollmemnt.toInstant()));        
+        assessmentRequest.setEvaluationDate(null);
+        assessmentRequest.setPassing(null);
+        assessmentRequest.setCourseId(courseId);
+        assessmentRequest.setCourseName(course.getName());
+        assessmentRequest.setCourseNameExtension(course.getNameExtension());
+        assessmentRequest.setFirstName(courseStudent.getFirstName());
+        assessmentRequest.setLastName(courseStudent.getLastName());
+        assessmentRequest.setStudyProgramme("Test Study Programme");
+        assessmentRequest.setUserId(courseStudent.getId());
+                
+        if(pmock.compositeStaffAssessmentRequests.containsKey(staffMemberId)){
+          pmock.compositeStaffAssessmentRequests.get(staffMemberId).add(assessmentRequest);
+        }else{
+          ArrayList<CompositeAssessmentRequest> assessmentRequests = new ArrayList<>();
+          assessmentRequests.add(assessmentRequest);
+          pmock.compositeStaffAssessmentRequests.put(staffMemberId, assessmentRequests);
+        }
+        return this;
+      }
+      
+      public Builder mockStaffCompositeCourseAssessmentRequests() throws JsonProcessingException {
+        for (Long staffMemberId : pmock.compositeStaffAssessmentRequests.keySet()) {
+          stubFor(get(urlEqualTo(String.format("/1/composite/staffMembers/%d/assessmentRequests/", staffMemberId)))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(pmock.compositeStaffAssessmentRequests.get(staffMemberId)))
+              .withStatus(200)));
+        }
+        return this;
+      }
+
+      public Builder mockCourseAssessments(MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
+        OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
+        CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
+        
+        stubFor(post(urlMatching(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
+            .withStatus(200)));
+
+        List<CourseAssessment> courseAssessments = new ArrayList<CourseAssessment>();
+        courseAssessments.add(courseAssessment);
+        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(courseAssessments))
+            .withStatus(200)));
+        
+        stubFor(get(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/%d", courseStudent.getStudentId(), courseStudent.getCourseId(), courseAssessment.getId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
+            .withStatus(200)));
+
+        stubFor(put(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/%d", courseStudent.getStudentId(), courseStudent.getCourseId(), courseAssessment.getId())))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
+            .withStatus(200)));
+        
+        return this;
+      }
+      
+//    Maybe?
+//    CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, staffMember.getId(), null, "<p>Test evaluation.</p>\n", Boolean.TRUE);
+//    verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", courseStudent.getStudentId(), courseStudent.getCourseId())))
+//      .withHeader("Content-Type", equalTo("application/json"))
+//      .withRequestBody(equalToJson(pmock.objectMapper.writeValueAsString(cAss), wiremock.org.skyscreamer.jsonassert.JSONCompareMode.LENIENT)));
+//      waitForPresent(".notification-queue-item-success"); 
+      
       public Builder mockLogin(MockLoggable loggable) throws JsonProcessingException {
         stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
@@ -707,10 +898,6 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody("")
             .withStatus(200)));
-        
-//        List<String> emails = new ArrayList<String>();
-//        emails.add("");
-//        WhoAmI whoAmI = new WhoAmI(null, null, null, emails);
 
         stubFor(get(urlEqualTo("/1/system/whoami"))
           .willReturn(aResponse()
@@ -866,5 +1053,6 @@ public class PyramusMock {
   private HashMap<Long, List<Object>> studentGroupUsers = new HashMap<>();
   private List<StudentGroup> studentGroups = new ArrayList<>();
   private List<String> payloads = new ArrayList<>();
-
+  private HashMap<Long, List<CompositeAssessmentRequest>> compositeCourseAssessmentRequests = new HashMap<>();
+  private HashMap<Long, List<CompositeAssessmentRequest>> compositeStaffAssessmentRequests = new HashMap<>();
 }

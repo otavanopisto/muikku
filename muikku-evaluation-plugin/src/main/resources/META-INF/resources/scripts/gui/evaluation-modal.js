@@ -296,7 +296,7 @@
           var material = $(html).appendTo('.eval-modal-assignments-content');
           // Toggle material open/closed
           $(material).find('.assignment-title').on('click', function (event) {
-            var assignmentContent = $(event.target).closest('.assignment').find('.assignment-content');
+            var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
             $(document).evaluationModal('toggleAssignment', assignmentContent);
           });
           // Evaluate material
