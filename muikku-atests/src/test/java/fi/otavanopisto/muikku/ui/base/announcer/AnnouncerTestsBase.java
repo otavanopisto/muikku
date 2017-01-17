@@ -220,8 +220,6 @@ public class AnnouncerTestsBase extends AbstractUITest {
       waitAndClick("li.an-category[data-folder-id~=\"past\"]");
       waitForPresent(".an-announcements div");
       assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
-//      navigate("/announcements", true);
-//      waitForPresent("div#announcements ");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());
