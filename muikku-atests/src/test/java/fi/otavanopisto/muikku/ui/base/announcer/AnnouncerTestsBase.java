@@ -215,7 +215,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
     mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
+    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
     try {
       navigate("/announcer", true);
       waitForPresent("div.mf-content-empty");
@@ -231,5 +231,79 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
+  
+  @Test
+  public void myAnnnouncementsListTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStaffMember another = new MockStaffMember(3l, 3l, "Another", "User", UserRole.ADMINISTRATOR, "121212-1234", "blaablaa@example.com", Sex.MALE);
+    Long courseId = 1l;
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStaffMember(another).addStudent(student).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+    MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
+    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
+    
+    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
+    createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
+    try {
+      navigate("/announcer", true);
+      waitForPresent(".an-announcement-topic");
+      assertCount("div.an-announcement-topic>span" ,2);
+      waitAndClick("li.an-category[data-folder-id~=\"mine\"]");
+      waitForPresent("li.an-category.selected[data-folder-id~=\"mine\"]");
+      waitForPresent("div.an-announcement-topic>span");
+      assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
+      assertCount("div.an-announcement-topic>span" ,1);
+    }finally{
+      deleteAnnouncements();
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
+
+  @Test
+  public void archivedAnnouncementListTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    try{
+      try{
+        login();
+        maximizeWindow();
+        navigate("/announcer", true);
+        waitAndClick(".an-new-announcement");
+        
+        waitForPresent(".cke_wysiwyg_frame");
+        waitForPresent("*[name='endDate']");
+        clearElement("*[name='endDate']");
+        sendKeys("*[name='endDate']", "21.12.2025");
+        
+        sendKeys(".mf-textfield-subject", "Test title");
+        click(".mf-form-header");
+        waitForPresent("#ui-datepicker-div");
+        waitForNotVisible("#ui-datepicker-div");
+        addTextToCKEditor("Announcer test announcement");
+        waitAndClick(".mf-toolbar input[name='send']");
+        
+        waitForPresent(".an-announcement-topic");
+        waitAndClick(".an-announcement-select input");
+        waitAndClick(".mf-items-toolbar .icon-delete");
+        waitAndClick(".mf-toolbar input[name='send']");
+        reloadCurrentPage();
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
+        waitAndClick("li.an-category[data-folder-id~=\"archived\"]");
+        waitForPresent("li.an-category.selected[data-folder-id~=\"archived\"]");
+        waitForPresent("div.an-announcement-topic>span");
+        assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
+      }finally{
+        deleteAnnouncements();
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
+  
   
 }
