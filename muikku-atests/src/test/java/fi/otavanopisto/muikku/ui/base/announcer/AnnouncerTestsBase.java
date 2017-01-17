@@ -213,7 +213,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
     mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     
-    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(115, 10, 15), false, true, null);
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
     try {
       navigate("/announcer", true);
       waitForPresent("div.mf-content-empty");
