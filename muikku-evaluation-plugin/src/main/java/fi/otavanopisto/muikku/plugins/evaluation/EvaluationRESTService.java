@@ -600,6 +600,27 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(result.toArray(new fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation[0]))).build();
   }
+
+  @GET
+  @Path("/users/{USERENTITYID}/materials/{WORKSPACEMATERIALID}/evaluation")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response findWorkspaceMaterialEvaluation(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    Long currentUserEntityId = sessionController.getLoggedUserEntity().getId();
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION) && !currentUserEntityId.equals(userEntityId)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation =
+        evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    if (workspaceMaterialEvaluation == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
+  }
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")

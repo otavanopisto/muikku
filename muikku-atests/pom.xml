@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.64-SNAPSHOT</version>
+    <version>1.1.65-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -16,7 +16,7 @@
 
   <properties>
     <!-- Selenium -->
-    <selenium-java.version>3.0.1</selenium-java.version>
+    <selenium-java.version>2.52.0</selenium-java.version>
     <!-- PhantomJS driver -->
     <phantomjsdriver.version>1.3.0</phantomjsdriver.version>
     <wiremock.version>1.53</wiremock.version>
