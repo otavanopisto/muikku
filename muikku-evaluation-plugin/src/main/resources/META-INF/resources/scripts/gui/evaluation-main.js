@@ -8,121 +8,120 @@
       this._loadOperations = 0;
       this._importantRequests = [];
       this._unimportantRequests = [];
+      this._sortFunctions = [];
+      this._sortProperty = '';
+      this._currentSort = '';
+      this._cardsLoaded = 0;
+      this._cardsTotal = 0;
       this.element.on("loadStart", $.proxy(this._onLoadStart, this));
       this.element.on("loadEnd", $.proxy(this._onLoadEnd, this));
+      this.element.on("cardLoaded", $.proxy(this._onCardLoaded, this));
       this.element.on("discardCard", $.proxy(this._onDiscardCard, this));
       this.element.on("cardStateChange", $.proxy(this._onCardStateChange, this))
-      this._loadAssessmentRequests();
+      this._setupSorters();
+      this._initializeView();
     },
-    _loadAssessmentRequests: function () {
+    _initializeView() {
       this.element.trigger("loadStart", $('.evaluation-cards-container'));
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       
       if (workspaceEntityId) {
+        this._sortProperty = 'evaluation-workspace-sort';
         $('.evaluation-cards-title h3').text($('#workspaceName').val());
         $('.icon-sort-workspace-alpha-asc').hide();
         $('.icon-sort-workspace-alpha-desc').hide();
       }
       else {
+        this._sortProperty = 'evaluation-default-sort';
         $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
       }
       
-      var requestContainer = $('.evaluation-cards-container'); 
-      
-      mApi().user.property
-        .read('important-evaluation-requests')
-        .callback($.proxy(function (err, property) {
-
-          // Important requests
-          this._importantRequests = property.value ? property.value.split(',') : [];
-          mApi().user.property
-            .read('unimportant-evaluation-requests')
-            .callback($.proxy(function (err, property) {
-
-              // Unimportant requests
-              
-              this._unimportantRequests = property.value ? property.value.split(',') : [];
-              mApi().evaluation.compositeAssessmentRequests
-                .read({workspaceEntityId: workspaceEntityId})
-                .callback($.proxy(function (err, assessmentRequests) {
-
-                  // Requests
-                  
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  }
-                  else {
-                    if (assessmentRequests.length > 0) {
-
-                      // Default sort by lowest assessment request date first
-
-                      assessmentRequests.sort($.proxy(function (c1, c2) {
-                        var result = this._compareImportance(c1.workspaceUserEntityId.toString(), c2.workspaceUserEntityId.toString());
-                        if (result == 0) {
-                          var a = Date.parse(c1.assessmentRequestDate);
-                          var b = Date.parse(c2.assessmentRequestDate);
-                          return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
-                        }
-                        return result;
-                      }, this));
-                      
-                      for (var i = 0; i < assessmentRequests.length; i++) {
-                        var requestDate = assessmentRequests[i].assessmentRequestDate;
-                        var evaluationDate = assessmentRequests[i].evaluationDate;
-                        var isRequest = '';
-                        var isEvaluated = '';
-                        var cardStateClass = '';
-                        if ((requestDate && evaluationDate && requestDate > evaluationDate) || (requestDate && !evaluationDate)) {
-                          cardStateClass = 'evaluation-requested';
-                          isRequest = true;
-                        }
-                        else if (evaluationDate) {
-                          cardStateClass = assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-incomplete';
-                          isEvaluated = true;
-                        }
-                        assessmentRequests[i] = $.extend({}, assessmentRequests[i], {
-                          workspaceMode: workspaceEntityId,
-                          cardStateClass: cardStateClass,
-                          isRequest: isRequest,
-                          isEvaluated: isEvaluated});
-                        renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
-                          var card = $(html).appendTo(requestContainer);
-                          $(card).find('.evaluate-button').on('click', function() {
-                            var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
-                            $(document).evaluationModal('open', $(this).closest('.evaluation-card'), !workspaceEntityId);
-                          });
-                          $(card).find('.archive-button').on('click', function(event) {
-                            var archiveCard = $(event.target).closest('.evaluation-card');
-                            $(document).evaluationModal('confirmStudentArchive', archiveCard, $.proxy(function(archived) {
-                              if (archived) {
-                                $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
-                              }
-                            }, this));
-                          });
-                          $(card).find('.evaluation-important-button').on('click', $.proxy(function(event) {
-                            this._changeRequestImportance(card, true);
-                          }, this));
-                          $(card).find('.evaluation-unimportant-button').on('click', $.proxy(function(event) {
-                            this._changeRequestImportance(card, false);
-                          }, this));
-                          var workspaceUserEntityId = $(card).attr('data-workspace-user-entity-id'); 
-                          if (this._isImportant(workspaceUserEntityId)) {
-                            $(card).find('.evaluation-important-button').addClass('active');
-                          }
-                          else if (this._isUnimportant(workspaceUserEntityId)) {
-                            $(card).find('.evaluation-unimportant-button').addClass('active');
-                          }
-                        }, this));
-                      }  
-                    }
-                    else {
-                      this._showNoCardsMessage();
-                    }
-                    this.element.trigger("loadEnd", $('.evaluation-cards-container'));
-                  }
-                }, this)); 
-            }, this));
+      // Important requests
+      mApi().user.property.read('important-evaluation-requests').callback($.proxy(function (err, property) {
+        this._importantRequests = property.value ? property.value.split(',') : [];
+        // Unimportant requests
+        mApi().user.property.read('unimportant-evaluation-requests').callback($.proxy(function (err, property) {
+          this._unimportantRequests = property.value ? property.value.split(',') : [];
+          // Default sort
+          mApi().user.property.read(this._sortProperty).callback($.proxy(function (err, property) {
+            this._currentSort = property.value||'sort-amount-asc';
+            // Assessment requests
+            this._loadAssessmentRequests();
+          }, this));
         }, this));
+      }, this));
+    },
+    _loadAssessmentRequests: function () {
+      var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
+
+      mApi().evaluation.compositeAssessmentRequests
+        .read({workspaceEntityId: workspaceEntityId})
+        .callback($.proxy(function (err, assessmentRequests) {
+  
+          // Requests
+          
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            if (assessmentRequests.length > 0) {
+              this._cardsTotal = assessmentRequests.length;
+              for (var i = 0; i < assessmentRequests.length; i++) {
+                var requestDate = assessmentRequests[i].assessmentRequestDate;
+                var evaluationDate = assessmentRequests[i].evaluationDate;
+                var isRequest = '';
+                var isEvaluated = '';
+                var cardStateClass = '';
+                if ((requestDate && evaluationDate && requestDate > evaluationDate) || (requestDate && !evaluationDate)) {
+                  cardStateClass = 'evaluation-requested';
+                  isRequest = true;
+                }
+                else if (evaluationDate) {
+                  cardStateClass = assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-incomplete';
+                  isEvaluated = true;
+                }
+                assessmentRequests[i] = $.extend({}, assessmentRequests[i], {
+                  workspaceMode: workspaceEntityId,
+                  cardStateClass: cardStateClass,
+                  isRequest: isRequest,
+                  isEvaluated: isEvaluated});
+                renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
+                  var card = $(html).appendTo($('.evaluation-cards-container'));
+                  $(card).find('.evaluate-button').on('click', function() {
+                    var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
+                    $(document).evaluationModal('open', $(this).closest('.evaluation-card'), !workspaceEntityId);
+                  });
+                  $(card).find('.archive-button').on('click', function(event) {
+                    var archiveCard = $(event.target).closest('.evaluation-card');
+                    $(document).evaluationModal('confirmStudentArchive', archiveCard, $.proxy(function(archived) {
+                      if (archived) {
+                        $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
+                      }
+                    }, this));
+                  });
+                  $(card).find('.evaluation-important-button').on('click', $.proxy(function(event) {
+                    this._changeRequestImportance(card, true);
+                  }, this));
+                  $(card).find('.evaluation-unimportant-button').on('click', $.proxy(function(event) {
+                    this._changeRequestImportance(card, false);
+                  }, this));
+                  var workspaceUserEntityId = $(card).attr('data-workspace-user-entity-id'); 
+                  if (this._isImportant(workspaceUserEntityId)) {
+                    $(card).find('.evaluation-important-button').addClass('active');
+                  }
+                  else if (this._isUnimportant(workspaceUserEntityId)) {
+                    $(card).find('.evaluation-unimportant-button').addClass('active');
+                  }
+                  this.element.trigger("cardLoaded");
+                }, this));
+              }
+            }
+            else {
+              this._showNoCardsMessage();
+            }
+            this.element.trigger("loadEnd", $('.evaluation-cards-container'));
+          }
+        }, this)); 
     },
     _isImportant(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._importantRequests) >= 0;
@@ -226,6 +225,14 @@
         $(document).find('div.loading').remove();
       }
     },
+    _onCardLoaded: function() {
+      this._cardsLoaded++;
+      if (this._cardsLoaded == this._cardsTotal) {
+        if (this._sortFunctions[this._currentSort]) {
+          this._sortFunctions[this._currentSort]();
+        }
+      }
+    },
     _onDiscardCard: function(event, data) {
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       var workspaceUserEntityId = data.workspaceUserEntityId;
@@ -271,6 +278,167 @@
       $('.evaluation-cards-container').append($('<div>')
         .addClass('evaluation-well-done-container')
         .text(getLocaleText("plugin.evaluation.evaluationWellDone")));
+    },
+    _setupSorters: function() {
+      
+      // Sort by assessment request date, ascending
+      this._sortFunctions['sort-amount-asc'] = $.proxy(function() {
+        $('.eval-sorting').removeClass('selected');
+        $('.icon-sort-amount-asc').addClass('selected');
+        var cards = $('.evaluation-card').sort(function (c1, c2) {
+          var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
+          if (result == 0) {
+            var a = Date.parse($(c1).attr('data-assessment-request-date'));
+            var b = Date.parse($(c2).attr('data-assessment-request-date'));
+            return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
+          }
+          return result;
+        });
+        for (var i = 0; i < cards.length; i++) {
+          $('.evaluation-cards-container').append(cards[i]);
+        }
+        if (this._currentSort != 'sort-amount-asc') {
+          this._currentSort = 'sort-amount-asc';
+          mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
+        }
+      }, this);
+      $('.icon-sort-amount-asc').on('click', $.proxy(function(event) {
+        this._sortFunctions['sort-amount-asc']();
+      }, this));
+      
+      // Sort by assessment request date, descending
+      this._sortFunctions['sort-amount-desc'] = $.proxy(function() {
+        $('.eval-sorting').removeClass('selected');
+        $('.icon-sort-amount-desc').addClass('selected');
+        var cards = $('.evaluation-card').sort(function (c1, c2) {
+          var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
+          if (result == 0) {
+            var a = Date.parse($(c1).attr('data-assessment-request-date'));
+            var b = Date.parse($(c2).attr('data-assessment-request-date'));
+            return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? 1 : a > b ? -1 : 0;
+          }
+          return result;
+        });
+        for (var i = 0; i < cards.length; i++) {
+          $('.evaluation-cards-container').append(cards[i]);
+        }
+        if (this._currentSort != 'sort-amount-desc') {
+          this._currentSort = 'sort-amount-desc';
+          mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
+        }
+      }, this);
+      $('.icon-sort-amount-desc').on('click', $.proxy(function (event) {
+        this._sortFunctions['sort-amount-desc']();
+      }, this));
+
+      // Sort by student name, ascending
+      this._sortFunctions['sort-alpha-asc'] = $.proxy(function() {
+        $('.eval-sorting').removeClass('selected');
+        $('.icon-sort-alpha-asc').addClass('selected');
+        var cards = $('.evaluation-card').sort(function (c1, c2) {
+          var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
+          if (result == 0) {
+            var a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+            var b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+            return a.localeCompare(b);
+          }
+          return result;
+        });
+        for (var i = 0; i < cards.length; i++) {
+          $('.evaluation-cards-container').append(cards[i]);
+        }
+        if (this._currentSort != 'sort-alpha-asc') {
+          this._currentSort = 'sort-alpha-asc';
+          mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
+        }
+      }, this);
+      $('.icon-sort-alpha-asc').on('click', $.proxy(function (event) {
+        this._sortFunctions['sort-alpha-asc']();
+      }, this));
+
+      // Sort by student name, descending
+      this._sortFunctions['sort-alpha-desc'] = $.proxy(function() {
+        $('.eval-sorting').removeClass('selected');
+        $('.icon-sort-alpha-desc').addClass('selected');
+        var cards = $('.evaluation-card').sort(function (c1, c2) {
+          var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
+          if (result == 0) {
+            var a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+            var b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+            return b.localeCompare(a);
+          }
+          return result;
+        });
+        for (var i = 0; i < cards.length; i++) {
+          $('.evaluation-cards-container').append(cards[i]);
+        }
+        if (this._currentSort != 'sort-alpha-desc') {
+          this._currentSort = 'sort-alpha-desc';
+          mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
+        }
+      }, this);
+      $('.icon-sort-alpha-desc').on('click', $.proxy(function (event) {
+        this._sortFunctions['sort-alpha-desc']();
+      }, this));
+  
+      // Sort by workspace name (student name as secondary), ascending
+      this._sortFunctions['sort-workspace-alpha-asc'] = $.proxy(function() {
+        $('.eval-sorting').removeClass('selected');
+        $('.icon-sort-workspace-alpha-asc').addClass('selected');
+        var cards = $('.evaluation-card').sort(function (c1, c2) {
+          var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
+          if (result == 0) {
+            var a = $(c1).find('.workspace-name').text().toLowerCase();
+            var b = $(c2).find('.workspace-name').text().toLowerCase();
+            if (a == b) {
+              a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+              b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+            }
+            return a.localeCompare(b);
+          }
+          return result;
+        });
+        for (var i = 0; i < cards.length; i++) {
+          $('.evaluation-cards-container').append(cards[i]);
+        }
+        if (this._currentSort != 'sort-workspace-alpha-asc') {
+          this._currentSort = 'sort-workspace-alpha-asc';
+          mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
+        }
+      }, this);
+      $('.icon-sort-workspace-alpha-asc').on('click', $.proxy(function (event) {
+        this._sortFunctions['sort-workspace-alpha-asc']();
+      }, this));
+
+      // Sort by workspace name (student name as secondary), descending
+      this._sortFunctions['sort-workspace-alpha-desc'] = $.proxy(function() {
+        $('.eval-sorting').removeClass('selected');
+        $('.icon-sort-workspace-alpha-desc').addClass('selected');
+        var cards = $('.evaluation-card').sort(function (c1, c2) {
+          var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
+          if (result == 0) {
+            var a = $(c1).find('.workspace-name').text().toLowerCase();
+            var b = $(c2).find('.workspace-name').text().toLowerCase();
+            if (a == b) {
+              a = $(c1).find('.evaluation-card-student').text().toLowerCase();
+              b = $(c2).find('.evaluation-card-student').text().toLowerCase();
+            }
+            return b.localeCompare(a);
+          }
+          return result;
+        });
+        for (var i = 0; i < cards.length; i++) {
+          $('.evaluation-cards-container').append(cards[i]);
+        }
+        if (this._currentSort != 'sort-workspace-alpha-desc') {
+          this._currentSort = 'sort-workspace-alpha-desc';
+          mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
+        }
+      }, this);
+      $('.icon-sort-workspace-alpha-desc').on('click', $.proxy(function (event) {
+        this._sortFunctions['sort-workspace-alpha-desc']();
+      }, this));
+
     }
   });
 
@@ -294,123 +462,7 @@
         $(document).trigger("loadEnd", $('.evaluation-cards-container'));
       }, this)); 
   });
-
-  // Sort by assessment request date, ascending
-  $('.icon-sort-amount-asc').on('click', function(event) {
-    $('.eval-sorting').removeClass('selected');
-    $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (c1, c2) {
-      var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
-      if (result == 0) {
-        var a = Date.parse($(c1).attr('data-assessment-request-date'));
-        var b = Date.parse($(c2).attr('data-assessment-request-date'));
-        return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? -1 : a > b ? 1 : 0;
-      }
-      return result;
-    });
-    for (var i = 0; i < cards.length; i++) {
-      $('.evaluation-cards-container').append(cards[i]);
-    }
-  });
-
-  // Sort by assessment request date, descending
-  $('.icon-sort-amount-desc').on('click', function (event) {
-    $('.eval-sorting').removeClass('selected');
-    $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (c1, c2) {
-      var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
-      if (result == 0) {
-        var a = Date.parse($(c1).attr('data-assessment-request-date'));
-        var b = Date.parse($(c2).attr('data-assessment-request-date'));
-        return isNaN(a) || isNaN(b) ? isNaN(a) ? isNaN(b) ? 0 : 1 : -1 : a < b ? 1 : a > b ? -1 : 0;
-      }
-      return result;
-    });
-    for (var i = 0; i < cards.length; i++) {
-      $('.evaluation-cards-container').append(cards[i]);
-    }
-  });
-
-  // Sort by student name, ascending
-  $('.icon-sort-alpha-asc').on('click', function (event) {
-    $('.eval-sorting').removeClass('selected');
-    $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (c1, c2) {
-      var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
-      if (result == 0) {
-        var a = $(c1).find('.evaluation-card-student').text().toLowerCase();
-        var b = $(c2).find('.evaluation-card-student').text().toLowerCase();
-        return a.localeCompare(b);
-      }
-      return result;
-    });
-    for (var i = 0; i < cards.length; i++) {
-      $('.evaluation-cards-container').append(cards[i]);
-    }
-  });
-
-  // Sort by student name, descending
-  $('.icon-sort-alpha-desc').on('click', function (event) {
-    $('.eval-sorting').removeClass('selected');
-    $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (c1, c2) {
-      var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
-      if (result == 0) {
-        var a = $(c1).find('.evaluation-card-student').text().toLowerCase();
-        var b = $(c2).find('.evaluation-card-student').text().toLowerCase();
-        return b.localeCompare(a);
-      }
-      return result;
-    });
-    for (var i = 0; i < cards.length; i++) {
-      $('.evaluation-cards-container').append(cards[i]);
-    }
-  });
   
-  // Sort by workspace name (student name as secondary), ascending
-  $('.icon-sort-workspace-alpha-asc').on('click', function (event) {
-    $('.eval-sorting').removeClass('selected');
-    $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (c1, c2) {
-      var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
-      if (result == 0) {
-        var a = $(c1).find('.workspace-name').text().toLowerCase();
-        var b = $(c2).find('.workspace-name').text().toLowerCase();
-        if (a == b) {
-          a = $(c1).find('.evaluation-card-student').text().toLowerCase();
-          b = $(c2).find('.evaluation-card-student').text().toLowerCase();
-        }
-        return a.localeCompare(b);
-      }
-      return result;
-    });
-    for (var i = 0; i < cards.length; i++) {
-      $('.evaluation-cards-container').append(cards[i]);
-    }
-});
-
-  // Sort by workspace name (student name as secondary), descending
-  $('.icon-sort-workspace-alpha-desc').on('click', function (event) {
-    $('.eval-sorting').removeClass('selected');
-    $(event.target).addClass('selected');
-    var cards = $('.evaluation-card').sort(function (c1, c2) {
-      var result = $(document).evaluationMainView('compareCardImportance', c1, c2);
-      if (result == 0) {
-        var a = $(c1).find('.workspace-name').text().toLowerCase();
-        var b = $(c2).find('.workspace-name').text().toLowerCase();
-        if (a == b) {
-          a = $(c1).find('.evaluation-card-student').text().toLowerCase();
-          b = $(c2).find('.evaluation-card-student').text().toLowerCase();
-        }
-        return b.localeCompare(a);
-      }
-      return result;
-    });
-    for (var i = 0; i < cards.length; i++) {
-      $('.evaluation-cards-container').append(cards[i]);
-    }
-  });
-
   $('.eval-home').on('click', function (event) {
     location.href = location.href.split("?")[0];
   });
