@@ -329,8 +329,8 @@
         // TOC
         var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
         if (tocElement) {
+          tocElement.closest('.workspace-materials-toc-item').remove();
           var tocSection = tocElement.closest('.workspace-materials-toc-section');
-          tocElement.remove();
           if (tocSection) {
             tocSection.sortable('refresh');
           }
@@ -1823,7 +1823,7 @@
                     'id': 'page-' + workspaceMaterial.id,
                     'data-path': workspaceMaterial.path,
                     'data-material-content': htmlMaterial.html,
-                    'data-view-restricted': htmlMaterial.viewRestrict,
+                    'data-view-restrict': htmlMaterial.viewRestrict,
                     'data-material-title': workspaceMaterial.title,
                     'data-parent-id': workspaceMaterial.parentId,
                     'data-material-id': workspaceMaterial.materialId,
@@ -1844,6 +1844,11 @@
                     var section = $('ul[data-workspace-node-id="' + workspaceMaterial.parentId + '"]');
                     section.append(newPageTocItem);
                   }
+
+                  if (htmlMaterial.viewRestrict == 'LOGGED_IN') {
+                    newPageTocItem.append($('<span>').addClass('icon-closed-material item-view-restricted'));
+                  }
+                  
                   var tocSection = newPageTocItem.closest('.workspace-materials-toc-section');
                   if (tocSection) {
                     tocSection.sortable('refresh');
