@@ -21,7 +21,7 @@
       this._setupSorters();
       this._initializeView();
     },
-    _initializeView() {
+    _initializeView: function() {
       this.element.trigger("loadStart", $('.evaluation-cards-container'));
       var workspaceEntityId = $('#workspaceEntityId').val()||undefined;
       
@@ -99,10 +99,10 @@
                       }
                     }, this));
                   });
-                  $(card).find('.evaluation-important-button').on('click', $.proxy(function(event) {
+                  $(card).find('.evaluation-important-button').on('click', $.proxy(function() {
                     this._changeRequestImportance(card, true);
                   }, this));
-                  $(card).find('.evaluation-unimportant-button').on('click', $.proxy(function(event) {
+                  $(card).find('.evaluation-unimportant-button').on('click', $.proxy(function() {
                     this._changeRequestImportance(card, false);
                   }, this));
                   var workspaceUserEntityId = $(card).attr('data-workspace-user-entity-id'); 
@@ -302,7 +302,7 @@
           mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
         }
       }, this);
-      $('.icon-sort-amount-asc').on('click', $.proxy(function(event) {
+      $('.icon-sort-amount-asc').on('click', $.proxy(function() {
         this._sortFunctions['sort-amount-asc']();
       }, this));
       
@@ -327,7 +327,7 @@
           mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
         }
       }, this);
-      $('.icon-sort-amount-desc').on('click', $.proxy(function (event) {
+      $('.icon-sort-amount-desc').on('click', $.proxy(function() {
         this._sortFunctions['sort-amount-desc']();
       }, this));
 
@@ -352,7 +352,7 @@
           mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
         }
       }, this);
-      $('.icon-sort-alpha-asc').on('click', $.proxy(function (event) {
+      $('.icon-sort-alpha-asc').on('click', $.proxy(function() {
         this._sortFunctions['sort-alpha-asc']();
       }, this));
 
@@ -377,7 +377,7 @@
           mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
         }
       }, this);
-      $('.icon-sort-alpha-desc').on('click', $.proxy(function (event) {
+      $('.icon-sort-alpha-desc').on('click', $.proxy(function() {
         this._sortFunctions['sort-alpha-desc']();
       }, this));
   
@@ -406,7 +406,7 @@
           mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
         }
       }, this);
-      $('.icon-sort-workspace-alpha-asc').on('click', $.proxy(function (event) {
+      $('.icon-sort-workspace-alpha-asc').on('click', $.proxy(function() {
         this._sortFunctions['sort-workspace-alpha-asc']();
       }, this));
 
@@ -435,7 +435,7 @@
           mApi().user.property.create({key: this._sortProperty, value: this._currentSort});
         }
       }, this);
-      $('.icon-sort-workspace-alpha-desc').on('click', $.proxy(function (event) {
+      $('.icon-sort-workspace-alpha-desc').on('click', $.proxy(function() {
         this._sortFunctions['sort-workspace-alpha-desc']();
       }, this));
 
@@ -463,7 +463,7 @@
       }, this)); 
   });
   
-  $('.eval-home').on('click', function (event) {
+  $('.eval-home').on('click', function() {
     location.href = location.href.split("?")[0];
   });
   
