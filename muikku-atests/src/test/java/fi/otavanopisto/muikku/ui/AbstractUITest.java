@@ -1,10 +1,7 @@
 package fi.otavanopisto.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -618,6 +615,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void assertTextIgnoreCase(String selector, String text) {
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
+  }
+
+  protected void assertNotTextIgnoreCase(String selector, String text) {
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertNotEquals(text, actual);
+  }
+  
+  protected void assertLessThan(int lessThan, int actualCount) {
+    assertTrue(actualCount < lessThan);
   }
   
   protected void sendKeys(String selector, String keysToSend) {
