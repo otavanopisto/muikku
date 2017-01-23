@@ -272,9 +272,13 @@
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
       var muikkuFieldElement;
       if (data.fieldlessMode) {
+        var value = data.value;
+        if (value) {
+          value = value.replace(/`/g, "'"); // To not mess up MathJax
+        }
         muikkuFieldElement = $('<div>')
           .addClass('muikku-text-field')
-          .text(data.value);
+          .text(value);
       }
       else {
         muikkuFieldElement = $('<input>')
@@ -455,6 +459,9 @@
         var value = data.value;
         if (value && !data.meta.richedit) {
           value = value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+        }
+        if (value) {
+          value = value.replace(/`/g, "'"); // To not mess up MathJax
         }
         memoFieldElement = $('<div>')
           .addClass('muikku-memo-field')
