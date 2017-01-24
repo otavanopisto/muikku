@@ -172,9 +172,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       User student = userController.findUserByIdentifier(studentIdentifier);
       if (student != null) {
         
-        // Students without a start date are never notified
+        // Students without a start date (or with an end date) are never notified
         
-        if (student.getStudyStartDate() == null) {
+        if (student.getStudyStartDate() == null || student.getStudyEndDate() != null) {
           continue;
         }
         
