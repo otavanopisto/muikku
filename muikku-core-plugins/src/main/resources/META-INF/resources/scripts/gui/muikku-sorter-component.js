@@ -51,9 +51,18 @@
         if (!this.isReadonly()) {
           $(itemsContainer).sortable({
             tolerance: 'pointer',
+            start: function (event, ui) {
+              var width = $(ui.item)[0].getBoundingClientRect().width;
+              $(ui.item).css({
+                'width': Math.ceil(width)
+              });
+            },
             update: $.proxy(function (event, ui) {
               $(this.element).trigger('change');
-            }, this)
+            }, this),
+            stop: function() {
+              $(itemsContainer).hide().show(0);
+            }
           });
         }
         this.element.append(itemsContainer);
@@ -71,9 +80,18 @@
         } else {
           $(itemsContainer).sortable({
             tolerance: 'pointer',
+            start: function (event, ui) {
+              var width = $(ui.item)[0].getBoundingClientRect().width;
+              $(ui.item).css({
+                'width': Math.ceil(width)
+              });
+            },
             update: $.proxy(function (event, ui) {
               $(this.element).trigger("change");
-            }, this)
+            }, this),
+            stop: function() {
+              $(itemsContainer).hide().show(0);
+            }
           });
           this.element.removeAttr('data-disabled');
         } 
