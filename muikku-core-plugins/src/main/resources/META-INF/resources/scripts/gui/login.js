@@ -51,7 +51,7 @@
     }, this));
   }
   
-  $(document).on('click', '.bt-forgotpassword', function (event, data) {
+  $(document).on('click', '.bt-forgotpassword, .forgotpassword-link', function (event, data) {
     event.preventDefault();
     confirmForgotpasswordRequest();
   });
