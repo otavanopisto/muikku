@@ -307,6 +307,30 @@ class GradingSchoolDataController {
   
     return null;
   }
+  
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByStudent(String schoolDataSource, String studentIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.findLatestAssessmentRequestByStudent(studentIdentifier);
+    }
+    else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+    }
+    return null;
+  }
+
+  public WorkspaceAssessment findLatestWorkspaceAssessmentByStudent(String schoolDataSource, String studentIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
+    if (schoolDataBridge != null) {
+      return schoolDataBridge.findLatestWorkspaceAssessmentByStudent(studentIdentifier);
+    }
+    else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
+    }
+    return null;
+  }
 
   public List<WorkspaceAssessmentRequest> listAssessmentRequestsByStudent(String schoolDataSource, String studentIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
