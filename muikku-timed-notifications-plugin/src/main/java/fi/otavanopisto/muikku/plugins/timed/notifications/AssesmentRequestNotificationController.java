@@ -30,7 +30,7 @@ public class AssesmentRequestNotificationController {
   
   public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, false, 
+    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, true, 
         firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore);
   }
   
@@ -38,19 +38,15 @@ public class AssesmentRequestNotificationController {
     return assessmentRequestNotificationDAO.create(studentIdentifier.toId(), new Date());
   }
   
-  public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){
+  public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiers(){
     List<SchoolDataIdentifier> results = new ArrayList<>();
-    List<AssesmentRequestNotification> assessmentRequestNotifications = assessmentRequestNotificationDAO.listByDateAfter(date);
+    List<AssesmentRequestNotification> assessmentRequestNotifications = assessmentRequestNotificationDAO.listAll();
     for(AssesmentRequestNotification assessmentRequestNotification : assessmentRequestNotifications){
       results.add(SchoolDataIdentifier.fromId(assessmentRequestNotification.getStudentIdentifier()));
     }
     return results;
   }
-  
-  public Long countAssessmentRequestNotificationsBySchoolDataIdentifierAfter(SchoolDataIdentifier studentIdentifier, Date date) {
-    return assessmentRequestNotificationDAO.countByStudentIdentifierAndDateAfter(studentIdentifier.toId(), date);
-  }
-  
+
   private SearchProvider getProvider(String name) {
     for (SearchProvider searchProvider : searchProviders) {
       if (name.equals(searchProvider.getName())) {
