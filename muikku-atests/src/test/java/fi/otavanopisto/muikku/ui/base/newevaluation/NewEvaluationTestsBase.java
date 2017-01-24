@@ -95,6 +95,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
       navigate(String.format("/evaluation2"), true);
       waitAndClick(".evaluate-button");
       waitAndClick(".workspace-evaluation-form-activate-button");
+      waitForNotVisible(".workspace-evaluation-form-overlay");
       waitForPresentAndVisible(".cke_contents");
       waitAndClick(".cke_contents");
       getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
