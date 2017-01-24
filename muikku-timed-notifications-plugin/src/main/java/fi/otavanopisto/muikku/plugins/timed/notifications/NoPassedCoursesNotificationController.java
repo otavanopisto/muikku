@@ -46,7 +46,7 @@ public class NoPassedCoursesNotificationController {
         firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore);
   }
   
-  public int countPassedCoursesByStudentIdentifierSince(SchoolDataIdentifier studentIdentifier, Date since){
+  public int countPassedCoursesByStudentIdentifierSince(SchoolDataIdentifier studentIdentifier, Date since) {
     int count = 0;
     List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(studentIdentifier);
     for (WorkspaceEntity workspaceEntity : workspaceEntities) {
@@ -70,7 +70,7 @@ public class NoPassedCoursesNotificationController {
     return noPassedCoursesNotificationDAO.create(studentIdentifier.toId(), new Date());
   }
   
-  public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){
+  public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date) {
     List<SchoolDataIdentifier> results = new ArrayList<>();
     List<NoPassedCoursesNotification> noPassedCoursesNotifications = noPassedCoursesNotificationDAO.listByDateAfter(date);
     for (NoPassedCoursesNotification noPassedCoursesNotification : noPassedCoursesNotifications) {
@@ -78,7 +78,7 @@ public class NoPassedCoursesNotificationController {
     }
     return results;
   }
-  
+
   private SearchProvider getProvider(String name) {
     for (SearchProvider searchProvider : searchProviders) {
       if (name.equals(searchProvider.getName())) {
