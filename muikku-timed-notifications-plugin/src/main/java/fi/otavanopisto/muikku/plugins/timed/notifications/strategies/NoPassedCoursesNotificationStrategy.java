@@ -138,7 +138,11 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       User student = userController.findUserByIdentifier(studentIdentifier);
       
       if ((student != null) && (isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS))) {
-        if (noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, thresholdDate) < MIN_PASSED_COURSES) {
+        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, thresholdDate);
+        if (passedCourseCount == null) {
+          logger.severe(String.format("Could not read course count for %s", studentId));
+          continue;
+        } else if (passedCourseCount < MIN_PASSED_COURSES) {
           studentIdentifiers.add(studentIdentifier);
         }
       } else {
