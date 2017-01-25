@@ -97,8 +97,6 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       offset += MAX_RESULTS;
     }
     
-    System.out.println("Matches " + searchResult.getTotalHitCount() + " students");
-    
     for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiers(searchResult)) {
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
@@ -111,11 +109,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           continue;
         }
         
-        System.out.println("Notifying " + student.getDisplayName() + "because end is " + student.getStudyTimeEnd());
-        
         // Double check that the study time really is ending in 60 days
         
-        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt)) {
+        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
           logger.severe(String.format("Study time end of student %s is not within notification range", studentIdentifier));
           continue;
         }
