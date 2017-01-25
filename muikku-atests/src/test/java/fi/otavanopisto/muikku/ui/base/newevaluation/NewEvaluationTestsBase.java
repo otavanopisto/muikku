@@ -297,4 +297,85 @@ public class NewEvaluationTestsBase extends AbstractUITest {
     }
   }
 
+  @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.SAFARI
+    }
+  )
+  public void evaluationRequestImportanceOrderingTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student2 = new MockStudent(3l, 3l, "Apprentice", "Master", "maprentice@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "111109-1212", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    MockStudent student3 = new MockStudent(4l, 4l, "Anotha", "Student", "hurhurhrurh@example.com", 1l, OffsetDateTime.of(1992, 3, 1, 0, 0, 0, 0, ZoneOffset.UTC), "010392-2145", Sex.MALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    OffsetDateTime date = OffsetDateTime.of(2016, 11, 10, 1, 1, 1, 1, ZoneOffset.UTC);
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStudent(student).addStudent(student2).addStudent(student3).addStaffMember(admin).mockLogin(admin).build();
+      
+      Long courseId = 3l;
+      
+      login();
+      
+      Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+
+      OffsetDateTime created = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+      OffsetDateTime begin = OffsetDateTime.of(2015, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+      OffsetDateTime end = OffsetDateTime.of(2045, 10, 12, 12, 12, 0, 0, ZoneOffset.UTC);
+      MockCourse mockCourse = new MockCourse(workspace.getId(), workspace.getName(), created, "test course", begin, end);
+      
+      MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+      MockCourseStudent courseStudent2 = new MockCourseStudent(3l, courseId, student2.getId());
+      MockCourseStudent courseStudent3 = new MockCourseStudent(4l, courseId, student3.getId());
+      CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+      mockBuilder
+        .addCourseStaffMember(courseId, courseStaffMember)
+        .addCourseStudent(courseId, courseStudent)
+        .addCourseStudent(courseId, courseStudent2)
+        .addCourseStudent(courseId, courseStudent3)
+        .build();
+   
+      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      
+      try{
+        mockBuilder
+        .mockAssessmentRequests(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, date)
+        .mockAssessmentRequests(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, date)
+        .mockCompositeGradingScales()
+        .addCompositeCourseAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, date)
+        .addCompositeCourseAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, date.minusDays(2l))
+        .addCompositeCourseAssessmentRequest(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student3, date.minusDays(1l))
+        .mockCompositeCourseAssessmentRequests()
+        .addStaffCompositeAssessmentRequest(student.getId(), courseId, courseStudent.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student, admin.getId(), date)
+        .addStaffCompositeAssessmentRequest(student2.getId(), courseId, courseStudent2.getId(), "Hello!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student2, admin.getId(), date.minusDays(2l))
+        .addStaffCompositeAssessmentRequest(student3.getId(), courseId, courseStudent3.getId(), "Tsadaam!", false, false, TestUtilities.courseFromMockCourse(mockCourse), student3, admin.getId(), date.minusDays(1l))
+        .mockStaffCompositeCourseAssessmentRequests();
+        
+        navigate(String.format("/evaluation2"), true);
+        
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        waitForPresent("div[data-user-entity-id=\"1\"]");
+        waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-important-button");
+        
+        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        
+        waitAndClick(".icon-sort-alpha-desc");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        waitUntilTextRemovedFromElement(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
+        assertTextIgnoreCase(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "student, anotha");
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
+        } finally {
+          deleteWorkspace(workspace.getId());
+        }
+      } finally {
+        mockBuilder.wiremockReset();
+    }
+  }
+  
 }
