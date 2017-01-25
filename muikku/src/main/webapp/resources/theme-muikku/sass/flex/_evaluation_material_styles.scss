@@ -268,10 +268,12 @@ ol {
 
 ul,
 ol {
-  margin: 0 20px;
+  margin: 16px 0;
+  padding: 0 0 0 30px;
 
   li {
-    margin: 5px;
+    margin: 0;
+    padding: 0;
   }
   
   ol {
