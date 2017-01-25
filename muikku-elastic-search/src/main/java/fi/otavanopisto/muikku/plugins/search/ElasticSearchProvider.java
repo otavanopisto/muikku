@@ -129,6 +129,9 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
       Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
+      
+      long now = new Date().getTime() / 1000;
+      
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
@@ -166,8 +169,9 @@ public class ElasticSearchProvider implements SearchProvider {
       if (startedStudiesBefore != null ) {
         query.must(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
       }
-      
-      if(studyTimeEndsBefore != null) {
+
+      if (studyTimeEndsBefore != null) {
+        query.must(rangeQuery("studyTimeEnd").gte(now));
         query.must(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
       
@@ -204,9 +208,9 @@ public class ElasticSearchProvider implements SearchProvider {
          * 
          * StaffMember (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
          * Student that has
-         *   active flag true or
-         *     has not started nor finished studies (ie. in study programme that never expires) and
-         *     is student in active workspace
+         *   no study end date set
+         *   no study start date set OR study start date is in the past
+         *   is student in active workspace
          *   
          * Active workspace is:
          *   published and
@@ -217,21 +221,22 @@ public class ElasticSearchProvider implements SearchProvider {
         Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
         
         query.must(
-            boolQuery()
-              .should(termsQuery("archetype",
-                  EnvironmentRoleArchetype.TEACHER.name().toLowerCase(),
-                  EnvironmentRoleArchetype.MANAGER.name().toLowerCase(),
-                  EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(),
-                  EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()))
-              .should(boolQuery()
-                  .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
-                  .must(termQuery("startedStudies", true))
-                  .mustNot(termQuery("active", false)))
-              .should(boolQuery()
-                  .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
-                  .must(termQuery("startedStudies", false))
-                  .must(termQuery("finishedStudies", false))
-                  .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))));
+          boolQuery()
+            .should(termsQuery("archetype",
+              EnvironmentRoleArchetype.TEACHER.name().toLowerCase(),
+              EnvironmentRoleArchetype.MANAGER.name().toLowerCase(),
+              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(),
+              EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()))
+            .should(boolQuery()
+              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .mustNot(existsQuery("studyEndDate"))
+              .must(boolQuery()
+                .should(boolQuery().mustNot(existsQuery("studyStartDate")))
+                .should(boolQuery().must(rangeQuery("studyStartDate").lt(now)))
+              )
+              .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+            )
+        );
       }
 
       SearchRequestBuilder requestBuilder = elasticClient
@@ -276,7 +281,8 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
+      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
     return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
         onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }

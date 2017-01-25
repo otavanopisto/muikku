@@ -87,7 +87,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     OffsetDateTime studyTimeEndsOdt = OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT);
     OffsetDateTime sendNotificationIfStudentStartedBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
     Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
+    Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     
     if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
@@ -96,13 +97,26 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       offset += MAX_RESULTS;
     }
     
+    System.out.println("Matches " + searchResult.getTotalHitCount() + " students");
+    
     for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiers(searchResult)) {
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
 
       if (studentEntity != null) {
         User student = userController.findUserByIdentifier(studentIdentifier);
         
+        // Do not notify students that have no study start date set or have started their studies within the last 60 days
+        
         if (student.getStudyStartDate() == null || student.getStudyStartDate().isAfter(sendNotificationIfStudentStartedBefore)) {
+          continue;
+        }
+        
+        System.out.println("Notifying " + student.getDisplayName() + "because end is " + student.getStudyTimeEnd());
+        
+        // Double check that the study time really is ending in 60 days
+        
+        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt)) {
+          logger.severe(String.format("Study time end of student %s is not within notification range", studentIdentifier));
           continue;
         }
         

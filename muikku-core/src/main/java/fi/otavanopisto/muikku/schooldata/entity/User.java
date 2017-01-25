@@ -48,12 +48,6 @@ public interface User extends SchoolDataEntity {
 
   public boolean getHidden();
   
-  public boolean getStartedStudies();
-  
-  public boolean getFinishedStudies();
-  
-  public boolean getActive();
-  
   public boolean hasEvaluationFees();
   
   public String getCurriculumIdentifier();
