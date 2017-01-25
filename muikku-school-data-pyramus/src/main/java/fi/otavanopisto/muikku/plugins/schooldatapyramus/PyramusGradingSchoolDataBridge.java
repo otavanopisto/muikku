@@ -542,4 +542,21 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return request == null ? null : entityFactory.createEntity(request);
   }
 
+  @Override
+  public Long countStudentWorkspaceAssessments(String studentIdentifier, Date fromDate, Date toDate,
+      boolean onlyPassingGrades) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+    StringBuffer dateParams = new StringBuffer();
+    if (fromDate != null)
+      dateParams.append("&").append("from=").append(fromDate.toInstant().toString());
+    if (toDate != null)
+      dateParams.append("&").append("to=").append(toDate.toInstant().toString());
+    
+    return pyramusClient.get(String.format("/students/students/%d/courseAssessmentCount/?onlyPassingGrades=%s%s", studentId, onlyPassingGrades, dateParams.toString()), Long.class);
+  }
+
 }
