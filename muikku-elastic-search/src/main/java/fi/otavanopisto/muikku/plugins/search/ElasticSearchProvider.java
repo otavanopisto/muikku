@@ -129,6 +129,8 @@ public class ElasticSearchProvider implements SearchProvider {
       Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
       
+      long now = OffsetDateTime.now().with(ChronoField.MILLI_OF_DAY, 0).toInstant().toEpochMilli() / 1000;      
+      
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
@@ -222,8 +224,14 @@ public class ElasticSearchProvider implements SearchProvider {
             )
             .should(boolQuery()
               .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
-              .mustNot(existsQuery("studyEndDate"))
-              .must(existsQuery("studyStartDate"))
+              .should(boolQuery()
+                .mustNot(existsQuery("studyEndDate"))
+                .must(rangeQuery("studyEndDate").gte(now))
+              )
+              .should(boolQuery()
+                .must(existsQuery("studyStartDate"))
+                .must(rangeQuery("studyStartDate").lte(now))
+              )
             )
             .should(boolQuery()
               .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
