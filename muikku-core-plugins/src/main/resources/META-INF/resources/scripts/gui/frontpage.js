@@ -162,5 +162,11 @@
     }
     
   });
+  
+  $(document).ready(function() {
+    mApi().feed.feeds.read("oonews").callback(function (news) {
+      
+    });
+  })
 
 }).call(this);
