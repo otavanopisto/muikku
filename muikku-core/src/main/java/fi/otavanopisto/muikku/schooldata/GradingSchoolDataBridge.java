@@ -178,4 +178,7 @@ public interface GradingSchoolDataBridge {
   
   public List<TransferCredit> listStudentTransferCredits(SchoolDataIdentifier studentIdentifier);
 
+  public Long countStudentWorkspaceAssessments(String studentIdentifier, Date fromDate, Date toDate,
+      boolean onlyPassingGrades);
+
 }
