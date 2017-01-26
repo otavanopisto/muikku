@@ -87,7 +87,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     OffsetDateTime studyTimeEndsOdt = OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT);
     OffsetDateTime sendNotificationIfStudentStartedBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
     Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
+    Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     
     if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
@@ -102,7 +103,15 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       if (studentEntity != null) {
         User student = userController.findUserByIdentifier(studentIdentifier);
         
+        // Do not notify students that have no study start date set or have started their studies within the last 60 days
+        
         if (student.getStudyStartDate() == null || student.getStudyStartDate().isAfter(sendNotificationIfStudentStartedBefore)) {
+          continue;
+        }
+        
+        // Make sure study time end exists and falls between now and 60 days in to future
+        
+        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
           continue;
         }
         

@@ -1,3 +1,67 @@
+// Open front page's variables
+
+$of-body-font-family: 'Exo 2',Arial,sans-serif;
+$of-body-background-color: #f5f5f5;
+$of-body-font-color: #343333; 
+
+$of-navigation-link-color: #969696;
+$of-navigation-link-highlight-color: #00af00;
+$of-navigation-link-selected-color: #009fe3;
+
+$of-navigation-shadow-color: rgba(0, 0, 0, 0.2);
+
+$of-navigation-login-background-color: #009fe3;
+$of-navigation-login-text-color: #fff;
+$of-navigation-forgotpassword-link-color: #009fe3;
+
+$of-navigation-locale-selected-background-color: #494949;
+$of-navigation-locale-selected-text-color: #fff;
+$of-navigation-locale-selection-background-color: #494949;
+$of-navigation-locale-selection-boxshadow-color: rgba(0, 0, 0, 0.3);
+$of-navigation-locale-selection-link-color: #fff;
+$of-navigation-locale-selection-arrow-background-color: #494949; 
+
+$of-header-background-color: #0089c6;
+
+$of-header-bubble-background-color: #fff;
+$of-header-bubble-border-color: #02a0e3;
+$of-header-bubble-border-hover-color: #ef6000;
+$of-header-bubble-boxshadow-color: rgba(0, 0, 0, 0.15);
+$of-header-bubble-title-font-color: #009fe3;
+$of-header-bubble-link-background-color: #ef6000;
+$of-header-bubble-link-color: #fff;
+
+$of-header-site-info-text-color: #fff;
+$of-header-site-info-logo-boxshadow-color: rgba(0, 0, 0, 0.2);
+$of-header-site-info-logo-glow-boxshadow-color: rgba(255, 255, 255, 1);
+$of-header-site-info-text-shadow-color: rgba(0, 0, 0, 0.3);
+
+$of-announcement-background-color: #454545;
+
+$of-frontpage-box-background-color: #fff;
+$of-frontpage-box-border-color: #e2e3e3;
+$of-frontpage-section-title-color: #009fe3;
+
+$of-studying-read-more-link-color: #fff;
+$of-studying-nettilukio-color: #5db5c5;
+$of-studying-nettiperuskoulu-color: #f58220;
+$of-studying-aineopiskelu-color: #c64986;
+
+$of-carousel-dot-background-color: #afafaf;
+$of-carousel-active-dot-background-color: #ef6000;
+$of-carousel-dot-border-color: #fff;
+
+$of-organization-some-icon-background-color: #454545;
+$of-organization-some-icon-hover-background-color: #009fe3;
+$of-organization-some-icon-text-color: #fff;
+$of-organization-site-link-color: #fff;
+$of-organization-site-link-background-color: #009fe3;
+$of-organization-newsletter-link-color: #fff;
+$of-organization-newsletter-link-background-color: #ef6000;
+
+$of-footer-background-color: #454545;
+$of-footer-text-color: #fff;
+
 // Environment level variables
 
 // TODO: Move shadows to _styles.scss

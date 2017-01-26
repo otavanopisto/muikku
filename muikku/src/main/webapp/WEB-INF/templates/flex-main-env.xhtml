@@ -30,7 +30,7 @@
             <h:form>
               <div class="language-container">
                 <ui:repeat value="#{i18n.languages}" var="locale">
-                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.shorten.' .concat(locale)]}</a>
                 </ui:repeat>
               </div>
             </h:form>

@@ -459,6 +459,34 @@ main.content {
 
 #announcements {
   
+  .fp-announcement {
+  
+    > div {
+      padding-left:10px;  
+    }
+    
+    &.environment {
+      border-left: 5px solid #fda726;
+    }
+    
+    &.workspace {
+      border-left: 5px solid #e163ed;
+    }
+    
+    &:not(:first-child) {
+      margin-top:10px;
+    }
+    
+    .fp-announcement-info-workspace {
+      font-size:10px;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 260px;
+      text-overflow: ellipsis;
+    }
+    
+  }
+  
 }
 
 /* Headers */

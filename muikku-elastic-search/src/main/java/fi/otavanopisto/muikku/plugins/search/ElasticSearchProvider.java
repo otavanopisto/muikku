@@ -42,7 +42,6 @@ import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.sort.SortOrder;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
@@ -129,6 +128,9 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
       Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
+      
+      long now = OffsetDateTime.now().with(ChronoField.MILLI_OF_DAY, 0).toInstant().toEpochMilli() / 1000;      
+      
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
@@ -166,8 +168,8 @@ public class ElasticSearchProvider implements SearchProvider {
       if (startedStudiesBefore != null ) {
         query.must(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
       }
-      
-      if(studyTimeEndsBefore != null) {
+
+      if (studyTimeEndsBefore != null) {
         query.must(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
       
@@ -200,40 +202,49 @@ public class ElasticSearchProvider implements SearchProvider {
         /**
          * List only active users. 
          * 
-         * Active user is:
-         * 
-         * StaffMember (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
-         * Student that has
-         *   active flag true or
-         *     has not started nor finished studies (ie. in study programme that never expires) and
-         *     is student in active workspace
+         * Active user is
+         * - staff member (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
+         * - student that has study start date (in the past) and no study end date
+         * - student that has study start date (in the past) and study end date in the future
+         * - student that has no study start and end date but belongs to an active workspace
          *   
-         * Active workspace is:
-         *   published and
-         *   non-stop (no start and end dates) or
-         *   current date is between start and end date
+         * Active workspace is
+         * - published and
+         * - either has no start/end date or current date falls between them
          */
         
         Set<Long> activeWorkspaceEntityIds = getActiveWorkspaces();
         
         query.must(
-            boolQuery()
-              .should(termsQuery("archetype",
-                  EnvironmentRoleArchetype.TEACHER.name().toLowerCase(),
-                  EnvironmentRoleArchetype.MANAGER.name().toLowerCase(),
-                  EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(),
-                  EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase()))
-              .should(boolQuery()
-                  .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
-                  .must(termQuery("startedStudies", true))
-                  .mustNot(termQuery("active", false)))
-              .should(boolQuery()
-                  .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
-                  .must(termQuery("startedStudies", false))
-                  .must(termQuery("finishedStudies", false))
-                  .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))));
+          boolQuery()
+            .should(termsQuery("archetype",
+              EnvironmentRoleArchetype.TEACHER.name().toLowerCase(),
+              EnvironmentRoleArchetype.MANAGER.name().toLowerCase(),
+              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(),
+              EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase())
+            )
+            .should(boolQuery()
+              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .must(existsQuery("studyStartDate"))
+              .must(rangeQuery("studyStartDate").lte(now))
+              .mustNot(existsQuery("studyEndDate"))
+            )
+            .should(boolQuery()
+              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .must(existsQuery("studyStartDate"))
+              .must(rangeQuery("studyStartDate").lte(now))
+              .must(existsQuery("studyEndDate"))
+              .must(rangeQuery("studyEndDate").gte(now))
+            )
+            .should(boolQuery()
+              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .mustNot(existsQuery("studyEndDate"))
+              .mustNot(existsQuery("studyStartDate"))
+              .must(termsQuery("workspaces", ArrayUtils.toPrimitive(activeWorkspaceEntityIds.toArray(new Long[0]))))
+            )
+        );
       }
-
+      
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
         .setTypes("User")
@@ -276,7 +287,8 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
-      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+      Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
+      Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
     return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
         onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }
@@ -298,20 +310,25 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   private Set<Long> getActiveWorkspaces() {
-    OffsetDateTime now = OffsetDateTime.now();
-    OffsetDateTime low = now.with(ChronoField.MILLI_OF_DAY, 0);
-    OffsetDateTime high = low.plusDays(1).minus(1, ChronoUnit.MILLIS); 
+    
+    long now = OffsetDateTime.now().with(ChronoField.MILLI_OF_DAY, 0).toInstant().toEpochMilli() / 1000;
     
     BoolQueryBuilder query = boolQuery();
     
     query.must(termQuery("published", Boolean.TRUE));
-    query
+    query.must(
+      boolQuery()
+        .should(boolQuery()
+          .mustNot(existsQuery("beginDate"))
+          .mustNot(existsQuery("endDate"))
+        )
         .should(boolQuery()
           .must(existsQuery("beginDate"))
-          .must(existsQuery("endDate")))
-        .should(boolQuery()
-          .must(rangeQuery("beginDate").lte(low.toInstant().toEpochMilli()))
-          .must(rangeQuery("endDate").gte(high.toInstant().toEpochMilli())));
+          .must(existsQuery("endDate"))
+          .must(rangeQuery("beginDate").lte(now))
+          .must(rangeQuery("endDate").gte(now))
+        )
+    );
 
     SearchResponse response = elasticClient
       .prepareSearch("muikku")

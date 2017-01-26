@@ -120,15 +120,47 @@
         height: 1em;
         padding: 10px 20px 10px 10px;
         text-shadow: none;
-        
-        &:hover,
-        &:focus,
-        &:active {
-          background: #c5eaf8;
-        }
-        
-        &.icon-user {
-          font-size: 16px;
+
+        div[class*="dock-static-navi"] {
+          margin: 5px 0;
+          display: block;
+          float: none;
+          
+          > a {
+            padding: 5px;
+            font-size: 18px;
+            height: 1em;
+            color: #416c7c;
+            text-shadow: none;
+            display: block;
+            padding: 10px 20px 10px 10px;
+            
+            &:hover,
+            &:focus,
+            &:active {
+              background: #c5eaf8;
+            }
+            
+            &.icon-user {
+              font-size: 16px;
+            }
+            
+            > span {
+              color: #5c5c5c;
+              display: inline-block;
+              font-size: 16px;
+              font-weight: 300;
+              padding: 0 0 0 10px;
+              text-transform: uppercase;
+              vertical-align: top;
+            }
+          
+            &:hover {
+              text-shadow: none;
+            }
+          
+          }
+
         }
         
         > span {
