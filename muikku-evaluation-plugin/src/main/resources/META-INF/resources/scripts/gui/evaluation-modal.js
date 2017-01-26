@@ -275,6 +275,7 @@
       }
       else {
         $('#workspaceEvaluationDate').datepicker('setDate', new Date());
+        $('#workspaceAssessor').val(MUIKKU_LOGGED_USER);
       }
       this._loadMaterials();
       this._loadJournalEntries();
@@ -294,9 +295,9 @@
           literalEvaluation: assignment.literalEvaluation
         }, $.proxy(function (html) {
           var material = $(html).appendTo('.eval-modal-assignments-content');
-          // Toggle material open/closed
-          $(material).find('.assignment-title').on('click', function (event) {
-            var assignmentContent = $(event.target).closest('.assignment').find('.assignment-content');
+          // Toggle material open/close
+          $(material).find('.assignment-title-wrapper').on('click', function (event) {
+            var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
             $(document).evaluationModal('toggleAssignment', assignmentContent);
           });
           // Evaluate material
@@ -380,7 +381,7 @@
         $('#assignmentAssessmentId').val('');
         $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
-        $('#assignmentAssessor').prop('selectedIndex', 0);
+        $('#assignmentAssessor').val(MUIKKU_LOGGED_USER);
         $('#assignmentGrade').prop('selectedIndex', 0);
         this.toggleMaterialAssessmentView(true, $.proxy(function() {
           this._createAssignmentEditor(workspaceMaterialId);

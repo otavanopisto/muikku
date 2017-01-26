@@ -84,9 +84,6 @@ public class PyramusSchoolDataEntityFactory {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
 
     boolean hidden = false;
-    boolean startedStudies = false;
-    boolean finishedStudies = false;
-    boolean active = true;
     
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()),
@@ -103,10 +100,7 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
-        hidden,
-        startedStudies,
-        finishedStudies,
-        active);
+        hidden);
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
@@ -132,10 +126,6 @@ public class PyramusSchoolDataEntityFactory {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
     
-    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(OffsetDateTime.now());
-    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(OffsetDateTime.now());
-    boolean active = studyStartDate == null && studyEndDate == null ? true : startedStudies && !finishedStudies;
-    
     return new PyramusUser(
         identifierMapper.getStudentIdentifier(student.getId()),
         student.getFirstName(),
@@ -151,10 +141,7 @@ public class PyramusSchoolDataEntityFactory {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
-        hidden,
-        startedStudies,
-        finishedStudies,
-        active);
+        hidden);
   }
 
   public EnvironmentRole createEntity(fi.otavanopisto.pyramus.rest.model.UserRole role) {

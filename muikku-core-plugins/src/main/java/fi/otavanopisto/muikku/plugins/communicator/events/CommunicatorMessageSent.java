@@ -5,10 +5,11 @@ public class CommunicatorMessageSent {
   public CommunicatorMessageSent() {
   }
   
-  public CommunicatorMessageSent(Long communicatorMessageId, Long recipientUserEntityId) {
+  public CommunicatorMessageSent(Long communicatorMessageId, Long recipientUserEntityId, String baseUrl) {
     super();
     this.communicatorMessageId = communicatorMessageId;
     this.recipientUserEntityId = recipientUserEntityId;
+    this.baseUrl = baseUrl;
   }
 
   public Long getCommunicatorMessageId() {
@@ -19,6 +20,11 @@ public class CommunicatorMessageSent {
     return recipientUserEntityId;
   }
 
+  public String getBaseUrl() {
+    return baseUrl;
+  }
+
   private Long communicatorMessageId;
   private Long recipientUserEntityId;
+  private String baseUrl;
 }

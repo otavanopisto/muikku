@@ -224,7 +224,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id ), CourseAssessment.class));
+    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), CourseAssessment.class));
   }
 
   @Override
@@ -518,6 +518,45 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
         logger.severe(String.format("Could not change course participation type because course student %d could not be found", courseStudentId));
       }
     }
+  }
+
+  @Override
+  public WorkspaceAssessment findLatestWorkspaceAssessmentByStudent(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null;
+    }
+    CourseAssessment courseAssessment = pyramusClient.get(String.format("/students/students/%d/latestCourseAssessment/", studentId), CourseAssessment.class);
+    return courseAssessment == null ? null : entityFactory.createEntity(courseAssessment);
+  }
+
+  @Override
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByStudent(String studentIdentifier) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+    CourseAssessmentRequest request = pyramusClient.get(String.format("/students/students/%d/latestAssessmentRequest/", studentId), CourseAssessmentRequest.class); 
+    return request == null ? null : entityFactory.createEntity(request);
+  }
+
+  @Override
+  public Long countStudentWorkspaceAssessments(String studentIdentifier, Date fromDate, Date toDate,
+      boolean onlyPassingGrades) {
+    Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    if (studentId == null) {
+      logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
+      return null; 
+    }
+    StringBuffer dateParams = new StringBuffer();
+    if (fromDate != null)
+      dateParams.append("&").append("from=").append(fromDate.toInstant().toString());
+    if (toDate != null)
+      dateParams.append("&").append("to=").append(toDate.toInstant().toString());
+    
+    return pyramusClient.get(String.format("/students/students/%d/courseAssessmentCount/?onlyPassingGrades=%s%s", studentId, onlyPassingGrades, dateParams.toString()), Long.class);
   }
 
 }

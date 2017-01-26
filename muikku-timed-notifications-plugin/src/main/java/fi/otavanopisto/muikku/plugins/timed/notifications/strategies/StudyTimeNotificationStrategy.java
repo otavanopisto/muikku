@@ -39,6 +39,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
 
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.maxresults", "20"));
+  private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.daysuntilfirstnotification", "60"));
   private static final int NOTIFICATION_THRESHOLD_DAYS_LEFT = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.notificationthreshold", "30"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.studytime.checkfreq", "1800000"));
   
@@ -83,8 +84,11 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       return;
     }
     
-    Date studyTimeEnds = Date.from(OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
+    OffsetDateTime studyTimeEndsOdt = OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT);
+    OffsetDateTime sendNotificationIfStudentStartedBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
+    Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
+    Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
     
     if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
@@ -98,6 +102,19 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
 
       if (studentEntity != null) {
         User student = userController.findUserByIdentifier(studentIdentifier);
+        
+        // Do not notify students that have no study start date set or have started their studies within the last 60 days
+        
+        if (student.getStudyStartDate() == null || student.getStudyStartDate().isAfter(sendNotificationIfStudentStartedBefore)) {
+          continue;
+        }
+        
+        // Make sure study time end exists and falls between now and 60 days in to future
+        
+        if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
+          continue;
+        }
+        
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
         Map<String, Object> templateModel = new HashMap<>();
         templateModel.put("internetixStudent", student.hasEvaluationFees());

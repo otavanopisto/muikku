@@ -220,52 +220,6 @@
   
 }
 
-.mf-list-container {
-  background-color: $environment-background-color;
- 
-   
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    
-    li {
-      border-bottom: 1px solid $environment-border-color;
-      border-left: 5px solid $navigation-vertical-bar-border-color;
-      
-      a {
-        font-weight: 300;
-
-        text-decoration: none;
-        color: $environment-font-color;
-        display: inline-block;
-        box-sizing: border-box;
-        width: 100%;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        padding-left: 10px;             
-      }
-            
-      &:hover {
-        border-left: 5px solid $environment-border-color;     
-        cursor: pointer;   
-      }
-       
-      &.selected {
-        background-color: $navigation-vertical-bar-active-background-color;
-        border-left: 5px solid $environment-border-selected-color;
-        
-        a {
-          font-weight: normal;
-        }
-      
-      } 
-     
-    }
-  
-  }
-
-} 
 
 .mf-content-area {
   background-color: $environment-navigation-container-background-color;
@@ -975,9 +929,25 @@ ul.mf-tool-label-container {
 
 // Needs to be unified with mf-list*
 
+
+
+
 .mf-categories {
   background-color: $environment-background-color;
-   
+  
+  .mf-category-title {
+    margin-left: 5px;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 5px;
+    
+    &.no-items {
+      color: $navigation-vertical-bar-empty-font-color;
+    }
+    
+  }
+
+       
   ul {
     list-style-type: none;
     margin: 0;
@@ -1002,8 +972,14 @@ ul.mf-tool-label-container {
       height: 30px;
       padding-top: 8px;      
       text-decoration: none;
-    }
+      
+      &.mf-category-item-plain {
+        padding-left: 7px;
+        padding-top: 4px;
+      }
 
+    }
+    
     &::before {
       margin-left: 5px;
       color: $navigation-vertical-bar-icon-color;

@@ -28,6 +28,7 @@
 .math-wrapper {
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: hidden;
 }
 
 // WRAPPER FOR TEXTFIELDS
@@ -604,11 +605,11 @@ ol {
 }
 
 ul, ol {
-  margin: 0 20px;
-  padding: 0;
+  margin: 16px 0;
+  padding: 0 0 0 30px;
 
   li {
-    margin: 5px;
+    margin: 0;
     padding: 0;
   }
 
@@ -664,22 +665,22 @@ sup {
       
       // Check Exercise
       &.muikku-check-exercises {
-        background: $exercise;
+        background: $exercise-color;
       }
       
       // Submit Assignment
       &.muikku-submit-assignment {
-        background: $assignment;
+        background: $assignment-color;
       }
       
       // Withdraw Assingment
       &.muikku-withdraw-assignment {
-        background: darken($assignment, 10%);
+        background: darken($assignment-color, 10%);
       }
       
       // Update Assignment
       &.muikku-update-assignment {
-        background: lighten($assignment, 5%);
+        background: lighten($assignment-color, 5%);
       }
       
     }
@@ -690,8 +691,70 @@ sup {
       background: $exerciseCorrectAnswersOnRequest;
     }
     
+    // Show Assignment's Evaluation
+    &.muikku-show-evaluation-button {
+      
+      &.failed {
+        background: $evaluation-incomplete-color;
+      }
+      
+      &.passed {
+        background: $evaluation-passed-color;
+      }
+      
+    }
+     
   }
+  
+}
 
+
+.evaluation-container {
+
+  .assignment-grade-container,
+  .assignment-date-container,
+  .assignment-literal-container {
+    margin: 10px 0; 
+  }
+  
+  .assignment-literal-label,
+  .assignment-grade-label,
+  .assignment-date-label {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  
+  .assignment-grade-label,
+  .assignment-date-label {
+    display: inline-block;
+    padding: 0 10px 0 0;
+  }
+  
+  .assignment-grade-data {
+    background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 0 0 0 5px;
+    min-width: 16px;
+    padding: 3px 6px;
+    text-align: center;
+  }
+  
+  .assignment-literal-data {
+    background: $evaluation-modal-assignment-evaluated-literal-background-color;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 1px 10px;
+    
+    p {
+      margin: 10px 0;
+    }
+ 
+  }
+  
+  
+  
 }
   
 .workspace-materials-view-page {
@@ -830,12 +893,13 @@ sup {
 }
 
 footer.article-details {
-  margin: 0 -20px -10px;
-  padding: 5px 20px;
   border-top: 2px solid #e6f2c4;
+  clear: both;
   font-size: 13px;
   line-height: 1.2em;
-  
+  margin: 0 -20px -10px;
+  padding: 5px 20px; 
+   
   .producers-override {
     margin: 10px 0;
   

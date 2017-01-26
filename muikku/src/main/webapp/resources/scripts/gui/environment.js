@@ -29,8 +29,41 @@
     reloadMessageCount();
   });
   
+  $(document).on("Communicator:threaddeleted", function (event) {
+    reloadMessageCount();
+  });
+  
   $(document).ready(function () {
     reloadMessageCount();
   });
+  
+  $(document).on('click', '.dock-static-navi-button-navimore', function (event) {
+    if ($(this).attr('data-navmore-status') == 'open') {
+      $(this).find('.navmore-container')
+        .animate({
+          width: '0%'
+        }, {
+          duration: 150,
+          complete: function() {
+            $(this).hide();
+          }
+        });
+      $(this).attr('data-navmore-status', 'close');
+    } else {
+      $(this).find('.navmore-container')
+      .show()
+      .animate({
+        width: '70%'
+      }, {
+        duration: 150,
+        complete: function() {
+
+        }
+      });
+      $(this).attr('data-navmore-status', 'open');
+    }
+    
+  });
+  
   
 }).call(this);
