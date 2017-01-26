@@ -26,14 +26,12 @@ public class FeedSynchronizer {
   @Schedule(second = "0", minute = "*", hour = "*")
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateFeeds() {
-    logger.info("Updating feeds...");
     Client client = ClientBuilder.newClient();
 
     List<Feed> feeds = feedDao.listAll();
-    
-    logger.info(String.format("Number of feeds: %d", feeds.size()));
 
     for (Feed feed : feeds) {
+      logger.info(String.format("Synchronizing feed: %s", feed.getName()));
       WebTarget target = client.target(feed.getUrl());
       String result = target.request("*").get(String.class);
       feedDao.updateContent(feed, result);
