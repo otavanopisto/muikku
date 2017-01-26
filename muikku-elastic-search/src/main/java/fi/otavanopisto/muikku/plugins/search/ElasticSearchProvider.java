@@ -129,8 +129,6 @@ public class ElasticSearchProvider implements SearchProvider {
       Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
       
-      long now = new Date().getTime() / 1000;
-      
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
@@ -170,7 +168,6 @@ public class ElasticSearchProvider implements SearchProvider {
       }
 
       if (studyTimeEndsBefore != null) {
-        query.must(rangeQuery("studyTimeEnd").gte(now));
         query.must(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
       

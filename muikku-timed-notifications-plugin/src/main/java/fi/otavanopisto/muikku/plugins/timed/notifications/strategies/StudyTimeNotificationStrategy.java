@@ -109,10 +109,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           continue;
         }
         
-        // Double check that the study time really is ending in 60 days
+        // Make sure study time end exists and falls between now and 60 days in to future
         
         if (student.getStudyTimeEnd() == null || student.getStudyTimeEnd().isAfter(studyTimeEndsOdt) || student.getStudyTimeEnd().isBefore(OffsetDateTime.now())) {
-          logger.severe(String.format("Study time end of student %s is not within notification range", studentIdentifier));
           continue;
         }
         
