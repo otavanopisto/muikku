@@ -224,14 +224,16 @@ public class ElasticSearchProvider implements SearchProvider {
             )
             .should(boolQuery()
               .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
-              .should(boolQuery()
-                .mustNot(existsQuery("studyEndDate"))
-                .must(rangeQuery("studyEndDate").gte(now))
-              )
-              .should(boolQuery()
-                .must(existsQuery("studyStartDate"))
-                .must(rangeQuery("studyStartDate").lte(now))
-              )
+              .must(existsQuery("studyStartDate"))
+              .must(rangeQuery("studyStartDate").lte(now))
+              .mustNot(existsQuery("studyEndDate"))
+            )
+            .should(boolQuery()
+              .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
+              .must(existsQuery("studyStartDate"))
+              .must(rangeQuery("studyStartDate").lte(now))
+              .must(existsQuery("studyEndDate"))
+              .must(rangeQuery("studyEndDate").gte(now))
             )
             .should(boolQuery()
               .must(termQuery("archetype", EnvironmentRoleArchetype.STUDENT.name().toLowerCase()))
@@ -241,6 +243,8 @@ public class ElasticSearchProvider implements SearchProvider {
             )
         );
       }
+      
+      System.out.println(query);
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
