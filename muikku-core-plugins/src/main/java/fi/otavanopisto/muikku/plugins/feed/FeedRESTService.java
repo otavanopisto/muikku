@@ -44,6 +44,10 @@ public class FeedRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
+    if (feed.getContent() == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
     SyndFeedInput input = new SyndFeedInput();
     
     try (Reader reader = new StringReader(feed.getContent())) {
