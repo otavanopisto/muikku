@@ -358,6 +358,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         
         navigate(String.format("/evaluation2"), true);
         
+        waitForPresent(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
         waitForPresent("div[data-user-entity-id=\"1\"]");
         waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-important-button");
@@ -370,7 +371,12 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitUntilTextRemovedFromElement(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "master, apprentice");
         assertTextIgnoreCase(".evaluation-card:nth-child(2) .evaluation-card-title .evaluation-card-student", "student, anotha");
         assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");
-        } finally {
+        
+        waitAndClick("div[data-user-entity-id=\"1\"] .evaluation-unimportant-button");
+        waitAndClick(".icon-sort-alpha-asc");
+        waitUntilTextRemovedFromElement(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "tester, student");        
+        assertTextIgnoreCase(".evaluation-card:first-child .evaluation-card-title .evaluation-card-student", "master, apprentice");
+      } finally {
           deleteWorkspace(workspace.getId());
         }
       } finally {
