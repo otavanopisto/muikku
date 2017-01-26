@@ -204,8 +204,9 @@ public class ElasticSearchProvider implements SearchProvider {
          * 
          * Active user is
          * - staff member (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
-         * - student that HAS study start date and HAS NO study end date or
-         * - student that HAS NO study start date and HAS NO study end date and belongs to an active workspace
+         * - student that has study start date (in the past) and no study end date
+         * - student that has study start date (in the past) and study end date in the future
+         * - student that has no study start and end date but belongs to an active workspace
          *   
          * Active workspace is
          * - published and
@@ -243,8 +244,6 @@ public class ElasticSearchProvider implements SearchProvider {
             )
         );
       }
-      
-      System.out.println(query);
       
       SearchRequestBuilder requestBuilder = elasticClient
         .prepareSearch("muikku")
