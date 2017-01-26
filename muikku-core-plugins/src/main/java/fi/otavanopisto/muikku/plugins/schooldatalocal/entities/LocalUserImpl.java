@@ -11,7 +11,7 @@ public class LocalUserImpl  extends AbstractUser implements User {
       String studyProgrammeName, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, String curriculumIdentifier) {
     super(identifier, firstName, lastName, nickName, displayName, studyProgrammeName, nationality, language, municipality, school,
-        studyStartDate, studyEndDate, studyTimeEnd, false, false, false, false, false, curriculumIdentifier);
+        studyStartDate, studyEndDate, studyTimeEnd, false, false, curriculumIdentifier);
   }
 
   @Override
