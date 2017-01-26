@@ -161,10 +161,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     OffsetDateTime thresholdDateTime = studyStartDate.plusDays(thresholdDays);
 
     // If the threshold date has passed the student is valid target for the notification
-    if (thresholdDateTime.isBefore(currentDateTime))
-      return true;
-    else
-      return false;
+    return thresholdDateTime.isBefore(currentDateTime);
   }
   
   private Collection<Long> getGroups() {
