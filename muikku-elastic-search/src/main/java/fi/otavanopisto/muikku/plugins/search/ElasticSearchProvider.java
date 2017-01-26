@@ -141,7 +141,7 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termQuery("isDefaultIdentifier", true));
       }
       
-      if (StringUtils.isNotBlank(text)) {
+      if (StringUtils.isNotBlank(text) && !ArrayUtils.isEmpty(textFields)) {
         String[] words = text.split(" ");
         for (int i = 0; i < words.length; i++) {
           if (StringUtils.isNotBlank(words[i])) {
@@ -164,11 +164,11 @@ public class ElasticSearchProvider implements SearchProvider {
       }
       
       if (startedStudiesBefore != null ) {
-        query.must(rangeQuery("studyStartDate").lt(startedStudiesBefore.getTime()));
+        query.must(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
       }
       
       if(studyTimeEndsBefore != null) {
-        query.must(rangeQuery("studyTimeEnd").lt(studyTimeEndsBefore.getTime()));
+        query.must(rangeQuery("studyTimeEnd").lt((long) studyTimeEndsBefore.getTime() / 1000));
       }
       
       if (archetypes != null) {

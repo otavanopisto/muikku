@@ -39,6 +39,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
 
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.maxresults", "20"));
+  private static final int DAYS_UNTIL_FIRST_NOTIFICATION = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.daysuntilfirstnotification", "60"));
   private static final int NOTIFICATION_THRESHOLD_DAYS_LEFT = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.studytime.notificationthreshold", "30"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.studytime.checkfreq", "1800000"));
   
@@ -84,6 +85,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     }
     
     OffsetDateTime studyTimeEndsOdt = OffsetDateTime.now().plusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT);
+    OffsetDateTime sendNotificationIfStudentStartedBefore = OffsetDateTime.now().minusDays(DAYS_UNTIL_FIRST_NOTIFICATION);
     Date studyTimeEnds = Date.from(studyTimeEndsOdt.toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT).toInstant()));
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
@@ -100,7 +102,7 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
       if (studentEntity != null) {
         User student = userController.findUserByIdentifier(studentIdentifier);
         
-        if (student.getStudyStartDate() == null || student.getStudyStartDate().isBefore(studyTimeEndsOdt)) {
+        if (student.getStudyStartDate() == null || student.getStudyStartDate().isAfter(sendNotificationIfStudentStartedBefore)) {
           continue;
         }
         

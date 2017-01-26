@@ -31,7 +31,7 @@ div.muikku-sorter-items-container {
   
   &.capitalize {
     
-    > .muikku-sorter-item:first-child:first-letter {
+    > .muikku-sorter-item:first-child::first-letter {
       text-transform:capitalize;
     }
     
