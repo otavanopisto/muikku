@@ -219,8 +219,21 @@ public class GradingController {
     return gradingSchoolDataController.listCompositeAssessmentRequestsByWorkspace(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), workspaceStudentIdentifiers);
   }
 
+  public Long countStudentWorkspaceAssessments(SchoolDataIdentifier studentIdentifier, Date fromDate, Date toDate, boolean onlyPassingGrades) {
+    return gradingSchoolDataController.countStudentWorkspaceAssessments(
+        studentIdentifier.getDataSource(), studentIdentifier.getIdentifier(), fromDate, toDate, onlyPassingGrades);
+  }
+
   public List<CompositeAssessmentRequest> listAssessmentRequestsByStaffMember(SchoolDataIdentifier staffMemberIdentifier) {
     return gradingSchoolDataController.listCompositeAssessmentRequestsByStaffMember(staffMemberIdentifier.getDataSource(), staffMemberIdentifier.getIdentifier());
+  }
+  
+  public WorkspaceAssessment findLatestWorkspaceAssessmentByIdentifier(SchoolDataIdentifier studentIdentifier) {
+    return gradingSchoolDataController.findLatestWorkspaceAssessmentByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+  }
+
+  public WorkspaceAssessmentRequest findLatestAssessmentRequestByIdentifier(SchoolDataIdentifier studentIdentifier) {
+    return gradingSchoolDataController.findLatestAssessmentRequestByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
   }
   
   public List<WorkspaceAssessmentRequest> listStudentAssessmentRequestsSince(SchoolDataIdentifier studentIdentifier, Date date) {

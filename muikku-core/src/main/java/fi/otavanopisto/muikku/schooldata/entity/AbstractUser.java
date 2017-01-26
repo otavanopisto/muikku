@@ -7,7 +7,7 @@ public abstract class AbstractUser implements User {
   public AbstractUser(String identifier, String firstName, String lastName, String nickName, String displayName,
       String studyProgrammeName, String nationality, String language, String municipality, String school,
       OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime studyTimeEnd, boolean hidden, 
-      boolean startedStudies, boolean finishedStudies, boolean active, boolean evaluationFees, String curriculumIdentifier) {
+      boolean evaluationFees, String curriculumIdentifier) {
     super();
     this.identifier = identifier;
     this.firstName = firstName;
@@ -23,9 +23,6 @@ public abstract class AbstractUser implements User {
     this.studyEndDate = studyEndDate;
     this.studyTimeEnd = studyTimeEnd;
     this.hidden = hidden;
-    this.active = active;
-    this.startedStudies = startedStudies;
-    this.finishedStudies = finishedStudies;
     this.evaluationFees = evaluationFees;
     this.curriculumIdentifier = curriculumIdentifier;
   }
@@ -143,33 +140,6 @@ public abstract class AbstractUser implements User {
   }
   
   @Override
-  public boolean getStartedStudies() {
-    return startedStudies;
-  }
-  
-  public void setStartedStudies(boolean startedStudies) {
-    this.startedStudies = startedStudies;
-  }
-  
-  @Override
-  public boolean getFinishedStudies() {
-    return finishedStudies;
-  }
-  
-  public void setFinishedStudies(boolean finishedStudies) {
-    this.finishedStudies = finishedStudies;
-  }
-  
-  @Override
-  public boolean getActive() {
-    return active;
-  }
-  
-  public void setActive(boolean active) {
-    this.active = active;
-  }
-  
-  @Override
   public boolean hasEvaluationFees() {
     return evaluationFees;
   }
@@ -204,9 +174,6 @@ public abstract class AbstractUser implements User {
   private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private boolean hidden;
-  private boolean startedStudies;
-  private boolean finishedStudies;
-  private boolean active;
   private boolean evaluationFees;
   private String curriculumIdentifier;
   private String nickName;
