@@ -164,7 +164,7 @@
   });
   
   $(document).ready(function() {
-    mApi().feed.feeds.read("oonews").callback(function (err, news) {
+    mApi().feed.feeds.read("oonews", {numEntries: 5}).callback(function (err, news) {
       renderDustTemplate('frontpage/feed.dust', {entries: news}, function(text) {
         $(".frontpage-news").html(text);
       });
