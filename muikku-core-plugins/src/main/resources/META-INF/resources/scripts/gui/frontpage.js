@@ -166,7 +166,6 @@
   $(document).ready(function() {
     mApi().feed.feeds.read("oonews").callback(function (err, news) {
       renderDustTemplate('frontpage/feed.dust', {entries: news}, function(text) {
-        console.log(text);
         $(".frontpage-news").html(text);
       });
     });
