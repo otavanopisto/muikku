@@ -388,7 +388,17 @@
                 item.labels[i]["hexColor"] = communicator.colorIntToHex(item.labels[i].labelColor);
               }
             }
+            
+            if (item.recipients) {
+              $.each(item.recipients, function (ind, recipient) {
+                if (recipient.userId && recipient.userId == MUIKKU_LOGGED_USER_ID) {
+                  recipient["self"] = true;
+                }
+              });
+            }
           });
+          
+          
           
           if (items.length > this.options.maxMessageCount) {
             hasMore = true;

@@ -14,7 +14,11 @@
                  <div class="cm-message-recipients-wrapper">
                   <span>({recipientCount})</span>
                   {#recipients}
-                    <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                    {?self}
+                      <span class="cm-message-recipient-name" title="{firstName} {lastName}">{#localize key="plugin.communicator.me"/}</span>
+                    {:else}
+                      <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                    {/self}
                   {/recipients}
                   {#userGroupRecipients}
                     <span class="cm-message-recipient-name" title="{name}">{name}</span>
@@ -26,9 +30,32 @@
                 </div>
               </div>
             {:else}
-              <div class="cm-message-sender cm-message-header-content-primary">
-                <span class="cm-message-sender-name" title="{sender.firstName} {sender.lastName}">{sender.firstName} {sender.lastName}</span>
-              </div>
+              {@eq key=folderId value="trash"}
+                <div class="cm-message-recipients cm-message-header-content-primary lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                  <div class="cm-message-recipients-cell">
+                   <div class="cm-message-recipients-wrapper">
+                    <span>({recipientCount})</span>
+                    {#recipients}
+                      {?self}
+                        <span class="cm-message-recipient-name" title="{firstName} {lastName}">{#localize key="plugin.communicator.me"/}</span>
+                      {:else}
+                        <span class="cm-message-recipient-name" title="{firstName} {lastName}">{firstName} {lastName}</span>
+                      {/self}
+                    {/recipients}
+                    {#userGroupRecipients}
+                      <span class="cm-message-recipient-name" title="{name}">{name}</span>
+                    {/userGroupRecipients}
+                    {#workspaceRecipients}
+                      <span class="cm-message-recipient-name" title="{name}">{name}</span>
+                    {/workspaceRecipients}
+                    </div>
+                  </div>
+                </div>
+              {:else}
+                <div class="cm-message-sender cm-message-header-content-primary">
+                  <span class="cm-message-sender-name" title="{sender.firstName} {sender.lastName}">{sender.firstName} {sender.lastName}</span>
+                </div>
+              {/eq}
             {/sent}
             <div class="cm-message-caption cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}
               {#labels}
