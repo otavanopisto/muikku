@@ -1,0 +1,5 @@
+<ul>
+{#entries}
+  <li><a href="{uri|s}">{title}</a></li>
+{/entries}
+</ul>
