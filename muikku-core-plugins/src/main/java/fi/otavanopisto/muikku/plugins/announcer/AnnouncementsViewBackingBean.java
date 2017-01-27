@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.announcer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -12,7 +13,12 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementEnvironmentRestriction;
+import fi.otavanopisto.muikku.plugins.announcer.dao.AnnouncementTimeFrame;
 import fi.otavanopisto.muikku.plugins.announcer.model.Announcement;
+import fi.otavanopisto.muikku.plugins.announcer.workspace.model.AnnouncementWorkspace;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceBasicInfo;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceRESTModelController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -32,17 +38,27 @@ public class AnnouncementsViewBackingBean {
   @Inject
   private SessionController sessionController;
   
+  @Inject
+  private WorkspaceRESTModelController workspaceRESTModelController;
+  
   @RequestAction
   public String init() {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
+      if (currentAnnouncement != null) {
+        List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(currentAnnouncement, loggedUserEntity);
+        currentAnnouncementWorkspaces = new ArrayList<WorkspaceBasicInfo>();
+        for (AnnouncementWorkspace aw : announcementWorkspaces) {
+          currentAnnouncementWorkspaces.add(workspaceRESTModelController.workspaceBasicInfo(aw.getWorkspaceEntityId()));
+        }
+      }
     }
-    if (sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_UNARCHIVED_ANNOUNCEMENTS)) {
-      activeAnnouncements = announcementController.listActiveEnvironmentAnnouncements();
-    } else {
-      activeAnnouncements = announcementController.listActiveEnvironmentAnnouncementsByTargetedUserEntity(loggedUserEntity);
-    }
+    AnnouncementEnvironmentRestriction environment = 
+        sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
+            AnnouncementEnvironmentRestriction.PUBLICANDGROUP : AnnouncementEnvironmentRestriction.PUBLIC;
+    AnnouncementTimeFrame timeFrame = AnnouncementTimeFrame.CURRENT;
+    activeAnnouncements = announcementController.listAnnouncements(true, true, environment, timeFrame, loggedUserEntity, false, false);
     return null;
   }
 
@@ -50,6 +66,10 @@ public class AnnouncementsViewBackingBean {
     return currentAnnouncement;
   }
   
+  public List<WorkspaceBasicInfo> getCurrentAnnouncementWorkspaces() {
+    return currentAnnouncementWorkspaces;
+  }
+
   public List<Announcement> getActiveAnnouncements() {
     return activeAnnouncements;
   }
@@ -59,5 +79,6 @@ public class AnnouncementsViewBackingBean {
   }
   
   private Announcement currentAnnouncement = null;
+  private List<WorkspaceBasicInfo> currentAnnouncementWorkspaces = null; 
   private List<Announcement> activeAnnouncements = null; 
 }

@@ -1,10 +1,7 @@
 package fi.otavanopisto.muikku.ui;
 
 import static com.jayway.restassured.RestAssured.certificate;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -435,7 +432,6 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void waitForPresentAndVisible(String selector) {
     waitForPresent(selector);
     waitForVisible(selector);
-    assertVisible(selector);
   }
    
   protected void takeScreenshot() throws WebDriverException, IOException {
@@ -620,6 +616,15 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
+
+  protected void assertNotTextIgnoreCase(String selector, String text) {
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertNotEquals(text, actual);
+  }
+  
+  protected void assertLessThan(int lessThan, int actualCount) {
+    assertTrue(actualCount < lessThan);
+  }
   
   protected void sendKeys(String selector, String keysToSend) {
     getWebDriver().findElement(By.cssSelector(selector)).sendKeys(keysToSend);
@@ -630,6 +635,20 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   
+  protected void waitUntilTextRemovedFromElement(final String selector, String textToRemove) {
+    new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        try {
+          String text = getWebDriver().findElement(By.cssSelector(selector)).getText();
+          return !text.equalsIgnoreCase(textToRemove);
+        } catch (Exception e) {
+        }
+        
+        return false;
+      }
+    });
+  }
+    
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
@@ -830,7 +849,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected Discussion createWorkspaceDiscussion(Long workspaceEntityId, Long groupId, String name) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    Discussion payload = new Discussion(null, name, groupId);
+    Discussion payload = new Discussion(null, name, null, groupId);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -908,7 +927,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected Discussion createDiscussion(Long groupId, String name) throws IOException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
-    Discussion payload = new Discussion(null, name, groupId);
+    Discussion payload = new Discussion(null, name, null, groupId);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)

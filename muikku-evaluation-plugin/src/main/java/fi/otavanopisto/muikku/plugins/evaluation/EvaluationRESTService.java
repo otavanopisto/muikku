@@ -47,6 +47,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -63,6 +64,10 @@ public class EvaluationRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -2380108419567067263L;
   
+  @Inject
+  @BaseUrl
+  private String baseUrl;
+
   @Inject
   private Logger logger;
 
@@ -187,7 +192,7 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluated);
     
     if (student != null && workspace != null && assessment != null) {
-      sendAssessmentNotification(payload, assessor, student, workspace);
+      sendAssessmentNotification(workspaceEntity, payload, assessor, student, workspace, grade.getName());
     }
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
@@ -338,7 +343,7 @@ public class EvaluationRESTService extends PluginRESTService {
         evaluated);
     
     if (student != null && workspace != null && assessment != null) {
-      sendAssessmentNotification(payload, assessor, student, workspace);
+      sendAssessmentNotification(workspaceEntity, payload, assessor, student, workspace, grade.getName());
     }
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
@@ -595,6 +600,27 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(result.toArray(new fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation[0]))).build();
   }
+
+  @GET
+  @Path("/users/{USERENTITYID}/materials/{WORKSPACEMATERIALID}/evaluation")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response findWorkspaceMaterialEvaluation(@PathParam("USERENTITYID") Long userEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    Long currentUserEntityId = sessionController.getLoggedUserEntity().getId();
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION) && !currentUserEntityId.equals(userEntityId)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation =
+        evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+    if (workspaceMaterialEvaluation == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
+  }
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
@@ -826,7 +852,8 @@ public class EvaluationRESTService extends PluginRESTService {
     return result;
   }
 
-  private void sendAssessmentNotification(WorkspaceAssessment payload, UserEntity evaluator, UserEntity student, Workspace workspace) {
+  private void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceAssessment payload, UserEntity evaluator, UserEntity student, Workspace workspace, String grade) {
+    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
     communicatorController.createMessage(
@@ -840,11 +867,11 @@ public class EvaluationRESTService extends PluginRESTService {
         localeController.getText(
             locale,
             "plugin.workspace.assessment.notificationTitle",
-            new Object[] {workspace.getName()}),
+            new Object[] {workspace.getName(), grade}),
         localeController.getText(
             locale,
             "plugin.workspace.assessment.notificationContent",
-            new Object[] {payload.getVerbalAssessment()}),
+            new Object[] {workspaceUrl, workspace.getName(), grade, payload.getVerbalAssessment()}),
         Collections.<Tag>emptySet());
   }
 }

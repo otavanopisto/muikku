@@ -8,10 +8,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,6 +70,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmen
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -113,7 +116,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class WorkspaceRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -5286350366083446537L;
-  
+
   @Inject
   private Logger logger;
 
@@ -248,12 +251,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create local copy of workspace %s", sourceWorkspaceId)).build();
     }
-   
+
     return Response
-        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription()))
+        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace)))
         .build();
   }
 
+  private Set<String> convertWorkspaceCurriculumIds(Workspace workspace) {
+    Set<String> curriculumIdentifiers = new HashSet<String>(); 
+    if (workspace.getCurriculumIdentifiers() != null)
+      workspace.getCurriculumIdentifiers().forEach((SchoolDataIdentifier id) -> curriculumIdentifiers.add(id.toId()));
+    return curriculumIdentifiers;
+  }
+  
   private WorkspaceEntity findCopiedWorkspaceEntity(Workspace workspace) {
     WorkspaceEntity result = null;
     
@@ -413,8 +423,20 @@ public class WorkspaceRESTService extends PluginRESTService {
               String description = (String) result.get("description");
               String nameExtension = (String) result.get("nameExtension");
               
+              Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
+              Set<String> curriculumIdentifiers = new HashSet<String>();
+              if (curriculumIdentifiersObject instanceof Collection) {
+                Collection<?> curriculumIdentifierCollection = (Collection<?>) curriculumIdentifiersObject;
+                for (Object o : curriculumIdentifierCollection) {
+                  if (o instanceof String)
+                    curriculumIdentifiers.add((String) o);
+                  else
+                    logger.warning("curriculumIdentifier not of type String");
+                }
+              }
+              
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
               }
             }
           }
@@ -475,7 +497,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
   }
   
   @GET
@@ -716,7 +738,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription())).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
   }
   
   @GET
@@ -946,6 +968,39 @@ public class WorkspaceRESTService extends PluginRESTService {
       userArchived);
     
   }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/evaluatedAssignmentInfo")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getEvaluatedAssignmentInfo(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    Map<String, Long> result = new HashMap<String, Long>();
+    
+    // Workspace and user
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+
+    // Total number of evaluated assignments
+    
+    List<WorkspaceMaterial> evaluatedAssignments = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(
+        workspaceEntity,
+        WorkspaceMaterialAssignmentType.EVALUATED);
+    result.put("assignmentsTotal", new Long(evaluatedAssignments.size()));
+    
+    // Done number of evaluated assignments  
+
+    List<WorkspaceMaterialReplyState> replyStates = new ArrayList<WorkspaceMaterialReplyState>();
+    replyStates.add(WorkspaceMaterialReplyState.FAILED);
+    replyStates.add(WorkspaceMaterialReplyState.PASSED);
+    replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
+    Long assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
+    result.put("assignmentsDone", assignmentsDone);
+    
+    return Response.ok(result).build();
+}
   
   @GET
   @Path("/workspaces/{ID}/feeInfo")
@@ -1715,10 +1770,10 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description) {
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, Set<String> curriculumIdentifiers) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
-    
+
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
         workspaceEntity.getUrlName(),
         workspaceEntity.getAccess(),
@@ -1729,7 +1784,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         description, 
         workspaceEntity.getDefaultMaterialLicense(),
         numVisits, 
-        lastVisit);
+        lastVisit,
+        curriculumIdentifiers);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
@@ -2122,9 +2178,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response listJournalEntries(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @QueryParam("userEntityId") Long userEntityId,
-      @QueryParam("workspaceStudentId") String workspaceStudentId
-  ) {
-    
+      @QueryParam("workspaceStudentId") String workspaceStudentId,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("25") Integer maxResults) {
     // Workspace
     
     List<WorkspaceJournalEntry> entries = new ArrayList<>();
@@ -2137,7 +2193,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
-      entries = workspaceJournalController.listEntries(workspaceEntity);
+      entries = workspaceJournalController.listEntries(workspaceEntity, firstResult, maxResults);
     }
     else {
       if (userEntityId != null) {
@@ -2180,14 +2236,19 @@ public class WorkspaceRESTService extends PluginRESTService {
           userEntity = userEntityFromWorkspaceUser;
         }
       }
-      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity, firstResult, maxResults);
     }
     
     for (WorkspaceJournalEntry entry : entries) {
+      UserEntity entryUserEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
+      User user = userController.findUserByUserEntityDefaults(entryUserEntity);
+      
       result.add(new WorkspaceJournalEntryRESTModel(
           entry.getId(),
           entry.getWorkspaceEntityId(),
           entry.getUserEntityId(),
+          user.getFirstName(),
+          user.getLastName(),
           entry.getHtml(),
           entry.getTitle(),
           entry.getCreated()

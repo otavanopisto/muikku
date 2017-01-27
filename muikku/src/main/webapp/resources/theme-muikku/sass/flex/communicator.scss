@@ -63,7 +63,7 @@
     &.user {
 
       &::before {
-        color: $target-user-icon-color;
+        color: $target-user-color;
       }     
         
     }
@@ -71,7 +71,7 @@
     &.usergroup {
 
       &::before {
-        color: $target-workspace-icon-color;
+        color: $target-group-color;
       }
            
     }
@@ -79,7 +79,7 @@
     &.workspace {
 
       &::before {
-         color: $target-group-icon-color;
+        color: $target-workspace-color;
       }     
     
     }     
@@ -88,7 +88,8 @@
       color: $target-remove-font-color;
       
       &::before {
-        color: $target-group-icon-color;
+        color: 
+$target-group-color;
       }
       
     } 
@@ -109,62 +110,6 @@
   }
   
 }
-
-.cm-label-name {
-  
-  &::before {
-    margin-left: 5px;
-  }
-  
-  a {
-    margin-left: 5px;
-  }
-  
-}
-
-.cm-categories {
-  background-color: $environment-background-color;
-   
-  ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-     
-    li {
-      border-bottom: 1px solid $environment-border-color;
-      border-left: 5px solid $navigation-vertical-bar-border-color;
-       
-      a {
-        font-weight: 300;
-        text-decoration: none;
-        height: 30px;
-        color: $environment-font-color;
-        display: inline-block;
-        box-sizing: border-box;
-        padding-top: 8px;      
-      }
-            
-      &:hover {
-        border-left: 5px solid $navigation-vertical-bar-hover-border-color;     
-        cursor: pointer;   
-      } 
-      
-      &.selected {
-        background-color: $environment-background-selected-color;
-        border-left: 5px solid $environment-border-selected-color;
-        
-        a {
-          font-weight: normal;
-        }
-        
-      }
-       
-    }
-  
-  }
-  
-} 
-
 
 .cm-label-menu-content {
   
@@ -366,14 +311,24 @@
   }
   
   .cm-message-recipients {
-    color: $environment-font-color;
-    display: inline-block;
+    color: #000;
     margin: 0 0 0 5px;
-    max-width: calc(100% - 170px);
+    width: calc(100% - 170px);
     overflow: hidden;
-    text-overflow: ellipsis;
     vertical-align: bottom;
-    white-space: nowrap;
+    display:table;
+    table-layout: fixed;
+
+    div.cm-message-recipients-cell{
+      display: table-cell;
+    }    
+    div.cm-message-recipients-wrapper {
+      overflow: hidden; 
+      white-space: nowrap; 
+      text-overflow: ellipsis; 
+      word-break: break-all; 
+      word-wrap: break-word;    
+    }
     
     .cm-message-recipient-name {
       padding: 0 5px;

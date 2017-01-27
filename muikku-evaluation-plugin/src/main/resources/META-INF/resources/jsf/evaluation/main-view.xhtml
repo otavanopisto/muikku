@@ -13,6 +13,8 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <!-- Muikku materials -->
     <ui:include src="/jsf/workspace/workspace-material-scripts.xhtml"/>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
     <!--  Datepicker -->
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js"/>
     <!-- Dust -->
@@ -71,10 +73,12 @@
         <div class="evaluation-cards-title">
           <h3>#{i18n.text['plugin.evaluation.evaluationRequestsTitle']}</h3>
           <div class="evaluation-sorting-wrapper">
-            <div class="eval-sorting icon-sort-amount-asc selected" title="#{i18n.text['plugin.evaluation.sorting.sortByEvalReqDateAscTitle']}"></div>
+            <div class="eval-sorting icon-sort-amount-asc" title="#{i18n.text['plugin.evaluation.sorting.sortByEvalReqDateAscTitle']}"></div>
             <div class="eval-sorting icon-sort-amount-desc" title="#{i18n.text['plugin.evaluation.sorting.sortByEvalReqDateDescTitle']}"></div>
             <div class="eval-sorting icon-sort-alpha-asc" title="#{i18n.text['plugin.evaluation.sorting.sortBySurnameAscTitle']}"></div>
             <div class="eval-sorting icon-sort-alpha-desc" title="#{i18n.text['plugin.evaluation.sorting.sortBySurnameDescTitle']}"></div>
+            <div class="eval-sorting icon-sort-workspace-alpha-asc" title="#{i18n.text['plugin.evaluation.sorting.sortByWorkspaceAscTitle']}"></div>
+            <div class="eval-sorting icon-sort-workspace-alpha-desc" title="#{i18n.text['plugin.evaluation.sorting.sortByWorkspaceDescTitle']}"></div>
           </div>
         </div>
         <div class="evaluation-cards-container">

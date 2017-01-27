@@ -28,8 +28,11 @@ import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotifi
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
@@ -47,6 +50,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserController userController;
   
   @Inject
   private LocaleController localeController;
@@ -83,18 +89,27 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
       return;
     }
     
-    Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = assesmentRequestNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
-    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, since);
+    // #2867: Do no notify anyone that has been notified about this before (i.e. triggers only once after studies have started)
     
+    List<SchoolDataIdentifier> studentIdentifiersAlreadyNotified = assesmentRequestNotificationController.listNotifiedSchoolDataIdentifiers();
+
+    // Get a batch of students that have been studying for more than 60 days
+    
+    Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
+    SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifiersAlreadyNotified, since);
     if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
       offset = 0;
-    } else {
+    }
+    else {
       offset += MAX_RESULTS;
     }
+    // #2867: Filter the batch to only contain students that have no evaluation activity whatsoever
     
-    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutAssesmentRequests(searchResult, since)) {
-      
+    List<SchoolDataIdentifier> studentIdentifiers = getStudentIdentifiersWithoutEvaluationActivity(searchResult);
+    
+    // Notify the filtered list of students 
+    
+    for (SchoolDataIdentifier studentIdentifier : studentIdentifiers) {
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
@@ -109,7 +124,8 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
           studentEntity
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
-      } else {
+      }
+      else {
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }
     }
@@ -133,26 +149,60 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     return groups;
   }
   
-  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutAssesmentRequests(SearchResult searchResult, Date since){
+  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutEvaluationActivity(SearchResult searchResult) {
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<>();
     for (Map<String, Object> result : searchResult.getResults()) {
-      String studentId = (String) result.get("id");
+
+      // Convert the search result id into SchoolDataIdentifier. Skip student if this fails.
       
+      String studentId = (String) result.get("id");
       if (StringUtils.isBlank(studentId)) {
         logger.severe("Could not process user found from search index because it had a null id");
         continue;
       }
-      
       String[] studentIdParts = studentId.split("/", 2);
       SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
       if (studentIdentifier == null) {
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
       }
-
-      List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listStudentAssessmentRequestsSince(studentIdentifier, since);
       
-      if (assessmentRequests.isEmpty()){
+      // Find the student by SchoolDataIdentifier
+      
+      User student = userController.findUserByIdentifier(studentIdentifier);
+      if (student != null) {
+        
+        // Students without a start date (or with an end date) are never notified
+        
+        if (student.getStudyStartDate() == null || student.getStudyEndDate() != null) {
+          continue;
+        }
+        
+        // Students that have started their studies in the last 60 days should not be notified
+        // (given searchResult should not even contain these but let's check it once more, just in case) 
+        
+        OffsetDateTime thresholdDateTime = OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS);
+        if (student.getStudyStartDate().isAfter(thresholdDateTime)) {
+          logger.severe(String.format("Skipping student id %s that just started studies", studentId));
+          continue;
+        }
+      
+        // Check if student has made any assessment requests. If they have, they don't need to be notified
+  
+        WorkspaceAssessmentRequest latestRequest = gradingController.findLatestAssessmentRequestByIdentifier(studentIdentifier);
+        if (latestRequest != null) {
+          continue;
+        }
+        
+        // Check if student has any workspace assessments. If they have, they don't need to be notified
+        
+        WorkspaceAssessment latestAssessment = gradingController.findLatestWorkspaceAssessmentByIdentifier(studentIdentifier);
+        if (latestAssessment != null) {
+          continue;
+        }
+        
+        // By this point, we can be certain that the student has to be notified
+        
         studentIdentifiers.add(studentIdentifier);
       }
     }

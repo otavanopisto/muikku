@@ -84,9 +84,6 @@ public class PyramusSchoolDataEntityFactory {
     String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
 
     boolean hidden = false;
-    boolean startedStudies = false;
-    boolean finishedStudies = false;
-    boolean active = true;
     
     return new PyramusUser(
         identifierMapper.getStaffIdentifier(staffMember.getId()),
@@ -103,10 +100,7 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
-        hidden,
-        startedStudies,
-        finishedStudies,
-        active);
+        hidden);
   }
 
   public List<User> createEntity(fi.otavanopisto.pyramus.rest.model.StaffMember... staffMembers) {
@@ -132,10 +126,6 @@ public class PyramusSchoolDataEntityFactory {
       displayName.append(String.format(" (%s)", studyProgrammeName));
     }
     
-    boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(OffsetDateTime.now());
-    boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(OffsetDateTime.now());
-    boolean active = studyStartDate == null && studyEndDate == null ? true : startedStudies && !finishedStudies;
-    
     return new PyramusUser(
         identifierMapper.getStudentIdentifier(student.getId()),
         student.getFirstName(),
@@ -151,10 +141,7 @@ public class PyramusSchoolDataEntityFactory {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
-        hidden,
-        startedStudies,
-        finishedStudies,
-        active);
+        hidden);
   }
 
   public EnvironmentRole createEntity(fi.otavanopisto.pyramus.rest.model.UserRole role) {
@@ -430,7 +417,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public UserGroup createEntity(StudentGroup studentGroup) {
     return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()),
-        studentGroup.getName());
+        studentGroup.getName(), studentGroup.getGuidanceGroup());
   }
 
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {
@@ -441,6 +428,7 @@ public class PyramusSchoolDataEntityFactory {
     }
     return result;
   }
+
 
   public GroupUser createEntity(StudentGroupStudent studentGroupStudent) {
     return new PyramusGroupUser(identifierMapper.getStudentGroupStudentIdentifier(studentGroupStudent.getId()),
@@ -457,6 +445,16 @@ public class PyramusSchoolDataEntityFactory {
     if (studentGroupStudents != null) {
       for (StudentGroupStudent studentGroupStudent : studentGroupStudents) {
         results.add(createEntity(studentGroupStudent));
+      }
+    }
+    return results;
+  }
+
+  public List<GroupUser> createEntities(StudentGroupUser... studentGroupUsers) {
+    List<GroupUser> results = new ArrayList<>();
+    if (studentGroupUsers != null) {
+      for (StudentGroupUser studentGroupUser : studentGroupUsers) {
+        results.add(createEntity(studentGroupUser));
       }
     }
     return results;

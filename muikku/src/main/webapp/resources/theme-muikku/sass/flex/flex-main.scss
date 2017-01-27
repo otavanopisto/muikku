@@ -410,6 +410,10 @@ main.content {
   height: 100%;
   box-sizing: border-box;
   
+  &.box-max-width ul li {
+    max-width: 279px;
+  }
+    
   .empty {
     font-style: italic;
   }
@@ -424,6 +428,7 @@ main.content {
 
 .box ul li {
   padding: 5px 0;
+  word-wrap: break-word;
 }
 
 /* Frontpage Boxes When User Not Logged In */

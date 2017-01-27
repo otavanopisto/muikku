@@ -27,13 +27,15 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Startup
 @Singleton
 @ApplicationScoped
-public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificationStrategy{
+public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificationStrategy {
 
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.maxresults", "20"));
@@ -49,6 +51,9 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserController userController;
   
   @Inject
   private NotificationController notificationController;
@@ -74,23 +79,9 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
 
   @Override
   public void sendNotifications() {
-    Collection<Long> groups = getGroups();
-    if (groups.isEmpty()) {
-      return;
-    }
-    
-    Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
-    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = noPassedCoursesNotificationController.listNotifiedSchoolDataIdentifiersAfter(since);
-    SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, since);
-    
-    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
-      offset = 0;
-    } else {
-      offset += MAX_RESULTS;
-    }
-    
-    for (SchoolDataIdentifier studentIdentifier : getStudentIdentifiersWithoutPassedCourses(searchResult, since)) {
-      
+    List<SchoolDataIdentifier> studentsToNotify = getStudentsToNotify();
+
+    for (SchoolDataIdentifier studentIdentifier : studentsToNotify) {
       UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);      
       if (studentEntity != null) {
         Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
@@ -109,11 +100,26 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity was not found", studentIdentifier.toId()));
       }
     }
-    
   }
   
-  private List<SchoolDataIdentifier> getStudentIdentifiersWithoutPassedCourses(SearchResult searchResult, Date since){
+  public List<SchoolDataIdentifier> getStudentsToNotify() {
+    Collection<Long> groups = getGroups();
+    if (groups.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
+    Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
+    List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = noPassedCoursesNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
+    SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, thresholdDate);
+    
+    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
+      offset = 0;
+    } else {
+      offset += MAX_RESULTS;
+    }
+    
     List<SchoolDataIdentifier> studentIdentifiers = new ArrayList<>();
+    
     for (Map<String, Object> result : searchResult.getResults()) {
       String studentId = (String) result.get("id");
       
@@ -128,17 +134,37 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
       }
-     
-      if (noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, since) < MIN_PASSED_COURSES) {
-        studentIdentifiers.add(studentIdentifier);
-      }
       
+      User student = userController.findUserByIdentifier(studentIdentifier);
+      
+      if ((student != null) && (isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS))) {
+        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, thresholdDate);
+        if (passedCourseCount == null) {
+          logger.severe(String.format("Could not read course count for %s", studentId));
+          continue;
+        } else if (passedCourseCount < MIN_PASSED_COURSES) {
+          studentIdentifiers.add(studentIdentifier);
+        }
+      } else {
+        logger.severe(String.format("Non-notified or null student (%s) detected in search results.", studentIdentifier != null ? studentIdentifier.toId() : "null identifier"));
+      }
     }
+    
     return studentIdentifiers;
   }
-  
-  private Collection<Long> getGroups(){
+
+  public boolean isNotifiedStudent(OffsetDateTime studyStartDate, OffsetDateTime studyEndDate, OffsetDateTime currentDateTime, int thresholdDays) {
+    if ((studyStartDate == null) || (studyEndDate != null))
+      return false;
     
+    // Earliest point when student may receive the notification is study start date + threshold day count
+    OffsetDateTime thresholdDateTime = studyStartDate.plusDays(thresholdDays);
+
+    // If the threshold date has passed the student is valid target for the notification
+    return thresholdDateTime.isBefore(currentDateTime);
+  }
+  
+  private Collection<Long> getGroups() {
     String groupsString = pluginSettingsController.getPluginSetting("timed-notifications", "no-passed-courses-notification.groups");
     if (StringUtils.isBlank(groupsString)) {
       this.active = false;
@@ -147,14 +173,15 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     }
     
     Collection<Long> groups = new ArrayList<>();
+    
     String[] groupSplit = groupsString.split(",");
     for (String group : groupSplit) {
       if (NumberUtils.isNumber(group)) {
         groups.add(NumberUtils.createLong(group));
       }
     }
+
     return groups;
-    
   }
   
   private int offset = 0;

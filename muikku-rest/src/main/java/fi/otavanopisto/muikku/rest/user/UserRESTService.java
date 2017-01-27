@@ -46,6 +46,7 @@ import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -123,6 +124,24 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
+  
+  @GET
+  @Path("/property/{KEY}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getUserEntityProperty(@PathParam("KEY") String key) {
+    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+    UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
+    return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
+  }
+
+  @POST
+  @Path("/property")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response setUserEntityProperty(fi.otavanopisto.muikku.rest.model.UserEntityProperty payload) {
+    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+    userEntityController.setUserEntityProperty(loggedUserEntity, payload.getKey(), payload.getValue());
+    return Response.ok(payload).build();
+  }
   
   @GET
   @Path("/students")
@@ -304,7 +323,8 @@ public class UserRESTService extends AbstractRESTService {
             studyStartDate,
             studyEndDate,
             studyTimeEnd,
-            (String) o.get("curriculumIdentifier")));
+            (String) o.get("curriculumIdentifier"),
+            userEntity.getUpdatedByStudent()));
         }
       }
     }
@@ -372,7 +392,8 @@ public class UserRESTService extends AbstractRESTService {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
-        user.getCurriculumIdentifier());
+        user.getCurriculumIdentifier(),
+        userEntity.getUpdatedByStudent());
     
     return Response
         .ok(student)
@@ -391,12 +412,22 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
     SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(id);
+    
     if (studentIdentifier == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity(String.format("Invalid studentIdentifier %s", id)).build();
     }
+    if (!(Objects.equals(studentIdentifier.getIdentifier(), loggedUserIdentifier.getIdentifier()) &&
+        Objects.equals(studentIdentifier.getDataSource(), loggedUserIdentifier.getDataSource()))) {
+      return Response.status(Status.FORBIDDEN).entity("Trying to modify non-logged-in student").build();
+    }
     
     User user = userController.findUserByIdentifier(studentIdentifier);
+    
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+    
+    userEntityController.markAsUpdatedByStudent(userEntity);
     
     // TODO: update other fields too
     
@@ -630,6 +661,8 @@ public class UserRESTService extends AbstractRESTService {
     
     for (UserAddress address : addresses) {
       if (address.getIdentifier().toId().equals(studentAddress.getIdentifier())) {
+        userEntityController.markAsUpdatedByStudent(studentEntity);
+
         userController.updateUserAddress(
             studentIdentifier,
             address.getIdentifier(),
@@ -1280,7 +1313,8 @@ public class UserRESTService extends AbstractRESTService {
         transferCredit.getLength(), 
         toId(transferCredit.getLengthUnitIdentifier()), 
         toId(transferCredit.getSchoolIdentifier()), 
-        toId(transferCredit.getSubjectIdentifier()));
+        toId(transferCredit.getSubjectIdentifier()),
+        toId(transferCredit.getCurriculumIdentifier()));
   }
   
   private String toId(SchoolDataIdentifier identifier) {

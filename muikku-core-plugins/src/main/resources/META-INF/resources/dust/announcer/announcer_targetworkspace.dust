@@ -1,0 +1,5 @@
+<div class="mf-item-user an-announcement-targetgroup">
+  <input type="hidden" data-array="true" name="workspaceEntityIds" value="{id}" />
+  <div class="an-announcement-targetgroup-name icon-book workspace"><span>{name}</span></div>
+  <div class="clear"></div>
+</div>

@@ -258,20 +258,22 @@ a {
 }
 
 ul {
-  list-style-position: inside;
+  list-style-position: outside;
 }
 
 ol {
   list-style-type: decimal;
-  list-style-position: inside;
+  list-style-position: outside;
 }
 
 ul,
 ol {
-  margin: 0 20px;
+  margin: 16px 0;
+  padding: 0 0 0 30px;
 
   li {
-    margin: 5px;
+    margin: 0;
+    padding: 0;
   }
   
   ol {

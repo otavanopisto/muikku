@@ -4,7 +4,7 @@ $(document).ready(function(){
   mApi()
   .announcer
   .announcements
-  .read({onlyActive: "true", onlyMine: "true", hideWorkspaceAnnouncements: "false"})
+  .read({ hideWorkspaceAnnouncements: "false" })
   .callback($.proxy(function(err, result) {
       if (err) {
         $(".notification-queue").notificationQueue(
@@ -13,24 +13,15 @@ $(document).ready(function(){
             err);
       } else {
         async.map(result, function(announcement, callback) {
-          if (announcement.workspaceEntityIds.length === 0) {
-            announcement.link = "announcements?announcementId=" + announcement.id;
-            callback(null, announcement);
-          } else {
-            var workspaceEntityId = announcement.workspaceEntityIds[0];
-            mApi().workspace.workspaces.read(workspaceEntityId)
-              .callback(function (err, result) {
-                if (err) {
-                  callback(err);
-                } else {
-                  announcement.workspaceName = result.name;
-                  announcement.link =
-                    "workspace/" + result.urlName +
-                    "/announcements?announcementId=" + announcement.id;
-                  callback(null, announcement);
-                }
-              });
+          if (announcement.workspaces.length > 0) {
+            var workspaceNames = $.map(announcement.workspaces, function(workspace) {
+              return workspace.name;
+            });
+            announcement.workspaceName = workspaceNames.join(", ");
           }
+          
+          announcement.link = "announcements?announcementId=" + announcement.id;
+          callback(null, announcement);
         },
         function(err, result) {
           if (err) {

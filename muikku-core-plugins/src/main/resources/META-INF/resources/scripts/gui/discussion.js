@@ -390,6 +390,7 @@
           if (!area.groupId) {
             $('<option>')
               .attr('value', area.id)
+              .attr('data-description', area.description)
               .text(area.name) 
               .appendTo(areaSelect);
           }
@@ -404,6 +405,16 @@
     },
     
     _loadThreads: function (areaId) {
+      
+      var option = this.element.find('select[name="areas"] option:selected');
+      var description = option.attr('data-description');
+      var descriptionContainer =  this.element.find('.di-thread-description-container');
+      if(description){
+        $(descriptionContainer).show();
+        this.element.find('.di-thread-description').text(description);
+      }else{
+        $(descriptionContainer).hide();
+      }
       this.element.find('.di-thread')
         .hide();
 
@@ -465,7 +476,6 @@
     _create : function() {
       this._firstResult = 0;
       this._replies = []; 
-      
       this.element.on("click", ".icon-goback", $.proxy(this._onBackClick, this));
       this.element.on("click", ".di-remove-thread-link", $.proxy(this._onRemoveClick, this));
       this.element.on("click", ".di-message-reply-link", $.proxy(this._onMessageReplyClick, this));
@@ -491,6 +501,7 @@
     },
     
     loadThread: function (areaId, threadId) {
+      $('.di-thread-description-container').hide();      
       this.element
         .html('')
         .addClass('loading');
@@ -831,7 +842,9 @@
     _onSendClick: function (event) {
       var form = $(event.target).closest('form')[0];
       if (form.checkValidity()) {
-        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), $.proxy(function(err, result) {
+        var description = $('#textDescription').val();
+        
+        this.options.ioController.createArea(this.element.find('input[name="name"]').val(), description, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.newarea', err));
           } else {        
@@ -868,6 +881,8 @@
             var areaSelect = this.element.find("select[name='forumAreaId']");
             areaSelect.val(this.options.areaId)
             this.element.find('input[name="name"]').val(areaSelect.find(':selected').text());
+            var test = areaSelect.find(':selected').attr('data-description');
+            this.element.find('textarea[name="description"]').val(test);
           }
           
           if (callback) {
@@ -882,8 +897,9 @@
       if (form.checkValidity()) {
         var areaId = this.element.find("select[name='forumAreaId']").val();
         var name = this.element.find('input[name="name"]').val();
+        var description = $('#textDescription').val();
         
-        this.options.ioController.updateArea(areaId, name, $.proxy(function(err, result) {
+        this.options.ioController.updateArea(areaId, name, description, $.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.editarea', err));
           } else {

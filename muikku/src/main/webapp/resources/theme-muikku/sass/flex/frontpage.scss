@@ -20,5 +20,9 @@
   }
   .fp-announcement-info-workspace{
     font-size:10px;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 260px;
+    text-overflow: ellipsis;    
   }
 }

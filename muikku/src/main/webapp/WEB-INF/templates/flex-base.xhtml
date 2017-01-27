@@ -31,6 +31,14 @@
       
       <!-- jQuery UI -->
       <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js"/>
+
+      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js"/>
+      
+      <script defer="defer" type="text/javascript">
+        $(document).ready(function () {
+          $.datepicker.setDefaults($.datepicker.regional['#{sessionBackingBean.locale}']);
+        });
+      </script>
       
       <!--  jQuery Touch Punch or jQuery Mobile? -->
       <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"/>
@@ -75,7 +83,7 @@
 
       <!-- Flex Grid -->
       <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css"/>
-      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.0.9/style.css"/>
+      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.1.5/style.css"/>
       <ui:insert name="styles"></ui:insert>
     </head>
   

@@ -11,11 +11,12 @@
         entities: false,
         entities_latin: false,
         entities_greek: false,
+        mathJaxLib: '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML',
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
           { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
           { name: 'links', items: [ 'Link' ] },
-          { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+          { name: 'insert', items: [ 'Image', 'Table', 'Muikku-mathjax', 'Smiley', 'SpecialChar' ] },
           { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
           { name: 'styles', items: [ 'Format' ] },
           { name: 'insert', items : [ 'Muikku-mathjax' ] },
@@ -23,9 +24,13 @@
           { name: 'tools', items: [ 'Maximize' ] }
         ],
         contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_reading.css',
-        extraPlugins: {
+        extraPlugins : {
+          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/',
           'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.8/',
-          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/'
+          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
+          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.8/',
+          'muikku-mathjax': CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
         }
       }
     },
@@ -90,14 +95,27 @@
               
               this._evaluationModal.append(html);
               
+              this._evaluationModal
+                .find('.eval-modal-evaluate-workspace-content')
+                .css({
+                  'overflow-y': 'hidden'
+                })
+                .append($('<div>')
+                  .addClass('workspace-evaluation-form-overlay'))
+                .append($('<div>')
+                  .addClass('workspace-evaluation-form-activate-button')
+                  .text(getLocaleText("plugin.evaluation.evaluationModal.workspaceEvaluationForm.overlayButtonLabel"))
+                );
+              
               // Material's loading animation start
               
-              this.element.trigger("loadStart", $('.eval-modal-assignment-content'));
+              this.element.trigger("loadStart", $('.eval-modal-assignments-content'));
               
               // Workspace assessment editor
 
               var workspaceLiteralEditor = this._evaluationModal.find("#workspaceEvaluateFormLiteralEvaluation")[0]; 
               CKEDITOR.replace(workspaceLiteralEditor, $.extend({}, this.options.ckeditor, {
+                draftKey: ['workspace-evaluation-draft', workspaceEntityId, $(requestCard).attr('data-user-entity-id')].join('-'),
                 on: {
                   instanceReady: $.proxy(this._onLiteralEvaluationEditorReady, this)
                 }
@@ -116,26 +134,37 @@
                 }, this));
               }, this));
               $('#workspaceSaveButton').click($.proxy(function(event) {
-                this._saveAssessment();
+                CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
+                this._saveWorkspaceAssessment();
               }, this));
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
               }, this));
+              $('.workspace-evaluation-form-activate-button').click($.proxy(function(event) {
+                $('.workspace-evaluation-form-activate-button, .workspace-evaluation-form-overlay').animate({
+                  opacity: 0
+                }, {
+                  duration: 300,
+                  complete: function (){
+                    this.remove();
+                    $('.eval-modal-evaluate-workspace-content').removeAttr('style');
+                  }
+                });
+              }, this));
               
               // Assignment assessment editor
 
-              var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
-              CKEDITOR.replace(assignmentLiteralEditor, this.options.ckeditor);
               var assignmentDateEditor = $(this._evaluationModal).find('#assignmentEvaluationDate'); 
               $(assignmentDateEditor)
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
               $('#assignmentSaveButton').click($.proxy(function(event) {
+                CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.discardDraft();
                 this._saveMaterialAssessment();
               }, this));
               $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
-                this._toggleMaterialAssessmentView(false);
+                this.toggleMaterialAssessmentView(false);
               }, this));
               
               // Discard modal button (top right)  
@@ -151,6 +180,9 @@
     
     close: function() {
       $('body').removeClass('no-scroll');
+      for (var name in CKEDITOR.instances) {
+        CKEDITOR.instances[name].destroy(true);
+      }
       this._evaluationModal.remove();
     },
 
@@ -160,6 +192,25 @@
     
     _onLiteralEvaluationEditorReady: function() {
       this.element.trigger("dialogReady");
+    },
+    
+    _loadJournalEntries: function() {
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      
+      mApi().workspace.workspaces.journal.read(workspaceEntityId, {userEntityId: userEntityId})
+        .callback($.proxy(function (err, journalEntries) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            renderDustTemplate('/evaluation/evaluation-journal-entries.dust', { 
+              journalEntries: journalEntries
+            }, $.proxy(function(text) {
+              this.element.find('.eval-modal-journal-entries-content').append(text);
+            }, this));
+          }
+        }, this));
     },
     
     _loadMaterials: function() {
@@ -179,10 +230,12 @@
         if ($(assignment).attr('data-open') == 'true') {
           $(assignment).attr('data-open', false);
           $(assignment).hide();
+          $(assignment).prev('.assignment-literal-evaluation-wrapper').hide();
         }
         else {
           $(assignment).attr('data-open', true);
           $(assignment).show();
+          $(assignment).prev('.assignment-literal-evaluation-wrapper').show();
         }
       }
       else {
@@ -210,6 +263,7 @@
                   .attr('data-loaded', true)
                   .attr('data-open', true);
                 $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
+                $(assignment).prev('.assignment-literal-evaluation-wrapper').show();
               }, this));
           }, this));
       }
@@ -221,8 +275,10 @@
       }
       else {
         $('#workspaceEvaluationDate').datepicker('setDate', new Date());
+        $('#workspaceAssessor').val(MUIKKU_LOGGED_USER);
       }
       this._loadMaterials();
+      this._loadJournalEntries();
     },
     
     _onMaterialsLoaded: function(event, data) {
@@ -235,13 +291,34 @@
           materialId: assignment.materialId,
           path: assignment.path,
           evaluationDate: assignment.evaluated,
-          grade: assignment.grade
+          grade: assignment.grade,
+          literalEvaluation: assignment.literalEvaluation
         }, $.proxy(function (html) {
-          $('.eval-modal-assignment-content').append(html);
+          var material = $(html).appendTo('.eval-modal-assignments-content');
+          // Toggle material open/close
+          $(material).find('.assignment-title-wrapper').on('click', function (event) {
+            var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
+            $(document).evaluationModal('toggleAssignment', assignmentContent);
+          });
+          // Evaluate material
+          $(material).find('.assignment-evaluate-button').on('click', function (event) {
+            var oldAssignment = $(document).evaluationModal('activeAssignment');
+            var newAssignment = $(event.target).closest('.assignment-wrapper');
+            if (!oldAssignment || newAssignment[0] !== oldAssignment[0]) {
+              $(document).evaluationModal('activeAssignment', newAssignment);
+              var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+              var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
+              $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
+              $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
+            }
+            else {
+              $(document).evaluationModal('toggleMaterialAssessmentView', true);
+            }
+          });
         }, this));
       }, this));
       // Material's loading animation end
-      this.element.trigger("loadEnd", $('.eval-modal-assignment-content'));
+      this.element.trigger("loadEnd", $('.eval-modal-assignments-content'));
     },
     
     _onWorkspaceAssessmentSaved: function(event, data) {
@@ -261,11 +338,19 @@
       }, this));
     },
     
-    setActiveAssignment: function(assignment) {
-      this._activeAssignment = assignment;
+    activeAssignment: function(val) {
+      if (val) {
+        this._activeAssignment = val;
+      }
+      else {
+        return this._activeAssignment;
+      }
     },
     
     loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
+      if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
+        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy(true);
+      }
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
@@ -278,7 +363,7 @@
             else {
               $('#assignmentAssessmentId').val(assessment.identifier);
               // Verbal assessment
-              CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
+              $('#assignmentEvaluateFormLiteralEvaluation').val(assessment.verbalAssessment);
               // Date
               $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
               // Assessor
@@ -286,21 +371,34 @@
               // Grade
               $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
               // Show material evaluation view
-              this._toggleMaterialAssessmentView(true);
+              this.toggleMaterialAssessmentView(true, $.proxy(function() {
+                this._createAssignmentEditor(workspaceMaterialId);
+              }, this));
             }
           }, this));
       }
       else {
         $('#assignmentAssessmentId').val('');
-        CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData('');
+        $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
-        $('#assignmentAssessor').prop('selectedIndex', 0);
+        $('#assignmentAssessor').val(MUIKKU_LOGGED_USER);
         $('#assignmentGrade').prop('selectedIndex', 0);
-        this._toggleMaterialAssessmentView(true);
+        this.toggleMaterialAssessmentView(true, $.proxy(function() {
+          this._createAssignmentEditor(workspaceMaterialId);
+        }, this));
       }
     },
     
-    _toggleMaterialAssessmentView(show) {
+    // CKEditor draft workaround :|
+    _createAssignmentEditor: function(workspaceMaterialId) {
+      var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+      var assignmentLiteralEditor = this._evaluationModal.find("#assignmentEvaluateFormLiteralEvaluation")[0]; 
+      CKEDITOR.replace(assignmentLiteralEditor, $.extend({}, this.options.ckeditor, {
+        draftKey: ['material-evaluation-draft', workspaceMaterialId, userEntityId].join('-')
+      }));
+    },
+    
+    toggleMaterialAssessmentView: function(show, callback) {
       
       // View width check so we know how modal is rendered
       if ($(document).width() > 1023) {
@@ -324,6 +422,9 @@
           $(this).css({
             "box-shadow" : boxShadow
           });
+          if (callback) {
+            callback();
+          }
         });
       }
       else {
@@ -337,6 +438,9 @@
             left: "100%"
         }, 250, "swing", function() {
           $('.eval-modal-assignment-evaluate-container').hide();
+          if (callback) {
+            callback();
+          }
         });
       }
     },
@@ -470,7 +574,7 @@
         }, this));
     },
 
-    _saveAssessment: function() {
+    _saveWorkspaceAssessment: function() {
       var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
       if ($(this._requestCard).attr('data-evaluated')) {
         mApi().evaluation.workspaceuser.assessment
@@ -555,7 +659,14 @@
                     $(this._activeAssignment).attr('data-evaluated', true);
                     $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
                     $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
-                    this._toggleMaterialAssessmentView(false);
+                    this.toggleMaterialAssessmentView(false);
+                    var assignmentContent = $(this._activeAssignment).find('.assignment-content');
+                    if ($(assignmentContent).attr('data-open') == 'true') {
+                      $(assignmentContent).attr('data-open', false);
+                      $(assignmentContent).hide();
+                      $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
+                    }
+                    $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
                   }
                 }, this));
             }
@@ -587,34 +698,18 @@
                 .append($('<span>').addClass('assignment-grade-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentGradeLabel")))
                 .append($('<span>').addClass('assignment-grade-data').text($('#assignmentGrade option:selected').text()));
               $(this._activeAssignment).find('.assignment-done').after(gradeElement).after(evaluationDateElement);
-              this._toggleMaterialAssessmentView(false);
+              this.toggleMaterialAssessmentView(false);
+              var assignmentContent = $(this._activeAssignment).find('.assignment-content');
+              if ($(assignmentContent).attr('data-open') == 'true') {
+                $(assignmentContent).attr('data-open', false);
+                $(assignmentContent).hide();
+                $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
+              }
+              $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
             }
           }, this));
       }
     }
-  });
-
-  $(document).on('click', '.archive-button', function (event) {
-    var card = $(event.target).closest('.evaluation-card');
-    $(document).evaluationModal('confirmStudentArchive', card, $.proxy(function(archived) {
-      if (archived) {
-        $(document).trigger("discardCard", {workspaceUserEntityId: $(card).attr('data-workspace-user-entity-id')});
-      }
-    }, this));
-  });
-  
-  $(document).on('click', '.assignment-title-wrapper', function (event) {
-    var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
-    $(document).evaluationModal('toggleAssignment', assignmentContent);
-  });
-
-  $(document).on('click', '.assignment-evaluate-button', function (event) {
-    var assignment = $(event.target).closest('.assignment-wrapper');
-    $(document).evaluationModal('setActiveAssignment', assignment);
-    var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
-    var workspaceMaterialId = $(assignment).find('.assignment-content').attr('data-workspace-material-id');
-    $('.eval-modal-assignment-title').text($(assignment).find('.assignment-title').text())
-    $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(assignment).attr('data-evaluated'));
   });
 
   $(document).on('afterHtmlMaterialRender', function (event, data) {

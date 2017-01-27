@@ -20,6 +20,7 @@
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-journal.css"/>   
+    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main-functionality.css"/>          
   </ui:define>
   
   <ui:define name="grid-content">
@@ -66,8 +67,7 @@
       </div>
     </form>
     
-		<div class="workspace-journal-content-wrapper flex-row">
-    
+    <div class="journal workspace-journal-content-wrapper flex-row flex-align-items-center" data-canListAllEntries="#{workspaceJournalBackingBean.canListAllEntries}" data-myJournal="#{workspaceJournalBackingBean.myJournal}">
       <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
         <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
           <div class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
@@ -79,69 +79,11 @@
         </ui:fragment>
       </ui:fragment>
 
-			<ui:repeat var="entry" value="#{workspaceJournalBackingBean.journalEntries}">
-
-				<div class="workspace-single-journal-entry lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" data-entry-id="#{entry.id}">
-					<div class="workspace-journal-entry-view flex-row">
-            <div class=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-  						<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
-                <div class="flex-row">
-    							<div class="workspace-journal-title lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">#{entry.title}</div>
-                  <div class="workspace-journal-entry-meta lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last lg-flex-right md-flex-right sm-flex-left">
-                    <div class="workspace-journal-dateTime">
-                      <h:outputText value="#{entry.created}" >
-                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-                      </h:outputText>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex-row">
-                  <div class="workspace-journal-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                    <h:outputText value="#{entry.html}" escape="false"/>
-                  </div>
-                </div>
-  						</ui:fragment>
-  						<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
-                <div class="flex-row">
-    							<div class="workspace-journal-header-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                    <div class="workspace-journal-poster-container flex-row flex-align-items-center">
-                      <div class="workspace-journal-poster-image lg-flex-cell-1 md-flex-cell-1 sm-flex-hide"><img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/></div>
-                      <div class="workspace-journal-poster-name lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">#{workspaceJournalBackingBean.posterOf(entry)}</div>
-                      <div class="workspace-journal-entry-meta lg-flex-cell-4 md-flex-cell-5 sm-flex-cell-full lg-flex-right md-flex-right sm-flex-left">
-                        <div class="workspace-journal-dateTime">
-                          <h:outputText value="#{entry.created}" >
-                            <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-                          </h:outputText>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex-row">
-                  <div class="workspace-journal-content-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                    <div class="workspace-journal-title">#{entry.title}</div>
-                    <div class="workspace-journal-content">
-                      <h:outputText value="#{entry.html}" escape="false"/>
-                    </div>
-                  </div>
-                </div>
-  						</ui:fragment>
-            </div>
-					</div>
-					<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
-            <div class="flex-row">
-  						<div class="workspace-journal-footer lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-  							<button class="journal-edit-button">#{i18n.text['plugin.workspace.journal.editEntryButton.label']}</button>
-  							<button data-entry-id="#{entry.id}" class="journal-delete-button">#{i18n.text['plugin.workspace.journal.deleteEntryButton.label']}</button>
-  							<ui:remove>
-  								<button class="journal-permanent-url-button">#{i18n.text['plugin.workspace.journal.copyUrlEntryButton.label']}</button>
-  							</ui:remove>
-  						</div>
-            </div>
-					</ui:fragment>
-				</div>
-
-			</ui:repeat>
-		</div>
-	</ui:define>
+      <div id="journalEntries" class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      </div>
+      <div class="workspace-journal-paging-toolbar lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+        <div class="mf-paging-tool mf-page-link-load-more wj-page-link-load-more disabled">#{i18n.text['plugin.workspace.journal.loadMoreEntries']}</div>
+      </div>
+    </div>
+  </ui:define>
 </ui:composition>

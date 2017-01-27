@@ -94,7 +94,9 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
         sendKeys(".mf-textfield-subject", "title");
         click("#socialNavigation.sn-container .jo-message-create .mf-toolbar input[name=\"send\"]");
         waitForPresent("#content");
+        waitForPresent(".workspace-journal-title");
         assertText(".workspace-journal-title", "title");
+        waitForPresent(".workspace-journal-content>p");
         assertText(".workspace-journal-content>p", "content");
       } finally {
         deleteWorkspace(workspace.getId());

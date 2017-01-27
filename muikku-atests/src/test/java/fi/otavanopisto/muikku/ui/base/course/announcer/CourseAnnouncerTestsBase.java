@@ -74,8 +74,9 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       clearElement("*[name='endDate']");
       sendKeys("*[name='endDate']", "21.12.2025");
       
+      waitAndClick(".mf-textfield-subject");
       sendKeys(".mf-textfield-subject", "Test title");
-      click(".mf-form-header");
+      
       waitForPresent("#ui-datepicker-div");
       waitForNotVisible("#ui-datepicker-div");
       addTextToCKEditor("Announcer test announcement");

@@ -56,6 +56,18 @@
       }
     }
   };
+  
+  $(document).on('click', '#workspaceNavigationWrapperBuble', function (event) {
+    
+    if ($(this).attr('data-nav-visibility-state') == 'open') {
+      $(this).find('.navmore-container').hide();
+      $(this).attr('data-nav-visibility-state', 'close');
+    } else {
+      $(this).find('.navmore-container').show();
+      $(this).attr('data-nav-visibility-state', 'open');
+    }
+    
+  });
 
   $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
     
@@ -83,61 +95,93 @@
 
   function confirmEvaluationRequest() {
     var workspaceEntityId = $('.workspaceEntityId').val();
-
-    mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, data) {
+    
+    mApi().workspace.workspaces.evaluatedAssignmentInfo.read(workspaceEntityId).callback($.proxy(function(err, assignmentInfo) {
       if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-      } else {
-        renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', data, $.proxy(function (text) {
-          var dialog = $(text);
-          $(text).dialog({
-            modal: true, 
-            minHeight: 200,
-            resizable: false,
-            width: 560,
-            dialogClass: "workspace-evaluation-confirm-dialog",
-            buttons: [{
-              'text': dialog.data('button-request-text'),
-              'class': 'save-evaluation-button',
-              'click': function(event) {
-                
-                var workspaceEntityId = $('.workspaceEntityId').val();
-                var message = $('#evaluationRequestAdditionalMessage').val();
-
-                mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
-                  'requestText': message
-                }).callback(function(err, result) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  } else {
-                    
-                    var evalButton = $('.workspace-dock-navi-button-evaluation');
-
-                    evalButton
-                      .children('.icon-assessment-' + evalButton.attr('data-state'))
-                        .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                        .addClass('icon-assessment-pending')
-                        .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
-                        .children('span')
-                          .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-                  
-                    evalButton.attr('data-state', 'pending');
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      }
+      else {
+        mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, data) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            data = $.extend(data, {assignmentsTotal: assignmentInfo.assignmentsTotal, assignmentsDone: assignmentInfo.assignmentsDone});
+            renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', data, $.proxy(function (text) {
+              var dialog = $(text);
+              $(text).dialog({
+                modal: true, 
+                minHeight: 200,
+                resizable: false,
+                width: 560,
+                dialogClass: "workspace-evaluation-confirm-dialog",
+                beforeClose: function(event, ui) {
+                  $(this).dialog().remove(); 
+                },
+                open: function(event, ui) {
+                  if (data.assignmentsDone < data.assignmentsTotal) {
+                    var delay = 15;
+                    var saveButton = $('.save-evaluation-button');
+                    var saveButtonText = $(saveButton).find('.ui-button-text');
+                    var saveText = $(saveButton).text();
+                    saveButton.attr('disabled', 'disabled');
+                    $(saveButtonText).text(saveText + ' (' + delay + ')');
+                    var timeout = function() {
+                      delay--;
+                      if (delay == 0) {
+                        $(saveButtonText).text(saveText);
+                        $(saveButton).removeAttr("disabled");
+                      }
+                      else {
+                        $(saveButtonText).text(saveText + ' (' + delay + ')');
+                        setTimeout(timeout, 1000);
+                      }
+                    }; 
+                    setTimeout(timeout, 1000);
                   }
-                });
-                
-                $(this).dialog("destroy").remove();
-                
-              }
-            }, {
-              'text': dialog.data('button-cancel-text'),
-              'class': 'cancel-button',
-              'click': function(event) {
-                $(this).dialog("destroy").remove();
-              }
-            }]
-          });
-        }, this))
+                },
+                buttons: [{
+                  'text': dialog.data('button-request-text'),
+                  'class': 'save-evaluation-button',
+                  'click': function(event) {
+                    
+                    var workspaceEntityId = $('.workspaceEntityId').val();
+                    var message = $('#evaluationRequestAdditionalMessage').val();
+    
+                    mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
+                      'requestText': message
+                    }).callback(function(err) {
+                      if (err) {
+                        $('.notification-queue').notificationQueue('notification', 'error', err);
+                      }
+                      else {
+                        var evalButton = $('.workspace-dock-navi-button-evaluation');
+                        evalButton
+                          .children('.icon-assessment-' + evalButton.attr('data-state'))
+                            .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                            .addClass('icon-assessment-pending')
+                            .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
+                            .children('span')
+                              .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
+                        evalButton.attr('data-state', 'pending');
+                        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+                      }
+                    });
+                    
+                    $(this).dialog("destroy");
+                    
+                  }
+                }, {
+                  'text': dialog.data('button-cancel-text'),
+                  'class': 'cancel-button',
+                  'click': function() {
+                    $(this).dialog("destroy");
+                  }
+                }]
+              });
+            }, this))
+          }
+        }, this));
       }
     }, this));
   }
