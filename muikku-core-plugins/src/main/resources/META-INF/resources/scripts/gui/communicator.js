@@ -398,8 +398,6 @@
             }
           });
           
-          
-          
           if (items.length > this.options.maxMessageCount) {
             hasMore = true;
             items.pop();
