@@ -40,14 +40,6 @@ public class Feed {
   public void setFormat(String format) {
     this.format = format;
   }
-  
-  public String getContent() {
-    return content;
-  }
-  
-  public void setContent(String content) {
-    this.content = content;
-  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,8 +59,4 @@ public class Feed {
   @NotEmpty
   @Column(nullable = false, unique = true)
   private String format;
-
-  @Lob
-  @Column
-  private String content;
 }

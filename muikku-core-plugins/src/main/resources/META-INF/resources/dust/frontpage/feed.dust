@@ -1,5 +1,5 @@
 <ul>
 {#entries}
-  <li><a href="{uri|s}">{title}</a></li>
+  <li><a href="{link|s}">{title}</a></li>
 {/entries}
 </ul>
