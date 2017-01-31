@@ -163,7 +163,11 @@
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.discardDraft();
                 this._saveMaterialAssessment();
               }, this));
-              $('#assignmentCancelButton, .eval-modal-assignment-close').click($.proxy(function(event) {
+              $('#assignmentCancelButton').click($.proxy(function(event) {
+                this.toggleAssignment(this._activeAssignment, false, false);
+                this.toggleMaterialAssessmentView(false);
+              }, this));
+              $('.eval-modal-assignment-close').click($.proxy(function(event) {
                 this.toggleMaterialAssessmentView(false);
               }, this));
               
@@ -225,22 +229,54 @@
         }, this));
     },
     
-    toggleAssignment: function(assignment) {
-      if ($(assignment).attr('data-loaded') == 'true') {
-        if ($(assignment).attr('data-open') == 'true') {
-          $(assignment).attr('data-open', false);
-          $(assignment).hide();
-          $(assignment).prev('.assignment-literal-evaluation-wrapper').hide();
-        }
-        else {
-          $(assignment).attr('data-open', true);
-          $(assignment).show();
-          $(assignment).prev('.assignment-literal-evaluation-wrapper').show();
-        }
+    toggleAssignment: function(assignment, open, scrollToView) {
+      if (!this._isLoaded(assignment)) {
+        this._loadAssignment(assignment, $.proxy(function() {
+          this._setAssignmentOpen(assignment, open, scrollToView);
+        }, this));
       }
       else {
+        this._setAssignmentOpen(assignment, open, scrollToView);
+      }
+    },
+    
+    _setAssignmentOpen: function(assignment, open, scrollToView) {
+      var isOpen = this._isOpen(assignment);
+      var shouldBeOpen = open == undefined ? !isOpen : open;
+      if (isOpen != shouldBeOpen) {
+        var assignmentContent = $(assignment).find('.assignment-content');
+        if (shouldBeOpen) {
+          $(assignmentContent).attr('data-open', true);
+          $(assignmentContent).show();
+          $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').show();
+        }
+        else {
+          $(assignmentContent).attr('data-open', false);
+          $(assignmentContent).hide();
+          $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
+        }
+      }
+      if (scrollToView) {
+        var container = $('.eval-modal-materials-content');
+        container.animate({
+          scrollTop: assignment.offset().top - container.offset().top + container.scrollTop()
+        }, 500);
+      }
+    },
+    
+    _isLoaded: function(assignment) {
+      return $(assignment).find('.assignment-content').attr('data-loaded') == 'true';
+    },
+
+    _isOpen: function(assignment) {
+      return $(assignment).find('.assignment-content').attr('data-open') == 'true';
+    },
+    
+    _loadAssignment: function(assignment, callback) {
+      if (!this._isLoaded(assignment)) {
+        var assignmentContent = $(assignment).find('.assignment-content');
         var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-        var workspaceMaterialId = $(assignment).attr('data-workspace-material-id');
+        var workspaceMaterialId = $(assignmentContent).attr('data-workspace-material-id');
         var userEntityId = $(this._requestCard).attr('data-user-entity-id');
         mApi().workspace.workspaces.materials.compositeMaterialReplies
           .read(workspaceEntityId, workspaceMaterialId, {userEntityId: userEntityId})
@@ -251,21 +287,27 @@
               var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
               fieldAnswers[answerKey] = answer.value;
             }
-            var materialId = $(assignment).attr('data-material-id');
+            var materialId = $(assignmentContent).attr('data-material-id');
             mApi().materials.html
               .read(materialId)
               .callback($.proxy(function (err, htmlMaterial) {
-                $(assignment)
+                $(assignmentContent)
                   .attr('data-material-type', 'html')
                   .attr('data-material-title', htmlMaterial.title)
                   .attr('data-material-content', htmlMaterial.html)
                   .attr('data-view-restricted', htmlMaterial.viewRestrict)
-                  .attr('data-loaded', true)
-                  .attr('data-open', true);
-                $(document).muikkuMaterialLoader('loadMaterial', $(assignment), fieldAnswers);
-                $(assignment).prev('.assignment-literal-evaluation-wrapper').show();
+                  .attr('data-loaded', true);
+                $(document).muikkuMaterialLoader('loadMaterial', $(assignmentContent), fieldAnswers);
+                if (callback) {
+                  callback();
+                }
               }, this));
           }, this));
+      }
+      else {
+        if (callback) {
+          callback();
+        }
       }
     },
     
@@ -296,25 +338,29 @@
         }, $.proxy(function (html) {
           var material = $(html).appendTo('.eval-modal-assignments-content');
           // Toggle material open/close
-          $(material).find('.assignment-title-wrapper').on('click', function (event) {
-            var assignmentContent = $(event.target).closest('.assignment-wrapper').find('.assignment-content');
-            $(document).evaluationModal('toggleAssignment', assignmentContent);
-          });
+          $(material).find('.assignment-title-wrapper').on('click', $.proxy(function(event) {
+            var assignment = $(event.target).closest('.assignment-wrapper');
+            $(document).evaluationModal('toggleAssignment', assignment, !this._isOpen(assignment), false);
+          }, this));
           // Evaluate material
-          $(material).find('.assignment-evaluate-button').on('click', function (event) {
-            var oldAssignment = $(document).evaluationModal('activeAssignment');
+          $(material).find('.assignment-evaluate-button').on('click', $.proxy(function (event) {
+            var oldAssignment = this._activeAssignment;
             var newAssignment = $(event.target).closest('.assignment-wrapper');
             if (!oldAssignment || newAssignment[0] !== oldAssignment[0]) {
+              if (oldAssignment) {
+                this.toggleAssignment(oldAssignment, false, false);
+              }
               $(document).evaluationModal('activeAssignment', newAssignment);
               var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
               var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
               $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
-              $(document).evaluationModal('loadMaterialAssessment', userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
+              this.loadMaterialAssessment(userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
             }
             else {
-              $(document).evaluationModal('toggleMaterialAssessmentView', true);
+              this.toggleMaterialAssessmentView(true);
             }
-          });
+            this.toggleAssignment(newAssignment, true, true);
+          }, this));
         }, this));
       }, this));
       // Material's loading animation end
@@ -659,13 +705,9 @@
                     $(this._activeAssignment).attr('data-evaluated', true);
                     $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
                     $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
+                    this.toggleAssignment(this._activeAssignment, false, false);
                     this.toggleMaterialAssessmentView(false);
                     var assignmentContent = $(this._activeAssignment).find('.assignment-content');
-                    if ($(assignmentContent).attr('data-open') == 'true') {
-                      $(assignmentContent).attr('data-open', false);
-                      $(assignmentContent).hide();
-                      $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
-                    }
                     $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
                   }
                 }, this));
@@ -698,13 +740,9 @@
                 .append($('<span>').addClass('assignment-grade-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentGradeLabel")))
                 .append($('<span>').addClass('assignment-grade-data').text($('#assignmentGrade option:selected').text()));
               $(this._activeAssignment).find('.assignment-done').after(gradeElement).after(evaluationDateElement);
+              this.toggleAssignment(this.activeAssignment(), false, false);
               this.toggleMaterialAssessmentView(false);
               var assignmentContent = $(this._activeAssignment).find('.assignment-content');
-              if ($(assignmentContent).attr('data-open') == 'true') {
-                $(assignmentContent).attr('data-open', false);
-                $(assignmentContent).hide();
-                $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
-              }
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
             }
           }, this));
