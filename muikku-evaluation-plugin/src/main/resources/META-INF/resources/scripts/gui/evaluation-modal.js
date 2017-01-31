@@ -348,6 +348,7 @@
             var newAssignment = $(event.target).closest('.assignment-wrapper');
             if (!oldAssignment || newAssignment[0] !== oldAssignment[0]) {
               if (oldAssignment) {
+                oldAssignment.removeClass('active');
                 this.toggleAssignment(oldAssignment, false, false);
               }
               $(document).evaluationModal('activeAssignment', newAssignment);
@@ -456,6 +457,7 @@
       }
       
       if (show) {
+        this._activeAssignment.addClass('active');
         this._disableModalScrolling();
         $('.eval-modal-assignment-evaluate-container')
           .show()
@@ -474,6 +476,7 @@
         });
       }
       else {
+        this._activeAssignment.removeClass('active');
         this._enableModalScrolling();
         $('.eval-modal-assignment-evaluate-container')
           .css({
