@@ -8,27 +8,19 @@ import fi.otavanopisto.muikku.plugin.PrioritizedPluginDescriptor;
 
 public class PermissionDataPluginDescriptor implements PluginDescriptor, PrioritizedPluginDescriptor {
   
-//  @Inject
-//  private PermissionsPluginController permissionsPluginController;
-//
+  public static final String PLUGIN_NAME = "data-permissions";
+
   @Override
   public void init() {
   }
 
 	@Override
 	public String getName() {
-		return "data-permissions";
+		return PLUGIN_NAME;
 	}
 	
 	public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
-	  // TODO: moved to data plugin as @observes cannot be prioritized (last in this case)
-//    try {
-//      permissionsPluginController.processPermissions();
-//    } catch (Exception e) {
-//      // TODO: Proper error handling
-//      e.printStackTrace();
-//      throw new RuntimeException(e);
-//    }
+	  // Permissions are initialized in data plugin as as @observes cannot be prioritized (last in this case)
 	}
 
   @Override

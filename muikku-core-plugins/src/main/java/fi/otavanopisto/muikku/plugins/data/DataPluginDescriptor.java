@@ -54,7 +54,14 @@ public class DataPluginDescriptor implements PluginDescriptor {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
-		
+
+    try {
+      permissionsPluginController.checkForResetPermissions();
+    } catch (Exception e) {
+      // TODO: Proper error handling
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
 	}
 	
 }
