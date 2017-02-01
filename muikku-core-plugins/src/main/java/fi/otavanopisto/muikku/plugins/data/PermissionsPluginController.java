@@ -12,6 +12,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -82,6 +83,9 @@ public class PermissionsPluginController {
   }
   
   public void resetPermissions(Set<RoleEntity> resetRoleEntities) {
+    if (CollectionUtils.isEmpty(resetRoleEntities))
+      return;
+    
     // TODO Only handles environment and workspace scopes
     for (MuikkuPermissionCollection collection : permissionCollections) {
       logger.log(Level.INFO, "Processing permission collection " + collection.getClass().getSimpleName());
