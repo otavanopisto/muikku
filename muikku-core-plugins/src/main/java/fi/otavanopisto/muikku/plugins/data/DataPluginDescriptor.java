@@ -19,34 +19,34 @@ public class DataPluginDescriptor implements PluginDescriptor {
   public void init() {
   }
 
-	@Inject
-	private DataPluginController dataPluginController;
-	
+  @Inject
+  private DataPluginController dataPluginController;
+
   @Inject
   private PermissionsPluginController permissionsPluginController;
-	
-	@Override
-	public String getName() {
-		return "data";
-	}
-	
-	public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
-		String xmlFilePaths = System.getProperty("muikku-data");
-		if (StringUtils.isNotBlank(xmlFilePaths)) {
-			try {
-			  String[] files = xmlFilePaths.split(",");
-			  for (String file : files) {
-  				dataPluginController.processScripts(new File(file));
-			  }
-			} catch (ParserConfigurationException | SAXException | IOException e) {
-				// TODO: Proper error handling
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-		}
 
-		// TODO:  this should be in permissiondataplugindescriptor but it's dependent on 
-		//        being run after data import and as @observes cannot be prioritized we cant implement it 
+  @Override
+  public String getName() {
+    return "data";
+  }
+
+  public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
+    String xmlFilePaths = System.getProperty("muikku-data");
+    if (StringUtils.isNotBlank(xmlFilePaths)) {
+      try {
+        String[] files = xmlFilePaths.split(",");
+        for (String file : files) {
+          dataPluginController.processScripts(new File(file));
+        }
+      } catch (ParserConfigurationException | SAXException | IOException e) {
+        // TODO: Proper error handling
+        e.printStackTrace();
+        throw new RuntimeException(e);
+      }
+    }
+
+    // TODO: this should be in permissiondataplugindescriptor but it's dependent on
+    // being run after data import and as @observes cannot be prioritized we cant implement it
     try {
       permissionsPluginController.processPermissions();
     } catch (Exception e) {
@@ -62,6 +62,6 @@ public class DataPluginDescriptor implements PluginDescriptor {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
-	}
-	
+  }
+
 }
