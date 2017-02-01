@@ -13,4 +13,4 @@ css/%.css: sass/%.scss
 	sassc $< $@
 
 css/flex/%.css: sass/flex/%.scss
-	sassc $< $@
+	sassc $< $@ -I sass/flex -I sass
