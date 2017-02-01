@@ -631,6 +631,10 @@
     },
 
     _saveMaterialAssessment: function() {
+      if (this._savingMaterialAssessment) {
+        return;
+      }
+      this._savingMaterialAssessment = true;
       var assessmentId = $('#assignmentAssessmentId').val();
       var userEntityId = $('#assignmentUserEntityId').val();
       var workspaceMaterialId = $('#assignmentWorkspaceMaterialId').val();
@@ -640,6 +644,7 @@
           .callback($.proxy(function (err, assessment) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
+              this._savingMaterialAssessment = undefined;
             }
             else {
               var scaleAndGrade = $('#assignmentGrade').val().split('@');
@@ -653,6 +658,7 @@
                 .callback($.proxy(function (err, assessment) {
                   if (err) {
                     $('.notification-queue').notificationQueue('notification', 'error', err);
+                    this._savingMaterialAssessment = undefined;
                   }
                   else {
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.updateSuccessful"));
@@ -667,6 +673,7 @@
                       $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
                     }
                     $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
+                    this._savingMaterialAssessment = undefined;
                   }
                 }, this));
             }
@@ -685,6 +692,7 @@
           .callback($.proxy(function (err, assessment) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
+              this._savingMaterialAssessment = undefined;
             }
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.saveSuccessful"));
@@ -706,6 +714,7 @@
                 $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
               }
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
+              this._savingMaterialAssessment = undefined;
             }
           }, this));
       }
