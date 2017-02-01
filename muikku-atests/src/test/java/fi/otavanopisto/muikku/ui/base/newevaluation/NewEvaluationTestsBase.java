@@ -196,8 +196,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
+        waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
         waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        sleep(500);
         click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
         
@@ -373,8 +373,8 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
+        waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
         waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        sleep(500);
         click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
         getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
         
