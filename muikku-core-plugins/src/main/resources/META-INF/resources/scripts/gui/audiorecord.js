@@ -67,6 +67,7 @@
           };
         });
       } else {
+        this.element.find('.clips').empty();
         if (this.readonly() && clips.length == 0) {
           this.element.find('.no-clips').show();
         }
