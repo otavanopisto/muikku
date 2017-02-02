@@ -288,6 +288,16 @@
   border-bottom: 1px solid $evaluation-modal-seperator-border-color;
   padding: 8px 0;
   position: relative;
+  
+  &.active {
+  
+    .assignment-title {
+      color: $assignment-color;
+      font-weight: 400;
+    }
+  
+  }
+  
 }
 
 .assignment-literal-evaluation-wrapper {

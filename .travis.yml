@@ -77,6 +77,7 @@ env:
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=user
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=discussions
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=guider
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=tor
     
 # PhantomJS
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=communicator
