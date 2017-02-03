@@ -553,6 +553,42 @@ h2.frontpage-section-title {
   max-width: calc(50% - 20px);
 }
 
+ul.news-content-wrapper {
+  list-style-type: none;
+  margin: 0;
+  padding: 20px;
+  
+  li {
+    line-height: 20px;
+    list-style-type: none;
+    margin: 0;
+    padding: 10px 5px;
+  }
+  
+  a {
+    color: $of-feed-link-color;
+    text-decoration: none;
+    
+    &:hover {
+      color: $of-feed-link-hover-color;
+    }
+    
+  }
+  
+  .feed-item-title {
+    font-weight: 600;
+  }
+  
+  .feed-item-description {
+    padding: 0 0 0 10px;
+  }
+  
+  .feed-item-date {
+    color: $of-feed-date-text-color;
+  }
+  
+}
+
 // ORGANIZATION SECTION
 
 .frontpage-organization {
