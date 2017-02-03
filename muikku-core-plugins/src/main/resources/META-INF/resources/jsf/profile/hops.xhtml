@@ -26,15 +26,15 @@
           <div class="context-wrapper flex-row">
             <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
               <div class="profile-content flex-row">
-                <form name="hopsForm" class="hops-form-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                <form jsf:id="hopsForm" class="hops-form-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                   <div class="hops-form-section flex-row">
                     <h3>Henkilökohtainen opiskelusuunnitelma (HOPS)</h3>                    
                     <p>Jos haluat täyttää omat tietosi yksin, niin ole hyvä ja tutustu täyttöohjeisiin.</p>
                     <strong>Palauta HOPS omalle pienryhmäohjaajallesi tallentamalla lomakkeen tiedot näkymän alareunan painikkeesta.</strong>                  
                   </div> 
                   <div class="hops-form-section flex-row">
-                    <input placeholder="Nimi" type="text"></input>
-                    <input placeholder="Päiväys" type="date"></input>
+                    <input placeholder="Nimi" type="text" jsf:value="#{name}"></input>
+                    <input placeholder="Päiväys" type="date" jsf:value="#{date}"></input>
                   </div>
                   <div class="hops-form-section flex-row">
                     <p>Lukio-opintoihin saat opiskeluaikaa enintään neljä vuotta. Voit suorittaa opinnot noin 2-4 vuoden aikana.</p> 
@@ -103,17 +103,17 @@
                       <label>Haluan suorittaa seuraavat kielet</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="checkbox" name="language" value="ena">Englanti</input>
-                      <input type="checkbox" name="language" value="rub">Ruotsi</input>
-                      <input type="checkbox" name="language" value="sab">Saksa</input>
-                      <input type="checkbox" name="language" value="rab">Ranska</input>
-                      <input type="checkbox" name="language" value="ia">Italia</input>
-                      <input type="checkbox" name="language" value="ea">Espanja</input>                        
+                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>Englanti<br/>
+                      <input jsf:value="#{hopsBackingBean.swedish}" type="checkbox"/>Ruotsi<br/>
+                      <input jsf:value="#{hopsBackingBean.german}" type="checkbox"/>Saksa<br/>
+                      <input jsf:value="#{hopsBackingBean.french}" type="checkbox"/>Ranska<br/>
+                      <input jsf:value="#{hopsBackingBean.italian}" type="checkbox"/>Italia<br/>
+                      <input jsf:value="#{hopsBackingBean.spanish}" type="checkbox"/>Espanja<br/>
                     </div> 
                   </div>                      
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <p>HOPS on suunnitelma, jota voidaan muuttaa. Voit päivittää valintojasi myöhemmin opintojesi edistyessä.</p>
-                    <input type="button" name="graduationCertificate" value="Tallenna tiedot"></input>
+                    <h:commandButton value="Tallenna" action="#{hopsBackingBean.save()}" />
                   </div>                                                                 
                 </form>
               </div>             
