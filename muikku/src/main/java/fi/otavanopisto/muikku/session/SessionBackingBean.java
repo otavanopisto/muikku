@@ -175,6 +175,8 @@ public class SessionBackingBean {
       return localeController.getText(locale, "role.studyProgrammeLeader");
     case TEACHER:
       return localeController.getText(locale, "role.teacher");
+    case STUDY_GUIDER:
+      return localeController.getText(locale, "role.studyguider");
     default:
       return localeController.getText(locale, "role.custom");
     }
