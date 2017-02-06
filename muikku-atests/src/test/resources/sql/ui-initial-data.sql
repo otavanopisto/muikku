@@ -6,7 +6,7 @@ INSERT INTO WorkspaceTypeEntity (id, name) values (2, 'Group work');
 INSERT INTO WorkspaceTypeEntity (id, name) values (3, 'Game');
 INSERT INTO WorkspaceTypeEntity (id, name) values (4, 'Pool');
 
-insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8080, 8443);
+insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8081, 8443);
 update PluginSetting set value = 'http://0.0.0.0:8089/1' where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.url');
 update PluginSetting set value = 'http://0.0.0.0:8089/oauth2ClientTest/success' where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.redirectUrl');
 
