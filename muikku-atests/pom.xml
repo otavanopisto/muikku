@@ -287,7 +287,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
@@ -665,7 +665,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
@@ -1053,7 +1053,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
@@ -1435,7 +1435,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
