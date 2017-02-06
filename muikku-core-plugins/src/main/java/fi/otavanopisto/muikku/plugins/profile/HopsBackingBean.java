@@ -1,10 +1,6 @@
 package fi.otavanopisto.muikku.plugins.profile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.Stateful;
-import javax.enterprise.context.ConversationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,14 +8,12 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
-import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -29,50 +23,88 @@ import fi.otavanopisto.security.LoggedIn;
 public class HopsBackingBean {
   
   @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
   private SessionController sessionController;
   
   @Inject
   private UserController userController;
   
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
-  
   @RequestAction
   @LoggedIn
   public String init() {
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
-    List<UserAddress> userAddresses = userController.listUserAddresses(user);
-    List<UserPhoneNumber> userPhoneNumbers = userController.listUserPhoneNumbers(user);
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    User user = userController.findUserByIdentifier(userIdentifier);
     
-    displayName = user.getDisplayName();
+    goalSecondarySchoolDegree = loadStringProperty(user, "goalSecondarySchoolDegree");
+    goalMatriculationExam = loadStringProperty(user, "goalMatriculationExam");
+    vocationalYears = loadStringProperty(user, "vocationalYears");
+    goalJustMatriculationExam = loadStringProperty(user, "goalJustMatriculationExam");
+    justTransferCredits = loadStringProperty(user, "justTransferCredits");
+    transferCreditYears = loadStringProperty(user, "transferCreditYears");
+    completionYears = loadStringProperty(user, "completionYears");
+    mathSyllabus = loadStringProperty(user, "mathSyllabus");
+    english = loadBoolProperty(user, "english");
+    swedish = loadBoolProperty(user, "swedish");
+    german = loadBoolProperty(user, "german");
+    french = loadBoolProperty(user, "french");
+    italian = loadBoolProperty(user, "italian");
+    spanish = loadBoolProperty(user, "spanish");
+
     return null;
   }
   
   public String save() {
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    User user = userController.findUserByIdentifier(userIdentifier);
+    
+    saveStringProperty(user, "goalSecondarySchoolDegree", goalSecondarySchoolDegree);
+    saveStringProperty(user, "goalMatriculationExam", goalMatriculationExam);
+    saveStringProperty(user, "vocationalYears", vocationalYears);
+    saveStringProperty(user, "goalJustMatriculationExam", goalJustMatriculationExam);
+    saveStringProperty(user, "justTransferCredits", justTransferCredits);
+    saveStringProperty(user, "transferCreditYears", transferCreditYears);
+    saveStringProperty(user, "completionYears", completionYears);
+    saveStringProperty(user, "mathSyllabus", mathSyllabus);
+    saveBoolProperty(user, "english", english);
+    saveBoolProperty(user, "swedish", swedish);
+    saveBoolProperty(user, "german", german);
+    saveBoolProperty(user, "french", french);
+    saveBoolProperty(user, "italian", italian);
+    saveBoolProperty(user, "spanish", spanish);
+
     return null;
   }
   
-  public String getDisplayName() {
-    return displayName;
+  private String loadStringProperty(User user, String propertyName) {
+    UserProperty property = userSchoolDataController.getUserProperty(user, "hops." + propertyName);
+    if (property != null) {
+      return property.getValue();
+    } else {
+      return null;
+    }
   }
 
-  public String getName() {
-    return name;
+  private boolean loadBoolProperty(User user, String propertyName) {
+    UserProperty property = userSchoolDataController.getUserProperty(user, "hops." + propertyName);
+    if (property != null) {
+      return "true".equals(property.getValue());
+    } else {
+      return false;
+    }
   }
-
-  public void setName(String name) {
-    this.name = name;
+  
+  private void saveStringProperty(User user, String propertyName, String value) {
+    if (value != null && !"".equals(value)) {
+      userSchoolDataController.setUserProperty(user, "hops." + propertyName, value);
+    }
   }
-
-  public String getDate() {
-    return date;
+  
+  private void saveBoolProperty(User user, String propertyName, boolean value) {
+    userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "true" : "false");
   }
-
-  public void setDate(String date) {
-    this.date = date;
-  }
-
+  
   public String getGoalSecondarySchoolDegree() {
     return goalSecondarySchoolDegree;
   }
@@ -111,6 +143,14 @@ public class HopsBackingBean {
 
   public void setJustTransferCredits(String justTransferCredits) {
     this.justTransferCredits = justTransferCredits;
+  }
+  
+  public String getTransferCreditYears() {
+    return transferCreditYears;
+  }
+  
+  public void setTransferCreditYears(String transferCreditYears) {
+    this.transferCreditYears = transferCreditYears;
   }
 
   public String getCompletionYears() {
@@ -177,14 +217,12 @@ public class HopsBackingBean {
     this.spanish = spanish;
   }
 
-  private String displayName;
-  private String name;
-  private String date;
   private String goalSecondarySchoolDegree;
   private String goalMatriculationExam;
   private String vocationalYears;
   private String goalJustMatriculationExam;
   private String justTransferCredits;
+  private String transferCreditYears;
   private String completionYears;
   private String mathSyllabus;
   private boolean english;
