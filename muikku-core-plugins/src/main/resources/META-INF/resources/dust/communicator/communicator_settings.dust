@@ -1,0 +1,20 @@
+<div class="cm-communicator-settings flex-row">
+  <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <div class="flex-row flex-align-items-center  cm-communicator-settings-title">Asetukset</div>
+    <div class="flex-row">
+      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full cm-communicator-settings-item">
+        <div class="flex-row cm-communicator-setting-title">
+          <div class="lg-flex-cell-14 md-flex-cell-14 sm-flex-cell-14">
+            Allekirjoitukset
+          </div>
+<!--           <div class="lg-flex-cell-2 md-flex-cell-2 sm-flex-cell-2 flex-right">+</div> -->
+        </div>
+        <div class="flex-row cm-communicator-setting-content">
+          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div class="">Luo allekrijoitus</div>
+          </div>            
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
