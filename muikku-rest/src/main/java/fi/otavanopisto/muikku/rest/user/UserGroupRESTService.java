@@ -31,6 +31,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
@@ -85,9 +86,14 @@ public class UserGroupRESTService extends AbstractRESTService {
       
       UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
       UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(identifier);      
-      
+
       if (userEntity == null) {
         return Response.status(Status.NOT_FOUND).build();
+      }
+
+      // Check for group-user-only roles - no shared groups, no rights
+      if (sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS) && !userGroupEntityController.haveSharedUserGroups(loggedUserEntity, userEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
       }
       
       if (!(loggedUserEntity.getId().equals(userEntity.getId()) || sessionController.hasEnvironmentPermission(MuikkuPermissions.LIST_USER_USERGROUPS))) {
