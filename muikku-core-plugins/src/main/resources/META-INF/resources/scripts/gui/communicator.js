@@ -1,9 +1,13 @@
 (function() {
   'use strict';
   
+  
+  
   var CommunicatorFolderController = function (options) {
     this.options = options;
   };
+  
+  
   
   $.extend(CommunicatorFolderController.prototype, {
     
@@ -701,6 +705,10 @@
           var toolTemplate = 'communicator/communicator_tools_thread.dust';
           this._loadTools(toolTemplate);
           break;
+        case 'settings':
+          var toolTemplate = 'communicator/communicator_tools_settings.dust';
+          this._loadTools(toolTemplate);
+          break;          
       }      
     },
     
@@ -717,6 +725,11 @@
       defaultFolderId: 'inbox'
     },
     _create : function() {
+      
+    $('.mf-view-settings-function-container').on('click', '.cm-settings', $.proxy(this._onSettingsClick, this));    
+
+      
+   
       this.loadLabels($.proxy(
         function (err, labels) {
           this._folderControllers = {
@@ -752,7 +765,7 @@
               threadId = hashParts[1];
             }
           }
-          
+
           folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
           
           this.element.on('click', '.mf-label-edit', $.proxy(this._onLabelEditClick, this));    
@@ -781,7 +794,13 @@
         // Store the signatures etc....
       }, this));
     },
-    
+    _onSettingsClick: function(){
+      renderDustTemplate('communicator/communicator_settings.dust', {}, $.proxy(function(text) {
+        $(".cm-messages-container").html(text);
+        $('.mf-controls-container').messageTools( 'toolset', 'settings');     
+      }));
+    },   
+
     loadFolder: function (id) {
       this._updateHash(id, null);
       this._updateSelected(id);

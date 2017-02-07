@@ -2,6 +2,38 @@
 @import "styles";
 @import "draft";
 
+.cm-communicator-settings {
+  background: #fff;
+  
+}
+
+.cm-communicator-settings-title {
+  
+  font-size: 22px;  
+  padding:10px; 
+}
+
+.cm-communicator-settings-item {
+  &:first-child{
+    border-top: 1px solid #ededed;  
+  }
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid #ededed;
+  }
+}
+
+
+.cm-communicator-setting-title {
+  background: #f7fdff;
+  padding: 10px;
+  font-size: 18px;  
+  
+}
+.cm-communicator-setting-content {
+  padding: 15px 30px;
+} 
+
 .cm-message-create {
   width:100%;
 }  

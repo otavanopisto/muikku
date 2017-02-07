@@ -238,6 +238,16 @@
   position: relative;
 }
 
+.mf-view-header{
+  background-color:$environment-header-background-color;
+  
+}
+
+.mf-view-title{
+  margin:0;  
+}
+
+
 .mf-view-toolbar {
   background-color: $environment-background-color;
   padding: 5px;
@@ -401,6 +411,11 @@ ul.mf-tool-label-container {
     div::before {
       color: $navigation-horizontal-bar-navigation-icon-color;
     }
+  }
+  &.settings {
+     div::before {
+      color:#3782df;     
+     }
   }
 
   &.button {
