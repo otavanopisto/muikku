@@ -88,32 +88,32 @@
     padding: 0;
     box-sizing: border-box;
     min-height: 500px;
-    
-    ul.profile-section-links {
-      margin: 0;
-      list-style-type: none;
-      padding: 10px;
-    }
-
-    li.profile-section-link {
-      padding: 5px;
-      text-transform: uppercase;
-      font-weight: 300;
-      cursor: pointer;
-      margin: 0 0 1px;
-      
-      &:hover,
-      &.active {
-        background: $environment-profile-section-background-color;
-        color: $environment-profile-section-font-color;
-        font-weight: 400;
-        
-        a {
-          color: $environment-profile-section-font-color;
-        }        
-      }
-    }
   }
+
+  ul.profile-section-links {
+    margin: 0;
+    list-style-type: none;
+    padding: 10px;
+  }
+
+  li.profile-section-link {
+    padding: 5px;
+    text-transform: uppercase;
+    font-weight: 300;
+    cursor: pointer;
+    margin: 0 0 1px;
+    
+    &:hover,
+    &.active {
+      background: $environment-profile-section-background-color;
+      color: $environment-profile-section-font-color;
+      font-weight: 400;
+      
+      a {
+        color: $environment-profile-section-font-color;
+      }        
+    }
+  }  
 }
 
 .hops-form-wrapper {
