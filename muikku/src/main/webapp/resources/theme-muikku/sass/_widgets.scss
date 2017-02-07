@@ -559,7 +559,7 @@ div[class*="wi-dock-static-navi"] {
   .lu-badgeContainer {
   
     .lu-user-picture {
-      @include border(2px,#fff,solid);
+      @include border(2px, #fff, solid);
       height:48px;
       width:48px; 
       position:relative;
@@ -581,7 +581,7 @@ div[class*="wi-dock-static-navi"] {
       
     }
     .lu-infoContainer {
-       @include border(2px,#fff,solid);
+       @include border(2px, #fff, solid);
        background:#fff;
        height:48px;
        display:inline-block;
