@@ -6,14 +6,14 @@
 #profile { 
   
   .profile-content {
-    background: #fff;
+    background: $environment-profile-background-color;
     padding: 20px;
     box-sizing: border-box;
     min-height: 500px;
     position: relative;
     
     .profile-picture-wrapper {
-      border: 3px solid #fff;
+      border: 3px solid $environment-profile-picture-border;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
       left: 20px;
       min-height: 100px;
@@ -51,8 +51,8 @@
         margin: 10px 0;
       
         .profile-change-password {
-          background: #0099ff;
-          color: #fff;
+          background: $environment-profile-button-background-color;
+          color: $environment-profile-button-font-color;
           display: inline-block;
           font-size: 14px;
           padding: 6px 8px;
@@ -67,8 +67,8 @@
         margin: 10px 0;
       
         .profile-change-address-municipality {
-          background: #0099ff;
-          color: #fff;
+          background: $environment-profile-button-background-color;
+          color: $environment-profile-button-font-color;
           display: inline-block;
           font-size: 14px;
           padding: 6px 8px;
@@ -104,10 +104,12 @@
       
       &:hover,
       &.active {
-        background: #ff008d;
-        color: #fff;
+        background: $environment-profile-section-background-color;
+        color: $environment-profile-section-font-color;
         font-weight: 400;
-        
+        a {
+         color: $environment-profile-section-font-color;
+        }        
       }
     }
   }
