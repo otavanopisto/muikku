@@ -90,30 +90,27 @@
     min-height: 500px;
     
     ul.profile-section-links {
-      padding: 0;
       margin: 0;
       list-style-type: none;
       padding: 10px;
+    }
+
+    li.profile-section-link {
+      padding: 5px;
+      text-transform: uppercase;
+      font-weight: 300;
+      cursor: pointer;
+      margin: 0 0 1px;
       
-      li.profile-section-link {
-        padding: 5px;
-        text-transform: uppercase;
-        font-weight: 300;
-        cursor: pointer;
-        margin: 0 0 1px 0;
+      &:hover,
+      &.active {
+        background: #ff008d;
+        color: #fff;
+        font-weight: 400;
         
-        &:hover,
-        &.active {
-          background: #ff008d;
-          color: #fff;
-          font-weight: 400;
-          
-        }
       }
     }
-    
   }
-
 }
 
 .hops-form-wrapper {
@@ -132,6 +129,7 @@
     width: 200px;
     font-size: 15px;
     padding: 5px;
+    
     &:not(:first-child) {
       margin-left: 10px;
     }  
