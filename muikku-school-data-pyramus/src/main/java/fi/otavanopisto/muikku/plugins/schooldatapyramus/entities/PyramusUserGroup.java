@@ -5,9 +5,10 @@ import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 
 public class PyramusUserGroup implements UserGroup {
 
-  public PyramusUserGroup(String identifier, String name){
+  public PyramusUserGroup(String identifier, String name, Boolean guidanceGroup){
     this.identifier = identifier;
     this.name = name;
+    this.guidanceGroup = guidanceGroup;
   }
   
   @Override
@@ -30,6 +31,12 @@ public class PyramusUserGroup implements UserGroup {
     return getIdentifier() + "/" + getSchoolDataSource();
   }
   
+  @Override
+  public boolean isGuidanceGroup() {
+    return guidanceGroup;
+  }
+  
   private String identifier;
   private String name;
+  private Boolean guidanceGroup;
 }

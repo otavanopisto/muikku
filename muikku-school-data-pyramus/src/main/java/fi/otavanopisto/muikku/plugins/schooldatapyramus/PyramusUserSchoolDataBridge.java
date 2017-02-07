@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
@@ -26,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -388,12 +390,32 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public UserProperty getUserProperty(String userIdentifier, String key) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
+      Map<String, String> variables = student.getVariables();
+      String value = variables.get(key);
+      if (value == null) {
+        return null;
+      } else {
+        return new PyramusUserProperty(userIdentifier, key, value);
+      }
+    }
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override
   public UserProperty setUserProperty(String userIdentifier, String key, String value) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
+      Map<String, String> variables = student.getVariables();
+      variables.put(key, value);
+      student.setVariables(variables);
+      pyramusClient.put(String.format("/students/students/%d", studentId), student);
+      return new PyramusUserProperty(userIdentifier, key, value);
+    }
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override
@@ -466,7 +488,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         if (studyProgrammeId != null) {
           StudyProgramme studyProgramme = pyramusClient.get(String.format("/students/studyProgrammes/%d", studyProgrammeId), StudyProgramme.class);
           if (studyProgramme != null)
-            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()), studyProgramme.getName());
+            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()), studyProgramme.getName(), false);
         }
       break;
     }
@@ -522,17 +544,27 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) {
+    return listGroupUsersByGroupAndType(groupIdentifier, GroupUserType.STUDENT);
+  }
+  
+  @Override
+  public List<GroupUser> listGroupUsersByGroupAndType(String groupIdentifier, GroupUserType type) {
     switch (identifierMapper.getStudentGroupType(groupIdentifier)) {
       case STUDENTGROUP:
         Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
         if (userGroupId != null) {
-          return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
+          switch (type) {
+          case STUDENT:
+            return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
+          case STAFF_MEMBER:
+            return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/staffmembers", userGroupId), StudentGroupUser[].class));
+          }
         }
       break;
       
       // TODO: Studyprogramme groups, Pyramus needs endpoint to list students by studyprogramme - too costly to implement it otherwise
       case STUDYPROGRAMME:
-        throw new SchoolDataBridgeInternalException("PyramusUserSchoolDataBridge.listGroupUsersByGroup - not implemented");
+        throw new SchoolDataBridgeInternalException("PyramusUserSchoolDataBridge.listGroupUsersByGroupAndType - not implemented");
     }
 
     throw new SchoolDataBridgeInternalException("Malformed group identifier");

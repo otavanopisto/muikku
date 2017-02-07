@@ -17,12 +17,14 @@ import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
 import fi.otavanopisto.muikku.schooldata.entity.Role;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 
 public class UserSchoolDataController {
 
@@ -201,6 +203,30 @@ public class UserSchoolDataController {
 
     return null;
   }
+  
+  /* User properties */
+
+  public UserProperty getUserProperty(User user, String key) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.getUserProperty(user.getIdentifier(), key);
+      }
+    }
+    return null;
+  }
+
+  public UserProperty setUserProperty(User user, String key, String value) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.setUserProperty(user.getIdentifier(), key, value);
+      }
+    }
+    return null;
+  }
 
   /* Roles */
 
@@ -277,6 +303,17 @@ public class UserSchoolDataController {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
         return schoolDataBridge.listGroupUsersByGroup(userGroup.getIdentifier());
+      }
+    }
+    return null;
+  }
+
+  public List<GroupUser> listGroupUsersByGroupAndType(UserGroup userGroup, GroupUserType type){
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.listGroupUsersByGroupAndType(userGroup.getIdentifier(), type);
       }
     }
     return null;

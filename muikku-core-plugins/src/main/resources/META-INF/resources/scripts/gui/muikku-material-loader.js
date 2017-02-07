@@ -46,7 +46,15 @@
           parsed.append('<h2>' + material.title + '</h2>');
         }
         if (material.html) {
-          parsed.append(material.html);
+          // #2773: assignments need a form to avoid input name clashes
+          var assignmentType = $(pageElement).attr('data-assignment-type');
+          if (assignmentType == 'EXERCISE' || assignmentType == 'EVALUATED') {
+            var form = $('<form name="assignment-' + workspaceMaterialId + '">').appendTo(parsed);
+            $(form).append(material.html);
+          }
+          else {
+            parsed.append(material.html);
+          }
         }
         
         // Convert relative urls to point to correct url

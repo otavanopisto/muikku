@@ -1,11 +1,16 @@
 package fi.otavanopisto.muikku.users;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.GroupUserType;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 
 public class UserGroupController {
@@ -33,4 +38,16 @@ public class UserGroupController {
     return findUserGroup(userGroupEntity.getSchoolDataSource(), userGroupEntity.getIdentifier());
   }
   
+  public List<GroupUser> listUserGroupStaffMembers(UserGroup userGroup) {
+    return userSchoolDataController.listGroupUsersByGroupAndType(
+        userGroup,
+        GroupUserType.STAFF_MEMBER);
+  }
+  
+  public User findUserByGroupUser(GroupUser groupUser) {
+    return userSchoolDataController.findUser(
+        groupUser.getUserSchoolDataSource(),
+        groupUser.getUserIdentifier()
+    );
+  }
 }

@@ -26,94 +26,135 @@
           <div class="context-wrapper flex-row">
             <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
               <div class="profile-content flex-row">
-                <form name="hopsForm" class="hops-form-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+                <form jsf:id="hopsForm" class="hops-form-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                   <div class="hops-form-section flex-row">
-                    <h3>Henkilökohtainen opiskelusuunnitelma (HOPS)</h3>                    
-                    <p>Jos haluat täyttää omat tietosi yksin, niin ole hyvä ja tutustu täyttöohjeisiin.</p>
-                    <strong>Palauta HOPS omalle pienryhmäohjaajallesi tallentamalla lomakkeen tiedot näkymän alareunan painikkeesta.</strong>                  
+                    <h3>#{i18n.text['plugin.profile.hops.title']}</h3>                    
+                    <p>#{i18n.text['plugin.profile.hops.help1']}</p>
+                    <strong>#{i18n.text['plugin.profile.hops.help2']}</strong>                  
                   </div> 
                   <div class="hops-form-section flex-row">
-                    <input placeholder="Nimi" type="text"></input>
-                    <input placeholder="Päiväys" type="date"></input>
-                  </div>
-                  <div class="hops-form-section flex-row">
-                    <p>Lukio-opintoihin saat opiskeluaikaa enintään neljä vuotta. Voit suorittaa opinnot noin 2-4 vuoden aikana.</p> 
-                    <p>Vähintään 2,5-vuotinen ammatillinen perustutkinto (120 ov) antaa suoraan osallistumisoikeuden yo-kirjoituksiin.</p>
-                    <p>2-vuotisen ammatillisen tutkinnon suorittaneelta vaaditaan vähintään kahden lukiokurssin suorittamista niissä oppiaineissa, joiden yo-kokeisiin hän haluaa osallistua.(HOPS)</p>                    
+                    <p>#{i18n.text['plugin.profile.hops.info1']}</p> 
+                    <p>#{i18n.text['plugin.profile.hops.info2']}</p>
+                    <p>#{i18n.text['plugin.profile.hops.info3']}</p>                    
                   </div>                   
                   <div class="hops-form-section flex-row">
-                    <h3>Kokonaistavoitteet</h3>                     
+                    <h3>#{i18n.text['plugin.profile.goals.title']}</h3>                     
                   </div> 
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>Tavoitteena lukion päästötodistus</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.goals.upperSecondary']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="radio" name="graduationCertificate" value="yes" />Kyllä
-                      <input type="radio" name="graduationCertificate" value="no"/>Ei
-                      <input type="radio" name="graduationCertificate" value="maybe"/>Ehkä
+                      <h:selectOneRadio value="#{hopsBackingBean.goalSecondarySchoolDegree}">
+                        <f:selectItem itemValue="yes" itemLabel="#{i18n.text['plugin.profile.hops.goals.yes']}"/>
+                        <f:selectItem itemValue="no" itemLabel="#{i18n.text['plugin.profile.hops.goals.no']}"/>
+                        <f:selectItem itemValue="maybe" itemLabel="#{i18n.text['plugin.profile.hops.goals.maybe']}"/>
+                      </h:selectOneRadio>
                     </div> 
                   </div>  
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>Aion suorittaa yo-kirjoitukset</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.goals.matriculationExam']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="radio" name="graduationCertificate" value="yes" />Kyllä
-                      <input type="radio" name="graduationCertificate" value="no"/>Ei
-                      <input type="radio" name="graduationCertificate" value="maybe"/>Ehkä
+                      <h:selectOneRadio value="#{hopsBackingBean.goalMatriculationExam}">
+                        <f:selectItem itemValue="yes" itemLabel="#{i18n.text['plugin.profile.hops.goals.yes']}"/>
+                        <f:selectItem itemValue="no" itemLabel="#{i18n.text['plugin.profile.hops.goals.no']}"/>
+                        <f:selectItem itemValue="maybe" itemLabel="#{i18n.text['plugin.profile.hops.goals.maybe']}"/>
+                      </h:selectOneRadio>
                     </div> 
                   </div>  
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>Minulla on <input style="width:30px;" type="number" maxlength="1" name="vocationalYears"></input> vuoden tai vuosien laajuinen ammatillinen perustutkinto ja haluan suorittaa pelkät yo-kirjoitukset</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.goals.vocationalYears1']}
+                      <h:selectOneMenu value="#{hopsBackingBean.vocationalYears}">
+                        <f:selectItem itemValue="1" />
+                        <f:selectItem itemValue="2" />
+                        <f:selectItem itemValue="3" />
+                        <f:selectItem itemValue="4" />
+                        <f:selectItem itemValue="5" />
+                        <f:selectItem itemValue="6" />
+                        <f:selectItem itemValue="7" />
+                        <f:selectItem itemValue="8" />
+                        <f:selectItem itemValue="9" />
+                      </h:selectOneMenu>
+                      #{i18n.text['plugin.profile.hops.goals.vocationalYears2']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="radio" name="graduationCertificate" value="yes" />Kyllä
-                      <input type="radio" name="graduationCertificate" value="no"/>Ei
-
+                      <h:selectOneRadio value="#{hopsBackingBean.goalJustMatriculationExam}">
+                        <f:selectItem itemValue="yes" itemLabel="#{i18n.text['plugin.profile.hops.goals.yes']}"/>
+                        <f:selectItem itemValue="no" itemLabel="#{i18n.text['plugin.profile.hops.goals.no']}"/>
+                      </h:selectOneRadio>
                     </div> 
                   </div>  
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>Minulla on vuotta aiempia lukio- tai ammatillisia opintoja ja haluan hyväksiluvut suorituksistani</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.goals.justTransferCredits1']}
+                      <h:selectOneMenu value="#{hopsBackingBean.transferCreditYears}">
+                        <f:selectItem itemValue="1" />
+                        <f:selectItem itemValue="2" />
+                        <f:selectItem itemValue="3" />
+                        <f:selectItem itemValue="4" />
+                        <f:selectItem itemValue="5" />
+                        <f:selectItem itemValue="6" />
+                        <f:selectItem itemValue="7" />
+                        <f:selectItem itemValue="8" />
+                        <f:selectItem itemValue="9" />
+                      </h:selectOneMenu>
+                      #{i18n.text['plugin.profile.hops.goals.justTransferCredits2']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="radio" name="graduationCertificate" value="yes" />Kyllä
-                      <input type="radio" name="graduationCertificate" value="no"/>Ei
-                    </div> 
+                      <h:selectOneRadio value="#{hopsBackingBean.justTransferCredits}">
+                        <f:selectItem itemValue="yes" itemLabel="Kyllä"/>
+                        <f:selectItem itemValue="no" itemLabel="Ei"/>
+                      </h:selectOneRadio>
+                    </div>
                   </div>  
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16" >
-                      <label>Arvioin suorittavani lukion <input style="width:30px;" type="number" maxlength="1" name="vocationalYears"></input> vuodessa</label>
-                      <p>(HUOM! Aiemmat lukio-opinnot vaikuttavat opiskeluaikaan).</p>                                       
+                      <label>#{i18n.text['plugin.profile.hops.goals.completionYears1']}
+                      <h:selectOneMenu value="#{hopsBackingBean.completionYears}">
+                        <f:selectItem itemValue="1" />
+                        <f:selectItem itemValue="2" />
+                        <f:selectItem itemValue="3" />
+                        <f:selectItem itemValue="4" />
+                        <f:selectItem itemValue="5" />
+                        <f:selectItem itemValue="6" />
+                        <f:selectItem itemValue="7" />
+                        <f:selectItem itemValue="8" />
+                        <f:selectItem itemValue="9" />
+                      </h:selectOneMenu>
+                      #{i18n.text['plugin.profile.hops.goals.completionYears2']}</label>
+                      <p>#{i18n.text['plugin.profile.hops.goals.completionYears3']}</p>                                       
                     </div>
                   </div>                           
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>Haluan suorittaa matematiikassa</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.mathSyllabus.title']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="radio" name="graduationCertificate" value="yes" />Lyhyen
-                      <input type="radio" name="graduationCertificate" value="no"/>pitkän oppimäärän
+                      <h:selectOneRadio value="#{hopsBackingBean.mathSyllabus}">
+                        <f:selectItem itemValue="MAA" itemLabel="#{i18n.text['plugin.profile.hops.mathSyllabus.MAA']}"/>
+                        <f:selectItem itemValue="MAB" itemLabel="#{i18n.text['plugin.profile.hops.mathSyllabus.MAB']}"/>
+                      </h:selectOneRadio>
                     </div> 
                   </div>            
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>Haluan suorittaa seuraavat kielet</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.languages.title']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input type="checkbox" name="language" value="ena">Englanti</input>
-                      <input type="checkbox" name="language" value="rub">Ruotsi</input>
-                      <input type="checkbox" name="language" value="sab">Saksa</input>
-                      <input type="checkbox" name="language" value="rab">Ranska</input>
-                      <input type="checkbox" name="language" value="ia">Italia</input>
-                      <input type="checkbox" name="language" value="ea">Espanja</input>                        
+                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.english']}<br/>
+                      <input jsf:value="#{hopsBackingBean.swedish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.swedish']}<br/>
+                      <input jsf:value="#{hopsBackingBean.german}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.german']}<br/>
+                      <input jsf:value="#{hopsBackingBean.french}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.french']}<br/>
+                      <input jsf:value="#{hopsBackingBean.italian}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.italian']}<br/>
+                      <input jsf:value="#{hopsBackingBean.spanish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.spanish']}<br/>
                     </div> 
                   </div>                      
                   <div class="flex-row hops-form-section flex-align-items-center">
-                    <p>HOPS on suunnitelma, jota voidaan muuttaa. Voit päivittää valintojasi myöhemmin opintojesi edistyessä.</p>
-                    <input type="button" name="graduationCertificate" value="Tallenna tiedot"></input>
+                    <p>#{i18n.text['plugin.profile.hops.footer']}</p>
+                    <h:commandButton value="Tallenna" action="#{hopsBackingBean.save()}" />
                   </div>                                                                 
                 </form>
               </div>             

@@ -22,6 +22,10 @@
         <span class="evaluation-card-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
       </div>
       <div class="evaluation-card-button-row">
+        <div class="evaluation-card-button-block">
+          <div class="evaluation-important-button icon-star" title="{#localize key="plugin.evaluation.card.button.markImportantButtonLabel"/}"></div>
+          <div class="evaluation-unimportant-button icon-star-empty" title="{#localize key="plugin.evaluation.card.button.markNonImportantButtonLabel"/}"></div>
+        </div>
         <div class="evaluation-card-button archive-button icon-archive" title="{#localize key="plugin.evaluation.card.button.archiveButtonLabel"/}"></div>
         <div class="evaluation-card-button evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}"></div>
       </div>
@@ -56,6 +60,10 @@
         <span class="evaluation-card-data-text assignments-status {@eq key=assignmentsDone value=assignmentsTotal}all-done{/eq} {@ne key=assignmentsDone value=assignmentsTotal}not-done{/ne}">{assignmentsDone}/{assignmentsTotal}</span>
       </div>
       <div class="evaluation-card-button-row">
+        <div class="evaluation-card-button-block">
+          <div class="evaluation-important-button icon-star" title="{#localize key="plugin.evaluation.card.button.markImportantButtonLabel"/}"></div>
+          <div class="evaluation-unimportant-button icon-star-empty" title="{#localize key="plugin.evaluation.card.button.markNonImportantButtonLabel"/}"></div>
+        </div>
         <div class="evaluation-card-button evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}"></div>
       </div>
     </div>
