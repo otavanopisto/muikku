@@ -116,15 +116,17 @@
 
 }
 
-.hops-form-wrapper{
-  label{
+.hops-form-wrapper {
+  label {
     padding:0;
     margin: 0;
   }
-  input:not(:first-child){
+  
+  input:not(:first-child) {
     margin-left:5px;
   
   }
+  
   input[type="text"],
   input[type="date"] {
     width:200px;
@@ -134,7 +136,8 @@
       margin-left:10px;
     }  
   }
-  .hops-form-section{
+  
+  .hops-form-section {
     padding:15px;
   } 
 }
