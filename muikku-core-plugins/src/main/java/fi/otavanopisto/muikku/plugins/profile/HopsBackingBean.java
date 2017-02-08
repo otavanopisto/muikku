@@ -8,12 +8,16 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -32,15 +36,19 @@ public class HopsBackingBean {
   @Inject
   private UserController userController;
   
+  @Inject
+  private EnvironmentUserController environmentUserController;
+  
   @RequestAction
   @LoggedIn
   public String init() {
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     User user = userController.findUserByIdentifier(userIdentifier);
-    
-    if (userIdentifier == null || !userIdentifier.getIdentifier().startsWith("STUDENT")) {
-      student = false;
-    } else {
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    EnvironmentRoleEntity roleEntity = environmentUser.getRole();
+
+    if (EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
       student = true;
       goalSecondarySchoolDegree = loadStringProperty(user, "goalSecondarySchoolDegree");
       goalMatriculationExam = loadStringProperty(user, "goalMatriculationExam");
@@ -56,6 +64,8 @@ public class HopsBackingBean {
       french = loadBoolProperty(user, "french");
       italian = loadBoolProperty(user, "italian");
       spanish = loadBoolProperty(user, "spanish");
+    } else {
+      student = false;
     }
 
     return null;
