@@ -1160,6 +1160,7 @@
         .empty()
         .append(dialog);
     },
+
     
     _updateHash: function (folderId, threadId) {
       if (folderId) {
@@ -1213,6 +1214,70 @@
     
   });
   
+  $.widget("custom.communicatorCreateSignatureDialog", {
+    
+    options: {
+      ckeditor: {
+        toolbar: [
+          { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+          { name: 'links', items: [ 'Link' ] },
+          { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+          { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+          { name: 'styles', items: [ 'Format' ] },
+          { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+          { name: 'tools', items: [ 'Maximize' ] }
+        ],
+//        extraPlugins: {
+//          'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
+//          'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
+//          'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
+//          'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
+//          'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
+//          'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
+//          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.1/plugin.min.js',
+//          'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
+//          'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
+//        }
+      }
+    },
+      
+    _create : function() {
+      var extraPlugins = [];
+      
+      $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
+        CKEDITOR.plugins.addExternal(plugin, url);
+        extraPlugins.push(plugin);
+      }, this));
+      this.options.ckeditor.extraPlugins = extraPlugins.join(',');
+      this.element.on('click', 'input[name="send"]', $.proxy(this._onSendClick, this));
+      this.element.on('click', 'input[name="cancel"]', $.proxy(this._onCancelClick, this));
+    },
+    
+    _destroy: function () {
+      try {
+        this._contentsEditor.destroy();
+      } catch (e) {
+      }
+    },
+    
+    _onSendClick: function (event) {
+      this.element.addClass('loading');
+    },
+    
+    _onCancelClick: function (event) {
+      event.preventDefault();
+      this.element.trigger('dialogClose');
+      this.element.remove();
+    },
+    
+    _onCKEditorReady: function (e) {
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
+    }
+  });  
+
+  
+  
   $.widget("custom.communicatorCreateMessageDialog", {
     
     options: {
@@ -1241,7 +1306,9 @@
         }
       }
     },
-    
+
+
+      
     _create : function() {
       var extraPlugins = [];
       
