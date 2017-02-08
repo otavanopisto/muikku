@@ -89,7 +89,7 @@ public class HopsBackingBean {
   private boolean loadBoolProperty(User user, String propertyName) {
     UserProperty property = userSchoolDataController.getUserProperty(user, "hops." + propertyName);
     if (property != null) {
-      return "true".equals(property.getValue());
+      return "yes".equals(property.getValue());
     } else {
       return false;
     }
@@ -102,7 +102,7 @@ public class HopsBackingBean {
   }
   
   private void saveBoolProperty(User user, String propertyName, boolean value) {
-    userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "true" : "false");
+    userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "yes" : "no");
   }
   
   public String getGoalSecondarySchoolDegree() {
