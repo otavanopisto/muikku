@@ -97,6 +97,10 @@
             
             if (this.options.evaluationGradeId) {
               var gradeSelector = $(this._dialog).find('select[name="grade"]');
+              var gradeExists = $(gradeSelector).find("option[value='" + this.options.evaluationGradeId + "']").length !== 0;
+              if (!gradeExists) {
+                $(gradeSelector).append('<option value="' + this.options.evaluationGradeId + '"></option>');
+              }
               gradeSelector.val(this.options.evaluationGradeId);
               gradeSelector.change($.proxy(function(){
                 $(this._dialog).find('input[name="evaluationDate"]').datepicker('setDate', new Date());
