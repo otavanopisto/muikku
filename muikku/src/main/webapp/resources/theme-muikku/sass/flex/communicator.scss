@@ -2,18 +2,18 @@
 @import "styles";
 @import "draft";
 
-.cm-communicator-settings {
+.cm-settings {
   background: #fff;
   
 }
 
-.cm-communicator-settings-title {
+.cm-settings-title {
   
   font-size: 22px;  
   padding:10px; 
 }
 
-.cm-communicator-settings-item {
+.cm-settings-item {
   &:first-child{
     border-top: 1px solid #ededed;  
   }
@@ -24,15 +24,27 @@
 }
 
 
-.cm-communicator-setting-title {
+.cm-setting-title {
   background: #f7fdff;
-  padding: 10px;
   font-size: 18px;  
-  
+  padding: 10px;
 }
-.cm-communicator-setting-content {
+.cm-setting-content {
   padding: 15px 30px;
 } 
+
+
+.cm-setting-signature{
+  border-left: 3px solid #dadada;
+  background: #ededed;
+  padding: 10px;
+}
+
+.cm-setting-create-signature-link {
+  cursor: pointer;
+  color: $environment-link-color
+}
+
 
 .cm-message-create {
   width:100%;
