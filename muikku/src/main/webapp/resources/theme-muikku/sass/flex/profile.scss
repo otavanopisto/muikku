@@ -7,9 +7,9 @@
   
   .profile-content {
     background: $environment-profile-background-color;
-    padding: 20px;
     box-sizing: border-box;
     min-height: 500px;
+    padding: 20px;
     position: relative;
     
     .profile-picture-wrapper {
@@ -33,13 +33,13 @@
       margin: 0 0 0 166px;
     
       h1.profile-user-realname {
-        font-weight: 300;
         font-size: 20px;
+        font-weight: 300;
       }
       
       h2 {
-        font-weight: 300;
         font-size: 16px;
+        font-weight: 300;
         margin: 10px 0 2px;
       }
       
@@ -53,12 +53,12 @@
         .profile-change-password {
           background: $environment-profile-button-background-color;
           color: $environment-profile-button-font-color;
+          cursor: pointer;
           display: inline-block;
           font-size: 14px;
+          font-weight: 400;
           padding: 6px 8px;
           text-transform: uppercase;
-          cursor: pointer;
-          font-weight: 400;
         }
       
       }
@@ -69,12 +69,12 @@
         .profile-change-address-municipality {
           background: $environment-profile-button-background-color;
           color: $environment-profile-button-font-color;
+          cursor: pointer;
           display: inline-block;
           font-size: 14px;
+          font-weight: 400;
           padding: 6px 8px;
           text-transform: uppercase;
-          cursor: pointer;
-          font-weight: 400;
         }
       
       }
@@ -85,23 +85,23 @@
   
   .profile-section-links-container {
     background: $environment-profile-background-color;
-    padding: 0;
     box-sizing: border-box;
     min-height: 500px;
+    padding: 0;
   }
 
   .profile-section-links {
-    margin: 0;
     list-style-type: none;
+    margin: 0;
     padding: 10px;
   }
 
   .profile-section-link {
-    padding: 5px;
-    text-transform: uppercase;
     font-weight: 300;
     cursor: pointer;
     margin: 0 0 1px;
+    padding: 5px;
+    text-transform: uppercase;
     
     &:hover,
     &.active {
@@ -118,8 +118,8 @@
 
 .hops-form-wrapper {
   label {
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
   
   input:not(:first-child) {
@@ -129,10 +129,10 @@
   
   input[type="text"],
   input[type="date"] {
-    width: 200px;
     font-size: 15px;
     padding: 5px;
-    
+    width: 200px;
+
     &:not(:first-child) {
       margin-left: 10px;
     }  
