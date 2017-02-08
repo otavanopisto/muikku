@@ -1087,13 +1087,15 @@
           .read(workspaceEntityId, { userIdentifier: this.options.userIdentifier })
           .callback($.proxy(function(err, statistics) {
             if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
+              // Not all roles have access to all workspaces' forumStatistics and that's fine.
+              if (statistics.status == 403)
+                callback(null, null);
+              else
+                $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
-              callback(null, {
-                statistics: statistics||{
-                  messageCount: 0,
-                  latestMessage: null 
-                }
+              callback(null, statistics || {
+                messageCount: 0,
+                latestMessage: null 
               });
             }
           }, this));
@@ -1201,7 +1203,7 @@
                       var studentActivity = loads[1];
                       
                       workspace.activity = studentActivity.activity;
-                      workspace.forumStatistics = forumStatistics.statistics;
+                      workspace.forumStatistics = forumStatistics;
                       
                       workspaceCallback();
                     }
