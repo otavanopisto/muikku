@@ -1407,13 +1407,6 @@
       MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(data.pageElement)[0]]);
     }
     
-    $(data.pageElement).find('.math-tex').each(function (index, mathtex) {
-      var mathWrapper = $('<div>')
-      .addClass('math-wrapper')
-      .insertBefore(mathtex);
-    $(mathtex).appendTo(mathWrapper);
-    });
-
     var maxFileSize = null;
     if ($("input[name='max-file-size']").length) {
       maxFileSize = Number($("input[name='max-file-size']").val());
