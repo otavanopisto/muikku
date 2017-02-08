@@ -20,8 +20,8 @@
       </div>
     
       <div class="mf-toolbar flex-row">
-        <input type="submit" name="send" value='{#localize key="plugin.communicator.createmessage.button.send"/}' disabled="disabled"/>
-        <input type="submit" name="cancel" value='{#localize key="plugin.communicator.createmessage.button.cancel"/}'/>
+        <input type="submit" name="send" value='{#localize key="plugin.communicator.createsignature.button.send"/}' disabled="disabled"/>
+        <input type="submit" name="cancel" value='{#localize key="plugin.communicator.createsignature.button.cancel"/}'/>
       </div>   
     </form>
   </div>
