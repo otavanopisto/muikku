@@ -8,6 +8,7 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -37,20 +38,25 @@ public class HopsBackingBean {
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
     User user = userController.findUserByIdentifier(userIdentifier);
     
-    goalSecondarySchoolDegree = loadStringProperty(user, "goalSecondarySchoolDegree");
-    goalMatriculationExam = loadStringProperty(user, "goalMatriculationExam");
-    vocationalYears = loadStringProperty(user, "vocationalYears");
-    goalJustMatriculationExam = loadStringProperty(user, "goalJustMatriculationExam");
-    justTransferCredits = loadStringProperty(user, "justTransferCredits");
-    transferCreditYears = loadStringProperty(user, "transferCreditYears");
-    completionYears = loadStringProperty(user, "completionYears");
-    mathSyllabus = loadStringProperty(user, "mathSyllabus");
-    english = loadBoolProperty(user, "english");
-    swedish = loadBoolProperty(user, "swedish");
-    german = loadBoolProperty(user, "german");
-    french = loadBoolProperty(user, "french");
-    italian = loadBoolProperty(user, "italian");
-    spanish = loadBoolProperty(user, "spanish");
+    if (userIdentifier == null || !userIdentifier.getIdentifier().startsWith("STUDENT")) {
+      student = false;
+    } else {
+      student = true;
+      goalSecondarySchoolDegree = loadStringProperty(user, "goalSecondarySchoolDegree");
+      goalMatriculationExam = loadStringProperty(user, "goalMatriculationExam");
+      vocationalYears = loadStringProperty(user, "vocationalYears");
+      goalJustMatriculationExam = loadStringProperty(user, "goalJustMatriculationExam");
+      justTransferCredits = loadStringProperty(user, "justTransferCredits");
+      transferCreditYears = loadStringProperty(user, "transferCreditYears");
+      completionYears = loadStringProperty(user, "completionYears");
+      mathSyllabus = loadStringProperty(user, "mathSyllabus");
+      english = loadBoolProperty(user, "english");
+      swedish = loadBoolProperty(user, "swedish");
+      german = loadBoolProperty(user, "german");
+      french = loadBoolProperty(user, "french");
+      italian = loadBoolProperty(user, "italian");
+      spanish = loadBoolProperty(user, "spanish");
+    }
 
     return null;
   }
@@ -216,6 +222,14 @@ public class HopsBackingBean {
   public void setSpanish(boolean spanish) {
     this.spanish = spanish;
   }
+  
+  public boolean isStudent() {
+    return student;
+  }
+  
+  public void setStudent(boolean student) {
+    this.student = student;
+  }
 
   private String goalSecondarySchoolDegree;
   private String goalMatriculationExam;
@@ -231,4 +245,5 @@ public class HopsBackingBean {
   private boolean french;
   private boolean italian;
   private boolean spanish;
+  private boolean student;
 }

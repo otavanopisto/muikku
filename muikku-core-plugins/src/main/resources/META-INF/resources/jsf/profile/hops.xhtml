@@ -20,7 +20,37 @@
   </ui:define>  
 
   <ui:define name="mf-content-master"> 
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn and not hopsBackingBean.student}">
+      <div id="profile">
+        <ui:insert name="mf-content-area">
+          <div class="context-wrapper flex-row">
+            <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
+              <div class="profile-content flex-row">
+                <div>#{i18n.text['plugin.profile.hops.studentsOnly']}</div>
+              </div>
+            </section>
+            <nav id="profileSectionNavigation" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
+              <div class="profile-section-links-container">
+                <ul class="profile-section-links">
+                  <li class="profile-section-link" data-link="personal">
+                    <a jsf:outcome="profile.jsf">#{i18n.text['plugin.profile.links.personal']}</a>
+                  </li>
+                  <li class="profile-section-link active" data-link="hops">
+                    <a jsf:outcome="hops.jsf">#{i18n.text['plugin.profile.links.HOPS']}</a>
+                  </li>
+                  <!-- To Be Added In The Future 
+                  <li class="profile-section-links">Työtilat</li>
+                  <li class="profile-section-links">Suoritusrekisteri</li>
+                  <li class="profile-section-links">Kaverit</li>
+                   -->
+                </ul>
+              </div>
+            </nav>    
+          </div>
+        </ui:insert>
+      </div>
+    </ui:fragment>
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn and hopsBackingBean.student}">
       <div id="profile">
         <ui:insert name="mf-content-area">
           <div class="context-wrapper flex-row">
