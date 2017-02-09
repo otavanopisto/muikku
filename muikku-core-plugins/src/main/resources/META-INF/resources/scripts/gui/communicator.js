@@ -780,6 +780,7 @@
           this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));               
           this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-setting-create-signature-link', $.proxy(this._onNewSignatureLinkClick, this));
+          this.element.on('click', '.cm-setting-edit-signature-link', $.proxy(this._onEditSignatureLinkClick, this));          
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
           
           this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
@@ -972,7 +973,7 @@
     },
 
     updateSignature: function (id, name, signature, callback) {
-      mApi().communicator.signatures.update(id, { name: name, signature: signature }).callback($.proxy(function (err, results) {
+      mApi().communicator.signatures.update(id, { id : id, name: name, signature: signature }).callback($.proxy(function (err, results) {
         callback(err, results);
       }, this));
     },
@@ -1169,9 +1170,9 @@
         .append(dialog);
     },
     
-    newSignatureDialog: function (options) {
+    signatureDialog: function (options) {
       var dialog = $('<div>')
-        .communicatorCreateSignatureDialog();
+        .communicatorCreateEditSignatureDialog(options);
       
       dialog.on('dialogReady', function(e) {
         $(document.body).css({
@@ -1232,6 +1233,19 @@
     _onNewMessageButtonClick: function (event) {
       this.newMessageDialog();
     },
+    
+    _onEditSignatureLinkClick: function (event) {
+      var targetTest =  $(event.target);
+      var signatureElem = $(event.target).closest('.cm-signature');
+      var signature = {};
+      
+      signature.id = signatureElem.attr('data-id');
+      signature.name = signatureElem.attr('data-name');
+      signature.content = signatureElem.attr('data-signature');
+      
+      this.signatureDialog({signature: signature});
+    },    
+    
     _onNewSignatureLinkClick: function (event) {
       this.newSignatureDialog();
     },
@@ -1246,9 +1260,10 @@
     
   });
   
-  $.widget("custom.communicatorCreateSignatureDialog", {
+  $.widget("custom.communicatorCreateEditSignatureDialog", {
     
     options: {
+      signature: null,
       ckeditor: {
         toolbar: [
           { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
@@ -1270,6 +1285,12 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
+
+        var test = this.options.signature.content;
+        if(this.options.signature){
+          this._contentsEditor.setData(this.options.signature.content);          
+        }                
+        
       }, this));
         
       this.element.on('click', 'input[name="send"]', $.proxy(this._onSendClick, this));
@@ -1277,8 +1298,9 @@
     },
     
     _load: function (callback) {
+      var content = null;
 
-      renderDustTemplate('communicator/communicator_create_signature.dust', {}, $.proxy(function (text) {
+      renderDustTemplate('communicator/communicator_create_signature.dust', {content : content}, $.proxy(function (text) {
         this.element.html(text);
         if(callback){
           callback();
@@ -1313,8 +1335,14 @@
           return false;
         }
         
-        communicator.createSignature(caption, content);
-        
+        if(this.options.signature){
+          communicator.updateSignature(this.options.signature.id, this.options.signature.name, this.options.signature.content, $.proxy(function () {
+            this.element.removeClass('loading');
+            window.location.reload(true);
+          }, this));
+        }else{
+          communicator.createSignature(caption, content);                    
+        }
       }      
     },
     

@@ -13,9 +13,9 @@
           <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-center cm-setting-signature">
             {?signatures}
               {#signatures}
-                <div class="">
+                <div class="cm-signature" data-id="{id}" data-name="{name}" data-signature="{signature}">
                   <div>{signature|s}</div>
-                  <div><span>Muokkaa</span><span>Poista</span></div>  
+                  <div><span class="cm-setting-edit-signature-link">Muokkaa</span><span class="cm-setting-delete-signature-link">Poista</span></div>  
                 </div>
               {/signatures}
              {:else}
