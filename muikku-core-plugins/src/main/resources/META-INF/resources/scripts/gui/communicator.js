@@ -796,12 +796,18 @@
         // Store the signatures etc....
       }, this));
     },
-    _onSettingsClick: function(){
-      renderDustTemplate('communicator/communicator_settings.dust', {}, $.proxy(function(text) {
-        $(".cm-messages-container").html(text);
-        $('.mf-controls-container').messageTools( 'toolset', 'settings');     
-      }));
-    },   
+    _onSettingsClick: function(){ 
+      this.loadSignatures($.proxy(function(err, signatures) {        
+        if(err){
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.signatures.loading'));          
+        }else{          
+          renderDustTemplate('communicator/communicator_settings.dust', {signatures : signatures}, $.proxy(function(text) {
+            $(".cm-messages-container").html(text);
+            $('.mf-controls-container').messageTools( 'toolset', 'settings');     
+          }, this));
+        }
+      }, this)); 
+    },
 
     loadFolder: function (id) {
       this._updateHash(id, null);
@@ -1259,10 +1265,12 @@
     _create : function() {
       
       this._load($.proxy(function () {
-        this._contentsEditor = CKEDITOR.replace(this.element.find('textarea[name="content"]')[0]);
+        this._contentsEditor = CKEDITOR.replace(this.element.find('textarea[name="content"]')[0], $.extend(this.options.ckeditor, {
+          on: {
+            instanceReady: $.proxy(this._onCKEditorReady, this)
+          }
+        }));
       }, this));
-      
-      
         
       this.element.on('click', 'input[name="send"]', $.proxy(this._onSendClick, this));
       this.element.on('click', 'input[name="cancel"]', $.proxy(this._onCancelClick, this));
@@ -1288,6 +1296,26 @@
     
     _onSendClick: function (event) {
       this.element.addClass('loading');
+      var communicator = $(".communicator").communicator("instance");
+
+      
+      var form = $(event.target).closest('form')[0];
+      if (form.checkValidity()) {
+        var buttonElement = $(event.target);
+        buttonElement.attr('disabled','disabled');
+        
+        var caption = 'default';
+        var content = this._contentsEditor.getData();
+
+        if (!content || !content.trim()) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nocontent'));
+          buttonElement.removeAttr('disabled');
+          return false;
+        }
+        
+        communicator.createSignature(caption, content);
+        
+      }      
     },
     
     _onCancelClick: function (event) {
@@ -1296,10 +1324,10 @@
       this.element.remove();
     },
     
-//    _onCKEditorReady: function (e) {
-//      this.element.find('input[name="send"]').removeAttr('disabled');
-//      this.element.trigger('dialogReady');
-//    }
+    _onCKEditorReady: function (e) {
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
+    }
   });  
 
   
