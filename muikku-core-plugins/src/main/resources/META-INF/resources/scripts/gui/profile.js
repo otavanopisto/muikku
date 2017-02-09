@@ -1,5 +1,15 @@
 (function() {
 
+  function changeLink(event){
+   var clickedLink = $(event.target).closest(".profile-section-link");
+   var allLinks = $(event.target).closest(".profile-section-links").find(".profile-section-link");
+   
+   $(allLinks).removeClass("active");
+   $(clickedLink).addClass("active");
+   
+    
+  }
+  
   function changeAddressMunicipality() {
 
     mApi().user.students.read(MUIKKU_LOGGED_USER).callback(function (err, oldStudent) {
@@ -156,10 +166,14 @@
     }, this));
   }
   
+  $(document).on('click', '.profile-section-link', function (event, data) {
+    changeLink(event);
+  });
+
   $(document).on('click', '.profile-change-password', function (event, data) {
     changePassword();
   });
-
+  
   $(document).on('click', '.profile-change-address-municipality', function (event, data) {
     changeAddressMunicipality();
   });

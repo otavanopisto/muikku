@@ -6,40 +6,40 @@
 #profile { 
   
   .profile-content {
-    background:#fff;
-    padding:20px;
-    box-sizing:border-box;
-    min-height:500px;
-    position:relative;
+    background: $environment-profile-background-color;
+    box-sizing: border-box;
+    min-height: 500px;
+    padding: 20px;
+    position: relative;
     
     .profile-picture-wrapper {
-      border:3px solid #fff;
-      box-shadow:0 0 15px rgba(0, 0, 0, 0.05);
-      left:20px;
-      min-height:100px;
-      position:absolute;
-      top:20px;
-      width:140px;
+      border: 3px solid $environment-profile-picture-border;
+      box-shadow: $environment-profile-picture-box-shadow;
+      left: 20px;
+      min-height: 100px;
+      position: absolute;
+      top: 20px;
+      width: 140px;
       
       img {
-        border:0 none;
-        display:block;
-        height:auto;
-        width:140px;
+        border: 0 none;
+        display: block;
+        height: auto;
+        width: 140px;
       }
     }
     
     .profile-data-wrapper {
-      margin:0 0 0 166px;
+      margin: 0 0 0 166px;
     
       h1.profile-user-realname {
-        font-weight:300;
-        font-size:20px;
+        font-size: 20px;
+        font-weight: 300;
       }
       
       h2 {
-        font-weight:300;
-        font-size:16px;
+        font-size: 16px;
+        font-weight: 300;
         margin: 10px 0 2px;
       }
       
@@ -48,33 +48,33 @@
       }
       
       .profile-change-password-container {
-        margin:10px 0;
+        margin: 10px 0;
       
         .profile-change-password {
-          background:#0099ff;
-          color:#fff;
-          display:inline-block;
-          font-size:14px;
-          padding:6px 8px;
-          text-transform:uppercase;
-          cursor:pointer;
-          font-weight:400;
+          background: $environment-profile-button-background-color;
+          color: $environment-profile-button-font-color;
+          cursor: pointer;
+          display: inline-block;
+          font-size: 14px;
+          font-weight: 400;
+          padding: 6px 8px;
+          text-transform: uppercase;
         }
       
       }
 
       .profile-change-address-municipality-container {
-        margin:10px 0;
+        margin: 10px 0;
       
         .profile-change-address-municipality {
-          background:#0099ff;
-          color:#fff;
-          display:inline-block;
-          font-size:14px;
-          padding:6px 8px;
-          text-transform:uppercase;
-          cursor:pointer;
-          font-weight:400;
+          background: $environment-profile-button-background-color;
+          color: $environment-profile-button-font-color;
+          cursor: pointer;
+          display: inline-block;
+          font-size: 14px;
+          font-weight: 400;
+          padding: 6px 8px;
+          text-transform: uppercase;
         }
       
       }
@@ -84,34 +84,62 @@
   }
   
   .profile-section-links-container {
-    background:#fff;
-    padding:0;
-    box-sizing:border-box;
-    min-height:500px;
-    
-    ul.profile-section-links {
-      padding:0;
-      margin:0;
-      list-style-type:none;
-      padding:10px;
-      
-      li.profile-section-links {
-        padding:5px;
-        text-transform:uppercase;
-        font-weight:300;
-        cursor:pointer;
-        margin:0 0 1px 0;
-        
-        &:hover,
-        &.active {
-          background:#ff008d;
-          color:#fff;
-          font-weight:400;
-          
-        }
-      }
-    }
-    
+    background: $environment-profile-background-color;
+    box-sizing: border-box;
+    min-height: 500px;
+    padding: 0;
   }
 
+  .profile-section-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px;
+  }
+
+  .profile-section-link {
+    font-weight: 300;
+    cursor: pointer;
+    margin: 0 0 1px;
+    padding: 5px;
+    text-transform: uppercase;
+    
+    &:hover,
+    &.active {
+      background: $environment-profile-section-background-color;
+      color: $environment-profile-section-font-color;
+      font-weight: 400;
+      
+      a {
+        color: $environment-profile-section-font-color;
+      }        
+    }
+  }  
+}
+
+.hops-form-wrapper {
+  label {
+    margin: 0;
+    padding: 0;
+  }
+  
+  input:not(:first-child) {
+    margin-left: 5px;
+  
+  }
+  
+  input[type="text"],
+  input[type="date"] {
+    font-size: 15px;
+    padding: 5px;
+    width: 200px;
+
+    &:not(:first-child) {
+      margin-left: 10px;
+    }  
+    
+  }
+  
+  .hops-form-section {
+    padding: 15px;
+  } 
 }
