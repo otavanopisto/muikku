@@ -35,14 +35,19 @@
 
 
 .cm-setting-signature{
-  border-left: 3px solid #dadada;
-  background: #ededed;
+  border-left: 3px solid #d7d7d7;
+  background: #fafafa;
   padding: 10px;
+  font-style: italic;
 }
 
-.cm-setting-create-signature-link {
+.cm-setting-create-signature-link, .cm-setting-edit-signature-link, .cm-setting-remove-signature-link {
   cursor: pointer;
-  color: $environment-link-color
+  color: $environment-link-color;
+  font-style:normal;
+  &:not(:first-child){
+    margin-left:15px;
+  }
 }
 
 

@@ -781,6 +781,7 @@
           this.element.find('.cm-thread-container').communicatorThread();       
           this.element.on('click', '.cm-setting-create-signature-link', $.proxy(this._onNewSignatureLinkClick, this));
           this.element.on('click', '.cm-setting-edit-signature-link', $.proxy(this._onEditSignatureLinkClick, this));          
+          this.element.on('click', '.cm-setting-remove-signature-link', $.proxy(this._removeSignature, this));
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
           
           this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
@@ -984,6 +985,41 @@
       }, this));
     },
     
+    _removeSignature: function  (event) {
+      var id = $(event.target).closest('.cm-signature').attr('data-id');
+      this._confirmSignatureRemoval(id, $.proxy(function (){
+        this.deleteSignature(id, $.proxy(function () {
+          window.location.reload(true);         
+        }, this));
+      }, this));
+      
+    }, 
+    
+    _confirmSignatureRemoval: function (id, confirmCallback) {
+      renderDustTemplate('communicator/communicator_confirm_signature_removal.dust', {}, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          resizable : false,
+          width : 360,
+          dialogClass : "cm-signature-management-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-confirm-text'),
+            'class' : 'delete-button',
+            'click' : function(event) {
+              $(this).dialog().remove();
+              confirmCallback();
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog().remove();
+            }
+          } ]
+        });
+      }, this));
+    },    
     _onLabelMenuOpenClick : function(event){
       var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');
       var clickedMenu = $(event.target).closest("li").find('.mf-label-functions-menu');
@@ -1247,7 +1283,7 @@
     },    
     
     _onNewSignatureLinkClick: function (event) {
-      this.newSignatureDialog();
+      this.signatureDialog();
     },
     
     
@@ -1326,7 +1362,6 @@
         var buttonElement = $(event.target);
         buttonElement.attr('disabled','disabled');
         
-        var caption = 'default';
         var content = this._contentsEditor.getData();
 
         if (!content || !content.trim()) {
@@ -1336,12 +1371,14 @@
         }
         
         if(this.options.signature){
-          communicator.updateSignature(this.options.signature.id, this.options.signature.name, this.options.signature.content, $.proxy(function () {
+          communicator.updateSignature(this.options.signature.id, this.options.signature.name, content, $.proxy(function () {
             this.element.removeClass('loading');
             window.location.reload(true);
           }, this));
         }else{
+          var caption = 'default';
           communicator.createSignature(caption, content);                    
+          window.location.reload(true);
         }
       }      
     },

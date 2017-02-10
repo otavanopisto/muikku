@@ -15,7 +15,7 @@
               {#signatures}
                 <div class="cm-signature" data-id="{id}" data-name="{name}" data-signature="{signature}">
                   <div>{signature|s}</div>
-                  <div><span class="cm-setting-edit-signature-link">Muokkaa</span><span class="cm-setting-delete-signature-link">Poista</span></div>  
+                  <div><span class="cm-setting-edit-signature-link">Muokkaa</span><span class="cm-setting-remove-signature-link">Poista</span></div>  
                 </div>
               {/signatures}
              {:else}
