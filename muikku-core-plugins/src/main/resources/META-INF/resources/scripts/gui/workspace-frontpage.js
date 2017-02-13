@@ -28,8 +28,18 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
+          var materialLicenseIcon = "none";
+          switch (workspace.materialDefaultLicense) {
+            case 'https://creativecommons.org/licenses/by/4.0': materialLicenseIcon = 'by';
+            case 'https://creativecommons.org/licenses/by-sa/4.0': materialLicenseIcon = 'by-sa';
+            case 'https://creativecommons.org/licenses/by-nc/4.0': materialLicenseIcon = 'by-nc';
+            case 'https://creativecommons.org/licenses/by-nd/4.0': materialLicenseIcon = 'by-nd';
+            case 'https://creativecommons.org/licenses/by-nc-sa/4.0': materialLicenseIcon = 'by-nc-sa';
+            case 'https://creativecommons.org/licenses/by-nc-nd/4.0': materialLicenseIcon = 'by-nc-nd';
+          }
           renderDustTemplate('workspace/workspace-index-material-license.dust', {
-            materialDefaultLicense: workspace.materialDefaultLicense
+            materialDefaultLicense: workspace.materialDefaultLicense,
+            materialLicenseIcon: materialLicenseIcon
           }, $.proxy(function (text) {
             $('.workspace-frontpage-footer').prepend($.parseHTML(text));
           }, this));
