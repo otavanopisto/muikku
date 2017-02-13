@@ -1322,7 +1322,6 @@
           }
         }));
 
-        var test = this.options.signature.content;
         if(this.options.signature){
           this._contentsEditor.setData(this.options.signature.content);          
         }                
@@ -1377,8 +1376,9 @@
           }, this));
         }else{
           var caption = 'default';
-          communicator.createSignature(caption, content);                    
-          window.location.reload(true);
+          communicator.createSignature(caption, content, function () {
+            window.location.reload(true);
+          });                    
         }
       }      
     },
