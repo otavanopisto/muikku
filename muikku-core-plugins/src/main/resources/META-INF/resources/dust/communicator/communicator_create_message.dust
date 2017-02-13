@@ -35,7 +35,9 @@
                 <textarea id="textContent" name="content"></textarea>
               </div>
             </div>
-                            <input type="checkbox" name="signature" value="{#localize key="plugin.communicator.createmessage.checkbox.signature"/}" />
+            <div>
+            <input type="checkbox" name="signature" value=""  selected> {#localize key="plugin.communicator.createmessage.checkbox.signature"/}</input>
+            </div>                            
           </div> 
         </div>
       </div>
