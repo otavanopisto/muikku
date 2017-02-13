@@ -2,30 +2,27 @@
 @import "styles";
 @import "draft";
 
-.cm-settings {
-  background: #fff;
-  
+.cm-settings{
+  background: $environment-background-color; 
 }
 
 .cm-settings-title {
-  
   font-size: 22px;  
   padding:10px; 
 }
 
 .cm-settings-item {
   &:first-child{
-    border-top: 1px solid #ededed;  
+    border-top: 1px solid $environment-border-color;  
   }
   
   &:not(:last-child) {
-    border-bottom: 1px solid #ededed;
+    border-bottom: 1px solid $environment-border-color;
   }
 }
 
-
 .cm-setting-title {
-  background: #f7fdff;
+  background: $environment-settings-subtitle-background-color;
   font-size: 18px;  
   padding: 10px;
 }
@@ -35,8 +32,8 @@
 
 
 .cm-setting-signature{
-  border-left: 3px solid #d7d7d7;
-  background: #fafafa;
+  border-left: 3px solid $environment-setting-signature-border-color;
+  background: $environment-setting-signature-background-color;
   padding: 10px;
   font-style: italic;
 }

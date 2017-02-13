@@ -94,7 +94,8 @@ public class CommunicatorController {
             Whitelist.relaxed()
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")
-          ).clean(doc);
+              .addAttributes("i", "class")
+    ).clean(doc);
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
   }

@@ -413,9 +413,12 @@ ul.mf-tool-label-container {
     }
   }
   &.settings {
-     div::before {
-      color:#3782df;     
-     }
+    div::before {
+      color:$environment-settings-icon-color;   
+    }
+    div:hover::before {
+        color: $environment-settings-hover-icon-color;
+    } 
   }
 
   &.button {

@@ -726,7 +726,7 @@
     },
     _create : function() {
       
-    $('.mf-view-settings-function-container').on('click', '.cm-settings', $.proxy(this._onSettingsClick, this));    
+    $('.mf-view-settings-function-container').on('click', '.cm-settings-icon', $.proxy(this._onSettingsClick, this));    
 
       
    
@@ -1436,7 +1436,7 @@
       
     _create : function() {
       var extraPlugins = [];
-      
+      var communicator = $(".communicator").communicator("instance");
       $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
@@ -1455,6 +1455,8 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
+        
+
 
         var autocomplete = this.element.find('input[name="recipient"]').autocomplete({
           open: function(event, ui) {
@@ -1529,66 +1531,81 @@
           .callback(callback);
       }, this);
     },
+    
 
     _load: function (callback) {
+      var communicator = $(".communicator").communicator("instance");
       var replyMessageId = this.options.replyMessageId;
+      this._signature = undefined;
+      var hasSignature = false; 
       
-      if (replyMessageId) {
-        mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            var data = {
-              replyMessage: message
-            };
-            
-            renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
-              this.element.html(text);
+      communicator.loadSignatures( $.proxy(function (err, signatures){
+        if(signatures.length > 0){
+          this._signature = "<br/> <i class='mf-signature'>" + signatures[0].signature + "</i>";            
+          hasSignature = true;
+        }        
+        
+        if (replyMessageId) {
+          mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              var data = {
+                replyMessage: message,
+                hasSignature: hasSignature
+              };
               
-              if (this.options.mode == "replyall") {
-                // Add all the recipients
-                $.each(message.recipients,  $.proxy(function (index, recipient) {
-                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
+              renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
+                this.element.html(text);
+                
+                if (this.options.mode == "replyall") {
+                  // Add all the recipients
+                  $.each(message.recipients,  $.proxy(function (index, recipient) {
+                    var recipientFullName = recipient.firstName + " " + recipient.lastName;
+                    
+                    if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
+                      this._addRecipient('USER', recipient.userId, recipientFullName);
+                    }
+                  }, this));
                   
-                  if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
-                    this._addRecipient('USER', recipient.userId, recipientFullName);
+                  // Add all the usergroups if the user is allowed to message groups
+                  if (this.options.groupMessagingPermission == true) {
+                    $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
+                      this._addRecipient('GROUP', recipient.id, recipient.name);
+                    }, this));
                   }
-                }, this));
-                
-                // Add all the usergroups if the user is allowed to message groups
-                if (this.options.groupMessagingPermission == true) {
-                  $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
-                    this._addRecipient('GROUP', recipient.id, recipient.name);
-                  }, this));
+                  
+                  // Add all the workspace groups if the user is allowed to message groups
+                  if (this.options.groupMessagingPermission == true) {
+                    $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
+                      this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
+                    }, this));
+                  }
+                  
+                  this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
                 }
                 
-                // Add all the workspace groups if the user is allowed to message groups
-                if (this.options.groupMessagingPermission == true) {
-                  $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
-                    this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
-                  }, this));
-                }
+                var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
+                this._addRecipient('USER', message.sender.id, senderFullName);                       
                 
-                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
-              }
-              
-              var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
-              this._addRecipient('USER', message.sender.id, senderFullName);                       
-              
-              if (callback) {
-                callback();
-              }
-            }, this));
-          }
-        }, this));
-      } else {
-        renderDustTemplate('communicator/communicator_create_message.dust', {}, $.proxy(function (text) {
-          this.element.html(text);
-          if(callback){
-            callback();
-          }
-        }, this));
-      }
+                if (callback) {
+                  callback();
+                }
+              }, this));
+            }
+          }, this));
+        } else {
+          var data = {
+            hasSignature: hasSignature
+          };
+          renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
+            this.element.html(text);
+            if(callback){
+              callback();
+            }
+          }, this));
+        }
+      }, this));    
     },
     
     _addRecipient: function (type, id, label) {
@@ -1750,7 +1767,11 @@
         
         var caption = this.element.find('input[name="caption"]').val();
         var content = this._contentsEditor.getData();
+        var signatureLen = this.element.find('input[name="signature"]:checked').length;
 
+        
+ 
+        
         if (!caption || !caption.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
           buttonElement.removeAttr('disabled');
@@ -1759,8 +1780,12 @@
         
         if (!content || !content.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nomessage'));
-          buttonElement.removeAttr('disabled');
+          buttonElement.removeAttr('disabled');          
           return false;
+        }
+        
+        if(signatureLen > 0){
+          content = content + this._signature;          
         }
         
         var payload = {
