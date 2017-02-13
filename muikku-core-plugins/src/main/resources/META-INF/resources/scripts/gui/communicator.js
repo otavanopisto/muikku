@@ -798,7 +798,7 @@
         // Store the signatures etc....
       }, this));
     },
-    _onSettingsClick: function(){ 
+    _onSettingsClick: function() { 
       this.loadSignatures($.proxy(function(err, signatures) {        
         if(err){
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.signatures.loading'));          
@@ -989,7 +989,7 @@
       var id = $(event.target).closest('.cm-signature').attr('data-id');
       this._confirmSignatureRemoval(id, $.proxy(function (){
         this.deleteSignature(id, $.proxy(function () {
-          window.location.reload(true);         
+          this._onSettingsClick();
         }, this));
       }, this));
       
@@ -1322,7 +1322,6 @@
           }
         }));
 
-        var test = this.options.signature.content;
         if(this.options.signature){
           this._contentsEditor.setData(this.options.signature.content);          
         }                
@@ -1370,23 +1369,30 @@
           return false;
         }
         
-        if(this.options.signature){
+        if (this.options.signature) {
           communicator.updateSignature(this.options.signature.id, this.options.signature.name, content, $.proxy(function () {
             this.element.removeClass('loading');
-            window.location.reload(true);
+            communicator._onSettingsClick();
+            this._closeDialog(event);
           }, this));
-        }else{
+        } else {
           var caption = 'default';
-          communicator.createSignature(caption, content);                    
-          window.location.reload(true);
+          communicator.createSignature(caption, content, $.proxy(function () {
+            communicator._onSettingsClick();
+            this._closeDialog(event);
+          }, this));                    
         }
       }      
     },
-    
-    _onCancelClick: function (event) {
+
+    _closeDialog: function (event) {
       event.preventDefault();
       this.element.trigger('dialogClose');
       this.element.remove();
+    },
+    
+    _onCancelClick: function (event) {
+      this._closeDialog(event);
     },
     
     _onCKEditorReady: function (e) {
