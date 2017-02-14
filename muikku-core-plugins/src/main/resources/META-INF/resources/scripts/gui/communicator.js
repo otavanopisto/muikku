@@ -320,6 +320,10 @@
     }
   });
   
+  var CommunicatorSettingsController = function () {
+   // not much to control, but maybe when there are more settings than signatures?
+  };
+  
   $.widget("custom.communicatorMessages", {
     _create : function() {
       this._firstItem = 0;
@@ -736,7 +740,8 @@
             'inbox': new CommunicatorInboxFolderController(),
             'unread': new CommunicatorUnreadFolderController(),
             'sent': new CommunicatorSentFolderController(),
-            'trash': new CommunicatorTrashFolderController()
+            'trash': new CommunicatorTrashFolderController(),
+            'settings': new CommunicatorSettingsController(),
           };
           
           if (err) {
@@ -805,21 +810,29 @@
         }else{          
           renderDustTemplate('communicator/communicator_settings.dust', {signatures : signatures}, $.proxy(function(text) {
             $(".cm-messages-container").html(text);
-            $('.mf-controls-container').messageTools( 'toolset', 'settings');     
+            $('.mf-controls-container').messageTools( 'toolset', 'settings');   
+            this._updateHash('settings', null);
           }, this));
         }
       }, this)); 
     },
 
     loadFolder: function (id) {
-      this._updateHash(id, null);
-      this._updateSelected(id);
       
-      this.element.find('.cm-thread-container').hide();
-      $('.mf-controls-container').messageTools( 'toolset', 'thread');       
-      this.element.find('.cm-messages-container')
-        .communicatorMessages('loadFolder', id)
-        .show();
+      if(id == 'settings'){
+        this._onSettingsClick();
+        this._updateHash(id, null);        
+      }else{
+      
+        this._updateHash(id, null);
+        this._updateSelected(id);
+        
+        this.element.find('.cm-thread-container').hide();
+        $('.mf-controls-container').messageTools( 'toolset', 'thread');       
+        this.element.find('.cm-messages-container')
+          .communicatorMessages('loadFolder', id)
+          .show();
+      }
     },
     
     reloadFolder: function () {
