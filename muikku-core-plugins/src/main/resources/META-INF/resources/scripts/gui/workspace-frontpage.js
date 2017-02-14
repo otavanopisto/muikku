@@ -27,18 +27,30 @@
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
-          var materialLicenseIcon = "none";
+          var materialLicenseIcons = [];
           switch (workspace.materialDefaultLicense) {
-            case 'https://creativecommons.org/licenses/by/4.0':materialLicenseIcon = 'by'; break;
-            case 'https://creativecommons.org/licenses/by-sa/4.0': materialLicenseIcon = 'by-sa'; break;
-            case 'https://creativecommons.org/licenses/by-nc/4.0': materialLicenseIcon = 'by-nc'; break;
-            case 'https://creativecommons.org/licenses/by-nd/4.0': materialLicenseIcon = 'by-nd'; break;
-            case 'https://creativecommons.org/licenses/by-nc-sa/4.0': materialLicenseIcon = 'by-nc-sa'; break;
-            case 'https://creativecommons.org/licenses/by-nc-nd/4.0': materialLicenseIcon = 'by-nc-nd'; break;
+            case 'https://creativecommons.org/licenses/by/4.0':
+              materialLicenseIcons = ['by'];
+              break;
+            case 'https://creativecommons.org/licenses/by-sa/4.0':
+              materialLicenseIcons = ['by', 'sa'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nc/4.0':
+              materialLicenseIcons = ['by', 'nc'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nd/4.0':
+              materialLicenseIcons = ['by', 'nd'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nc-sa/4.0':
+              materialLicenseIcons = ['by', 'nc', 'sa'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nc-nd/4.0':
+              materialLicenseIcons = ['by', 'nc', 'nd'];
+              break;
           }
           renderDustTemplate('workspace/workspace-index-material-license.dust', {
             materialDefaultLicense: workspace.materialDefaultLicense,
-            materialLicenseIcon: materialLicenseIcon
+            materialLicenseIcons: materialLicenseIcons
           }, $.proxy(function (text) {
             $('.workspace-frontpage-footer').prepend($.parseHTML(text));
           }, this));
