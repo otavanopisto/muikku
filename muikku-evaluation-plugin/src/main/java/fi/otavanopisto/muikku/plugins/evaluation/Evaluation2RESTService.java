@@ -329,7 +329,10 @@ public class Evaluation2RESTService {
         WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
         if (workspaceMaterialReply != null) {
           WorkspaceMaterialReplyState replyState = workspaceMaterialReply.getState();
-          if (replyState == WorkspaceMaterialReplyState.SUBMITTED || replyState == WorkspaceMaterialReplyState.PASSED || replyState == WorkspaceMaterialReplyState.FAILED) {
+          if (replyState == WorkspaceMaterialReplyState.SUBMITTED ||
+              replyState == WorkspaceMaterialReplyState.PASSED ||
+              replyState == WorkspaceMaterialReplyState.FAILED ||
+              replyState == WorkspaceMaterialReplyState.INCOMPLETE) {
             submitted = workspaceMaterialReply.getLastModified();
           }
         }
@@ -469,7 +472,10 @@ public class Evaluation2RESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
-      return Response.status(Status.FORBIDDEN).build();
+      // Allow students to access their own supplementation requests
+      if (!sessionController.getLoggedUserEntity().getId().equals(userEntityId)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
 
     // User entity
@@ -1076,6 +1082,7 @@ public class Evaluation2RESTService {
           replyStates.add(WorkspaceMaterialReplyState.FAILED);
           replyStates.add(WorkspaceMaterialReplyState.PASSED);
           replyStates.add(WorkspaceMaterialReplyState.SUBMITTED);
+          replyStates.add(WorkspaceMaterialReplyState.INCOMPLETE);
           assignmentsDone = workspaceMaterialReplyController.getReplyCountByUserEntityAndReplyStatesAndWorkspaceMaterials(userEntity.getId(), replyStates, evaluatedAssignments);
         }
       }

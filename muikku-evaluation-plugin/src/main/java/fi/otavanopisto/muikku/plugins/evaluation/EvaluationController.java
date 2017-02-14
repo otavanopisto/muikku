@@ -72,13 +72,31 @@ public class EvaluationController {
   private CommunicatorController communicatorController;
   
   public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
-    return supplementationRequestDAO.createSupplementationRequest(
+    SupplementationRequest supplementationRequest = supplementationRequestDAO.createSupplementationRequest(
         userEntityId,
         studentEntityId,
         workspaceEntityId,
         workspaceMaterialId,
         requestDate,
         requestText);
+    
+    // If the supplementation request is for an assignment, mark it as INCOMPLETE
+    
+    if (studentEntityId != null && workspaceMaterialId != null) {
+      UserEntity student = userEntityController.findUserEntityById(studentEntityId);
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+      if (student != null && workspaceMaterial != null) {
+        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+        if (reply == null) {
+          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
+        }
+        else {
+          workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
+        }
+      }
+    }
+    
+    return supplementationRequest;
   }
 
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
@@ -147,7 +165,7 @@ public class EvaluationController {
   }
 
   public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
-    return supplementationRequestDAO.updateSupplementationRequest(
+    supplementationRequest = supplementationRequestDAO.updateSupplementationRequest(
         supplementationRequest,
         userEntityId,
         supplementationRequest.getStudentEntityId(),
@@ -156,6 +174,24 @@ public class EvaluationController {
         requestDate,
         requestText,
         Boolean.FALSE);
+
+    // If the supplementation request is for an assignment, mark it as INCOMPLETE
+    
+    if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceMaterialId() != null) {
+      UserEntity student = userEntityController.findUserEntityById(supplementationRequest.getStudentEntityId());
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(supplementationRequest.getWorkspaceMaterialId());
+      if (student != null && workspaceMaterial != null) {
+        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+        if (reply == null) {
+          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
+        }
+        else {
+          workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
+        }
+      }
+    }
+    
+    return supplementationRequest;
   }
   
   public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
