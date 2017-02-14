@@ -238,13 +238,13 @@
   position: relative;
 }
 
-.mf-view-header{
-  background-color:$environment-header-background-color;
+.mf-view-header {
+  background-color: $environment-header-background-color;
   
 }
 
-.mf-view-title{
-  margin:0;  
+.mf-view-title {
+  margin: 0;  
 }
 
 
@@ -413,11 +413,13 @@ ul.mf-tool-label-container {
     }
   }
   &.settings {
+  
     div::before {
-      color:$environment-settings-icon-color;   
+      color: $environment-settings-icon-color;   
     }
+    
     div:hover::before {
-        color: $environment-settings-hover-icon-color;
+      color: $environment-settings-hover-icon-color;
     } 
   }
 
