@@ -1449,7 +1449,6 @@
       
     _create : function() {
       var extraPlugins = [];
-      var communicator = $(".communicator").communicator("instance");
       $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
@@ -1468,8 +1467,6 @@
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
         }));
-        
-
 
         var autocomplete = this.element.find('input[name="recipient"]').autocomplete({
           open: function(event, ui) {
