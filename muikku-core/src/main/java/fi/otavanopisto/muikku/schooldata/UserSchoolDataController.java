@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
 import fi.otavanopisto.muikku.schooldata.entity.UserEmail;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 
 public class UserSchoolDataController {
 
@@ -200,6 +201,30 @@ public class UserSchoolDataController {
       return schoolDataBridge.findUserEmail(identifier);
     }
 
+    return null;
+  }
+  
+  /* User properties */
+
+  public UserProperty getUserProperty(User user, String key) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.getUserProperty(user.getIdentifier(), key);
+      }
+    }
+    return null;
+  }
+
+  public UserProperty setUserProperty(User user, String key, String value) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.setUserProperty(user.getIdentifier(), key, value);
+      }
+    }
     return null;
   }
 

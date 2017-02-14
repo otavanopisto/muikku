@@ -415,8 +415,13 @@
               $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
               // Assessor
               $('#assignmentAssessor').val(assessment.assessorIdentifier);
-              // Grade
-              $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+              // Grade (with filtered scale fallback)
+              var gradeValue = assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier;
+              var gradeExists = $("#assignmentGrade option[value='" + gradeValue + "']").length !== 0;
+              if (!gradeExists) {
+                $('#assignmentGrade').append('<option value="' + gradeValue + '"></option>');
+              }
+              $('#assignmentGrade').val(gradeValue);
               // Show material evaluation view
               this.toggleMaterialAssessmentView(true, $.proxy(function() {
                 this._createAssignmentEditor(workspaceMaterialId);
@@ -516,8 +521,13 @@
             $('#workspaceEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
             // Assessor
             $('#workspaceAssessor').val(assessment.assessorIdentifier);
-            // Grade
-            $('#workspaceGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+            // Grade (with filtered scale fallback)
+            var gradeValue = assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier;
+            var gradeExists = $("#workspaceGrade option[value='" + gradeValue + "']").length !== 0;
+            if (!gradeExists) {
+              $('#workspaceGrade').append('<option value="' + gradeValue + '"></option>');
+            }
+            $('#workspaceGrade').val(gradeValue);
             // Remove assessment button
             $('.button-delete').show();
           }

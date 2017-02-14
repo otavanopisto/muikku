@@ -1,7 +1,7 @@
 insert into PluginSettingKey(name, plugin) select 'roles.workspace.TEACHER', 'school-data-pyramus' from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER' having count(*) = 0;
 insert into PluginSetting (value, key_id) select '1', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER') from PluginSetting having count(*) = 0;
 
-insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8080, 8443);
+insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8081, 8443);
 
 update PluginSetting set value = 'http://dev.muikku.fi:8089/1' where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.url');
 update PluginSetting set value = 'http://dev.muikku.fi:8089/oauth2ClientTest/success' where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'rest.redirectUrl');

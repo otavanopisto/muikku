@@ -19,6 +19,7 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
+import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusUserProperty;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
@@ -389,12 +390,32 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public UserProperty getUserProperty(String userIdentifier, String key) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
+      Map<String, String> variables = student.getVariables();
+      String value = variables.get(key);
+      if (value == null) {
+        return null;
+      } else {
+        return new PyramusUserProperty(userIdentifier, key, value);
+      }
+    }
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override
   public UserProperty setUserProperty(String userIdentifier, String key, String value) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
+      Map<String, String> variables = student.getVariables();
+      variables.put(key, value);
+      student.setVariables(variables);
+      pyramusClient.put(String.format("/students/students/%d", studentId), student);
+      return new PyramusUserProperty(userIdentifier, key, value);
+    }
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override
