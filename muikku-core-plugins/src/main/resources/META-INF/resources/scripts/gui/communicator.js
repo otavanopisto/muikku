@@ -695,22 +695,23 @@
     _create : function(){
       this.toolset(this.options.value);
     },
-    toolset: function(value) {      
+    toolset: function(value) {   
+      var toolTemplate = null;
       if ( value === undefined ) {
         return this.options.value;
       }      
       this.options.value = value;
       switch (this.options.value) {
         case 'message':
-          var toolTemplate = 'communicator/communicator_tools_message.dust';
+          toolTemplate = 'communicator/communicator_tools_message.dust';
           this._loadTools(toolTemplate);
           break;
         case 'thread':
-          var toolTemplate = 'communicator/communicator_tools_thread.dust';
+          toolTemplate = 'communicator/communicator_tools_thread.dust';
           this._loadTools(toolTemplate);
           break;
         case 'settings':
-          var toolTemplate = 'communicator/communicator_tools_settings.dust';
+          toolTemplate = 'communicator/communicator_tools_settings.dust';
           this._loadTools(toolTemplate);
           break;          
       }      
@@ -799,9 +800,6 @@
         }
       , this));
       
-      this.loadSignatures($.proxy(function (err, signatures) {
-        // Store the signatures etc....
-      }, this));
     },
     _onSettingsClick: function() { 
       this.loadSignatures($.proxy(function(err, signatures) {        
@@ -1284,7 +1282,6 @@
     },
     
     _onEditSignatureLinkClick: function (event) {
-      var targetTest =  $(event.target);
       var signatureElem = $(event.target).closest('.cm-signature');
       var signature = {};
       
