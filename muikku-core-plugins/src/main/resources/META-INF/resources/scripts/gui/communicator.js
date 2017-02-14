@@ -1376,7 +1376,7 @@
         
         var content = this._contentsEditor.getData();
 
-        if (!content || !content.trim()) {
+        if (!content  ||  !content.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nocontent'));
           buttonElement.removeAttr('disabled');
           return false;
