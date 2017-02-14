@@ -18,7 +18,9 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.workspace.ContentNode;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -56,6 +58,9 @@ public class EvaluationController {
   
   @Inject
   private WorkspaceMaterialEvaluationDAO workspaceMaterialEvaluationDAO;
+
+  @Inject
+  private SupplementationRequestDAO supplementationRequestDAO;
   
   @Inject
   private UserEntityController userEntityController;
@@ -65,6 +70,16 @@ public class EvaluationController {
   
   @Inject
   private CommunicatorController communicatorController;
+  
+  public SupplementationRequest createSupplementationRequest(Long userEntityId, Long studentEntityId, Long workspaceEntityId, Long workspaceMaterialId, Date requestDate, String requestText) {
+    return supplementationRequestDAO.createSupplementationRequest(
+        userEntityId,
+        studentEntityId,
+        workspaceEntityId,
+        workspaceMaterialId,
+        requestDate,
+        requestText);
+  }
 
   public WorkspaceMaterialEvaluation createWorkspaceMaterialEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
     WorkspaceMaterialEvaluation evaluation = workspaceMaterialEvaluationDAO.create(student.getId(), 
@@ -92,6 +107,10 @@ public class EvaluationController {
     
     return evaluation;
   }
+  
+  public void deleteWorkspaceSupplementationRequest(SupplementationRequest supplementationRequest) {
+    supplementationRequestDAO.archive(supplementationRequest);
+  }
 
   public void deleteWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation evaluation) {
     if (evaluation != null) {
@@ -99,6 +118,22 @@ public class EvaluationController {
     }
   }
   
+  public SupplementationRequest findSupplementationRequestByStudentAndWorkspace(Long studentEntityId, Long workspaceEntityId) {
+    return supplementationRequestDAO.findByStudentAndWorkspace(studentEntityId, workspaceEntityId);
+  }
+
+  public SupplementationRequest findSupplementationRequestByStudentAndWorkspaceAndArchived(Long studentEntityId, Long workspaceEntityId, Boolean archived) {
+    return supplementationRequestDAO.findByStudentAndWorkspaceAndArchived(studentEntityId, workspaceEntityId, archived);
+  }
+
+  public SupplementationRequest findSupplementationRequestByStudentAndWorkspaceMaterial(Long studentEntityId, Long workspaceMaterialId) {
+    return supplementationRequestDAO.findByStudentAndWorkspaceMaterial(studentEntityId, workspaceMaterialId);
+  }
+
+  public SupplementationRequest findSupplementationRequestByStudentAndWorkspaceMaterialAndArchived(Long studentEntityId, Long workspaceMaterialId, Boolean archived) {
+    return supplementationRequestDAO.findByStudentAndWorkspaceMaterialAndArchived(studentEntityId, workspaceMaterialId, archived);
+  }
+
   public WorkspaceMaterialEvaluation findWorkspaceMaterialEvaluation(Long id) {
     return workspaceMaterialEvaluationDAO.findById(id);
   }
@@ -109,6 +144,18 @@ public class EvaluationController {
   
   public List<WorkspaceMaterialEvaluation> listWorkspaceMaterialEvaluationsByWorkspaceMaterialId(Long workspaceMaterialId){
     return workspaceMaterialEvaluationDAO.listByWorkspaceMaterialId(workspaceMaterialId);
+  }
+
+  public SupplementationRequest updateSupplementationRequest(SupplementationRequest supplementationRequest, Long userEntityId, Date requestDate, String requestText) {
+    return supplementationRequestDAO.updateSupplementationRequest(
+        supplementationRequest,
+        userEntityId,
+        supplementationRequest.getStudentEntityId(),
+        supplementationRequest.getWorkspaceEntityId(),
+        supplementationRequest.getWorkspaceMaterialId(),
+        requestDate,
+        requestText,
+        Boolean.FALSE);
   }
   
   public WorkspaceMaterialEvaluation updateWorkspaceMaterialEvaluation(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {

@@ -9,6 +9,11 @@
     <input required="required" type="date" name="evaluationDate" id="workspaceEvaluationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
+    <label for="workspaceGrading">ARVIOINTI</label>
+    <input type="radio" name="workspaceGrading" value="GRADED" id="workspaceGradedButton"/>ARVOSANA
+    <input type="radio" name="workspaceGrading" value="INCOMPLETE" id="workspaceIncompleteButton"/>TÄYDENNETTÄVÄ
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
     <label for="grade">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.assessmentGradeLabel"/}</label>
     <select name="grade" id="workspaceGrade">
       {#gradingScales}
@@ -26,7 +31,7 @@
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.workspaceEvaluationForm.assessorLabel"/}</label>
     <select name="assessor" id="workspaceAssessor">
       {#assessors}
-        <option value="{userIdentifier}">{lastName}, {firstName}</option>
+        <option value="{userIdentifier}" data-user-entity-id="{userEntityId}">{lastName}, {firstName}</option>
       {/assessors}
     </select>
   </div>

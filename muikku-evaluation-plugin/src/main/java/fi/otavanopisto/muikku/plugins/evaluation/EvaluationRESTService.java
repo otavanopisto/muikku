@@ -348,7 +348,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
   }
-  
+
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments/{EVALUATIONID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

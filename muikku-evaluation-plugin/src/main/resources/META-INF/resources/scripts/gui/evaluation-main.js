@@ -246,6 +246,7 @@
     _onCardStateChange: function(event, data) {
       if (data.evaluated) {
         $(data.card).attr('data-evaluated', true);
+        $(data.card).attr('data-graded', data.graded);
         $(data.card).removeClass('evaluation-requested');
         if (data.passing) {
           $(data.card).removeClass('evaluated-incomplete').addClass('evaluated-passed');

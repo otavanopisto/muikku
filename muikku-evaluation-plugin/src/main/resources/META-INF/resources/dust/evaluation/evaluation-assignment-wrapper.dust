@@ -1,4 +1,4 @@
-<div class="assignment-wrapper {materialType}" {?evaluationDate}data-evaluated="true" data-literal-evaluation="{literalEvaluation}"{/evaluationDate}>
+<div class="assignment-wrapper {materialType}" {?evaluationDate}data-evaluated="true" {?grade}data-graded="true"{/grade}{/evaluationDate}>
   <div class="assignment-title-wrapper">
     <div class="assignment-title">{title}</div>
     <div class="assignment-done">
@@ -9,27 +9,21 @@
         <span class="assignment-notdone-label">{#localize key="plugin.evaluation.evaluationModal.assignmentNotDoneLabel"/}</span>
       {/submitDate}
     </div>
-    {?evaluationDate}
-      <div class="assignment-evaluated">
-        <span class="assignment-evaluated-label">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"/}</span>
-        <span class="assignment-evaluated-data">{evaluationDate|formatDate}</span>
-      </div>
-    {/evaluationDate}
-    {?grade}
-      <div class="assignment-grade">
-        <span class="assignment-grade-label">{#localize key="plugin.evaluation.evaluationModal.assignmentGradeLabel"/}</span>
-        <span class="assignment-grade-data">{grade}</span>
-      </div>
-    {/grade}
+    <div class="assignment-evaluated" {^evaluationDate}style="display:none;"{/evaluationDate}>
+      <span class="assignment-evaluated-label">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"/}</span>
+      <span class="assignment-evaluated-data">{evaluationDate|formatDate}</span>
+    </div>
+    <div class="assignment-grade" {^grade}style="display:none;"{/grade}>
+      <span class="assignment-grade-label">{#localize key="plugin.evaluation.evaluationModal.assignmentGradeLabel"/}</span>
+      <span class="assignment-grade-data">{grade}</span>
+    </div>
   </div>
   {?submitDate}
     <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
   {/submitDate}
-  {?literalEvaluation}
   <div class="assignment-literal-evaluation-wrapper" style="display:none;">
     <div class="assignment-literal-evaluation-label">{#localize key="plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"/}</div>
     <div class="assignment-literal-evaluation">{literalEvaluation|s}</div>
   </div>
-  {/literalEvaluation}
   <div class="assignment-content" data-workspace-material-id="{workspaceMaterialId}" data-material-id="{materialId}" data-path="{path}" data-open="false" data-loaded="false"></div>
 </div>

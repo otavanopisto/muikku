@@ -48,6 +48,7 @@
       this.element.on("dialogReady", $.proxy(this._onDialogReady, this));
       this.element.on("materialsLoaded", $.proxy(this._onMaterialsLoaded, this));
       this.element.on("workspaceAssessmentSaved", $.proxy(this._onWorkspaceAssessmentSaved, this));
+      this.element.on("workspaceSupplementationRequestSaved", $.proxy(this._onWorkspaceSupplementationRequestSaved, this));
     },
     
     open: function(requestCard, discardOnSave) {
@@ -125,6 +126,21 @@
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
+              
+              // Enabled workspace grade if assessment is marked graded
+              
+              $('#workspaceGradedButton').click($.proxy(function(event) {
+                $('#workspaceGrade').prop('disabled', false);
+              }, this));
+              
+              // Disable workspace grade if assessment is marked incomplete
+              
+              $('#workspaceIncompleteButton').click($.proxy(function(event) {
+                $('#workspaceGrade').prop('disabled', true);
+              }, this));
+              
+              // Delete workspace assessment (or supplementation request)
+              
               if ($(this._requestCard).attr('data-evaluated')) {
                 $('#workspaceDeleteButton').show();
               }
@@ -133,13 +149,28 @@
                   this._deleteAssessment();
                 }, this));
               }, this));
+              
+              // Save workspace assessment (or supplementation request) 
+              
               $('#workspaceSaveButton').click($.proxy(function(event) {
                 CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.discardDraft();
-                this._saveWorkspaceAssessment();
+                var gradingValue = $('input[name=workspaceGrading]:checked').val();
+                if (gradingValue == 'GRADED') {
+                  this._saveWorkspaceAssessment();
+                }
+                else {
+                  this._saveWorkspaceSupplementationRequest();
+                }
               }, this));
+              
+              // Cancel workspace assessment
+              
               $('#workspaceCancelButton').click($.proxy(function(event) {
                 this.close();
               }, this));
+              
+              // Activate workspace assessment
+              
               $('.workspace-evaluation-form-activate-button').click($.proxy(function(event) {
                 $('.workspace-evaluation-form-activate-button, .workspace-evaluation-form-overlay').animate({
                   opacity: 0
@@ -159,14 +190,29 @@
                 .css({'z-index': 999, 'position': 'relative'})
                 .attr('type', 'text')
                 .datepicker();
+
+              // Enabled assignment grade if assessment is marked graded
+              
+              $('#assignmentGradedButton').click($.proxy(function(event) {
+                $('#assignmentGrade').prop('disabled', false);
+              }, this));
+              
+              // Disable asignment grade if assessment is marked incomplete
+              
+              $('#assignmentIncompleteButton').click($.proxy(function(event) {
+                $('#assignmentGrade').prop('disabled', true);
+              }, this));
+              
               $('#assignmentSaveButton').click($.proxy(function(event) {
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.discardDraft();
                 this._saveMaterialAssessment();
               }, this));
+              
               $('#assignmentCancelButton').click($.proxy(function(event) {
                 this.toggleAssignment(this._activeAssignment, false, false);
                 this.toggleMaterialAssessmentView(false);
               }, this));
+              
               $('.eval-modal-assignment-close').click($.proxy(function(event) {
                 this.toggleMaterialAssessmentView(false);
               }, this));
@@ -248,12 +294,14 @@
         if (shouldBeOpen) {
           $(assignmentContent).attr('data-open', true);
           $(assignmentContent).show();
-          $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').show();
+          if ($(assignment).find('.assignment-literal-evaluation').text() != '') {
+            $(assignment).find('.assignment-literal-evaluation-wrapper').show();
+          }
         }
         else {
           $(assignmentContent).attr('data-open', false);
           $(assignmentContent).hide();
-          $(assignmentContent).prev('.assignment-literal-evaluation-wrapper').hide();
+          $(assignment).find('.assignment-literal-evaluation-wrapper').hide();
         }
       }
       if (scrollToView) {
@@ -312,12 +360,22 @@
     },
     
     _onDialogReady: function() {
-      if ($(this._requestCard).attr('data-evaluated')) {
-        this._loadAssessment($(this._requestCard).attr('data-workspace-user-entity-id'));
+      if ($(this._requestCard).attr('data-evaluated') == 'true') {
+        if ($(this._requestCard).attr('data-graded') == 'true') {
+          this._loadWorkspaceAssessment($(this._requestCard).attr('data-workspace-user-entity-id'));
+        }
+        else {
+          var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+          var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+          this._loadWorkspaceSupplementationRequest(userEntityId, workspaceEntityId);
+        }
       }
       else {
         $('#workspaceEvaluationDate').datepicker('setDate', new Date());
         $('#workspaceAssessor').val(MUIKKU_LOGGED_USER);
+        $('#workspaceGradedButton').prop('checked', 'checked');
+        $('#workspaceGrade').prop('disabled', false);
+        $('#workspaceGrade').prop('selectedIndex', 0);
       }
       this._loadMaterials();
       this._loadJournalEntries();
@@ -355,7 +413,7 @@
               var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
               var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
               $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
-              this.loadMaterialAssessment(userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated'));
+              this.loadMaterialAssessment(userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated') == 'true', $(newAssignment).attr('data-graded') == 'true');
             }
             else {
               this.toggleMaterialAssessmentView(true);
@@ -378,11 +436,27 @@
           this.element.trigger("cardStateChange", {
             card: $(this._requestCard),
             evaluated: true,
+            graded: true,
             passing: assessment.passing,
             evaluationDate: moment(assessment.assessmentDate).toDate()});
         }
         this.close();
       }, this));
+    },
+
+    _onWorkspaceSupplementationRequestSaved: function(event, data) {
+      if (this._discardOnSave === true) {
+        this.element.trigger("discardCard", {workspaceUserEntityId: $(this._requestCard).attr('data-workspace-user-entity-id')});          
+      }
+      else {
+        this.element.trigger("cardStateChange", {
+          card: $(this._requestCard),
+          evaluated: true,
+          graded: false,
+          passing: false,
+          evaluationDate: moment(data.supplementationRequest.requestDate).toDate()});
+      }
+      this.close();
     },
     
     activeAssignment: function(val) {
@@ -394,41 +468,70 @@
       }
     },
     
-    loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated) {
+    loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated, graded) {
       if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
         CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy(true);
       }
       $('#assignmentWorkspaceMaterialId').val(workspaceMaterialId);
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
-        mApi().evaluation.user.workspacematerial.assessment
-          .read(userEntityId, workspaceMaterialId)
-          .callback($.proxy(function (err, assessment) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-            else {
-              $('#assignmentAssessmentId').val(assessment.identifier);
-              // Verbal assessment
-              $('#assignmentEvaluateFormLiteralEvaluation').val(assessment.verbalAssessment);
-              // Date
-              $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
-              // Assessor
-              $('#assignmentAssessor').val(assessment.assessorIdentifier);
-              // Grade
-              $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
-              // Show material evaluation view
-              this.toggleMaterialAssessmentView(true, $.proxy(function() {
-                this._createAssignmentEditor(workspaceMaterialId);
-              }, this));
-            }
-          }, this));
+        if (graded) {
+          mApi().evaluation.user.workspacematerial.assessment
+            .read(userEntityId, workspaceMaterialId)
+            .callback($.proxy(function (err, assessment) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              }
+              else {
+                // Verbal assessment
+                $('#assignmentEvaluateFormLiteralEvaluation').val(assessment.verbalAssessment);
+                // Date
+                $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
+                // Assessor
+                $('#assignmentAssessor').val(assessment.assessorIdentifier);
+                // Grading
+                $('#assignmentGradedButton').prop('checked', 'checked');
+                // Grade
+                $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+                // Show material evaluation view
+                this.toggleMaterialAssessmentView(true, $.proxy(function() {
+                  this._createAssignmentEditor(workspaceMaterialId);
+                }, this));
+              }
+            }, this));
+        }
+        else {
+          mApi().evaluation.user.workspacematerial.supplementationrequest
+            .read(userEntityId, workspaceMaterialId)
+            .callback($.proxy(function (err, supplementationRequest) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              }
+              else {
+                // Verbal assessment
+                $('#assignmentEvaluateFormLiteralEvaluation').val(supplementationRequest.requestText);
+                // Date
+                $('#assignmentEvaluationDate').datepicker('setDate', moment(supplementationRequest.requestDate).toDate());
+                // Assessor
+                $('#assignmentAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
+                // Grading
+                $('#assignmentIncompleteButton').prop('checked', 'checked');
+                // Grade
+                $('#assignmentGrade').prop('disabled', true);
+                // Show material evaluation view
+                this.toggleMaterialAssessmentView(true, $.proxy(function() {
+                  this._createAssignmentEditor(workspaceMaterialId);
+                }, this));
+              }
+            }, this));
+        }
       }
       else {
-        $('#assignmentAssessmentId').val('');
         $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').val(MUIKKU_LOGGED_USER);
+        $('#assignmentGradedButton').prop('checked', 'checked');
+        $('#assignmentGrade').prop('disabled', false);
         $('#assignmentGrade').prop('selectedIndex', 0);
         this.toggleMaterialAssessmentView(true, $.proxy(function() {
           this._createAssignmentEditor(workspaceMaterialId);
@@ -502,7 +605,7 @@
       $('.eval-modal').removeClass('no-scroll');
     },
     
-    _loadAssessment: function(workspaceUserEntityId) {
+    _loadWorkspaceAssessment: function(workspaceUserEntityId) {
       mApi().evaluation.workspaceuser.assessment
         .read(workspaceUserEntityId)
         .callback($.proxy(function (err, assessment) {
@@ -516,9 +619,35 @@
             $('#workspaceEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
             // Assessor
             $('#workspaceAssessor').val(assessment.assessorIdentifier);
+            // Grading
+            $('#workspaceGradedButton').prop('checked', 'checked');
             // Grade
             $('#workspaceGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
             // Remove assessment button
+            $('.button-delete').show();
+          }
+        }, this));
+    },
+    
+    _loadWorkspaceSupplementationRequest: function(userEntityId, workspaceEntityId) {
+      mApi().evaluation.user.workspace.supplementationrequest
+        .read(userEntityId, workspaceEntityId)
+        .callback($.proxy(function (err, supplementationRequest) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            // Verbal assessment
+            CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(supplementationRequest.requestText);
+            // Date
+            $('#workspaceEvaluationDate').datepicker('setDate', moment(supplementationRequest.requestDate).toDate());
+            // Assessor
+            $('#workspaceAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
+            // Grading
+            $('#workspaceIncompleteButton').prop('checked', 'checked');
+            // Grade
+            $('#workspaceGrade').prop('disabled', true);
+            // Remove supplementation request button
             $('.button-delete').show();
           }
         }, this));
@@ -616,7 +745,7 @@
           }
           else {
             $('.button-delete').hide();
-            this.element.trigger("cardStateChange", {card: $(this._requestCard), evaluated: false});
+            this.element.trigger("cardStateChange", {card: $(this._requestCard), evaluated: false, graded: false});
             $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.deleteSuccessful"));
             this.close();
           }
@@ -625,58 +754,50 @@
 
     _saveWorkspaceAssessment: function() {
       var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
-      if ($(this._requestCard).attr('data-evaluated')) {
-        mApi().evaluation.workspaceuser.assessment
-          .read(workspaceUserEntityId)
-          .callback($.proxy(function (err, assessment) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-            else {
-              var scaleAndGrade = $('#workspaceGrade').val().split('@');
-              assessment.verbalAssessment = CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData();
-              assessment.assessmentDate = $('#workspaceEvaluationDate').datepicker('getDate').getTime();
-              assessment.assessorIdentifier = $('#workspaceAssessor').val();
-              assessment.gradingScaleIdentifier = scaleAndGrade[0];
-              assessment.gradeIdentifier = scaleAndGrade[1];
-              mApi().evaluation.workspaceuser.assessment
-                .update(workspaceUserEntityId, assessment)
-                .callback($.proxy(function (err, assessment) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  }
-                  else {
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.updateSuccessful"));
-                    this.element.trigger("workspaceAssessmentSaved", {
-                      assessment: assessment
-                    });
-                  }
-                }, this));
-            }
-          }, this));
-      }
-      else {
-        var scaleAndGrade = $('#workspaceGrade').val().split('@');
-        mApi().evaluation.workspaceuser.assessment
-          .create(workspaceUserEntityId, {
-            assessorIdentifier: $('#workspaceAssessor').val(),
-            gradingScaleIdentifier: scaleAndGrade[0],
-            gradeIdentifier: scaleAndGrade[1],
-            verbalAssessment: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData(),
-            assessmentDate: $('#workspaceEvaluationDate').datepicker('getDate').getTime()
-          })
-          .callback($.proxy(function (err, assessment) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-            else {
-              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
-              this.element.trigger("workspaceAssessmentSaved", {
-                assessment: assessment
-              });
-            }
-          }, this));
-      }
+      var scaleAndGrade = $('#workspaceGrade').val().split('@');
+      mApi().evaluation.workspaceuser.assessment
+        .create(workspaceUserEntityId, {
+          assessorIdentifier: $('#workspaceAssessor').val(),
+          gradingScaleIdentifier: scaleAndGrade[0],
+          gradeIdentifier: scaleAndGrade[1],
+          verbalAssessment: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData(),
+          assessmentDate: $('#workspaceEvaluationDate').datepicker('getDate').getTime()
+        })
+        .callback($.proxy(function (err, assessment) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
+            this.element.trigger("workspaceAssessmentSaved", {
+              assessment: assessment
+            });
+          }
+        }, this));
+    },
+    
+    _saveWorkspaceSupplementationRequest: function() {
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      mApi().evaluation.user.workspace.supplementationrequest
+        .create(userEntityId, workspaceEntityId, {
+          userEntityId: $('#workspaceAssessor option:selected').attr('data-user-entity-id'),
+          studentEntityId: userEntityId,
+          workspaceEntityId: workspaceEntityId,
+          requestDate: $('#workspaceEvaluationDate').datepicker('getDate').getTime(),
+          requestText: CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.getData()
+        })
+        .callback($.proxy(function (err, supplementationRequest) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+          else {
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.workspaceEvaluation.saveSuccessful"));
+            this.element.trigger("workspaceSupplementationRequestSaved", {
+              supplementationRequest: supplementationRequest
+            });
+          }
+        }, this));
     },
 
     _saveMaterialAssessment: function() {
@@ -684,47 +805,13 @@
         return;
       }
       this._savingMaterialAssessment = true;
-      var assessmentId = $('#assignmentAssessmentId').val();
       var userEntityId = $('#assignmentUserEntityId').val();
       var workspaceMaterialId = $('#assignmentWorkspaceMaterialId').val();
-      if (assessmentId) {
-        mApi().evaluation.user.workspacematerial.assessment
-          .read(userEntityId, workspaceMaterialId)
-          .callback($.proxy(function (err, assessment) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-              this._savingMaterialAssessment = undefined;
-            }
-            else {
-              var scaleAndGrade = $('#assignmentGrade').val().split('@');
-              assessment.verbalAssessment = CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData();
-              assessment.assessmentDate = $('#assignmentEvaluationDate').datepicker('getDate').getTime();
-              assessment.assessorIdentifier = $('#assignmentAssessor').val();
-              assessment.gradingScaleIdentifier = scaleAndGrade[0];
-              assessment.gradeIdentifier = scaleAndGrade[1];
-              mApi().evaluation.user.workspacematerial.assessment
-                .update(userEntityId, workspaceMaterialId, assessment)
-                .callback($.proxy(function (err, assessment) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                    this._savingMaterialAssessment = undefined;
-                  }
-                  else {
-                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.updateSuccessful"));
-                    $(this._activeAssignment).attr('data-evaluated', true);
-                    $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
-                    $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
-                    this.toggleAssignment(this._activeAssignment, false, false);
-                    this.toggleMaterialAssessmentView(false);
-                    var assignmentContent = $(this._activeAssignment).find('.assignment-content');
-                    $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
-                    this._savingMaterialAssessment = undefined;
-                  }
-                }, this));
-            }
-          }, this));
-      }
-      else {
+      var gradingValue = $('input[name=assignmentGrading]:checked').val();
+      if (gradingValue == 'GRADED') {
+        
+        // Save an assignment evaluation
+        
         var scaleAndGrade = $('#assignmentGrade').val().split('@');
         mApi().evaluation.user.workspacematerial.assessment
           .create(userEntityId, workspaceMaterialId, {
@@ -741,20 +828,88 @@
             }
             else {
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.saveSuccessful"));
+              
+              // Mark assignment as evaluated and graded
+              
               $(this._activeAssignment).attr('data-evaluated', true);
-              var evaluationDateElement = $('<div>')
-                .addClass('assignment-evaluated')
-                .append($('<span>').addClass('assignment-evaluated-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentEvaluatedLabel")))
-                .append($('<span>').addClass('assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate'))));
-              var gradeElement = $('<div>')
-                .addClass('assignment-grade')
-                .append($('<span>').addClass('assignment-grade-label').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentGradeLabel")))
-                .append($('<span>').addClass('assignment-grade-data').text($('#assignmentGrade option:selected').text()));
-              $(this._activeAssignment).find('.assignment-done').after(gradeElement).after(evaluationDateElement);
+              $(this._activeAssignment).attr('data-graded', true);
+              
+              // Show evaluation date and grade
+              
+              $(this._activeAssignment).find('.assignment-literal-evaluation').html(CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData());
+              $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+              $(this._activeAssignment).find('.assignment-evaluated').show();
+              $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
+              $(this._activeAssignment).find('.assignment-grade').show();
+              
+              // Close assignment content
+              
               this.toggleAssignment(this.activeAssignment(), false, false);
+              
+              // Close assignment editor
+              
               this.toggleMaterialAssessmentView(false);
+              
+              // Set verbal assessment to assignment content
+              
               var assignmentContent = $(this._activeAssignment).find('.assignment-content');
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
+              
+              // Notify saving is done
+              
+              this._savingMaterialAssessment = undefined;
+            }
+          }, this));
+      }
+      else {
+
+        // Save an assignment supplementation request
+        
+        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+        mApi().evaluation.user.workspacematerial.supplementationrequest
+          .create(userEntityId, workspaceMaterialId, {
+            userEntityId: $('#assignmentAssessor option:selected').attr('data-user-entity-id'),
+            studentEntityId: userEntityId,
+            workspaceMaterialId: workspaceMaterialId,
+            requestDate: $('#assignmentEvaluationDate').datepicker('getDate').getTime(),
+            requestText: CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData()
+          })
+          .callback($.proxy(function (err, supplementationRequest) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.evaluation.notifications.assignmentEvaluation.saveSuccessful"));
+
+              // Mark assignment as evaluated but not graded
+              
+              $(this._activeAssignment).attr('data-evaluated', true);
+              $(this._activeAssignment).attr('data-graded', false);
+
+              // Show evaluation date but hide grade
+              
+              $(this._activeAssignment).find('.assignment-literal-evaluation').html(CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData());
+              $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
+              $(this._activeAssignment).find('.assignment-evaluated').show();
+              $(this._activeAssignment).find('.assignment-grade-data').text('');
+              $(this._activeAssignment).find('.assignment-grade').hide();
+              
+              // Close assignment content
+              
+              this.toggleAssignment(this.activeAssignment(), false, false);
+              
+              // Close assignment editor
+              
+              this.toggleMaterialAssessmentView(false);
+              
+              // Set verbal assessment to assignment content
+              
+              var assignmentContent = $(this._activeAssignment).find('.assignment-content');
+              $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
+              
+              // Notify saving is done
+              
               this._savingMaterialAssessment = undefined;
             }
           }, this));
