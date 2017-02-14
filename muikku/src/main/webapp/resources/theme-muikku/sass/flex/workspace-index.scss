@@ -265,17 +265,30 @@ footer.workspace-frontpage-footer {
     font-weight: 300;
     background: #98c807;
     padding: 20px;
+    
+    .workspace-material-license-icon-container {
+      color: #fff;
+      font-size: 40px;
+      vertical-align: middle;
+      
+      > span {
+        padding: 0 10px 0 0;
+      } 
+      
+    }
   
     .workspace-material-license-label {
       color: #fff;
-      padding: 0 5px 0 0;
+      padding: 0 5px;
       text-transform: uppercase;
+      vertical-align: middle;
     }
     
     .workspace-material-license {
-      padding: 0;
       color: #fff;
       font-weight: 400;
+      padding: 0;
+      vertical-align: middle;
       
       a {
         color: #fff;      
