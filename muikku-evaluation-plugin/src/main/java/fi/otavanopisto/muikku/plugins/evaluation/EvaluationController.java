@@ -79,23 +79,7 @@ public class EvaluationController {
         workspaceMaterialId,
         requestDate,
         requestText);
-    
-    // If the supplementation request is for an assignment, mark it as INCOMPLETE
-    
-    if (studentEntityId != null && workspaceMaterialId != null) {
-      UserEntity student = userEntityController.findUserEntityById(studentEntityId);
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-      if (student != null && workspaceMaterial != null) {
-        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-        if (reply == null) {
-          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
-        }
-        else {
-          workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
-        }
-      }
-    }
-    
+    handleSupplementationNotifications(supplementationRequest);    
     return supplementationRequest;
   }
 
@@ -174,23 +158,7 @@ public class EvaluationController {
         requestDate,
         requestText,
         Boolean.FALSE);
-
-    // If the supplementation request is for an assignment, mark it as INCOMPLETE
-    
-    if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceMaterialId() != null) {
-      UserEntity student = userEntityController.findUserEntityById(supplementationRequest.getStudentEntityId());
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(supplementationRequest.getWorkspaceMaterialId());
-      if (student != null && workspaceMaterial != null) {
-        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
-        if (reply == null) {
-          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
-        }
-        else {
-          workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
-        }
-      }
-    }
-    
+    handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
   }
   
@@ -237,6 +205,44 @@ public class EvaluationController {
       }
     }
   }
+  
+  private void handleSupplementationNotifications(SupplementationRequest supplementationRequest) {
+    Long teacherEntityId = supplementationRequest.getUserEntityId();
+    Long studentEntityId = supplementationRequest.getStudentEntityId();
+    Long workspaceEntityId = supplementationRequest.getWorkspaceEntityId();
+    Long workspaceMaterialId = supplementationRequest.getWorkspaceMaterialId();
+    String requestText = supplementationRequest.getRequestText();
+
+    // If the supplementation request is for an assignment, mark the student reply as INCOMPLETE
+    
+    if (studentEntityId != null && workspaceMaterialId != null) {
+      UserEntity teacher = userEntityController.findUserEntityById(teacherEntityId);
+      UserEntity student = userEntityController.findUserEntityById(studentEntityId);
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+      if (student != null && workspaceMaterial != null) {
+        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, student);
+        if (reply == null) {
+          workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, WorkspaceMaterialReplyState.INCOMPLETE, student);
+        }
+        else {
+          workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
+        }
+      }
+      
+      // Send notification of an incomplete assignment
+      
+      notifyOfIncompleteAssignment(teacher, student, workspaceMaterial, requestText);
+    }
+    else if (studentEntityId != null && workspaceEntityId != null) {
+
+      // Send notification of an incomplete workspace
+      
+      UserEntity teacher = userEntityController.findUserEntityById(teacherEntityId);
+      UserEntity student = userEntityController.findUserEntityById(studentEntityId);
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      notifyOfIncompleteWorkspace(teacher, student, workspaceEntity, requestText);
+    }
+  }
 
   private void notifyOfFailedAssignment(UserEntity assessor, UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScaleItem grade, String verbalAssessment) {
     Locale locale = student.getLocale() == null ? new Locale("fi") : new Locale(student.getLocale());
@@ -271,6 +277,65 @@ public class EvaluationController {
         category,
         notificationCaption,
         notificationText,
+        Collections.<Tag>emptySet());
+  }
+
+  private void notifyOfIncompleteAssignment(UserEntity assessor, UserEntity student, WorkspaceMaterial workspaceMaterial, String verbalAssessment) {
+    Locale locale = student.getLocale() == null ? new Locale("fi") : new Locale(student.getLocale());
+    
+    // Workspace
+    Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
+    String workspaceName = workspace.getName();
+    if (!StringUtils.isBlank(workspace.getNameExtension())) {
+      workspaceName = String.format("%s (%s)", workspaceName, workspace.getNameExtension());
+    }
+    
+    // Notification
+    String assignmentName = workspaceMaterial.getTitle();
+    String notificationCaption = localeController.getText(locale, "plugin.evaluation.assignmentIncomplete.notificationCaption");
+    String notificationText = localeController.getText(locale, "plugin.evaluation.assignmentIncomplete.notificationText");
+    notificationText = MessageFormat.format(notificationText, assignmentName, workspaceUrl, workspaceName, verbalAssessment == null ? "" : verbalAssessment);
+    
+    // Communicator message
+    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+    communicatorController.createMessage(
+        communicatorController.createMessageId(),
+        assessor,
+        Arrays.asList(student),
+        null,
+        null,
+        null,
+        category,
+        notificationCaption,
+        notificationText,
+        Collections.<Tag>emptySet());
+  }
+
+  private void notifyOfIncompleteWorkspace(UserEntity teacher, UserEntity student, WorkspaceEntity workspaceEntity, String verbalAssessment) {
+
+    // Workspace
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
+    String workspaceName = workspace.getName();
+    if (!StringUtils.isBlank(workspace.getNameExtension())) {
+      workspaceName = String.format("%s (%s)", workspaceName, workspace.getNameExtension());
+    }
+
+    Locale locale = userEntityController.getLocale(student);
+    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
+    communicatorController.createMessage(
+        communicatorController.createMessageId(),
+        teacher,
+        Arrays.asList(student),
+        null,
+        null,
+        null,
+        category,
+        localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationCaption"),
+        localeController.getText(locale, "plugin.evaluation.workspaceIncomplete.notificationText", new Object[] {workspaceUrl, workspaceName, verbalAssessment}),
         Collections.<Tag>emptySet());
   }
   
