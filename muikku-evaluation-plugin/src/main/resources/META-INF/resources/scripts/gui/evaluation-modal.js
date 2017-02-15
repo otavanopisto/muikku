@@ -537,9 +537,9 @@
         $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').val(MUIKKU_LOGGED_USER);
-        $('input[name=assignmentGrading]').val('GRADED');
         $('#assignmentGradedButton').prop('checked', true);
         $('#assignmentGrade').prop('disabled', false);
+        $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
         $('#assignmentGrade').prop('selectedIndex', 0);
         this.toggleMaterialAssessmentView(true, $.proxy(function() {
           this._createAssignmentEditor(workspaceMaterialId);
