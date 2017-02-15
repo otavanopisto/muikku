@@ -10,9 +10,9 @@
     <input required="required" type="date" name="evaluationDate" id="assignmentEvaluationDate"/>
   </div>
   <div class="evaluation-modal-evaluate-form-row">
-    <label for="assignmentGrading">ARVIOINTI</label>
-    <input type="radio" name="assignmentGrading" value="GRADED" id="assignmentGradedButton"/>ARVOSANA
-    <input type="radio" name="assignmentGrading" value="INCOMPLETE" id="assignmentIncompleteButton"/>TÄYDENNETTÄVÄ
+    <label for="assignmentGrading">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"/}</label>
+    <input type="radio" name="assignmentGrading" value="GRADED" id="assignmentGradedButton"/>{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateGradeLabel"/}
+    <input type="radio" name="assignmentGrading" value="INCOMPLETE" id="assignmentIncompleteButton"/>{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateIncompleteLabel"/}
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="grade">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentGradeLabel"/}</label>

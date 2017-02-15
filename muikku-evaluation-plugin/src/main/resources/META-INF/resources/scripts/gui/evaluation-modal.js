@@ -131,12 +131,14 @@
               
               $('#workspaceGradedButton').click($.proxy(function(event) {
                 $('#workspaceGrade').prop('disabled', false);
+                $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
               }, this));
               
               // Disable workspace grade if assessment is marked incomplete
               
               $('#workspaceIncompleteButton').click($.proxy(function(event) {
                 $('#workspaceGrade').prop('disabled', true);
+                $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
               }, this));
               
               // Delete workspace assessment (or supplementation request)
@@ -195,12 +197,14 @@
               
               $('#assignmentGradedButton').click($.proxy(function(event) {
                 $('#assignmentGrade').prop('disabled', false);
+                $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
               }, this));
               
               // Disable asignment grade if assessment is marked incomplete
               
               $('#assignmentIncompleteButton').click($.proxy(function(event) {
                 $('#assignmentGrade').prop('disabled', true);
+                $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
               }, this));
               
               $('#assignmentSaveButton').click($.proxy(function(event) {
@@ -493,6 +497,7 @@
                 $('#assignmentGradedButton').prop('checked', 'checked');
                 // Grade
                 $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+                $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled', 'disabled');
                 // Show material evaluation view
                 this.toggleMaterialAssessmentView(true, $.proxy(function() {
                   this._createAssignmentEditor(workspaceMaterialId);
@@ -518,6 +523,7 @@
                 $('#assignmentIncompleteButton').prop('checked', 'checked');
                 // Grade
                 $('#assignmentGrade').prop('disabled', true);
+                $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
                 // Show material evaluation view
                 this.toggleMaterialAssessmentView(true, $.proxy(function() {
                   this._createAssignmentEditor(workspaceMaterialId);
@@ -623,6 +629,7 @@
             $('#workspaceGradedButton').prop('checked', 'checked');
             // Grade
             $('#workspaceGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
+            $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
             // Remove assessment button
             $('.button-delete').show();
           }
@@ -647,6 +654,7 @@
             $('#workspaceIncompleteButton').prop('checked', 'checked');
             // Grade
             $('#workspaceGrade').prop('disabled', true);
+            $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
             // Remove supplementation request button
             $('.button-delete').show();
           }
