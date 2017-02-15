@@ -160,7 +160,7 @@
 }
 
 .workspace-evaluation-form-activate-button {
-  background: $evaluation-requested-color;
+  background: $evaluation-modal-workspace-evaluation-form-activate-button-background-color;
   border-radius: 100%;
   box-sizing: border-box;
   color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
@@ -368,13 +368,25 @@
 
 .assignment-grade-data {
   background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
-  border-radius: 5px;
+  border-radius: 3px;
   display: inline-block;
   font-size: 15px;
+  line-height: 1;
   margin: 0 0 0 5px;
   min-width: 16px;
-  padding: 3px 6px;
+  padding: 6px;
   text-align: center;
+}
+
+.assignment-grade.evaluated-incomplete {
+  
+  .assignment-grade-data {
+    background: $evaluation-incomplete-color;
+    color: $evaluation-modal-assignment-evaluated-incomplete-font-color;
+    font-size: 13px;
+    padding: 4px;
+  }
+  
 }
 
 .assignment-notdone-label {
@@ -390,10 +402,11 @@
   display: inline-block;
   font-size: 18px;
   height: 18px;
+  margin-top: -14px;
   padding: 5px;
   position: absolute;
   right: 10px;
-  top: 18px;
+  top: 50%;
   text-align: center;
   vertical-align: top;
   width: 18px;
@@ -403,10 +416,25 @@
 .assignment-wrapper[data-evaluated="true"] {
   
   .assignment-evaluate-button {
-    background: $evaluation-passed-color;
+    background: $evaluation-incomplete-color;
+  }
+  
+  &[data-graded="true"] {
+    .assignment-evaluate-button {
+      background: $evaluation-passed-color;
+    }
+  
   }
   
 }
+
+/* .assignment-wrapper[data-evaluated="true"] { */
+  
+/*   .assignment-evaluate-button { */
+/*     background: $evaluation-passed-color; */
+/*   } */
+  
+/* } */
 
 .assignment-wrapper.exercise .assignment-evaluate-button {
   display: none;

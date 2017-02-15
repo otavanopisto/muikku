@@ -77,7 +77,7 @@
                   isRequest = true;
                 }
                 else if (evaluationDate) {
-                  cardStateClass = assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-incomplete';
+                  cardStateClass = assessmentRequests[i].graded ? assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-failed' : 'evaluated-incomplete';
                   isEvaluated = true;
                 }
                 assessmentRequests[i] = $.extend({}, assessmentRequests[i], {

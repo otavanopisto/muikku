@@ -841,6 +841,8 @@
               $(this._activeAssignment).find('.assignment-evaluated').show();
               $(this._activeAssignment).find('.assignment-grade-data').text($('#assignmentGrade option:selected').text());
               $(this._activeAssignment).find('.assignment-grade').show();
+              $(this._activeAssignment).find('.assignment-grade-label').show();
+              $(this._activeAssignment).find('.assignment-grade').removeClass('evaluated-incomplete');
               
               // Close assignment content
               
@@ -892,8 +894,10 @@
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.getData());
               $(this._activeAssignment).find('.assignment-evaluated-data').text(formatDate($('#assignmentEvaluationDate').datepicker('getDate')));
               $(this._activeAssignment).find('.assignment-evaluated').show();
-              $(this._activeAssignment).find('.assignment-grade-data').text('');
-              $(this._activeAssignment).find('.assignment-grade').hide();
+              $(this._activeAssignment).find('.assignment-grade-data').text(getLocaleText("plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"));
+              $(this._activeAssignment).find('.assignment-grade-label').hide();
+              $(this._activeAssignment).find('.assignment-grade').show();
+              $(this._activeAssignment).find('.assignment-grade').addClass('evaluated-incomplete');
               
               // Close assignment content
               
@@ -906,7 +910,7 @@
               // Set verbal assessment to assignment content
               
               var assignmentContent = $(this._activeAssignment).find('.assignment-content');
-              $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
+              $(this._activeAssignment).find('.assignment-literal-evaluation').html(supplementationRequest.requestText);
               
               // Notify saving is done
               

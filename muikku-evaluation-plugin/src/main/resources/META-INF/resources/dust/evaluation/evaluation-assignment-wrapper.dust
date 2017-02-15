@@ -13,9 +13,9 @@
       <span class="assignment-evaluated-label">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedLabel"/}</span>
       <span class="assignment-evaluated-data">{evaluationDate|formatDate}</span>
     </div>
-    <div class="assignment-grade" {^grade}style="display:none;"{/grade}>
-      <span class="assignment-grade-label">{#localize key="plugin.evaluation.evaluationModal.assignmentGradeLabel"/}</span>
-      <span class="assignment-grade-data">{grade}</span>
+    <div class="assignment-grade {?evaluationDate}{^grade}evaluated-incomplete{/grade}{/evaluationDate}" {^evaluationDate}style="display:none;"{/evaluationDate}>
+      <span class="assignment-grade-label">{?grade}{#localize key="plugin.evaluation.evaluationModal.assignmentGradeLabel"/}{/grade}</span>
+      <span class="assignment-grade-data">{?grade}{grade}{:else}{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluatedIncompleteLabel"/}{/grade}</span>
     </div>
   </div>
   {?submitDate}
