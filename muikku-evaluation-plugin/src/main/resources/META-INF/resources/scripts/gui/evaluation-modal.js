@@ -130,14 +130,14 @@
               // Enabled workspace grade if assessment is marked graded
               
               $('#workspaceGradedButton').click($.proxy(function(event) {
-                $('#workspaceGrade').removeAttr('disabled');
+                $('#workspaceGrade').prop('disabled', false);
                 $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
               }, this));
               
               // Disable workspace grade if assessment is marked incomplete
               
               $('#workspaceIncompleteButton').click($.proxy(function(event) {
-                $('#workspaceGrade').attr('disabled', 'disabled');
+                $('#workspaceGrade').prop('disabled', true);
                 $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
               }, this));
               
@@ -196,14 +196,14 @@
               // Enabled assignment grade if assessment is marked graded
               
               $('#assignmentGradedButton').click($.proxy(function(event) {
-                $('#assignmentGrade').removeAttr('disabled');
+                $('#assignmentGrade').prop('disabled', false);
                 $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
               }, this));
               
               // Disable asignment grade if assessment is marked incomplete
               
               $('#assignmentIncompleteButton').click($.proxy(function(event) {
-                $('#assignmentGrade').attr('disabled', 'disabled');
+                $('#assignmentGrade').prop('disabled', true);
                 $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
               }, this));
               
@@ -377,8 +377,8 @@
       else {
         $('#workspaceEvaluationDate').datepicker('setDate', new Date());
         $('#workspaceAssessor').val(MUIKKU_LOGGED_USER);
-        $('#workspaceGradedButton').attr('checked', 'checked');
-        $('#workspaceGrade').removeAttr('disabled');
+        $('#workspaceGradedButton').prop('checked', true);
+        $('#workspaceGrade').prop('disabled', false);
         $('#workspaceGrade').prop('selectedIndex', 0);
       }
       this._loadMaterials();
@@ -494,9 +494,9 @@
                 // Assessor
                 $('#assignmentAssessor').val(assessment.assessorIdentifier);
                 // Grading
-                $('#assignmentGradedButton').attr('checked', 'checked');
+                $('#assignmentGradedButton').prop('checked', true);
                 // Grade
-                $('#assignmentGrade').removeAttr('disabled');
+                $('#assignmentGrade').prop('disabled', false);
                 $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled', 'disabled');
                 $('#assignmentGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
                 // Show material evaluation view
@@ -521,9 +521,9 @@
                 // Assessor
                 $('#assignmentAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
                 // Grading
-                $('#assignmentIncompleteButton').attr('checked', 'checked');
+                $('#assignmentIncompleteButton').prop('checked', true);
                 // Grade
-                $('#assignmentGrade').attr('disabled', 'disabled');
+                $('#assignmentGrade').prop('disabled', true);
                 $('#assignmentGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
                 // Show material evaluation view
                 this.toggleMaterialAssessmentView(true, $.proxy(function() {
@@ -537,8 +537,9 @@
         $('#assignmentEvaluateFormLiteralEvaluation').val('');
         $('#assignmentEvaluationDate').datepicker('setDate', new Date());
         $('#assignmentAssessor').val(MUIKKU_LOGGED_USER);
-        $('#assignmentGradedButton').attr('checked', 'checked');
-        $('#assignmentGrade').removeAttr('disabled');
+        $('input[name=assignmentGrading]').val('GRADED');
+        $('#assignmentGradedButton').prop('checked', true);
+        $('#assignmentGrade').prop('disabled', false);
         $('#assignmentGrade').prop('selectedIndex', 0);
         this.toggleMaterialAssessmentView(true, $.proxy(function() {
           this._createAssignmentEditor(workspaceMaterialId);
@@ -627,9 +628,9 @@
             // Assessor
             $('#workspaceAssessor').val(assessment.assessorIdentifier);
             // Grading
-            $('#workspaceGradedButton').attr('checked', 'checked');
+            $('#workspaceGradedButton').prop('checked', true);
             // Grade
-            $('#workspaceGrade').removeAttr('disabled');
+            $('#workspaceGrade').prop('disabled', false);
             $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').removeAttr('disabled');
             $('#workspaceGrade').val(assessment.gradingScaleIdentifier + '@' + assessment.gradeIdentifier);
             // Remove assessment button
@@ -653,9 +654,9 @@
             // Assessor
             $('#workspaceAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
             // Grading
-            $('#workspaceIncompleteButton').attr('checked', 'checked');
+            $('#workspaceIncompleteButton').prop('checked', true);
             // Grade
-            $('#workspaceGrade').attr('disabled', 'disabled');
+            $('#workspaceGrade').prop('disabled', true);
             $('#workspaceGrade').closest('.evaluation-modal-evaluate-form-row').attr('disabled', 'disabled');
             // Remove supplementation request button
             $('.button-delete').show();
