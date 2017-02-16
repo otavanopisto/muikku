@@ -167,7 +167,7 @@ public class EvaluationController {
         requestDate,
         requestText,
         Boolean.FALSE);
-    //
+    // For workspace supplementation requests, mark respective workspace assessment requests as handled 
     if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceEntityId() != null) {
       markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId());
     }
