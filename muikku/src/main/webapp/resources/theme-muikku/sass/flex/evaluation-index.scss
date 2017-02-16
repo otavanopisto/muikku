@@ -210,6 +210,10 @@ body {
     border: 1px solid $evaluation-failed-color;
     box-shadow: 0 0 2px $evaluation-failed-boxshadow-color;
     
+    .evaluation-card-button.archive-button {
+      display: inline-block;
+    }
+    
     .evaluation-card-button.evaluate-button {
       background: $evaluation-failed-color;
     }
