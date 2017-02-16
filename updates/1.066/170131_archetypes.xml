@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    update EnvironmentRoleEntity set archetype = 'STUDY_GUIDER' where id = (select id from RoleEntity where name = 'STUDY_GUIDER');
+  </sql>
+
+  <sql>
+    update EnvironmentRoleEntity set archetype = 'CUSTOM' where id in (select id from RoleEntity where name in ('GUEST', 'USER'));  
+  </sql>
+
+  <sql>
+    delete from RolePermission where role_id in (select id from RoleEntity where name in ('USER', 'GUEST', 'STUDY_GUIDER'));
+  </sql>
+
+</update>
