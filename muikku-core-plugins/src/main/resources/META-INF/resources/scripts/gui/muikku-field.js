@@ -294,7 +294,7 @@
       // #2421: Show evaluation
       
       if (assignmentType == 'EVALUATED' && (state == 'FAILED' || state == 'PASSED' || state == 'INCOMPLETE')) {
-        var buttonClass = state == 'FAILED' ? 'failed' : 'passed';
+        var buttonClass = state == 'INCOMPLETE' ? 'incomplete' : state == 'FAILED' ? 'failed' : 'passed';
         $('<button>')
           .addClass('muikku-show-evaluation-button')
           .addClass(buttonClass)
@@ -403,6 +403,12 @@
             break;
           case "WITHDRAWN":
             $(tocItem).find('.assignment').children('span').remove();
+            break;
+          case "INCOMPLETE":
+            $(tocItem).find('.assignment').append($('<span>')
+                .addClass('evaluated-incomplete')
+                .attr("title", getLocaleText('plugin.workspace.materials.assignmentIncompleteTooltip'))
+            );
             break;
           case "PASSED":
             $(tocItem).find('.assignment').append($('<span>')
