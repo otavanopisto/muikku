@@ -148,7 +148,7 @@
               }
               $('#workspaceDeleteButton').click($.proxy(function(event) {
                 this._confirmAssessmentDeletion($.proxy(function () {
-                  this._deleteAssessment();
+                  this._deleteEvaluationData();
                 }, this));
               }, this));
               
@@ -365,13 +365,13 @@
     
     _onDialogReady: function() {
       if ($(this._requestCard).attr('data-evaluated') == 'true') {
+        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
         if ($(this._requestCard).attr('data-graded') == 'true') {
-          this._loadWorkspaceAssessment($(this._requestCard).attr('data-workspace-user-entity-id'));
+          this._loadWorkspaceAssessment(workspaceEntityId, userEntityId);
         }
         else {
-          var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-          var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-          this._loadWorkspaceSupplementationRequest(userEntityId, workspaceEntityId);
+          this._loadWorkspaceSupplementationRequest(workspaceEntityId, userEntityId);
         }
       }
       else {
@@ -414,10 +414,11 @@
                 this.toggleAssignment(oldAssignment, false, false);
               }
               $(document).evaluationModal('activeAssignment', newAssignment);
-              var userEntityId = $('#evaluationStudentContainer').attr('data-user-entity-id');
+              var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+              var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
               var workspaceMaterialId = $(newAssignment).find('.assignment-content').attr('data-workspace-material-id');
               $('.eval-modal-assignment-title').text($(newAssignment).find('.assignment-title').text())
-              this.loadMaterialAssessment(userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated') == 'true', $(newAssignment).attr('data-graded') == 'true');
+              this.loadMaterialAssessment(workspaceEntityId, userEntityId, workspaceMaterialId, $(newAssignment).attr('data-evaluated') == 'true', $(newAssignment).attr('data-graded') == 'true');
             }
             else {
               this.toggleMaterialAssessmentView(true);
@@ -472,7 +473,7 @@
       }
     },
     
-    loadMaterialAssessment: function(userEntityId, workspaceMaterialId, evaluated, graded) {
+    loadMaterialAssessment: function(workspaceEntityId, userEntityId, workspaceMaterialId, evaluated, graded) {
       if (CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation) {
         CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.destroy(true);
       }
@@ -480,8 +481,8 @@
       $('#assignmentUserEntityId').val(userEntityId);
       if (evaluated) {
         if (graded) {
-          mApi().evaluation.user.workspacematerial.assessment
-            .read(userEntityId, workspaceMaterialId)
+          mApi().evaluation.workspace.user.workspacematerial.assessment
+            .read(workspaceEntityId, userEntityId, workspaceMaterialId)
             .callback($.proxy(function (err, assessment) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -507,8 +508,8 @@
             }, this));
         }
         else {
-          mApi().evaluation.user.workspacematerial.supplementationrequest
-            .read(userEntityId, workspaceMaterialId)
+          mApi().evaluation.workspace.user.workspacematerial.supplementationrequest
+            .read(workspaceEntityId, userEntityId, workspaceMaterialId)
             .callback($.proxy(function (err, supplementationRequest) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -613,9 +614,9 @@
       $('.eval-modal').removeClass('no-scroll');
     },
     
-    _loadWorkspaceAssessment: function(workspaceUserEntityId) {
-      mApi().evaluation.workspaceuser.assessment
-        .read(workspaceUserEntityId)
+    _loadWorkspaceAssessment: function(workspaceEntityId, userEntityId) {
+      mApi().evaluation.workspace.user.assessment
+        .read(workspaceEntityId, userEntityId)
         .callback($.proxy(function (err, assessment) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -639,9 +640,9 @@
         }, this));
     },
     
-    _loadWorkspaceSupplementationRequest: function(userEntityId, workspaceEntityId) {
-      mApi().evaluation.user.workspace.supplementationrequest
-        .read(userEntityId, workspaceEntityId)
+    _loadWorkspaceSupplementationRequest: function(workspaceEntityId, userEntityId) {
+      mApi().evaluation.workspace.user.supplementationrequest
+        .read(workspaceEntityId, userEntityId)
         .callback($.proxy(function (err, supplementationRequest) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -746,10 +747,11 @@
       }, this));
     },
     
-    _deleteAssessment: function() {
-      var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
-      mApi().evaluation.workspaceuser.assessment
-        .del(workspaceUserEntityId)
+    _deleteEvaluationData: function() {
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
+      mApi().evaluation.workspace.user.evaluationdata
+        .del(workspaceEntityId, userEntityId)
         .callback($.proxy(function (err) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -764,10 +766,11 @@
     },
 
     _saveWorkspaceAssessment: function() {
-      var workspaceUserEntityId = $('#workspaceWorkspaceUserEntityId').val();
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
       var scaleAndGrade = $('#workspaceGrade').val().split('@');
-      mApi().evaluation.workspaceuser.assessment
-        .create(workspaceUserEntityId, {
+      mApi().evaluation.workspace.user.assessment
+        .create(workspaceEntityId, userEntityId, {
           assessorIdentifier: $('#workspaceAssessor').val(),
           gradingScaleIdentifier: scaleAndGrade[0],
           gradeIdentifier: scaleAndGrade[1],
@@ -790,8 +793,8 @@
     _saveWorkspaceSupplementationRequest: function() {
       var userEntityId = $(this._requestCard).attr('data-user-entity-id');
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-      mApi().evaluation.user.workspace.supplementationrequest
-        .create(userEntityId, workspaceEntityId, {
+      mApi().evaluation.workspace.user.supplementationrequest
+        .create(workspaceEntityId, userEntityId, {
           userEntityId: $('#workspaceAssessor option:selected').attr('data-user-entity-id'),
           studentEntityId: userEntityId,
           workspaceEntityId: workspaceEntityId,
@@ -816,7 +819,8 @@
         return;
       }
       this._savingMaterialAssessment = true;
-      var userEntityId = $('#assignmentUserEntityId').val();
+      var userEntityId = $(this._requestCard).attr('data-user-entity-id');
+      var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
       var workspaceMaterialId = $('#assignmentWorkspaceMaterialId').val();
       var gradingValue = $('input[name=assignmentGrading]:checked').val();
       if (gradingValue == 'GRADED') {
@@ -824,8 +828,8 @@
         // Save an assignment evaluation
         
         var scaleAndGrade = $('#assignmentGrade').val().split('@');
-        mApi().evaluation.user.workspacematerial.assessment
-          .create(userEntityId, workspaceMaterialId, {
+        mApi().evaluation.workspace.user.workspacematerial.assessment
+          .create(workspaceEntityId, userEntityId, workspaceMaterialId, {
             assessorIdentifier: $('#assignmentAssessor').val(),
             gradingScaleIdentifier: scaleAndGrade[0],
             gradeIdentifier: scaleAndGrade[1],
@@ -880,8 +884,8 @@
         
         var userEntityId = $(this._requestCard).attr('data-user-entity-id');
         var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
-        mApi().evaluation.user.workspacematerial.supplementationrequest
-          .create(userEntityId, workspaceMaterialId, {
+        mApi().evaluation.workspace.user.workspacematerial.supplementationrequest
+          .create(workspaceEntityId, userEntityId, workspaceMaterialId, {
             userEntityId: $('#assignmentAssessor option:selected').attr('data-user-entity-id'),
             studentEntityId: userEntityId,
             workspaceMaterialId: workspaceMaterialId,

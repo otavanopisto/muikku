@@ -172,7 +172,9 @@ public class GradingController {
 
   public void deleteWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier, SchoolDataIdentifier workspaceAssesmentIdentifier) {
     gradingSchoolDataController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
-    // #2716: When workspace assessment is removed, restore latest workspace assessment request
+  }
+  
+  public void restoreLatestAssessmentRequest(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
     List<WorkspaceAssessmentRequest> requests = listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
     if (CollectionUtils.isNotEmpty(requests)) {
       requests.sort(new Comparator<WorkspaceAssessmentRequest>() {
@@ -180,7 +182,7 @@ public class GradingController {
           return o2.getDate().compareTo(o1.getDate()); // latest request first
         }
       });
-      // Update should cause the school data source to treat the request as active again (i.e. not handled)
+      // Mark the latest request as not handled
       WorkspaceAssessmentRequest latestRequest = requests.get(0);
       updateWorkspaceAssessmentRequest(
           latestRequest.getSchoolDataSource(),
@@ -190,7 +192,9 @@ public class GradingController {
           workspaceIdentifier.getIdentifier(),
           studentIdentifier.getIdentifier(),
           latestRequest.getRequestText(),
-          latestRequest.getDate());
+          latestRequest.getDate(),
+          latestRequest.getArchived(),
+          Boolean.FALSE); // not handled
     }
   }
 
@@ -248,8 +252,18 @@ public class GradingController {
   }
   
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
-      String workspaceIdentifier, String studentIdentifier, String requestText, Date date) {
-    return gradingSchoolDataController.updateWorkspaceAssessmentRequest(schoolDataSource, identifier, workspaceUserIdentifier, workspaceUserSchoolDataSource, workspaceIdentifier, studentIdentifier, requestText, date);
+      String workspaceIdentifier, String studentIdentifier, String requestText, Date date, Boolean archived, Boolean handled) {
+    return gradingSchoolDataController.updateWorkspaceAssessmentRequest(
+        schoolDataSource,
+        identifier,
+        workspaceUserIdentifier,
+        workspaceUserSchoolDataSource,
+        workspaceIdentifier,
+        studentIdentifier,
+        requestText,
+        date,
+        archived,
+        handled);
   }
 
   public void deleteWorkspaceAssessmentRequest(String schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {

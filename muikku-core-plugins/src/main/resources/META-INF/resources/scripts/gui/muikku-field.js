@@ -307,8 +307,8 @@
             }
             else {
               if (state == 'INCOMPLETE') {
-                mApi().evaluation.user.workspacematerial.supplementationrequest
-                  .read(MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
+                mApi().evaluation.workspace.user.workspacematerial.supplementationrequest
+                  .read(this.workspaceEntityId(), MUIKKU_LOGGED_USER_ID, this.workspaceMaterialId())
                   .callback($.proxy(function (err, supplementationRequest) {
                     if (err) {
                       $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.evaluation.fail'), err);

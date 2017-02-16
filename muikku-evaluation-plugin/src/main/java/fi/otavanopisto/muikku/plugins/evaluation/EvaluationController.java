@@ -30,11 +30,13 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
+import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.users.UserEntityController;
 
@@ -63,6 +65,9 @@ public class EvaluationController {
   private SupplementationRequestDAO supplementationRequestDAO;
   
   @Inject
+  private GradingController gradingController;
+
+  @Inject
   private UserEntityController userEntityController;
 
   @Inject
@@ -79,6 +84,10 @@ public class EvaluationController {
         workspaceMaterialId,
         requestDate,
         requestText);
+    // For workspace supplementation requests, mark respective workspace assessment requests as handled 
+    if (studentEntityId != null && workspaceEntityId != null) {
+      markWorkspaceAssessmentRequestsAsHandled(studentEntityId, workspaceEntityId);      
+    }
     handleSupplementationNotifications(supplementationRequest);    
     return supplementationRequest;
   }
@@ -110,7 +119,7 @@ public class EvaluationController {
     return evaluation;
   }
   
-  public void deleteWorkspaceSupplementationRequest(SupplementationRequest supplementationRequest) {
+  public void deleteSupplementationRequest(SupplementationRequest supplementationRequest) {
     supplementationRequestDAO.archive(supplementationRequest);
   }
 
@@ -158,6 +167,10 @@ public class EvaluationController {
         requestDate,
         requestText,
         Boolean.FALSE);
+    //
+    if (supplementationRequest.getStudentEntityId() != null && supplementationRequest.getWorkspaceEntityId() != null) {
+      markWorkspaceAssessmentRequestsAsHandled(supplementationRequest.getStudentEntityId(), supplementationRequest.getWorkspaceEntityId());
+    }
     handleSupplementationNotifications(supplementationRequest);
     return supplementationRequest;
   }
@@ -206,6 +219,47 @@ public class EvaluationController {
     }
   }
   
+  /**
+   * Marks the assessment requests of student <code>userEntityId</code> in workspace
+   * <code>workspaceEntityId</code> as handled.
+   * 
+   * @param userEntityId Student id (in Muikku)
+   * @param workspaceEntityId Workspace id (in Muikku)
+   */
+  private void markWorkspaceAssessmentRequestsAsHandled(Long userEntityId, Long workspaceEntityId) {
+    // TODO Performance bottleneck?
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    
+    // List assessment requests (from Pyramus)  
+    
+    List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(),
+        workspaceEntity.getIdentifier(),
+        userEntity.getDefaultIdentifier());
+    
+    // Mark each assessment request as handled (to Pyramus)
+    
+    for (WorkspaceAssessmentRequest assessmentRequest : assessmentRequests) {
+      gradingController.updateWorkspaceAssessmentRequest(
+          assessmentRequest.getSchoolDataSource(),
+          assessmentRequest.getIdentifier(),
+          assessmentRequest.getWorkspaceUserIdentifier(),
+          assessmentRequest.getWorkspaceUserSchoolDataSource(),
+          workspaceEntity.getIdentifier(),
+          userEntity.getDefaultIdentifier(),
+          assessmentRequest.getRequestText(),
+          assessmentRequest.getDate(),
+          assessmentRequest.getArchived(),
+          Boolean.TRUE); // handled
+    }
+  }
+  
+  /**
+   * Handles all notification messages related to the given supplementation request.
+   * 
+   * @param supplementationRequest Supplementation request
+   */
   private void handleSupplementationNotifications(SupplementationRequest supplementationRequest) {
     Long teacherEntityId = supplementationRequest.getUserEntityId();
     Long studentEntityId = supplementationRequest.getStudentEntityId();
@@ -213,7 +267,7 @@ public class EvaluationController {
     Long workspaceMaterialId = supplementationRequest.getWorkspaceMaterialId();
     String requestText = supplementationRequest.getRequestText();
 
-    // If the supplementation request is for an assignment, mark the student reply as INCOMPLETE
+    // If the supplementation request is for an assignment, also mark student's reply as INCOMPLETE
     
     if (studentEntityId != null && workspaceMaterialId != null) {
       UserEntity teacher = userEntityController.findUserEntityById(teacherEntityId);
