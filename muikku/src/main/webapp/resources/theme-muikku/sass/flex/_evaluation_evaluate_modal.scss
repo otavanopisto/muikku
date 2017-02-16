@@ -160,14 +160,16 @@
 }
 
 .workspace-evaluation-form-activate-button {
+  align-items: center;
   background: $evaluation-modal-workspace-evaluation-form-activate-button-background-color;
   border-radius: 100%;
   box-sizing: border-box;
   color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
   cursor: pointer;
+  @include flexbox;
   font-size: 18px;
   height: 180px;
-  line-height: 26px;
+  line-height: 24px;
   left: 50%;
   margin: -80px;
   opacity: 1;
@@ -341,13 +343,17 @@
   
 .assignment-wrapper.assignment .assignment-title-wrapper {
   border-left: 3px solid $assignment-color;
+  box-sizing: border-box;
   cursor: pointer;
+  height: 51px;
   padding: 2px 50px 2px 8px;
 }
 
 .assignment-wrapper.exercise .assignment-title-wrapper {
   border-left: 3px solid $exercise-color;
+  box-sizing: border-box;
   cursor: pointer;
+  height: 51px;
   padding: 2px 8px;
 }
 
@@ -381,10 +387,9 @@
   border-radius: 3px;
   display: inline-block;
   font-size: 15px;
-  line-height: 1;
   margin: 0 0 0 5px;
   min-width: 16px;
-  padding: 6px;
+  padding: 0 2px;
   text-align: center;
 }
 
@@ -394,7 +399,7 @@
     background: $evaluation-incomplete-color;
     color: $evaluation-modal-assignment-evaluated-incomplete-font-color;
     font-size: 13px;
-    padding: 4px;
+    padding: 0 4px;
   }
   
 }
