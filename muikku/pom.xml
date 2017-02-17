@@ -9,7 +9,11 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
+<<<<<<< HEAD
     <version>1.1.67</version>
+=======
+    <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -220,13 +224,21 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>muikku-school-data-pyramus</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
 
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>pyramus-oauth-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -237,7 +249,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>elastic-search-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -248,7 +264,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>dummy-mail-bridge-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -259,7 +279,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>jndi-mail-bridge-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -270,7 +294,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>mongo-log-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -281,7 +309,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-calendar-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -292,7 +324,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -303,7 +339,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>h2db-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -314,7 +354,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>google-oauth-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -325,7 +369,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>facebook-oauth-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -336,7 +384,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>calendar-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -347,7 +399,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>evaluation-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -358,7 +414,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>deus-nex-machina</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -369,7 +429,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>timed-notifications-plugin</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>
@@ -380,7 +444,11 @@
         <dependency>
           <groupId>fi.otavanopisto.muikku</groupId>
           <artifactId>developer-tools</artifactId>
+<<<<<<< HEAD
           <version>1.1.67</version>
+=======
+          <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
         </dependency>
       </dependencies>
     </profile>

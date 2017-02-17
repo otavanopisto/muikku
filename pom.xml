@@ -4,7 +4,11 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
+<<<<<<< HEAD
 	<version>1.1.67</version>
+=======
+	<version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -97,7 +101,11 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
+<<<<<<< HEAD
 				<version>1.1.67</version>
+=======
+				<version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
