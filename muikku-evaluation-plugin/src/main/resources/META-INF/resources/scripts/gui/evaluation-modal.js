@@ -881,7 +881,6 @@
               
               // Set verbal assessment to assignment content
               
-              var assignmentContent = $(this._activeAssignment).find('.assignment-content');
               $(this._activeAssignment).find('.assignment-literal-evaluation').html(assessment.verbalAssessment);
               
               // Notify saving is done
@@ -894,8 +893,6 @@
 
         // Save an assignment supplementation request
         
-        var userEntityId = $(this._requestCard).attr('data-user-entity-id');
-        var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
         mApi().evaluation.workspace.user.workspacematerial.supplementationrequest
           .create(workspaceEntityId, userEntityId, workspaceMaterialId, {
             userEntityId: $('#assignmentAssessor option:selected').attr('data-user-entity-id'),
