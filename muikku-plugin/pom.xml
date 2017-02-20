@@ -9,11 +9,7 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-<<<<<<< HEAD
-    <version>1.1.67</version>
-=======
     <version>1.1.68-SNAPSHOT</version>
->>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
     <relativePath>../pom.xml</relativePath>
   </parent>
   
