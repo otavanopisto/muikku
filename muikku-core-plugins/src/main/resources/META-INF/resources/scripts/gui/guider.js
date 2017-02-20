@@ -24,6 +24,7 @@
         this.element.on('click', '.mf-label-functions', $.proxy(this._onFilterMenuLink, this));
         this.element.on('click', '.mf-label-function-edit', $.proxy(this._onFlagEditClick, this));               
         this.element.on('click', '.mf-label-function-delete', $.proxy(this._onFlagDeleteClick, this));               
+        this.element.on('click', '.mf-label-function-share', $.proxy(this._onFlagShareClick, this));               
         
         $(document).on('click',function(e){
           if ( $(e.target).closest('.gt-filters').length === 0 ) {            
@@ -32,6 +33,14 @@
        })
       
       }, this));
+    },
+    
+    _onFlagShareClick: function (event) {
+      var flagId = Number($(event.target).closest("[data-flag-id]").attr('data-flag-id'));
+      
+      $('<div>').guiderFlagShareDialog({
+        flagId: flagId   
+      });
     },
 
     _onFlagEditClick: function (event) {

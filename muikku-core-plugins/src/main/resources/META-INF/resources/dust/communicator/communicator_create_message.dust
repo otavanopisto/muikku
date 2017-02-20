@@ -35,10 +35,18 @@
                 <textarea id="textContent" name="content"></textarea>
               </div>
             </div>
-          </div> 
+          </div>
+          {?hasSignature}
+            <div class="mf-fieldRow flex-row flex-align-items-center">
+              <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">              
+                <div class="mf-form-element-subcontainer flex-row flex-align-items-center">              
+                  <input type="checkbox" name="signature" checked> {#localize key="plugin.communicator.createmessage.checkbox.signature"/}</input>
+                </div>
+              </div>
+            </div>          
+          {/hasSignature} 
         </div>
       </div>
-    
       <div class="mf-toolbar flex-row">
         <input type="submit" name="send" value='{#localize key="plugin.communicator.createmessage.button.send"/}' disabled="disabled"/>
         <input type="submit" name="cancel" value='{#localize key="plugin.communicator.createmessage.button.cancel"/}'/>
