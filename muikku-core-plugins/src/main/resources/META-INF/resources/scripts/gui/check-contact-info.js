@@ -1,23 +1,22 @@
 $(document).ready(function(){
   mApi().user.students.read(MUIKKU_LOGGED_USER).callback(
       function(err, student) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error',
-              err);
-        }
-        if (student && !student.updatedByStudent) {
+        if (!err && student && !student.updatedByStudent) {
           mApi().user.students.addresses
             .read(MUIKKU_LOGGED_USER)
             .callback(function(err, addresses) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification',
-                    'error', err);
+              if (err || !addresses || addresses.length == 0) {
+                return;
               }
               var address = null;
               for (var i = 0; i < addresses.length; i++) {
                 if (addresses[i].defaultAddress) {
                   address = addresses[i];
+                  break;
                 }
+              }
+              if (address == null) {
+                return;
               }
               renderDustTemplate('frontpage/check-contact-info-dialog.dust',
                 {
