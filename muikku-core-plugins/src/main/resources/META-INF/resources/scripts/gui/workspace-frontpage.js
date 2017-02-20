@@ -22,14 +22,35 @@
           }, this));
         }
       });
-
     mApi().workspace.workspaces
       .read(workspaceEntityId).callback($.proxy(function (err, workspace) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
+          var materialLicenseIcons = [];
+          switch (workspace.materialDefaultLicense) {
+            case 'https://creativecommons.org/licenses/by/4.0':
+              materialLicenseIcons = ['cc-by'];
+              break;
+            case 'https://creativecommons.org/licenses/by-sa/4.0':
+              materialLicenseIcons = ['cc-by', 'cc-sa'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nc/4.0':
+              materialLicenseIcons = ['cc-by', 'cc-nc'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nd/4.0':
+              materialLicenseIcons = ['cc-by', 'cc-nd'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nc-sa/4.0':
+              materialLicenseIcons = ['cc-by', 'cc-nc', 'cc-sa'];
+              break;
+            case 'https://creativecommons.org/licenses/by-nc-nd/4.0':
+              materialLicenseIcons = ['cc-by', 'cc-nc', 'cc-nd'];
+              break;
+          }
           renderDustTemplate('workspace/workspace-index-material-license.dust', {
-            materialDefaultLicense: workspace.materialDefaultLicense
+            materialDefaultLicense: workspace.materialDefaultLicense,
+            materialLicenseIcons: materialLicenseIcons
           }, $.proxy(function (text) {
             $('.workspace-frontpage-footer').prepend($.parseHTML(text));
           }, this));

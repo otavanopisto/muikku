@@ -73,7 +73,7 @@ body[class^='workspace'] {
       margin-top:5px;
 
       .lu-picture-container {
-        @include border(2px,#fff,solid);
+        @include border(2px, #fff, solid);
         box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
         height:48px;
         width:48px;      

@@ -1,7 +1,9 @@
 package fi.otavanopisto.muikku.plugins.data;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,6 +12,10 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
 import fi.otavanopisto.muikku.dao.security.RolePermissionDAO;
 import fi.otavanopisto.muikku.dao.security.UserGroupRolePermissionDAO;
@@ -32,6 +38,9 @@ import fi.otavanopisto.muikku.security.PermissionScope;
 
 public class PermissionsPluginController {
 	
+  private static final String PLUGIN_NAME = PermissionDataPluginDescriptor.PLUGIN_NAME;
+  private static final String RESET_ROLES_SETTING = "startupResetRoles";
+  
   @Inject
   private Logger logger;
   
@@ -60,13 +69,23 @@ public class PermissionsPluginController {
   private SystemRoleEntityDAO systemRoleEntityDAO;
   
   @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
   @Any
   private Instance<MuikkuPermissionCollection> permissionCollections;
   
   @Inject
   private Event<PermissionDiscoveredEvent> permissionDiscoveredEvent;
-  
+
   public void resetPermissions() {
+    resetPermissions(new HashSet<>(roleEntityDAO.listAll()));
+  }
+  
+  public void resetPermissions(Set<RoleEntity> resetRoleEntities) {
+    if (CollectionUtils.isEmpty(resetRoleEntities))
+      return;
+    
     // TODO Only handles environment and workspace scopes
     for (MuikkuPermissionCollection collection : permissionCollections) {
       logger.log(Level.INFO, "Processing permission collection " + collection.getClass().getSimpleName());
@@ -80,10 +99,11 @@ public class PermissionsPluginController {
               if (!PermissionScope.PERSONAL.equals(permissionScope)) {
 
                 // Current roles
-                
+
                 String[] pseudoRoles = collection.getDefaultPseudoRoles(permissionName);
                 EnvironmentRoleArchetype[] environmentRoles = collection.getDefaultEnvironmentRoles(permissionName);
                 WorkspaceRoleArchetype[] workspaceRoles = collection.getDefaultWorkspaceRoles(permissionName);
+                
                 List<RoleEntity> currentRoles = new ArrayList<RoleEntity>();
                 if (pseudoRoles != null) {
                   for (String pseudoRole : pseudoRoles) {
@@ -110,6 +130,8 @@ public class PermissionsPluginController {
                 
                 if (PermissionScope.ENVIRONMENT.equals(permissionScope) || PermissionScope.WORKSPACE.equals(permissionScope)) {
                   List<RolePermission> databasePermissions = rolePermissionDAO.listByPermission(permission);
+                  
+                  removeNonHandledRoles(currentRoles, databasePermissions, resetRoleEntities);
                   for (RolePermission databasePermission : databasePermissions) {
                     int index = indexOfRoleEntity(currentRoles, databasePermission);
                     if (index >= 0) {
@@ -136,6 +158,61 @@ public class PermissionsPluginController {
       }
     }
   }
+
+  private void removeNonHandledRoles(List<RoleEntity> defaultRoles, List<RolePermission> databaseRoles,
+      Set<RoleEntity> resetRoles) {
+    for (int i = defaultRoles.size() - 1; i >= 0; i--) {
+      boolean found = false;
+      for (RoleEntity re : resetRoles) {
+        if (re.getId().equals(defaultRoles.get(i).getId())) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        defaultRoles.remove(i);
+      }
+    }
+    for (int i = databaseRoles.size() - 1; i >= 0; i--) {
+      boolean found = false;
+      for (RoleEntity re : resetRoles) {
+        if (re.getId().equals(databaseRoles.get(i).getRole().getId())) {
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        databaseRoles.remove(i);
+      }
+    }
+  }
+
+  public void checkForResetPermissions() {
+    String resetRoles = pluginSettingsController.getPluginSetting(PLUGIN_NAME, RESET_ROLES_SETTING);
+    
+    if (StringUtils.isNotBlank(resetRoles)) {
+      try {
+        String[] roles = resetRoles.split(",");
+
+        Set<RoleEntity> resetRoleEntities = new HashSet<>();
+        
+        for (String role : roles) {
+          long roleId = Long.parseLong(role);
+          
+          RoleEntity roleEntity = roleEntityDAO.findById(roleId);
+          
+          if (roleEntity != null)
+            resetRoleEntities.add(roleEntity);
+          else
+            logger.log(Level.SEVERE, String.format("RoleEntity not found (%d)", roleId));
+        }
+
+        resetPermissions(resetRoleEntities);
+      } finally {
+        pluginSettingsController.setPluginSetting(PLUGIN_NAME, RESET_ROLES_SETTING, "");
+      }
+    }
+  } 
   
   private int indexOfRoleEntity(List<RoleEntity> roleEntities, RolePermission databasePermission) {
     for (int i = 0; i < roleEntities.size(); i++) {
@@ -248,6 +325,6 @@ public class PermissionsPluginController {
     }
 
     logger.log(Level.INFO, "Finished permission gathering");
-  } 
-	
+  }
+
 }

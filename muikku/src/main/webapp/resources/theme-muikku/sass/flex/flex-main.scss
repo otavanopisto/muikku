@@ -30,6 +30,17 @@ body {
   color: $body-font-color;
 }
 
+dl {
+  padding: 10px;  
+  font-size: 14px;
+}
+
+dt {
+  font-weight: 600;
+}
+
+
+
 .disable-page-scrolling {
   height: 100%;
   overflow: hidden; 

@@ -5,7 +5,11 @@
   <parent>
     <groupId>fi.otavanopisto.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.1.66-SNAPSHOT</version>
+<<<<<<< HEAD
+    <version>1.1.67</version>
+=======
+    <version>1.1.68-SNAPSHOT</version>
+>>>>>>> 629d08580c3f2f982203ae6f251e2fddf1678366
     <relativePath>../pom.xml</relativePath>
   </parent>
   
@@ -108,14 +112,14 @@
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.65-SNAPSHOT</version>
+      <version>0.7.64</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>fi.otavanopisto.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.65-SNAPSHOT</version>
+      <version>0.7.64</version>
       <scope>test</scope>
     </dependency>
 
@@ -287,7 +291,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
@@ -665,7 +669,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
@@ -1053,7 +1057,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>
@@ -1435,7 +1439,7 @@
       </activation>
       <properties>
         <h2.version>1.4.177</h2.version>
-        <it.port.http>8080</it.port.http>
+        <it.port.http>8081</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
         <it.build.directory>${project.build.directory}</it.build.directory>

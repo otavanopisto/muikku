@@ -648,7 +648,25 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
-    
+
+  protected void waitUntilAnimationIsDone(final String cssLocator) {
+    WebDriverWait wdw = new WebDriverWait(getWebDriver(), 20);
+    ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        String temp = ((JavascriptExecutor) driver).executeScript("return jQuery('" + cssLocator + "').is(':animated')")
+            .toString();
+        return temp.equalsIgnoreCase("false");
+      }
+    };
+
+    try {
+      wdw.until(expectation);
+    } catch (Exception e) {
+      throw new AssertionError("Element animation is not finished in time. Css locator: " + cssLocator);
+    }
+  }
+  
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
@@ -774,9 +792,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }
@@ -786,9 +804,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.personsPyramusMocks();
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
-    webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+    webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
     navigate("/login?authSourceId=1", true);
     waitForPresent(".index");
   }

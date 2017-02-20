@@ -87,7 +87,7 @@
       
       this._load($.proxy(function () {
         this._contentsEditor = CKEDITOR.replace(this.element.find('textarea[name="content"]')[0], $.extend(this.options.ckeditor, {
-          draftKey: this.options.announcement ? 'announcement-edit-message' : 'announcement-create-message',
+          draftKey: this.options.announcement ? 'announcement-edit-message-' + this.options.announcement.id : 'announcement-create-message',
           on: {
             instanceReady: $.proxy(this._onCKEditorReady, this)
           }
