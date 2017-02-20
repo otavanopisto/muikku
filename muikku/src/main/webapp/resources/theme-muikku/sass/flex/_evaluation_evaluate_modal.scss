@@ -160,17 +160,17 @@
 }
 
 .workspace-evaluation-form-activate-button {
+  @include flexbox;
   align-items: center;
   background: $evaluation-modal-workspace-evaluation-form-activate-button-background-color;
   border-radius: 100%;
   box-sizing: border-box;
   color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
   cursor: pointer;
-  @include flexbox;
   font-size: 18px;
   height: 180px;
-  line-height: 24px;
   left: 50%;
+  line-height: 24px;
   margin: -80px;
   opacity: 1;
   padding: 44px 20px;
@@ -420,8 +420,8 @@
   padding: 5px;
   position: absolute;
   right: 10px;
-  top: 20px;
   text-align: center;
+  top: 20px;
   vertical-align: top;
   width: 18px;
   z-index: 9;
