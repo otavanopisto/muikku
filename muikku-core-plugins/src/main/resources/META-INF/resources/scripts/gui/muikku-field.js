@@ -298,7 +298,7 @@
         $('<button>')
           .addClass('muikku-show-evaluation-button')
           .addClass(buttonClass)
-          .text(getLocaleText('plugin.workspace.materialsLoader.showEvaluation'))
+          .text(state == 'INCOMPLETE' ? getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.showButton') : getLocaleText('plugin.workspace.materialsLoader.showEvaluation'))
           .insertAfter(this.element.find('.muikku-assignment-button'))
           .click($.proxy(function() {
             var evaluationContainer = this.element.find('.evaluation-container');
@@ -319,7 +319,7 @@
                           .addClass('assignment-literal-container')
                             .append($('<div>')
                             .addClass('assignment-literal-label')
-                            .text(getLocaleText('plugin.workspace.materialsLoader.evaluation.literal.label')))
+                            .text(getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.literal.label')))
                             .append($('<div>')
                             .addClass('assignment-literal-data')
                             .html(supplementationRequest.requestText))
@@ -432,12 +432,24 @@
       if (evaluationContainer.attr('data-open') == 'false') {
         evaluationContainer.attr('data-open', 'true');
         evaluationContainer.show();
-        this.element.find('.muikku-show-evaluation-button').text(getLocaleText('plugin.workspace.materialsLoader.hideEvaluation'));
+        var button = this.element.find('.muikku-show-evaluation-button');
+        if (button.hasClass('incomplete')) {
+          button.text(getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.hideButton'));
+        }
+        else {
+          button.text(getLocaleText('plugin.workspace.materialsLoader.hideEvaluation'));
+        }
       }
       else {
         evaluationContainer.attr('data-open', 'false');
         evaluationContainer.hide();
-        this.element.find('.muikku-show-evaluation-button').text(getLocaleText('plugin.workspace.materialsLoader.showEvaluation'));
+        var button = this.element.find('.muikku-show-evaluation-button');
+        if (button.hasClass('incomplete')) {
+          button.text(getLocaleText('plugin.workspace.materialsLoader.supplementationRequest.showButton'));
+        }
+        else {
+          button.text(getLocaleText('plugin.workspace.materialsLoader.showEvaluation'));
+        }
       }
     },
     
