@@ -2,22 +2,72 @@
 @import "styles";
 @import "draft";
 
+.cm-settings {
+  background: $environment-background-color; 
+}
+
+.cm-settings-title {
+  font-size: 22px;  
+  padding: 10px; 
+}
+
+.cm-settings-item {
+  &:first-child {
+    border-top: 1px solid $environment-border-color;  
+  }
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid $environment-border-color;
+  }
+}
+
+.cm-setting-title {
+  background: $environment-settings-subtitle-background-color;
+  font-size: 18px;  
+  padding: 10px;
+} 
+
+.cm-setting-content {
+  padding: 15px 30px;
+} 
+
+
+.cm-setting-signature {
+  background: $environment-setting-signature-background-color;
+  border-left: 3px solid $environment-setting-signature-border-color;
+  font-style: italic;
+  padding: 10px;
+}
+
+.cm-setting-create-signature-link, 
+.cm-setting-edit-signature-link, 
+.cm-setting-remove-signature-link {
+  color: $environment-link-color;
+  cursor: pointer;
+  font-style: normal;
+  
+  &:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+
 .cm-message-create {
   width:100%;
 }  
   
 .ui-autocomplete {
-  position: absolute !important;
-  top: 20px !important;
-  right: 0 !important;
   left: 0 !important;
-  
+  position: absolute !important;
+  right: 0 !important;
+  top: 20px !important;
+
   .ui-menu-item {
   
     &[data-existing="true"] {
       color: $environment-font-disabled-color;
-      font-style: italic;
       cursor: default;
+      font-style: italic;
     }
     
   }
