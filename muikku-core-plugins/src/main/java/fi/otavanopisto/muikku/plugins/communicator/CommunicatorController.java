@@ -49,8 +49,6 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemp
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
-import fi.otavanopisto.security.Permit;
-import fi.otavanopisto.security.PermitContext;
 
 public class CommunicatorController {
    
@@ -96,7 +94,8 @@ public class CommunicatorController {
             Whitelist.relaxed()
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")
-          ).clean(doc);
+              .addAttributes("i", "class")
+    ).clean(doc);
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
   }
@@ -280,53 +279,43 @@ public class CommunicatorController {
     return communicatorMessageDAO.countMessagesByUserAndMessageId(user, communicatorMessageId, inTrash);
   }
   
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public List<CommunicatorMessageTemplate> listMessageTemplates(@PermitContext UserEntity user) {
+  public List<CommunicatorMessageTemplate> listMessageTemplates(UserEntity user) {
     return communicatorMessageTemplateDAO.listByUser(user);
   }
   
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public List<CommunicatorMessageSignature> listMessageSignatures(@PermitContext UserEntity user) {
+  public List<CommunicatorMessageSignature> listMessageSignatures(UserEntity user) {
     return communicatorMessageSignatureDAO.listByUser(user);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
   public CommunicatorMessageTemplate getMessageTemplate(Long id) {
     return communicatorMessageTemplateDAO.findById(id);
   }
   
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
   public CommunicatorMessageSignature getMessageSignature(Long id) {
     return communicatorMessageSignatureDAO.findById(id);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public void deleteMessageTemplate(@PermitContext CommunicatorMessageTemplate messageTemplate) {
+  public void deleteMessageTemplate(CommunicatorMessageTemplate messageTemplate) {
     communicatorMessageTemplateDAO.delete(messageTemplate);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public void deleteMessageSignature(@PermitContext CommunicatorMessageSignature messageSignature) {
+  public void deleteMessageSignature(CommunicatorMessageSignature messageSignature) {
     communicatorMessageSignatureDAO.delete(messageSignature);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public CommunicatorMessageTemplate editMessageTemplate(@PermitContext CommunicatorMessageTemplate messageTemplate, String name, String content) {
+  public CommunicatorMessageTemplate editMessageTemplate(CommunicatorMessageTemplate messageTemplate, String name, String content) {
     return communicatorMessageTemplateDAO.update(messageTemplate, name, content);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public CommunicatorMessageSignature editMessageSignature(@PermitContext CommunicatorMessageSignature messageSignature, String name, String signature) {
+  public CommunicatorMessageSignature editMessageSignature(CommunicatorMessageSignature messageSignature, String name, String signature) {
     return communicatorMessageSignatureDAO.update(messageSignature, name, signature);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public CommunicatorMessageSignature createMessageSignature(String name, String content, @PermitContext UserEntity user) {
+  public CommunicatorMessageSignature createMessageSignature(String name, String content, UserEntity user) {
     return communicatorMessageSignatureDAO.create(name, content, user);
   }
 
-  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
-  public CommunicatorMessageTemplate createMessageTemplate(String name, String content, @PermitContext UserEntity user) {
+  public CommunicatorMessageTemplate createMessageTemplate(String name, String content, UserEntity user) {
     return communicatorMessageTemplateDAO.create(name, content, user);
   }
 

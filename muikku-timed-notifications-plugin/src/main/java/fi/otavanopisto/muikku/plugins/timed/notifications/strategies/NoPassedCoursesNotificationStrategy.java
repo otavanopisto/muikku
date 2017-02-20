@@ -137,16 +137,14 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       
       User student = userController.findUserByIdentifier(studentIdentifier);
       
-      if ((student != null) && (isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS))) {
-        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, thresholdDate);
+      if ((student != null) && (student.getStudyStartDate() != null) && (isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS))) {
+        Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, Date.from(student.getStudyStartDate().toInstant()));
         if (passedCourseCount == null) {
           logger.severe(String.format("Could not read course count for %s", studentId));
           continue;
         } else if (passedCourseCount < MIN_PASSED_COURSES) {
           studentIdentifiers.add(studentIdentifier);
         }
-      } else {
-        logger.severe(String.format("Non-notified or null student (%s) detected in search results.", studentIdentifier != null ? studentIdentifier.toId() : "null identifier"));
       }
     }
     
@@ -159,9 +157,12 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     
     // Earliest point when student may receive the notification is study start date + threshold day count
     OffsetDateTime thresholdDateTime = studyStartDate.plusDays(thresholdDays);
+    
+    // Furthest point to receive the notification is studyStartDate + thresholdDays + 30 (1 month)
+    OffsetDateTime maxThresholdDateTime = studyStartDate.plusDays(thresholdDays + 30);
 
     // If the threshold date has passed the student is valid target for the notification
-    return thresholdDateTime.isBefore(currentDateTime);
+    return thresholdDateTime.isBefore(currentDateTime) && maxThresholdDateTime.isAfter(currentDateTime);
   }
   
   private Collection<Long> getGroups() {
