@@ -164,11 +164,19 @@
   });
   
   $(document).ready(function() {
-    mApi().feed.feeds.read("oonews", {numEntries: 5}).callback(function (err, news) {
-      renderDustTemplate('frontpage/feed.dust', {entries: news}, function(text) {
+    mApi().feed.feeds.read("oonews", {numItems: 5}).callback(function (err, news) {
+      renderDustTemplate('frontpage/feed_news.dust', {entries: news}, function(text) {
         $(".frontpage-news").html(text);
       });
     });
-  })
+  });
+  
+  $(document).ready(function() {
+    mApi().feed.feeds.read("avoimet_verkostot,eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
+      renderDustTemplate('frontpage/feed_blogs.dust', {entries: blogs}, function(text) {
+        $(".frontpage-posts").html(text);
+      });
+    });
+  });
 
 }).call(this);
