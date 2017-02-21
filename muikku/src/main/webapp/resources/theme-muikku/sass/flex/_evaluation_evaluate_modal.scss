@@ -160,15 +160,17 @@
 }
 
 .workspace-evaluation-form-activate-button {
-  background: $evaluation-requested-color;
+  @include flexbox;
+  align-items: center;
+  background: $evaluation-modal-workspace-evaluation-form-activate-button-background-color;
   border-radius: 100%;
   box-sizing: border-box;
   color: $evaluation-modal-workspace-evaluation-form-activate-button-font-color;
   cursor: pointer;
   font-size: 18px;
   height: 180px;
-  line-height: 26px;
   left: 50%;
+  line-height: 24px;
   margin: -80px;
   opacity: 1;
   padding: 44px 20px;
@@ -213,6 +215,10 @@
     padding: 5px;
   }
   
+  input#assignmentGradedButton {
+    margin: 0 10px 0 0;
+  }
+  
   textarea {
     background: $evaluation-modal-memofield-background-color;
     border: 2px solid $evaluation-modal-memofield-border-color;
@@ -230,6 +236,7 @@
     border-radius: 3px;
     font-family: $environment-font-family;
     font-size: 14px;
+    margin: 0;
     padding: 0 5px;
     
     option {
@@ -242,6 +249,11 @@
 
 .evaluation-modal-evaluate-form-row {
   margin: 5px 0 15px; 
+  
+  &[disabled="disabled"] {
+    opacity: 0.3;
+  }
+
 }
 
 .eval-modal-evaluate-buttonset {
@@ -331,13 +343,17 @@
   
 .assignment-wrapper.assignment .assignment-title-wrapper {
   border-left: 3px solid $assignment-color;
+  box-sizing: border-box;
   cursor: pointer;
+  height: 51px;
   padding: 2px 50px 2px 8px;
 }
 
 .assignment-wrapper.exercise .assignment-title-wrapper {
   border-left: 3px solid $exercise-color;
+  box-sizing: border-box;
   cursor: pointer;
+  height: 51px;
   padding: 2px 8px;
 }
 
@@ -368,13 +384,24 @@
 
 .assignment-grade-data {
   background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
-  border-radius: 5px;
+  border-radius: 3px;
   display: inline-block;
   font-size: 15px;
   margin: 0 0 0 5px;
   min-width: 16px;
-  padding: 3px 6px;
+  padding: 0 2px;
   text-align: center;
+}
+
+.assignment-grade.evaluated-incomplete {
+  
+  .assignment-grade-data {
+    background: $evaluation-incomplete-color;
+    color: $evaluation-modal-assignment-evaluated-incomplete-font-color;
+    font-size: 13px;
+    padding: 0 4px;
+  }
+  
 }
 
 .assignment-notdone-label {
@@ -393,8 +420,8 @@
   padding: 5px;
   position: absolute;
   right: 10px;
-  top: 18px;
   text-align: center;
+  top: 20px;
   vertical-align: top;
   width: 18px;
   z-index: 9;
@@ -403,7 +430,14 @@
 .assignment-wrapper[data-evaluated="true"] {
   
   .assignment-evaluate-button {
-    background: $evaluation-passed-color;
+    background: $evaluation-incomplete-color;
+  }
+  
+  &[data-graded="true"] {
+    .assignment-evaluate-button {
+      background: $evaluation-passed-color;
+    }
+  
   }
   
 }

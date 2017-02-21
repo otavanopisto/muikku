@@ -45,4 +45,19 @@ public interface WorkspaceAssessmentRequest extends SchoolDataEntity {
    * @return assessment request date
    */
   public Date getDate();
+
+  /**
+   * Returns assessment request archived flag
+   * 
+   * @return assessment request archived flag
+   */
+  public Boolean getArchived();
+
+  /**
+   * Returns assessment request handled flag
+   * 
+   * @return assessment request handled flag
+   */
+  public Boolean getHandled();
+
 }
