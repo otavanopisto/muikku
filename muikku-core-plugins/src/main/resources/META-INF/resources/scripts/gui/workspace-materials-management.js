@@ -1185,7 +1185,7 @@
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
-      $('body').animate({
+      $('html,body').animate({
         scrollTop : scrollTop
       }, {
         duration : 500,
@@ -1195,13 +1195,13 @@
           $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
           scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
-          $('body').scrollTop(scrollTop);
+          $('html,body').scrollTop(scrollTop);
           $.waypoints('refresh');
           $(window).data('scrolling', false);
         }
       });
     } else {
-      $('body').scrollTop(scrollTop);
+      $('html,body').scrollTop(scrollTop);
       $('li.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
       window.location.hash = 'p-' + workspaceMaterialId;
