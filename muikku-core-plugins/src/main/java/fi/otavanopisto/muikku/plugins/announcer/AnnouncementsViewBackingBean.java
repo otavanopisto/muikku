@@ -47,7 +47,7 @@ public class AnnouncementsViewBackingBean {
     if (announcementId != null) {
       currentAnnouncement = announcementController.findById(announcementId);
       if (currentAnnouncement != null) {
-        List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(currentAnnouncement, loggedUserEntity);
+        List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(currentAnnouncement, loggedUserEntity);
         currentAnnouncementWorkspaces = new ArrayList<WorkspaceBasicInfo>();
         for (AnnouncementWorkspace aw : announcementWorkspaces) {
           currentAnnouncementWorkspaces.add(workspaceRESTModelController.workspaceBasicInfo(aw.getWorkspaceEntityId()));

@@ -229,7 +229,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
 
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(newAnnouncement);
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(newAnnouncement, userEntity);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(newAnnouncement);
     
     return Response
         .ok(createRESTModel(newAnnouncement, announcementUserGroups, announcementWorkspaces))
@@ -247,7 +247,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("onlyMine") @DefaultValue("false") boolean onlyMine,
       @QueryParam("onlyEditable") @DefaultValue("false") boolean onlyEditable,
       @QueryParam("onlyArchived") @DefaultValue("false") boolean onlyArchived,
-      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame      
+      @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
   ) {
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
     List<Announcement> announcements = null;
@@ -263,8 +263,7 @@ public class AnnouncerRESTService extends PluginRESTService {
       announcements = announcementController.listAnnouncements(
           includeGroups, includeWorkspaces, environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
     }
-
-    if (workspaceEntityId != null) {
+    else {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       if (workspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity("Workspace entity with given ID not found").build();
@@ -285,7 +284,7 @@ public class AnnouncerRESTService extends PluginRESTService {
         continue;
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-      List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement, currentUserEntity);
+      List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, currentUserEntity);
           
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
@@ -306,7 +305,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     }
     
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement, userEntity);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
   }
