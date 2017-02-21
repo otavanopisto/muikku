@@ -14,10 +14,13 @@ $(document).ready(function(){
       } else {
         async.map(result, function(announcement, callback) {
           if (announcement.workspaces.length > 0) {
+            announcement.workspaceName = announcement.workspaces[0].name;
+            announcement.otherWorkspaces = announcement.workspaces.length - 1;
+            
             var workspaceNames = $.map(announcement.workspaces, function(workspace) {
               return workspace.name;
             });
-            announcement.workspaceName = workspaceNames.join(", ");
+            announcement.allWorkspaceNames = workspaceNames.join(", ");
           }
           
           announcement.link = "announcements?announcementId=" + announcement.id;
