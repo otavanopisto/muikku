@@ -206,6 +206,20 @@ body {
     
   }
   
+  &.evaluated-failed {
+    border: 1px solid $evaluation-failed-color;
+    box-shadow: 0 0 2px $evaluation-failed-boxshadow-color;
+    
+    .evaluation-card-button.archive-button {
+      display: inline-block;
+    }
+    
+    .evaluation-card-button.evaluate-button {
+      background: $evaluation-failed-color;
+    }
+    
+  }
+  
   &.evaluated-passed {
     border: 1px solid $evaluation-passed-color;
     box-shadow: 0 0 2px $evaluation-passed-boxshadow-color;

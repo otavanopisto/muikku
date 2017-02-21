@@ -348,7 +348,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(workspaceEntity, assessment)).build();
   }
-  
+
   @DELETE
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments/{EVALUATIONID}")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
@@ -406,6 +406,10 @@ public class EvaluationRESTService extends PluginRESTService {
     }
     
     gradingController.deleteWorkspaceAssessment(workspaceIdentifier, studentIdentifier, workspaceAssesmentIdentifier);
+
+    // If student has assessment requests, restore the latest one (issue #2716)
+    
+    gradingController.restoreLatestAssessmentRequest(workspaceIdentifier, studentIdentifier);
     
     return Response.noContent().build();
   }
