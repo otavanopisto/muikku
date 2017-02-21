@@ -30,22 +30,22 @@
           var materialLicenseIcons = [];
           switch (workspace.materialDefaultLicense) {
             case 'https://creativecommons.org/licenses/by/4.0':
-              materialLicenseIcons = ['cc-by'];
+              materialLicenseIcons = ['cc', 'cc-by'];
               break;
             case 'https://creativecommons.org/licenses/by-sa/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-sa'];
+              materialLicenseIcons = ['cc', 'cc-by', 'cc-sa'];
               break;
             case 'https://creativecommons.org/licenses/by-nc/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nc'];
+              materialLicenseIcons = ['cc', 'cc-by', 'cc-nc'];
               break;
             case 'https://creativecommons.org/licenses/by-nd/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nd'];
+              materialLicenseIcons = ['cc', 'cc-by', 'cc-nd'];
               break;
             case 'https://creativecommons.org/licenses/by-nc-sa/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nc', 'cc-sa'];
+              materialLicenseIcons = ['cc', 'cc-by', 'cc-nc', 'cc-sa'];
               break;
             case 'https://creativecommons.org/licenses/by-nc-nd/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nc', 'cc-nd'];
+              materialLicenseIcons = ['cc', 'cc-by', 'cc-nc', 'cc-nd'];
               break;
           }
           renderDustTemplate('workspace/workspace-index-material-license.dust', {
