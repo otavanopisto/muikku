@@ -28,7 +28,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Produces ("application/json")
 public class FeedRESTService extends PluginRESTService {
 
-  private static final long serialVersionUID = -7027696842893383409L;
+  private static final long serialVersionUID = -10681497398136513L;
 
   @Inject
   private FeedDAO feedDao;
