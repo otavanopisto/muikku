@@ -172,6 +172,14 @@
   });
   
   $(document).ready(function() {
+    mApi().feed.feeds.read("ooevents", {numItems: 5}).callback(function (err, news) {
+      renderDustTemplate('frontpage/feed_events.dust', {entries: news}, function(text) {
+        $(".frontpage-events").html(text);
+      });
+    });
+  });
+  
+  $(document).ready(function() {
     mApi().feed.feeds.read("avoimet_verkostot,eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
       renderDustTemplate('frontpage/feed_blogs.dust', {entries: blogs}, function(text) {
         $(".frontpage-posts").html(text);

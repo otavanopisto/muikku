@@ -553,20 +553,8 @@ h2.frontpage-section-title {
   max-width: calc(50% - 20px);
 }
 
-// This is temporary and will be removed when we get Events feeds
-.frontpage-events a { 
-  box-sizing: border-box;
-  color: $of-frontpage-section-title-color;
-  display: block;
-  font-size: 20px;
-  height: 100%;
-  line-height: 20px;
-  padding: calc(50% - 20px) 0;
-  text-align: center;
-  text-decoration: none;
-}
-
 ul.news-content-wrapper,
+ul.events-content-wrapper,
 ul.blogs-content-wrapper {
   list-style-type: none;
   margin: 0;
