@@ -18,6 +18,12 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
+
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
@@ -40,6 +46,14 @@ public class FeedSynchronizer {
   
   @Resource
   EJBContext ejbContext;
+  
+  private String clean(String html) {
+    Document doc = Jsoup.parse(html);
+    doc = new Cleaner(Whitelist.basic()).clean(doc);
+    doc.select("a[target]").attr("rel", "noopener noreferer");
+    doc.outputSettings().escapeMode(EscapeMode.xhtml);
+    return doc.body().html();
+  }
 
   @Schedule(second = "0", minute = "*", hour = "*")
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -72,7 +86,9 @@ public class FeedSynchronizer {
               entry.getTitle(),
               entry.getLink(),
               entry.getAuthor(),
-              entry.getDescription() == null ? null : entry.getDescription().getValue(),
+              entry.getDescription() == null
+                  ? null
+                  : clean(entry.getDescription().getValue()),
               publicationDate,
               (String)null,
               feed);
