@@ -553,12 +553,21 @@ h2.frontpage-section-title {
   max-width: calc(50% - 20px);
 }
 
+.frontpage-box-title {
+  color: $of-frontpage-section-title-color;
+  font-size: 26px;
+  font-weight: 300;
+  margin: 0;
+  padding: 20px 0 5px 25px;
+  text-transform: uppercase;
+}
+
 ul.news-content-wrapper,
 ul.events-content-wrapper,
 ul.blogs-content-wrapper {
   list-style-type: none;
   margin: 0;
-  padding: 20px;
+  padding: 10px 20px 20px;
   
   li {
     line-height: 20px;
@@ -578,39 +587,24 @@ ul.blogs-content-wrapper {
   }
   
   .feed-item-title {
+    display: inline;
     font-weight: 600;
     padding: 0 10px 0 0;
   }
   
-  .feed-item-date {
-    color: $of-feed-date-text-color;
-    display: inline-block;
-    padding: 5px 0;
+  .feed-item-description {
+    display: inline;
+    
+    p {
+      display: none;
+    }
   }
   
-}
-
-ul.blogs-content-wrapper {
-  list-style-type: none;
-  margin: 0;
-  padding: 5px;
-  
-  li {
-    border-bottom: 1px solid $of-frontpage-box-border-color;
-    line-height: 20px;
-    list-style-type: none;
-    margin: 0;
-    padding: 15px 25px;
-    
-    &:first-child {
-      padding: 20px 25px;
-    }
-    
-    &:last-child {
-      border: 0;
-      padding: 15px 25px;
-    }
-    
+  .feed-item-date {
+    color: $of-feed-date-text-color;
+    display: inline;
+    display: inline-block;
+    padding: 5px 0;
   }
   
 }
