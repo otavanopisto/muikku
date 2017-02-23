@@ -1,9 +1,13 @@
 (function() {
   'use strict';
   
+  
+  
   var CommunicatorFolderController = function (options) {
     this.options = options;
   };
+  
+  
   
   $.extend(CommunicatorFolderController.prototype, {
     
@@ -316,6 +320,10 @@
     }
   });
   
+  var CommunicatorSettingsController = function () {
+   // not much to control, but maybe when there are more settings than signatures?
+  };
+  
   $.widget("custom.communicatorMessages", {
     _create : function() {
       this._firstItem = 0;
@@ -387,6 +395,14 @@
               for (var i = 0, l = item.labels.length; i < l; i++) {
                 item.labels[i]["hexColor"] = communicator.colorIntToHex(item.labels[i].labelColor);
               }
+            }
+            
+            if (item.recipients) {
+              $.each(item.recipients, function (ind, recipient) {
+                if (recipient.userId && recipient.userId == MUIKKU_LOGGED_USER_ID) {
+                  recipient["self"] = true;
+                }
+              });
             }
           });
           
@@ -679,20 +695,25 @@
     _create : function(){
       this.toolset(this.options.value);
     },
-    toolset: function(value) {      
+    toolset: function(value) {   
+      var toolTemplate = null;
       if ( value === undefined ) {
         return this.options.value;
       }      
       this.options.value = value;
       switch (this.options.value) {
         case 'message':
-          var toolTemplate = 'communicator/communicator_tools_message.dust';
+          toolTemplate = 'communicator/communicator_tools_message.dust';
           this._loadTools(toolTemplate);
           break;
         case 'thread':
-          var toolTemplate = 'communicator/communicator_tools_thread.dust';
+          toolTemplate = 'communicator/communicator_tools_thread.dust';
           this._loadTools(toolTemplate);
           break;
+        case 'settings':
+          toolTemplate = 'communicator/communicator_tools_settings.dust';
+          this._loadTools(toolTemplate);
+          break;          
       }      
     },
     
@@ -709,13 +730,19 @@
       defaultFolderId: 'inbox'
     },
     _create : function() {
+      
+    $('.mf-view-settings-function-container').on('click', '.cm-settings-icon', $.proxy(this._onSettingsClick, this));    
+
+      
+   
       this.loadLabels($.proxy(
         function (err, labels) {
           this._folderControllers = {
             'inbox': new CommunicatorInboxFolderController(),
             'unread': new CommunicatorUnreadFolderController(),
             'sent': new CommunicatorSentFolderController(),
-            'trash': new CommunicatorTrashFolderController()
+            'trash': new CommunicatorTrashFolderController(),
+            'settings': new CommunicatorSettingsController(),
           };
           
           if (err) {
@@ -744,7 +771,7 @@
               threadId = hashParts[1];
             }
           }
-          
+
           folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
           
           this.element.on('click', '.mf-label-edit', $.proxy(this._onLabelEditClick, this));    
@@ -758,7 +785,11 @@
           this.element.on('click', '.mf-label-function-edit', $.proxy(this._onLabelEditClick, this));  
           this.element.on('click', '.mf-label-function-delete', $.proxy(this._onLabelDeleteClick, this));               
           this.element.find('.cm-thread-container').communicatorThread();       
+          this.element.on('click', '.cm-setting-create-signature-link', $.proxy(this._onNewSignatureLinkClick, this));
+          this.element.on('click', '.cm-setting-edit-signature-link', $.proxy(this._onEditSignatureLinkClick, this));          
+          this.element.on('click', '.cm-setting-remove-signature-link', $.proxy(this._removeSignature, this));
           this.element.on('click', '.cm-new-message-button', $.proxy(this._onNewMessageButtonClick, this));
+          
           this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
           
           if (threadId) {
@@ -768,17 +799,38 @@
           }
         }
       , this));
-    },
-    
-    loadFolder: function (id) {
-      this._updateHash(id, null);
-      this._updateSelected(id);
       
-      this.element.find('.cm-thread-container').hide();
-      $('.mf-controls-container').messageTools( 'toolset', 'thread');       
-      this.element.find('.cm-messages-container')
-        .communicatorMessages('loadFolder', id)
-        .show();
+    },
+    _onSettingsClick: function() { 
+      this.loadSignatures($.proxy(function(err, signatures) {        
+        if(err){
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.signatures.loading'));          
+        }else{          
+          renderDustTemplate('communicator/communicator_settings.dust', {signatures : signatures}, $.proxy(function(text) {
+            $(".cm-messages-container").html(text);
+            $('.mf-controls-container').messageTools( 'toolset', 'settings');   
+            this._updateHash('settings', null);
+          }, this));
+        }
+      }, this)); 
+    },
+
+    loadFolder: function (id) {
+      
+      if(id == 'settings'){
+        this._onSettingsClick();
+        this._updateHash(id, null);        
+      }else{
+      
+        this._updateHash(id, null);
+        this._updateSelected(id);
+        
+        this.element.find('.cm-thread-container').hide();
+        $('.mf-controls-container').messageTools( 'toolset', 'thread');       
+        this.element.find('.cm-messages-container')
+          .communicatorMessages('loadFolder', id)
+          .show();
+      }
     },
     
     reloadFolder: function () {
@@ -919,7 +971,66 @@
         labelContainer.append(itm);
       });
     },
+
+    loadSignatures: function (callback) {
+      mApi().communicator.signatures.read().callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
     
+    createSignature: function (name, signature, callback) {
+      mApi().communicator.signatures.create({ name: name, signature: signature }).callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+
+    updateSignature: function (id, name, signature, callback) {
+      mApi().communicator.signatures.update(id, { id : id, name: name, signature: signature }).callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+
+    deleteSignature: function (id, callback) {
+      mApi().communicator.signatures.del(id).callback($.proxy(function (err, results) {
+        callback(err, results);
+      }, this));
+    },
+    
+    _removeSignature: function  (event) {
+      var id = $(event.target).closest('.cm-signature').attr('data-id');
+      this._confirmSignatureRemoval(id, $.proxy(function (){
+        this.deleteSignature(id, $.proxy(function () {
+          this._onSettingsClick();
+        }, this));
+      }, this));
+      
+    }, 
+    
+    _confirmSignatureRemoval: function (id, confirmCallback) {
+      renderDustTemplate('communicator/communicator_confirm_signature_removal.dust', {}, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          resizable : false,
+          width : 360,
+          dialogClass : "cm-signature-management-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-confirm-text'),
+            'class' : 'delete-button',
+            'click' : function(event) {
+              $(this).dialog().remove();
+              confirmCallback();
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog().remove();
+            }
+          } ]
+        });
+      }, this));
+    },    
     _onLabelMenuOpenClick : function(event){
       var menus = $(event.target).closest("ul").find('.mf-label-functions-menu');
       var clickedMenu = $(event.target).closest("li").find('.mf-label-functions-menu');
@@ -1106,6 +1217,27 @@
         .append(dialog);
     },
     
+    signatureDialog: function (options) {
+      var dialog = $('<div>')
+        .communicatorCreateEditSignatureDialog(options);
+      
+      dialog.on('dialogReady', function(e) {
+        $(document.body).css({
+          paddingBottom: dialog.height() + 50 + 'px'
+        }).addClass('footerDialogOpen');
+      });
+      
+      dialog.on('dialogClose', function(e) {
+        $(document.body).removeClass('footerDialogOpen').removeAttr('style');
+      });
+      
+      $('#socialNavigation')
+        .empty()
+        .append(dialog);
+    },
+
+
+    
     _updateHash: function (folderId, threadId) {
       if (folderId) {
         if (threadId) {
@@ -1149,6 +1281,22 @@
       this.newMessageDialog();
     },
     
+    _onEditSignatureLinkClick: function (event) {
+      var signatureElem = $(event.target).closest('.cm-signature');
+      var signature = {};
+      
+      signature.id = signatureElem.attr('data-id');
+      signature.name = signatureElem.attr('data-name');
+      signature.content = signatureElem.attr('data-signature');
+      
+      this.signatureDialog({signature: signature});
+    },    
+    
+    _onNewSignatureLinkClick: function (event) {
+      this.signatureDialog();
+    },
+    
+    
     _onCommunicatorFolderClick: function (event) {
       var folderId = $(event.target).closest('.cm-folder')
         .attr('data-folder-id');
@@ -1157,6 +1305,113 @@
     }
     
   });
+  
+  $.widget("custom.communicatorCreateEditSignatureDialog", {
+    
+    options: {
+      signature: null,
+      ckeditor: {
+        toolbar: [
+          { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+          { name: 'links', items: [ 'Link' ] },
+          { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+          { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+          { name: 'styles', items: [ 'Format' ] },
+          { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+          { name: 'tools', items: [ 'Maximize' ] }
+        ],
+      }
+    },
+      
+    _create : function() {
+      
+      this._load($.proxy(function () {
+        this._contentsEditor = CKEDITOR.replace(this.element.find('textarea[name="content"]')[0], $.extend(this.options.ckeditor, {
+          on: {
+            instanceReady: $.proxy(this._onCKEditorReady, this)
+          }
+        }));
+
+        if(this.options.signature){
+          this._contentsEditor.setData(this.options.signature.content);          
+        }                
+        
+      }, this));
+        
+      this.element.on('click', 'input[name="send"]', $.proxy(this._onSendClick, this));
+      this.element.on('click', 'input[name="cancel"]', $.proxy(this._onCancelClick, this));
+    },
+    
+    _load: function (callback) {
+      var content = null;
+
+      renderDustTemplate('communicator/communicator_create_signature.dust', {content : content}, $.proxy(function (text) {
+        this.element.html(text);
+        if(callback){
+          callback();
+        }
+      }, this));
+      
+    },    
+    _destroy: function () {
+      try {
+        this._contentsEditor.destroy();
+      } catch (e) {
+        alert(e);
+      }
+    },
+    
+    _onSendClick: function (event) {
+      this.element.addClass('loading');
+      var communicator = $(".communicator").communicator("instance");
+
+      
+      var form = $(event.target).closest('form')[0];
+      if (form.checkValidity()) {
+        var buttonElement = $(event.target);
+        buttonElement.attr('disabled','disabled');
+        
+        var content = this._contentsEditor.getData();
+
+        if (!content  ||  !content.trim()) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nocontent'));
+          buttonElement.removeAttr('disabled');
+          return false;
+        }
+        
+        if (this.options.signature) {
+          communicator.updateSignature(this.options.signature.id, this.options.signature.name, content, $.proxy(function () {
+            this.element.removeClass('loading');
+            communicator._onSettingsClick();
+            this._closeDialog(event);
+          }, this));
+        } else {
+          var caption = 'default';
+          communicator.createSignature(caption, content, $.proxy(function () {
+            communicator._onSettingsClick();
+            this._closeDialog(event);
+          }, this));                    
+        }
+      }      
+    },
+
+    _closeDialog: function (event) {
+      event.preventDefault();
+      this.element.trigger('dialogClose');
+      this.element.remove();
+    },
+    
+    _onCancelClick: function (event) {
+      this._closeDialog(event);
+    },
+    
+    _onCKEditorReady: function (e) {
+      this.element.find('input[name="send"]').removeAttr('disabled');
+      this.element.trigger('dialogReady');
+    }
+  });  
+
+  
   
   $.widget("custom.communicatorCreateMessageDialog", {
     
@@ -1186,10 +1441,11 @@
         }
       }
     },
-    
+
+
+      
     _create : function() {
       var extraPlugins = [];
-      
       $.each($.extend(this.options.ckeditor.extraPlugins, {}, true), $.proxy(function (plugin, url) {
         CKEDITOR.plugins.addExternal(plugin, url);
         extraPlugins.push(plugin);
@@ -1282,66 +1538,81 @@
           .callback(callback);
       }, this);
     },
+    
 
     _load: function (callback) {
+      var communicator = $(".communicator").communicator("instance");
       var replyMessageId = this.options.replyMessageId;
+      this._signature = undefined;
+      var hasSignature = false; 
       
-      if (replyMessageId) {
-        mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            var data = {
-              replyMessage: message
-            };
-            
-            renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
-              this.element.html(text);
+      communicator.loadSignatures( $.proxy(function (err, signatures){
+        if(signatures.length > 0){
+          this._signature = "<br/> <i class='mf-signature'>" + signatures[0].signature + "</i>";            
+          hasSignature = true;
+        }        
+        
+        if (replyMessageId) {
+          mApi().communicator.communicatormessages.read(replyMessageId).callback($.proxy(function (err, message) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              var data = {
+                replyMessage: message,
+                hasSignature: hasSignature
+              };
               
-              if (this.options.mode == "replyall") {
-                // Add all the recipients
-                $.each(message.recipients,  $.proxy(function (index, recipient) {
-                  var recipientFullName = recipient.firstName + " " + recipient.lastName;
+              renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
+                this.element.html(text);
+                
+                if (this.options.mode == "replyall") {
+                  // Add all the recipients
+                  $.each(message.recipients,  $.proxy(function (index, recipient) {
+                    var recipientFullName = recipient.firstName + " " + recipient.lastName;
+                    
+                    if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
+                      this._addRecipient('USER', recipient.userId, recipientFullName);
+                    }
+                  }, this));
                   
-                  if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
-                    this._addRecipient('USER', recipient.userId, recipientFullName);
+                  // Add all the usergroups if the user is allowed to message groups
+                  if (this.options.groupMessagingPermission == true) {
+                    $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
+                      this._addRecipient('GROUP', recipient.id, recipient.name);
+                    }, this));
                   }
-                }, this));
-                
-                // Add all the usergroups if the user is allowed to message groups
-                if (this.options.groupMessagingPermission == true) {
-                  $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
-                    this._addRecipient('GROUP', recipient.id, recipient.name);
-                  }, this));
+                  
+                  // Add all the workspace groups if the user is allowed to message groups
+                  if (this.options.groupMessagingPermission == true) {
+                    $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
+                      this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
+                    }, this));
+                  }
+                  
+                  this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
                 }
                 
-                // Add all the workspace groups if the user is allowed to message groups
-                if (this.options.groupMessagingPermission == true) {
-                  $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
-                    this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
-                  }, this));
-                }
+                var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
+                this._addRecipient('USER', message.sender.id, senderFullName);                       
                 
-                this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
-              }
-              
-              var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
-              this._addRecipient('USER', message.sender.id, senderFullName);                       
-              
-              if (callback) {
-                callback();
-              }
-            }, this));
-          }
-        }, this));
-      } else {
-        renderDustTemplate('communicator/communicator_create_message.dust', {}, $.proxy(function (text) {
-          this.element.html(text);
-          if(callback){
-            callback();
-          }
-        }, this));
-      }
+                if (callback) {
+                  callback();
+                }
+              }, this));
+            }
+          }, this));
+        } else {
+          var data = {
+            hasSignature: hasSignature
+          };
+          renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
+            this.element.html(text);
+            if(callback){
+              callback();
+            }
+          }, this));
+        }
+      }, this));    
     },
     
     _addRecipient: function (type, id, label) {
@@ -1503,7 +1774,11 @@
         
         var caption = this.element.find('input[name="caption"]').val();
         var content = this._contentsEditor.getData();
+        var signatureLen = this.element.find('input[name="signature"]:checked').length;
 
+        
+ 
+        
         if (!caption || !caption.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.notitle'));
           buttonElement.removeAttr('disabled');
@@ -1512,8 +1787,12 @@
         
         if (!content || !content.trim()) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.validation.nomessage'));
-          buttonElement.removeAttr('disabled');
+          buttonElement.removeAttr('disabled');          
           return false;
+        }
+        
+        if(signatureLen > 0){
+          content = content + this._signature;          
         }
         
         var payload = {

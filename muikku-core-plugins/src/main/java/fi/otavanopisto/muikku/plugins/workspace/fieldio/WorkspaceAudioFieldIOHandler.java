@@ -41,34 +41,33 @@ public class WorkspaceAudioFieldIOHandler implements WorkspaceFieldIOHandler {
       existingClipIds.add(existingClip.getClipId());
     }
     
-    if (clips.length > 0) {
-      for (Clip clip : clips) {
-        if (existingClipIds.contains(clip.getId())) {
-          // Already existing clip
-          existingClipIds.remove(clip.getId());
-        } else {
-          // New clip
-          try {
-            byte[] audioData = TempFileUtils.getTempFileData(clip.getId());
-            if (audioData == null) {
-              throw new WorkspaceFieldIOException("Temp audio does not exist");
-            }
-            
-            workspaceMaterialFieldAnswerController.createWorkspaceMaterialAudioFieldAnswerClip(fieldAnswer, audioData, clip.getContentType(), clip.getId(), clip.getName());
-          } catch (IOException e) {
-            throw new WorkspaceFieldIOException("Failed to retrieve clip data", e);
+    for (Clip clip : clips) {
+      if (existingClipIds.contains(clip.getId())) {
+        // Already existing clip
+        existingClipIds.remove(clip.getId());
+      }
+      else {
+        // New clip
+        try {
+          byte[] audioData = TempFileUtils.getTempFileData(clip.getId());
+          if (audioData == null) {
+            throw new WorkspaceFieldIOException("Temp audio does not exist");
           }
+          
+          workspaceMaterialFieldAnswerController.createWorkspaceMaterialAudioFieldAnswerClip(fieldAnswer, audioData, clip.getContentType(), clip.getId(), clip.getName());
+        } catch (IOException e) {
+          throw new WorkspaceFieldIOException("Failed to retrieve clip data", e);
         }
       }
-      
-      // Removed clips
-      for (String existingClipId : existingClipIds) {
-        WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip = workspaceMaterialFieldAnswerController.findWorkspaceMaterialAudioFieldAnswerClipByClipId(existingClipId);
-        if (workspaceMaterialAudioFieldAnswerClip != null) {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(workspaceMaterialAudioFieldAnswerClip);
-        }
+    }
+
+    // Removed clips
+    
+    for (String existingClipId : existingClipIds) {
+      WorkspaceMaterialAudioFieldAnswerClip workspaceMaterialAudioFieldAnswerClip = workspaceMaterialFieldAnswerController.findWorkspaceMaterialAudioFieldAnswerClipByClipId(existingClipId);
+      if (workspaceMaterialAudioFieldAnswerClip != null) {
+        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialAudioFieldAnswerClip(workspaceMaterialAudioFieldAnswerClip);
       }
-       
     }
   }
 

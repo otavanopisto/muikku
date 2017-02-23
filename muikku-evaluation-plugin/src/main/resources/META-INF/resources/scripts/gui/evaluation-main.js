@@ -77,7 +77,7 @@
                   isRequest = true;
                 }
                 else if (evaluationDate) {
-                  cardStateClass = assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-incomplete';
+                  cardStateClass = assessmentRequests[i].graded ? assessmentRequests[i].passing ? 'evaluated-passed' : 'evaluated-failed' : 'evaluated-incomplete';
                   isEvaluated = true;
                 }
                 assessmentRequests[i] = $.extend({}, assessmentRequests[i], {
@@ -246,12 +246,18 @@
     _onCardStateChange: function(event, data) {
       if (data.evaluated) {
         $(data.card).attr('data-evaluated', true);
+        $(data.card).attr('data-graded', data.graded);
         $(data.card).removeClass('evaluation-requested');
-        if (data.passing) {
-          $(data.card).removeClass('evaluated-incomplete').addClass('evaluated-passed');
+        if (data.graded) {
+          if (data.passing) {
+            $(data.card).removeClass('evaluated-failed evaluated-incomplete').addClass('evaluated-passed');
+          }
+          else {
+            $(data.card).removeClass('evaluated-passed evaluated-incomplete').addClass('evaluated-failed');
+          }
         }
         else {
-          $(data.card).removeClass('evaluated-passed').addClass('evaluated-incomplete');
+          $(data.card).removeClass('evaluated-passed evaluated-failed').addClass('evaluated-incomplete');
         }
         $(data.card).find('.enrollment-row').removeClass('highlight');
         $(data.card).find('.request-row').removeClass('highlight');
@@ -261,7 +267,7 @@
         this._resetImportance(data.card);
       }
       else {
-        $(data.card).removeClass('evaluated-passed evaluation-incomplete');
+        $(data.card).removeClass('evaluated-passed evaluated-failed evaluated-incomplete');
         $(data.card).find('.evaluation-row .evaluation-card-data-text').text('-');
         $(data.card).removeAttr('data-evaluated');
         if ($(data.card).attr('data-assessment-request-date')) {

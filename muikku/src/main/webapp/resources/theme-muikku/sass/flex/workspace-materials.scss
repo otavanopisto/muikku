@@ -157,8 +157,7 @@ nav.workspace-materials-toc-wrapper {
 // TOC SECTION <ul>
 .workspace-materials-toc-section {
   margin: 0;
-  padding-top: 5px;
-  padding-bottom: 10px;
+  padding: 5px 0 10px;
 }
 
 // TOC SUBTITLE <li>
@@ -223,7 +222,8 @@ nav.workspace-materials-toc-wrapper {
       // Adjust link padding when assignment is "done", "evaluated-passed" or "evaluated-failed" so icons has more room 
       &.submitted,
       &.evaluated-passed,
-      &.evaluated-failed {
+      &.evaluated-failed,
+      &.evaluated-incomplete {
         padding-right: 20px;
       }
       
@@ -244,7 +244,8 @@ nav.workspace-materials-toc-wrapper {
   // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed"
   span.submitted,
   span.evaluated-passed,
-  span.evaluated-failed {
+  span.evaluated-failed,
+  span.evaluated-incomplete {
     border: 1px solid #fff;
     border-radius: 100%;
     color: #fff;
@@ -281,7 +282,7 @@ nav.workspace-materials-toc-wrapper {
   
   // Color and icon for "evaluated-passed" assignment 
   .evaluated-passed::before {
-    background: #1ec30c;
+    background: $evaluation-passed-color;
     border-radius: 100%;
     content: "\f164";
     font-family: 'muikku' !important;
@@ -303,7 +304,29 @@ nav.workspace-materials-toc-wrapper {
   
   // Color and icon for "evaluated-failed" assignment 
   .evaluated-failed::before {
-    background: #ea7401;
+    background: $evaluation-failed-color;
+    border-radius: 100%;
+    content: "\f165";
+    font-family: 'muikku' !important;
+    font-size: 10px;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 10px;
+    line-height: 1;
+    padding: 2px;
+    position: absolute;
+    speak: none;
+    text-transform: none;
+    top: 0;
+    width: 10px;
+  }
+  
+  // Color and icon for "evaluated-incomplete" assignment 
+  .evaluated-incomplete::before {
+    background: $evaluation-incomplete-color;
     border-radius: 100%;
     content: "\f165";
     font-family: 'muikku' !important;

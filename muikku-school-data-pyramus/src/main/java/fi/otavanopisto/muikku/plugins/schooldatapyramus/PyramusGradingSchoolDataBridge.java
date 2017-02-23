@@ -7,14 +7,18 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGrade;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusCompositeGradingScale;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
@@ -54,6 +58,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Inject
   private CourseParticipationTypeEvaluationMapper courseParticipationTypeEvaluationMapper;
   
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -65,7 +72,11 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[] restGradingScales = pyramusClient.get(
         "/composite/gradingScales/",
         fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale[].class);
+    Set<Long> gradingScaleFilter = getGradingScaleFilter();
     for (int i = 0; i < restGradingScales.length; i++) {
+      if (!gradingScaleFilter.isEmpty() && !gradingScaleFilter.contains(restGradingScales[i].getScaleId())) {
+        continue;
+      }
       List<CompositeGrade> localGrades = new ArrayList<CompositeGrade>();
       List<fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade> restGrades = restGradingScales[i].getGrades();
       for (fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade restGrade : restGrades) {
@@ -93,7 +104,14 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 	@Override
 	public List<GradingScale> listGradingScales() {
 	  fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
-    return createGradingScaleEntities(gradingScales);
+	  Set<Long> gradingScaleFilter = getGradingScaleFilter();
+	  List<GradingScale> gradingScaleEntities = new ArrayList<GradingScale>();
+	  for (int i = 0; i < gradingScales.length; i++) {
+	    if (gradingScaleFilter.isEmpty() || gradingScaleFilter.contains(gradingScales[i].getId())) {
+	      gradingScaleEntities.add(createGradingScaleEntity(gradingScales[i]));
+	    }
+	  }
+	  return gradingScaleEntities;
 	}
 
 	@Override
@@ -136,17 +154,6 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     }
     
     return new PyramusGradingScale(g.getId().toString(), g.getName());
-  }
-
-  private List<GradingScale> createGradingScaleEntities(fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales) {
-    List<GradingScale> result = new ArrayList<>();
-
-    if (gradingScales != null) {
-      for (fi.otavanopisto.pyramus.rest.model.GradingScale g : gradingScales)
-        result.add(createGradingScaleEntity(g));
-    }
-      
-    return result;
   }
 
   @Override
@@ -431,7 +438,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   @Override
   public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
       String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
-      String requestText, Date date) {
+      String requestText, Date date, Boolean archived, Boolean handled) {
     Long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
     Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     Long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
@@ -457,7 +464,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       return null; 
     }
     
-    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, Boolean.FALSE, Boolean.FALSE);
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, fromDateToOffsetDateTime(date), requestText, archived, handled);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
   }
 
@@ -499,9 +506,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
   
   private OffsetDateTime fromDateToOffsetDateTime(Date date) {
-	Instant instant = date.toInstant();
-	ZoneId systemId = ZoneId.systemDefault();
-	ZoneOffset offset = systemId.getRules().getOffset(instant);
+	  Instant instant = date.toInstant();
+	  ZoneId systemId = ZoneId.systemDefault();
+	  ZoneOffset offset = systemId.getRules().getOffset(instant);
     return date.toInstant().atOffset(offset);
   }
   
@@ -518,6 +525,24 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
         logger.severe(String.format("Could not change course participation type because course student %d could not be found", courseStudentId));
       }
     }
+  }
+  
+  private Set<Long> getGradingScaleFilter() {
+    Set<Long> gradingScaleFilter = new HashSet<Long>(); 
+    String activeGradingScaleIds = pluginSettingsController.getPluginSetting("school-data-pyramus", "activeGradingScaleIds");
+    if (!StringUtils.isBlank(activeGradingScaleIds)) {
+      try {
+        String[] gradingScaleIds = activeGradingScaleIds.split(",");
+        for (int i = 0; i < gradingScaleIds.length; i++) {
+          gradingScaleFilter.add(new Long(gradingScaleIds[i]));
+        }
+        
+      }
+      catch (Exception e) {
+        logger.warning(String.format("Malformatted plugin setting school-data-pyramus.activeGradingScales: %s", activeGradingScaleIds));
+      }
+    }
+    return gradingScaleFilter;
   }
 
   @Override

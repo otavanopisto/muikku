@@ -1,14 +1,15 @@
 package fi.otavanopisto.muikku.plugins.announcer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -143,20 +144,32 @@ public class AnnouncementController {
   }
 
   /**
-   * Lists announcement workspaces that are published to workspaces the user is part of
+   * Lists announcement workspaces and return them as sorted list so that the users' workspaces are first
    * 
    * @param announcement
    * @param userEntity
    * @return
    */
-  public List<AnnouncementWorkspace> listAnnouncementWorkspaces(Announcement announcement, UserEntity userEntity) {
-    List<WorkspaceEntity> workspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
-    if (CollectionUtils.isEmpty(workspaces)) {
-      return announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
-    }
-    else {
-      return announcementWorkspaceDAO.listByAnnouncementAndWorkspacesAndArchived(announcement, workspaces, Boolean.FALSE);
-    }
+  public List<AnnouncementWorkspace> listAnnouncementWorkspacesSortByUserFirst(Announcement announcement, UserEntity userEntity) {
+    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
+    Set<Long> userWorkspaceIds = userWorkspaces.stream().map(workspace -> workspace.getId()).collect(Collectors.toSet());
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
+
+    announcementWorkspaces.sort(new Comparator<AnnouncementWorkspace>() {
+      @Override
+      public int compare(AnnouncementWorkspace o1, AnnouncementWorkspace o2) {
+        boolean o1user = userWorkspaceIds.contains(o1.getWorkspaceEntityId());
+        boolean o2user = userWorkspaceIds.contains(o2.getWorkspaceEntityId());
+        
+        if (o1user && !o2user)
+          return -1;
+        if (o2user && !o1user)
+          return 1;
+        return 0;
+      }
+    });
+
+    return announcementWorkspaces;
   }
   
   public void archive(Announcement announcement) {

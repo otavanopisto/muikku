@@ -859,7 +859,7 @@ public class PyramusMock {
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location",
-              "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+              "http://dev.muikku.fi:8081/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
         stubFor(post(urlEqualTo("/1/oauth/token"))
           .willReturn(aResponse()
@@ -880,7 +880,7 @@ public class PyramusMock {
         stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
           .willReturn(aResponse()
             .withStatus(302)
-            .withHeader("Location", "http://dev.muikku.fi:8080/")));
+            .withHeader("Location", "http://dev.muikku.fi:8081/")));
         
         return this;
       }
@@ -908,7 +908,7 @@ public class PyramusMock {
         stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
           .willReturn(aResponse()
             .withStatus(302)
-            .withHeader("Location", "http://dev.muikku.fi:8080/")));
+            .withHeader("Location", "http://dev.muikku.fi:8081/")));
         
         return this;        
       }
@@ -933,7 +933,7 @@ public class PyramusMock {
         mockStudentGroups();
         
         for (String payload : pmock.payloads) {
-          TestUtilities.webhookCall("http://dev.muikku.fi:8080/pyramus/webhook", payload);
+          TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
         }
 
         return this;

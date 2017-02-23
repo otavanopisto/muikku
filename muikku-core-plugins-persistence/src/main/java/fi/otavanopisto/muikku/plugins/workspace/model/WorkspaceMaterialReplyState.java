@@ -24,6 +24,10 @@ public enum WorkspaceMaterialReplyState {
   
   /* Teacher has evaluated the assignment with a grade that is non passing */
   
-  FAILED
+  FAILED,
+  
+  /* Teacher has marked the assignment as incomplete */
+  
+  INCOMPLETE
   
 }
