@@ -98,6 +98,12 @@
       box-sizing: border-box;
     }
     
+    .ui-dialog-additional-message {
+      font-size: 14px;
+      font-style: italic;
+      text-transform: none;
+    }
+    
   }
   
   .ui-dialog-buttonpane {
@@ -131,7 +137,7 @@
         vertical-align: middle;
         
         &[disabled="disabled"] {
-          opacity: 0.2;
+          opacity: 0.4;
           cursor: default;
         }
         
@@ -141,6 +147,7 @@
           line-height: normal;
           font-size: 16px;
         }
+        
       }
       
       button.delete-button,
