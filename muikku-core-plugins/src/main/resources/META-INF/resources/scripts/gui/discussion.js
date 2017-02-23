@@ -989,7 +989,7 @@
         extraPlugins: {
           'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
           'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.2/plugin.min.js'
+          'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js'
         }
       }
     },
@@ -1015,12 +1015,9 @@
     destroyEditor: function (discardDraft) {
       try {
         if (this._messageEditor) {
-          this._messageEditor.pauseDrafting();
-          
           if (discardDraft) {
             this._messageEditor.discardDraft();
           }
-          
           this._messageEditor.destroy();
           this._messageEditor = null;
         }
