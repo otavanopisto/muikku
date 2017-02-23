@@ -88,6 +88,14 @@ public class GuiderStudentWorkspaceActivity {
       
       failed++;
     }
+
+    public void addIncomplete(Date date) {
+      if ((date != null) && (incompleteLastDate == null || incompleteLastDate.before(date))) {
+        incompleteLastDate = date;
+      }
+      
+      incomplete++;
+    }
     
     public long getUnanswered() {
       return unanswered;
@@ -124,6 +132,14 @@ public class GuiderStudentWorkspaceActivity {
     public Date getPassedLastDate() {
       return passedLastDate;
     }
+
+    public long getIncomplete() {
+      return incomplete;
+    }
+    
+    public Date getIncompleteLastDate() {
+      return incompleteLastDate;
+    }
     
     public long getCount() {
       return unanswered + answered + submitted + failed + passed;
@@ -143,7 +159,9 @@ public class GuiderStudentWorkspaceActivity {
     private long failed = 0l;
     private Date failedLastDate = null; 
     private long passed = 0l;
-    private Date passedLastDate = null; 
+    private Date passedLastDate = null;
+    private long incomplete = 0l;
+    private Date incompleteLastDate = null;
   }
   
   public static class Excercices {

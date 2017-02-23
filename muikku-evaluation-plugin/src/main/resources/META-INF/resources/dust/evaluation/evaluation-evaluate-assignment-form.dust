@@ -1,5 +1,4 @@
 <div class="evaluation-modal-evaluate-form"> 
-  <input type="hidden" name="assignmentAssessmentId" id="assignmentAssessmentId"/>
   <input type="hidden" name="assignmentWorkspaceMaterialId" id="assignmentWorkspaceMaterialId"/>
   <input type="hidden" name="assignmentUserEntityId" id="assignmentUserEntityId"/>
   <div class="evaluation-modal-evaluate-form-row">
@@ -9,6 +8,11 @@
   <div class="evaluation-modal-evaluate-form-row">
     <label for="evaluationDate">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentDateLabel"/}</label>
     <input required="required" type="date" name="evaluationDate" id="assignmentEvaluationDate"/>
+  </div>
+  <div class="evaluation-modal-evaluate-form-row">
+    <label for="assignmentGrading">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateLabel"/}</label>
+    <input type="radio" name="assignmentGrading" value="GRADED" id="assignmentGradedButton"/>{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateGradeLabel"/}
+    <input type="radio" name="assignmentGrading" value="INCOMPLETE" id="assignmentIncompleteButton"/>{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentEvaluateIncompleteLabel"/}
   </div>
   <div class="evaluation-modal-evaluate-form-row">
     <label for="grade">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessmentGradeLabel"/}</label>
@@ -28,7 +32,7 @@
     <label for="evaluateFormLiteralEvaluation">{#localize key="plugin.evaluation.evaluationModal.assignmentEvaluationForm.assessorLabel"/}</label>
     <select name="assessor" id="assignmentAssessor">
       {#assessors}
-        <option value="{userIdentifier}">{lastName}, {firstName}</option>
+        <option value="{userIdentifier}" data-user-entity-id="{userEntityId}">{lastName}, {firstName}</option>
       {/assessors}
     </select>
   </div>

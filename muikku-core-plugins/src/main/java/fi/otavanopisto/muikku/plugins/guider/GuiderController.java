@@ -76,6 +76,9 @@ public class GuiderController {
           case UNANSWERED:
             activity.getEvaluables().addUnanswered();
           break;
+          case INCOMPLETE:
+            activity.getEvaluables().addIncomplete(workspaceMaterialReply.getLastModified());
+          break;
         }
       }
     }

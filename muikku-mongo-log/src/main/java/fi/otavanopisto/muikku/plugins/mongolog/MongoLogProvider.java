@@ -59,6 +59,7 @@ public class MongoLogProvider implements LogProvider {
         db = mongo.getDB(database);
       } else {
         logger.warning("Could not initialize mongo log because some of the settings were missing");
+        enabled = false;
       }
     } catch (Exception e) {
       logger.warning("Cannot initialize connection to mongoDB");

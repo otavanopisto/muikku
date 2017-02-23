@@ -80,6 +80,7 @@ $environment-menu-font-color: #000;
 $environment-menu-item-active-background-color: #1a9bfc;
 $environment-menu-item-active-font-color: #fff;
 $environment-content-container-background-color: #f0f3f4;
+$environment-header-background-color: #eff7fb;
 $environment-navigation-container-background-color: #f1f8fb;
 $environment-navigation-content-navigation-background-color: #f5fcff;
 $environment-paging-tool-background-color: #36a3ce;
@@ -89,8 +90,12 @@ $environment-paging-tool-font-disabled-color: #dadada;
 $environment-widget-overlay-background-color: #000;
 $environment-subtitle-font-color: #757575;
 $environment-items-title-font-color: #757575;
+$environment-settings-icon-color: #000;
+$environment-settings-hover-icon-color: #3782df;
+$environment-settings-subtitle-background-color: #f7fdff;
+$environment-setting-signature-border-color: #d7d7d7;
+$environment-setting-signature-background-color: #fafafa;
 $environment-profile-background-color: #fff;
-
 $environment-profile-picture-box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
 $environment-profile-picture-border: #fff;
 $environment-profile-section-background-color: #ff008d;
@@ -228,14 +233,16 @@ $target-remove-font-color: #d80000;
 // Evaluation Basic 
 
 $evaluation-passed-color: #2ed31c;
+$evaluation-failed-color: #d31111;
 $evaluation-incomplete-color: #ea7503;
-$evaluation-requested-color: #0099ff;
+$evaluation-requested-color: #009fe3;
 $evaluation-archive-color: #4c4c4c;
 $evaluation-delete-color: #d50b36;
 $evaluation-cancel-color: #7391a7;
 
-$evaluation-incomplete-boxshadow-color: rgba(234, 117, 3, 0.2);
 $evaluation-passed-boxshadow-color: rgba(60, 221, 3, 0.2);
+$evaluation-failed-boxshadow-color: rgba(211, 17, 17, 0.2);
+$evaluation-incomplete-boxshadow-color: rgba(234, 117, 3, 0.2);
 $evaluation-requested-boxshadow-color: rgba(0, 204, 255, 0.2);
 
 // Evaluation Body and Main View
@@ -259,7 +266,7 @@ $evaluation-filter-wrapper-background-boxshadow-color: rgba(0, 0, 0, 0.1);
 
 $evaluation-sorting-item-nonactive-background-color: #eee;
 $evaluation-sorting-item-nonactive-font-color: #000;
-$evaluation-sorting-item-active-background-color: #0099ff;
+$evaluation-sorting-item-active-background-color: #009fe3;
 $evaluation-sorting-item-active-font-color: #fff;
 
 // Evaluation Welldone
@@ -274,10 +281,10 @@ $evaluation-card-title-background: #ebfbfe;
 $evaluation-card-assignment-status-font-color: #fff;
 $evaluation-card-assignment-status-notdone-background-color: #da5760;
 $evaluation-card-assignment-status-done-background-color: #63da57;
-$evaluation-important-star-font-color: #0099ff;
+$evaluation-important-star-font-color: #009fe3;
 $evaluation-important-star-active-font-color: #fff;
 $evaluation-important-star-active-background-color: #ff0000;
-$evaluation-unimportant-star-font-color: #0099ff;
+$evaluation-unimportant-star-font-color: #009fe3;
 $evaluation-unimportant-star-active-font-color: #fff;
 $evaluation-unimportant-star-active-background-color: #666;
 $evaluation-card-button-font-color: #fff;
@@ -301,7 +308,7 @@ $evaluation-modal-header-font-color: #fff;
 // Evaluation Modal - Workspace Evaluation Overlay
 
 $evaluation-modal-workspace-evaluation-form-overlay-background-color: #fff;
-$evaluation-modal-workspace-evaluation-form-activate-button-background-color: #3786bf;
+$evaluation-modal-workspace-evaluation-form-activate-button-background-color: #009fe3;
 $evaluation-modal-workspace-evaluation-form-activate-button-font-color: #fff;
 
 // Evaluation Modal - Forms
@@ -324,5 +331,6 @@ $evaluation-modal-assignment-evaluation-header-background-color: #fff;
 
 $evaluation-modal-seperator-border-color: #f8f8f8;
 $evaluation-modal-assignment-evaluate-button-font-color: #fff;
+$evaluation-modal-assignment-evaluated-incomplete-font-color: #fff;
 $evaluation-modal-assignment-evaluated-grade-info-background-color: #c9f8bb;
 $evaluation-modal-assignment-evaluated-literal-background-color: #e2ffe2;

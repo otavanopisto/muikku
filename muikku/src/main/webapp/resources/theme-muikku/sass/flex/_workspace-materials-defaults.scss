@@ -695,6 +695,10 @@ sup {
     &.muikku-show-evaluation-button {
       
       &.failed {
+        background: $evaluation-failed-color;
+      }
+      
+      &.incomplete {
         background: $evaluation-incomplete-color;
       }
       

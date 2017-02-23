@@ -8,12 +8,14 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 public class PyramusWorkspaceAssessmentRequest implements WorkspaceAssessmentRequest {
   
   public PyramusWorkspaceAssessmentRequest(String identifier, String workSpaceUserIdentifier,
-      String requestText, Date date) {
+      String requestText, Date date, Boolean archived, Boolean handled) {
     super();
     this.identifier = identifier;
     this.workSpaceUserIdentifier = workSpaceUserIdentifier;
     this.requestText = requestText;
     this.date = date;
+    this.archived = archived;
+    this.handled = handled;
   }
 
   @Override
@@ -46,8 +48,20 @@ public class PyramusWorkspaceAssessmentRequest implements WorkspaceAssessmentReq
     return requestText;
   }
 
+  @Override
+  public Boolean getArchived() {
+    return archived;
+  }
+
+  @Override
+  public Boolean getHandled() {
+    return handled;
+  }
+
   private String identifier;
   private String workSpaceUserIdentifier;
   private String requestText;
   private Date date;
+  private Boolean archived;
+  private Boolean handled;
 }

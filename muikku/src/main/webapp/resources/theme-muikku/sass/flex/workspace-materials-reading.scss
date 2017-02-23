@@ -275,7 +275,8 @@ nav.workspace-waterials-reading-nav {
     // When assigment or exercise is "done", "evaluated-passed" or "evaluated-failed" 
     span.submitted,
     span.evaluated-passed,
-    span.evaluated-failed {
+    span.evaluated-failed,
+    span.evaluated-incomplete {
       color: #fff;
       position: absolute;
       right: 3px;
@@ -313,7 +314,7 @@ nav.workspace-waterials-reading-nav {
     // Color and icon for "evaluated-passed" assignment 
     .evaluated-passed::before {
       content: "\f164";
-      background: #1ec30c;
+      background: $evaluation-passed-color;
       font-size: 10px;
       height: 10px;
       width: 10px;
@@ -335,7 +336,7 @@ nav.workspace-waterials-reading-nav {
     // Color and icon for "evaluated-failed" assignment 
     .evaluated-failed::before {
       content: "\f165";
-      background: #ea7401;
+      background: $evaluation-failed-color;
       font-size: 10px;
       height: 10px;
       width: 10px;
@@ -352,6 +353,28 @@ nav.workspace-waterials-reading-nav {
       -moz-osx-font-smoothing: grayscale;
       position: absolute;
       top: 0;
+    }
+    
+    // Color and icon for "evaluated-incomplete" assignment 
+    .evaluated-incomplete::before {
+      background: $evaluation-incomplete-color;
+      border-radius: 100%;
+      content: "\f165";
+      font-family: 'muikku' !important;
+      font-size: 10px;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      height: 10px;
+      line-height: 1;
+      padding: 2px;
+      position: absolute;
+      speak: none;
+      text-transform: none;
+      top: 0;
+      width: 10px;
     }
     
   }

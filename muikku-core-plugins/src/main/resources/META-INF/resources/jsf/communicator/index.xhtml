@@ -35,7 +35,17 @@
   
   <ui:define name="mf-content-master"> 
     <div class="communicator" data-group-messaging-permission="#{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')}">
-      <h2 class="main-functionality-page-title">#{i18n.text['plugin.communicator.pageTitle']}</h2>
+      <div class="mf-view-header flex-row flex-align-items-center">
+        <div class="mf-view-title-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8">
+          <h2 class="mf-view-title">#{i18n.text['plugin.communicator.pageTitle']}</h2>
+        </div>
+        <div class="mf-view-settings-function-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 flex-right">
+         <div class="mf-tool-container settings cm-settings-function-container">
+           <div title="#{i18n.text['plugin.communicator.settings']}" class="mf-tool cm-settings-icon icon-settings">           
+           </div>
+         </div>        
+        </div>
+      </div>
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
           <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">
