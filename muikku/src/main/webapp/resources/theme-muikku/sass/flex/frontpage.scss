@@ -706,9 +706,9 @@ footer.of-footer {
 }
 
 .frontpage-footer-container {
+  @include flexbox;
   align-items: stretch;
   box-sizing: border-box;
-  @include flexbox;
   flex-flow: row wrap;
   margin: 0 auto;
   max-width: 1260px;
@@ -718,7 +718,7 @@ footer.of-footer {
   box-sizing: border-box;
   flex: 1 1 calc(50% - 20px);
   margin: 10px;
-  padding: 0 30px 30px 30px;
+  padding: 0 30px 30px;
   
   h2 {
     color: $of-footer-text-color;
@@ -787,68 +787,56 @@ footer.of-footer {
   .carousel-video-container {
   
     .carousel-video.ar169 { // Aspect Ratio 16:9
-      position: relative;
-      padding-bottom: 56.25%;
-      padding-top: 30px;
       height: 0;
       overflow: hidden;
+      padding-bottom: 56.25%;
+      padding-top: 30px;
+      position: relative;
     }
     
     .carousel-video.ar43 { // Aspect Ratio 4:3
-      position: relative;
-      padding-bottom: 75%;
-      padding-top: 30px;
       height: 0;
       overflow: hidden;
+      padding-bottom: 75%;
+      padding-top: 30px;
+      position: relative;
     }
     
     .carousel-video.ar11 { // Aspect Ratio 1:1
-      position: relative;
-      padding-bottom: 100%;
-      padding-top: 30px;
       height: 0;
       overflow: hidden;
+      padding-bottom: 100%;
+      padding-top: 30px;
+      position: relative;
     }
     
     .carousel-video iframe,  
     .carousel-video object,  
     .carousel-video embed {
+      height: 100%;
+      left: 0;
       position: absolute;
       top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
     }
     
-    .carousel-video-description {
-    
-    }
-  
   }
   
 }
 
 .carousel-images-wrapper {
-
-  .carousel-image-container {
   
-    .carousel-image {
-    
-      img {
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        height: auto;
-        width:100%;
-      }
-    
-    }
-    
-    .carousel-image-description {
-      font-weight: 400;
-      line-height: 1.3;
-      padding: 15px 20px;
-    }
+  img {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    height: auto;
+    width: 100%;
+  }
   
+  .carousel-image-description {
+    font-weight: 400;
+    line-height: 1.3;
+    padding: 15px 20px;
   }
   
 }
@@ -857,7 +845,7 @@ footer.of-footer {
 
 .carousel-video-controls-wrapper,
 .carousel-image-controls-wrapper {
-  margin: 10px 10px 15px 10px;
+  margin: 10px 10px 15px;
   width: calc(100% - 20px);
 }
 
@@ -880,8 +868,8 @@ ul.carousel-image-controls {
       border-radius: 100%;
       box-sizing: border-box;
       cursor: pointer;
-      height: 17px;
       font-size: 0;
+      height: 17px;
       list-style-type: none;
       margin: 0 10px;
       outline: none;
