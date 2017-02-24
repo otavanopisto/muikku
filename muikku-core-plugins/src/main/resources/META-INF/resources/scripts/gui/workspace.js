@@ -120,7 +120,7 @@
                 },
                 open: function(event, ui) {
                   if (data.assignmentsDone < data.assignmentsTotal) {
-                    var delay = 15;
+                    var delay = 5;
                     var saveButton = $('.save-evaluation-button');
                     var saveButtonText = $(saveButton).find('.ui-button-text');
                     var saveText = $(saveButton).text();
