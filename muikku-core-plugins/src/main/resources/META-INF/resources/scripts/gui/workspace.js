@@ -258,6 +258,8 @@
   }
 
   $(document).ready(function () {
+    
+    
     var workspaceEntityId = $('.workspaceEntityId').val();
     if (workspaceEntityId) {
       var evaluationLink = $('.dock-static-navi-button-evaluation > a.icon-evaluate');
@@ -267,6 +269,12 @@
         $(evaluationLink).attr('target', '_blank');
       }
     }
+    
+    renderDustTemplate('workspace/workspace_progress_frontpage.dust', { }, $.proxy(function (text) {
+      var progressContainer = $('.workspace-progress-container');
+      progressContainer.html(text);
+    }, this));
+    
   });
 
 }).call(this);

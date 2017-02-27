@@ -1,0 +1,21 @@
+<div class="c100 p12 small">
+  <span>12%</span>
+  <div class="slice">
+    <div class="bar"></div>
+    <div class="fill"></div>
+  </div>
+</div>
+<div class="c100 green p12 small">
+  <span>12%</span>
+  <div class="slice">
+    <div class="bar"></div>
+    <div class="fill"></div>
+  </div>
+</div>
+<div class="c100 orange p12 small">
+  <span>12%</span>
+  <div class="slice">
+    <div class="bar"></div>
+    <div class="fill"></div>
+  </div>
+</div>  

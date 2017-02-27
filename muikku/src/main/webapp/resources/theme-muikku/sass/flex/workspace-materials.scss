@@ -89,8 +89,9 @@ body {
   
 }
 
-// TOC
-nav.workspace-materials-toc-wrapper {
+// PROGRESS
+
+.workspace-materials-progress-wrapper {
   background: #fff;
   text-align: left;
   font-family: 'Open Sans', Arial, sans-serif;
@@ -101,6 +102,29 @@ nav.workspace-materials-toc-wrapper {
   z-index: 11;
   position: fixed;
   top: 90px;
+  bottom: 0;
+  width: 290px;
+}
+
+.workspace-materials-progress-container {
+  padding: 15px;  
+}
+
+
+
+// TOC
+
+nav.workspace-materials-toc-wrapper {
+  background: #fff;
+  text-align: left;
+  font-family: 'Open Sans', Arial, sans-serif;
+  text-shadow: none;
+  color: #000;
+  font-size: 14px;
+  line-height: 1.5em;
+  z-index: 11;
+  position: fixed;
+  top: 160px;
   bottom: 0;
   width: 290px;
   
@@ -124,7 +148,7 @@ nav.workspace-materials-toc-wrapper {
 // TOC TITLE
 .workspace-materials-toc-title {
   text-transform: uppercase;
-  margin: 0;
+  margin: 0 !important;
   padding: 10px 12px;
   font-size: 19px;
   color: #2c2c2c;

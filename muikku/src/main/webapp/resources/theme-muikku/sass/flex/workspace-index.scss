@@ -23,6 +23,15 @@
     background-position: center center;
     z-index: 10;
   }
+
+  .workspace-progress-container{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
   
   h1.workspace-title {
     margin: 0;

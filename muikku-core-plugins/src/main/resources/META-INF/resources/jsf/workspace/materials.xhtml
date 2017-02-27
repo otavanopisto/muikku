@@ -22,6 +22,7 @@
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-materials.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/flex/circle.css"/>      
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
   </ui:define>
@@ -92,9 +93,17 @@
           </ui:fragment>  
         </ui:repeat>
       </article>
-      
+ 
       <div id="TOCContainer" class="lg-flex-cell-5 md-flex-cell-5 sm-flex-hide lg-flex-cell-last md-flex-cell-last no-margin-top">
+
+        <div class="workspace-materials-progress-wrapper">
+          <div class="workspace-progress-container workspace-materials-progress-container flex-row flex-justify-content-center">
+
+          </div>
+        </div>
+
         <nav id="workspaceMaterialsTOCWrapper" class="workspace-materials-toc-wrapper">
+
           <div class="workspace-materials-toc-container">
             <h1 class="workspace-materials-toc-title">#{i18n.text['plugin.workspace.materials.tocTitle']}</h1>
               <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
