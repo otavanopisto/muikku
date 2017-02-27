@@ -99,6 +99,7 @@ public class GuiderController {
           case PASSED:
           case FAILED:
           case SUBMITTED:
+          case INCOMPLETE:
             activity.getExcercices().addAnswered(workspaceMaterialReply.getSubmitted());
           break;
           case UNANSWERED:
