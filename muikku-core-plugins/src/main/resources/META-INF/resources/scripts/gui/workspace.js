@@ -268,6 +268,13 @@
         $(evaluationLink).attr('href', href + '?workspaceEntityId=' + workspaceEntityId);
         $(evaluationLink).attr('target', '_blank');
       }
+      mApi().guider.workspaces.activity
+        .read(workspaceEntityId)
+        .callback($.proxy(function (err, activity) {
+          if (!err) {
+            // e.g. activity.evaluablesTotal
+          }
+        }, this));
     }
     
     renderDustTemplate('workspace/workspace_progress_frontpage.dust', { }, $.proxy(function (text) {

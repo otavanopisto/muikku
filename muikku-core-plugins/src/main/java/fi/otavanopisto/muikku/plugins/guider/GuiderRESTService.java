@@ -16,6 +16,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
@@ -25,9 +26,11 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfReco
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Stateful
@@ -45,6 +48,9 @@ public class GuiderRESTService extends PluginRESTService {
   private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
+  private SessionController sessionController;
+
+  @Inject
   private GuiderController guiderController;
   
   @Inject
@@ -55,6 +61,34 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/activity")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getWorkspaceAssessmentsStudyProgressAnalysis(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid userIdentifier").build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceEntity not found").build();
+    }
+    
+    GuiderStudentWorkspaceActivity activity = guiderController.getStudentWorkspaceActivity(workspaceEntity, userIdentifier);
+    if (activity == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
+    }
+    
+    WorkspaceAssessmentState assessmentState = WorkspaceAssessmentState.UNASSESSED;
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
+    if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+    }
+    
+    return Response.ok(toRestModel(activity, assessmentState)).build();
+  }
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/studentactivity/{USERIDENTIFIER}")
@@ -81,29 +115,8 @@ public class GuiderRESTService extends PluginRESTService {
     }
     
     WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-    
-    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
-        activity.getLastVisit(),
-        activity.getNumVisits(),
-        activity.getJournalEntryCount(),
-        activity.getLastJournalEntry(),
-        activity.getEvaluables().getUnanswered(), 
-        activity.getEvaluables().getAnswered(), 
-        activity.getEvaluables().getAnsweredLastDate(), 
-        activity.getEvaluables().getSubmitted(), 
-        activity.getEvaluables().getSubmittedLastDate(), 
-        activity.getEvaluables().getPassed(), 
-        activity.getEvaluables().getPassedLastDate(), 
-        activity.getEvaluables().getFailed(), 
-        activity.getEvaluables().getFailedLastDate(), 
-        activity.getEvaluables().getDonePercent(), 
-        activity.getExcercices().getUnanswered(), 
-        activity.getExcercices().getAnswered(), 
-        activity.getExcercices().getAnsweredLastDate(), 
-        activity.getExcercices().getDonePercent(),
-        assessmentState);
-    
-    return Response.ok(model).build();
+
+    return Response.ok(toRestModel(activity, assessmentState)).build();
   }
   
   @GET
@@ -150,4 +163,31 @@ public class GuiderRESTService extends PluginRESTService {
     
     return Response.ok().type(contentType).entity(output).build();
   }
+  
+  private GuiderStudentWorkspaceActivityRestModel toRestModel(GuiderStudentWorkspaceActivity activity, WorkspaceAssessmentState assessmentState) {
+    GuiderStudentWorkspaceActivityRestModel model = new GuiderStudentWorkspaceActivityRestModel(
+        activity.getLastVisit(),
+        activity.getNumVisits(),
+        activity.getJournalEntryCount(),
+        activity.getLastJournalEntry(),
+        activity.getEvaluables().getUnanswered(), 
+        activity.getEvaluables().getAnswered(), 
+        activity.getEvaluables().getAnsweredLastDate(), 
+        activity.getEvaluables().getSubmitted(), 
+        activity.getEvaluables().getSubmittedLastDate(), 
+        activity.getEvaluables().getPassed(), 
+        activity.getEvaluables().getPassedLastDate(), 
+        activity.getEvaluables().getFailed(), 
+        activity.getEvaluables().getFailedLastDate(),
+        activity.getEvaluables().getIncomplete(),
+        activity.getEvaluables().getIncompleteLastDate(),
+        activity.getEvaluables().getDonePercent(), 
+        activity.getExcercices().getUnanswered(), 
+        activity.getExcercices().getAnswered(), 
+        activity.getExcercices().getAnsweredLastDate(), 
+        activity.getExcercices().getDonePercent(),
+        assessmentState);
+    return model;
+  }
+  
 } 

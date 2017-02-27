@@ -145,10 +145,10 @@ public class GuiderStudentWorkspaceActivity {
       return unanswered + answered + submitted + failed + passed;
     }
     
-    public double getDonePercent() {
+    public int getDonePercent() {
       double result = submitted + passed;
       result /= getCount();
-      return Math.round(result * 100);
+      return (int) Math.round(result * 100);
     }
 
     private long unanswered = 0l;
@@ -194,10 +194,10 @@ public class GuiderStudentWorkspaceActivity {
       return unanswered + answered;
     }
     
-    public double getDonePercent() {
+    public int getDonePercent() {
       double result = answered;
       result /= getCount();
-      return Math.round(result * 100);
+      return (int) Math.round(result * 100);
     }
 
     private long unanswered = 0l;
