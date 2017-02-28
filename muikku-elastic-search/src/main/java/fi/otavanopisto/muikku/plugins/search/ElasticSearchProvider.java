@@ -128,9 +128,8 @@ public class ElasticSearchProvider implements SearchProvider {
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
       Date startedStudiesBefore, Date studyTimeEndsBefore) {
     try {
-      
-      long now = OffsetDateTime.now().with(ChronoField.MILLI_OF_DAY, 0).toInstant().toEpochMilli() / 1000;      
-      
+      long now = OffsetDateTime.now().toEpochSecond();
+
       text = sanitizeSearchString(text);
 
       BoolQueryBuilder query = boolQuery();
