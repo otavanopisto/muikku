@@ -87,11 +87,13 @@
             </a>
           </div>
           <!-- DISCUSSION -->
-          <div class="dock-static-navi-button-discussion sm-flex-hide #{activeTrail eq 'discussion' ? 'active-trail' : ''}" title="#{i18n.text['plugin.forum.forum']}">
-            <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble">
-              <span style="display:none" class="dock-notification"></span>
-            </a>
-          </div>
+          <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM')}">
+            <div class="dock-static-navi-button-discussion sm-flex-hide #{activeTrail eq 'discussion' ? 'active-trail' : ''}" title="#{i18n.text['plugin.forum.forum']}">
+              <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble">
+                <span style="display:none" class="dock-notification"></span>
+              </a>
+            </div>
+          </ui:fragment>
         </ui:fragment>
         <!-- GUIDER -->
         <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('GUIDER_VIEW')}">

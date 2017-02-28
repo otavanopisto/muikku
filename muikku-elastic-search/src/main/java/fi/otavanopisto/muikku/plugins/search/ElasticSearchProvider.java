@@ -99,13 +99,6 @@ public class ElasticSearchProvider implements SearchProvider {
     //node.close();
   }
   
-  private boolean isEmptyCollection(Collection<?> c) {
-    if (c == null)
-      return true;
-    
-    return c.isEmpty();
-  }
-  
   private String sanitizeSearchString(String query) {
     if (query == null)
       return null;
@@ -181,11 +174,11 @@ public class ElasticSearchProvider implements SearchProvider {
         query.must(termsQuery("archetype", archetypeNames.toArray(new String[0]))); 
       }
       
-      if (!isEmptyCollection(groups)) {
+      if (groups != null) {
         query.must(termsQuery("groups", ArrayUtils.toPrimitive(groups.toArray(new Long[0]))));
       }
 
-      if (!isEmptyCollection(workspaces)) {
+      if (workspaces != null) {
         query.must(termsQuery("workspaces", ArrayUtils.toPrimitive(workspaces.toArray(new Long[0]))));
       }
       
@@ -250,7 +243,7 @@ public class ElasticSearchProvider implements SearchProvider {
         .setFrom(start)
         .setSize(maxResults);
       
-      if (!isEmptyCollection(fields)) {
+      if (CollectionUtils.isNotEmpty(fields)) {
         requestBuilder.addFields(fields.toArray(new String[0]));
       }
       
