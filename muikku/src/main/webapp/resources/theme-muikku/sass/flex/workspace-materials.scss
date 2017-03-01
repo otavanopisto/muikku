@@ -73,7 +73,7 @@ body {
   }
   
   // Alternative Section's titles
-  & > h3, > h4, > h5, > h6 {
+  & > h3, > h4, > h5, > h6 {  
     position: relative;
     z-index: 13;
     width: auto;
@@ -99,15 +99,20 @@ body {
   color: #000;
   font-size: 14px;
   line-height: 1.5em;
-  z-index: 11;
+  z-index: 12;
   position: fixed;
+  max-height: 90px;
   top: 90px;
   bottom: 0;
   width: 290px;
+
 }
 
 .workspace-materials-progress-container {
-  padding: 15px;  
+  padding: 10px;
+  background: #f7f7f7;  
+  
+
 }
 
 
@@ -124,7 +129,7 @@ nav.workspace-materials-toc-wrapper {
   line-height: 1.5em;
   z-index: 11;
   position: fixed;
-  top: 160px;
+  top: 170px;
   bottom: 0;
   width: 290px;
   
@@ -144,6 +149,9 @@ nav.workspace-materials-toc-wrapper {
   position: relative;
   height: 100%;
 }
+
+
+
 
 // TOC TITLE
 .workspace-materials-toc-title {

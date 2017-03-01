@@ -5,6 +5,7 @@
 @import "workspace-materials-defaults";
 
 // WORKSPACE FRONTPAGE HEADER
+
 .workspace-header-wrapper {
   background: #fff;
   box-sizing: border-box;
@@ -21,7 +22,7 @@
     background-color: #d1e069;
     background-size: cover;
     background-position: center center;
-    z-index: 10;
+    z-index: 15;
   }
 
   .workspace-progress-container{
