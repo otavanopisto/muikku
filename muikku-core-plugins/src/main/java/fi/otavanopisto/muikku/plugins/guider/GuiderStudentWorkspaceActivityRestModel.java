@@ -38,6 +38,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.excercicesDonePercent = excercicesDonePercent;
     this.assessmentState = assessmentState;
     this.evaluablesTotal = evaluablesUnanswered + evaluablesAnswered + evaluablesSubmitted + evaluablesPassed + evaluablesFailed + evaluablesIncomplete;
+    this.exercisesTotal = excercicesUnanswered + excercicesAnswered;
   }
 
   public void setLastVisit(Date lastVisit) {
@@ -160,6 +161,14 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.evaluablesTotal = evaluablesTotal;
   }
 
+  public long getExercisesTotal() {
+    return exercisesTotal;
+  }
+
+  public void setExercisesTotal(long exercisesTotal) {
+    this.exercisesTotal = exercisesTotal;
+  }
+
   private Date lastVisit;
   private long numVisits;
   
@@ -184,6 +193,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private long excercicesAnswered;
   private Date excercicesAnsweredLastDate;
   private int excercicesDonePercent;
+  private long exercisesTotal;
   
   private WorkspaceAssessmentState assessmentState;
 }
