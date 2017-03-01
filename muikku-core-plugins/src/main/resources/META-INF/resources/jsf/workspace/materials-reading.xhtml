@@ -23,6 +23,7 @@
   
   <ui:define name="styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-materials-reading.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/flex/circle.css"/>          
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
   </ui:define>
@@ -48,12 +49,16 @@
           </div>
         </ui:fragment>
       </nav>
-    
+
       <div id="workspaceMaterialsReadingTOCContainer">
         <div class="workspace-materials-reading-TOC-title">
           <h1>#{i18n.text['plugin.workspace.materialsReading.tocTitle']}</h1>
           <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin" title="Kiinnitä sisällysluettelo"></div>
         </div>
+        <div class="workspace-materials-fullscreen-progress-wrapper">
+          <div class="workspace-materials-fullscreen-progress-container flex-row flex-justify-content-center">
+          </div>
+        </div>         
         <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
           <ul class="workspace-materials-toc-root">
             <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">

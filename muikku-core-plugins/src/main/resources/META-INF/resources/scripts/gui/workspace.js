@@ -273,7 +273,12 @@
         .callback($.proxy(function (err, activity) {
           if (!err) {
 
-            var progressViewType = $('.workspace-progress-container').length ? 'frontpage' : 'materialspage';
+            var progressViewType = $('.workspace-progress-container').length ? 'frontpage' : 'materials';
+            
+            if (progressViewType === 'materials') {
+               progressViewType = $('.workspace-materials-fullscreen-progress-container').length ? 'materials-fullscreen' : 'materials-normal';              
+            }
+            
             var progressContainer = null;
             var template = null;  
             
@@ -282,10 +287,15 @@
                 progressContainer = $('.workspace-progress-container');
                 template = 'workspace/workspace_progress_frontpage.dust';
                 break;
-              case 'materialspage':
+              case 'materials-normal':
                 progressContainer = $('.workspace-materials-progress-container');
                 template = 'workspace/workspace_progress_materials.dust';
                 break;
+              case 'materials-fullscreen':
+                progressContainer = $('.workspace-materials-fullscreen-progress-container');
+                template = 'workspace/workspace_progress_materials.dust';
+                break;
+              
               default:
                 progressContainer = $('.workspace-materials-progress-container');
                 template = 'workspace/workspace_progress_materials.dust';
