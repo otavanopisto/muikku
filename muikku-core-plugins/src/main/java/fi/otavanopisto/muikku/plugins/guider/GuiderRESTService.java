@@ -182,10 +182,10 @@ public class GuiderRESTService extends PluginRESTService {
         activity.getEvaluables().getIncomplete(),
         activity.getEvaluables().getIncompleteLastDate(),
         activity.getEvaluables().getDonePercent(), 
-        activity.getExcercices().getUnanswered(), 
-        activity.getExcercices().getAnswered(), 
-        activity.getExcercices().getAnsweredLastDate(), 
-        activity.getExcercices().getDonePercent(),
+        activity.getExercises().getUnanswered(), 
+        activity.getExercises().getAnswered(), 
+        activity.getExercises().getAnsweredLastDate(), 
+        activity.getExercises().getDonePercent(),
         assessmentState);
     return model;
   }

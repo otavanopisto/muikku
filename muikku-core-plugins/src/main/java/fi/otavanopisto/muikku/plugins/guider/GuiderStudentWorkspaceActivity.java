@@ -8,8 +8,8 @@ public class GuiderStudentWorkspaceActivity {
     return evaluables;
   }
   
-  public Excercices getExcercices() {
-    return excercices;
+  public Exercises getExercises() {
+    return exercises;
   }
 
   public void setLastVisit(Date lastVisit) {
@@ -45,7 +45,7 @@ public class GuiderStudentWorkspaceActivity {
   }
   
   private Evaluables evaluables = new Evaluables();
-  private Excercices excercices = new Excercices();
+  private Exercises exercises = new Exercises();
   private Date lastVisit;
   private long numVisits;
   private long journalEntryCount;
@@ -164,7 +164,7 @@ public class GuiderStudentWorkspaceActivity {
     private Date incompleteLastDate = null;
   }
   
-  public static class Excercices {
+  public static class Exercises {
 
     public void addUnanswered() {
       unanswered++;
