@@ -93,24 +93,23 @@ body {
 
 .workspace-materials-progress-wrapper {
   background: #fff;
-  text-align: left;
-  font-family: 'Open Sans', Arial, sans-serif;
-  text-shadow: none;
+  bottom: 0;
   color: #000;
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5em;
-  z-index: 12;
+  max-height: 74px;
   position: fixed;
-  max-height: 90px;
+  text-align: left;
+  text-shadow: none;
   top: 90px;
-  bottom: 0;
   width: 290px;
-
+  z-index: 12;
 }
 
 .workspace-materials-progress-container {
-  padding: 10px;
-  background: #f7f7f7;  
+  padding: 8px 0 1px 0;
+  background: #fff;  
   
 
 }
