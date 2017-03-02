@@ -2,7 +2,7 @@
 
 .workspace-progress-element-menu {
   position: absolute;
-/*   display: none; */
+  display: none;
   background-color: transparent;
   z-index: 99;
   text-align: left;
@@ -10,13 +10,13 @@
 
 
   &.frontpage {
-    top: 81px;
+    top: 78px;
     &.evaluable {
-      margin-left: -158px;      
+     right: 126px;      
     }
     
     &.exercise {
-      margin-left: -70px;      
+     right: 37px;      
     }      
   }
   
@@ -24,23 +24,23 @@
     top: 69px;
     
     &.evaluable {
-      margin-left: -239px;      
+      right: 150px;     
     }
     
     &.exercise {
-      margin-left: -108px;      
+      right: 85px;      
     }      
   }
 
 
   &.materials-fullscreen {
-    top: 186px;
+    top: 64px;
     &.evaluable {
-      margin-right: 72px;      
+     right: 85px;      
     }
     
     &.exercise {
-      margin-right: 5px;      
+      right: 20px;      
     }      
   }
 
