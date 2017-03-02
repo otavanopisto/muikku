@@ -56,7 +56,8 @@ public class GuiderController {
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(evaluatedAssignment, userEntity);
       if (workspaceMaterialReply == null) {
         activity.getEvaluables().addUnanswered();
-      } else {
+      }
+      else {
         switch (workspaceMaterialReply.getState()) {
           case WITHDRAWN:
             activity.getEvaluables().addAnswered(workspaceMaterialReply.getWithdrawn());
@@ -88,22 +89,19 @@ public class GuiderController {
       WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(exerciseAssignment, userEntity);
       if (workspaceMaterialReply == null) {
         activity.getExercises().addUnanswered();
-      } else {
+      }
+      else {
         switch (workspaceMaterialReply.getState()) {
-          case WITHDRAWN:
-            activity.getExercises().addAnswered(workspaceMaterialReply.getWithdrawn());
-          break;
+          case UNANSWERED:
           case ANSWERED:
-            activity.getExercises().addAnswered(workspaceMaterialReply.getLastModified());
+          case WITHDRAWN:
+            activity.getExercises().addUnanswered();
           break;
           case PASSED:
           case FAILED:
           case SUBMITTED:
           case INCOMPLETE:
             activity.getExercises().addAnswered(workspaceMaterialReply.getSubmitted());
-          break;
-          case UNANSWERED:
-            activity.getExercises().addUnanswered();
           break;
         }
       }

@@ -38,7 +38,6 @@
             }
 
             activity.evaluablesDone = activity.evaluablesPassed + activity.evaluablesSubmitted + activity.evaluablesFailed + activity.evaluablesIncomplete;
-            activity.evaluablesUndone = activity.evaluablesTotal - (activity.evaluablesPassed + activity.evaluablesSubmitted);   
             
             renderDustTemplate(template, {progress : activity}, $.proxy(function (text) {
               progressContainer.html(text);
