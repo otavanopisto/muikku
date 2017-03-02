@@ -1,4 +1,4 @@
-function openInSN(template, result, formSendFunction, formContentFunction, cke) {
+function openInSN(template, options, formSendFunction, formContentFunction, cke) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
   var ck = cke;
@@ -11,7 +11,7 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
 
   tabDiv.appendTo(formContainer);
 
-  renderDustTemplate(template, result, function(text) {
+  renderDustTemplate(template, options, function(text) {
     $(tabDiv).append($.parseHTML(text));
     var ckeditor = ck;
     var textareas = functionContainer.find("textarea");    
@@ -21,71 +21,65 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
     var elements = $(tabDiv).find("form");
     
     // Discussion - TODO: replace with formParameters 
-    if(result != null && result.actionType == "edit"){
-      var editableContent = result.message;
-      var topic = result.title;
-      
+    if (options != null && options.actionType == "edit") {
+      var editableContent = options.message;
+      var topic = options.title;
       $(textfields).each(function(index,textfield){        
         $(textfield).val(topic);
       });  
-      
     }
+
     // Getting existing content 
 
-
-
-     if(ckeditor == undefined){
-       var ckeditor = true;
-     }
+    if (ckeditor == undefined){
+      var ckeditor = true;
+    }
      
-     if(ckeditor == true){
-     
-        $(textareas).each(function(index,textarea){
-          
-          // This does not work 100%! This needs to be replaced in discussions!!
-          
-          $(textarea).val(editableContent);
-          
-          CKEDITOR.replace(textarea, {
-            height : '100px',
-            entities: false,
-            entities_latin: false,
-            entities_greek: false,
-            toolbar: [
-                      { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-                      { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
-                      { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-                      { name: 'links', items: [ 'Link' ] },
-                      { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
-                      { name: 'styles', items: [ 'Format' ] },
-                      { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-                      { name: 'tools', items: [ 'Maximize' ] }
-                    ]
-          });
+    if (ckeditor == true){
+      $(textareas).each(function(index,textarea) {
 
+        // This does not work 100%! This needs to be replaced in discussions!!
+        
+        $(textarea).val(editableContent);
+        
+        CKEDITOR.replace(textarea, {
+          height : '100px',
+          entities: false,
+          entities_latin: false,
+          entities_greek: false,
+          toolbar: [
+            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+            { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+            { name: 'links', items: [ 'Link' ] },
+            { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+            { name: 'styles', items: [ 'Format' ] },
+            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+            { name: 'tools', items: [ 'Maximize' ] }
+          ]
         });
-     }
-
+      });
+    }
      
     // Selects current forum area when new message form loads
+    
     var selArea = $("#discussionAreaSelect").val();
     
     if (selArea != "all") {
       $("#forumAreaIdSelect option")
-      .prop('selected', false)
-      .filter('[value="' + selArea + '"]')
-      .prop('selected', true);
+        .prop('selected', false)
+        .filter('[value="' + selArea + '"]')
+        .prop('selected', true);
     }
     
     // Form functions a done here, so all the form content is loaded this allows us to use CKEDITOR.setdata from the mainfunction
     
     if (formContentFunction != undefined){
-      if($.isFunction(formContentFunction)){
-         formContentFunction();
-      }else{
-        if(formContentFunction.quote == true){
-           CKEDITOR.instances.textContent.setData('<blockquote>' + '<p><strong>' + formContentFunction.quoteAuthor + '</strong></p>' +formContentFunction.quoteContent + '</blockquote><p> </p>');         
-        }       
+      if ($.isFunction(formContentFunction)) {
+        formContentFunction();
+      }
+      else if (formContentFunction.quote == true) {
+        CKEDITOR.instances.textContent.setData('<blockquote><p><strong>' + formContentFunction.quoteAuthor + '</strong></p>' + formContentFunction.quoteContent + '</blockquote><p></p>');         
       }
     }
     
@@ -93,7 +87,6 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
       formContainer.empty();
       $('.sn-container').removeClass('open');
       $('.sn-container').addClass('closed');
-      
       adjustContentMargin();
     });
 
@@ -107,7 +100,8 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
       // TODO: Remove this hack
       if (CKEDITOR.instances.textContent) {
         ckContent = CKEDITOR.instances.textContent.getData();
-      } else if (CKEDITOR.instances.length > 0) {
+      }
+      else if (CKEDITOR.instances.length > 0) {
         ckContent = CKEDITOR.instances[0].textContent.getData();
       }
 
@@ -116,16 +110,15 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
       });
 
       $.each(vals, function(index, value) {
-        
         if (varIsArray[value.name] != true) {
-          
           if (value.name == "content" || value.name == "message" && textareas.length > 0) {
             obj[value.name] = ckContent || '';         
-          } else {
+          }
+          else {
             obj[value.name] = value.value || '';   
           }
-          
-        } else {
+        }
+        else {
           if (!$.isArray(obj[value.name])) {
             obj[value.name] = [];
           }
@@ -140,10 +133,7 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
         $('.sn-container').addClass('closed');
         adjustContentMargin();
       }
-
     });
-
-
   });
 
   functionContainer.removeClass('closed');
@@ -154,18 +144,13 @@ function openInSN(template, result, formSendFunction, formContentFunction, cke) 
 // TODO: create more sophisticated fix for content area's bottom margin adjustment when social navigation is opened  
 function adjustContentMargin() {
   if ($('.sn-container.open').length > 0) {
-  
     if ($("#content").length > 0) {
-      $("#content").css({
-        "margin-bottom" : "320px"
-      });
+      $("#content").css({"margin-bottom" : "320px"});
     }
-    
-  } else {
+  }
+  else {
     if ($("#content").length > 0) {
-      $("#content").css({
-        "margin-bottom" : 0
-      });
+      $("#content").css({"margin-bottom" : 0});
     }
   }
   

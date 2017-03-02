@@ -111,15 +111,16 @@
   function newJournalEntry() {
     var workspaceId = $("input[name='workspaceEntityId']").val();
     var sendJournalEntry = function(values) {
-
-      mApi({async: false}).workspace.workspaces.journal.create(workspaceId, values).callback(
-          function(err, result) {
-            if (!err) {
-              window.location.reload(true);
-            } else {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-          });
+      mApi({async: false}).workspace.workspaces.journal
+        .create(workspaceId, values)
+        .callback(function(err, result) {
+          if (!err) {
+            window.location.reload(true);
+          }
+          else {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+        });
     }
 
     openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId,sendJournalEntry);
@@ -128,19 +129,22 @@
   function editJournalEntry(element) {
     var id = element.attr('data-entry-id');
     var workspaceId = $("input[name='workspaceEntityId']").val();
-    openInSN('/workspace/workspace-journal-edit-entry.dust',
-        {actionType: 'edit'
-        ,message: element.find('.workspace-journal-content').html()
-        ,title: element.find('.workspace-journal-title').html()}
-      , function(values){
-      mApi({async: false}).workspace.journal.update(id, values).callback(
-          function(err, result) {
-            if (!err) {
-              window.location.reload(true);
-            } else {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }
-          });
+    openInSN('/workspace/workspace-journal-edit-entry.dust', {
+      actionType: 'edit',
+      message: element.find('.workspace-journal-content').html(),
+      title: element.find('.workspace-journal-title').html()
+    },
+    function(values) {
+      mApi({async: false}).workspace.journal
+        .update(id, values)
+        .callback(function(err, result) {
+          if (!err) {
+            window.location.reload(true);
+          }
+          else {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+        });
     });
   }
   
