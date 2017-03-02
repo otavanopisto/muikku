@@ -7,7 +7,7 @@
         <div class="fill"></div>
       </div>
     </div>
-    <div class="workspace-progress-element-menu frontpage evaluable cm-label-menu">
+    <div id="evaluableMenu" class="workspace-progress-element-menu frontpage evaluable cm-label-menu">
       <div class="workspace-progress-element-menu-content evaluable cm-label-menu-content">
         <div class="workspace-progress-menu-title">{#localize key="plugin.workspace.progress.evaluable.title"/}</div>
         <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.done"/}</span><span>{evaluablesDone}</span></div>
@@ -44,7 +44,7 @@
         <div class="fill"></div>
       </div>
     </div>
-    <div class="workspace-progress-element-menu frontpage exercise cm-label-menu">
+    <div id="exerciseMenu"  class="workspace-progress-element-menu frontpage exercise cm-label-menu">
       <div class="workspace-progress-element-menu-content exercise cm-label-menu-content">
         <div class="workspace-progress-menu-title">{#localize key="plugin.workspace.progress.exercise.title"/}</div>
         <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.exercise.done"/}</span><span>{exercisesAnswered}</span></div>

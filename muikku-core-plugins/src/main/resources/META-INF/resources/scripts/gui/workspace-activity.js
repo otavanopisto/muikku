@@ -42,7 +42,16 @@
             renderDustTemplate(template, {progress : activity}, $.proxy(function (text) {
               progressContainer.html(text);
               $(progressContainer).on('click', '.c100', function (event) {
-                $(event.target).closest('.c100').next('.workspace-progress-element-menu').toggle();              
+                var activeMenu = $('.workspace-progress-element-menu:visible');
+                var thisMenu = $(event.target).closest('.c100').next('.workspace-progress-element-menu');
+
+                if(thisMenu.attr('id') == activeMenu.attr('id') || activeMenu.length == 0){
+                  $(event.target).closest('.c100').next('.workspace-progress-element-menu').toggle();          
+                }else{
+                  activeMenu.hide();
+                  thisMenu.show();
+                }
+    
               });
               
             }, this));
