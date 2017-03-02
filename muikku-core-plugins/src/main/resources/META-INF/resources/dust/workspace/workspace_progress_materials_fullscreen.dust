@@ -12,18 +12,18 @@
         <div class="workspace-progress-menu-title">{#localize key="plugin.workspace.progress.evaluable.title"/}</div>
         <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.done"/}</span><span>{evaluablesDone}</span></div>
         <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.undone"/}</span><span>{evaluablesUndone}</span></div>
-        {?evaluablesPassed} 
+        {@gt key=evaluablesPassed value="0"} 
           <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.passed"/}</span><span>{evaluablesPassed}</span></div>
-        {/evaluablesPassed}
-        {?evaluablesSubmitted}
+        {/gt}
+        {@gt key=evaluablesSubmitted value="0"}
           <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.unevaluated"/}</span><span>{evaluablesSubmitted}</span></div>
-        {/evaluablesSubmitted}
-        {?evaluablesFailed}
+        {/gt}
+        {@gt key=evaluablesFailed value="0"}
           <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.failed"/}</span><span>{evaluablesFailed}</span></div>
-        {/evaluablesFailed}
-        {?evaluablesIncomplete}
+        {/gt}
+        {@gt key=evaluablesIncomplete value="0"}
           <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.evaluable.incomplete"/}</span><span>{evaluablesIncomplete}</span></div>
-        {/evaluablesIncomplete}
+        {/gt}
        </div>
     </div>    
   {:else}
