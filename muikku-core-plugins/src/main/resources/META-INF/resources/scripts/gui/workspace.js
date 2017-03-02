@@ -293,7 +293,7 @@
                 break;
               case 'materials-fullscreen':
                 progressContainer = $('.workspace-materials-fullscreen-progress-container');
-                template = 'workspace/workspace_progress_materials.dust';
+                template = 'workspace/workspace_progress_materials_fullscreen.dust';
                 break;
               
               default:
