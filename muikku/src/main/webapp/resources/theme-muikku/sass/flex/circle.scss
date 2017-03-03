@@ -224,45 +224,41 @@ $exercise-color-dark: #e08833;
   
   
   // evaluable skin
+  
   &.evaluable {
   
-  	.bar, .fill { border-color: $evaluable-color !important;}
+    .bar, .fill { border-color: $evaluable-color !important;}
   
   	&:hover {
-  		> span { color: $evaluable-color;}
+      > span { color: $evaluable-color;}
   	}
-  
   }
   
-  	&.evaluable.dark{
-  
-  		.bar, .fill { border-color: $evaluable-color-dark !important;}
-  
-  		&:hover {
-  			> span { color: $evaluable-color-dark;}
-  		}
-  
-  	}
+  &.evaluable.dark{
+    .bar, .fill { border-color: $evaluable-color-dark !important;}
+
+		&:hover {
+		  > span { color: $evaluable-color-dark;}
+	  }
+  }
   
   
   // exercise skin
   
   &.exercise{
-  
+ 
   	.bar, .fill { border-color: $exercise-color !important;}
-  
   	&:hover {
-  		> span { color: $exercise-color;}
-  	}
-  
+      > span { color: $exercise-color;}
+    }
   }
   
   &.exercise.dark {
   
-  	.bar, .fill { border-color: $exercise-color-dark !important;}
-  
+    .bar, .fill { border-color: $exercise-color-dark !important;}
+  	
   	&:hover {
-  		> span { color: $exercise-color-dark;}
-  	}
+  	  > span { color: $exercise-color-dark;}
+    }
   }
 }
