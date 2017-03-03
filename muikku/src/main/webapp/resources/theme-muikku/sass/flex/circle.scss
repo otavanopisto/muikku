@@ -41,7 +41,7 @@ $exercise-color-dark: #e08833;
 // classes 2 extend
 
 
-.rect-auto{
+.rect-auto {
   clip: rect(auto, auto, auto, auto);
 }
 
@@ -85,18 +85,18 @@ $exercise-color-dark: #e08833;
   background-color: $secondary-color;
   
   // center circle to its parent
-  &.center{
+  &.center {
     float: none;
     margin: 0 auto;
   }
   
   // bigger size
-  &.big{
+  &.big {
     font-size: 160px;
   }
   
   // smaller size
-  &.small{
+  &.small {
     font-size: 60px;
   }
   
@@ -120,7 +120,7 @@ $exercise-color-dark: #e08833;
   }
   
   // background inside the circle
-  &::after{
+  &::after {
     position: absolute;
     top: $circle-width;
     left: $circle-width;
@@ -157,11 +157,11 @@ $exercise-color-dark: #e08833;
       @extend .rect-auto;
     }
   
-    &.p#{$j} .bar:after{
+    &.p#{$j} .bar:after {
       @extend .pie-fill;
     }
   
-    &.p#{$j} .fill{
+    &.p#{$j} .fill {
       @extend .pie;
       @extend .pie-fill;
     }
@@ -178,14 +178,14 @@ $exercise-color-dark: #e08833;
   
   
   // hover styles
-  &:hover{
+  &:hover {
     cursor: default;
     > span {
       color: $primary-color;
       font-weight:  bold;
     }
   
-    &::after{
+    &::after {
       left: $circle-width-hover;
       top: $circle-width-hover;
       width: 1 - (2 * $circle-width-hover);
@@ -236,7 +236,7 @@ $exercise-color-dark: #e08833;
     }
   }
   
-  &.evaluable.dark{
+  &.evaluable.dark {
     .bar, 
     .fill { border-color: $evaluable-color-dark !important;}
 
@@ -248,7 +248,7 @@ $exercise-color-dark: #e08833;
   
   // exercise skin
   
-  &.exercise{
+  &.exercise {
 
     .bar, 
     .fill { border-color: $exercise-color !important;}
