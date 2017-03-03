@@ -74,17 +74,17 @@ body {
   
   // Alternative Section's titles
   & > h3, > h4, > h5, > h6 {  
-    position: relative;
-    z-index: 13;
-    width: auto;
     background: #fff;
-    margin: 30px auto -30px; 
-    font-weight: 300;
     color: #000;
     font-size: 26px;
-    padding: 10px 20px 10px;
-    text-transform: none;
+    font-weight: 300;
     line-height: 1.3em;
+    margin: 30px auto -30px;
+    padding: 10px 20px 10px;    
+    position: relative;
+    text-transform: none;
+    width: auto;
+    z-index: 13;
   }
   
 }
@@ -108,7 +108,7 @@ body {
 }
 
 .workspace-materials-progress-container {
-  padding: 8px 0 1px 0;
+  padding: 8px 0 1px;
   background: #fff;  
   
 
