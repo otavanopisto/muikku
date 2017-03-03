@@ -68,7 +68,9 @@ $exercise-color-dark: #e08833;
   
   }
   
-  *, *::before, *::after {
+  *, 
+  *::before, 
+  *::after {
   	@include box-sizing(content-box);
     cursor: pointer;  
   }
@@ -227,7 +229,8 @@ $exercise-color-dark: #e08833;
   
   &.evaluable {
   
-    .bar, .fill { border-color: $evaluable-color !important;}
+    .bar, 
+    .fill { border-color: $evaluable-color !important;}
   
   	&:hover {
       > span { color: $evaluable-color;}
@@ -235,7 +238,8 @@ $exercise-color-dark: #e08833;
   }
   
   &.evaluable.dark{
-    .bar, .fill { border-color: $evaluable-color-dark !important;}
+    .bar, 
+    .fill { border-color: $evaluable-color-dark !important;}
 
 		&:hover {
 		  > span { color: $evaluable-color-dark;}
@@ -246,8 +250,10 @@ $exercise-color-dark: #e08833;
   // exercise skin
   
   &.exercise{
- 
-  	.bar, .fill { border-color: $exercise-color !important;}
+
+    .bar, 
+  	.fill { border-color: $exercise-color !important;}
+  	
   	&:hover {
       > span { color: $exercise-color;}
     }
@@ -255,7 +261,8 @@ $exercise-color-dark: #e08833;
   
   &.exercise.dark {
   
-    .bar, .fill { border-color: $exercise-color-dark !important;}
+    .bar, 
+    .fill { border-color: $exercise-color-dark !important;}
   	
   	&:hover {
   	  > span { color: $exercise-color-dark;}
