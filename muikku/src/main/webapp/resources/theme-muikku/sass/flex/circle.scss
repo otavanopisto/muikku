@@ -199,7 +199,7 @@ $exercise-color-dark: #e08833;
 		background-color: $secondary-color-dark;
 
 		.bar,
-		.fill{
+		.fill {
 			border-color: $primary-color-dark !important;
 		}
 
@@ -208,11 +208,11 @@ $exercise-color-dark: #e08833;
 		}
 
 
-		&:after{
+		&:after {
 			background-color: $bg-color-dark;
 		}
 
-		&:hover{
+		&:hover {
 
 			> span {
 				color: $primary-color-dark;
@@ -224,11 +224,11 @@ $exercise-color-dark: #e08833;
 
 
 	// evaluable skin
-	&.evaluable{
+	&.evaluable {
 
 		.bar, .fill { border-color: $evaluable-color !important;}
 
-		&:hover{
+		&:hover {
 			> span { color: $evaluable-color;}
 		}
 
@@ -238,7 +238,7 @@ $exercise-color-dark: #e08833;
 
 			.bar, .fill { border-color: $evaluable-color-dark !important;}
 
-			&:hover{
+			&:hover {
 				> span { color: $evaluable-color-dark;}
 			}
 
@@ -246,25 +246,25 @@ $exercise-color-dark: #e08833;
 
 
 	// exercise skin
+	
 	&.exercise{
 
 		.bar, .fill { border-color: $exercise-color !important;}
 
-		&:hover{
+		&:hover {
 			> span { color: $exercise-color;}
 		}
 
 	}
 
-		&.exercise.dark{
-
-			.bar, .fill { border-color: $exercise-color-dark !important;}
-
-			&:hover{
-				> span { color: $exercise-color-dark;}
-			}
-
-		}
+  &.exercise.dark {
+  
+  	.bar, .fill { border-color: $exercise-color-dark !important;}
+  
+  	&:hover {
+  		> span { color: $exercise-color-dark;}
+  	}
+  }
 
 
 }
