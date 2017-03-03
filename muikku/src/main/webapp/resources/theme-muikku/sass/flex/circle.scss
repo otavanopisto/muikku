@@ -42,21 +42,21 @@ $exercise-color-dark: #e08833;
 
 
 .rect-auto{
-	clip: rect(auto, auto, auto, auto);
+  clip: rect(auto, auto, auto, auto);
 }
 
 .pie {
-	position: absolute;
-	border: $circle-width solid $primary-color;
-	width: 1 - (2 * $circle-width);
-	height: 1 - (2 * $circle-width);
-	clip: rect(0em, 0.5em, 1em, 0em);
-	border-radius: 50%;
-	@include rotate(0deg);
+  position: absolute;
+  border: $circle-width solid $primary-color;
+  width: 1 - (2 * $circle-width);
+  height: 1 - (2 * $circle-width);
+  clip: rect(0em, 0.5em, 1em, 0em);
+  border-radius: 50%;
+  @include rotate(0deg);
 }
 
 .pie-fill {
-	@include rotate(180deg);
+  @include rotate(180deg);
 }
 
 
@@ -71,7 +71,7 @@ $exercise-color-dark: #e08833;
   *, 
   *::before, 
   *::after {
-  	@include box-sizing(content-box);
+    @include box-sizing(content-box);
     cursor: pointer;  
   }
   
@@ -86,104 +86,104 @@ $exercise-color-dark: #e08833;
   
   // center circle to its parent
   &.center{
-  	float: none;
-  	margin: 0 auto;
+    float: none;
+    margin: 0 auto;
   }
   
   // bigger size
   &.big{
-  	font-size: 160px;
+    font-size: 160px;
   }
   
   // smaller size
   &.small{
-  	font-size: 60px;
+    font-size: 60px;
   }
   
   // centered value inside circle
   > span {
-  	position: absolute;
-  	width: 100%;
-  	z-index: 1;
-  	left: 0;
-  	top: 0;
-  	width: 5em;
-  	line-height: 5em;
-  	font-size: 0.2em;
-  	color: $secondary-color;
-  	display: block;
-  	text-align: center;
-  	white-space: nowrap;
-  	@include transition-property(all);
-  	@include transition-duration(0.2s);
-  	@include transition-timing-function(ease-out);
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 5em;
+    line-height: 5em;
+    font-size: 0.2em;
+    color: $secondary-color;
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-out);
   }
   
   // background inside the circle
   &::after{
-  	position: absolute;
-  	top: $circle-width;
-  	left: $circle-width;
-  	display: block;
-  	content: " ";
-  	border-radius: 50%;
-  	background-color: $bg-sub-color;
-  	width: 1 - (2 * $circle-width);
-  	height: 1 - (2 * $circle-width);
-  	@include transition-property(all);
-  	@include transition-duration(0.2s);
-  	@include transition-timing-function(ease-in);
+    position: absolute;
+    top: $circle-width;
+    left: $circle-width;
+    display: block;
+    content: " ";
+    border-radius: 50%;
+    background-color: $bg-sub-color;
+    width: 1 - (2 * $circle-width);
+    height: 1 - (2 * $circle-width);
+    @include transition-property(all);
+    @include transition-duration(0.2s);
+    @include transition-timing-function(ease-in);
   
   }
   
   // the slice (mask)
   .slice {
-  	position: absolute;
-  	width: 1em;
-  	height: 1em;
-  	clip: rect(0em, 1em, 1em, 0.5em);
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    clip: rect(0em, 1em, 1em, 0.5em);
   }
   
   // circle to show the status
   .bar {
-  	@extend .pie;
+    @extend .pie;
   }
   
   
   // loop to create all needed elements automatically
   @for $j from 51 through 100 {
   
-  	&.p#{$j} .slice {
-  		@extend .rect-auto;
-  	}
+    &.p#{$j} .slice {
+      @extend .rect-auto;
+    }
   
-  	&.p#{$j} .bar:after{
-  		@extend .pie-fill;
-  	}
+    &.p#{$j} .bar:after{
+      @extend .pie-fill;
+    }
   
-  	&.p#{$j} .fill{
-  		@extend .pie;
-  		@extend .pie-fill;
-  	}
+    &.p#{$j} .fill{
+      @extend .pie;
+      @extend .pie-fill;
+    }
   
   }
   
   // loop to rotate all 100 circles
   @for $j from 1 through 100 {
-  	&.p#{$j} .bar {
-  		@include rotate((360/100*$j) + deg);
-  	}
+    &.p#{$j} .bar {
+      @include rotate((360/100*$j) + deg);
+    }
   }
   
   
   
   // hover styles
   &:hover{
-  	cursor: default;
-  	> span {
+    cursor: default;
+    > span {
       color: $primary-color;
       font-weight:  bold;
-  	}
+    }
   
     &::after{
       left: $circle-width-hover;
@@ -198,29 +198,28 @@ $exercise-color-dark: #e08833;
   // override colors for the dark skin
   &.dark {
   
-  	background-color: $secondary-color-dark;
+    background-color: $secondary-color-dark;
   
-  	.bar,
-  	.fill {
-  		border-color: $primary-color-dark !important;
-  	}
+    .bar,
+    .fill {
+      border-color: $primary-color-dark !important;
+    }
   
-  	> span {
-  		color: $secondary-color-dark;
-  	}
+    > span {
+      color: $secondary-color-dark;
+    }
   
   
-  	&::after {
-  		background-color: $bg-color-dark;
-  	}
+    &::after {
+      background-color: $bg-color-dark;
+    }
   
-  	&:hover {
+    &:hover {
+      > span {
+        color: $primary-color-dark;
+      }
   
-  		> span {
-  			color: $primary-color-dark;
-  		}
-  
-  	}
+    }
   
   }
   
@@ -232,18 +231,18 @@ $exercise-color-dark: #e08833;
     .bar, 
     .fill { border-color: $evaluable-color !important;}
   
-  	&:hover {
+    &:hover {
       > span { color: $evaluable-color;}
-  	}
+    }
   }
   
   &.evaluable.dark{
     .bar, 
     .fill { border-color: $evaluable-color-dark !important;}
 
-		&:hover {
-		  > span { color: $evaluable-color-dark;}
-	  }
+    &:hover {
+      > span { color: $evaluable-color-dark;}
+    }
   }
   
   
@@ -252,9 +251,9 @@ $exercise-color-dark: #e08833;
   &.exercise{
 
     .bar, 
-  	.fill { border-color: $exercise-color !important;}
-  	
-  	&:hover {
+    .fill { border-color: $exercise-color !important;}
+    
+    &:hover {
       > span { color: $exercise-color;}
     }
   }
@@ -263,9 +262,9 @@ $exercise-color-dark: #e08833;
   
     .bar, 
     .fill { border-color: $exercise-color-dark !important;}
-  	
-  	&:hover {
-  	  > span { color: $exercise-color-dark;}
+
+    &:hover {
+      > span { color: $exercise-color-dark;}
     }
   }
 }
