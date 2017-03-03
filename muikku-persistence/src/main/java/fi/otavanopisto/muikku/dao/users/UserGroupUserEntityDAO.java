@@ -5,14 +5,19 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import fi.otavanopisto.muikku.dao.CoreDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity_;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity_;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier_;
 
 public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
 
@@ -122,6 +127,49 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
 
   public void delete(UserGroupUserEntity userGroupUserEntity) {
     super.delete(userGroupUserEntity);
+  }
+
+  public boolean haveSharedUserGroups(UserEntity user1, UserEntity user2) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<UserGroupEntity> root = criteria.from(UserGroupEntity.class);
+    
+    Subquery<UserGroupEntity> user1Groups = criteria.subquery(UserGroupEntity.class);
+    Subquery<UserGroupEntity> user2Groups = criteria.subquery(UserGroupEntity.class);
+    
+    Root<UserGroupUserEntity> user1Root = user1Groups.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserSchoolDataIdentifier> user1Identifier = user1Root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
+    Root<UserGroupUserEntity> user2Root = user2Groups.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserSchoolDataIdentifier> user2Identifier = user2Root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
+    
+    user1Groups.select(user1Root.get(UserGroupUserEntity_.userGroupEntity));
+    user2Groups.select(user2Root.get(UserGroupUserEntity_.userGroupEntity));
+    
+    user1Groups.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(user1Identifier.get(UserSchoolDataIdentifier_.userEntity), user1),
+            criteriaBuilder.equal(user1Root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+        )
+    );
+    user2Groups.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(user2Identifier.get(UserSchoolDataIdentifier_.userEntity), user2),
+            criteriaBuilder.equal(user2Root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+        )
+    );
+    
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            root.in(user1Groups),
+            root.in(user2Groups),
+            criteriaBuilder.equal(root.get(UserGroupEntity_.archived), Boolean.FALSE)
+        )
+    );
+   
+    return entityManager.createQuery(criteria).getSingleResult() > 0;
   }
   
 }
