@@ -10,7 +10,8 @@
 @import "compass";
 
 
-// VARS
+// VARS TODO: move to vars
+ 
 $circle-width: 0.08em;
 $circle-width-hover: 0.04em;
 
@@ -61,8 +62,13 @@ $exercise-color-dark: #e08833;
 // main
 .c100 {
 
+  div {
+
+  }
+  
 	*, *:before, *:after {
 		@include box-sizing(content-box);
+    cursor: pointer;  
 	}
 
 	position: relative;
