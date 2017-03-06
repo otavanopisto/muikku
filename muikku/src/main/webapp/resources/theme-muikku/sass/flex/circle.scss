@@ -6,8 +6,6 @@
 *****************************************************************/
 
 
-// Compass utilities
-@import "compass";
 
 
 // VARS TODO: move to vars
@@ -52,11 +50,11 @@ $exercise-color-dark: #e08833;
   height: 1 - (2 * $circle-width);
   clip: rect(0em, 0.5em, 1em, 0em);
   border-radius: 50%;
-  @include rotate(0deg);
+  transform: rotate(0deg);
 }
 
 .pie-fill {
-  @include rotate(180deg);
+  transform: rotate(180deg);  
 }
 
 
@@ -71,7 +69,7 @@ $exercise-color-dark: #e08833;
   *, 
   *::before, 
   *::after {
-    @include box-sizing(content-box);
+    box-sizing: content-box;
     cursor: pointer;  
   }
   
@@ -114,9 +112,9 @@ $exercise-color-dark: #e08833;
     display: block;
     text-align: center;
     white-space: nowrap;
-    @include transition-property(all);
-    @include transition-duration(0.2s);
-    @include transition-timing-function(ease-out);
+    transition-property:all;
+    transition-duration:0.2s;
+    transition-timing-function:ease-out;
   }
   
   // background inside the circle
@@ -130,9 +128,9 @@ $exercise-color-dark: #e08833;
     background-color: $bg-sub-color;
     width: 1 - (2 * $circle-width);
     height: 1 - (2 * $circle-width);
-    @include transition-property(all);
-    @include transition-duration(0.2s);
-    @include transition-timing-function(ease-in);
+    transition-property:all;
+    transition-duration:0.2s;;
+    transition-timing-function:ease-in;;
   
   }
   
@@ -171,7 +169,7 @@ $exercise-color-dark: #e08833;
   // loop to rotate all 100 circles
   @for $j from 1 through 100 {
     &.p#{$j} .bar {
-      @include rotate((360/100*$j) + deg);
+      transform: rotate((360/100*$j) + deg);
     }
   }
   
