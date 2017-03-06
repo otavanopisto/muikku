@@ -4,8 +4,11 @@ import java.util.Locale;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.ocpsoft.rewrite.annotation.RequestAction;
@@ -44,7 +47,8 @@ public class LanguageWidgetBackingBean {
       userEntityController.updateLocale(localSessionController.getLoggedUserEntity(), locale);
     }
     
-    return "/index.jsf?faces-redirect=true";
+    ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+    return ((HttpServletRequest) ec.getRequest()).getRequestURI();    
   }
   
 }

@@ -183,7 +183,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceJournalController workspaceJournalController;
   
   @Inject
-  private CopiedWorkspaceEntityFinder copiedWorkspaceEntityFinder;
+  private CopiedWorkspaceEntityIdFinder copiedWorkspaceEntityIdFinder;
 
   @Inject
   private FlagController flagController;
@@ -221,13 +221,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     }
     
+    WorkspaceEntity sourceWorkspaceEntity = null;
     if (sourceWorkspaceEntityId != null) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
-      if (workspaceEntity == null) {
+      sourceWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceEntityId);
+      if (sourceWorkspaceEntity == null) {
         return Response.status(Status.BAD_REQUEST).entity(String.format("Invalid source workspace entity id %d", sourceWorkspaceEntityId)).build();
       }
       
-      workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+      workspaceIdentifier = new SchoolDataIdentifier(sourceWorkspaceEntity.getIdentifier(), sourceWorkspaceEntity.getDataSource().getIdentifier());
     }
     
     if (workspaceIdentifier == null) {
@@ -251,6 +252,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to create local copy of workspace %s", sourceWorkspaceId)).build();
     }
+    
+    // #2599: Also copy workspace default license and producers
+    if (sourceWorkspaceEntity != null) {
+      workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, sourceWorkspaceEntity.getDefaultMaterialLicense());
+      List<WorkspaceMaterialProducer> workspaceMaterialProducers = workspaceController.listWorkspaceMaterialProducers(sourceWorkspaceEntity);
+      for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
+        workspaceController.createWorkspaceMaterialProducer(workspaceEntity, workspaceMaterialProducer.getName());
+      }
+    }
 
     return Response
         .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace)))
@@ -265,27 +275,31 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
   
   private WorkspaceEntity findCopiedWorkspaceEntity(Workspace workspace) {
-    WorkspaceEntity result = null;
+    WorkspaceEntity workspaceEntity = null;
+    Long workspaceEntityId = null;
     
     long timeoutTime = System.currentTimeMillis() + 60000;    
     
-    while (result == null) {
-      result = copiedWorkspaceEntityFinder.findCopiedWorkspaceEntity(workspace);
+    while (workspaceEntityId == null) {
+      workspaceEntityId = copiedWorkspaceEntityIdFinder.findCopiedWorkspaceEntityId(workspace);
     
       if (System.currentTimeMillis() > timeoutTime) {
         logger.severe("Timeouted when waiting for copied workspace entity");
         return null;
       }
       
-      if (result == null) {
+      if (workspaceEntityId == null) {
         try {
           Thread.sleep(10);
         } catch (InterruptedException e) {
         }
       }
+      else {
+        workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      }
     }
     
-    return result;
+    return workspaceEntity;
   }
 
   @GET

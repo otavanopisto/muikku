@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.schooldata.events;
 
-import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 
 public class SchoolDataEnvironmentRoleDiscoveredEvent {
 

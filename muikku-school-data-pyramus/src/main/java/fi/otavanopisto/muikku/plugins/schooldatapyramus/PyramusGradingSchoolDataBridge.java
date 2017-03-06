@@ -104,12 +104,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 	@Override
 	public List<GradingScale> listGradingScales() {
 	  fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
-	  Set<Long> gradingScaleFilter = getGradingScaleFilter();
 	  List<GradingScale> gradingScaleEntities = new ArrayList<GradingScale>();
 	  for (int i = 0; i < gradingScales.length; i++) {
-	    if (gradingScaleFilter.isEmpty() || gradingScaleFilter.contains(gradingScales[i].getId())) {
-	      gradingScaleEntities.add(createGradingScaleEntity(gradingScales[i]));
-	    }
+      gradingScaleEntities.add(createGradingScaleEntity(gradingScales[i]));
 	  }
 	  return gradingScaleEntities;
 	}

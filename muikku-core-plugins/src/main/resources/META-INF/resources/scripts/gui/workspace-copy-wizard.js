@@ -54,10 +54,8 @@
             }, this));
         },
         "change-dates": function (callback) {
-          var beginDate = $('input[name="beginDate"]').datepicker('getDate');
-          
-          var endDate = $('input[name="endDate"]').datepicker('getDate');
-          
+          var beginDate = $(this.element).find('input[name="beginDate"]').datepicker('getDate');
+          var endDate = $(this.element).find('input[name="endDate"]').datepicker('getDate');
           mApi().workspace.workspaces.details
             .read(this._createdWorkspace.id)
             .callback($.proxy(function (loadErr, workspaceDetails) {
@@ -350,12 +348,8 @@
               getLocaleText('plugin.workspacecopywizard.summarySteps.copyWorkspaceName', name)))
             .appendTo(copyWorkspaceStep);
           
-          var beginDate = $(this.element).find('input[name="beginDate"]')
-            .datepicker('getDate');
-          
-          var endDate = $(this.element).find('input[name="endDate"]')
-            .datepicker('getDate');
-          
+          var beginDate = $(this.element).find('input[name="beginDate"]').datepicker('getDate');
+          var endDate = $(this.element).find('input[name="endDate"]').datepicker('getDate');
           if (beginDate || endDate) {
             var changeDatesStep = this._addSummaryStep('change-dates', getLocaleText('plugin.workspacecopywizard.summarySteps.changeDates'));
             var details = $('<ul>').appendTo(changeDatesStep);

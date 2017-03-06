@@ -1185,8 +1185,7 @@
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
-      
-      $('html, body').stop().animate({
+      $('html,body').animate({
         scrollTop : scrollTop
       }, {
         duration : 500,
@@ -1195,11 +1194,14 @@
           $('li.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
+          scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
+          $('html,body').scrollTop(scrollTop);
+          $.waypoints('refresh');
           $(window).data('scrolling', false);
         }
       });
     } else {
-      $('html, body').stop().scrollTop(scrollTop);
+      $('html,body').scrollTop(scrollTop);
       $('li.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
       window.location.hash = 'p-' + workspaceMaterialId;
@@ -1342,9 +1344,12 @@
         $('li.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
         window.location.hash = 'p-' + workspaceMaterialId;
+        $(window).data('scrolling', true);
+        $.waypoints('refresh');
+        $(window).data('scrolling', false);
       }
     }, {
-      offset: '60%'
+      offset: 50
     });
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {

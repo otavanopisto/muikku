@@ -12,6 +12,8 @@ public enum EnvironmentRoleArchetype {
   
   STUDY_PROGRAMME_LEADER,
   
+  STUDY_GUIDER,
+  
   CUSTOM
   
 }

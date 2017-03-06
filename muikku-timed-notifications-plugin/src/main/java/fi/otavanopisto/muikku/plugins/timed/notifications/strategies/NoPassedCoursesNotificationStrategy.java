@@ -40,7 +40,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
   private static final int FIRST_RESULT = 0;
   private static final int MAX_RESULTS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.maxresults", "20"));
   private static final int NOTIFICATION_THRESHOLD_DAYS = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.notificationthreshold", "300"));
-  private static final int MIN_PASSED_COURSES = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.notificationthreshold", "5"));
+  private static final int MIN_PASSED_COURSES = NumberUtils.createInteger(System.getProperty("muikku.timednotifications.nopassedcourses.mincoursesthreshold", "5"));
   private static final long NOTIFICATION_CHECK_FREQ = NumberUtils.createLong(System.getProperty("muikku.timednotifications.nopassedcourses.checkfreq", "1800000"));
   
   @Inject
