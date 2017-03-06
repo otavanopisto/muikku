@@ -8,14 +8,15 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 
-public class CopiedWorkspaceEntityFinder {
+public class CopiedWorkspaceEntityIdFinder {
 
   @Inject
   private WorkspaceController workspaceController;
 
   @Transactional (value = TxType.REQUIRES_NEW)
-  public WorkspaceEntity findCopiedWorkspaceEntity(Workspace workspace) {
-    return workspaceController.findWorkspaceEntity(workspace);
+  public Long findCopiedWorkspaceEntityId(Workspace workspace) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+    return workspaceEntity == null ? null : workspaceEntity.getId();
   }
 
 }
