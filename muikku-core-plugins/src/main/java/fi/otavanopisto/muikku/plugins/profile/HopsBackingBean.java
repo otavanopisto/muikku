@@ -64,6 +64,7 @@ public class HopsBackingBean {
       french = loadBoolProperty(user, "french");
       italian = loadBoolProperty(user, "italian");
       spanish = loadBoolProperty(user, "spanish");
+      science = loadStringProperty(user, "science");
     } else {
       student = false;
     }
@@ -89,6 +90,7 @@ public class HopsBackingBean {
     saveBoolProperty(user, "french", french);
     saveBoolProperty(user, "italian", italian);
     saveBoolProperty(user, "spanish", spanish);
+    saveStringProperty(user, "science", science);
 
     return null;
   }
@@ -240,6 +242,14 @@ public class HopsBackingBean {
   public void setStudent(boolean student) {
     this.student = student;
   }
+  
+  public String getScience() {
+    return science;
+  }
+  
+  public void setScience(String science) {
+    this.science = science;
+  }
 
   private String goalSecondarySchoolDegree;
   private String goalMatriculationExam;
@@ -256,4 +266,5 @@ public class HopsBackingBean {
   private boolean italian;
   private boolean spanish;
   private boolean student;
+  private String science;
 }
