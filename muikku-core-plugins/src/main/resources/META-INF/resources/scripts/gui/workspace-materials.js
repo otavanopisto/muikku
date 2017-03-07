@@ -6,8 +6,7 @@
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
-      
-      $('html, body').stop().animate({
+      $('html,body').animate({
         scrollTop : scrollTop
       }, {
         duration : 500,
@@ -16,16 +15,21 @@
           $('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
+          scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
+          $('html,body').scrollTop(scrollTop);
+          $.waypoints('refresh');
           $(window).data('scrolling', false);
         }
       });
-    } else {
-      $('html, body').stop().scrollTop(scrollTop);
+    }
+    else {
+      $('html,body').scrollTop(scrollTop);
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+      window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
-
+  
   $(window).load(function() {
     if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
       scrollToPage(window.location.hash.substring(3), false);
@@ -58,9 +62,12 @@
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
         window.location.hash = 'p-' + workspaceMaterialId;
+        $(window).data('scrolling', true);
+        $.waypoints('refresh');
+        $(window).data('scrolling', false);
       }
     }, {
-      offset: '0%'
+      offset: 150
     });
     
     $('.workspace-materials-view-page[data-assignment-type="EXERCISE"]').each(function (index, page) {

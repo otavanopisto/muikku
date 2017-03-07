@@ -132,6 +132,14 @@ public class RestAssessmentRequest {
     this.workspaceUserIdentifier = workspaceUserIdentifier;
   }
 
+  public Boolean getGraded() {
+    return graded;
+  }
+
+  public void setGraded(Boolean graded) {
+    this.graded = graded;
+  }
+
   private Long userEntityId;
   private String firstName;
   private String lastName;
@@ -145,6 +153,7 @@ public class RestAssessmentRequest {
   private Date enrollmentDate;
   private Date assessmentRequestDate;
   private Date evaluationDate;
+  private Boolean graded;
   private Boolean passing;
   private Long assignmentsDone;
   private Long assignmentsTotal;

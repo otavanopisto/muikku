@@ -17,13 +17,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.time.OffsetDateTime;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
-import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -400,7 +400,7 @@ public class PyramusSchoolDataEntityFactory {
     
     return new PyramusWorkspaceAssessmentRequest(courseAssessmentRequest.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
-        courseAssessmentRequest.getRequestText(), created);
+        courseAssessmentRequest.getRequestText(), created, courseAssessmentRequest.getArchived(), courseAssessmentRequest.getHandled());
   }
 
   public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
@@ -489,10 +489,10 @@ public class PyramusSchoolDataEntityFactory {
       return EnvironmentRoleArchetype.MANAGER;
     case STUDENT:
       return EnvironmentRoleArchetype.STUDENT;
-    case USER:
     case TEACHER:
-    case STUDY_GUIDER:
       return EnvironmentRoleArchetype.TEACHER;
+    case STUDY_GUIDER:
+      return EnvironmentRoleArchetype.STUDY_GUIDER;
     case STUDY_PROGRAMME_LEADER:
       return EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
     default:

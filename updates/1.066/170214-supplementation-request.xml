@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>
+    create table SupplementationRequest (
+      id bigint not null auto_increment,
+      userEntityId bigint not null,
+      studentEntityId bigint not null,
+      workspaceEntityId bigint,
+      workspaceMaterialId bigint,
+      requestDate datetime not null,
+      requestText longtext,
+      archived bit not null,
+      primary key (id)
+    )
+  </sql>
+  <sql>
+    alter table SupplementationRequest add constraint UKpnt06qthoxjvxmuxupbhchenn unique (studentEntityId, workspaceEntityId)
+  </sql>
+  <sql>
+    alter table SupplementationRequest add constraint UKl51cf45ha7x8d6lyux4gpkakm unique (studentEntityId, workspaceMaterialId)
+  </sql>
+</update>

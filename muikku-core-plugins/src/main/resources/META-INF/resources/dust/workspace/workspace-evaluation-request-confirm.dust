@@ -3,7 +3,7 @@
   {#localize key="plugin.workspace.evaluation.requestEvaluation.description"/}
 
   {@lt key=assignmentsDone value=assignmentsTotal}
-    <p style="color:red;">{#localize key="plugin.workspace.evaluation.requestEvaluation.assignmentsNotDone" arg0=assignmentsDone arg1=assignmentsTotal/}</p>
+    <div class="ui-dialog-additional-message">{#localize key="plugin.workspace.evaluation.requestEvaluation.assignmentsNotDone" arg0=assignmentsDone arg1=assignmentsTotal/}</div>
   {/lt}
    
   {?evaluationHasFee}

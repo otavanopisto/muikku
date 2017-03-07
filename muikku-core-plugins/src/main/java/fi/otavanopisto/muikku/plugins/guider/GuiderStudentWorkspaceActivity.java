@@ -8,8 +8,8 @@ public class GuiderStudentWorkspaceActivity {
     return evaluables;
   }
   
-  public Excercices getExcercices() {
-    return excercices;
+  public Exercises getExercises() {
+    return exercises;
   }
 
   public void setLastVisit(Date lastVisit) {
@@ -45,7 +45,7 @@ public class GuiderStudentWorkspaceActivity {
   }
   
   private Evaluables evaluables = new Evaluables();
-  private Excercices excercices = new Excercices();
+  private Exercises exercises = new Exercises();
   private Date lastVisit;
   private long numVisits;
   private long journalEntryCount;
@@ -88,6 +88,14 @@ public class GuiderStudentWorkspaceActivity {
       
       failed++;
     }
+
+    public void addIncomplete(Date date) {
+      if ((date != null) && (incompleteLastDate == null || incompleteLastDate.before(date))) {
+        incompleteLastDate = date;
+      }
+      
+      incomplete++;
+    }
     
     public long getUnanswered() {
       return unanswered;
@@ -124,15 +132,23 @@ public class GuiderStudentWorkspaceActivity {
     public Date getPassedLastDate() {
       return passedLastDate;
     }
+
+    public long getIncomplete() {
+      return incomplete;
+    }
+    
+    public Date getIncompleteLastDate() {
+      return incompleteLastDate;
+    }
     
     public long getCount() {
       return unanswered + answered + submitted + failed + passed;
     }
     
-    public double getDonePercent() {
+    public int getDonePercent() {
       double result = submitted + passed;
       result /= getCount();
-      return Math.round(result * 100);
+      return (int) Math.round(result * 100);
     }
 
     private long unanswered = 0l;
@@ -143,10 +159,12 @@ public class GuiderStudentWorkspaceActivity {
     private long failed = 0l;
     private Date failedLastDate = null; 
     private long passed = 0l;
-    private Date passedLastDate = null; 
+    private Date passedLastDate = null;
+    private long incomplete = 0l;
+    private Date incompleteLastDate = null;
   }
   
-  public static class Excercices {
+  public static class Exercises {
 
     public void addUnanswered() {
       unanswered++;
@@ -176,10 +194,10 @@ public class GuiderStudentWorkspaceActivity {
       return unanswered + answered;
     }
     
-    public double getDonePercent() {
+    public int getDonePercent() {
       double result = answered;
       result /= getCount();
-      return Math.round(result * 100);
+      return (int) Math.round(result * 100);
     }
 
     private long unanswered = 0l;

@@ -1,5 +1,5 @@
 {?workspaceMode}
-  <div class="evaluation-card workspace {cardStateClass}" data-user-entity-id="{userEntityId}" data-workspace-user-entity-id="{workspaceUserEntityId}" data-workspace-user-identifier="{workspaceUserIdentifier}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-name="{workspaceName}{#workspaceNameExtension} ({workspaceNameExtension}){/workspaceNameExtension}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true"{/evaluationDate} data-assessment-request-date="{assessmentRequestDate}">
+  <div class="evaluation-card workspace {cardStateClass}" data-user-entity-id="{userEntityId}" data-workspace-user-entity-id="{workspaceUserEntityId}" data-workspace-user-identifier="{workspaceUserIdentifier}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-name="{workspaceName}{#workspaceNameExtension} ({workspaceNameExtension}){/workspaceNameExtension}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true"{/evaluationDate} data-graded="{graded}" data-assessment-request-date="{assessmentRequestDate}">
     <div class="evaluation-card-title">
       <div class="evaluation-card-student">{lastName}, {firstName}</div>
       <div class="evaluation-card-study-programme">{studyProgramme}</div>
@@ -32,7 +32,7 @@
     </div>
   </div>
 {:else}
-  <div class="evaluation-card frontpage evaluation-requested" data-user-entity-id="{userEntityId}" data-workspace-user-entity-id="{workspaceUserEntityId}" data-workspace-user-identifier="{workspaceUserIdentifier}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-name="{workspaceName}{#workspaceNameExtension} ({workspaceNameExtension}){/workspaceNameExtension}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true"{/evaluationDate} data-assessment-request-date="{assessmentRequestDate}">
+  <div class="evaluation-card frontpage evaluation-requested" data-user-entity-id="{userEntityId}" data-workspace-user-entity-id="{workspaceUserEntityId}" data-workspace-user-identifier="{workspaceUserIdentifier}" data-workspace-entity-id="{workspaceEntityId}" data-workspace-name="{workspaceName}{#workspaceNameExtension} ({workspaceNameExtension}){/workspaceNameExtension}" data-workspace-url-name="{workspaceUrlName}" {?evaluationDate}data-evaluated="true"{/evaluationDate} data-graded="{graded}" data-assessment-request-date="{assessmentRequestDate}">
     <div class="evaluation-card-title">
       <div class="evaluation-card-student">{lastName}, {firstName}</div>
       <div class="evaluation-card-study-programme">{studyProgramme}</div>
