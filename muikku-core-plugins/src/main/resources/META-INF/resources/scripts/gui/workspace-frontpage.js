@@ -28,9 +28,9 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           var materialLicenseIcons = [];
-          if (workspace.materialDefaultLicense && workspace.materialDefaultLicense.includes('creativecommons.org')) {
+          if (workspace.materialDefaultLicense && workspace.materialDefaultLicense.includes('creativecommons.org/licenses/')) {
             materialLicenseIcons.push('cc');
-            var license = workspace.materialDefaultLicense.match('/licenses/(.*)/')[1];
+            var license = workspace.materialDefaultLicense.match('creativecommons.org/licenses/(.*)/')[1];
             if (license) {
               if (license.includes('by')) {
                 materialLicenseIcons.push('cc-by');

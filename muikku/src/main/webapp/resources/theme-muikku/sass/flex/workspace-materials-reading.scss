@@ -15,6 +15,7 @@
 @import "connectionlost";
 @import "ckeditor_theme";
 @import "workspace_print";
+@import "_workspace_progress_menu";
 
 .lazy-pdf {
   height: 882px;
@@ -32,6 +33,15 @@ body {
   line-height: 1.7em;
   font-weight: 300;
   font-size: 16px;
+}
+
+.workspace-materials-fullscreen-progress-wrapper {
+  background-color: #fff;  
+  padding: 5px 15px 0;
+  margin-bottom: -30px;
+  margin-top: 30px;
+  position: relative;
+  
 }
 
 // WORKSPACE NAVIGATION - FULLSCREEN 

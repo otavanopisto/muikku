@@ -73,23 +73,49 @@ body {
   }
   
   // Alternative Section's titles
-  & > h3, > h4, > h5, > h6 {
-    position: relative;
-    z-index: 13;
-    width: auto;
+  & > h3, > h4, > h5, > h6 {  
     background: #fff;
-    margin: 30px auto -30px; 
-    font-weight: 300;
     color: #000;
     font-size: 26px;
-    padding: 10px 20px 10px;
-    text-transform: none;
+    font-weight: 300;
     line-height: 1.3em;
+    margin: 30px auto -30px;
+    padding: 10px 20px;    
+    position: relative;
+    text-transform: none;
+    width: auto;
+    z-index: 13;
   }
   
 }
 
+// PROGRESS
+
+.workspace-materials-progress-wrapper {
+  background: #fff;
+  bottom: 0;
+  color: #000;
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5em;
+  max-height: 74px;
+  position: fixed;
+  text-align: left;
+  text-shadow: none;
+  top: 90px;
+  width: 290px;
+  z-index: 12;
+}
+
+.workspace-materials-progress-container {
+  background: #fff;  
+  padding: 8px 0 1px;
+}
+
+
+
 // TOC
+
 nav.workspace-materials-toc-wrapper {
   background: #fff;
   text-align: left;
@@ -100,7 +126,7 @@ nav.workspace-materials-toc-wrapper {
   line-height: 1.5em;
   z-index: 11;
   position: fixed;
-  top: 90px;
+  top: 170px;
   bottom: 0;
   width: 290px;
   
@@ -121,10 +147,13 @@ nav.workspace-materials-toc-wrapper {
   height: 100%;
 }
 
+
+
+
 // TOC TITLE
 .workspace-materials-toc-title {
   text-transform: uppercase;
-  margin: 0;
+  margin: 0 !important;
   padding: 10px 12px;
   font-size: 19px;
   color: #2c2c2c;
