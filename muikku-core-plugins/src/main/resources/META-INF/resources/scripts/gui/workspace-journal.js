@@ -123,7 +123,9 @@
         });
     }
 
-    openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId,sendJournalEntry);
+    openInSN('/workspace/workspace-journal-new-entry.dust', {
+      draftKey: 'journal-' + workspaceId + '-new'
+    }, sendJournalEntry);
   };
 
   function editJournalEntry(element) {
@@ -131,6 +133,7 @@
     var workspaceId = $("input[name='workspaceEntityId']").val();
     openInSN('/workspace/workspace-journal-edit-entry.dust', {
       actionType: 'edit',
+      draftKey: 'journal-' + workspaceId + '-' + id,
       message: element.find('.workspace-journal-content').html(),
       title: element.find('.workspace-journal-title').html()
     },

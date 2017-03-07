@@ -42,22 +42,48 @@ function openInSN(template, options, formSendFunction, formContentFunction, cke)
         
         $(textarea).val(editableContent);
         
-        CKEDITOR.replace(textarea, {
-          height : '100px',
-          entities: false,
-          entities_latin: false,
-          entities_greek: false,
-          toolbar: [
-            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-            { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
-            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-            { name: 'links', items: [ 'Link' ] },
-            { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
-            { name: 'styles', items: [ 'Format' ] },
-            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-            { name: 'tools', items: [ 'Maximize' ] }
-          ]
-        });
+        if (options && options.draftKey) {
+          CKEDITOR.plugins.addExternal('notification', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/');
+          CKEDITOR.plugins.addExternal('change', '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js');
+          CKEDITOR.plugins.addExternal('draft', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js');
+          CKEDITOR.replace(textarea, {
+            language: getLocale(),
+            height : '100px',
+            entities: false,
+            entities_latin: false,
+            entities_greek: false,
+            toolbar: [
+              { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+              { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+              { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+              { name: 'links', items: [ 'Link' ] },
+              { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+              { name: 'styles', items: [ 'Format' ] },
+              { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+              { name: 'tools', items: [ 'Maximize' ] }
+            ],
+            extraPlugins : 'notification,change,draft',
+            draftKey: options.draftKey
+          });
+        }
+        else {
+          CKEDITOR.replace(textarea, {
+            height : '100px',
+            entities: false,
+            entities_latin: false,
+            entities_greek: false,
+            toolbar: [
+              { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+              { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+              { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+              { name: 'links', items: [ 'Link' ] },
+              { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+              { name: 'styles', items: [ 'Format' ] },
+              { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+              { name: 'tools', items: [ 'Maximize' ] }
+            ]
+          });
+        }
       });
     }
      
@@ -84,6 +110,9 @@ function openInSN(template, options, formSendFunction, formContentFunction, cke)
     }
     
     cancelBtn.on("click", cancelBtn, function() {
+      if (CKEDITOR.instances.textContent && CKEDITOR.instances.textContent.config.draftKey) {
+        CKEDITOR.instances.textContent.discardDraft();
+      }
       formContainer.empty();
       $('.sn-container').removeClass('open');
       $('.sn-container').addClass('closed');
@@ -128,6 +157,9 @@ function openInSN(template, options, formSendFunction, formContentFunction, cke)
 
       var result = formSendFunction(obj);
       if (result !== false) {
+        if (CKEDITOR.instances.textContent && CKEDITOR.instances.textContent.config.draftKey) {
+          CKEDITOR.instances.textContent.discardDraft();
+        }
         formContainer.empty();
         $('.sn-container').removeClass('open');
         $('.sn-container').addClass('closed');
