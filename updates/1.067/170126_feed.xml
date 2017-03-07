@@ -5,8 +5,7 @@
       id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
       name VARCHAR(128) NOT NULL UNIQUE,
       url VARCHAR(4096) NOT NULL,
-      format VARCHAR(256) NOT NULL,
-      content LONGTEXT
+      format VARCHAR(256) NOT NULL
     );
   </sql>
 </update>
