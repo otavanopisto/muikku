@@ -1,8 +1,6 @@
-function openInSN(template, options, formSendFunction, formContentFunction, cke) {
+function openInSN(template, options, formSendFunction, formContentFunction) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
-  var ck = cke;
-  // temporary solution for removing existing tabs --> TODO: TABBING
 
   formContainer.empty();
  
@@ -13,7 +11,6 @@ function openInSN(template, options, formSendFunction, formContentFunction, cke)
 
   renderDustTemplate(template, options, function(text) {
     $(tabDiv).append($.parseHTML(text));
-    var ckeditor = ck;
     var textareas = functionContainer.find("textarea");    
     var textfields = functionContainer.find("input[type='text']"); 
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
@@ -29,63 +26,51 @@ function openInSN(template, options, formSendFunction, formContentFunction, cke)
       });  
     }
 
-    // Getting existing content 
-
-    if (ckeditor == undefined){
-      var ckeditor = true;
-    }
-     
-    if (ckeditor == true){
-      $(textareas).each(function(index,textarea) {
-
-        // This does not work 100%! This needs to be replaced in discussions!!
-        
-        $(textarea).val(editableContent);
-        
-        if (options && options.draftKey) {
-          CKEDITOR.plugins.addExternal('notification', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/');
-          CKEDITOR.plugins.addExternal('change', '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js');
-          CKEDITOR.plugins.addExternal('draft', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js');
-          CKEDITOR.replace(textarea, {
-            language: getLocale(),
-            height : '100px',
-            entities: false,
-            entities_latin: false,
-            entities_greek: false,
-            toolbar: [
-              { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-              { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
-              { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-              { name: 'links', items: [ 'Link' ] },
-              { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
-              { name: 'styles', items: [ 'Format' ] },
-              { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-              { name: 'tools', items: [ 'Maximize' ] }
-            ],
-            extraPlugins : 'notification,change,draft',
-            draftKey: options.draftKey
-          });
-        }
-        else {
-          CKEDITOR.replace(textarea, {
-            height : '100px',
-            entities: false,
-            entities_latin: false,
-            entities_greek: false,
-            toolbar: [
-              { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
-              { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
-              { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
-              { name: 'links', items: [ 'Link' ] },
-              { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
-              { name: 'styles', items: [ 'Format' ] },
-              { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-              { name: 'tools', items: [ 'Maximize' ] }
-            ]
-          });
-        }
-      });
-    }
+    $(textareas).each(function(index,textarea) {
+      $(textarea).val(editableContent);
+      if (options && options.draftKey) {
+        CKEDITOR.plugins.addExternal('notification', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/');
+        CKEDITOR.plugins.addExternal('change', '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js');
+        CKEDITOR.plugins.addExternal('draft', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js');
+        CKEDITOR.replace(textarea, {
+          language: getLocale(),
+          height : '100px',
+          entities: false,
+          entities_latin: false,
+          entities_greek: false,
+          toolbar: [
+            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+            { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+            { name: 'links', items: [ 'Link' ] },
+            { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+            { name: 'styles', items: [ 'Format' ] },
+            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+            { name: 'tools', items: [ 'Maximize' ] }
+          ],
+          extraPlugins : 'notification,change,draft',
+          draftKey: options.draftKey
+        });
+      }
+      else {
+        CKEDITOR.replace(textarea, {
+          height : '100px',
+          entities: false,
+          entities_latin: false,
+          entities_greek: false,
+          toolbar: [
+            { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
+            { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
+            { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
+            { name: 'links', items: [ 'Link' ] },
+            { name: 'insert', items: [ 'Image', 'Table', 'Smiley', 'SpecialChar' ] },
+            { name: 'styles', items: [ 'Format' ] },
+            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+            { name: 'tools', items: [ 'Maximize' ] }
+          ]
+        });
+      }
+    });
      
     // Selects current forum area when new message form loads
     
