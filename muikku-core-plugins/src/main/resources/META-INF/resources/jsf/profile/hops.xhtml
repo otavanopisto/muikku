@@ -183,6 +183,18 @@
                     </div> 
                   </div>                      
                   <div class="flex-row hops-form-section flex-align-items-center">
+                    <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
+                      <label>#{i18n.text['plugin.profile.hops.religion.title']}</label>                  
+                    </div>
+                    <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
+                      <h:selectOneMenu value="#{hopsBackingBean.religion}">
+                        <f:selectItem itemValue="UE" itemLabel="#{i18n.text['plugin.profile.hops.religion.UE']}"/>
+                        <f:selectItem itemValue="ET" itemLabel="#{i18n.text['plugin.profile.hops.religion.ET']}"/>
+                        <f:selectItem itemValue="UX" itemLabel="#{i18n.text['plugin.profile.hops.religion.UX']}"/>
+                      </h:selectOneMenu>
+                    </div> 
+                  </div>                      
+                  <div class="flex-row hops-form-section flex-align-items-center">
                     <p>#{i18n.text['plugin.profile.hops.footer']}</p>
                     <h:commandButton value="Tallenna" action="#{hopsBackingBean.save()}" />
                   </div>                                                                 
