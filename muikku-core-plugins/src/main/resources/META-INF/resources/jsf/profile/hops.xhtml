@@ -174,8 +174,13 @@
                       <label>#{i18n.text['plugin.profile.hops.languages.title']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.english']}<br/>
+                      <b>#{i18n.text['plugin.profile.hops.languages.mandatory']}</b><br/>
+                      <input jsf:value="#{hopsBackingBean.finnish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.finnish']}
+                      <b>#{i18n.text['plugin.profile.hops.languages.or']}</b><br/>
                       <input jsf:value="#{hopsBackingBean.swedish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.swedish']}<br/>
+                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.english']}<br/>
+                      <br/>
+                      <b>#{i18n.text['plugin.profile.hops.languages.optional']}</b><br/>
                       <input jsf:value="#{hopsBackingBean.german}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.german']}<br/>
                       <input jsf:value="#{hopsBackingBean.french}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.french']}<br/>
                       <input jsf:value="#{hopsBackingBean.italian}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.italian']}<br/>
