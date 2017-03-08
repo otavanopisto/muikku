@@ -58,8 +58,9 @@ public class HopsBackingBean {
       transferCreditYears = loadStringProperty(user, "transferCreditYears");
       completionYears = loadStringProperty(user, "completionYears");
       mathSyllabus = loadStringProperty(user, "mathSyllabus");
-      english = loadBoolProperty(user, "english");
+      finnish = loadBoolProperty(user, "finnish");
       swedish = loadBoolProperty(user, "swedish");
+      english = loadBoolProperty(user, "english");
       german = loadBoolProperty(user, "german");
       french = loadBoolProperty(user, "french");
       italian = loadBoolProperty(user, "italian");
@@ -84,8 +85,9 @@ public class HopsBackingBean {
     saveStringProperty(user, "transferCreditYears", transferCreditYears);
     saveStringProperty(user, "completionYears", completionYears);
     saveStringProperty(user, "mathSyllabus", mathSyllabus);
-    saveBoolProperty(user, "english", english);
+    saveBoolProperty(user, "finnish", finnish);
     saveBoolProperty(user, "swedish", swedish);
+    saveBoolProperty(user, "english", english);
     saveBoolProperty(user, "german", german);
     saveBoolProperty(user, "french", french);
     saveBoolProperty(user, "italian", italian);
@@ -186,13 +188,13 @@ public class HopsBackingBean {
   public void setMathSyllabus(String mathSyllabus) {
     this.mathSyllabus = mathSyllabus;
   }
-
-  public boolean isEnglish() {
-    return english;
+  
+  public boolean isFinnish() {
+    return finnish;
   }
-
-  public void setEnglish(boolean english) {
-    this.english = english;
+  
+  public void setFinnish(boolean finnish) {
+    this.finnish = finnish;
   }
 
   public boolean isSwedish() {
@@ -201,6 +203,14 @@ public class HopsBackingBean {
 
   public void setSwedish(boolean swedish) {
     this.swedish = swedish;
+  }
+
+  public boolean isEnglish() {
+    return english;
+  }
+
+  public void setEnglish(boolean english) {
+    this.english = english;
   }
 
   public boolean isGerman() {
@@ -259,8 +269,9 @@ public class HopsBackingBean {
   private String transferCreditYears;
   private String completionYears;
   private String mathSyllabus;
-  private boolean english;
+  private boolean finnish;
   private boolean swedish;
+  private boolean english;
   private boolean german;
   private boolean french;
   private boolean italian;
