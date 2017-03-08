@@ -15,6 +15,7 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/> 
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/article-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>  
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-activity.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-signup-dialog.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-materials-reading.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
@@ -23,6 +24,7 @@
   
   <ui:define name="styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-materials-reading.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/flex/circle.css"/>          
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
   </ui:define>
@@ -48,12 +50,13 @@
           </div>
         </ui:fragment>
       </nav>
-    
+
       <div id="workspaceMaterialsReadingTOCContainer">
         <div class="workspace-materials-reading-TOC-title">
           <h1>#{i18n.text['plugin.workspace.materialsReading.tocTitle']}</h1>
           <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin" title="Kiinnitä sisällysluettelo"></div>
         </div>
+       
         <div class="workspace-materials-toc-content-scrolling" id="materialsScrollableTOC">
           <ul class="workspace-materials-toc-root">
             <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
@@ -105,6 +108,10 @@
       <section class="flex-row">
         <article class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top">
           <h1>#{workspaceMaterialsReadingBackingBean.workspaceName}</h1>
+          <div class="workspace-materials-fullscreen-progress-wrapper">
+            <div class="workspace-progress-widget workspace-materials-fullscreen-progress-container flex-row flex-justify-content-end">
+            </div>
+          </div>  
           <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
             <ui:fragment rendered="#{node.type eq 'folder'}">
               <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-reading-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" data-path="#{node.path}" data-view-restricted="#{node.viewRestricted}">

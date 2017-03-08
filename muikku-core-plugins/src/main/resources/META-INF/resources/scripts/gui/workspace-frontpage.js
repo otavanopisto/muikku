@@ -28,25 +28,28 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           var materialLicenseIcons = [];
-          switch (workspace.materialDefaultLicense) {
-            case 'https://creativecommons.org/licenses/by/4.0':
-              materialLicenseIcons = ['cc-by'];
-              break;
-            case 'https://creativecommons.org/licenses/by-sa/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-sa'];
-              break;
-            case 'https://creativecommons.org/licenses/by-nc/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nc'];
-              break;
-            case 'https://creativecommons.org/licenses/by-nd/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nd'];
-              break;
-            case 'https://creativecommons.org/licenses/by-nc-sa/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nc', 'cc-sa'];
-              break;
-            case 'https://creativecommons.org/licenses/by-nc-nd/4.0':
-              materialLicenseIcons = ['cc-by', 'cc-nc', 'cc-nd'];
-              break;
+          if (workspace.materialDefaultLicense && workspace.materialDefaultLicense.includes('creativecommons.org')) {
+            materialLicenseIcons.push('cc');
+            if (workspace.materialDefaultLicense.includes('creativecommons.org/licenses/')) {
+              var license = workspace.materialDefaultLicense.match('creativecommons.org/licenses/(.*)/')[1];
+              if (license) {
+                if (license.includes('by')) {
+                  materialLicenseIcons.push('cc-by');
+                }
+                if (license.includes('nc')) {
+                  materialLicenseIcons.push('cc-nc');
+                }
+                if (license.includes('nd')) {
+                  materialLicenseIcons.push('cc-nd');
+                }
+                if (license.includes('sa')) {
+                  materialLicenseIcons.push('cc-sa');
+                }
+              }
+            }
+            else if (workspace.materialDefaultLicense.includes('creativecommons.org/publicdomain/')) {
+              materialLicenseIcons.push('cc-zero');
+            }
           }
           renderDustTemplate('workspace/workspace-index-material-license.dust', {
             materialDefaultLicense: workspace.materialDefaultLicense,

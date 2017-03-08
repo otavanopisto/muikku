@@ -178,4 +178,8 @@ public class UserGroupEntityController {
     userGroupEntityDAO.delete(userGroupEntity);
   }
 
+  public boolean haveSharedUserGroups(UserEntity user1, UserEntity user2) {
+    return userGroupUserEntityDAO.haveSharedUserGroups(user1, user2);
+  }
+  
 }

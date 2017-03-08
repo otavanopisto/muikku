@@ -35,10 +35,14 @@ public class DiscussionBackingBean {
 
   @RequestAction
   public String init() {
+    if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM)) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+    
     List<EnvironmentForumArea> forumAreas = forumController.listEnvironmentForums();
     lockStickyPermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_LOCK_OR_STICKIFY_MESSAGES);
     showFullNamePermission = sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_SHOW_FULL_NAMES);
-        
+
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (EnvironmentForumArea forumArea : forumAreas) {

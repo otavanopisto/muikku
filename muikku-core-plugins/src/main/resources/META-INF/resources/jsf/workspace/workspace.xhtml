@@ -13,14 +13,16 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-activity.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-frontpage.js"/>
     <ui:include src="workspace-material-scripts.xhtml"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-index.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/flex/circle.css"/>  
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
-    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
+    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>  
   </ui:define>
 
   <ui:define name="grid-content">
@@ -35,6 +37,8 @@
         <ui:fragment rendered="#{not empty workspaceIndexBackingBean.workspaceNameExtension}">
           <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
         </ui:fragment>
+        <div class="workspace-progress-widget workspace-progress-container">
+        </div>  
       </div>
     </header>
     

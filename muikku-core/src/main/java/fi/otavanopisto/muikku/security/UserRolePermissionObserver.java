@@ -59,7 +59,7 @@ public class UserRolePermissionObserver {
               // Check if event role archetype exists
               
               for (EnvironmentRoleArchetype archetype : archetypes) {
-                if (archetype.equals(translateArchetype(event.getArchetype()))) {
+                if (archetype.equals(event.getArchetype())) {
                   applyPermission(permissionScope, role, permission);
                   break;
                 }
@@ -103,23 +103,6 @@ public class UserRolePermissionObserver {
           }
         }
       }
-    }
-  }
-  
-  private EnvironmentRoleArchetype translateArchetype(fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype archetype) {
-    switch (archetype) {
-      case ADMINISTRATOR:
-        return EnvironmentRoleArchetype.ADMINISTRATOR;
-      case MANAGER:
-        return EnvironmentRoleArchetype.MANAGER;
-      case TEACHER:
-        return EnvironmentRoleArchetype.TEACHER;
-      case STUDENT:
-        return EnvironmentRoleArchetype.STUDENT;
-      case STUDY_PROGRAMME_LEADER:
-        return EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER;
-      default:
-        return EnvironmentRoleArchetype.CUSTOM;
     }
   }
   

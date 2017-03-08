@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -71,6 +72,7 @@ import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
+import fi.otavanopisto.muikku.security.RoleFeatures;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -199,22 +201,41 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = new HashSet<Long>();
+    Set<Long> workspaceFilters = null;
 
-    if ((myUserGroups != null) && myUserGroups) {
-      userGroupFilters = new HashSet<Long>();
-
-      // Groups where user is a member
-      
-      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-      for (UserGroupEntity userGroup : userGroups) {
-        userGroupFilters.add(userGroup.getId());
+    if (!sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
+      if ((myUserGroups != null) && myUserGroups) {
+        userGroupFilters = new HashSet<Long>();
+  
+        // Groups where user is a member
+        
+        List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
+        for (UserGroupEntity userGroup : userGroups) {
+          userGroupFilters.add(userGroup.getId());
+        }
+      } else if (!CollectionUtils.isEmpty(userGroupIds)) {
+        userGroupFilters = new HashSet<Long>();
+        
+        // Defined user groups
+        userGroupFilters.addAll(userGroupIds);
       }
-    } else if (!CollectionUtils.isEmpty(userGroupIds)) {
+    } else {
+      // User can only list users from his/her own user groups
       userGroupFilters = new HashSet<Long>();
+
+      // Groups where user is a member and the ids of the groups
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
+      Set<Long> accessibleUserGroupEntityIds = userGroups.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
       
-      // Defined user groups
-      userGroupFilters.addAll(userGroupIds);
+      if (CollectionUtils.isNotEmpty(userGroupIds)) {
+        // if there are specified user groups, they need to be subset of the groups that the user can access
+        if (!CollectionUtils.isSubCollection(userGroupIds, accessibleUserGroupEntityIds))
+          return Response.status(Status.BAD_REQUEST).build();
+        
+        userGroupFilters.addAll(userGroupIds);
+      } else {
+        userGroupFilters.addAll(accessibleUserGroupEntityIds);
+      }
     }
     
     List<SchoolDataIdentifier> userIdentifiers = null;    
@@ -277,10 +298,10 @@ public class UserRESTService extends AbstractRESTService {
       for (WorkspaceEntity ws : workspaces)
         myWorkspaceIds.add(ws.getId());
 
-      workspaceFilters.addAll(myWorkspaceIds);
+      workspaceFilters = new HashSet<>(myWorkspaceIds);
     } else if (!CollectionUtils.isEmpty(workspaceIds)) {
       // Defined workspaces
-      workspaceFilters.addAll(workspaceIds);
+      workspaceFilters = new HashSet<>(workspaceIds);
     }
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
@@ -381,6 +402,8 @@ public class UserRESTService extends AbstractRESTService {
 
     CacheControl cacheControl = new CacheControl();
     cacheControl.setMustRevalidate(true);
+    
+    // TODO: There's no permission handling, this is relying on schooldatacontroller to check for permission
     
     User user = userController.findUserByIdentifier(studentIdentifier);
     if (user == null) {
@@ -1009,23 +1032,42 @@ public class UserRESTService extends AbstractRESTService {
 	  EnvironmentRoleArchetype roleArchetype = archetype != null ? EnvironmentRoleArchetype.valueOf(archetype) : null;
 
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = new HashSet<Long>();
+    Set<Long> workspaceFilters = null;
 
-	  if ((myUserGroups != null) && myUserGroups) {
-	    userGroupFilters = new HashSet<Long>();
-
-	    // Groups where user is a member
-	    
-	    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
-	    for (UserGroupEntity userGroup : userGroups) {
-	      userGroupFilters.add(userGroup.getId());
-	    }
-	  } else if (!CollectionUtils.isEmpty(userGroupIds)) {
-	    userGroupFilters = new HashSet<Long>();
-	    
-      // Defined user groups
-	    userGroupFilters.addAll(userGroupIds);
-	  }
+    if (!sessionController.hasEnvironmentPermission(RoleFeatures.ACCESS_ONLY_GROUP_STUDENTS)) {
+  	  if ((myUserGroups != null) && myUserGroups) {
+  	    userGroupFilters = new HashSet<Long>();
+  
+  	    // Groups where user is a member
+  	    
+  	    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
+  	    for (UserGroupEntity userGroup : userGroups) {
+  	      userGroupFilters.add(userGroup.getId());
+  	    }
+  	  } else if (!CollectionUtils.isEmpty(userGroupIds)) {
+  	    userGroupFilters = new HashSet<Long>();
+  	    
+        // Defined user groups
+  	    userGroupFilters.addAll(userGroupIds);
+  	  }
+    } else {
+      // User can only list users from his/her own user groups
+      userGroupFilters = new HashSet<Long>();
+  
+      // Groups where user is a member and the ids of the groups
+      List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserIdentifier(sessionController.getLoggedUser());
+      Set<Long> accessibleUserGroupEntityIds = userGroups.stream().map(UserGroupEntity::getId).collect(Collectors.toSet());
+      
+      if (CollectionUtils.isNotEmpty(userGroupIds)) {
+        // if there are specified user groups, they need to be subset of the groups that the user can access
+        if (!CollectionUtils.isSubCollection(userGroupIds, accessibleUserGroupEntityIds))
+          return Response.status(Status.BAD_REQUEST).build();
+        
+        userGroupFilters.addAll(userGroupIds);
+      } else {
+        userGroupFilters.addAll(accessibleUserGroupEntityIds);
+      }
+    }
 
     if ((myWorkspaces != null) && myWorkspaces) {
       // Workspaces where user is a member
@@ -1034,10 +1076,10 @@ public class UserRESTService extends AbstractRESTService {
       for (WorkspaceEntity ws : workspaces)
         myWorkspaceIds.add(ws.getId());
 
-      workspaceFilters.addAll(myWorkspaceIds);
+      workspaceFilters = new HashSet<Long>(myWorkspaceIds);
     } else if (!CollectionUtils.isEmpty(workspaceIds)) {
       // Defined workspaces
-      workspaceFilters.addAll(workspaceIds);
+      workspaceFilters = new HashSet<Long>(workspaceIds);
     }
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");

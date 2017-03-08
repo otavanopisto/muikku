@@ -1,8 +1,8 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus.entities;
 
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
-import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRoleArchetype;
 
 public class PyramusEnvironmentRole implements EnvironmentRole {
 

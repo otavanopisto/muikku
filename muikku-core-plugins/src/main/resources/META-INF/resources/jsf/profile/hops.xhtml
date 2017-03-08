@@ -174,12 +174,41 @@
                       <label>#{i18n.text['plugin.profile.hops.languages.title']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.english']}<br/>
+                      <b>#{i18n.text['plugin.profile.hops.languages.mandatory']}</b><br/>
+                      <input jsf:value="#{hopsBackingBean.finnish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.finnish']}
+                      <b>#{i18n.text['plugin.profile.hops.languages.or']}</b><br/>
                       <input jsf:value="#{hopsBackingBean.swedish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.swedish']}<br/>
+                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.english']}<br/>
+                      <br/>
+                      <b>#{i18n.text['plugin.profile.hops.languages.optional']}</b><br/>
                       <input jsf:value="#{hopsBackingBean.german}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.german']}<br/>
                       <input jsf:value="#{hopsBackingBean.french}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.french']}<br/>
                       <input jsf:value="#{hopsBackingBean.italian}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.italian']}<br/>
                       <input jsf:value="#{hopsBackingBean.spanish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.spanish']}<br/>
+                    </div> 
+                  </div>                      
+                  <div class="flex-row hops-form-section flex-align-items-center">
+                    <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
+                      <label>#{i18n.text['plugin.profile.hops.science.title']}</label>                  
+                    </div>
+                    <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
+                      <h:selectOneMenu value="#{hopsBackingBean.science}">
+                        <f:selectItem itemValue="BI" itemLabel="#{i18n.text['plugin.profile.hops.science.BI']}"/>
+                        <f:selectItem itemValue="FY" itemLabel="#{i18n.text['plugin.profile.hops.science.FY']}"/>
+                        <f:selectItem itemValue="KE" itemLabel="#{i18n.text['plugin.profile.hops.science.KE']}"/>
+                        <f:selectItem itemValue="GE" itemLabel="#{i18n.text['plugin.profile.hops.science.GE']}"/>
+                        <f:selectItem itemValue="TT" itemLabel="#{i18n.text['plugin.profile.hops.science.TT']}"/>
+                      </h:selectOneMenu>
+                    </div> 
+                  </div>            
+                      <label>#{i18n.text['plugin.profile.hops.religion.title']}</label>                  
+                    </div>
+                    <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
+                      <h:selectOneMenu value="#{hopsBackingBean.religion}">
+                        <f:selectItem itemValue="UE" itemLabel="#{i18n.text['plugin.profile.hops.religion.UE']}"/>
+                        <f:selectItem itemValue="ET" itemLabel="#{i18n.text['plugin.profile.hops.religion.ET']}"/>
+                        <f:selectItem itemValue="UX" itemLabel="#{i18n.text['plugin.profile.hops.religion.UX']}"/>
+                      </h:selectOneMenu>
                     </div> 
                   </div>                      
                   <div class="flex-row hops-form-section flex-align-items-center">
