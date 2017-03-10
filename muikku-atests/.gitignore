@@ -5,3 +5,4 @@
 /.classpath
 /target/
 /.phantomjs
+/.DS_Store

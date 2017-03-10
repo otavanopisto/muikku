@@ -15,7 +15,7 @@
         <div class="gt-course-activity-short lg-flex-cell-8 md-flex-cell-8 sm-flex-hide">
           <span title="{#localize key="plugin.guider.headerEvaluatedTitle" arg0=activity.evaluablesDonePercent/}">{activity.evaluablesDonePercent} %</span>
           <span> / </span>
-          <span title="{#localize key="plugin.guider.headerExercisesTitle" arg0=activity.excercicesDonePercent/}">{activity.excercicesDonePercent} %</span>
+          <span title="{#localize key="plugin.guider.headerExercisesTitle" arg0=activity.exercisesDonePercent/}">{activity.exercisesDonePercent} %</span>
         </div>       
       </div>
       <div class="gt-course-activity flex-row">
@@ -129,13 +129,13 @@
           </span>
         </div>
         
-        <h4>{#localize key="plugin.guider.excerciceAssignmentsTitle"/}</h4>
+        <h4>{#localize key="plugin.guider.exerciseAssignmentsTitle"/}</h4>
         
         <div class="gt-course-activity-row">
-          <label>{#localize key="plugin.guider.excercicesUnansweredLabel"/}</label>
+          <label>{#localize key="plugin.guider.exercisesUnansweredLabel"/}</label>
           <span>
-          {@gt key=activity.excercicesUnanswered value=0}
-            {activity.excercicesUnanswered}
+          {@gt key=activity.exercisesUnanswered value=0}
+            {activity.exercisesUnanswered}
           {:else}
             -
           {/gt}
@@ -143,10 +143,10 @@
         </div>
         
         <div class="gt-course-activity-row">
-          <label>{#localize key="plugin.guider.excercicesAnsweredLabel"/}</label>
+          <label>{#localize key="plugin.guider.exercisesAnsweredLabel"/}</label>
           <span>
-          {@gt key=activity.excercicesAnswered value=0}
-            {activity.excercicesAnswered} ({activity.excercicesAnsweredLastDate|formatDate})
+          {@gt key=activity.exercisesAnswered value=0}
+            {activity.exercisesAnswered} ({activity.exercisesAnsweredLastDate|formatDate})
           {:else}
             -
           {/gt}
