@@ -35,6 +35,17 @@
       scrollToPage($(window).data('initial-page'), true);
     }
   });
+
+  $(window).unload(function() {
+    var tocItem = $('a.active');
+    if (tocItem.length) {
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      var workspaceMaterialId = tocItem.parent().attr('data-workspace-material-id');
+      if (workspaceEntityId && workspaceMaterialId) {
+        mApi().user.property.create({key: 'workspace-' + workspaceEntityId + '-bookmark', value: workspaceMaterialId});
+      }
+    }
+  });
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
     event.preventDefault();

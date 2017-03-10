@@ -18,6 +18,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
+import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -30,6 +31,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 @Named
 @Stateful
@@ -61,6 +63,9 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   
   @Inject
   private CourseMetaController courseMetaController;
+
+  @Inject
+  private UserEntityController userEntityController;
   
   @Inject
   private Logger logger;
@@ -140,6 +145,15 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     announcementsBaseUrl = String.format("/workspace/%s/announcements", workspaceUrlName);
     workspaceVisitController.visit(workspaceEntity);
+    
+    if (sessionController.isLoggedIn()) {
+      UserEntityProperty bookmarkProperty = userEntityController.getUserEntityPropertyByKey(
+          sessionController.getLoggedUserEntity(),
+          String.format("workspace-%d-bookmark", workspaceEntityId));
+      if (bookmarkProperty != null && !StringUtils.isEmpty(bookmarkProperty.getValue())) {
+        bookmarkHash = String.format("#p-%s", bookmarkProperty.getValue());
+      }
+    }
     
     return null;
   }
@@ -268,6 +282,14 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     this.announcementsBaseUrl = announcementsBaseUrl;
   }
 
+  public String getBookmarkHash() {
+    return bookmarkHash;
+  }
+
+  public void setBookmarkHash(String bookmarkHash) {
+    this.bookmarkHash = bookmarkHash;
+  }
+
   private Long workspaceId;
   private String workspaceName;
   private String workspaceNameExtension;
@@ -289,4 +311,5 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private List<ContentNode> contentNodes;
   private String materialsBaseUrl;
   private String announcementsBaseUrl;
+  private String bookmarkHash;
 }
