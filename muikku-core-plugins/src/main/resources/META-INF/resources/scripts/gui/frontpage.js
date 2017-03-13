@@ -172,8 +172,8 @@
   });
   
   $(document).ready(function() {
-    mApi().feed.feeds.read("ooevents", {numItems: 4}).callback(function (err, news) {
-      renderDustTemplate('frontpage/feed_events.dust', {entries: news}, function(text) {
+    mApi().feed.feeds.read("ooevents", {numItems: 4, order: "ASCENDING"}).callback(function (err, events) {
+      renderDustTemplate('frontpage/feed_events.dust', {entries: events}, function(text) {
         $(".frontpage-events-container").html(text);
       });
     });
