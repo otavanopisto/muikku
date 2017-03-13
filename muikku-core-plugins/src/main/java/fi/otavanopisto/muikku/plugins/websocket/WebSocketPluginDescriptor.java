@@ -7,10 +7,10 @@ import fi.otavanopisto.muikku.plugin.AfterPluginsInitEvent;
 import fi.otavanopisto.muikku.plugin.PluginDescriptor;
 
 public class WebSocketPluginDescriptor implements PluginDescriptor {
-  
+
   @Inject
   private WebSocketTicketController websocketTicketController;
-  
+
   public static final String PLUGIN_NAME = "websocket";
 
   @Override
@@ -21,9 +21,9 @@ public class WebSocketPluginDescriptor implements PluginDescriptor {
     websocketTicketController.removeAllTickets();
   }
 
-	@Override
-	public String getName() {
-		return PLUGIN_NAME;
-	}
+  @Override
+  public String getName() {
+    return PLUGIN_NAME;
+  }
 
 }
