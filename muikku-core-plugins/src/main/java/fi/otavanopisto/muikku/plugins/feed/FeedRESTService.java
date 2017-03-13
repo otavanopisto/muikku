@@ -41,7 +41,8 @@ public class FeedRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.UNSECURED)
   public Response findFeedByNames(
       @PathParam("NAMES") String names,
-      @QueryParam("numItems") @DefaultValue("10") int numItems) {
+      @QueryParam("numItems") @DefaultValue("10") int numItems,
+      @QueryParam("order") @DefaultValue("DESCENDING") FeedSortOrder order) {
     List<String> namesList = Arrays.asList(names.split(","));
     
     if (namesList.size() == 0) {
@@ -61,7 +62,7 @@ public class FeedRESTService extends PluginRESTService {
       feeds.add(feedDao.findByName(name));
     }
     
-    List<FeedItem> feedItems = feedItemDao.findByFeeds(feeds, numItems);
+    List<FeedItem> feedItems = feedItemDao.findByFeeds(feeds, numItems, order);
     
     return Response.ok(feedItems).build();
   }
