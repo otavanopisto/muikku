@@ -2,7 +2,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/flex-main-env.xhtml">
+  template="#{sessionBackingBean.loggedIn ? '/WEB-INF/templates/flex-main-env.xhtml' : '/WEB-INF/templates/flex-main-open.xhtml'}">
   
   <ui:param name="activeTrail" value="index"/>
   
@@ -12,13 +12,13 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
-    
-    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="scripts/gui/login.js"/>
-    </ui:fragment>
-    
+		<ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/forgotpassword.js"/>
+      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/frontpage.js"/>
+    </ui:fragment>    
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
       <script defer="defer" jsf:name="/scripts/gui/widget-visits.js"/>
       <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js"/>
       <script defer="defer" jsf:name="/scripts/gui/widget-messages.js"/>
@@ -29,73 +29,28 @@
   </ui:define>
   
   <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
-    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/flex/frontpage.css"/>
+  
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <link rel="stylesheet" type="text/css" href="/css/flex/frontpage.css"/>
+      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.css"/>
+    </ui:fragment>
+    
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
+      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
+    </ui:fragment>
+    
   </ui:define>  
   
   <ui:define name="grid-content">
-    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}"> 
-      <div class="flex-row lg-flex-hide md-flex-hide flex-align-items-center">
-        <div class="sm-flex-cell-8 sm-flex-cell-first">
-          <div class="login">
-            <div class="bt-generic bt-login">
-              <a jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-              </a>
-            </div>
-          </div>  
-        </div>
-        
-        <div class="sm-flex-cell-8  sm-flex-cell-last">
-          <div class="forgot-password">
-            <div class="bt-generic bt-forgotpassword">
-              <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-            </div>
-          </div> 
-        </div>
-      </div>
+    <!--  If user is unauthenticated -->
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <ui:include src="/index_unauth.xhtml" />
     </ui:fragment>
     
-    <div class="flex-row">
-      <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-        <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first">
-          <div class="box">
-            <div id="siteInfo">
-              <h3>Infoa</h3>
-              <p>Muikku3 on Otavan Opiston kehittämä oppimisympäristö.
-                Ympäristö tarjoaa kaikki tarvitsemasi työkalut opettamiseen ja
-                oppimiseen:</p>
-              <ul>
-                <li>Opiskelu onnistuu myös älypuhelimen tai tablet-laitteen kautta ilman erillistä sovellusta.</li>
-                <li>Koko näytön lukutila rauhoittaa opiskeluympäristön opiskelua varten.</li>
-                <li>Automaattisesti tallentuvat tehtävät mahdollistavat laitteelta toiselle siirtymisen joustavasti.</li>
-                <li><b>Opettajien ja opiskelijoiden suunnittelema, ammattilaisten toteuttama.</b></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last">
-          <div class="box">
-            <div id="siteGuide">
-              <h3>Ohjeet</h3>
-              <p>
-                Kirjaudu sisään oikeasta ylänurkasta. <a
-                  href="http://www.nettilukio.fi/">Nettilukioon</a> ja <a
-                  href="http://www.nettiperuskoulu.fi">Nettiperuskouluun</a> voit
-                hakea linkkien kautta.
-              </p>
-              <p>
-                Jos haluat oppimisympäristön oman oppilaitoksesi käyttöön, ole
-                yhteydessä <a href="mailto:tommi.issakainen@otavanopisto.fi">tommi.issakainen@otavanopisto.fi</a>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </ui:fragment>
-      
-      <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+    <!--  If user is authenticated -->
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <div class="flex-row">
         <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-2 sm-flex-order-2">
           <div class="box box-max-width">
             <div id="visits"></div> 
@@ -112,8 +67,8 @@
             <div id="announcements"></div>
           </div>
         </div>
-      </ui:fragment>
-    </div>
+      </div>
+    </ui:fragment>
 
   </ui:define>
   

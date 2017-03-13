@@ -4,28 +4,29 @@
 }
 
 .ui-dialog {
-  box-shadow: 0 0 80px rgba(0,0,0,0.4);
   background: #fff;
-  font-family:'Open Sans', Arial, sans-serif;
+  border: none;
+  box-shadow: 0 0 80px rgba(0,0,0,0.6);
+  font-family: 'Open Sans', Arial, sans-serif;
   font-size: 16px;
   font-weight: 300;
-  padding: 0;
-  text-transform: uppercase;
-  border: none;
-  z-index: 9999;
   max-width: 100%;
   min-width: 320px;
+  padding: 0;
+  text-transform: uppercase;
+  z-index: 9999;
   
   &.ui-corner-all {
-    border-radius: 0;
+    border-radius: 5px;
   }
   
   .ui-dialog-titlebar {
     border: 0;
-    background: #7391a7;
+    background: #009fe3;
     color: #fff;
-    border-radius: 0;
-    padding: 8px 36px 8px 12px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 12px 36px 12px 16px;
     font-weight: 400;
     line-height: 1.5em;
     
@@ -41,16 +42,16 @@
     }
     
     .ui-dialog-titlebar-close {
-      background: #7391a7;
+      background: #009fe3;
       border-radius: 0;
       border: 0;
-      width: 24px;
+      width: 32px;
       margin: 0;
       font-size: 22px;
-      height: 22px;
+      height: 26px;
       position: absolute;
-      right: 12px;
-      top: 7px;
+      right: 8px;
+      top: 12px;
       cursor: pointer;
       
       span {
@@ -118,7 +119,7 @@
       text-align: right;
     
       button {
-        border-radius: 0;
+        border-radius: 2px;
         border: 0;
         color: #fff;
         font-weight: 400;

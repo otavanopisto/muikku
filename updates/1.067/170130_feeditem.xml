@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>
+    ALTER TABLE Feed
+      DROP COLUMN content;
+  </sql>
+  <sql>
+    CREATE TABLE FeedItem (
+      id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+      title VARCHAR(2048),
+      link VARCHAR(2048),
+      author VARCHAR(2048),
+      description LONGTEXT,
+      publicationDate DATETIME,
+      image VARCHAR(2048),
+      feed_id BIGINT NOT NULL,
+      FOREIGN KEY (feed_id) REFERENCES Feed (id)
+    );
+  </sql>
+</update>
