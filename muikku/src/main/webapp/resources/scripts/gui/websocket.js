@@ -157,6 +157,7 @@
     },
     
     _reconnect: function () {
+      var wasOpen = this._socketOpen; 
       this._socketOpen = false;
       clearTimeout(this._reconnectTimeout);
       
@@ -166,10 +167,12 @@
             this._webSocket.onmessage = function () {};
             this._webSocket.onerror = function () {};
             this._webSocket.onclose = function () {};
-            this._webSocket.close();
+            if (wasOpen) {
+              this._webSocket.close();
+            }
           }
         } catch (e) {
-          
+          // Ignore exceptions related to discarding a WebSocket 
         }
         
         this._getTicket($.proxy(function (ticket) {
