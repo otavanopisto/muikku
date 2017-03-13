@@ -38,7 +38,7 @@ nav.of-navigation {
     flex-flow: row nowrap;
     margin: 0 auto;
     max-width: 1280px;
-    min-height: 70px;
+    height: 70px;
   }
   
   .of-site-logo {
@@ -51,6 +51,7 @@ nav.of-navigation {
   
   .of-site-links {
     flex: 1 0 auto;
+    height: 100%,
   }
   
   .of-site-alternate-links {
@@ -364,7 +365,7 @@ header.of-header {
     .site-info-name-secondpart {
       font-weight: 200;
       letter-spacing: 5px;
-      text-shadow: 0 0 15px $of-header-site-info-text-shadow-color;
+      text-shadow: 0 0 15px $of-header-site-info-text2-shadow-color;
     }
   
   }
