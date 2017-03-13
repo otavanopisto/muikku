@@ -43,12 +43,13 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
 	    Feed feed,
 	    int numItems
   ) {
-	  return findByFeeds(Collections.singletonList(feed), numItems);
+	  return findByFeeds(Collections.singletonList(feed), numItems, FeedSortOrder.DESCENDING);
 	}
 
 	public List<FeedItem> findByFeeds(
 	    List<Feed> feeds,
-	    int numItems
+	    int numItems,
+	    FeedSortOrder order
   ) {
 		EntityManager entityManager = getEntityManager(); 
 		
@@ -63,7 +64,14 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
     criteria.where(
         root.get(FeedItem_.feed).in(feeds)
     );
-    criteria.orderBy(criteriaBuilder.desc(root.get(FeedItem_.publicationDate)));
+    switch (order) {
+    case ASCENDING:
+      criteria.orderBy(criteriaBuilder.asc(root.get(FeedItem_.publicationDate)));
+      break;
+    case DESCENDING:
+      criteria.orderBy(criteriaBuilder.desc(root.get(FeedItem_.publicationDate)));
+      break;
+    }
     
     return entityManager
         .createQuery(criteria)
