@@ -163,6 +163,8 @@
       this._reconnectTimeout = setTimeout($.proxy(function () {
         try {
           if (this._webSocket) {
+            this._webSocket.onmessage = function () {};
+            this._webSocket.onerror = function () {};
             this._webSocket.onclose = function () {};
             this._webSocket.close();
           }
@@ -221,8 +223,12 @@
     
     _onBeforeWindowUnload: function () {
       if (this._webSocket) {
+        this._webSocket.onmessage = function () {};
+        this._webSocket.onerror = function () {};
         this._webSocket.onclose = function () {};
-        this._webSocket.close();
+        if (this._socketOpen) {
+          this._webSocket.close();
+        }
       }
     }
   });
