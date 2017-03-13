@@ -166,7 +166,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:" + System.getProperty("it.port.https") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
     
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
@@ -196,7 +196,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:" + System.getProperty("it.port.https") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
@@ -226,7 +226,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:" + System.getProperty("it.port.https") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
