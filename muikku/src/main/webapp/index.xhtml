@@ -23,6 +23,7 @@
       <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js"/>
       <script defer="defer" jsf:name="/scripts/gui/widget-messages.js"/>
       <script defer="defer" jsf:name="/scripts/gui/widget-announcements.js"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-last-workspace.js"/>
       <script defer="defer" jsf:name="/scripts/gui/check-contact-info.js"/>
     </ui:fragment>
     
@@ -98,6 +99,7 @@
       <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
         <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-2 sm-flex-order-2">
           <div class="box box-max-width">
+            <div id="last-workspace"></div>
             <div id="visits"></div> 
             <div id="workspaces"></div>
           </div>

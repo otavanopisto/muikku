@@ -1,0 +1,3 @@
+<div>URL: {lastWorkspace.url}</div>
+<div>WORKSPACE: {lastWorkspace.workspaceName}</div>
+<div>MATERIAL: {lastWorkspace.materialName}</div>

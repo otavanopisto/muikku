@@ -36,14 +36,22 @@
     }
   });
 
-  $(window).unload(function() {
+  $(window).on('beforeunload', function() {
     var tocItem = $('a.active');
     if (tocItem.length) {
-      var workspaceEntityId = $('.workspaceEntityId').val();
-      var workspaceMaterialId = tocItem.parent().attr('data-workspace-material-id');
-      if (workspaceEntityId && workspaceMaterialId) {
-        mApi().user.property.create({key: 'workspace-' + workspaceEntityId + '-bookmark', value: workspaceMaterialId});
+      var url = window.location.href;
+      var workspaceName = $('.workspaceName').val();
+      var workspaceNameExtension = $('.workspaceNameExtension').val();
+      if (workspaceNameExtension) {
+        workspaceName += ' (' + workspaceNameExtension + ')';
       }
+      var materialName = $(tocItem).text();
+      var lastWorkspace = {
+        url: url,
+        workspaceName: workspaceName,
+        materialName: materialName
+      }
+      mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(lastWorkspace)});
     }
   });
   
