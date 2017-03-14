@@ -23,6 +23,7 @@
               template = 'workspace/workspace_progress_materials_fullscreen.dust';
             }
             renderDustTemplate(template, {progress : activity}, $.proxy(function (text) {
+              $(this.element).off('click');
               $(this.element).html(text);
               $(this.element).on('click', '.c100', function (event) {
                 var activeMenu = $('.workspace-progress-element-menu:visible');
