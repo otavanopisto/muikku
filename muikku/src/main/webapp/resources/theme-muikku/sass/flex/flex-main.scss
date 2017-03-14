@@ -39,8 +39,6 @@ dt {
   font-weight: 600;
 }
 
-
-
 .disable-page-scrolling {
   height: 100%;
   overflow: hidden; 
@@ -429,6 +427,14 @@ main.content {
     font-style: italic;
   }
   
+}
+
+.frontpage-continue-studies {
+  background-color: $environment-link-color;
+  border-radius: 2px;
+  color: $environment-alt-font-color;
+  margin: 0 5px;
+  padding: 2px 8px;
 }
 
 .box ul {
