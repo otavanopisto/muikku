@@ -641,9 +641,12 @@
 
       this._saveWorkspaceMaterialReply(stateOptions['success-state'], $.proxy(function (reply) {
         this._applyState(assignmentType, stateOptions['success-state']);
-        
         if (stateOptions['success-text']) {
           $('.notification-queue').notificationQueue('notification', 'success', getLocaleText(stateOptions['success-text']));
+        }
+        var progressWidget = $('.workspace-progress-widget');
+        if (progressWidget) {
+          $(progressWidget).workspaceActivity('loadActivity');
         }
       }, this));
     },

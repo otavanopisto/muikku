@@ -859,7 +859,7 @@ public class PyramusMock {
           .willReturn(aResponse()
             .withStatus(302)
             .withHeader("Location",
-              "http://dev.muikku.fi:8081/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+              "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
         stubFor(post(urlEqualTo("/1/oauth/token"))
           .willReturn(aResponse()
@@ -877,10 +877,10 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(whoAmI))
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
+        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:" + System.getProperty("it.port.https")))
           .willReturn(aResponse()
             .withStatus(302)
-            .withHeader("Location", "http://dev.muikku.fi:8081/")));
+            .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
         
         return this;
       }
@@ -905,10 +905,10 @@ public class PyramusMock {
             .withBody("")
             .withStatus(200)));
         
-        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
+        stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:" + System.getProperty("it.port.https")))
           .willReturn(aResponse()
             .withStatus(302)
-            .withHeader("Location", "http://dev.muikku.fi:8081/")));
+            .withHeader("Location", "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
         
         return this;        
       }
@@ -933,7 +933,7 @@ public class PyramusMock {
         mockStudentGroups();
         
         for (String payload : pmock.payloads) {
-          TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+          TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
         }
 
         return this;

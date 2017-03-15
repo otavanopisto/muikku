@@ -99,7 +99,8 @@ public class WebSocketMessenger {
           // Closing failed, ignore
         }
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to open WebSocket session", e);
     }
   }
@@ -111,18 +112,18 @@ public class WebSocketMessenger {
 
   public void handleMessage(String message, Session session, String ticketId) {
     ObjectMapper mapper = new ObjectMapper();
-
     try {
       WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
       if (ticket != null) {
         WebSocketMessage messageData = mapper.readValue(message, WebSocketMessage.class);
         WebSocketMessageEvent event = new WebSocketMessageEvent(ticket.getTicket(), ticket.getUser(), messageData);
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
-      } else {
-        logger.log(Level.SEVERE, String.format("Received a WebSocket message with invalid ticket '%s'", ticketId));
+      }
+      else {
         session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket"));
       }
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
     }
   }

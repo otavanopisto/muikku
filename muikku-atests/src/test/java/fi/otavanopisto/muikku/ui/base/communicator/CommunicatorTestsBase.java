@@ -184,7 +184,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".cm-messages-container");
         waitForPresent(".content");
         String currentUrl = getWebDriver().getCurrentUrl();
-        assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("https://dev.muikku.fi:8443/communicator#sent"));
+        assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("https://dev.muikku.fi:" + getPortHttps() + "/communicator#sent"));
         assertTrue("Element found even though it shouldn't be there", isElementPresent("div.cm-message-select input[type=\"checkbox\"]") == false);
       }finally{
         deleteCommunicatorMessages(); 
