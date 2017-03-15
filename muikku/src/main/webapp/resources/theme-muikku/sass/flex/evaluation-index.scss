@@ -447,24 +447,27 @@ body {
     padding: 8px;
        
     &::-webkit-input-placeholder {
-      color: $forms-textfield-placeholder-font-color;
+      color: $environment-font-color;
       font-style: italic;
-      text-transform: uppercase;
+      opacity:0.4;
     }
     
     &::-moz-placeholder {
-      color: $forms-textfield-placeholder-font-color;
+      color: $environment-font-color;
       font-style: italic;
+      opacity:0.4;
     }
     
     &:-ms-input-placeholder {
-      color: $forms-textfield-placeholder-font-color;
+      color: $environment-font-color;
       font-style: italic;
+      opacity:0.4;
     }
 
     &:-moz-placeholder {
-      color: $forms-textfield-placeholder-font-color;
+      color: $environment-font-color;
       font-style: italic;
+      opacity:0.4;
     }
     
   }
