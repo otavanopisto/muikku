@@ -123,10 +123,10 @@
           }
         }, this)); 
     },
-    _isImportant(workspaceUserEntityId) {
+    _isImportant: function(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._importantRequests) >= 0;
     },
-    _isUnimportant(workspaceUserEntityId) {
+    _isUnimportant: function(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._unimportantRequests) >= 0;
     },
     _resetImportance: function(card) {
@@ -486,7 +486,7 @@
           for (var i = 0; i < workspaces.length; i++) {
             var workspaceName = workspaces[i].name;
             if (workspaces[i].nameExtension) {
-              workspaceName += ' (' + workspaces[i].nameExtension + ')'; 
+              workspaceName += ' (' + workspaces[i].nameExtension + ')';
             }
             var workspaceItem = $('<li>')
               .append($('<a>')
