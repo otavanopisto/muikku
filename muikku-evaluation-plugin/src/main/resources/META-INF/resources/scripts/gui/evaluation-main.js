@@ -481,7 +481,7 @@
       $('.evaluation-search-wrapper')
         .show()
         .animate({
-          left: $(document).width() - 300 + "px"
+          left: $(document).width() - $('.evaluation-search-wrapper').width() + "px"
       }, 300, "swing", function() {
         $('.evaluation-search-wrapper').attr('data-visibility', 'visible');
       });

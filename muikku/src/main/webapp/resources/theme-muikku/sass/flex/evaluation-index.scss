@@ -413,8 +413,47 @@ body {
   padding: 10px;
   position: fixed;
   top: 60px;
-  width: 300px;
+  width: 360px;
   z-index:20;
+  
+  h3 {
+    color: $body-font-color;
+    font-size: 18px;
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  
+}
+
+.evaluation-search-container {
+  
+}
+
+.evaluation-search-results-container {
+  display: none;
+}
+
+.evaluation-my-workspaces-container {
+  
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  li {
+    list-style-type: none;
+    margin: 0;
+    padding: 5px;
+  }
+  
+  a {
+    color: $environment-link-color;
+    display: block;
+    font-size: 16px;
+    font-weight: 300;
+    text-decoration: none;
+  }
+  
 }
 
 @import "mobile_evaluation";
