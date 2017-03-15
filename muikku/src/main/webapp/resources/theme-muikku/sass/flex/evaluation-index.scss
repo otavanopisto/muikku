@@ -410,7 +410,7 @@ body {
   box-shadow: -5px 5px 20px $evaluation-search-wrapper-background-boxshadow-color;
   display: none;
   left: 100%;
-  padding: 10px;
+  padding: 0;
   position: fixed;
   top: 60px;
   width: 360px;
@@ -426,14 +426,75 @@ body {
 }
 
 .evaluation-search-container {
+  padding: 10px;
+  
+  .evaluation-search {
+    @include flexbox;
+    box-sizing: border-box;
+    flex-flow: row nowrap;
+  }
+  
+  input {
+    border: 1px solid $forms-textfield-border-color;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    box-sizing: border-box;
+    color: $environment-font-color;
+    display: inline;
+    flex: 1 1 calc(100% - 40px);
+    font-size: 16px;
+    font-weight: 300;
+    padding: 8px;
+       
+    &::-webkit-input-placeholder {
+      color: $forms-textfield-placeholder-font-color;
+      font-style: italic;
+      text-transform: uppercase;
+    }
+    
+    &::-moz-placeholder {
+      color: $forms-textfield-placeholder-font-color;
+      font-style: italic;
+    }
+    
+    &:-ms-input-placeholder {
+      color: $forms-textfield-placeholder-font-color;
+      font-style: italic;
+    }
+
+    &:-moz-placeholder {
+      color: $forms-textfield-placeholder-font-color;
+      font-style: italic;
+    }
+    
+  }
+  
+  button {
+    background: $forms-button-background-color;
+    border: 1px solid $forms-button-border-color;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    color: $forms-button-font-color;
+    cursor: pointer;
+    display: inline;
+    flex: 1 1 auto;
+    
+    &.icon-search::before {
+      font-size: 20px;
+      text-align: center;
+    }
+    
+  }
   
 }
 
 .evaluation-search-results-container {
   display: none;
+  padding: 10px;
 }
 
 .evaluation-my-workspaces-container {
+  padding: 10px;
   
   ul {
     margin: 0;
