@@ -667,6 +667,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     }
   }
   
+  protected void waitUntilContentChanged(final String selector, final String original) {
+    WebDriver driver = getWebDriver();
+    new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
+      public Boolean apply(WebDriver driver) {
+        String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+        if (!actual.equalsIgnoreCase(original)) {
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+  
   protected void waitAndSendKeys(String selector, String keysToSend) {
     waitForPresent(selector);
     sendKeys(selector, keysToSend);
