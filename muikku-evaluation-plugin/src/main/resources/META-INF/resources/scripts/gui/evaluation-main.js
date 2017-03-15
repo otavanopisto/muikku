@@ -509,7 +509,7 @@
         $('.evaluation-search-wrapper')
           .show()
           .animate({
-            left: $(document).width() - $('.evaluation-search-wrapper').width() + "px"
+            right: 0 + "px"
         }, 300, "swing", function() {
           $('.evaluation-search-wrapper').attr('data-visibility', 'visible');
         });
@@ -517,7 +517,7 @@
       else {
         $('.evaluation-search-wrapper')
           .animate({
-            left: "100%"
+            right: 0 - $('.evaluation-search-wrapper').width() + "px"
         }, 250, "swing", function() {
           $('.evaluation-search-wrapper').hide();
           $('.evaluation-search-wrapper').attr('data-visibility', 'hidden');

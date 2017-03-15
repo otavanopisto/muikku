@@ -285,9 +285,15 @@ body {
   }
 
   a {
-   color: $link;
+    color: $environment-link-color;
     font-size: 14px;
     font-weight: 400;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+    
   }
   
   .evaluation-card-data-text {
@@ -409,9 +415,9 @@ body {
   bottom: 0;
   box-shadow: -5px 5px 20px $evaluation-search-wrapper-background-boxshadow-color;
   display: none;
-  left: 100%;
   padding: 0;
   position: fixed;
+  right: calc(0px - 360px);
   top: 60px;
   width: 360px;
   z-index:20;
@@ -513,9 +519,14 @@ body {
   a {
     color: $environment-link-color;
     display: block;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 300;
     text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+    
   }
   
 }
