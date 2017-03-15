@@ -90,7 +90,6 @@ body {
     }
     
     &.icon-search {
-      display: none; // Hidden until search is implemented
       font-size: 32px;
       height: 32px;
       padding: 10px;
@@ -410,9 +409,9 @@ body {
   bottom: 0;
   box-shadow: -5px 5px 20px $evaluation-search-wrapper-background-boxshadow-color;
   display: none;
+  left: 100%;
   padding: 10px;
   position: fixed;
-  right: 0;
   top: 60px;
   width: 300px;
   z-index:20;
