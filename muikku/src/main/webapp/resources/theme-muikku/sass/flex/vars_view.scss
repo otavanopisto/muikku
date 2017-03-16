@@ -406,22 +406,22 @@ div.box {
         color: $form-button-font-color;
         padding: 5px;
                 
-        &:not(:first-child){
+        &:not(:first-child) {
           margin-left: 10px;
         }
 
         &.send {
-          background-color: $form-button-send-background-color
+          background-color: $form-button-send-background-color;
         }
         
         &.cancel {
-          background-color: $form-button-cancel-background-color
+          background-color: $form-button-cancel-background-color;
         }      
       }
       
       .autocomplete {
         background-color: $form-autocomplete-background-color;
-        border : 1px solid $form-autocomplete-border-color;
+        border: 1px solid $form-autocomplete-border-color;
         color: $form-autocomplete-hover-font-color;            
       }
     }    
