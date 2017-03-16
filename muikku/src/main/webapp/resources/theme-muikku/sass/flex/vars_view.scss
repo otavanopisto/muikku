@@ -509,11 +509,11 @@ div.box {
   .grade {
     color: $item-grade-font-color;
     
-    &.passing{
+    &.passing {
       background-color: $item-grade-passing-background-color;
     }
     
-    &.failing{
+    &.failing {
       background-color: $item-grade-failing-background-color;
     }
   
