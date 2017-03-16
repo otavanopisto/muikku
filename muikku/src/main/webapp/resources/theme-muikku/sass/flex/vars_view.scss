@@ -502,7 +502,7 @@ div.box {
     }
   }
 
-  .title{
+  .title {
     background-color: $item-title-background-color;
   }
 
@@ -530,7 +530,7 @@ div.box {
   .tool {
     color: $item-tool-font-color;
     
-    &.hover{
+    &.hover {
       color: $item-tool-font-hover-color;
     }
     
@@ -547,7 +547,7 @@ div.box {
       }
     }
 
-    .link{
+    .link {
       color: $item-tool-link-font-color;
     }
   }
@@ -821,7 +821,7 @@ div.box {
   background-color: $evaluation-background-color;
   
   .view {
-   background-color: $evaluation-view-background-color; 
+    background-color: $evaluation-view-background-color; 
   }  
   
   .passed {
