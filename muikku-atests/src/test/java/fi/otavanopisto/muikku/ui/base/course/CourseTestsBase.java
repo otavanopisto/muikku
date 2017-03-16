@@ -11,6 +11,7 @@ import org.openqa.selenium.By;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 
+import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
@@ -185,10 +186,16 @@ public class CourseTestsBase extends AbstractUITest {
         waitForPresent(".materials-progress-evaluated-status");
         boolean evaluatedExists = getWebDriver().findElements(By.cssSelector(".materials-progress-evaluated-status")).size() > 0;
         assertTrue(evaluatedExists);
+        waitAndClick(".materials-progress-evaluated-status");
+        waitForPresentAndVisible(".workspace-progress-element-menu-content.evaluable");
+        assertPresent(".workspace-progress-element-menu-content.evaluable");
         
         waitForPresent(".materials-progress-practice-status");
         boolean practiceExists = getWebDriver().findElements(By.cssSelector(".materials-progress-practice-status")).size() > 0;
         assertTrue(practiceExists);
+        waitAndClick(".materials-progress-practice-status");
+        waitForPresentAndVisible(".workspace-progress-element-menu-content.exercise");
+        assertPresent(".workspace-progress-element-menu-content.exercise");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());        
@@ -199,6 +206,15 @@ public class CourseTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
   public void courseProgressWidgetTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
