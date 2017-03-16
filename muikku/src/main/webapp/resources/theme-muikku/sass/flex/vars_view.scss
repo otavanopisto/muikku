@@ -433,7 +433,7 @@ div.box {
 .item {
   background-color: $item-background-color;  
   border: 1px solid $item-border-color;
-  width:500px;
+  width: 500px;
     
   .active {
     background-color: $item-background-active-color;
@@ -608,7 +608,7 @@ div.box {
   
   .button {    
     background-color: $navigation-horizontal-bar-default-button-background-color;
-    color:  $navigation-horizontal-bar-button-icon-color;
+    color: $navigation-horizontal-bar-button-icon-color;
   
     &.hover {
       background-color: $navigation-horizontal-bar-default-button-background-hover-color;
@@ -619,7 +619,7 @@ div.box {
   
     .special {
       background-color: $navigation-horizontal-bar-special-background-color;
-      color:  $navigation-horizontal-bar-button-icon-color;
+      color: $navigation-horizontal-bar-button-icon-color;
 
       &.accented {
         background-color: $navigation-horizontal-bar-special-accented-background-color;
@@ -692,6 +692,7 @@ div.box {
     
 
   }
+  
   .disabled {
     background-color: $navigation-horizontal-bar-disabled-button-background-color;       
     color: $navigation-horizontal-bar-disabled-button-font-color; 
@@ -771,13 +772,12 @@ div.box {
   
   .cat-11 {
     background-color: $category-color-11;
-  }
-     
+  }     
 }
 
 .search {
-  font-size: 50px;
   color: $search-icon-color;
+  font-size: 50px;
 }
 
 .search-result {
@@ -959,7 +959,6 @@ div.box {
         &.active {
           background-color: $evaluation-unimportant-star-active-background-color;
           color: $evaluation-unimportant-star-active-font-color;
-
         }        
       }
     }
