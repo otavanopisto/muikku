@@ -986,8 +986,9 @@ div.box {
     }
     
     .assignment-close {
-      color: $evaluation-modal-assignment-close-font-color;
       border: 1px solid $evaluation-modal-assignment-close-border-color;
+      color: $evaluation-modal-assignment-close-font-color;
+
       
       &.text-shadow {
         background-color: $evaluation-modal-assignment-close-textshadow-color;
