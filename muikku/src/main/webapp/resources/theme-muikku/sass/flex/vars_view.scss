@@ -793,10 +793,12 @@ div.box {
     background-color: $target-user-color;
     color: $environment-alt-font-color;
   }
+  
   &.workspace {
     background-color: $target-workspace-color;
     color: $environment-alt-font-color;
   }
+  
   &.group {
     background-color: $target-group-color;
     color: $environment-alt-font-color;
@@ -883,6 +885,7 @@ div.box {
     }
   
   }
+  
   .filter {
     background-color: $evaluation-filter-wrapper-background-color;
     
@@ -902,6 +905,7 @@ div.box {
       color: $evaluation-sorting-item-active-font-color;
     }
   }
+  
   .welldone {
     background-color: $evaluation-welldone-font-color;
     color: $environment-alt-font-color;
@@ -931,24 +935,30 @@ div.box {
       
     }
     .star {      
+    
       &.important {
         color: $evaluation-important-star-font-color;
-        &.active{
-          color: $evaluation-important-star-active-font-color;
+        
+        &.active {
           background-color: $evaluation-important-star-active-background-color;
+          color: $evaluation-important-star-active-font-color;
         }
       }      
+      
       &.unimportant {
         color: $evaluation-unimportant-star-font-color;
+        
         &.active{
-          color: $evaluation-unimportant-star-active-font-color;
           background-color: $evaluation-unimportant-star-active-background-color;
+          color: $evaluation-unimportant-star-active-font-color;
+
         }        
       }
     }
   }
   .evaluation-search {
     background-color: $evaluation-search-wrapper-background-color;
+    
     &.shadow {
       background-color: $evaluation-search-wrapper-background-boxshadow-color;
     }
@@ -960,10 +970,11 @@ div.box {
       color: $evaluation-modal-close-font-color;
       
       &.text-shadow {
-        color: $environment-font-color;
         background-color: $evaluation-modal-close-textshadow-color;
+        color: $environment-font-color;
       }    
     }
+    
     .assignment-close {
       color: $evaluation-modal-assignment-close-font-color;
       border: 1px solid $evaluation-modal-assignment-close-border-color;
@@ -972,6 +983,7 @@ div.box {
         background-color: $evaluation-modal-assignment-close-textshadow-color;
       }
     }
+    
     .header {
       background-color: $evaluation-modal-header-background-color;
       color: $evaluation-modal-header-font-color;      
@@ -980,6 +992,7 @@ div.box {
     .modal-text-editor {
       border: 1px solid $evaluation-modal-texteditor-border-color;
     }
+    
     .modal-textfield {
       background-color: $evaluation-modal-textfield-background-color;
       border: 1px solid $evaluation-modal-textfield-border-color;
