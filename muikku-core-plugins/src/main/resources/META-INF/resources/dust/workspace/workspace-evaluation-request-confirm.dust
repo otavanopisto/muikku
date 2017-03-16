@@ -2,10 +2,6 @@
 
   {#localize key="plugin.workspace.evaluation.requestEvaluation.description"/}
 
-  {@lt key=assignmentsDone value=assignmentsTotal}
-    <div class="ui-dialog-additional-message">{#localize key="plugin.workspace.evaluation.requestEvaluation.assignmentsNotDone" arg0=assignmentsDone arg1=assignmentsTotal/}</div>
-  {/lt}
-   
   {?evaluationHasFee}
     <div class="evaluation-request-additional-message-wrapper notify-user">
       <label>{#localize key="plugin.workspace.evaluation.requestEvaluation.evaluationHasFee.label"/}</label>
