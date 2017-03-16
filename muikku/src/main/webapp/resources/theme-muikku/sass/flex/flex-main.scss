@@ -392,6 +392,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 }
 
 /* Navigation Icons Notifier */
+
 .dock-notification {
   background-color: $environment-static-navigation-notifier-background-color;
   border-radius: 10px;
@@ -409,6 +410,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 }
 
 /* Content where everything goes */
+
 main.content {
   margin: 20px 0 0;
 }
