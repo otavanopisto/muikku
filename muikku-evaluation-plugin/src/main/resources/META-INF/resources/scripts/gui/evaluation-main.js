@@ -502,7 +502,7 @@
       location.href = location.href.split("?")[0];
     });
 
-    $('.eval-search').on('click', function() {
+    $('.eval-workspace').on('click', function() {
       var evalSearchVisibility = $('.evaluation-search-wrapper').attr('data-visibility');
       
       if (evalSearchVisibility == 'hidden') {
