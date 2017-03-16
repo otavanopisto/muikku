@@ -1,9 +1,4 @@
- div.circle {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  margin-left: 10px;
- }
+
 @import "vars";
 @import "styles";
  
@@ -15,7 +10,7 @@ body {
 
 // Vars-view flex 
 
-.vars-view-row{
+.vars-view-row {
   margin: 20px;
   display:flex;
   justify-content: space-around;  
@@ -45,10 +40,9 @@ div.box {
   border-radius: 50%;
   margin-left: 10px;
   padding: 20px;
- 
  }
 
-.vars-view-cell{
+.vars-view-cell {
   flex-direction: row;
   align-items: center;
   background-color: #f7f7f7; 
@@ -59,6 +53,7 @@ div.box {
   &.dark {
     background-color: #dadada;
   }
+  
   &.transparent {
     background-color: transparent;
   }
@@ -69,7 +64,7 @@ div.box {
     margin-left: 10px;  
   }  
   
-  .vars-view-subrow{
+  .vars-view-subrow {
     display:flex;
     flex-direction: row;       
   }  
@@ -124,7 +119,7 @@ div.box {
   }
   
   .notifier {
-    width:30px;
+    width: 30px;
     height: 30px;
     vertical-align:center;
     font-size: 22px;
@@ -143,10 +138,6 @@ div.box {
   font-size: 50px;  
 }
 
-
-
-
-
 .environment {
   background-color: $environment-background-color;  
   color: $environment-font-color;  
@@ -158,11 +149,11 @@ div.box {
   h3,
   h4,
   h5,
-  h6{
+  h6 {
     color: $environment-header-font-color;
   }
 
-  .link{
+  .link {
     color: $environment-link-color;
   }
   
@@ -188,12 +179,13 @@ div.box {
 
   .button-container{
     background-color: $environment-button-container-background-color; 
+    
     >div{
       padding: 10px;
       margin-bottom: 10px;
     }
+    
     .button {
-
       background-color: $environment-button-background-color; 
       @include gradient-top-bottom($environment-button-gradient-start-color, $environment-button-gradient-end-color,  $environment-button-background-color);
       border: 1px solid $environment-button-border-color;
@@ -210,8 +202,7 @@ div.box {
       border: 1px solid $environment-button-border-color;    
       background-color: $environment-button-dropdown-background-color;
       @include gradient-top-bottom($environment-button-gradient-start-color, $environment-button-gradient-end-color, $environment-button-dropdown-background-color);
-      color: $environment-button-font-color;  
-      
+      color: $environment-button-font-color;        
     }
   }
   
@@ -223,6 +214,7 @@ div.box {
     .item{
       padding: 5px;
     }
+    
     .item.active {
       background-color: $environment-menu-item-active-background-color;
       color: $environment-menu-item-active-font-color;      
@@ -236,9 +228,10 @@ div.box {
   }
   
   .content {
+    background-color: #fff;
     box-shadow: $environment-content-box-shadow;  
     padding: 10px;
-    background-color: #fff;
+    
     .navigation-container{
       background-color: $environment-navigation-container-background-color;
       padding: 15px;
@@ -250,22 +243,18 @@ div.box {
       padding: 5px;
     }
   }
-  .paging-container {
-
-  }
   
   .paging {
     background-color: $environment-paging-tool-background-color;
     color: $environment-paging-tool-font-color;
-    padding: 5px;   
     margin-top: 10px;
+    padding: 5px;   
     text-align: center;
     
     &.disabled {
-      margin-left: 20px;
-      
       background-color: $environment-paging-tool-background-disabled-color;
       color: $environment-paging-tool-font-disabled-color;    
+      margin-left: 20px;
     }
   }  
   
@@ -300,8 +289,7 @@ div.box {
       &.active {
         color: $environment-settings-hover-icon-color;
         margin-left: 20px;
-      }
-       
+      }       
     }
     
     .settings-subtitle {
@@ -317,6 +305,7 @@ div.box {
       background-color: $environment-setting-signature-background-color;
     }     
   }
+  
   .profile {
     background-color: $environment-profile-background-color;
     padding: 20px;
@@ -337,6 +326,7 @@ div.box {
       background-color: $environment-profile-section-background-color;
       color: $environment-profile-section-font-color;      
     }
+    
     .button {
       padding: 5px;
       margin-top: 10px;    
@@ -375,6 +365,7 @@ div.box {
         padding: 5px;
         margin-top: 5px;
       }
+      
       .form-header {
         color: $form-header-font-color;     
       }
@@ -405,6 +396,7 @@ div.box {
 
 
       }
+      
       .button {
         color: $form-button-font-color;
         padding: 5px;
@@ -576,9 +568,11 @@ div.box {
   .icon {
     color: $navigation-vertical-bar-icon-color;  
   }
+  
   .empty {
     color: $navigation-vertical-bar-empty-font-color;
   }
+  
   .selected {
     background-color: $navigation-vertical-bar-selected-background-color;
   
@@ -586,18 +580,18 @@ div.box {
  
   .decoration-icon {
     color: $navigation-vertical-bar-deco-icon-color;   
+    
     &.active {
       color: $navigation-vertical-bar-deco-active-icon-color;
     }  
   }
+  
   .sub-header {
     background-color: $navigation-vertical-bar-sub-header-background-color;    
   }  
 }
 
 .navigation-horizontal {  
-
-
   
   .navigate {
     border-radius: 30%;
@@ -639,6 +633,7 @@ div.box {
       > div:not(:first-child) {
         margin-top: 5px;
       }
+      
       &::after, 
       &::before {
         margin-top: 10px;      
@@ -668,19 +663,23 @@ div.box {
       .link {
         color: $navigation-horizontal-bar-special-menu-link-font-color;
       }
+      
       .input {
         padding: 10px;
         border: 1px solid $navigation-horizontal-bar-special-menu-input-border-color;
    
       }
     }
+    
     .active {
       color: $navigation-horizontal-bar-active-font-color;
       background-color: $navigation-horizontal-bar-special-background-color;
     }
+    
     .hover {
       background-color: $navigation-horizontal-bar-hover-background-color;    
     }
+    
     .border {
       border: 1px solid $navigation-horizontal-bar-border-color;    
     }
@@ -698,6 +697,7 @@ div.box {
 
 
 .content-navigations {
+  
   .content-menu {
     border: 1px solid $content-navigation-menu-border-color-1;
     box-shadow: $content-navigation-menu-shadow;
@@ -722,6 +722,7 @@ div.box {
   div {
     margin-left: 5px;
   }
+  
   .cat-1 {
     background-color: $category-color-1;
   }
@@ -980,7 +981,6 @@ div.box {
     }
     
     .assignment-close {
-    
       color: $evaluation-modal-assignment-close-font-color;
       border: 1px solid $evaluation-modal-assignment-close-border-color;
       
@@ -1006,7 +1006,6 @@ div.box {
     .modal-memofield {
       background-color: $evaluation-modal-memofield-background-color;
       border: 1px solid $evaluation-modal-memofield-border-color;    
-    
     }
     
     .modal-select {
