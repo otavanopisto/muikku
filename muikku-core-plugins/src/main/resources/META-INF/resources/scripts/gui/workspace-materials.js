@@ -12,7 +12,7 @@
         duration : 500,
         easing : "easeInOutQuad",
         complete : function() {
-          $('a.active').removeClass('active');
+          $('#materialsScrollableTOC').find('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
           scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -24,8 +24,8 @@
     }
     else {
       $('html,body').scrollTop(scrollTop);
-      $('a.active').removeClass('active');
-      $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+      $('#materialsScrollableTOC').find('a.active').removeClass('active');
+      $('#materialsScrollableTOC').find('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
       window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
@@ -37,7 +37,7 @@
   });
 
   $(window).on('beforeunload', function() {
-    var tocItem = $('a.active');
+    var tocItem = $('#materialsScrollableTOC').find('a.active'); 
     if (tocItem.length) {
       var url = window.location.href;
       var workspaceName = $('.workspaceName').val();
@@ -95,8 +95,8 @@
     $('.workspace-materials-view-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
         var workspaceMaterialId = $(this).data('workspace-material-id');
-        $('a.active').removeClass('active');
-        $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        $('#materialsScrollableTOC').find('a.active').removeClass('active');
+        $('#materialsScrollableTOC').find('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
         window.location.hash = 'p-' + workspaceMaterialId;
         $(window).data('scrolling', true);
         $.waypoints('refresh');
