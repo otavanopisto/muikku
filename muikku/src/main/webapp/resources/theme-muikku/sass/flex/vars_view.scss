@@ -778,14 +778,14 @@ div.box {
 }
  
 .user-picture{
-  background-color: #dadada;
+  background-color: $environment-background-dim-color;
   color: $user-picture-font-color;
 }
 
 .target {
   color: $target-font-color;
   
-  &.remove-font{
+  &.remove-font {
     color: $target-remove-font-color;  
   } 
 
@@ -973,7 +973,6 @@ div.box {
         background-color: $evaluation-modal-close-textshadow-color;
         color: $environment-font-color;
       }    
-      
     }
     
     .assignment-close {
@@ -1022,6 +1021,7 @@ div.box {
         background-color: $evaluation-modal-assignment-evaluation-header-background-color;
       }
     }
+    
     .modal-separator {
       border: 1px solid $evaluation-modal-seperator-border-color;
     }
