@@ -35,20 +35,21 @@ div.box {
 }
 
  div.circle {
-  width: 55px;
-  height: 55px;
   border-radius: 50%;
+  height: 55px;
   margin-left: 10px;
   padding: 20px;
+  width: 55px;
+
  }
 
 .vars-view-cell {
-  flex-direction: row;
   align-items: center;
   background-color: #f7f7f7; 
-  padding:10px;
   display: flex;
+  flex-direction: row;
   justify-content: space-around;
+  padding:10px;
   
   &.dark {
     background-color: #dadada;
@@ -71,11 +72,11 @@ div.box {
 }
 
 .environment-language-selection {
-  width: 300px;
   background-color: $environment-language-selection-background-color;
   box-shadow: $environment-language-selection-shadow;
   color: $environment-language-selection-link-color;
-  
+  width: 300px;
+    
     &:hover {
       background-color: $environment-language-selection-active-background-color;  
     }
@@ -207,8 +208,8 @@ div.box {
   }
   
   .menu {
-    box-shadow: $environment-menu-shadow;
     background-color: $environment-menu-background-color;
+    box-shadow: $environment-menu-shadow;
     color: $environment-menu-font-color;
     padding: 10px;
     .item{
@@ -223,8 +224,8 @@ div.box {
 
   .content-container {
     background-color: $environment-content-container-background-color; 
-    width: 500px;
     padding: 20px;
+    width: 500px;
   }
   
   .content {
@@ -234,8 +235,7 @@ div.box {
     
     .navigation-container{
       background-color: $environment-navigation-container-background-color;
-      padding: 15px;
-      
+      padding: 15px;      
     }
 
     .navigation{
@@ -275,16 +275,17 @@ div.box {
   
   .widget-overlay {
     background-color: $environment-widget-overlay-background-color;
-    width: 100px;
     height: 30px;
+    width: 100px;
   }
     
   .settings {
    
     .icon {
+      color: $environment-settings-icon-color;
       font-size: 50px;
       font-family: $environment-icon-family;    
-      color: $environment-settings-icon-color;
+
       
       &.active {
         color: $environment-settings-hover-icon-color;
@@ -293,16 +294,17 @@ div.box {
     }
     
     .settings-subtitle {
-      padding: 10px;
-      margin-top: 10px;
       background-color: $environment-settings-subtitle-background-color;
+      margin-top: 10px;
+      padding: 10px;
     }
           
     .settings-signature {
-      padding: 10px;
-      margin-top: 10px;
-      border-left: 3px solid $environment-setting-signature-border-color;
       background-color: $environment-setting-signature-background-color;
+      border-left: 3px solid $environment-setting-signature-border-color;
+      margin-top: 10px;
+      padding: 10px;
+
     }     
   }
   
@@ -311,34 +313,35 @@ div.box {
     padding: 20px;
     
     .picture {    
-      padding: 10px;
-      margin-top: 10px;
-      width: 40px;
-      height: 20px;
-      text-align: center;
-      box-shadow: $environment-profile-picture-box-shadow;
       border: 1px solid $environment-profile-picture-border;
+      box-shadow: $environment-profile-picture-box-shadow;
+      height: 20px;
+      margin-top: 10px;
+      padding: 10px;
+      text-align: center;
+      width: 40px;
     }
     
     .section {
-      margin-top: 10px;    
-      padding: 5px;
       background-color: $environment-profile-section-background-color;
       color: $environment-profile-section-font-color;      
+      margin-top: 10px;    
+      padding: 5px;
     }
     
     .button {
-      padding: 5px;
-      margin-top: 10px;    
       background-color: $environment-profile-button-background-color; 
-      color: $environment-profile-button-font-color;   
+      color: $environment-profile-button-font-color;
+      margin-top: 10px;             
+      padding: 5px;
+
     }
   }
   
   .file {
     background-color: $environment-file-background-color;  
-    padding: 5px;
     color: #fff;
+    padding: 5px;
   }
   
   .item-shadow {
@@ -349,14 +352,14 @@ div.box {
 
 
   .bottom-bar {
-    box-shadow: $environment-bottom-bar-box-shadow;
     background-color: $environment-bottom-bar-background-color;
+    box-shadow: $environment-bottom-bar-box-shadow;
     color: $environment-bottom-bar-font-color;
     padding: 10px;
     
     .link {
-      margin-top: 10px;
       color: $environment-bottom-bar-link-color;
+      margin-top: 10px;
     }   
 
     .forms {
@@ -371,13 +374,14 @@ div.box {
       }
       
       .form-element-title {
+        background-color: #fff;
         color: $form-element-title-font-color;
-        background-color: #fff;         
+         
       }
        
       .form-textfield { 
+        background-color: #fff;   
         color: $form-textfield-font-color;
-        background-color: #fff;         
         
         &.focus {
           background-color: $form-textfield-focus-background-color;
@@ -388,9 +392,10 @@ div.box {
         }  
         
         .subcontainer {
+          background-color: $form-textfield-subcontainer-background-color;   
           border: 1px solid $form-textfield-subcontainer-border-color;
           color: $form-textfield-subcontainer-font-color;
-          background-color: $form-textfield-subcontainer-background-color;        
+     
         }
 
 
@@ -426,18 +431,19 @@ div.box {
 // From here
 
 .item {
-  width:500px;
   background-color: $item-background-color;  
   border: 1px solid $item-border-color;
-  
+  width:500px;
+    
   .active {
-    border: 2px solid $item-border-color-active;
     background-color: $item-background-active-color;
+    border: 2px solid $item-border-color-active;
+
   }
   
   .highlight {
-    border: 2px solid $item-border-highlight-color;;
     background-color: $item-background-highlight-color;
+    border: 2px solid $item-border-highlight-color;
   }
   
   .markup-border-1 {
@@ -529,8 +535,8 @@ div.box {
     }
     
     .button {
-      color: $item-tool-button-font-color;
       background-color: $item-tool-button-background-color;
+      color: $item-tool-button-font-color;
       
       &.wizard {
         background-color: $item-tool-button-wizard-background-color;
@@ -552,11 +558,11 @@ div.box {
 }
 
 .navigation-vertical {
-  border: 1px solid $navigation-vertical-bar-border-color;
   background-color: $navigation-vertical-bar-background-color;
+  border: 1px solid $navigation-vertical-bar-border-color;
   
   .active {
-    background-color: $navigation-vertical-bar-background-active-color;
+//    background-color: $navigation-vertical-bar-background-active-color;
     background-color: $navigation-vertical-bar-active-background-color;
   }
   
@@ -594,15 +600,16 @@ div.box {
 .navigation-horizontal {  
   
   .navigate {
-    border-radius: 30%;
     background-color: $navigation-horizontal-bar-navigation-background-color;
+    border-radius: 30%;
     color: $navigation-horizontal-bar-navigation-icon-color; 
 
   }
   
   .button {    
-    color:  $navigation-horizontal-bar-button-icon-color;
     background-color: $navigation-horizontal-bar-default-button-background-color;
+    color:  $navigation-horizontal-bar-button-icon-color;
+  
     &.hover {
       background-color: $navigation-horizontal-bar-default-button-background-hover-color;
     }    
@@ -611,9 +618,9 @@ div.box {
   .special-container {
   
     .special {
-      color:  $navigation-horizontal-bar-button-icon-color;
       background-color: $navigation-horizontal-bar-special-background-color;
-      
+      color:  $navigation-horizontal-bar-button-icon-color;
+
       &.accented {
         background-color: $navigation-horizontal-bar-special-accented-background-color;
       }
@@ -624,11 +631,11 @@ div.box {
     }
 
     .menu {
-      margin-top: 10px;
-      position: relative;
       border: 1px solid $navigation-horizontal-bar-special-menu-border-color;
       border-radius: 3px;
       font-size: 12px;   
+      margin-top: 10px;
+      position: relative;
       
       > div:not(:first-child) {
         margin-top: 5px;
@@ -636,26 +643,26 @@ div.box {
       
       &::after, 
       &::before {
-        margin-top: 10px;      
-        bottom: 100%;
         border: solid transparent;
+        bottom: 100%;
         content: " ";
         height: 0;
+        margin-top: 10px;      
         width: 0;
         position: absolute;
         pointer-events: none;
       }  
     
       &::after {
-        border-color: $environment-border-transparent-color;
         border-bottom-color: $navigation-horizontal-bar-special-menu-arrow-border-color-1;
+        border-color: $environment-border-transparent-color;
         border-width: 7px;
         margin-left: -7px;
       }
       
       &::before {
-        border-color: $environment-border-transparent-color;
         border-bottom-color: $navigation-horizontal-bar-special-menu-arrow-border-color-2;
+        border-color: $environment-border-transparent-color;
         border-width: 8px;
         margin-left: -8px;
       }
@@ -665,15 +672,14 @@ div.box {
       }
       
       .input {
-        padding: 10px;
         border: 1px solid $navigation-horizontal-bar-special-menu-input-border-color;
-   
+        padding: 10px;
       }
     }
     
     .active {
-      color: $navigation-horizontal-bar-active-font-color;
       background-color: $navigation-horizontal-bar-special-background-color;
+      color: $navigation-horizontal-bar-active-font-color;
     }
     
     .hover {
