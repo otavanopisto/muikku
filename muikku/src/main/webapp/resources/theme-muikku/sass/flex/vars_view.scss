@@ -935,6 +935,7 @@ div.box {
       }
       
     }
+   
     .star {      
     
       &.important {
@@ -957,6 +958,7 @@ div.box {
       }
     }
   }
+  
   .evaluation-search {
     background-color: $evaluation-search-wrapper-background-color;
     
@@ -964,6 +966,7 @@ div.box {
       background-color: $evaluation-search-wrapper-background-boxshadow-color;
     }
   }  
+  
   .modal {
     background-color: $evaluation-modal-background-color;
     
@@ -982,7 +985,7 @@ div.box {
       
       &.text-shadow {
         background-color: $evaluation-modal-assignment-close-textshadow-color;
-      }
+      }      
     }
     
     .header {
