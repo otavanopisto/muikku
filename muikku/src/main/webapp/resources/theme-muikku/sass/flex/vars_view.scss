@@ -648,9 +648,9 @@ div.box {
         content: " ";
         height: 0;
         margin-top: 10px;      
-        width: 0;
-        position: absolute;
         pointer-events: none;
+        position: absolute;
+        width: 0;
       }  
     
       &::after {
@@ -784,7 +784,7 @@ div.box {
   color: $search-result-font-color; 
 }
  
-.user-picture{
+.user-picture {
   background-color: $environment-background-dim-color;
   color: $user-picture-font-color;
 }
@@ -957,7 +957,7 @@ div.box {
       &.unimportant {
         color: $evaluation-unimportant-star-font-color;
         
-        &.active{
+        &.active {
           background-color: $evaluation-unimportant-star-active-background-color;
           color: $evaluation-unimportant-star-active-font-color;
 
