@@ -95,93 +95,62 @@
 
   function confirmEvaluationRequest() {
     var workspaceEntityId = $('.workspaceEntityId').val();
-    
-    mApi().workspace.workspaces.evaluatedAssignmentInfo.read(workspaceEntityId).callback($.proxy(function(err, assignmentInfo) {
+    mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, data) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', err);
       }
       else {
-        mApi().workspace.workspaces.feeInfo.read(workspaceEntityId).callback($.proxy(function (err, data) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            data = $.extend(data, {assignmentsTotal: assignmentInfo.assignmentsTotal, assignmentsDone: assignmentInfo.assignmentsDone});
-            renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', data, $.proxy(function (text) {
-              var dialog = $(text);
-              $(text).dialog({
-                modal: true, 
-                minHeight: 200,
-                resizable: false,
-                width: 560,
-                dialogClass: "workspace-evaluation-confirm-dialog",
-                beforeClose: function(event, ui) {
-                  $(this).dialog().remove(); 
-                },
-                open: function(event, ui) {
-                  if (data.assignmentsDone < data.assignmentsTotal) {
-                    var delay = 5;
-                    var saveButton = $('.save-evaluation-button');
-                    var saveButtonText = $(saveButton).find('.ui-button-text');
-                    var saveText = $(saveButton).text();
-                    saveButton.attr('disabled', 'disabled');
-                    $(saveButtonText).text(saveText + ' (' + delay + ')');
-                    var timeout = function() {
-                      delay--;
-                      if (delay == 0) {
-                        $(saveButtonText).text(saveText);
-                        $(saveButton).removeAttr("disabled");
-                      }
-                      else {
-                        $(saveButtonText).text(saveText + ' (' + delay + ')');
-                        setTimeout(timeout, 1000);
-                      }
-                    }; 
-                    setTimeout(timeout, 1000);
+        renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', data, $.proxy(function (text) {
+          var dialog = $(text);
+          $(text).dialog({
+            modal: true, 
+            minHeight: 200,
+            resizable: false,
+            width: 560,
+            dialogClass: "workspace-evaluation-confirm-dialog",
+            beforeClose: function(event, ui) {
+              $(this).dialog().remove(); 
+            },
+            buttons: [{
+              'text': dialog.data('button-request-text'),
+              'class': 'save-evaluation-button',
+              'click': function(event) {
+                
+                var workspaceEntityId = $('.workspaceEntityId').val();
+                var message = $('#evaluationRequestAdditionalMessage').val();
+
+                mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
+                  'requestText': message
+                }).callback(function(err) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
-                },
-                buttons: [{
-                  'text': dialog.data('button-request-text'),
-                  'class': 'save-evaluation-button',
-                  'click': function(event) {
-                    
-                    var workspaceEntityId = $('.workspaceEntityId').val();
-                    var message = $('#evaluationRequestAdditionalMessage').val();
-    
-                    mApi({async: false}).assessmentrequest.workspace.assessmentRequests.create(parseInt(workspaceEntityId, 10), {
-                      'requestText': message
-                    }).callback(function(err) {
-                      if (err) {
-                        $('.notification-queue').notificationQueue('notification', 'error', err);
-                      }
-                      else {
-                        var evalButton = $('.workspace-dock-navi-button-evaluation');
-                        evalButton
-                          .children('.icon-assessment-' + evalButton.attr('data-state'))
-                            .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                            .addClass('icon-assessment-pending')
-                            .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
-                            .children('span')
-                              .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-                        evalButton.attr('data-state', 'pending');
-                        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
-                      }
-                    });
-                    
-                    $(this).dialog("destroy");
-                    
+                  else {
+                    var evalButton = $('.workspace-dock-navi-button-evaluation');
+                    evalButton
+                      .children('.icon-assessment-' + evalButton.attr('data-state'))
+                        .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                        .addClass('icon-assessment-pending')
+                        .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
+                        .children('span')
+                          .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
+                    evalButton.attr('data-state', 'pending');
+                    $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
                   }
-                }, {
-                  'text': dialog.data('button-cancel-text'),
-                  'class': 'cancel-button',
-                  'click': function() {
-                    $(this).dialog("destroy");
-                  }
-                }]
-              });
-            }, this))
-          }
-        }, this));
+                });
+                
+                $(this).dialog("destroy");
+                
+              }
+            }, {
+              'text': dialog.data('button-cancel-text'),
+              'class': 'cancel-button',
+              'click': function() {
+                $(this).dialog("destroy");
+              }
+            }]
+          });
+        }, this))
       }
     }, this));
   }
