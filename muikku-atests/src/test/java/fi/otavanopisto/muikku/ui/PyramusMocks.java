@@ -79,7 +79,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:8081/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
     stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
@@ -98,11 +98,11 @@ public class PyramusMocks extends AbstractPyramusMocks {
         .withBody(whoAmIJson)
         .withStatus(200)));
     
-    stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:8443"))
+    stubFor(get(urlEqualTo("/users/logout.page?redirectUrl=https://dev.muikku.fi:" + System.getProperty("it.port.https")))
       .willReturn(aResponse()
         .withStatus(302)
         .withHeader("Location",
-          "http://dev.muikku.fi:8081/")));
+          "http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/")));
 
   }
   
@@ -474,23 +474,23 @@ public class PyramusMocks extends AbstractPyramusMocks {
     mockPersonStaffMembers(new StaffMember[] { staffMember1, staffMember2, staffMember3 });
     
     String payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 5));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 5));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookStudentCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(courseStudent.getId(), courseStudent.getCourseId(), courseStudent.getStudentId()));    
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookCourseStudentCreatePayload(courseStudent2.getId(), courseStudent2.getCourseId(), courseStudent2.getStudentId()));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(1l, 1l, 4l));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     
     
   }
@@ -617,7 +617,7 @@ public class PyramusMocks extends AbstractPyramusMocks {
     mockCommons();
     mockCourseTypes();
     String payload = objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId()));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
   }
 
   public static void studentGroupsMocks() throws JsonProcessingException {
@@ -734,9 +734,9 @@ public class PyramusMocks extends AbstractPyramusMocks {
     mockContactTypes();
 
     String payload = objectMapper.writeValueAsString(new WebhookStaffMemberCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 4));
-    TestUtilities.webhookCall("http://dev.muikku.fi:8081/pyramus/webhook", payload);
+    TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
  
   }
   

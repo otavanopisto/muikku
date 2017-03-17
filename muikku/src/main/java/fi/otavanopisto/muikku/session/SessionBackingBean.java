@@ -86,6 +86,10 @@ public class SessionBackingBean {
   public boolean getLoggedIn() {
     return sessionController.isLoggedIn();
   }
+  
+  public boolean getIsStudent() {
+    return loggedUserRoleArchetype != null && loggedUserRoleArchetype.equals(EnvironmentRoleArchetype.STUDENT); 
+  }
 
   public Long getLoggedUserId() {
     return loggedUserId;

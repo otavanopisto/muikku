@@ -1282,6 +1282,14 @@ public class UserRESTService extends AbstractRESTService {
             continue;
           }
           
+          if (studentIdentifier.getIdentifier().startsWith("STUDENT-")) {
+            // When the users are indexed, the archetype is resolved from EnvironmentUser,
+            // so there's 1 archetype per *UserEntity*, not 1 archetype per *User*.
+            // That means that if a userentity has both "student" users and "staffmember" users
+            // the elasticsearch query returns both. We need to filter them after the fact.
+            continue;
+          }
+          
           String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
           
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(

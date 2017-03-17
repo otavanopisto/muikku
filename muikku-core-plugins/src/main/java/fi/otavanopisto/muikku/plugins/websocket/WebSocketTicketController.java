@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.websocket;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,7 +15,7 @@ public class WebSocketTicketController {
   public WebSocketTicket createTicket(String ticket, Long user, String ip, Date timestamp) {
     return webSocketTicketDAO.create(ticket, user, ip, timestamp);
   }
-
+  
   public WebSocketTicket findTicket(String ticket) {
     return webSocketTicketDAO.findByTicket(ticket);
   }
@@ -23,6 +24,13 @@ public class WebSocketTicketController {
     WebSocketTicket webSocketTicket = findTicket(ticket);
     if (webSocketTicket != null) {
       webSocketTicketDAO.delete(webSocketTicket);
+    }
+  }
+
+  public void removeAllTickets() {
+    List<WebSocketTicket> tickets = webSocketTicketDAO.listAll();
+    for (WebSocketTicket ticket : tickets) {
+      webSocketTicketDAO.delete(ticket);
     }
   }
   
