@@ -12,7 +12,7 @@
         duration : 500,
         easing : "easeInOutQuad",
         complete : function() {
-          $('a.active').removeClass('active');
+          $('#materialsScrollableTOC').find('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
           scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -24,15 +24,34 @@
     }
     else {
       $('html,body').scrollTop(scrollTop);
-      $('a.active').removeClass('active');
-      $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+      $('#materialsScrollableTOC').find('a.active').removeClass('active');
+      $('#materialsScrollableTOC').find('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
       window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
   
   $(window).load(function() {
-    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-      scrollToPage(window.location.hash.substring(3), false);
+    if ($(window).data('initial-page')) {
+      scrollToPage($(window).data('initial-page'), true);
+    }
+  });
+
+  $(window).on('beforeunload', function() {
+    var tocItem = $('#materialsScrollableTOC').find('a.active'); 
+    if (tocItem.length) {
+      var url = window.location.href;
+      var workspaceName = $('.workspaceName').val();
+      var workspaceNameExtension = $('.workspaceNameExtension').val();
+      if (workspaceNameExtension) {
+        workspaceName += ' (' + workspaceNameExtension + ')';
+      }
+      var materialName = $(tocItem).text();
+      var lastWorkspace = {
+        url: url,
+        workspaceName: workspaceName,
+        materialName: materialName
+      }
+      mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(lastWorkspace)});
     }
   });
   
@@ -42,6 +61,9 @@
   });
 
   $(document).ready(function() {
+    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
+      $(window).data('initial-page', window.location.hash.substring(3)); 
+    }
     
     $("#materialsScrollableTOC").perfectScrollbar({
       wheelSpeed:3,
@@ -56,20 +78,6 @@
       baseUrl: $('.materialsBaseUrl').val()
     }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
-    $('.workspace-materials-view-page').waypoint(function(direction) {
-      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
-        var workspaceMaterialId = $(this).data('workspace-material-id');
-        $('a.active').removeClass('active');
-        $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = 'p-' + workspaceMaterialId;
-        $(window).data('scrolling', true);
-        $.waypoints('refresh');
-        $(window).data('scrolling', false);
-      }
-    }, {
-      offset: 150
-    });
-    
     $('.workspace-materials-view-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type exercise')
@@ -82,6 +90,20 @@
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
+    });
+
+    $('.workspace-materials-view-page').waypoint(function(direction) {
+      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
+        var workspaceMaterialId = $(this).data('workspace-material-id');
+        $('#materialsScrollableTOC').find('a.active').removeClass('active');
+        $('#materialsScrollableTOC').find('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        window.location.hash = 'p-' + workspaceMaterialId;
+        $(window).data('scrolling', true);
+        $.waypoints('refresh');
+        $(window).data('scrolling', false);
+      }
+    }, {
+      offset: 150
     });
     
     $(window).data('initializing', false);

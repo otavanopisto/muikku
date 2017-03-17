@@ -39,8 +39,6 @@ dt {
   font-weight: 600;
 }
 
-
-
 .disable-page-scrolling {
   height: 100%;
   overflow: hidden; 
@@ -392,6 +390,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 }
 
 /* Navigation Icons Notifier */
+
 .dock-notification {
   background-color: $environment-static-navigation-notifier-background-color;
   border-radius: 10px;
@@ -409,6 +408,7 @@ div[class*='dock-dynamic-navi-button'] > a {
 }
 
 /* Content where everything goes */
+
 main.content {
   margin: 20px 0 0;
 }
@@ -429,6 +429,14 @@ main.content {
     font-style: italic;
   }
   
+}
+
+.frontpage-continue-studies {
+  background-color: $environment-link-color;
+  border-radius: 2px;
+  color: $environment-alt-font-color;
+  margin: 0 5px;
+  padding: 2px 8px;
 }
 
 .box ul {

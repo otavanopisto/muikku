@@ -164,8 +164,8 @@
       var i, l;
       for (i = 0, l = data.originalFiles.length; i < l; i++) {
         if (data.originalFiles[i].size && data.originalFiles[i].size > this.options.maxFileSize) {
-          var maxFileSizeConvertToKB = this.options.maxFileSize / 1024;
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsManagement.fileFieldUpload.fileSizeTooLarge', maxFileSizeConvertToKB));
+          var maxFileSizeConvertToMB = Math.floor(this.options.maxFileSize / 1048576);
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsManagement.fileFieldUpload.fileSizeTooLarge', maxFileSizeConvertToMB));
           return;
         }
         else {
