@@ -412,6 +412,7 @@ body {
     color: $body-font-color;
     font-size: 18px;
     font-weight: 300;
+    margin-top: 0;
     text-transform: uppercase;
   }
   
@@ -434,6 +435,7 @@ body {
     color: $body-font-color;
     font-size: 18px;
     font-weight: 300;
+    margin-top: 0;
     text-transform: uppercase;
   }
   
@@ -505,8 +507,7 @@ body {
   
 }
 
-.evaluation-search-results-container {
-  display: none;
+.evaluation-filters-container {
   padding: 10px;
 }
 
