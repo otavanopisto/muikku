@@ -108,20 +108,6 @@ body {
    
 }
 
-// FILTER WRAPPER
-.evaluation-filter-wrapper {
-  background: $evaluation-filter-wrapper-background-color;
-  bottom: 0;
-  box-shadow: 5px 5px 20px $evaluation-filter-wrapper-background-boxshadow-color;
-  display: none;
-  left: 0;
-  padding:10px;
-  position: fixed;
-  top: 60px;
-  width: 300px;
-  z-index:20;
-}
-
 // FRONTPAGE EVALUATION CARDS WRAPPER
 .evaluation-cards-wrapper {
   padding: 60px 0 0;
@@ -409,11 +395,33 @@ body {
   
 }
 
+// FILTER WRAPPER 
+.evaluation-filter-wrapper {
+  background: $evaluation-filter-wrapper-background-color;
+  bottom: 0;
+  box-shadow: 10px 0 10px $evaluation-filter-wrapper-background-boxshadow-color;
+  display: none;
+  padding: 0;
+  position: fixed;
+  left: calc(0px - 360px);
+  top: 60px;
+  width: 360px;
+  z-index:20;
+  
+  h3 {
+    color: $body-font-color;
+    font-size: 18px;
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  
+}
+
 // SEARCH WRAPPER 
 .evaluation-search-wrapper {
   background: $evaluation-search-wrapper-background-color;
   bottom: 0;
-  box-shadow: -5px 5px 20px $evaluation-search-wrapper-background-boxshadow-color;
+  box-shadow: -10px 0 10px $evaluation-search-wrapper-background-boxshadow-color;
   display: none;
   padding: 0;
   position: fixed;

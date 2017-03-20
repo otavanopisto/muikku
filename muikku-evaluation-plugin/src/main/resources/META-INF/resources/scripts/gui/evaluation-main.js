@@ -28,10 +28,12 @@
       if (workspaceEntityId) {
         this._sortProperty = 'evaluation-workspace-sort';
         $('.evaluation-cards-title h3').text($('#workspaceName').val());
+        $('.eval-filter').show();
         $('.icon-sort-workspace-alpha-asc').hide();
         $('.icon-sort-workspace-alpha-desc').hide();
       }
       else {
+        $('.eval-filter').hide();
         this._sortProperty = 'evaluation-default-sort';
         $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
       }
@@ -524,6 +526,31 @@
         });
       }
     });
+    
+    $('.eval-filter').on('click', function() {
+      var evalFilterVisibility = $('.evaluation-filter-wrapper').attr('data-visibility');
+      
+      if (evalFilterVisibility == 'hidden') {
+        $('.evaluation-filter-wrapper')
+          .show()
+          .animate({
+            left: 0 + "px"
+        }, 300, "swing", function() {
+          $('.evaluation-filter-wrapper').attr('data-visibility', 'visible');
+        });
+      }
+      else {
+        $('.evaluation-filter-wrapper')
+          .animate({
+            left: 0 - $('.evaluation-filter-wrapper').width() + "px"
+        }, 250, "swing", function() {
+          $('.evaluation-filter-wrapper').hide();
+          $('.evaluation-filter-wrapper').attr('data-visibility', 'hidden');
+        });
+      }
+    });
+    
+    
   });
   
   
