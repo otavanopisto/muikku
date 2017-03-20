@@ -114,7 +114,7 @@ linters:
     ignore_parent_selectors: false
 
   PlaceholderInExtend:
-    enabled: false
+    enabled: true
 
   PrivateNamingConvention:
     enabled: false
@@ -172,7 +172,7 @@ linters:
 
   SingleLinePerProperty:
     enabled: true
-    allow_single_line_rule_sets: true
+    allow_single_line_rule_sets: false
 
   SingleLinePerSelector:
     enabled: true
@@ -180,6 +180,11 @@ linters:
   SpaceAfterComma:
     enabled: true
     style: one_space # or 'no_space', or 'at_least_one_space'
+    
+  SpaceAfterComment:
+    enabled: true
+    allow_empty_comments: true
+    style: one_space
 
   SpaceAfterPropertyColon:
     enabled: true
@@ -216,13 +221,13 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   TrailingZero:
-    enabled: false
+    enabled: true
 
   TransitionAll:
-    enabled: false
+    enabled: true
 
   UnnecessaryMantissa:
     enabled: true

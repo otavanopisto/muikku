@@ -89,8 +89,7 @@ body {
       width: 34px;
     }
     
-    &.icon-search {
-      display: none; // Hidden until search is implemented
+    &.icon-books {
       font-size: 32px;
       height: 32px;
       padding: 10px;
@@ -103,7 +102,7 @@ body {
     
   }
   
-  .eval-search {
+  .eval-workspace {
     float: right;
   }
    
@@ -286,9 +285,15 @@ body {
   }
 
   a {
-   color: $link;
+    color: $environment-link-color;
     font-size: 14px;
     font-weight: 400;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+    
   }
   
   .evaluation-card-data-text {
@@ -410,12 +415,120 @@ body {
   bottom: 0;
   box-shadow: -5px 5px 20px $evaluation-search-wrapper-background-boxshadow-color;
   display: none;
-  padding: 10px;
+  padding: 0;
   position: fixed;
-  right: 0;
+  right: calc(0px - 360px);
   top: 60px;
-  width: 300px;
+  width: 360px;
   z-index:20;
+  
+  h3 {
+    color: $body-font-color;
+    font-size: 18px;
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  
+}
+
+.evaluation-search-container {
+  padding: 10px;
+  
+  .evaluation-search {
+    @include flexbox;
+    box-sizing: border-box;
+    flex-flow: row nowrap;
+  }
+  
+  input {
+    border: 1px solid $forms-textfield-border-color;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    box-sizing: border-box;
+    color: $environment-font-color;
+    display: inline;
+    flex: 1 1 calc(100% - 40px);
+    font-size: 16px;
+    font-weight: 300;
+    padding: 8px;
+       
+    &::-webkit-input-placeholder {
+      color: $environment-font-color;
+      font-style: italic;
+      opacity:0.4;
+    }
+    
+    &::-moz-placeholder {
+      color: $environment-font-color;
+      font-style: italic;
+      opacity:0.4;
+    }
+    
+    &:-ms-input-placeholder {
+      color: $environment-font-color;
+      font-style: italic;
+      opacity:0.4;
+    }
+
+    &:-moz-placeholder {
+      color: $environment-font-color;
+      font-style: italic;
+      opacity:0.4;
+    }
+    
+  }
+  
+  button {
+    background: $forms-button-background-color;
+    border: 1px solid $forms-button-border-color;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    color: $forms-button-font-color;
+    cursor: pointer;
+    display: inline;
+    flex: 1 1 auto;
+    
+    &.icon-search::before {
+      font-size: 20px;
+      text-align: center;
+    }
+    
+  }
+  
+}
+
+.evaluation-search-results-container {
+  display: none;
+  padding: 10px;
+}
+
+.evaluation-my-workspaces-container {
+  padding: 10px;
+  
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  
+  li {
+    list-style-type: none;
+    margin: 0;
+    padding: 5px;
+  }
+  
+  a {
+    color: $environment-link-color;
+    display: block;
+    font-size: 15px;
+    font-weight: 300;
+    text-decoration: none;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+    
+  }
+  
 }
 
 @import "mobile_evaluation";
