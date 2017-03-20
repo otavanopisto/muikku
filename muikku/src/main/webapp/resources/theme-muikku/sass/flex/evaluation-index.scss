@@ -56,9 +56,12 @@ body {
 
 // NAVIGATION (FRONTPAGE & WORKSPACE VIEWS)
 .evaluation-navigation {
+  @include flexbox;
+  align-items: stretch;
   background: $evaluation-navigation-background-color;
   bottom: 0;
   box-shadow: 0 3px 5px $evaluation-navigation-boxshadow-color;
+  flex-flow: row nowrap;
   left: 0;
   height: 60px;
   padding: 0 10px;
@@ -71,29 +74,29 @@ body {
   .eval-nav-item {
     color: $evaluation-navigation-item-font-color;
     cursor: pointer;
-    float: left;
+    flex: 0 0 32px;
     margin: 4px;
     text-align: center;
     
     &.icon-filter {
-      font-size: 28px;
-      height: 28px;
-      padding: 12px;
-      width: 28px;
+      font-size: 26px;
+      height: 26px;
+      padding: 13px;
+      width: 26px;
     }
     
     &.icon-home {
       font-size: 34px;
       height: 34px;
-      padding: 8px;
+      padding: 9px;
       width: 34px;
     }
     
     &.icon-books {
-      font-size: 32px;
-      height: 32px;
-      padding: 10px;
-      width: 32px;
+      font-size: 34px;
+      height: 34px;
+      padding: 9px;
+      width: 34px;
     }
     
     &:hover {
@@ -102,8 +105,74 @@ body {
     
   }
   
-  .eval-workspace {
-    float: right;
+  .eval-search-wrapper {
+    flex: 1 1 auto;
+    margin: 4px;
+    padding: 7px 8px;
+    text-align: right;
+    
+    .eval-search-container {
+      @include flexbox;
+      box-sizing: border-box;
+      flex-flow: row nowrap;
+      justify-content: flex-end;
+    }
+    
+    input {
+      border: 1px solid $forms-generic-border-color;
+      border-bottom-left-radius: 5px;
+      border-top-left-radius: 5px;
+      box-sizing: border-box;
+      color: $environment-font-color;
+      display: inline;
+      flex: 0 0 280px;
+      font-size: 16px;
+      font-weight: 300;
+      padding: 8px;
+         
+      &::-webkit-input-placeholder {
+        color: $environment-font-color; 
+        font-style: italic;
+        opacity:0.4;
+      }
+      
+      &::-moz-placeholder {
+        color: $environment-font-color;
+        font-style: italic;
+        opacity:0.4;
+      }
+      
+      &:-ms-input-placeholder {
+        color: $environment-font-color;
+        font-style: italic;
+        opacity:0.4;
+      }
+  
+      &:-moz-placeholder {
+        color: $environment-font-color;
+        font-style: italic;
+        opacity:0.4;
+      }
+      
+    }
+    
+    button {
+      background: $forms-button-background-color;
+      border: 1px solid $forms-generic-border-color;
+      border-bottom-right-radius: 5px;
+      border-top-right-radius: 5px;
+      color: $forms-button-font-color;
+      cursor: pointer;
+      display: inline;
+      flex: 0 0;
+      
+      &.icon-search::before {
+        font-size: 20px;
+        text-align: center;
+      }
+      
+    }
+    
   }
    
 }
@@ -418,11 +487,11 @@ body {
   
 }
 
-// SEARCH WRAPPER 
-.evaluation-search-wrapper {
-  background: $evaluation-search-wrapper-background-color;
+// WORKSPACES WRAPPER 
+.evaluation-workspaces-wrapper {
+  background: $evaluation-workspaces-wrapper-background-color;
   bottom: 0;
-  box-shadow: -10px 0 10px $evaluation-search-wrapper-background-boxshadow-color;
+  box-shadow: -10px 0 10px $evaluation-workspaces-wrapper-background-boxshadow-color;
   display: none;
   padding: 0;
   position: fixed;
@@ -437,72 +506,6 @@ body {
     font-weight: 300;
     margin-top: 0;
     text-transform: uppercase;
-  }
-  
-}
-
-.evaluation-search-container {
-  padding: 10px;
-  
-  .evaluation-search {
-    @include flexbox;
-    box-sizing: border-box;
-    flex-flow: row nowrap;
-  }
-  
-  input {
-    border: 1px solid $forms-textfield-border-color;
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 5px;
-    box-sizing: border-box;
-    color: $environment-font-color;
-    display: inline;
-    flex: 1 1 calc(100% - 40px);
-    font-size: 16px;
-    font-weight: 300;
-    padding: 8px;
-       
-    &::-webkit-input-placeholder {
-      color: $environment-font-color;
-      font-style: italic;
-      opacity:0.4;
-    }
-    
-    &::-moz-placeholder {
-      color: $environment-font-color;
-      font-style: italic;
-      opacity:0.4;
-    }
-    
-    &:-ms-input-placeholder {
-      color: $environment-font-color;
-      font-style: italic;
-      opacity:0.4;
-    }
-
-    &:-moz-placeholder {
-      color: $environment-font-color;
-      font-style: italic;
-      opacity:0.4;
-    }
-    
-  }
-  
-  button {
-    background: $forms-button-background-color;
-    border: 1px solid $forms-button-border-color;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-    color: $forms-button-font-color;
-    cursor: pointer;
-    display: inline;
-    flex: 1 1 auto;
-    
-    &.icon-search::before {
-      font-size: 20px;
-      text-align: center;
-    }
-    
   }
   
 }

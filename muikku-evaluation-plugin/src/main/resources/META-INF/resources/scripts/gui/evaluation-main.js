@@ -505,24 +505,24 @@
     });
 
     $('.eval-workspace').on('click', function() {
-      var evalSearchVisibility = $('.evaluation-search-wrapper').attr('data-visibility');
+      var evalSearchVisibility = $('.evaluation-workspaces-wrapper').attr('data-visibility');
       
       if (evalSearchVisibility == 'hidden') {
-        $('.evaluation-search-wrapper')
+        $('.evaluation-workspaces-wrapper')
           .show()
           .animate({
             right: 0 + "px"
         }, 300, "swing", function() {
-          $('.evaluation-search-wrapper').attr('data-visibility', 'visible');
+          $('.evaluation-workspaces-wrapper').attr('data-visibility', 'visible');
         });
       }
       else {
-        $('.evaluation-search-wrapper')
+        $('.evaluation-workspaces-wrapper')
           .animate({
-            right: 0 - $('.evaluation-search-wrapper').width() + "px"
+            right: 0 - $('.evaluation-workspaces-wrapper').width() + "px"
         }, 250, "swing", function() {
-          $('.evaluation-search-wrapper').hide();
-          $('.evaluation-search-wrapper').attr('data-visibility', 'hidden');
+          $('.evaluation-workspaces-wrapper').hide();
+          $('.evaluation-workspaces-wrapper').attr('data-visibility', 'hidden');
         });
       }
     });
