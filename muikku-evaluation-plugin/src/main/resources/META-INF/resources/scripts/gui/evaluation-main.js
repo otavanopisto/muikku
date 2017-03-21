@@ -13,12 +13,15 @@
       this._currentSort = '';
       this._cardsLoaded = 0;
       this._cardsTotal = 0;
+      this._filterFunctions = [];
+      this._activeFilters = [];
       this.element.on("loadStart", $.proxy(this._onLoadStart, this));
       this.element.on("loadEnd", $.proxy(this._onLoadEnd, this));
       this.element.on("cardLoaded", $.proxy(this._onCardLoaded, this));
       this.element.on("discardCard", $.proxy(this._onDiscardCard, this));
-      this.element.on("cardStateChange", $.proxy(this._onCardStateChange, this))
+      this.element.on("cardStateChange", $.proxy(this._onCardStateChange, this));
       this._setupSorters();
+      this._setupFilters();
       this._initializeView();
     },
     _initializeView: function() {
@@ -447,6 +450,51 @@
         this._sortFunctions['sort-workspace-alpha-desc']();
       }, this));
 
+    },
+    
+    _setupFilters: function() {
+      this._filterFunctions['text'] = $.proxy(function(card) {
+        var text = $('input.eval-searchfield').val();
+        var cmp =  $(card).find('.evaluation-card-student').text() +
+          $(card).find('.evaluation-card-study-programme').text() +
+          $(card).find('.workspace-name').text();
+        return cmp.toLowerCase().indexOf(text.toLowerCase()) >= 0;
+      }, this);
+      var textSearchFunction = $.proxy(function() {
+        if ($('input.eval-searchfield').val()) {
+          this._activeFilters.push('text');
+        }
+        else {
+          this._activeFilters.splice($.inArray('text', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this);
+      $('input.eval-searchfield').on('keypress', $.proxy(function(e) {
+        if (e.which === 13) {
+          textSearchFunction();
+        }
+      }, this));
+      $('button.eval-searchbutton').click($.proxy(function() {
+        textSearchFunction();
+      }, this));
+    },
+    
+    _filter: function() {
+      $('.evaluation-card').each($.proxy(function(index, card) {
+        var match = true;
+        for (var i = 0; i < this._activeFilters.length; i++) {
+          match = this._filterFunctions[this._activeFilters[i]](card);
+          if (!match) {
+            break;
+          }
+        }
+        if (match) {
+          $(card).show();
+        }
+        else {
+          $(card).hide();
+        }
+      }, this));
     }
   });
 
