@@ -453,6 +453,7 @@
     },
     
     _setupFilters: function() {
+      // Text filter
       this._filterFunctions['text'] = $.proxy(function(card) {
         var text = $('input.eval-searchfield').val();
         var cmp =  $(card).find('.evaluation-card-student').text() +
@@ -482,6 +483,32 @@
       $('div.remove-search-results').click($.proxy(function() {
         $('input.eval-searchfield').val('');
         textSearchFunction();
+      }, this));
+      // Evaluation request filter
+      this._filterFunctions['evaluation-request'] = $.proxy(function(card) {
+        return $(card).attr('data-assessment-request-date') != '';
+      }, this);
+      $('input.filter-evaluation-request').click($.proxy(function() {
+        if ($('input.filter-evaluation-request').is(':checked')) {
+          this._activeFilters.push('evaluation-request');
+        }
+        else {
+          this._activeFilters.splice($.inArray('evaluation-request', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
+      // Not evaluated filter
+      this._filterFunctions['no-evaluation'] = $.proxy(function(card) {
+        return $(card).attr('data-evaluated') != 'true';
+      }, this);
+      $('input.filter-no-evaluation').click($.proxy(function() {
+        if ($('input.filter-no-evaluation').is(':checked')) {
+          this._activeFilters.push('no-evaluation');
+        }
+        else {
+          this._activeFilters.splice($.inArray('no-evaluation', this._activeFilters), 1);
+        }
+        this._filter();
       }, this));
     },
     
