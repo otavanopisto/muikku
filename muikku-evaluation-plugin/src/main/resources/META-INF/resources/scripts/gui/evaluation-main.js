@@ -480,7 +480,6 @@
         textSearchFunction();
       }, this));
       $('div.remove-search-results').click($.proxy(function() {
-        $('div.remove-search-results').hide();
         $('input.eval-searchfield').val('');
         textSearchFunction();
       }, this));
