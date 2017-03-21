@@ -74,14 +74,14 @@ body {
   .eval-nav-item {
     color: $evaluation-navigation-item-font-color;
     cursor: pointer;
-    flex: 0 0 32px;
+    flex: 0 0 26px;
     margin: 4px;
     text-align: center;
     
     &.icon-filter {
       font-size: 26px;
       height: 26px;
-      padding: 13px;
+      padding: 13px 9px;
       width: 26px;
     }
     
@@ -484,14 +484,14 @@ body {
 }
 
 // FILTER WRAPPER 
-.evaluation-filter-wrapper {
+.evaluation-filters-wrapper {
   background: $evaluation-filter-wrapper-background-color;
   bottom: 0;
-  box-shadow: 10px 0 10px $evaluation-filter-wrapper-background-boxshadow-color;
+  box-shadow: -10px 0 10px $evaluation-filter-wrapper-background-boxshadow-color;
   display: none;
   padding: 0;
   position: fixed;
-  left: calc(0px - 360px);
+  right: calc(0px - 360px);
   top: 60px;
   width: 360px;
   z-index:20;
@@ -510,11 +510,11 @@ body {
 .evaluation-workspaces-wrapper {
   background: $evaluation-workspaces-wrapper-background-color;
   bottom: 0;
-  box-shadow: -10px 0 10px $evaluation-workspaces-wrapper-background-boxshadow-color;
+  box-shadow: 10px 0 10px $evaluation-workspaces-wrapper-background-boxshadow-color;
   display: none;
   padding: 0;
   position: fixed;
-  right: calc(0px - 360px);
+  left: calc(0px - 360px);
   top: 60px;
   width: 360px;
   z-index:20;

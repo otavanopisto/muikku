@@ -558,14 +558,14 @@
       location.href = location.href.split("?")[0];
     });
 
-    $('.eval-workspace').on('click', function() {
-      var evalSearchVisibility = $('.evaluation-workspaces-wrapper').attr('data-visibility');
+    $('.eval-workspaces').on('click', function() {
+      var evalWorkspacesVisibility = $('.evaluation-workspaces-wrapper').attr('data-visibility');
       
-      if (evalSearchVisibility == 'hidden') {
+      if (evalWorkspacesVisibility == 'hidden') {
         $('.evaluation-workspaces-wrapper')
           .show()
           .animate({
-            right: 0 + "px"
+            left: 0 + "px"
         }, 300, "swing", function() {
           $('.evaluation-workspaces-wrapper').attr('data-visibility', 'visible');
         });
@@ -573,7 +573,7 @@
       else {
         $('.evaluation-workspaces-wrapper')
           .animate({
-            right: 0 - $('.evaluation-workspaces-wrapper').width() + "px"
+            left: 0 - $('.evaluation-workspaces-wrapper').width() + "px"
         }, 250, "swing", function() {
           $('.evaluation-workspaces-wrapper').hide();
           $('.evaluation-workspaces-wrapper').attr('data-visibility', 'hidden');
@@ -581,25 +581,25 @@
       }
     });
     
-    $('.eval-filter').on('click', function() {
-      var evalFilterVisibility = $('.evaluation-filter-wrapper').attr('data-visibility');
+    $('.eval-filters').on('click', function() {
+      var evalFiltersVisibility = $('.evaluation-filters-wrapper').attr('data-visibility');
       
-      if (evalFilterVisibility == 'hidden') {
-        $('.evaluation-filter-wrapper')
+      if (evalFiltersVisibility == 'hidden') {
+        $('.evaluation-filters-wrapper')
           .show()
           .animate({
-            left: 0 + "px"
+            right: 0 + "px"
         }, 300, "swing", function() {
-          $('.evaluation-filter-wrapper').attr('data-visibility', 'visible');
+          $('.evaluation-filters-wrapper').attr('data-visibility', 'visible');
         });
       }
       else {
-        $('.evaluation-filter-wrapper')
+        $('.evaluation-filters-wrapper')
           .animate({
-            left: 0 - $('.evaluation-filter-wrapper').width() + "px"
+            right: 0 - $('.evaluation-filters-wrapper').width() + "px"
         }, 250, "swing", function() {
-          $('.evaluation-filter-wrapper').hide();
-          $('.evaluation-filter-wrapper').attr('data-visibility', 'hidden');
+          $('.evaluation-filters-wrapper').hide();
+          $('.evaluation-filters-wrapper').attr('data-visibility', 'hidden');
         });
       }
     });
