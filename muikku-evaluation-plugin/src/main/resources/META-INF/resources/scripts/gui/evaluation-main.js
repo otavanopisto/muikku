@@ -453,7 +453,6 @@
     },
     
     _setupFilters: function() {
-      $('div.remove-search-results').hide();
       this._filterFunctions['text'] = $.proxy(function(card) {
         var text = $('input.eval-searchfield').val();
         var cmp =  $(card).find('.evaluation-card-student').text() +
