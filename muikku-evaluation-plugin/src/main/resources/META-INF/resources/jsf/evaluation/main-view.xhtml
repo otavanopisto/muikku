@@ -61,12 +61,13 @@
       <input type="hidden" name="workspaceName" id="workspaceName" value="#{evaluationMainViewBackingBean.workspaceName}"/>
     
       <div class="evaluation-navigation">
-        <div class="eval-nav-item eval-filter icon-filter"></div>
         <div class="eval-nav-item eval-home icon-home"></div>
+        <div class="eval-nav-item eval-filter icon-filter"></div>
         <div class="eval-search-wrapper">
           <div class="eval-search-container">
             <input type="text" name="search" class="eval-searchfield" placeholder="#{i18n.text['plugin.evaluation.search.searchTextfieldPlaceholder']}"/>
             <button class="eval-searchbutton icon-search"></button>
+            <div class="remove-search-results icon-close"></div>
           </div>
         </div>
         <div class="eval-nav-item eval-workspace icon-books"></div>

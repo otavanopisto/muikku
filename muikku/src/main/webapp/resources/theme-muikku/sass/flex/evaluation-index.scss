@@ -116,10 +116,29 @@ body {
       box-sizing: border-box;
       flex-flow: row nowrap;
       justify-content: flex-end;
+      position: relative;
+    }
+    
+    .remove-search-results {
+      color: $forms-reset-icon-font-color;
+      cursor: pointer;
+      position: absolute;
+      right: 40px;
+      text-align: center;
+      top: 10px;
+    
+      &.icon-close {
+        box-sizing: border-box;
+        height: 20px;
+        font-size: 10px;
+        padding: 5px;
+        width: 20px;
+      }
+    
     }
     
     input {
-      border: 1px solid $forms-generic-border-color;
+      border: 0;
       border-bottom-left-radius: 5px;
       border-top-left-radius: 5px;
       box-sizing: border-box;
@@ -128,7 +147,7 @@ body {
       flex: 0 0 280px;
       font-size: 16px;
       font-weight: 300;
-      padding: 8px;
+      padding: 9px 26px 9px 9px;
          
       &::-webkit-input-placeholder {
         color: $environment-font-color; 
@@ -158,7 +177,7 @@ body {
     
     button {
       background: $forms-button-background-color;
-      border: 1px solid $forms-generic-border-color;
+      border: 0;
       border-bottom-right-radius: 5px;
       border-top-right-radius: 5px;
       color: $forms-button-font-color;
