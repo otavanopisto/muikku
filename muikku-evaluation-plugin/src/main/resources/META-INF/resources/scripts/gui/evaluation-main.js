@@ -453,6 +453,7 @@
     },
     
     _setupFilters: function() {
+      $('div.remove-search-results').hide();
       this._filterFunctions['text'] = $.proxy(function(card) {
         var text = $('input.eval-searchfield').val();
         var cmp =  $(card).find('.evaluation-card-student').text() +
@@ -462,9 +463,11 @@
       }, this);
       var textSearchFunction = $.proxy(function() {
         if ($('input.eval-searchfield').val()) {
+          $('div.remove-search-results').show();
           this._activeFilters.push('text');
         }
         else {
+          $('div.remove-search-results').hide();
           this._activeFilters.splice($.inArray('text', this._activeFilters), 1);
         }
         this._filter();
@@ -475,6 +478,11 @@
         }
       }, this));
       $('button.eval-searchbutton').click($.proxy(function() {
+        textSearchFunction();
+      }, this));
+      $('div.remove-search-results').click($.proxy(function() {
+        $('div.remove-search-results').hide();
+        $('input.eval-searchfield').val('');
         textSearchFunction();
       }, this));
     },
