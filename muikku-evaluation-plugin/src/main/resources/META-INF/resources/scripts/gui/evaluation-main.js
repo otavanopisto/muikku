@@ -123,10 +123,10 @@
           }
         }, this)); 
     },
-    _isImportant(workspaceUserEntityId) {
+    _isImportant: function(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._importantRequests) >= 0;
     },
-    _isUnimportant(workspaceUserEntityId) {
+    _isUnimportant: function(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._unimportantRequests) >= 0;
     },
     _resetImportance: function(card) {
@@ -455,7 +455,9 @@
       fieldlessMode: true
     });
     $(document).trigger("loadStart", $('.evaluation-cards-container'));
+
     // Grading scales
+    
     mApi().evaluation.compositeGradingScales
       .read()
       .callback($.proxy(function (err, gradingScales) {
@@ -467,10 +469,62 @@
         }
         $(document).trigger("loadEnd", $('.evaluation-cards-container'));
       }, this)); 
+
+    // My workspaces
+
+    mApi().workspace.workspaces
+      .read({userId: MUIKKU_LOGGED_USER_ID})
+      .callback($.proxy(function (err, workspaces) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          var workspaceContainer = $('ul.evaluation-my-workspaces');
+          workspaces.sort(function(a, b) {
+            return a.name.localeCompare(b.name);
+          });
+          for (var i = 0; i < workspaces.length; i++) {
+            var workspaceName = workspaces[i].name;
+            if (workspaces[i].nameExtension) {
+              workspaceName += ' (' + workspaces[i].nameExtension + ')';
+            }
+            var workspaceItem = $('<li>')
+              .append($('<a>')
+                .attr('href', '/evaluation2?workspaceEntityId=' + workspaces[i].id)
+                .text(workspaceName)
+              );
+            workspaceContainer.append(workspaceItem);
+          }
+        }
+      }, this));
+
+    $('.eval-home').on('click', function() {
+      location.href = location.href.split("?")[0];
+    });
+
+    $('.eval-workspace').on('click', function() {
+      var evalSearchVisibility = $('.evaluation-search-wrapper').attr('data-visibility');
+      
+      if (evalSearchVisibility == 'hidden') {
+        $('.evaluation-search-wrapper')
+          .show()
+          .animate({
+            right: 0 + "px"
+        }, 300, "swing", function() {
+          $('.evaluation-search-wrapper').attr('data-visibility', 'visible');
+        });
+      }
+      else {
+        $('.evaluation-search-wrapper')
+          .animate({
+            right: 0 - $('.evaluation-search-wrapper').width() + "px"
+        }, 250, "swing", function() {
+          $('.evaluation-search-wrapper').hide();
+          $('.evaluation-search-wrapper').attr('data-visibility', 'hidden');
+        });
+      }
+    });
   });
   
-  $('.eval-home').on('click', function() {
-    location.href = location.href.split("?")[0];
-  });
   
 }).call(this);

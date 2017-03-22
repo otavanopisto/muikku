@@ -62,10 +62,10 @@
     
       <div class="evaluation-navigation">
         <div class="eval-nav-item eval-home icon-home"></div>
-        <div class="eval-nav-item eval-search icon-search"></div>
+        <div class="eval-nav-item eval-workspace icon-books"></div>
       </div>
       
-      <div class="evaluation-filter-wrapper" id="evaluationFilterWrapper">
+      <div class="evaluation-filter-wrapper" data-visibility="hidden">
       
       </div>
     
@@ -86,8 +86,13 @@
         </div>
       </div>
       
-      <div class="evaluation-search-wrapper" id="evaluationSearchrWrapper">
-      
+      <div class="evaluation-search-wrapper" data-visibility="hidden">
+        
+        <div class="evaluation-my-workspaces-container">
+          <h3>#{i18n.text['plugin.evaluation.search.myWorkspacesTitle']}</h3>
+          <ul class="evaluation-my-workspaces"></ul>
+        </div>
+        
       </div>
     
     </div>
