@@ -51,7 +51,7 @@ nav.of-navigation {
   
   .of-site-links {
     flex: 1 0 auto;
-    height: 100%,
+    height: 100%;
   }
   
   .of-site-alternate-links {
@@ -414,7 +414,7 @@ h2.frontpage-section-title {
   flex: 1 1 calc(100% - 20px);
   font-size: 38px;
   font-weight: 200;
-  margin: 0 10px 20px 10px;
+  margin: 0 10px 20px;
 }
 
 // BOX INSIDE SECTIONS
@@ -462,7 +462,7 @@ h2.frontpage-section-title {
   
   .studying-description {
     font-weight: 400;
-    line-height:1.15; 
+    line-height: 1.15; 
     min-height: calc(14px * 1.15 * 2);
     padding: 20px 40px;
   }
@@ -603,7 +603,6 @@ ul.blogs-content-wrapper {
   
   .feed-item-date {
     color: $of-feed-date-text-color;
-    display: inline;
     display: inline-block;
     padding: 5px 0;
   }
@@ -629,7 +628,7 @@ ul.blogs-content-wrapper {
   .organization-some-title {
     font-size: 16px;
     font-weight: 600;
-    margin: 0 0 10px 0;
+    margin: 0 0 10px;
     text-transform: uppercase;
   }
 
@@ -643,11 +642,11 @@ ul.blogs-content-wrapper {
       color: $of-organization-some-icon-text-color;
       display: inline-block;
       font-size: 20px;
-      height:20px;
+      height: 20px;
       padding: 10px;
       text-decoration: none;
       transition: background 0.3s ease-in-out;
-      width:20px;
+      width: 20px;
       
       &:hover {
         background: $of-organization-some-icon-hover-background-color;
@@ -667,7 +666,7 @@ ul.blogs-content-wrapper {
     font-size: 17px;
     font-weight: 400;
     line-height: 1.3;
-    margin: 0 0 20px 0;
+    margin: 0 0 20px;
     
     span.bold {
       font-weight: 600;
@@ -680,8 +679,8 @@ ul.blogs-content-wrapper {
     font-weight: 400;
     margin: 5px 0;
     padding: 6px 12px;
-    text-transform: uppercase;
     text-decoration: none;
+    text-transform: uppercase;
   }
   
   .site-link {
@@ -689,6 +688,7 @@ ul.blogs-content-wrapper {
     color: $of-organization-site-link-color;
 
   }
+  
   .newsletter-link {
     background: $of-organization-newsletter-link-background-color;
     color: $of-organization-newsletter-link-color;
