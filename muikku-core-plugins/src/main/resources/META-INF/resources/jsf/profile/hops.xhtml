@@ -148,11 +148,6 @@
                         <f:selectItem itemValue="2" />
                         <f:selectItem itemValue="3" />
                         <f:selectItem itemValue="4" />
-                        <f:selectItem itemValue="5" />
-                        <f:selectItem itemValue="6" />
-                        <f:selectItem itemValue="7" />
-                        <f:selectItem itemValue="8" />
-                        <f:selectItem itemValue="9" />
                       </h:selectOneMenu>
                       #{i18n.text['plugin.profile.hops.goals.completionYears2']}</label>
                       <p>#{i18n.text['plugin.profile.hops.goals.completionYears3']}</p>                                       
@@ -171,16 +166,21 @@
                   </div>            
                   <div class="flex-row hops-form-section flex-align-items-center">
                     <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
-                      <label>#{i18n.text['plugin.profile.hops.languages.title']}</label>                  
+                      <label>#{i18n.text['plugin.profile.hops.languages.mandatory.title']}</label>                  
                     </div>
                     <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
-                      <b>#{i18n.text['plugin.profile.hops.languages.mandatory']}</b><br/>
-                      <input jsf:value="#{hopsBackingBean.finnish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.finnish']}
-                      <b>#{i18n.text['plugin.profile.hops.languages.or']}</b><br/>
-                      <input jsf:value="#{hopsBackingBean.swedish}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.swedish']}<br/>
-                      <input jsf:value="#{hopsBackingBean.english}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.english']}<br/>
+                      <h:selectOneMenu value="#{hopsBackingBean.finnish}" layout="pageDirection">
+                        <f:selectItem itemValue="AI" itemLabel="#{i18n.text['plugin.profile.hops.languages.finnish.native']}"/>
+                        <f:selectItem itemValue="S2" itemLabel="#{i18n.text['plugin.profile.hops.languages.finnish.foreign']}"/>
+                      </h:selectOneMenu>
+                    </div> 
+                  </div>                      
+                  <div class="flex-row hops-form-section flex-align-items-center">
+                    <div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10" >
+                      <label>#{i18n.text['plugin.profile.hops.languages.optional.title']}</label>                  
+                    </div>
+                    <div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6" >
                       <br/>
-                      <b>#{i18n.text['plugin.profile.hops.languages.optional']}</b><br/>
                       <input jsf:value="#{hopsBackingBean.german}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.german']}<br/>
                       <input jsf:value="#{hopsBackingBean.french}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.french']}<br/>
                       <input jsf:value="#{hopsBackingBean.italian}" type="checkbox"/>#{i18n.text['plugin.profile.hops.languages.italian']}<br/>
@@ -197,7 +197,6 @@
                         <f:selectItem itemValue="FY" itemLabel="#{i18n.text['plugin.profile.hops.science.FY']}"/>
                         <f:selectItem itemValue="KE" itemLabel="#{i18n.text['plugin.profile.hops.science.KE']}"/>
                         <f:selectItem itemValue="GE" itemLabel="#{i18n.text['plugin.profile.hops.science.GE']}"/>
-                        <f:selectItem itemValue="TT" itemLabel="#{i18n.text['plugin.profile.hops.science.TT']}"/>
                       </h:selectOneMenu>
                     </div> 
                   </div>            
