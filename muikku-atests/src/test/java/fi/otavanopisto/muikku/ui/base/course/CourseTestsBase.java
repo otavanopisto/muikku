@@ -281,6 +281,25 @@ public class CourseTestsBase extends AbstractUITest {
         waitUntilContentChanged(".materials-progress-practice-status span", "0/1");
         waitForPresent(".materials-progress-practice-status");
         assertTextIgnoreCase(".materials-progress-practice-status span", "1/1");
+        
+        waitAndClick(".materials-progress-evaluated-status.evaluable span");
+        waitForPresentAndVisible(".workspace-progress-element-menu-content.evaluable");
+        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(2)>span:first-child", "Tehtäviä palautettu");
+        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(2)>span:last-child", "1");
+
+        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(3)>span:first-child", "Tehtäviä yhteensä");
+        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(3)>span:last-child", "1");
+        
+        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(4)>span:first-child", "Tehtäviä arvioimatta");
+        assertTextIgnoreCase("#evaluableMenu>div>div:nth-child(4)>span:last-child", "1");
+        
+        waitAndClick(".materials-progress-practice-status.exercise span");
+        waitForPresentAndVisible(".workspace-progress-element-menu-content.exercise");
+        assertTextIgnoreCase("#exerciseMenu>div>div:nth-child(2)>span:first-child", "Tehtäviä tehty");
+        assertTextIgnoreCase("#exerciseMenu>div>div:nth-child(2)>span:last-child", "1");
+
+        assertTextIgnoreCase("#exerciseMenu>div>div:nth-child(3)>span:first-child", "Tehtäviä yhteensä");
+        assertTextIgnoreCase("#exerciseMenu>div>div:nth-child(3)>span:last-child", "1");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspaceHtmlMaterial(workspace.getId(), exerciseMaterial.getId());
@@ -289,8 +308,5 @@ public class CourseTestsBase extends AbstractUITest {
     }finally{
       WireMock.reset();
     }
-  }
-
-
-  
+  }  
 }
