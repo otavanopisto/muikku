@@ -136,7 +136,7 @@ body {
       }
     
     }
-    
+
     input {
       border: 0;
       border-bottom-left-radius: 5px;
@@ -148,33 +148,33 @@ body {
       font-size: 16px;
       font-weight: 300;
       padding: 9px 26px 9px 9px;
-         
+
       &::-webkit-input-placeholder {
-        color: $environment-font-color; 
+        color: $environment-font-color;
         font-style: italic;
-        opacity:0.4;
+        opacity: 0.4;
       }
-      
+
       &::-moz-placeholder {
         color: $environment-font-color;
         font-style: italic;
-        opacity:0.4;
+        opacity: 0.4;
       }
-      
+
       &:-ms-input-placeholder {
         color: $environment-font-color;
         font-style: italic;
-        opacity:0.4;
+        opacity: 0.4;
       }
-  
+
       &:-moz-placeholder {
         color: $environment-font-color;
         font-style: italic;
-        opacity:0.4;
+        opacity: 0.4;
       }
-      
+
     }
-    
+
     button {
       background: $forms-button-background-color;
       border: 0;
@@ -184,16 +184,16 @@ body {
       cursor: pointer;
       display: inline;
       flex: 0 0;
-      
+
       &.icon-search::before {
         font-size: 20px;
         text-align: center;
       }
-      
+
     }
-      
+
   }
- 
+
 }
 
 // FRONTPAGE EVALUATION CARDS WRAPPER
@@ -483,7 +483,7 @@ body {
   
 }
 
-// FILTER WRAPPER 
+// FILTER WRAPPER
 .evaluation-filters-wrapper {
   background: $evaluation-filter-wrapper-background-color;
   bottom: 0;
@@ -506,18 +506,18 @@ body {
   
 }
 
-// WORKSPACES WRAPPER 
+// WORKSPACES WRAPPER
 .evaluation-workspaces-wrapper {
   background: $evaluation-workspaces-wrapper-background-color;
   bottom: 0;
   box-shadow: 10px 0 10px $evaluation-workspaces-wrapper-background-boxshadow-color;
   display: none;
+  left: calc(0 - 360px);
   padding: 0;
   position: fixed;
-  left: calc(0px - 360px);
   top: 60px;
   width: 360px;
-  z-index:20;
+  z-index: 20;
   
   h3 {
     color: $body-font-color;
