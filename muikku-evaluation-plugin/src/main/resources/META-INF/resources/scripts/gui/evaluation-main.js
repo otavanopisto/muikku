@@ -484,6 +484,19 @@
         $('input.eval-searchfield').val('');
         textSearchFunction();
       }, this));
+      // Evaluated filter
+      this._filterFunctions['evaluated'] = $.proxy(function(card) {
+        return $(card).attr('data-evaluated') == 'true';
+      }, this);
+      $('input.filter-evaluated').click($.proxy(function() {
+        if ($('input.filter-evaluated').is(':checked')) {
+          this._activeFilters.push('evaluated');
+        }
+        else {
+          this._activeFilters.splice($.inArray('evaluated', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
       // Evaluation request filter
       this._filterFunctions['evaluation-request'] = $.proxy(function(card) {
         return $(card).attr('data-assessment-request-date') != '';
@@ -494,6 +507,19 @@
         }
         else {
           this._activeFilters.splice($.inArray('evaluation-request', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
+      // Supplementation request filter
+      this._filterFunctions['supplementation-request'] = $.proxy(function(card) {
+        return $(card).attr('data-evaluated') == 'true' && $(card).attr('data-graded') == '';
+      }, this);
+      $('input.filter-supplementation-request').click($.proxy(function() {
+        if ($('input.filter-supplementation-request').is(':checked')) {
+          this._activeFilters.push('supplementation-request');
+        }
+        else {
+          this._activeFilters.splice($.inArray('supplementation-request', this._activeFilters), 1);
         }
         this._filter();
       }, this));
