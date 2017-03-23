@@ -16,14 +16,52 @@
     },
     
     _create : function() {
+      this._categoryId = null;
       this._grades = $.parseJSON(this.element.attr('data-grades'));
+      $('.mf-button-container').on('change', '.tr-category-dropdown', $.proxy(this._onCategoryChange, this));      
       this.element.on('click', '.tr-task-evaluated', $.proxy(this._onEvaluationClick, this));
       this.element.on('click', '.tr-item-workspace-assessment:not(.open)', $.proxy(this._onWorkspaceAssessmentItemClick, this));
-      this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadWorkspaces, this));      
-      this._loadWorkspaces();
+      this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadCategory, this));      
+      this._loadCategory();
     },
     
-    _loadWorkspaces: function () {
+    category: function (categoryId) { 
+      this._categoryId = categoryId;
+      this._loadCategory(categoryId);
+    },
+    
+    _onCategoryChange: function (event, data) {
+      this.category(data.value);
+    },    
+    
+    _loadCategory: function (categoryId) {
+      var selectedCategory = categoryId == null ? $('.tr-category-dropdown li:first-child').attr('data-value') : categoryId;
+      switch (selectedCategory) {
+        case  'forms' :
+          this._loadForms();
+          break;          
+        case  'records' :
+          this._loadRecords();
+          break;                    
+        case  'vops' :
+          this._loadVops();
+          break;
+        default : 
+          alert('Unknown category');
+      }
+    },
+    
+    _loadForms : function () {
+      alert('Form view loader!');
+      
+    },
+
+    _loadVops : function () {
+      alert('Vops view loader!');
+      
+    },
+        
+    _loadRecords : function () {
       this.element.addClass('loading');
       this._clear();
       
@@ -130,6 +168,7 @@
           }
         }, this));
     },
+    
     
     _createStudentWorkspacesLoad: function (studentIdentifier) {
       return $.proxy(function (callback) {

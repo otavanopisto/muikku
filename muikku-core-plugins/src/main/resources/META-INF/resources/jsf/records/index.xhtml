@@ -12,6 +12,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>    
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/records.js"/>
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
       <script defer="defer" jsf:name="/scripts/gui/login.js"/>
@@ -23,8 +24,6 @@
     <link rel="stylesheet" type="text/css" href="/css/flex/records.css"/>
   </ui:define>  
 
-  <ui:define name="mf-button-container">
-  </ui:define>  
   
   <ui:define name="mf-controls-container">
   </ui:define>
@@ -35,6 +34,29 @@
   <ui:define name="mf-content-master"> 
     <div class="records">
       <h2 class="main-functionality-page-title">#{i18n.text['plugin.records.pageTitle']}</h2>
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row flex-align-items-center">
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">            
+            <div class="tr-category-dropdown mf-dropdown">
+              <div class="mf-dropdown-content">
+                <span class="mf-dropdown-text tr-dropdown-selected-text"/>
+                <span class="mf-dropdown-arrow icon-arrow-down"/>
+              </div>             
+              <ul style="display: none">
+                <li data-value="vops">
+                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.vops']}</span>
+                </li>
+                <li data-value="records">
+                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.records']}</span>
+                </li>
+                <li data-value="forms">
+                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.forms']}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </ui:insert>      
       <div class="mf-content-area flex-row">
         <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
           <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
