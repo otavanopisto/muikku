@@ -31,12 +31,12 @@
       if (workspaceEntityId) {
         this._sortProperty = 'evaluation-workspace-sort';
         $('.evaluation-cards-title h3').text($('#workspaceName').val());
-        $('.eval-filter').show();
+        $('.eval-filters').show();
         $('.icon-sort-workspace-alpha-asc').hide();
         $('.icon-sort-workspace-alpha-desc').hide();
       }
       else {
-        $('.eval-filter').hide();
+        $('.eval-filters').hide();
         this._sortProperty = 'evaluation-default-sort';
         $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
       }
