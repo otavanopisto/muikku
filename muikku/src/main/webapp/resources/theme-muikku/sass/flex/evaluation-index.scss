@@ -118,7 +118,7 @@ body {
       justify-content: flex-end;
       position: relative;
     }
-    
+
     .remove-search-results {
       color: $forms-reset-icon-font-color;
       cursor: pointer;
@@ -126,15 +126,15 @@ body {
       right: 40px;
       text-align: center;
       top: 10px;
-    
+
       &.icon-close {
         box-sizing: border-box;
-        height: 20px;
         font-size: 10px;
+        height: 20px;
         padding: 5px;
         width: 20px;
       }
-    
+
     }
 
     input {
