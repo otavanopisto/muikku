@@ -221,7 +221,7 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: true
+    enabled: false
 
   TrailingZero:
     enabled: true
