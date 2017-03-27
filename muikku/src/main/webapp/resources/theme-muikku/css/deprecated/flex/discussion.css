@@ -1,0 +1,335 @@
+/* Navigation Icon Shadow */
+/* Rounding *Corners */
+/* Generic Text Shadow for Buttons */
+/* Generic Box shadow for Buttons */
+/* Generic Gradient Used in Buttons */
+/* Form element - HOVER */
+/* Form element - FOCUS */
+/* Workspace Navigation Tooltip Transitions */
+p.cke_notification_message div.draft-restore {
+  font-family: "Open Sans", Arial, sans-serif;
+  padding: 5px 0; }
+  p.cke_notification_message div.draft-restore span.draft-label {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 400;
+    display: block;
+    margin: 0 0 5px; }
+  p.cke_notification_message div.draft-restore span.draft-text {
+    font-size: 14px;
+    font-weight: 300; }
+  p.cke_notification_message div.draft-restore a {
+    display: inline-block;
+    padding: 0 5px;
+    color: #fff;
+    font-weight: 400; }
+
+p.cke_notification_message div.draft-cancel {
+  font-family: "Open Sans", Arial, sans-serif;
+  padding: 5px 0; }
+  p.cke_notification_message div.draft-cancel span.draft-label {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 400;
+    display: block;
+    margin: 0 0 5px; }
+  p.cke_notification_message div.draft-cancel span.draft-text {
+    font-size: 14px;
+    font-weight: 300; }
+  p.cke_notification_message div.draft-cancel a {
+    display: inline-block;
+    padding: 0 5px;
+    color: #fff;
+    font-weight: 400; }
+
+/* discussion (.di-*) */
+.di-threads.loading {
+  padding-top: 75px;
+  padding-bottom: 75px; }
+  .di-threads.loading::after {
+    -webkit-animation: generic-loader 1.0s infinite linear;
+    -moz-animation: generic-loader 1.0s infinite linear;
+    animation: generic-loader 1.0s infinite linear;
+    content: "\e900";
+    font-family: 'muikku' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 50px;
+    width: 50px;
+    font-size: 50px;
+    color: #7ed9ff;
+    margin-left: auto;
+    margin-right: auto;
+    display: block; }
+
+.di-thread.loading {
+  padding-top: 75px;
+  padding-bottom: 75px; }
+  .di-thread.loading::after {
+    -webkit-animation: generic-loader 1.0s infinite linear;
+    -moz-animation: generic-loader 1.0s infinite linear;
+    animation: generic-loader 1.0s infinite linear;
+    content: "\e900";
+    font-family: 'muikku' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 50px;
+    width: 50px;
+    font-size: 50px;
+    color: #7ed9ff;
+    margin-left: auto;
+    margin-right: auto;
+    display: block; }
+
+.di-thread-description-container {
+  display: none; }
+
+.di-thread-description {
+  padding: 10px; }
+
+.di-search-result-container {
+  background-color: #fff;
+  box-shadow: -2px 3px 5px rgba(0, 0, 0, 0.03);
+  margin-top: 12px;
+  position: absolute;
+  right: 0;
+  width: 400px;
+  text-align: left; }
+
+.di-search-result-discussion {
+  font-size: 12px;
+  max-height: 50px;
+  overflow: hidden;
+  padding: 10px; }
+
+.di-search-form-container {
+  padding: 10px; }
+  .di-search-form-container input {
+    font-size: 12px;
+    font-weight: 300;
+    padding: 7px; }
+
+.di-search-result-users {
+  font-size: 12px;
+  padding: 10px; }
+
+.di-search-result-topic {
+  color: #0099ff;
+  font-weight: 400;
+  line-height: 1em;
+  text-transform: none; }
+
+.di-search-result-user {
+  display: inline-block;
+  line-height: 1em;
+  text-transform: none; }
+  .di-search-result-user div {
+    display: inline-block; }
+  .di-search-result-user .di-user-picture-container {
+    text-align: center; }
+    .di-search-result-user .di-user-picture-container .di-user-picture {
+      font-size: 14px;
+      height: 14px;
+      line-height: 1;
+      padding: 5px;
+      text-align: center;
+      width: 14px; }
+  .di-search-result-user .di-user-name {
+    color: #000;
+    font-weight: 600; }
+  .di-search-result-user:not(:first-child) {
+    margin-left: 10px; }
+
+.di-user-picture {
+  border-radius: 100%;
+  color: #fff;
+  font-size: 25px;
+  height: 25px;
+  padding: 5px;
+  line-height: 1;
+  text-align: center;
+  margin: 0 auto;
+  width: 25px; }
+  .di-user-picture.default.usr-1 {
+    background-color: #0099ff; }
+  .di-user-picture.default.usr-2 {
+    background-color: #ff9900; }
+  .di-user-picture.default.usr-3 {
+    background-color: #ff008d; }
+  .di-user-picture.default.usr-4 {
+    background-color: #0bf0f2; }
+  .di-user-picture.default.usr-5 {
+    background-color: #f00bf2; }
+  .di-user-picture.default.usr-6 {
+    background-color: #47ccae; }
+
+.di-message-state {
+  display: inline-block;
+  font-size: 15px;
+  margin-left: 6px;
+  text-align: center; }
+  .di-message-state:hover {
+    text-decoration: none; }
+  .di-message-state.pinned {
+    color: #149000; }
+  .di-message-state.locked {
+    color: #c92d2d; }
+
+.di-search-result-content {
+  color: #0099ff; }
+
+.di-no-messages {
+  min-height: 400px;
+  padding-top: 200px; }
+  .di-no-messages h3 {
+    text-align: center;
+    color: #000;
+    font-size: 24px;
+    text-transform: none;
+    font-weight: 300; }
+
+.di-browse-areas-container {
+  float: left; }
+  .di-browse-areas-container select {
+    width: 100%;
+    min-height: 40px; }
+    .di-browse-areas-container select option {
+      padding: 8px; }
+
+.di-content-main .di-reply-reply {
+  border-left: 30px solid #fff; }
+
+.di-content-main .di-message {
+  background: #fff; }
+  .di-content-main .di-message.closed .di-message-meta-topic {
+    line-height: 1em;
+    text-transform: none;
+    font-size: 16px;
+    font-weight: 400; }
+    .di-content-main .di-message.closed .di-message-meta-topic > span {
+      cursor: pointer; }
+      .di-content-main .di-message.closed .di-message-meta-topic > span.title:hover {
+        text-decoration: underline; }
+  .di-content-main .di-message.closed .di-message-meta-content {
+    line-height: 1em;
+    height: 10px;
+    overflow: hidden;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 100%;
+    color: #000;
+    font-weight: 300;
+    text-transform: none; }
+    .di-content-main .di-message.closed .di-message-meta-content span {
+      font-size: 12px;
+      font-style: italic;
+      font-weight: 300; }
+      .di-content-main .di-message.closed .di-message-meta-content span p {
+        margin: 0; }
+        .di-content-main .di-message.closed .di-message-meta-content span p strong {
+          font-weight: 400; }
+  .di-content-main .di-message.closed .di-message-meta-creator {
+    font-size: 11px;
+    font-weight: 600; }
+  .di-content-main .di-message.closed .di-message-area-name span {
+    display: block;
+    min-height: 15px;
+    font-size: 14px;
+    line-height: 14px;
+    margin-top: 4px; }
+  .di-content-main .di-message.closed .di-message-area-name .di-message-area-name-text {
+    padding-left: 5px; }
+  .di-content-main .di-message.closed .di-message-time {
+    font-size: 12px;
+    overflow: hidden; }
+  .di-content-main .di-message.closed .di-message-replies span {
+    display: inline-block;
+    font-weight: 600;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    text-align: center;
+    width: 30px; }
+  .di-content-main .di-message.closed .di-message-activity {
+    color: #000;
+    font-size: 14px;
+    font-weight: 300; }
+  .di-content-main .di-message.open {
+    position: relative; }
+    .di-content-main .di-message.open .di-user-picture {
+      border-radius: 100%;
+      color: #fff;
+      font-size: 20px;
+      height: 20px;
+      line-height: 1;
+      padding: 4px;
+      text-align: center;
+      width: 20px; }
+      .di-content-main .di-message.open .di-user-picture.default.usr-1 {
+        background-color: #0099ff; }
+      .di-content-main .di-message.open .di-user-picture.default.usr-2 {
+        background-color: #ff9900; }
+      .di-content-main .di-message.open .di-user-picture.default.usr-3 {
+        background-color: #ff008d; }
+      .di-content-main .di-message.open .di-user-picture.default.usr-4 {
+        background-color: #0bf0f2; }
+      .di-content-main .di-message.open .di-user-picture.default.usr-5 {
+        background-color: #f00bf2; }
+      .di-content-main .di-message.open .di-user-picture.default.usr-6 {
+        background-color: #47ccae; }
+      .di-content-main .di-message.open .di-user-picture.reply-recipient {
+        display: inline-block;
+        float: none;
+        height: 20px;
+        width: 20px; }
+    .di-content-main .di-message.open.owner {
+      border-left: 5px solid #dadada; }
+    .di-content-main .di-message.open .di-message-details {
+      font-size: 22px;
+      font-weight: 300; }
+      .di-content-main .di-message.open .di-message-details.di-message-details-reply {
+        font-size: 18px; }
+      .di-content-main .di-message.open .di-message-details .di-reply-to-decor {
+        color: #049a00;
+        font-size: 15px;
+        margin-left: 30px !important;
+        margin-right: 31px; }
+    .di-content-main .di-message.open .di-message-details > span:not(:first-child) {
+      margin-left: 10px; }
+    .di-content-main .di-message.open .di-message-details > span.di-reply-title-date::before {
+      content: "-";
+      margin-right: 5px;
+      color: #000; }
+    .di-content-main .di-message.open .di-message-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-left: 10px; }
+    .di-content-main .di-message.open .di-message-content-text {
+      font-weight: 300;
+      margin-left: 10px;
+      margin-right: 10px; }
+    .di-content-main .di-message.open .di-message-content-info {
+      color: #a4a4a4;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 10px;
+      text-align: center; }
+    .di-content-main .di-message.open .di-message-content-info > span:not(:first-child) {
+      margin-left: 10px; }
+    .di-content-main .di-message.open .di-message-content-tools {
+      margin-left: 10px; }
+      .di-content-main .di-message.open .di-message-content-tools .di-message-tool {
+        box-shadow: none; }
+  .di-content-main .di-message .di-message-info {
+    cursor: default; }

@@ -1,0 +1,2580 @@
+@charset "UTF-8";
+/* Navigation Icon Shadow */
+/* Rounding *Corners */
+/* Generic Text Shadow for Buttons */
+/* Generic Box shadow for Buttons */
+/* Generic Gradient Used in Buttons */
+/* Form element - HOVER */
+/* Form element - FOCUS */
+/* Workspace Navigation Tooltip Transitions */
+.material-styles-block {
+  border-radius: 10px;
+  padding: 10px 15px 10px 85px;
+  margin: 20px 0;
+  min-height: 64px;
+  font-size: inherit;
+  position: relative; }
+  .material-styles-block p:first-child,
+  .material-styles-block ul:first-child,
+  .material-styles-block ol:first-child,
+  .material-styles-block blockquote:first-child {
+    margin-top: 0 !important; }
+  .material-styles-block p:last-child,
+  .material-styles-block ul:last-child,
+  .material-styles-block ol:last-child,
+  .material-styles-block blockquote:last-child {
+    margin-bottom: 0 !important; }
+  .material-styles-block::after {
+    width: 64px;
+    height: 64px;
+    content: "";
+    position: absolute;
+    z-index: 9;
+    top: 10px;
+    left: 10px;
+    background-repeat: no-repeat; }
+  .material-styles-block a {
+    color: #006a96;
+    text-decoration: underline; }
+
+.material-basicbox {
+  background-color: #b8f1f6;
+  border-top: 2px solid #76ccd4;
+  color: #000;
+  padding: 12px 20px; }
+
+.material-grammarbox {
+  background-color: #fff7e0;
+  border-top: 2px solid #cab883;
+  color: #000;
+  padding: 12px 20px; }
+
+.material-thinkingbox {
+  background-color: #fff089;
+  border-top: 2px solid #e9d650;
+  text-shadow: -1px 1px 15px white, 1px -1px 15px white;
+  color: #000; }
+  .material-thinkingbox::after {
+    background-image: url("/gfx/icons/64x64/pondering-icon.png"); }
+
+.material-objectivebox {
+  background-color: #c1f9e6;
+  border-top: 2px solid #72ddb9;
+  text-shadow: -1px 1px 10px white, 1px -1px 10px white;
+  color: #000; }
+  .material-objectivebox::after {
+    background-image: url("/gfx/icons/64x64/objective-icon.png"); }
+
+.material-infobox {
+  background-color: #bae3ff;
+  border-top: 2px solid #9dccec;
+  text-shadow: -1px 1px 20px white, 1px -1px 20px white;
+  color: #000; }
+  .material-infobox::after {
+    background-image: url("/gfx/icons/64x64/info-icon.png"); }
+
+.material-recapbox {
+  background-color: #fff6ae;
+  border-top: 2px solid #eadf87;
+  text-shadow: -1px 1px 15px white, 1px -1px 15px white;
+  color: #000; }
+  .material-recapbox::after {
+    background-image: url("/gfx/icons/64x64/recap-icon.png"); }
+
+.material-instructionbox {
+  background-color: #bcfbc2;
+  border-top: 2px solid #8ce994;
+  text-shadow: -1px 1px 15px white, 1px -1px 15px white;
+  color: #000; }
+  .material-instructionbox::after {
+    background-image: url("/gfx/icons/64x64/instruction-icon.png"); }
+
+.material-linkbox {
+  background-color: #c8e9ff;
+  border-top: 2px solid #9dccec;
+  text-shadow: -1px 1px 20px white, 1px -1px 20px white;
+  color: #000; }
+  .material-linkbox::after {
+    background-image: url("/gfx/icons/64x64/link-icon.png"); }
+
+.material-audiobox {
+  background-color: #c8e9ff;
+  border-top: 2 px solid #9dccec;
+  text-shadow: -1px 1px 20px white, 1px -1px 20px white;
+  color: #000; }
+  .material-audiobox::after {
+    background-image: url("/gfx/icons/64x64/sound-icon.png"); }
+
+.material-filebox {
+  background-color: #c8e9ff;
+  border-top: 2px solid #9dccec;
+  text-shadow: -1px 1px 20px white, 1px -1px 20px white;
+  color: #000; }
+  .material-filebox::after {
+    background-image: url("/gfx/icons/64x64/file-icon.png"); }
+
+.material-styles-text {
+  max-width: 920px;
+  margin: 20px auto;
+  min-height: 14px;
+  background-repeat: no-repeat;
+  position: relative; }
+  .material-styles-text p:first-child,
+  .material-styles-text ul:first-child,
+  .material-styles-text ol:first-child,
+  .material-styles-text blockquote:first-child {
+    margin-top: 0 !important; }
+  .material-styles-text p:last-child,
+  .material-styles-text ul:last-child,
+  .material-styles-text ol:last-child,
+  .material-styles-text blockquote:last-child {
+    margin-bottom: 0 !important; }
+  .material-styles-text a {
+    color: #006a96;
+    text-decoration: underline; }
+
+.material-citation-basic {
+  padding: 10px 35px;
+  color: #000;
+  font-size: 20px;
+  font-style: italic;
+  line-height: 40px;
+  display: inline-block;
+  quotes: "“" "”"; }
+  .material-citation-basic::before {
+    color: #ccc;
+    content: open-quote;
+    display: inline-block;
+    font-family: arial;
+    font-size: 70px;
+    font-style: normal;
+    left: 0;
+    line-height: 1px;
+    margin-right: 25px;
+    vertical-align: -25px;
+    width: 0; }
+  .material-citation-basic::after {
+    color: #ccc;
+    content: close-quote;
+    display: inline-block;
+    font-family: arial;
+    font-size: 70px;
+    font-style: normal;
+    left: 3px;
+    line-height: 1px;
+    margin-left: 5px;
+    position: relative;
+    vertical-align: -25px;
+    width: 1px; }
+
+.material-citation-highlight {
+  padding: 20px 35px;
+  color: #000;
+  background: #f8f8f8;
+  font-size: 20px;
+  border-left: 3px solid #a30606;
+  border-radius: 0;
+  line-height: 40px;
+  font-style: italic;
+  display: inline-block;
+  quotes: "“" "”"; }
+  .material-citation-highlight::before {
+    color: #ccc;
+    content: open-quote;
+    display: inline-block;
+    font-family: arial;
+    font-size: 70px;
+    font-style: normal;
+    left: 0;
+    line-height: 1px;
+    margin-right: 25px;
+    vertical-align: -25px;
+    width: 0; }
+  .material-citation-highlight::after {
+    color: #ccc;
+    content: close-quote;
+    display: inline-block;
+    font-family: arial;
+    font-size: 70px;
+    font-style: normal;
+    left: 3px;
+    line-height: 1px;
+    margin-left: 5px;
+    position: relative;
+    vertical-align: -25px;
+    width: 1px; }
+
+.material-citation-long {
+  padding: 5px 10px 5px 40px;
+  color: #000;
+  quotes: "“" "”";
+  box-shadow: none;
+  text-shadow: none;
+  position: relative;
+  background: #f8f8f8;
+  font-style: normal; }
+  .material-citation-long::before {
+    position: absolute;
+    content: open-quote;
+    font-family: arial;
+    font-size: 55px;
+    left: 10px;
+    position: absolute;
+    top: 20px;
+    color: #bbb; }
+
+.material-example {
+  padding: 0 10px 4px 15px;
+  color: #000;
+  border-left: 3px solid #11a0ff;
+  border-radius: 0;
+  box-shadow: none;
+  text-shadow: none; }
+
+.muikku-connect-field {
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-content: space-between; }
+  .muikku-connect-field[disabled="disabled"] {
+    opacity: 0.5;
+    cursor: default !important; }
+    .muikku-connect-field[disabled="disabled"] .muikku-connect-field-counterpart:hover,
+    .muikku-connect-field[disabled="disabled"] .muikku-connect-field-term:hover {
+      background: #cff1f9;
+      cursor: default; }
+
+.muikku-connect-field-counterparts,
+.muikku-connect-field-terms {
+  display: block;
+  -webkit-flex-grow: 1;
+  -moz-flex-grow: 1;
+  -ms-flex-grow: 1;
+  flex-grow: 1;
+  -webkit-flex-shrink: 0;
+  -moz-flex-shrink: 0;
+  -ms-flex-shrink: 0;
+  flex-shrink: 0;
+  -webkit-flex-basis: 48%;
+  -moz-flex-basis: 48%;
+  -ms-flex-basis: 48%;
+  flex-basis: 48%;
+  position: relative; }
+
+.muikku-connect-field-gap {
+  -webkit-flex-grow: 0;
+  -moz-flex-grow: 0;
+  -ms-flex-grow: 0;
+  flex-grow: 0;
+  -webkit-flex-shrink: 1;
+  -moz-flex-shrink: 1;
+  -ms-flex-shrink: 1;
+  flex-shrink: 1;
+  -webkit-flex-basis: 4%;
+  -moz-flex-basis: 4%;
+  -ms-flex-basis: 4%;
+  flex-basis: 4%; }
+
+.muikku-connect-field-number {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  color: #000;
+  font-size: 12px;
+  left: -10px;
+  line-height: 12px;
+  margin: 15px 0 0;
+  min-width: 12px;
+  padding: 5px;
+  position: absolute;
+  text-align: center;
+  z-index: 11;
+  font-weight: 400; }
+
+.muikku-connect-field-correct-number {
+  background: #62c3eb;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  right: -10px;
+  line-height: 12px;
+  margin: 15px 0 0;
+  min-width: 12px;
+  padding: 5px;
+  position: absolute;
+  text-align: center;
+  z-index: 11;
+  font-weight: 400; }
+
+.muikku-connect-field-counterpart,
+.muikku-connect-field-term {
+  position: relative;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  background: #cff1f9;
+  margin: 0 4px 8px 4px;
+  border-radius: 3px;
+  transition: background 0.3s ease-in-out;
+  box-sizing: border-box;
+  height: 56px;
+  line-height: 20px;
+  font-size: 16px;
+  transition: height 0.2s ease-in-out;
+  color: #000; }
+  .muikku-connect-field-counterpart:hover,
+  .muikku-connect-field-term:hover {
+    background: #b1e8fe; }
+  .muikku-connect-field-counterpart .term-full-text,
+  .muikku-connect-field-counterpart .counterpart-full-text,
+  .muikku-connect-field-term .term-full-text,
+  .muikku-connect-field-term .counterpart-full-text {
+    background-color: #b1e8fe;
+    border-radius: 3px;
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.2);
+    height: auto;
+    left: 0;
+    min-height: 56px;
+    position: absolute;
+    padding: 8px 10px;
+    right: 0;
+    top: 0;
+    z-index: 9; }
+
+.term-placeholder,
+.counterpart-placeholder {
+  height: 56px;
+  padding: 0;
+  margin: 0 4px 8px; }
+
+.muikku-connect-field-term {
+  justify-content: flex-end;
+  text-align: right; }
+
+.muikku-connect-field-counterpart {
+  justify-content: flex-start;
+  text-align: left; }
+
+.ui-sortable-placeholder {
+  padding: 8px 21px;
+  margin: 4px;
+  border-radius: 3px;
+  background: #f8f8f8;
+  height: 1.7em; }
+
+.muikku-connect-field-term {
+  cursor: pointer; }
+  .muikku-connect-field-term.muikku-connect-field-edited {
+    background: #b1e8fe; }
+  .muikku-connect-field-term.muikku-connect-field-term-selected {
+    background: #3dc7ff;
+    color: #fff;
+    font-weight: 400; }
+
+.muikku-connect-field-counterpart {
+  text-align: left;
+  cursor: pointer; }
+  .muikku-connect-field-counterpart.muikku-connect-field-edited {
+    background: #b1e8fe; }
+  .muikku-connect-field-counterpart.ui-sortable-helper {
+    cursor: grab; }
+
+.muikku-organizer-field[disabled="disabled"] {
+  opacity: 0.5;
+  cursor: default; }
+  .muikku-organizer-field[disabled="disabled"] .icon-delete {
+    display: none; }
+  .muikku-organizer-field[disabled="disabled"] .muikku-category .muikku-term {
+    padding: 6px 8px; }
+  .muikku-organizer-field[disabled="disabled"] .muikku-terms-data .muikku-term {
+    cursor: default; }
+    .muikku-organizer-field[disabled="disabled"] .muikku-terms-data .muikku-term.term-in-use {
+      background: #b1e8fe; }
+      .muikku-organizer-field[disabled="disabled"] .muikku-terms-data .muikku-term.term-in-use:hover {
+        background: #b1e8fe; }
+    .muikku-organizer-field[disabled="disabled"] .muikku-terms-data .muikku-term:hover {
+      background: #cff1f9; }
+
+.muikku-terms-container {
+  margin: 10px 0; }
+  .muikku-terms-container .muikku-terms-title {
+    font-weight: 400;
+    line-height: 1;
+    padding: 2px 0 4px; }
+  .muikku-terms-container .muikku-terms-data .muikku-term {
+    background: #cff1f9;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #000;
+    cursor: move;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    margin: 2px 4px 0 0;
+    padding: 6px;
+    position: relative;
+    word-wrap: normal; }
+    .muikku-terms-container .muikku-terms-data .muikku-term.term-in-use {
+      background: #b1e8fe; }
+    .muikku-terms-container .muikku-terms-data .muikku-term:hover {
+      background: #b1e8fe; }
+    .muikku-terms-container .muikku-terms-data .muikku-term.ui-draggable-dragging {
+      z-index: 99;
+      background: #3dc7ff;
+      color: #fff;
+      padding: 6px;
+      height: auto !important; }
+
+.muikku-category-container {
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 5px;
+  width: calc(50% - 5px); }
+  .muikku-category-container:nth-child(odd) {
+    margin: 5px 5px 5px 0; }
+  .muikku-category-container:nth-child(even) {
+    margin: 5px 0 5px 5px; }
+  .muikku-category-container .muikku-category-title {
+    font-weight: 400;
+    line-height: 1;
+    padding: 2px 0 4px; }
+  .muikku-category-container .muikku-category {
+    border: 2px solid #cff1f9;
+    border-radius: 3px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 100px;
+    padding: 3px; }
+    .muikku-category-container .muikku-category .muikku-term {
+      background: #cff1f9;
+      border-radius: 3px;
+      box-sizing: border-box;
+      font-size: 16px;
+      margin: 2px 4px 1px 0;
+      display: inline-block;
+      padding: 6px 28px 6px 8px;
+      position: relative;
+      line-height: 1;
+      color: #000; }
+      .muikku-category-container .muikku-category .muikku-term.term-in-use {
+        background: #b1e8fe; }
+      .muikku-category-container .muikku-category .muikku-term .icon-delete {
+        position: absolute;
+        right: 5px;
+        top: 7px;
+        width: 14px;
+        height: 14px;
+        font-size: 14px;
+        color: #000;
+        cursor: pointer; }
+
+div.muikku-sorter-field[data-disabled="true"] {
+  cursor: default;
+  opacity: 0.5; }
+  div.muikku-sorter-field[data-disabled="true"] .muikku-sorter-item:hover {
+    background: #cff1f9; }
+
+span.muikku-sorter-field {
+  display: inline-block; }
+  span.muikku-sorter-field[data-disabled="true"] {
+    cursor: default;
+    opacity: 0.5; }
+    span.muikku-sorter-field[data-disabled="true"] .muikku-sorter-item:hover {
+      background: #cff1f9; }
+
+div.muikku-sorter-items-container.capitalize > .muikku-sorter-item:first-child::first-letter {
+  text-transform: capitalize; }
+
+div.muikku-sorter-items-container div.muikku-sorter-item {
+  border-radius: 3px;
+  background: #cff1f9;
+  box-sizing: border-box;
+  color: #000;
+  font-size: 16px;
+  line-height: 1;
+  margin: 5px 0;
+  padding: 6px 8px;
+  position: relative;
+  word-wrap: normal; }
+  div.muikku-sorter-items-container div.muikku-sorter-item.ui-sortable-handle {
+    cursor: move; }
+  div.muikku-sorter-items-container div.muikku-sorter-item:hover {
+    background: #b1e8fe; }
+  div.muikku-sorter-items-container div.muikku-sorter-item.ui-sortable-helper {
+    z-index: 99;
+    background: #3dc7ff;
+    color: #fff; }
+
+span.muikku-sorter-items-container {
+  display: inline-block; }
+  span.muikku-sorter-items-container.capitalize > .muikku-sorter-item:first-child:first-letter {
+    text-transform: capitalize; }
+  span.muikku-sorter-items-container span.muikku-sorter-item {
+    background: #cff1f9;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: #000;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 1;
+    margin: 5px 3px;
+    padding: 6px 8px;
+    position: relative;
+    vertical-align: top;
+    word-wrap: normal; }
+    span.muikku-sorter-items-container span.muikku-sorter-item:first-child {
+      margin: 5px 3px 5px 6px; }
+    span.muikku-sorter-items-container span.muikku-sorter-item:last-child {
+      margin: 5px 0 5px 3px; }
+    span.muikku-sorter-items-container span.muikku-sorter-item.ui-sortable-handle {
+      cursor: move; }
+    span.muikku-sorter-items-container span.muikku-sorter-item:hover {
+      background: #b1e8fe; }
+    span.muikku-sorter-items-container span.muikku-sorter-item.ui-sortable-helper {
+      z-index: 99;
+      background: #3dc7ff;
+      color: #fff;
+      padding: 6px 7px;
+      height: auto !important; }
+
+.audio-record.webrtc[data-readonly='readonly'] {
+  padding: 0 10px; }
+  .audio-record.webrtc[data-readonly='readonly'] .no-clips {
+    color: #7c7c7c;
+    margin: 8px 0;
+    text-align: center; }
+  .audio-record.webrtc[data-readonly='readonly'] .clip {
+    margin: 10px 0; }
+    .audio-record.webrtc[data-readonly='readonly'] .clip audio {
+      width: 100%; }
+    .audio-record.webrtc[data-readonly='readonly'] .clip a.remove-clip {
+      display: none !important; }
+  .audio-record.webrtc[data-readonly='readonly'] .controls {
+    display: none; }
+
+.audio-record {
+  border: 2px solid #abdbed;
+  border-radius: 3px;
+  line-height: 1;
+  padding: 5px 10px; }
+  .audio-record.muikku-field-unsaved {
+    border: 2px solid #e4e630; }
+    .audio-record.muikku-field-unsaved:hover {
+      border: 2px solid #e4e630; }
+  .audio-record.muikku-field-saving {
+    animation: saving-fields 4s ease infinite; }
+  .audio-record.muikku-field-saved {
+    border: 2px solid #9cf3c7; }
+    .audio-record.muikku-field-saved:hover {
+      border: 2px solid #9cf3c7; }
+  .audio-record:hover {
+    border: 2px solid #8dd6f1; }
+  .audio-record[data-readonly="readonly"] {
+    background: #fcfcfc !important;
+    border: 2px dotted #eaeaea !important;
+    color: #7c7c7c !important; }
+    .audio-record[data-readonly="readonly"]:hover {
+      border: 2px dotted #eee;
+      color: #555555 !important; }
+  .audio-record .clip {
+    margin: 5px 0 10px;
+    background: #f9f9f9;
+    border-radius: 5px; }
+    .audio-record .clip progress {
+      height: 22px;
+      margin: 0 0 0 5px; }
+    .audio-record .clip audio {
+      width: calc(100% - 32px); }
+    .audio-record .clip .remove-clip {
+      text-decoration: none;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: #2c2c2c;
+      padding: 2px 0 2px 5px;
+      border-radius: 2px;
+      position: relative; }
+      .audio-record .clip .remove-clip.icon-remove-clip::before {
+        content: "\e63b";
+        color: #de3211;
+        font-size: 22px;
+        font-weight: normal;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration: none;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale; }
+    .audio-record .clip .progress-label {
+      padding: 5px;
+      margin: 0; }
+  .audio-record .controls .hint-text {
+    display: block;
+    margin: 0;
+    padding: 5px 0;
+    font-style: italic; }
+  .audio-record .controls a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #2c2c2c;
+    display: inline-block;
+    padding: 5px 5px 5px 22px;
+    border-radius: 2px;
+    border: 1px solid #7391a7;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+    margin: 5px 10px 5px 0; }
+    .audio-record .controls a.start-record:hover {
+      border: 1px solid #f7846d; }
+    .audio-record .controls a.stop-record:hover {
+      border: 1px solid #000; }
+    .audio-record .controls a.icon-record::before, .audio-record .controls a.icon-stop::before {
+      color: #de3211;
+      display: inline-block;
+      font-size: 16px;
+      left: 4px;
+      position: absolute;
+      top: 4px;
+      transition: all 0.2s ease-in-out; }
+    .audio-record .controls a.icon-record::before {
+      color: #de3211; }
+    .audio-record .controls a.icon-stop::before {
+      color: #000; }
+    .audio-record .controls a span {
+      font-family: 'Open Sans', Arial, sans-serif;
+      display: inline-block;
+      margin: 0 5px 0 0;
+      vertical-align: middle; }
+  .audio-record .controls .start-record {
+    background: #fff; }
+  .audio-record .controls .stop-record {
+    background: #fff; }
+
+.muikku-file-input-field-file {
+  margin: 5px 0;
+  position: relative; }
+
+.muikku-file-input-field-file-label {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  height: 20px;
+  left: 5px;
+  line-height: 16px;
+  margin-bottom: 0;
+  margin-right: 0;
+  margin-top: 0;
+  padding: 5px;
+  position: absolute;
+  text-transform: none;
+  top: 0;
+  z-index: 99; }
+
+.muikku-file-input-field-file-progress-literal {
+  color: #000;
+  z-index: 99;
+  font-weight: 300;
+  font-size: 12px;
+  font-family: 'Open Sans', Arial, sans-serif;
+  text-transform: none;
+  text-align: right;
+  padding: 0 5px 0 0; }
+
+.muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
+  color: #fff !important;
+  display: block;
+  font-size: 14px;
+  font-weight: 400 !important;
+  position: absolute;
+  right: 10px;
+  top: 0;
+  text-decoration: none;
+  text-transform: uppercase; }
+
+.muikku-file-input-field-file-progress .ui-progressbar-value {
+  background: #34acfd;
+  height: 30px;
+  border-radius: 0 !important; }
+
+.muikku-file-input-field-file-remove {
+  color: #f00; }
+
+.muikku-file-input-field-file-restore {
+  color: #00f; }
+
+.muikku-file-input-field-file-uploader-container {
+  background: #fff;
+  border: 2px solid #abdbed;
+  border-radius: 3px;
+  outline: none;
+  padding: 5px 10px;
+  position: relative; }
+  .muikku-file-input-field-file-uploader-container[data-readonly="readonly"] {
+    background: #fcfcfc !important;
+    border: 2px dotted #eaeaea !important;
+    color: #7c7c7c !important; }
+    .muikku-file-input-field-file-uploader-container[data-readonly="readonly"]:hover {
+      border: 2px dotted #eee;
+      color: #555555 !important; }
+  .muikku-file-input-field-file-uploader-container:hover {
+    border: 2px solid #8dd6f1; }
+  .muikku-file-input-field-file-uploader-container a {
+    color: #fff !important;
+    text-decoration: none;
+    font-size: 14px; }
+    .muikku-file-input-field-file-uploader-container a:hover {
+      text-decoration: underline; }
+
+.muikku-file-input-field-file-uploader-container input[type="file"] {
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: pointer;
+  /* Fix for Chrome upload file field display issue */ }
+  .muikku-file-input-field-file-uploader-container input[type="file"]::-webkit-file-upload-button {
+    width: 0;
+    padding: 0;
+    margin: 0;
+    -webkit-appearance: none;
+    border: none; }
+
+.muikku-file-input-field-file-uploader-container input[type="file"][disabled="disabled"] {
+  cursor: default; }
+
+.muikku-file-input-field-file-uploader-container span {
+  display: block;
+  text-align: center; }
+
+.muikku-file-input-field-file-removed-permanently {
+  display: none; }
+
+.muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
+  text-decoration: line-through; }
+
+.correct-answers-count-container {
+  display: block;
+  margin: 5px;
+  text-align: center;
+  font-size: 20px; }
+  .correct-answers-count-container .correct-answers-count-label {
+    padding: 0 5px;
+    display: inline-block; }
+  .correct-answers-count-container .correct-answers-count-data {
+    padding: 0 5px;
+    display: inline-block; }
+
+span.muikku-field-examples {
+  background: #e2ffe2;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 14px;
+  font-style: italic;
+  margin: 1px 3px;
+  padding: 3px;
+  vertical-align: middle;
+  width: auto; }
+  span.muikku-field-examples span.muikku-field-examples-title {
+    font-weight: 600;
+    margin: 0 6px; }
+  span.muikku-field-examples span.muikku-field-example {
+    border-left: 1px solid #439ba0;
+    display: inline-block;
+    line-height: 1.5;
+    margin: 3px 0 3px 5px;
+    padding: 0 8px; }
+
+div.muikku-text-field.muikku-field-correct-answer,
+div.muikku-memo-field.muikku-field-correct-answer,
+input[type="text"].muikku-field-correct-answer,
+textarea.muikku-field-correct-answer,
+select.muikku-field-correct-answer {
+  border: 2px solid #00ff2a;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-text-field.muikku-field-correct-answer:hover,
+  div.muikku-memo-field.muikku-field-correct-answer:hover,
+  input[type="text"].muikku-field-correct-answer:hover,
+  textarea.muikku-field-correct-answer:hover,
+  select.muikku-field-correct-answer:hover {
+    border: 2px solid #00ff2a;
+    box-shadow: none; }
+
+div.muikku-text-field.muikku-field-incorrect-answer,
+div.muikku-memo-field.muikku-field-incorrect-answer,
+input[type="text"].muikku-field-incorrect-answer,
+textarea.muikku-field-incorrect-answer,
+select.muikku-field-incorrect-answer {
+  border: 2px solid #f64e4e;
+  box-shadow: none;
+  border-radius: 3px; }
+  div.muikku-text-field.muikku-field-incorrect-answer:hover,
+  div.muikku-memo-field.muikku-field-incorrect-answer:hover,
+  input[type="text"].muikku-field-incorrect-answer:hover,
+  textarea.muikku-field-incorrect-answer:hover,
+  select.muikku-field-incorrect-answer:hover {
+    border: 2px solid #f64e4e;
+    box-shadow: none; }
+
+div.muikku-connect-field.muikku-field-correct-answer {
+  border: none;
+  box-shadow: none; }
+  div.muikku-connect-field.muikku-field-correct-answer .muikku-connect-field-counterpart.muikku-connect-field-correct-answer,
+  div.muikku-connect-field.muikku-field-correct-answer .muikku-connect-field-term.muikku-connect-field-correct-answer {
+    background: #55fc70; }
+
+div.muikku-connect-field.muikku-field-incorrect-answer {
+  border: none;
+  box-shadow: none; }
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer,
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-term.muikku-connect-field-wrong-answer {
+    background: #f64e4e; }
+    div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer.muikku-connect-field-term-selected,
+    div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-term.muikku-connect-field-wrong-answer.muikku-connect-field-term-selected {
+      background: #3dc7ff;
+      color: #fff;
+      font-weight: 400; }
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-counterpart.muikku-connect-field-correct-answer,
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-term.muikku-connect-field-correct-answer {
+    background: #55fc70; }
+
+div.muikku-organizer-field .muikku-category.muikku-field-correct-answer {
+  border: 2px solid #00ff2a;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-organizer-field .muikku-category.muikku-field-correct-answer:hover {
+    border: 2px solid #00ff2a;
+    box-shadow: none; }
+
+div.muikku-organizer-field .muikku-category.muikku-field-semi-correct-answer {
+  border: 2px solid #dab33d;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-organizer-field .muikku-category.muikku-field-semi-correct-answer:hover {
+    border: 2px solid #dab33d;
+    box-shadow: none; }
+
+div.muikku-organizer-field .muikku-category.muikku-field-incorrect-answer {
+  border: 2px solid #f64e4e;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-organizer-field .muikku-category.muikku-field-incorrect-answer:hover {
+    border: 2px solid #f64e4e;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container.muikku-field-correct-answer {
+  border: 2px solid #00ff2a;
+  border-radius: 3px;
+  box-shadow: none; }
+  .muikku-sorter-field .muikku-sorter-items-container.muikku-field-correct-answer:hover {
+    border: 2px solid #00ff2a;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container.muikku-field-semi-correct-answer {
+  border: 2px solid #dab33d;
+  border-radius: 3px;
+  box-shadow: none; }
+  .muikku-sorter-field .muikku-sorter-items-container.muikku-field-semi-correct-answer:hover {
+    border: 2px solid #dab33d;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container.muikku-field-incorrect-answer {
+  border: 2px solid #f64e4e;
+  border-radius: 3px;
+  box-shadow: none; }
+  .muikku-sorter-field .muikku-sorter-items-container.muikku-field-incorrect-answer:hover {
+    border: 2px solid #f64e4e;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container .muikku-sorter-item.muikku-field-correct-answer {
+  background: #55fc70; }
+
+.muikku-sorter-field .muikku-sorter-items-container .muikku-sorter-item.muikku-field-incorrect-answer {
+  background: #f64e4e; }
+
+span.muikku-checkbox-field.muikku-field-correct-answer,
+span.muikku-select-field.muikku-field-correct-answer {
+  box-shadow: none;
+  border: none; }
+  span.muikku-checkbox-field.muikku-field-correct-answer input[type="checkbox"],
+  span.muikku-checkbox-field.muikku-field-correct-answer input[type="radio"],
+  span.muikku-select-field.muikku-field-correct-answer input[type="checkbox"],
+  span.muikku-select-field.muikku-field-correct-answer input[type="radio"] {
+    box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9); }
+    span.muikku-checkbox-field.muikku-field-correct-answer input[type="checkbox"]:hover,
+    span.muikku-checkbox-field.muikku-field-correct-answer input[type="radio"]:hover,
+    span.muikku-select-field.muikku-field-correct-answer input[type="checkbox"]:hover,
+    span.muikku-select-field.muikku-field-correct-answer input[type="radio"]:hover {
+      box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9); }
+  span.muikku-checkbox-field.muikku-field-correct-answer:hover,
+  span.muikku-select-field.muikku-field-correct-answer:hover {
+    box-shadow: none;
+    border: none; }
+
+span.muikku-checkbox-field.muikku-field-incorrect-answer,
+span.muikku-select-field.muikku-field-incorrect-answer {
+  box-shadow: none;
+  border: none; }
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"],
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"],
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"],
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"] {
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.7); }
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"]:hover,
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"]:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"]:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"]:hover {
+      box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.7); }
+  span.muikku-checkbox-field.muikku-field-incorrect-answer:hover,
+  span.muikku-select-field.muikku-field-incorrect-answer:hover {
+    box-shadow: none;
+    border: none; }
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override,
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override,
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override,
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override {
+    box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9);
+    border: 2px solid #00ff2a;
+    border-radius: 3px; }
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override:hover,
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override:hover {
+      box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9);
+      border: 2px solid #00ff2a; }
+
+#ui-datepicker-div {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 13px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+  border: 0;
+  width: auto;
+  padding: 0;
+  background: #f2f5f7;
+  display: none; }
+  #ui-datepicker-div .ui-helper-clearfix::before,
+  #ui-datepicker-div .ui-helper-clearfix::after {
+    border-collapse: collapse;
+    content: "";
+    display: table; }
+  #ui-datepicker-div .ui-helper-clearfix::after {
+    clear: both; }
+  #ui-datepicker-div .ui-widget-header {
+    border: 0;
+    background: #6aa4cf;
+    padding: 4px 0;
+    position: relative; }
+    #ui-datepicker-div .ui-widget-header .ui-datepicker-prev {
+      color: #fff;
+      position: absolute;
+      height: 24px;
+      top: 0;
+      left: 0;
+      padding: 8px 4px; }
+      #ui-datepicker-div .ui-widget-header .ui-datepicker-prev span {
+        display: none; }
+      #ui-datepicker-div .ui-widget-header .ui-datepicker-prev:hover {
+        background: transparent;
+        border: 0;
+        text-decoration: none; }
+      #ui-datepicker-div .ui-widget-header .ui-datepicker-prev::before {
+        cursor: pointer;
+        content: "\e605";
+        color: #fff;
+        font-size: 24px;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration: none;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale; }
+    #ui-datepicker-div .ui-widget-header .ui-datepicker-next {
+      color: #fff;
+      position: absolute;
+      height: 24px;
+      top: 0;
+      right: 0;
+      padding: 8px 4px; }
+      #ui-datepicker-div .ui-widget-header .ui-datepicker-next span {
+        display: none; }
+      #ui-datepicker-div .ui-widget-header .ui-datepicker-next:hover {
+        background: transparent;
+        border: 0;
+        text-decoration: none; }
+      #ui-datepicker-div .ui-widget-header .ui-datepicker-next::before {
+        cursor: pointer;
+        content: "\e608";
+        color: #fff;
+        font-size: 24px;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration: none;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale; }
+    #ui-datepicker-div .ui-widget-header .ui-datepicker-title {
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 1.8em;
+      margin: 0 2.3em;
+      text-align: center; }
+  #ui-datepicker-div table.ui-datepicker-calendar {
+    box-sizing: border-box;
+    border: 2px solid #fff;
+    margin: 0;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px; }
+    #ui-datepicker-div table.ui-datepicker-calendar th {
+      border: 0;
+      font-weight: bold;
+      padding: 0.7em 0.3em;
+      text-align: center; }
+    #ui-datepicker-div table.ui-datepicker-calendar td {
+      border: 0;
+      padding: 1px;
+      max-width: 100%;
+      width: 38px;
+      height: 32px;
+      box-sizing: border-box; }
+      #ui-datepicker-div table.ui-datepicker-calendar td .ui-state-default {
+        background: #d7ebf9;
+        color: #2779aa; }
+      #ui-datepicker-div table.ui-datepicker-calendar td a {
+        border: 0;
+        padding: 0 5px 0 0;
+        background: #d4edff;
+        display: block;
+        text-align: right;
+        text-decoration: none;
+        font-weight: bold;
+        height: 32px;
+        width: auto;
+        box-sizing: border-box; }
+        #ui-datepicker-div table.ui-datepicker-calendar td a:hover {
+          background: #9cd5f8; }
+        #ui-datepicker-div table.ui-datepicker-calendar td a.ui-state-highlight {
+          background: #6991aa;
+          color: #fff; }
+        #ui-datepicker-div table.ui-datepicker-calendar td a.ui-state-active {
+          background: #3baae3;
+          color: #fff; }
+
+h2, h3, h4, h5, h6 {
+  color: #000;
+  font-weight: 300;
+  padding: 0 0 0 5px; }
+
+h2 {
+  border-left: 5px solid #ce01bd;
+  font-size: 20px;
+  margin: 0 100px 0 -5px;
+  padding: 5px 5px 5px 10px;
+  font-weight: 300;
+  margin: 0;
+  color: #000;
+  cursor: pointer; }
+
+h3 {
+  font-size: 22px; }
+
+h4 {
+  font-size: 20px; }
+
+h5 {
+  font-size: 18px; }
+
+h6 {
+  font-size: 16px; }
+
+p {
+  line-height: 22px;
+  margin: 10px 0; }
+
+.muikku-word-definition {
+  z-index: 9999;
+  background: #c4ffd6 none repeat scroll 0 0;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
+  color: #000;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.5em;
+  max-width: 250px;
+  padding: 5px 10px;
+  position: absolute; }
+
+mark[data-muikku-word-definition] {
+  border-bottom: 1px dashed #007925;
+  color: #007925;
+  background: transparent;
+  cursor: help;
+  font-weight: 400;
+  position: relative; }
+
+textarea,
+input[type="text"] {
+  font-family: 'Open Sans', Arial, sans-serif !important;
+  border-radius: 3px;
+  background: #ebf7ff;
+  padding: 5px 10px;
+  margin: 0;
+  font-weight: 300;
+  font-style: italic;
+  border: 0;
+  color: #000;
+  resize: vertical;
+  box-sizing: border-box; }
+  textarea:hover,
+  input[type="text"]:hover {
+    background: #ebf7ff;
+    border: 0; }
+  textarea:focus,
+  input[type="text"]:focus {
+    box-shadow: none;
+    outline: none; }
+
+input[type="text"].muikku-text-field {
+  width: auto;
+  margin: 4px 3px; }
+
+input[type="checkbox"],
+input[type="radio"] {
+  background: #fff;
+  border: 2px solid #abdbed;
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15);
+  display: inline-block;
+  margin: 0 10px;
+  outline: none;
+  font-family: 'Open Sans', Arial, sans-serif; }
+  input[type="checkbox"]:hover,
+  input[type="radio"]:hover {
+    box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15); }
+
+/* Select and Option field overrides */
+select {
+  background: #fff;
+  border: 2px solid #abdbed;
+  transition: border,box-shadow 0.1s,0.2s ease-in-out;
+  outline: none;
+  color: #0061a2;
+  display: inline-block;
+  margin: 4px;
+  box-shadow: 0 0 0 3px rgba(215, 215, 215, 0.15);
+  border-radius: 3px;
+  max-width: 100%;
+  word-wrap: break-word;
+  vertical-align: middle;
+  font-family: 'Open Sans', Arial, sans-serif; }
+  select option {
+    background: #fff;
+    font-weight: 300;
+    padding: 4px 8px; }
+
+/* Radio button and Check box wrapper Span */
+span.radiobutton-horizontal > span,
+span.checkbox-horizontal > span {
+  display: inline-block; }
+  span.radiobutton-horizontal > span label,
+  span.checkbox-horizontal > span label {
+    font-weight: 300 !important;
+    font-size: 14px !important;
+    display: inline !important; }
+
+span.radiobutton-vertical,
+span.checkbox-vertical {
+  display: inline-block;
+  vertical-align: middle; }
+  span.radiobutton-vertical > span,
+  span.checkbox-vertical > span {
+    display: block; }
+    span.radiobutton-vertical > span label,
+    span.checkbox-vertical > span label {
+      font-weight: 300 !important;
+      font-size: 14px !important;
+      display: inline !important; }
+
+label {
+  display: inline;
+  font-weight: 400; }
+
+.textfield-wrapper {
+  display: inline-block;
+  position: relative; }
+  .textfield-wrapper span.muikku-text-field-hint {
+    display: none; }
+
+blockquote {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-style: italic;
+  padding: 2px 0;
+  border-style: solid;
+  border-color: #eee;
+  border-width: 0;
+  color: #777;
+  font-size: 22px;
+  margin: 0 40px; }
+  blockquote p {
+    margin: 10px 0; }
+
+img {
+  max-width: 100% !important;
+  height: auto !important; }
+
+a > img {
+  cursor: -webkit-zoom-in;
+  cursor: -moz-zoom-in; }
+
+p {
+  margin: 15px 0; }
+
+a {
+  color: #4290ea; }
+
+em, i {
+  font-style: italic;
+  font-weight: 300; }
+
+strong, b {
+  font-weight: 400;
+  font-style: inherit; }
+
+sub {
+  vertical-align: sub;
+  font-size: 70%; }
+
+sup {
+  vertical-align: super;
+  font-size: 70%; }
+
+p, h1, h2, h3, h4, h5, h6 {
+  word-wrap: break-word; }
+
+table {
+  border-collapse: separate;
+  border-spacing: initial;
+  margin: initial;
+  padding: initial; }
+
+td {
+  padding: initial;
+  margin: initial;
+  width: auto;
+  max-width: 100%; }
+
+a {
+  color: #4290ea; }
+
+ul {
+  list-style-position: outside; }
+
+ol {
+  list-style-type: decimal;
+  list-style-position: outside; }
+
+ul,
+ol {
+  margin: 0 20px; }
+  ul li,
+  ol li {
+    margin: 5px; }
+  ul ol,
+  ol ol {
+    list-style-type: decimal; }
+  ul ul,
+  ol ul {
+    list-style-type: circle; }
+
+.cke {
+  border: 1px solid #fff !important;
+  border-radius: 5px;
+  box-shadow: none !important; }
+  .cke[data-readonly="readonly"] {
+    box-shadow: none; }
+    .cke[data-readonly="readonly"] .cke_inner {
+      background: #fcfcfc !important;
+      border: 2px dotted #eaeaea !important;
+      color: #7c7c7c !important; }
+      .cke[data-readonly="readonly"] .cke_inner:hover {
+        border: 2px dotted #eee;
+        box-shadow: none;
+        color: #555555 !important; }
+        .cke[data-readonly="readonly"] .cke_inner:hover .cke_top {
+          background: #eaeaea; }
+        .cke[data-readonly="readonly"] .cke_inner:hover .cke_bottom {
+          border-top: 1px solid #eaeaea; }
+      .cke[data-readonly="readonly"] .cke_inner .cke_top {
+        background: #eaeaea; }
+      .cke[data-readonly="readonly"] .cke_inner .cke_bottom {
+        border-top: 1px solid #eaeaea; }
+  .cke .cke_inner {
+    /* CKE top, content and bottom wrapper */
+    border: 2px solid #abdbed;
+    border-radius: 3px; }
+    .cke .cke_inner:hover {
+      border-color: #8dd6f1; }
+      .cke .cke_inner:hover .cke_top {
+        background: #8dd6f1; }
+    .cke .cke_inner .cke_top {
+      border: 0;
+      box-shadow: none;
+      background: #abdbed;
+      background-image: none;
+      padding: 8px 8px 4px;
+      border-bottom: 0;
+      transition: background 0.1s,0.2s ease-in-out; }
+      .cke .cke_inner .cke_top .cke_toolbar {
+        display: block;
+        margin: 2px 0; }
+        .cke .cke_inner .cke_top .cke_toolbar .cke_toolgroup {
+          border: 1px solid #fff;
+          background: #fff;
+          background-image: none; }
+          .cke .cke_inner .cke_top .cke_toolbar .cke_toolgroup a:hover {
+            border-radius: 3px;
+            background: #9ed7ff;
+            box-shadow: none;
+            border: 0; }
+          .cke .cke_inner .cke_top .cke_toolbar .cke_toolgroup a.cke_button_on {
+            background: #9ed7ff;
+            background-image: none;
+            box-shadow: none;
+            border: 0; }
+        .cke .cke_inner .cke_top .cke_toolbar .cke_combo.cke_combo_off a.cke_combo_button {
+          background: #fff;
+          background-image: none;
+          box-shadow: none;
+          border: 1px solid #fff; }
+          .cke .cke_inner .cke_top .cke_toolbar .cke_combo.cke_combo_off a.cke_combo_button:hover {
+            background: #9ed7ff; }
+        .cke .cke_inner .cke_top .cke_toolbar .cke_combo.cke_combo_on a.cke_combo_button {
+          background: #9ed7ff;
+          background-image: none;
+          box-shadow: none;
+          border: 1px solid #fff; }
+    .cke .cke_inner .cke_bottom {
+      border: 0;
+      box-shadow: none;
+      background: #fff;
+      background-image: none;
+      border-top: 1px solid #abdbed; }
+
+p.cke_notification_message div.draft-restore {
+  font-family: "Open Sans", Arial, sans-serif;
+  padding: 5px 0; }
+  p.cke_notification_message div.draft-restore span.draft-label {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 400;
+    display: block;
+    margin: 0 0 5px; }
+  p.cke_notification_message div.draft-restore span.draft-text {
+    font-size: 14px;
+    font-weight: 300; }
+  p.cke_notification_message div.draft-restore a {
+    display: inline-block;
+    padding: 0 5px;
+    color: #fff;
+    font-weight: 400; }
+
+p.cke_notification_message div.draft-cancel {
+  font-family: "Open Sans", Arial, sans-serif;
+  padding: 5px 0; }
+  p.cke_notification_message div.draft-cancel span.draft-label {
+    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 400;
+    display: block;
+    margin: 0 0 5px; }
+  p.cke_notification_message div.draft-cancel span.draft-text {
+    font-size: 14px;
+    font-weight: 300; }
+  p.cke_notification_message div.draft-cancel a {
+    display: inline-block;
+    padding: 0 5px;
+    color: #fff;
+    font-weight: 400; }
+
+.ui-widget-overlay {
+  background: #000;
+  opacity: 0.5; }
+
+.ui-dialog {
+  background: #fff;
+  border: none;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.6);
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  max-width: 100%;
+  min-width: 320px;
+  padding: 0;
+  text-transform: uppercase;
+  z-index: 9999; }
+  .ui-dialog.ui-corner-all {
+    border-radius: 5px; }
+  .ui-dialog .ui-dialog-titlebar {
+    border: 0;
+    background: #009fe3;
+    color: #fff;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 12px 36px 12px 16px;
+    font-weight: 400;
+    line-height: 1.5em; }
+    .ui-dialog .ui-dialog-titlebar.ui-draggable-handle {
+      cursor: move; }
+    .ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+      margin: 0;
+      font-size: 18px;
+      width: 100%;
+      font-weight: 300; }
+    .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+      background: #009fe3;
+      border-radius: 0;
+      border: 0;
+      width: 32px;
+      margin: 0;
+      font-size: 22px;
+      height: 26px;
+      position: absolute;
+      right: 8px;
+      top: 12px;
+      cursor: pointer; }
+      .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close span {
+        display: none; }
+      .ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close::before {
+        content: "\e63b";
+        color: #fff;
+        font-size: 22px;
+        font-weight: normal;
+        font-family: 'muikku';
+        speak: none;
+        font-style: normal;
+        text-decoration: none;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale; }
+  .ui-dialog .ui-dialog-content {
+    margin: 10px 0 0;
+    line-height: 1.5em;
+    padding: 0.5em 1em;
+    overflow: auto;
+    position: relative;
+    color: #362b36; }
+    .ui-dialog .ui-dialog-content label {
+      font-weight: 400;
+      font-size: 16px;
+      margin: 5px 0 0;
+      display: block;
+      padding: 5px 5px 5px 0; }
+    .ui-dialog .ui-dialog-content textarea {
+      padding: 4px 8px;
+      box-sizing: border-box; }
+    .ui-dialog .ui-dialog-content .ui-dialog-additional-message {
+      font-size: 14px;
+      font-style: italic;
+      text-transform: none; }
+  .ui-dialog .ui-dialog-buttonpane {
+    border: 0;
+    background: transparent;
+    padding: 0 10px 10px;
+    margin: 10px 0 0; }
+    .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+      float: none;
+      position: relative;
+      text-align: right; }
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button {
+        border-radius: 2px;
+        border: 0;
+        color: #fff;
+        font-weight: 400;
+        text-transform: uppercase;
+        margin: 5px;
+        outline: none;
+        font-family: 'Open Sans', Arial, sans-serif;
+        min-width: 90px;
+        cursor: pointer;
+        display: inline-block;
+        line-height: normal;
+        overflow: visible;
+        padding: 0;
+        position: relative;
+        text-align: center;
+        vertical-align: middle; }
+        .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button[disabled="disabled"] {
+          cursor: default;
+          opacity: 0.4; }
+        .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button span {
+          padding: 0.4em 1em;
+          display: block;
+          line-height: normal;
+          font-size: 16px; }
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.delete-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.confirm-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.remove-button {
+        background: #de3211; }
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.publish-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.send-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.save-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.create-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.save-evaluation-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.unarchive-button {
+        background: #27b91c; }
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.revert-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.archive-button,
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.cancel-evaluation-button {
+        background: #f6a930; }
+      .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset button.cancel-button {
+        background: #7391a7; }
+
+body.evaluation {
+  background: none;
+  background-color: #f0f3f5;
+  background-image: url("/gfx/light-diagonal-strips.png");
+  padding: 0.01em;
+  /* Prevent margin collapsing  */
+  min-height: 100%;
+  line-height: 1.7em;
+  font-size: 16px; }
+  body.evaluation > .loading {
+    background: #fff none repeat scroll 0 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.8;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 9999; }
+    body.evaluation > .loading::before {
+      -webkit-animation: generic-loader 1.0s infinite linear;
+      -moz-animation: generic-loader 1.0s infinite linear;
+      animation: generic-loader 1.0s infinite linear;
+      content: "\e900";
+      font-family: 'muikku' !important;
+      speak: none;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      height: 50px;
+      width: 50px;
+      font-size: 50px;
+      color: #7ed9ff;
+      position: absolute;
+      top: 50%;
+      left: 50%; }
+  body.evaluation .evaluation-navigation-wrapper {
+    background: #7ed9ff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    box-sizing: border-box;
+    padding: 5px;
+    box-shadow: 0 4px 5px rgba(169, 169, 169, 0.3);
+    z-index: 9999; }
+    body.evaluation .evaluation-navigation-wrapper .icon-navicon {
+      color: #fff;
+      font-size: 30px;
+      display: inline-block;
+      padding: 4px;
+      cursor: not-allowed; }
+      body.evaluation .evaluation-navigation-wrapper .icon-navicon span[class*="tt"] {
+        display: none; }
+    body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper {
+      position: absolute;
+      left: 50px;
+      top: 0;
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      height: 45px;
+      padding: 0 0 5px 10px;
+      cursor: pointer; }
+      body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-current-workspace {
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 30px;
+        font-weight: 300;
+        -webkit-box-flex: 1 1 auto;
+        -moz-box-flex: 1 1 auto;
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        padding: 1px 0 0; }
+      body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-select-workspace {
+        -webkit-box-flex: 1 1 auto;
+        -moz-box-flex: 1 1 auto;
+        -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        cursor: pointer;
+        padding: 15px 10px 10px; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-select-workspace span.icon-arrow-down,
+        body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-select-workspace span.icon-arrow-up {
+          color: #fff;
+          font-size: 22px;
+          display: block; }
+      body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-available-workspaces {
+        color: #fff;
+        padding: 0 10px;
+        box-sizing: border-box;
+        border-top: 10px solid #8edeff;
+        border-bottom: 10px solid #8edeff;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        background: #8edeff;
+        position: absolute;
+        clear: both;
+        display: block;
+        right: 0;
+        left: 0;
+        top: 50px;
+        visibility: hidden;
+        overflow: hidden;
+        opacity: 0;
+        height: 0;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+        min-width: 600px; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-available-workspaces.ps-container > .ps-scrollbar-y-rail > .ps-scrollbar-y {
+          background-color: #fff; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-available-workspaces .evaluation-workspace-item {
+          padding: 2px 5px;
+          border-radius: 3px; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-available-workspaces .evaluation-workspace-item:hover {
+            background: #7ad8ff; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-workspacelisting-wrapper .evaluation-available-workspaces .evaluation-workspace-item a {
+            color: #fff;
+            text-decoration: none;
+            text-transform: uppercase;
+            display: block; }
+    body.evaluation .evaluation-navigation-wrapper .evaluation-filters {
+      position: absolute;
+      right: 20px;
+      top: 0;
+      padding: 5px 0;
+      font-weight: 300; }
+      body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter {
+        display: inline-block;
+        padding: 0;
+        margin: 0;
+        border-radius: 3px;
+        border-left: 1px solid #cfeefb;
+        cursor: pointer;
+        position: relative; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter:first-child {
+          border-left: none; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags.icon-flag::before {
+          color: #fff;
+          display: inline-block;
+          font-size: 30px;
+          margin: 0 5px;
+          padding: 5px; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container {
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 42px;
+          width: 250px;
+          box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+          background: #fff;
+          border: 1px solid #fff;
+          border-radius: 5px; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container .evaluation-flag {
+            padding: 6px 8px;
+            margin: 1px 0;
+            border-radius: 3px; }
+            body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container .evaluation-flag.active {
+              background: #a9e6ff; }
+              body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container .evaluation-flag.active span {
+                color: #000; }
+            body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container .evaluation-flag.icon-flag::before {
+              background: #fff none repeat scroll 0 0;
+              border-radius: 100%;
+              display: inline-block;
+              height: 15px;
+              padding: 5px;
+              text-align: center;
+              width: 15px;
+              border-style: solid;
+              border-width: 1px;
+              border-color: attr(data-flag-color color); }
+            body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container .evaluation-flag span {
+              padding: 5px;
+              font-family: 'Open Sans', Arial, sans-serif;
+              color: #000;
+              font-weight: 300;
+              vertical-align: top;
+              display: inline-block;
+              width: calc(100% - 37px); }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container::after, body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container::before {
+            bottom: 100%;
+            left: 230px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container::after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: #fff;
+            border-width: 8px;
+            margin-left: -8px; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-flags-container::before {
+            border-color: rgba(0, 222, 255, 0);
+            border-bottom-color: #ffff;
+            border-width: 8px;
+            margin-left: -8px; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search.icon-search::before {
+          color: #fff;
+          display: inline-block;
+          font-size: 30px;
+          margin: 0 5px;
+          padding: 5px; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container {
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 42px;
+          width: 310px;
+          box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+          background: #fff;
+          border: 1px solid #fff;
+          border-radius: 5px; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container::after, body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container::before {
+            bottom: 100%;
+            left: 292px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container::after {
+            border-color: rgba(255, 255, 255, 0);
+            border-bottom-color: #fff;
+            border-width: 8px;
+            margin-left: -8px; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container::before {
+            border-color: rgba(0, 222, 255, 0);
+            border-bottom-color: #ffff;
+            border-width: 8px;
+            margin-left: -8px; }
+          body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container input[type="text"] {
+            border: 0;
+            font-size: 22px;
+            font-weight: 300;
+            color: #252525;
+            padding: 10px;
+            margin: 0;
+            outline: none;
+            box-shadow: none;
+            cursor: text;
+            font-family: 'Open Sans', Arial, sans-serif; }
+            body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container input[type="text"]:focus, body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container input[type="text"]:active, body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter .evaluation-search-container input[type="text"]:hover {
+              border: 0;
+              box-shadow: none; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter label {
+          display: inline-block;
+          margin: 0 0 0 15px;
+          font-weight: 300;
+          cursor: pointer;
+          text-shadow: 0 0 10px #fff; }
+        body.evaluation .evaluation-navigation-wrapper .evaluation-filters .evaluation-filter input {
+          display: inline-block;
+          margin-right: 10px;
+          margin: 0 10px 0 0;
+          cursor: pointer; }
+  body.evaluation .evaluation-content-wrapper {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0; }
+    body.evaluation .evaluation-content-wrapper.loading::before {
+      -webkit-animation: generic-loader 1.0s infinite linear;
+      -moz-animation: generic-loader 1.0s infinite linear;
+      animation: generic-loader 1.0s infinite linear;
+      content: "\e900";
+      font-family: 'muikku' !important;
+      speak: none;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      height: 50px;
+      width: 50px;
+      font-size: 50px;
+      color: #7ed9ff;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -25px 0 0 -25px; }
+  body.evaluation .prevPage,
+  body.evaluation .nextPage {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 9998;
+    border: 0;
+    width: 40px;
+    font-size: 26px;
+    color: #aaaaaa;
+    cursor: pointer;
+    background: #eee;
+    outline: none;
+    transition: background 0.3s ease-in-out; }
+    body.evaluation .prevPage:hover,
+    body.evaluation .nextPage:hover {
+      color: #57abec;
+      background: #fff; }
+  body.evaluation .prevPage {
+    left: 0; }
+  body.evaluation .nextPage {
+    right: 0; }
+  body.evaluation .evaluation-students {
+    overflow: hidden;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 0px;
+    height: 150px;
+    white-space: nowrap;
+    transition: margin 0.2s ease-in-out; }
+    body.evaluation .evaluation-students .evaluation-no-students-found {
+      text-align: center;
+      font-weight: 300;
+      font-size: 20px;
+      font-style: italic;
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      margin: -15px auto 0 auto;
+      height: 30px;
+      text-align: center; }
+    body.evaluation .evaluation-students .evaluation-student-wrapper {
+      width: 160px;
+      height: 130px;
+      box-sizing: border-box;
+      margin: 10px;
+      display: inline-block;
+      text-align: center;
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      position: relative;
+      /* Workspace has been evaluated by teacher */
+      /* Student has sent workspace evaluation request */
+      /* Workspace hasn't been evaluated in acceptable time frame and TIME IS RUNNING OUT */
+      /* Workspace has been reviewed and needs more input from student */ }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.evaluation-student-loaded {
+        opacity: 1;
+        transform: rotate(0deg) scale(1, 1); }
+      body.evaluation .evaluation-students .evaluation-student-wrapper .workspace-student-joined-date {
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 4px;
+        background: #fff;
+        border-radius: 3px;
+        line-height: 1.3em;
+        white-space: normal;
+        top: 0;
+        color: #000;
+        font-size: 14px; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper .workspace-evaluation-requested-date {
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 4px;
+        border-radius: 3px;
+        line-height: 1.3em;
+        white-space: normal;
+        top: 27px;
+        background: #00ccff;
+        color: #fff;
+        font-size: 14px; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper .workspace-evaluated-date {
+        position: absolute;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 3px 4px;
+        border-radius: 3px;
+        line-height: 1.3em;
+        white-space: normal;
+        top: 54px;
+        background: #3cdd2a;
+        color: #fff;
+        font-size: 14px; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-evaluated .workspace-evaluated-date {
+        background: #3cdd2a; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-evaluated .evaluation-student-picture {
+        box-shadow: 0 0 0 5px #3cdd2a; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-evaluation-requested .evaluation-student-picture {
+        box-shadow: 0 0 0 5px #0099ff; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-assessment-critical .workspace-evaluation-requested-date {
+        background: #de5500; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-assessment-critical .evaluation-student-picture {
+        box-shadow: 0 0 0 5px #de0000; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-reviewed-non-passing .workspace-evaluated-date {
+        background: #ea7401; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper.workspace-reviewed-non-passing .evaluation-student-picture {
+        box-shadow: 0 0 0 5px #ea7401; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper .evaluation-student-picture {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        box-sizing: border-box;
+        background-image: url("/gfx/default-user-picture.jpg");
+        background-size: cover;
+        border-radius: 100%;
+        background-position: center center; }
+      body.evaluation .evaluation-students .evaluation-student-wrapper .evaluation-student-name-plate {
+        cursor: pointer;
+        width: 100%;
+        box-sizing: border-box;
+        background: #3a86bd;
+        color: #fff;
+        border-radius: 3px;
+        white-space: normal;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        line-height: 22px;
+        transition: background 0.3s ease-in-out;
+        font-weight: 300; }
+        body.evaluation .evaluation-students .evaluation-student-wrapper .evaluation-student-name-plate .evaluation-student-name {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;
+          text-align: left;
+          padding: 2px 4px 0;
+          font-size: 14px; }
+        body.evaluation .evaluation-students .evaluation-student-wrapper .evaluation-student-name-plate .evaluation-student-studyprogramme {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-size: 12px;
+          display: block;
+          font-style: italic;
+          text-align: left;
+          padding: 0 4px 2px; }
+        body.evaluation .evaluation-students .evaluation-student-wrapper .evaluation-student-name-plate:hover {
+          box-shadow: 0 0 0 5px #c1e8ff; }
+  body.evaluation .evaluation-assignments {
+    overflow: hidden;
+    position: absolute;
+    left: 40px;
+    right: 40px;
+    top: 150px;
+    bottom: 0px;
+    white-space: nowrap;
+    transition: margin 0.2s ease-in-out; }
+    body.evaluation .evaluation-assignments .ps-scrollbar-y-rail,
+    body.evaluation .evaluation-assignments .ps-scrollbar-x-rail {
+      z-index: 9; }
+    body.evaluation .evaluation-assignments .evaluation-assignment-wrapper {
+      width: 160px;
+      box-sizing: border-box;
+      margin: 10px;
+      display: inline-block;
+      text-align: center;
+      background: #fff;
+      opacity: 0.4;
+      position: relative;
+      border-radius: 3px;
+      border-top: 3px solid #fff;
+      box-shadow: 0 0 10px 0 rgba(169, 169, 169, 0.2); }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-pending {
+        opacity: 0.1; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-loading {
+        animation: load-cards 1s infinite ease-in-out; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper:hover {
+        box-shadow: 0 0 0 5px #c1e8ff; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-submitted {
+        opacity: 1;
+        cursor: pointer; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-evaluated {
+        opacity: 1;
+        border-top: 3px solid #3cdd2a;
+        cursor: pointer; }
+        body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-evaluated .evaluation-assignment-evaluated-date {
+          color: #1aa00b; }
+        body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-evaluated:hover {
+          box-shadow: 0 0 0 5px #b7fbc1; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-withdrawn {
+        border-top: 3px solid #cb23c5;
+        cursor: pointer; }
+        body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-withdrawn .evaluation-assignment-evaluated-date {
+          color: #1aa00b; }
+        body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-withdrawn:hover {
+          box-shadow: 0 0 0 5px #e69be3; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-reviewed-non-passing {
+        opacity: 1;
+        border-top: 3px solid #ea7401;
+        cursor: pointer; }
+        body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-reviewed-non-passing .evaluation-assignment-evaluated-date {
+          color: #ea7401; }
+        body.evaluation .evaluation-assignments .evaluation-assignment-wrapper.assignment-reviewed-non-passing:hover {
+          box-shadow: 0 0 0 5px #ffc58d; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper .evaluation-assignment-submitted-date,
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper .evaluation-assignment-evaluated-date {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 2px 4px;
+        text-align: right;
+        min-height: 1.7em;
+        font-size: 14px;
+        line-height: 1.3em;
+        white-space: normal;
+        font-size: 12px;
+        margin: 1px 0; }
+      body.evaluation .evaluation-assignments .evaluation-assignment-wrapper .evaluation-assignment-title {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 4px;
+        font-size: 14px;
+        line-height: 1.3em;
+        white-space: normal;
+        border-top: 1px solid #f2f2f2; }
+  body.evaluation .evaluation-evaluate-modal-wrapper {
+    position: absolute;
+    left: 0;
+    top: 56px;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    overflow: hidden; }
+    body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper {
+      padding: 0 20px 0 10px;
+      min-width: 500px;
+      position: absolute;
+      top: 0;
+      right: 50%;
+      bottom: 3px;
+      left: 10px; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper {
+        padding: 10px 20px;
+        font-size: 13px;
+        background: #ebf7ff;
+        position: relative; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-title {
+          font-size: 20px;
+          color: #000; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-educationtype,
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-subject,
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-length {
+          text-transform: uppercase;
+          display: inline-block; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-educationtype .title,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-subject .title,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-length .title {
+            color: #727272;
+            display: inline-block;
+            margin: 0 5px 0 0; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-educationtype .desc,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-subject .desc,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-length .desc {
+            color: #000;
+            display: inline-block;
+            margin: 0 10px 0 0; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-educationtype .symbol,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-subject .symbol,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-info-wrapper .evaluation-modal-workspace-length .symbol {
+            text-transform: none; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info,
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info {
+        /* WORKSPACE EVALUATION */
+        /* ASSIGNMENT EVALUATION */ }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper,
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper {
+          margin: 20px 0 0;
+          font-size: 14px; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2 {
+            border-left: 5px solid #ce01bd; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2 {
+            border-left: 5px solid #ff9900; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise {
+            border-bottom: 2px solid #f9f9f9;
+            padding: 0 0 15px;
+            margin: 0 0 15px; }
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper,
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper,
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper,
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper {
+              clear: both; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container {
+                position: relative;
+                margin: 0;
+                background: #fff;
+                border-radius: 3px;
+                color: #000; }
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container > h2 {
+                  font-size: 20px;
+                  margin: 0 120px 0 -5px;
+                  padding: 5px 170px 5px 10px;
+                  font-weight: 300;
+                  margin: 0;
+                  color: #000;
+                  cursor: pointer; }
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta {
+                  position: absolute;
+                  max-width: 150px;
+                  right: 0;
+                  top: -6px;
+                  text-align: right;
+                  padding: 0px 10px;
+                  white-space: nowrap; }
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assessmentvalue,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assignmentdone,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assessmentvalue,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assignmentdone,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assessmentvalue,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assignmentdone,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assessmentvalue,
+                  body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assignmentdone {
+                    margin: 4px 0 4px; }
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-exercisedone,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-exercisedone,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-exercisedone,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-title-container .evaluation-assignment-exercisedone {
+                  position: absolute;
+                  max-width: 150px;
+                  right: 0;
+                  top: 0;
+                  text-align: right;
+                  padding: 8px 10px;
+                  white-space: nowrap; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h1, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h2, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h3, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h4, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h5, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h6,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h1,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h2,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h3,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h4,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h5,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h6,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h1,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h2,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h3,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h4,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h5,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content h6,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h1,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h2,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h3,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h4,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h5,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content h6 {
+                margin-top: 1em; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment {
+                background: #d5ffd2;
+                padding: 8px 16px;
+                border-radius: 3px;
+                margin: 10px 0; }
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment.no-literal-assessment,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment.no-literal-assessment,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment.no-literal-assessment,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content .evaluation-assignment-literal-assessment.no-literal-assessment {
+                  text-align: center;
+                  font-style: italic; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content article,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content article,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content article,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content article {
+                clear: both; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="closed"],
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="closed"],
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="closed"],
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="closed"] {
+                display: none; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="open"],
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="open"],
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-assignment .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="open"],
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-workspace-assignment-wrapper .evaluation-modal-workspace-single-exercise .evaluation-assignmentlist-wrapper .evaluation-assignment-content[data-open-state="open"] {
+                display: block; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper,
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper {
+          margin: 20px 0 0;
+          font-size: 14px; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article {
+            clear: both; }
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container,
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container {
+              position: relative;
+              margin: 0;
+              background: #fff;
+              border-radius: 3px;
+              color: #000; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container > h2,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container > h2 {
+                font-size: 20px;
+                margin: 0 120px 0 -5px;
+                padding: 5px 170px 5px 10px;
+                font-weight: 300;
+                margin: 0;
+                color: #000;
+                cursor: pointer; }
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container .evaluation-assignment-meta,
+              body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container .evaluation-assignment-meta {
+                position: absolute;
+                max-width: 150px;
+                right: 0;
+                top: -6px;
+                text-align: right;
+                padding: 0 10px;
+                white-space: nowrap; }
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assessmentvalue,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assignmentdone,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assessmentvalue,
+                body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-assignment-info .evaluation-modal-assignment-wrapper .evaluation-modal-single-assignment article .evaluation-assignment-title-container .evaluation-assignment-meta .evaluation-assignment-assignmentdone {
+                  margin: 4px 0 4px; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-journal-info .evaluation-modal-workspace-journal-entries-wrapper .evaluation-modal-workspace-journal-entries-title {
+        border-left: 5px solid #016779;
+        color: #016779;
+        font-size: 24px;
+        font-weight: 300;
+        margin: 20px 0;
+        padding: 3px 0 3px 10px;
+        text-transform: uppercase; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-journal-info .evaluation-modal-workspace-journal-entries-wrapper .evaluation-modal-workspace-single-journal-entry {
+        border-bottom: 2px solid #f9f9f9;
+        box-sizing: border-box;
+        font-size: 14px;
+        line-height: 1.5em;
+        margin: 8px 0;
+        padding: 8px 12px 20px;
+        position: relative; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-journal-info .evaluation-modal-workspace-journal-entries-wrapper .evaluation-modal-workspace-single-journal-entry .evaluation-journal-entry-title {
+          font-weight: 400;
+          font-size: 18px;
+          margin: 0 0 10px;
+          color: #00515f; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationStudentAssignmentWrapper .evaluation-modal-student-wrapper .evaluation-modal-workspace-journal-info .evaluation-modal-workspace-journal-entries-wrapper .evaluation-modal-workspace-single-journal-entry .evaluation-journal-entry-date {
+          position: absolute;
+          right: 15px;
+          top: 8px;
+          font-size: 14px; }
+    body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper {
+      position: absolute;
+      padding: 0 10px;
+      min-width: 400px;
+      background: #fff;
+      top: 0;
+      bottom: 0;
+      right: 10px;
+      left: 51%;
+      overflow: hidden;
+      z-index: 10; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header {
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height: 100px;
+        padding: 0 20px; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-title {
+          width: auto;
+          margin: 0 auto;
+          font-weight: 300;
+          color: #000;
+          font-size: 24px;
+          padding: 20px 0 10px;
+          text-transform: uppercase;
+          line-height: 1.3em;
+          position: relative; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper {
+          padding: 0; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper .meta-education-type,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper .meta-workspace {
+            padding: 0px 20px 0 0;
+            text-transform: uppercase;
+            font-size: 14px;
+            display: inline-block; }
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper .meta-education-type .title,
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper .meta-workspace .title {
+              color: #727272;
+              display: inline-block;
+              margin: 0 5px 0 0; }
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper .meta-education-type .desc,
+            body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper header .evaluation-modal-evaluateForm-meta-wrapper .meta-workspace .desc {
+              color: #000;
+              display: inline-block; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-removeWrapper {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        z-index: 99; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-removeWrapper button.remove-evaluation {
+          border-radius: 0;
+          border: 0;
+          background: #de3211;
+          color: #fff;
+          font-weight: 400;
+          padding: 4px 15px;
+          text-transform: uppercase;
+          margin: 5px;
+          outline: none;
+          font-family: 'Open Sans', Arial, sans-serif;
+          min-width: 90px;
+          font-size: 16px;
+          float: none;
+          line-height: normal; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-removeWrapper button.remove-evaluation span {
+            display: block;
+            line-height: normal;
+            padding: 0; }
+      body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content {
+        padding: 10px 20px 10px 2px;
+        position: absolute;
+        bottom: 65px;
+        top: 0;
+        right: 10px;
+        left: 10px;
+        border-bottom: 1px solid #eee; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content label {
+          text-transform: uppercase;
+          padding: 0 0 3px;
+          font-weight: 300;
+          font-size: 16px;
+          display: block; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content textarea,
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content input[type="text"],
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content select {
+          border: 0;
+          border-radius: 3px;
+          box-sizing: border-box;
+          border: 2px solid #abdbed;
+          font-size: 16px;
+          color: #000;
+          background: #fff;
+          outline: none;
+          transition: border 0.15s ease-in-out;
+          font-family: 'Open Sans', Arial, sans-serif;
+          font-weight: 300;
+          width: auto;
+          transition: border,box-shadow 0.1s,0.2s ease-in-out; }
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content textarea:active, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content textarea:focus, body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content textarea:hover,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content input[type="text"]:active,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content input[type="text"]:focus,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content input[type="text"]:hover,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content select:active,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content select:focus,
+          body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content select:hover {
+            background: #fff;
+            border: 2px solid #8dd6f1;
+            box-shadow: 0 0 0 3px rgba(202, 225, 252, 0.75); }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content textarea {
+          width: 100%;
+          height: 200px;
+          padding: 10px; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content .evaluation-modal-evaluateForm-date-wrapper {
+          margin: 10px 0; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content .evaluation-modal-evaluateForm-grade-wrapper {
+          margin: 10px 0; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content .evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper {
+          margin: 10px 0; }
+        body.evaluation .evaluation-evaluate-modal-wrapper #evaluationEvaluateFormWrapper .evaluation-modal-evaluateForm-content .evaluation-modal-evaluateForm-valuer-wrapper {
+          margin: 10px 0; }
+  body.evaluation .evaluation-evaluate-modal {
+    background: #fff;
+    border: 1px solid #fff;
+    border-radius: 0;
+    bottom: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    left: 0;
+    min-width: 990px;
+    overflow: hidden;
+    padding: 0;
+    position: fixed;
+    right: 0;
+    text-transform: none;
+    top: 0;
+    z-index: 9999; }
+    body.evaluation .evaluation-evaluate-modal.assignment-evaluation-dialog .ui-dialog-titlebar {
+      background: #950589; }
+    body.evaluation .evaluation-evaluate-modal.workspace-evaluation-dialog .ui-dialog-titlebar {
+      background: #3a86bd; }
+    body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar {
+      background: #657e90;
+      border: 0;
+      color: #000;
+      font-size: 28px;
+      font-weight: 300;
+      height: 40px;
+      line-height: 1.3;
+      margin: 0 auto;
+      position: relative;
+      text-transform: uppercase;
+      white-space: nowrap;
+      width: auto; }
+      body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-title {
+        background-size: cover;
+        color: #fff;
+        display: inline-block;
+        left: 10px;
+        margin: 0;
+        position: absolute;
+        top: 12px; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-title span.modal-title-workspace-evaluation,
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-title span.modal-title-assignment-evaluation {
+          display: inline-block;
+          font-size: 26px;
+          margin: 0 50px 0 0;
+          padding: 0 10px; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-title span.modal-title-student-name {
+          background-image: url("/gfx/default-user-picture.jpg");
+          background-position: left center;
+          background-repeat: no-repeat;
+          background-size: contain;
+          color: #c9e1f2;
+          display: inline-block;
+          font-size: 24px;
+          margin: 0 20px 0 0;
+          padding: 0 0 0 40px; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-title span.modal-title-workspace-name {
+          border-left: 1px solid #fff;
+          color: #c9e1f2;
+          display: inline-block;
+          font-size: 24px;
+          padding: 0 0 0 20px; }
+      body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-titlebar-close {
+        background: transparent;
+        border: 0;
+        height: 56px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 56px;
+        z-index: 999; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-titlebar-close span {
+          display: none; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-titlebar .ui-dialog-titlebar-close::before {
+          border-bottom-left-radius: 10px;
+          color: #fff;
+          content: "\e63b";
+          cursor: pointer;
+          font-family: 'muikku';
+          font-size: 30px;
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-font-smoothing: antialiased;
+          font-style: normal;
+          font-variant: normal;
+          font-weight: normal;
+          line-height: 1;
+          speak: none;
+          text-decoration: none;
+          text-transform: none; }
+    body.evaluation .evaluation-evaluate-modal .ui-dialog-content {
+      line-height: 1; }
+      body.evaluation .evaluation-evaluate-modal .ui-dialog-content label.muikku-file-input-field-file-label {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 400 !important;
+        height: 20px;
+        left: 5px;
+        line-height: 16px;
+        margin-bottom: 0;
+        margin-right: 0;
+        margin-top: 0;
+        padding: 5px;
+        position: absolute;
+        text-transform: none;
+        top: 0;
+        z-index: 99; }
+    body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane {
+      border: 0;
+      bottom: 10px;
+      margin: 0;
+      max-width: 50%;
+      padding: 0;
+      position: absolute;
+      right: 0;
+      width: 310px;
+      z-index: 999; }
+      body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane .ui-dialog-buttonset {
+        float: none;
+        padding: 0 30px 0 0;
+        position: relative;
+        text-align: right; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane .ui-dialog-buttonset button {
+          border: 0;
+          border-radius: 0;
+          color: #fff;
+          float: none;
+          font-family: 'Open Sans', Arial, sans-serif;
+          font-size: 18px;
+          font-weight: 400;
+          margin: 5px;
+          min-width: 90px;
+          outline: none;
+          padding: 5px 15px;
+          text-transform: uppercase; }
+          body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane .ui-dialog-buttonset button span {
+            padding: 0; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane .ui-dialog-buttonset button.cancel-evaluation-button {
+          background: #7391a7; }
+        body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane .ui-dialog-buttonset button.save-evaluation-button {
+          background: #27b91c; }
