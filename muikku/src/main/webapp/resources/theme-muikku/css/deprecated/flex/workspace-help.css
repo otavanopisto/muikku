@@ -1233,3 +1233,8 @@ p.content-view-restricted-message {
 .workspace-generic-view-title {
   background: #fff;
   padding: 20px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

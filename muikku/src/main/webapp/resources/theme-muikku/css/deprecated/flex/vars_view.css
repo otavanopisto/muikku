@@ -637,3 +637,8 @@ div.circle {
       background-color: #c9f8bb; }
     .evaluation .modal .modal-assignment-evaluated .literal {
       background-color: #e2ffe2; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

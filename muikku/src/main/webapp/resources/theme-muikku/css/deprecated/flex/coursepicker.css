@@ -312,3 +312,8 @@
   font-size: 14px;
   padding: 0 10px;
   min-height: 30px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

@@ -287,3 +287,8 @@ p.cke_notification_message div.draft-cancel {
 /* Archive announcement */
 .an-archive-title {
   padding-left: 10px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

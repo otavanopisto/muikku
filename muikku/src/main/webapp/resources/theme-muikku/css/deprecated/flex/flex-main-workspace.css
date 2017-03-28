@@ -1923,3 +1923,8 @@ div[class*='workspace-dock-navi-button-edit-'] > a {
 @media screen and (min-width: 768px) and (max-width: 959px) {
   #headerLogoTextContainer {
     background-size: 100%; } }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

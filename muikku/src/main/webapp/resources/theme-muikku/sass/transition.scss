@@ -1,0 +1,13 @@
+//TODO: This patch doesn't work on any of the IE family browsers
+//Before this is merged in production this file must be removed
+//With all the deprecated folder contents and all the deprecated
+//CSS requires in the files, it is development only
+//The data-deprecated-class element can be left there in order to be
+//able to do a search in order to know that there are deprecated class elements
+
+[data-deprecated-class] {
+	all: initial;
+	* {
+		all: unset;
+	}
+}

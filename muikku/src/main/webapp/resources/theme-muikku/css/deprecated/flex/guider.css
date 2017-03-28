@@ -451,3 +451,8 @@
 
 span.ui-helper-hidden-accessible {
   display: none; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

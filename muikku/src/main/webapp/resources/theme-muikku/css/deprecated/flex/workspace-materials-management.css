@@ -3678,3 +3678,8 @@ nav.workspace-waterials-management-nav {
     position: relative;
     left: auto;
     min-width: 320px; } }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

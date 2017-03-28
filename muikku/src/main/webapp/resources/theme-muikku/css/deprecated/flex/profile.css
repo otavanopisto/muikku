@@ -99,3 +99,8 @@
 
 .hops-form-wrapper .hops-form-section {
   padding: 15px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

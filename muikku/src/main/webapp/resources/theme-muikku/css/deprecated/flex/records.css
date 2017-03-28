@@ -1101,3 +1101,8 @@ span.muikku-select-field.muikku-field-incorrect-answer {
   font-style: italic;
   margin: 5px 0 10px;
   padding: 2px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

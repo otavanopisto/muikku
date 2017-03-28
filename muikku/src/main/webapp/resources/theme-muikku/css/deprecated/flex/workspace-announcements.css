@@ -8,3 +8,8 @@
 /* Workspace Navigation Tooltip Transitions */
 body #announcements {
   margin-top: 0; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

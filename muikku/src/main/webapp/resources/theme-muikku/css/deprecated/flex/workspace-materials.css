@@ -2322,3 +2322,8 @@ nav.workspace-materials-toc-wrapper {
     top: 1px; }
   .workspace-materials-toc-item.item-view-restricted a {
     padding: 2px 28px 2px 6px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

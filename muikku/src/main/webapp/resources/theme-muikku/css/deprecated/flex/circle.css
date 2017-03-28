@@ -315,3 +315,8 @@
     border-color: #e08833 !important; }
   .c100.exercise.dark:hover > span {
     color: #e08833; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

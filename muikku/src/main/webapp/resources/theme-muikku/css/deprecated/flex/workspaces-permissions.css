@@ -712,3 +712,8 @@ body[class^='workspace'] {
     body[class^='workspace'] table#environmentUserRolePermissionsTable td.workspace-permission-column-input {
       padding: 4px;
       text-align: center; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

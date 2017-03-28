@@ -1440,3 +1440,8 @@ footer.workspace-frontpage-footer {
       padding: 0;
       color: #000;
       text-transform: uppercase; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

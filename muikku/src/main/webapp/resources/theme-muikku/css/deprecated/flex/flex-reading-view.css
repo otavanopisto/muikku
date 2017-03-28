@@ -63,3 +63,8 @@ body #readingView .context-wrapper {
         font-weight: 300;
         font-size: 16px;
         padding: 4px 8px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

@@ -31,3 +31,8 @@ body #announcements {
       padding: 8px;
       background: #f3fcff;
       text-align: right; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

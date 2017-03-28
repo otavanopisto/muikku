@@ -330,3 +330,8 @@
 #socialNavigation.sn-container .di-message-create .mf-toolbar input[name="cancel"],
 #socialNavigation.sn-container .di-area-create .mf-toolbar input[name="cancel"] {
   background: #7391a7; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

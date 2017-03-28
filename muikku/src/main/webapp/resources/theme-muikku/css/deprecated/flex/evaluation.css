@@ -2578,3 +2578,8 @@ body.evaluation {
           background: #7391a7; }
         body.evaluation .evaluation-evaluate-modal .ui-dialog-buttonpane .ui-dialog-buttonset button.save-evaluation-button {
           background: #27b91c; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

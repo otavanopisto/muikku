@@ -132,3 +132,8 @@ body {
     .workspace-teachers-listing-wrapper .workspace-users .workspace-users-delete,
     .workspace-students-listing-wrapper .workspace-users .workspace-users-delete {
       background: #de3211; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

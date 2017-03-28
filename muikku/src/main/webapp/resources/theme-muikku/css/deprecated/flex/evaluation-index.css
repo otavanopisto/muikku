@@ -3001,3 +3001,8 @@ body {
     top: auto; }
   .eval-modal-workspace-name {
     padding: 0 20px; } }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

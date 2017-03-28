@@ -1,0 +1,86 @@
+/* JSF theme settings */
+/* Theme name, not the folder name. theme- preface will be included automatically! */
+/* CSS Background-image loader, has to be use in every background-image rule */
+/* COLORS */
+/* Category - colors */
+/* Fonts */
+/* $header:#ff7800; */
+/* Shadow */
+/* Border */
+/* Paddings */
+/* Margins */
+/* Generic background */
+/* Action area background */
+/* Dyn Navi background */
+/* Static Navi */
+/* Bottom bar */
+/* sub-Action area background */
+/* toolbar background */
+/* highlighted background */
+/* mainFunctions */
+/* Generic gradients (Grayscale) */
+/* Widgets */
+/* Workspace REading View Page */
+/* Forms */
+/* Top-bottom 2 - color */
+/* Top-bottom 2 - color - light  (start-end-bgr) */
+/* Top-bottom 4 - color */
+/* MainFunction content */
+/* MainFunction sidebar */
+/* MainFunction content functions */
+/* MainFunction buttonArea */
+/* MainFunction Button */
+/* Header top-bottom */
+/* Content interaction top-bottom 4-color */
+/* Communicator */
+/* Gradients */
+/* Borders */
+/* Coursepicker */
+/* LineColors */
+/* Font sizes */
+/* Transition durations */
+/* Generic Mixins */
+/* Borders */
+/* Paddings */
+/* Margins */
+/* Corners */
+/* Specific mixins */
+/* Content interaction*/
+/* Mainfunctions */
+/* Static navigation */
+/* Dynamic Navigation */
+/* Main Navigation Tooltip Transitions */
+/* Workspace Navigation Tooltip Transitions */
+/* Widget Action Menu Transitions */
+/* Widget Action Menu Transitions */
+/* Widget Action Menu Transitions */
+body main#content {
+  min-height: 800px;
+  background: #fff;
+  margin-top: 30px; }
+  body main#content .context-wrapper nav#announcementContextNavigation .gc-navigation-item {
+    background: #dff7fe; }
+    body main#content .context-wrapper nav#announcementContextNavigation .gc-navigation-item a.gc-navigation-title {
+      font-weight: 300;
+      color: #000;
+      text-decoration: none;
+      font-size: 16px;
+      display: block;
+      padding: 8px;
+      text-shadow: 0 0 5px #fff; }
+      body main#content .context-wrapper nav#announcementContextNavigation .gc-navigation-item a.gc-navigation-title:hover {
+        color: #047094; }
+    body main#content .context-wrapper nav#announcementContextNavigation .gc-navigation-item .gc-navigation-date {
+      font-weight: 300;
+      font-size: 16px;
+      margin-top: 5px;
+      padding-top: 5px;
+      border-top: 1px solid #fff;
+      padding: 8px;
+      background: #f3fcff;
+      text-align: right; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

@@ -1,0 +1,190 @@
+.correct-answers-count-container {
+  display: block;
+  margin: 5px;
+  text-align: center;
+  font-size: 20px; }
+  .correct-answers-count-container .correct-answers-count-label {
+    padding: 0 5px;
+    display: inline-block; }
+  .correct-answers-count-container .correct-answers-count-data {
+    padding: 0 5px;
+    display: inline-block; }
+
+span.muikku-field-examples {
+  background: #e2ffe2;
+  border-radius: 3px;
+  display: inline-block;
+  font-size: 14px;
+  font-style: italic;
+  margin: 1px 3px;
+  padding: 3px;
+  vertical-align: middle;
+  width: auto; }
+  span.muikku-field-examples span.muikku-field-examples-title {
+    font-weight: 600;
+    margin: 0 6px; }
+  span.muikku-field-examples span.muikku-field-example {
+    border-left: 1px solid #439ba0;
+    display: inline-block;
+    line-height: 1.5;
+    margin: 3px 0 3px 5px;
+    padding: 0 8px; }
+
+div.muikku-text-field.muikku-field-correct-answer,
+div.muikku-memo-field.muikku-field-correct-answer,
+input[type="text"].muikku-field-correct-answer,
+textarea.muikku-field-correct-answer,
+select.muikku-field-correct-answer {
+  border: 2px solid #00ff2a;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-text-field.muikku-field-correct-answer:hover,
+  div.muikku-memo-field.muikku-field-correct-answer:hover,
+  input[type="text"].muikku-field-correct-answer:hover,
+  textarea.muikku-field-correct-answer:hover,
+  select.muikku-field-correct-answer:hover {
+    border: 2px solid #00ff2a;
+    box-shadow: none; }
+
+div.muikku-text-field.muikku-field-incorrect-answer,
+div.muikku-memo-field.muikku-field-incorrect-answer,
+input[type="text"].muikku-field-incorrect-answer,
+textarea.muikku-field-incorrect-answer,
+select.muikku-field-incorrect-answer {
+  border: 2px solid #f64e4e;
+  box-shadow: none;
+  border-radius: 3px; }
+  div.muikku-text-field.muikku-field-incorrect-answer:hover,
+  div.muikku-memo-field.muikku-field-incorrect-answer:hover,
+  input[type="text"].muikku-field-incorrect-answer:hover,
+  textarea.muikku-field-incorrect-answer:hover,
+  select.muikku-field-incorrect-answer:hover {
+    border: 2px solid #f64e4e;
+    box-shadow: none; }
+
+div.muikku-connect-field.muikku-field-correct-answer {
+  border: none;
+  box-shadow: none; }
+  div.muikku-connect-field.muikku-field-correct-answer .muikku-connect-field-counterpart.muikku-connect-field-correct-answer,
+  div.muikku-connect-field.muikku-field-correct-answer .muikku-connect-field-term.muikku-connect-field-correct-answer {
+    background: #55fc70; }
+
+div.muikku-connect-field.muikku-field-incorrect-answer {
+  border: none;
+  box-shadow: none; }
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer,
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-term.muikku-connect-field-wrong-answer {
+    background: #f64e4e; }
+    div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-counterpart.muikku-connect-field-wrong-answer.muikku-connect-field-term-selected,
+    div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-term.muikku-connect-field-wrong-answer.muikku-connect-field-term-selected {
+      background: #3dc7ff;
+      color: #fff;
+      font-weight: 400; }
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-counterpart.muikku-connect-field-correct-answer,
+  div.muikku-connect-field.muikku-field-incorrect-answer .muikku-connect-field-term.muikku-connect-field-correct-answer {
+    background: #55fc70; }
+
+div.muikku-organizer-field .muikku-category.muikku-field-correct-answer {
+  border: 2px solid #00ff2a;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-organizer-field .muikku-category.muikku-field-correct-answer:hover {
+    border: 2px solid #00ff2a;
+    box-shadow: none; }
+
+div.muikku-organizer-field .muikku-category.muikku-field-semi-correct-answer {
+  border: 2px solid #dab33d;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-organizer-field .muikku-category.muikku-field-semi-correct-answer:hover {
+    border: 2px solid #dab33d;
+    box-shadow: none; }
+
+div.muikku-organizer-field .muikku-category.muikku-field-incorrect-answer {
+  border: 2px solid #f64e4e;
+  border-radius: 3px;
+  box-shadow: none; }
+  div.muikku-organizer-field .muikku-category.muikku-field-incorrect-answer:hover {
+    border: 2px solid #f64e4e;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container.muikku-field-correct-answer {
+  border: 2px solid #00ff2a;
+  border-radius: 3px;
+  box-shadow: none; }
+  .muikku-sorter-field .muikku-sorter-items-container.muikku-field-correct-answer:hover {
+    border: 2px solid #00ff2a;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container.muikku-field-semi-correct-answer {
+  border: 2px solid #dab33d;
+  border-radius: 3px;
+  box-shadow: none; }
+  .muikku-sorter-field .muikku-sorter-items-container.muikku-field-semi-correct-answer:hover {
+    border: 2px solid #dab33d;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container.muikku-field-incorrect-answer {
+  border: 2px solid #f64e4e;
+  border-radius: 3px;
+  box-shadow: none; }
+  .muikku-sorter-field .muikku-sorter-items-container.muikku-field-incorrect-answer:hover {
+    border: 2px solid #f64e4e;
+    box-shadow: none; }
+
+.muikku-sorter-field .muikku-sorter-items-container .muikku-sorter-item.muikku-field-correct-answer {
+  background: #55fc70; }
+
+.muikku-sorter-field .muikku-sorter-items-container .muikku-sorter-item.muikku-field-incorrect-answer {
+  background: #f64e4e; }
+
+span.muikku-checkbox-field.muikku-field-correct-answer,
+span.muikku-select-field.muikku-field-correct-answer {
+  box-shadow: none;
+  border: none; }
+  span.muikku-checkbox-field.muikku-field-correct-answer input[type="checkbox"],
+  span.muikku-checkbox-field.muikku-field-correct-answer input[type="radio"],
+  span.muikku-select-field.muikku-field-correct-answer input[type="checkbox"],
+  span.muikku-select-field.muikku-field-correct-answer input[type="radio"] {
+    box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9); }
+    span.muikku-checkbox-field.muikku-field-correct-answer input[type="checkbox"]:hover,
+    span.muikku-checkbox-field.muikku-field-correct-answer input[type="radio"]:hover,
+    span.muikku-select-field.muikku-field-correct-answer input[type="checkbox"]:hover,
+    span.muikku-select-field.muikku-field-correct-answer input[type="radio"]:hover {
+      box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9); }
+  span.muikku-checkbox-field.muikku-field-correct-answer:hover,
+  span.muikku-select-field.muikku-field-correct-answer:hover {
+    box-shadow: none;
+    border: none; }
+
+span.muikku-checkbox-field.muikku-field-incorrect-answer,
+span.muikku-select-field.muikku-field-incorrect-answer {
+  box-shadow: none;
+  border: none; }
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"],
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"],
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"],
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"] {
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.7); }
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"]:hover,
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"]:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"]:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"]:hover {
+      box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.7); }
+  span.muikku-checkbox-field.muikku-field-incorrect-answer:hover,
+  span.muikku-select-field.muikku-field-incorrect-answer:hover {
+    box-shadow: none;
+    border: none; }
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override,
+  span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override,
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override,
+  span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override {
+    box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9);
+    border: 2px solid #00ff2a;
+    border-radius: 3px; }
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override:hover,
+    span.muikku-checkbox-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="checkbox"].muikku-field-correct-answer-override:hover,
+    span.muikku-select-field.muikku-field-incorrect-answer input[type="radio"].muikku-field-correct-answer-override:hover {
+      box-shadow: 0 0 0 2px rgba(0, 255, 42, 0.9);
+      border: 2px solid #00ff2a; }

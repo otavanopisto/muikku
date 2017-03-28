@@ -751,3 +751,8 @@ td {
   margin: initial;
   width: auto;
   max-width: 100%; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

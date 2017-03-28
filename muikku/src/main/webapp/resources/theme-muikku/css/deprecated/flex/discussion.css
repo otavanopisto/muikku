@@ -333,3 +333,8 @@ p.cke_notification_message div.draft-cancel {
         box-shadow: none; }
   .di-content-main .di-message .di-message-info {
     cursor: default; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

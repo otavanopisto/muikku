@@ -315,3 +315,8 @@ p.cke_notification_message div.draft-cancel {
       .cm-message.open .cm-message-details-sender .cm-message-header-content-primary {
         font-weight: 400;
         max-width: 80%; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

@@ -1059,3 +1059,8 @@ h2.workspace-management-generic-title {
 
 footer#footer {
   display: none; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

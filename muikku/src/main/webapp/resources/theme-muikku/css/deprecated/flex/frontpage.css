@@ -1245,3 +1245,8 @@ ul.carousel-image-controls {
       font-size: 30px; }
   .logo-container {
     display: none; } }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

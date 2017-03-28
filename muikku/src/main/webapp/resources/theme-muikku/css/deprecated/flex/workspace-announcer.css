@@ -142,3 +142,8 @@ input[type="text"] {
     .mf-content-functions .mf-view-container .di-edit-area-container,
     .mf-content-functions .mf-view-container .di-delete-area-container {
       margin: 2px 0 0 5px; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }

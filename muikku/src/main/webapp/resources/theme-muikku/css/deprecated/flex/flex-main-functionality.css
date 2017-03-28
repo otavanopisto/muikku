@@ -831,3 +831,8 @@ ul.mf-tool-label-container {
 
 .mf-category-11-font {
   color: #000000; }
+
+[data-deprecated-class] {
+  all: initial; }
+  [data-deprecated-class] * {
+    all: unset; }
