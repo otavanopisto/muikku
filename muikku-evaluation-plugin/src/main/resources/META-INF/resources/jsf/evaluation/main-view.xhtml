@@ -62,11 +62,25 @@
     
       <div class="evaluation-navigation">
         <div class="eval-nav-item eval-home icon-home"></div>
-        <div class="eval-nav-item eval-workspace icon-books"></div>
+        <div class="eval-nav-item eval-workspaces icon-books"></div>
+        <div class="eval-search-wrapper">
+          <div class="eval-search-container">
+            <input type="text" name="search" class="eval-searchfield" placeholder="#{i18n.text['plugin.evaluation.search.searchTextfieldPlaceholder']}"/>
+            <button class="eval-searchbutton icon-search"></button>
+            <div class="remove-search-results icon-close" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="eval-nav-item eval-filters icon-filter"></div>        
       </div>
       
-      <div class="evaluation-filter-wrapper" data-visibility="hidden">
-      
+      <div class="evaluation-filters-wrapper" data-visibility="hidden">
+        <h3>#{i18n.text['plugin.evaluation.filters.filtersTitle']}</h3>
+        <div class="evaluation-filters-container">
+          <input type="checkbox" class="filter-evaluated"/>#{i18n.text['plugin.evaluation.filters.evaluated']}<br/>
+          <input type="checkbox" class="filter-evaluation-request"/>#{i18n.text['plugin.evaluation.filters.evaluationRequested']}<br/>
+          <input type="checkbox" class="filter-supplementation-request"/>#{i18n.text['plugin.evaluation.filters.supplementationRequested']}<br/>
+          <input type="checkbox" class="filter-no-evaluation"/>#{i18n.text['plugin.evaluation.filters.notEvaluated']}
+        </div>
       </div>
     
       <div class="evaluation-cards-wrapper">
@@ -86,10 +100,9 @@
         </div>
       </div>
       
-      <div class="evaluation-search-wrapper" data-visibility="hidden">
-        
+      <div class="evaluation-workspaces-wrapper" data-visibility="hidden">
+        <h3>#{i18n.text['plugin.evaluation.search.myWorkspacesTitle']}</h3>        
         <div class="evaluation-my-workspaces-container">
-          <h3>#{i18n.text['plugin.evaluation.search.myWorkspacesTitle']}</h3>
           <ul class="evaluation-my-workspaces"></ul>
         </div>
         

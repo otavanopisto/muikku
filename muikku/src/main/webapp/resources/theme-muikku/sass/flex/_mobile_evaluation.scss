@@ -71,10 +71,24 @@
     }
     
   }
+
+  .evaluation-filters-wrapper {
+    right: calc(0px - 310px);
+    width: 310px;
+  }
+
+  .evaluation-workspaces-wrapper {
+    left: calc(0px - 310px);
+    width: 310px;
+  }
+  
+  .evaluation-navigation .eval-search-wrapper .eval-search-container {
+    display: none;
+  }
   
 }
 
-// DIALOG (0px - 1023px)
+// DIALOG (0 - 1023px)
 @media screen and (max-width: 1023px) {
 
   .eval-modal-student-container,

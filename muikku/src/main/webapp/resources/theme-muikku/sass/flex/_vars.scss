@@ -289,10 +289,10 @@ $evaluation-unimportant-star-active-font-color: #fff;
 $evaluation-unimportant-star-active-background-color: #666;
 $evaluation-card-button-font-color: #fff;
 
-// Evaluation Filter
+// Evaluation Workspaces
 
-$evaluation-search-wrapper-background-color: #fff;
-$evaluation-search-wrapper-background-boxshadow-color: rgba(0, 0, 0, 0.1);
+$evaluation-workspaces-wrapper-background-color: #fff;
+$evaluation-workspaces-wrapper-background-boxshadow-color: rgba(0, 0, 0, 0.1);
 
 // Evaluation Modal
 
@@ -337,7 +337,7 @@ $evaluation-modal-assignment-evaluated-literal-background-color: #e2ffe2;
 
 // Forms in Evaluation
 
-$forms-textfield-border-color: #e5e5e5;
-$forms-button-border-color: #7bdaff;
-$forms-button-background-color: #7bdaff;
+$forms-generic-border-color: #fff;
+$forms-button-background-color: #62c3eb;
 $forms-button-font-color: #fff;
+$forms-reset-icon-font-color: #4c4c4c;

@@ -123,7 +123,7 @@ linters:
   PropertyCount:
     enabled: true
     include_nested: false
-    max_properties: 10
+    max_properties: 20
 
   PropertySortOrder:
     enabled: true
@@ -221,7 +221,7 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: true
+    enabled: false
 
   TrailingZero:
     enabled: true
@@ -246,7 +246,7 @@ linters:
     properties: []
 
   VendorPrefix:
-    enabled: true
+    enabled: false
     identifier_list: base
     additional_identifiers: []
     excluded_identifiers: []
