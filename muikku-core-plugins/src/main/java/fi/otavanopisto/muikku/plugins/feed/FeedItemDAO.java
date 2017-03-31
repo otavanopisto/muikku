@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.feed;
 
-import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -23,7 +23,7 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
     String link,
     String author,
     String description,
-    OffsetDateTime publicationDate,
+    Date publicationDate,
     String image,
     Feed feed
   ) {
