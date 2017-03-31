@@ -1,0 +1,60 @@
+/*
+ * There are three types of buttons here
+ *
+ *
+ *
+ *
+ *
+ */
+ 
+@import "../base/colors.scss";
+
+$button-font-family: "Exo 2", Arial, sans-serif;
+
+$button-small-height: 21px;
+$button-small-font-size: 12px;
+
+$button-medium-height: 27px;
+$button-medium-font-size: 14px;
+
+$button-large-height: 33px;
+$button-large-font-size: 16px;
+
+a.button {
+	font-family: $button-font-family;
+	border-radius: 2px;
+	position: relative;
+	
+	//button medium
+	font-size: $button-medium-font-size;
+	height: $button-medium-height;
+	padding: #{$button-medium-font-size - 8px} #{$button-medium-font-size - 4px};
+
+	&.button-large {
+		font-size: $button-large-font-size;
+		height: $button-large-height;
+		padding: #{$button-large-font-size - 8px} #{$button-large-font-size - 4px};
+	}
+	
+	&.button-medium {
+	}
+	
+	&.button-small {
+		font-size: $button-small-font-size;
+		height: $button-small-height;
+		padding: #{$button-small-font-size - 8px} #{$button-small-font-size - 4px};
+	}
+	
+	&.button-dynamic-height {
+		width: 100%;
+		height: auto;
+	}
+	
+	&.button-extra-rounded {
+		border-radius: 5px;
+	}
+	
+	&.button-not-rounded {
+		border-radius: 0;
+	}
+}

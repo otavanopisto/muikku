@@ -5,7 +5,6 @@
 
   <h:panelGroup layout="block" styleClass="notification-queue">
     <h:panelGroup layout="block" styleClass="notification-queue-items">
-      <span id="foobar">foobar</span>
       <ui:insert name="messages">
         <ui:repeat var="message" value="#{facesContext.messageList}">
           <ui:fragment rendered="#{message.severity.ordinal eq 0}">

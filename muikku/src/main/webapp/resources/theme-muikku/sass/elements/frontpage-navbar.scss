@@ -1,0 +1,185 @@
+/*
+ * This element is a frontpage style navbar
+ *
+ * 	nav.frontpage-navbar
+ * 		div.frontpage-navbar-wrapper
+ *			div.frontpage-navbar-logo
+ *			div.frontpage-navbar-items
+ *				ul.frontpage-navbar-items-container
+ *					li.frontpage-navbar-item.frontpage-navbar-visible[wide-screen | wide-screen-and-medium-screen | medium-screen | pad | landscape-pad | portrait-pad | mobile]
+ *						a
+ *							span.[ | frontpage-navbar-icon].[ | frontpage-navbar-highlight-item | frontpage-navbar-dark-item | frontpage-navbar-clear-item ]
+ *			div.frontpage-navbar-default-options?
+ *				div.frontpage-navbar-default-options-container
+ */
+ 
+@import "../base/mixins.scss";
+@import "../base/colors.scss";
+
+$navbar-height: 70px;
+ 
+nav.frontpage-navbar {
+	background-color: $frontpage-generic-background-color;
+	box-shadow: 0 0 10px $frontpage-generic-background-color;
+	box-sizing: border-box;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 100%;
+	z-index: 9;
+	font-family: 'Exo 2',Arial,sans-serif;
+  
+	>.frontpage-navbar-wrapper {
+		align-items: stretch;
+		display: flex;
+		flex-flow: row nowrap;
+		margin: 0 auto;
+		max-width: 1280px;
+		height: $navbar-height;
+		
+		>.frontpage-navbar-logo {
+			flex: 0 0 auto;
+			height: $navbar-height;
+			width: 10px;
+			
+			@include wide-screen {
+				& {
+					width: 175px;	
+					background: url('/gfx/of-site-logo-text.png') no-repeat center center;
+				}
+			}
+		}
+		
+		>.frontpage-navbar-items {
+			flex: 1 0 auto;
+			height: 100%;
+			
+			>ul.frontpage-navbar-items-container {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				height: $navbar-height;
+			}
+		}
+		
+		>.frontpage-navbar-default-options {
+			flex: 0 0 auto;	
+			
+			>div.frontpage-navbar-default-options-container {
+				align-items: center;
+				display: flex;
+				min-height: $navbar-height;
+			}
+		}
+		
+		li.frontpage-navbar-item {
+			margin: 0;
+			padding: 0;
+			display: none;
+			padding: 0 10px;
+			line-height: $navbar-height;
+			vertical-align: top;
+
+			a {
+				box-sizing: border-box;
+				color: $frontpage-navbar-item-color;
+				display: flex;
+				font-size: 15px;
+				font-weight: 400;
+				text-align: center;
+				text-decoration: none;
+				text-transform: uppercase;
+				transition: border 0.5s ease-in-out;
+				height: $navbar-height;
+				justify-content: center;
+				align-items: center;
+      
+				>span.frontpage-navbar-icon {
+					display: inline-block;
+					font-size: 26px;
+					font-family: muikku;
+					speak: none;
+					font-style: normal;
+					font-weight: normal;
+					font-variant: none;
+					text-transform: none;
+					line-height: 1;
+					@include prefix(font-smoothing, web moz o ms, antialiased);
+				}
+				
+				>span.frontpage-navbar-highlight-item {
+					color: $frontpage-navbar-item-highlight-color;
+				}
+				
+				>span.frontpage-navbar-clear-item {
+					color: $frontpage-navbar-item-clear-color;
+				}
+				
+				>span.frontpage-navbar-dark-item {
+					color: $frontpage-navbar-item-clear-color;
+				}
+      
+				&:hover {
+					color: $frontpage-navbar-item-selected-color;
+				}
+      
+				&:active {
+					color: $frontpage-navbar-item-selected-color;
+				}
+      
+    		}
+    		
+		}//frontpage-navbar-item
+		
+	}//frontpage-navbar-wrapper
+	
+	>.frontpage-navbar-menu {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		width: 250px;
+	}
+	
+	@include wide-screen {
+		*.frontpage-navbar-visible-wide-screen {						
+			display: inline-block !important;
+		}
+		*.frontpage-navbar-visible-wide-and-medium-screen {						
+			display: inline-block !important;
+		}
+	}
+					
+	@include medium-screen {
+		*.frontpage-navbar-visible-medium-screen {			
+			display: inline-block !important;
+		}
+		*.frontpage-navbar-visible-wide-and-medium-screen {
+			display: inline-block !important;
+		}
+	}
+					
+	@include landscape-pad {
+		*.frontpage-navbar-visible-landscape-pad {						
+			display: inline-block !important;
+		}
+		*.frontpage-navbar-visible-pad {						
+			display: inline-block !important;
+		}
+	}
+					
+	@include portrait-pad {
+		*.frontpage-navbar-visible-portrait-pad {						
+			display: inline-block !important;
+		}
+		*.frontpage-navbar-visible-pad {						
+			display: inline-block !important;
+		}
+	}
+					
+	@include mobile {
+		*.frontpage-navbar-visible-mobile {						
+			display: inline-block !important;
+		}
+	}
+}

@@ -6,7 +6,7 @@
   
   <ui:define name="body">
     <ui:insert name="notification-queue">
-      <div class="notification-queue">
+      <div class="notification-queue" data-clear-styles="">
         <div class="notification-queue-items">
           <ui:insert name="messages">
             <ui:repeat var="message" value="#{facesContext.messageList}">
@@ -29,111 +29,42 @@
       </div>
     </ui:insert>
     
-    <ui:insert name="of-navigation">
-	    <nav class="of-navigation">
-	      <div class="of-navigation-wrapper">
-		      <div class="of-site-logo"></div>
+    <ui:insert name="frontpage-navbar">
+	    <nav class="frontpage-navbar" data-clear-styles="">
+	      <div class="frontpage-navbar-wrapper">
+		      <div class="frontpage-navbar-logo"></div>
 		      
-		      <div class="of-site-links wide-navigation">
-			      <ul class="of-links-container">
-			        <li class="of-link-item">
-			          <a class="nav-link" href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+		      <div class="frontpage-navbar-items">
+		          <ul class="frontpage-navbar-items-container">
+		            <li class="frontpage-navbar-item frontpage-navbar-visible-mobile frontpage-navbar-visible-pad">
+			          <a href="#">
+			          	<span class="frontpage-navbar-icon icon-burger"></span>
+			          </a>
 			        </li>
-			        <li class="of-link-item">
-			          <a class="nav-link" href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen frontpage-navbar-visible-pad">
+			          <a href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
 			        </li>
-			        <li class="of-link-item">
-			          <a class="nav-link" href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen">
+			          <a href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
 			        </li>
-			        <li class="of-link-item">
-			          <a class="nav-link" href="#contact"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
+			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen">
+			          <a href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
 			        </li>
-			        <li class="of-link-item">
-			          <a href="/coursepicker" class="highlight"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
+			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen frontpage-navbar-visible-pad">
+			          <a href="#contact">
+			          	<span>#{i18n.text['plugin.navigation.link.contact']}</span>
+			          </a>
+			        </li>
+			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen frontpage-navbar-visible-pad">
+			          <a href="/coursepicker">
+			          	<span class="frontpage-navbar-highlight-item">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+			          </a>
 			        </li>
 			      </ul>
 		      </div>
-		      
-		      <div class="of-site-links narrow-navigation">
-            <ul class="of-links-container primary-links">
-              <li class="of-link-item show-more-nav-desktop">
-                <a href="#"><span class="icon-navicon"></span></a>
-              </li>
-              <li class="of-link-item">
-                <a class="nav-link" href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a class="nav-link" href="#contact"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a href="/coursepicker" class="highlight"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
-              </li>
-            </ul>
-            <ul class="of-links-container secondary-links">
-              <li class="of-link-item">
-                <a class="nav-link" href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a class="nav-link" href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
-              </li>
-            </ul>
-          </div>
-          
-          <div class="of-site-links mobile-navigation">
-            <ul class="of-links-container primary-links">
-              <li class="of-link-item show-more-nav-mobile">
-                <a href="#"><span class="icon-navicon"></span></a>
-              </li>
-            </ul>
-            <ul class="of-links-container secondary-links">
-              <li class="of-link-item">
-                <a class="nav-link" href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a class="nav-link" href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a class="nav-link" href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a class="nav-link" href="#contact"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
-              </li>
-              <li class="of-link-item">
-                <a href="/coursepicker" class="highlight"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
-              </li>
-            </ul>
-          </div>
-		      
-		      <div class="of-site-alternate-links">
-		        <div class="of-site-alternate-links-container">
-				      <div class="of-site-login">
-				        <div class="login">
-		              <a class="login-link" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-		                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-		              </a>
-		            </div>
-		            <div class="forgotpassword">
-		              <a href="#" class="forgotpassword-link">
-		                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-		              </a>
-		            </div>
-				      </div>
-				      <div class="of-site-locale">
-				        <div class="selected-language">#{languageWidgetBackingBean.language}</div>
-		            <h:form>
-		              <div class="language-selection-container" data-visibility-status="hidden">
-		                <ui:repeat value="#{i18n.languages}" var="locale">
-		                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
-		                </ui:repeat>
-		              </div>
-		            </h:form>
-				      </div>
-			      </div>
-			      
-		      </div>
 	      </div>
-	    </nav>
-	  </ui:insert>
+	   </nav>
+	</ui:insert>
 	  
 	  <ui:insert name="of-header">
 	    <header class="of-header">

@@ -1,0 +1,43 @@
+@mixin prefix($property, $prefixes: (), $values...) {
+	@each $prefix in $prefixes {
+		#{'-' + $prefix + '-' + $property}: $values;
+	}
+ 
+	#{$property}: $values;
+}
+
+@mixin wide-screen {
+	@media screen and (min-width: 1200px) {
+		@content;
+	}
+}
+
+@mixin medium-screen {
+	@media screen and (min-width: 1025px) and (max-width: 1199px) {
+		@content;
+	}
+}
+
+@mixin landscape-pad {
+	@media screen and (min-width: 769px) and (max-width: 1024px) {
+		@content;
+	}
+}
+
+@mixin portrait-pad {
+	@media screen and (min-width: 769px) and (max-width: 1024px) {
+		@content;
+	}
+}
+
+@mixin portrait-pad {
+	@media screen and (min-width: 769px) and (max-width: 1024px) {
+		@content;
+	}
+}
+
+@mixin mobile {
+	@media screen and (max-width: 767px) {
+		@content;
+	}
+}

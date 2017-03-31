@@ -1,15 +1,1 @@
-/* Navigation Icon Shadow */
-/* Rounding *Corners */
-/* Generic Text Shadow for Buttons */
-/* Generic Box shadow for Buttons */
-/* Generic Gradient Used in Buttons */
-/* Form element - HOVER */
-/* Form element - FOCUS */
-/* Workspace Navigation Tooltip Transitions */
-body #announcements {
-  margin-top: 0; }
-
-[data-deprecated-class] {
-  all: initial; }
-  [data-deprecated-class] * {
-    all: unset; }
+body #announcements{margin-top:0}[data-clear-styles]{all:initial;box-sizing:border-box}[data-clear-styles] *{all:unset;box-sizing:border-box}
