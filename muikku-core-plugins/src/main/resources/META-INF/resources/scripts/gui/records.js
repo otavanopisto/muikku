@@ -21,7 +21,7 @@
       $('.mf-button-container').on('change', '.tr-category-dropdown', $.proxy(this._onCategoryChange, this));      
       this.element.on('click', '.tr-task-evaluated', $.proxy(this._onEvaluationClick, this));
       this.element.on('click', '.tr-item-workspace-assessment:not(.open)', $.proxy(this._onWorkspaceAssessmentItemClick, this));
-      this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadCategory, this));      
+      this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._goBackRecords, this));      
       this._loadCategory();
     },
     
@@ -29,7 +29,9 @@
       this._categoryId = categoryId;
       this._loadCategory(categoryId);
     },
-    
+    _goBackRecords : function () {
+      this._loadCategory('records');      
+    },
     _onCategoryChange: function (event, data) {
       this.category(data.value);
     },    
@@ -389,6 +391,22 @@
       this.element.off('click', '.tr-task-evaluated');
     }
   });
+  
+  $.widget("custom.vops", {
+    _create : function() {
+      renderDustTemplate('/records/records_view_forms.dust', {}, $.proxy(function(text) {
+        this.element.append(text);
+      }, this));      
+    }
+  }); 
+  
+  $.widget("custom.forms", {
+    _create : function() {
+      renderDustTemplate('/records/records_view_forms.dust', {}, $.proxy(function(text) {
+        this.element.append(text);
+      }, this));      
+    }     
+  });  
   
   $(document).ready(function(){
     $('[data-grades]').records({
