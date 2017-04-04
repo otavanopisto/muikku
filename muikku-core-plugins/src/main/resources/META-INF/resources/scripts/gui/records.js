@@ -1,15 +1,5 @@
 (function() {
   
-  $.widget("custom.recordFiles", {
-    _create : function() {
-      var files = $.parseJSON(this.element.attr('data-files'));
-
-      renderDustTemplate('/records/records_files.dust', { files: files }, $.proxy(function(text) {
-        this.element.append(text);
-      }, this));
-    }
-  });
-  
   $.widget("custom.records", {
     options: {
       studentIdentifier: null
@@ -54,19 +44,40 @@
     },
     
     _loadForms : function () {
-      alert('Form view loader!');
+      this.element.addClass('loading');
+      this._clear();      
+      var err = err;
       
+      
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+      } else {
+        renderDustTemplate('/records/records_forms.dust', {}, $.proxy(function(text) {
+          this.element.append(text);
+          this.element.removeClass('loading');
+        }, this));
+      }       
     },
 
-    _loadVops : function () {
-      alert('Vops view loader!');
+    _loadVops : function () { 
+      this.element.addClass('loading');
+      this._clear();      
+      var err = err;
       
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+      } else {
+        renderDustTemplate('/records/records_vops.dust', {}, $.proxy(function(text) {
+          this.element.append(text);
+          this.element.removeClass('loading');
+        }, this));
+      }      
     },
         
     _loadRecords : function () {
       this.element.addClass('loading');
       this._clear();
-      
+        
       mApi().user.students
         .read({userEntityId: this.options.userEntityId, includeInactiveStudents: true, includeHidden: true })
         .on('$', $.proxy(function (student, callback) {
@@ -159,11 +170,16 @@
           result.sort($.proxy(function (student1, student2) {
             return student1.id == this.options.studentIdentifier ? -1 : student2.id == this.options.studentIdentifier ? 1 : 0;
           }, this));
-          
+
+          var files = $.parseJSON($('[data-files]').attr('data-files'));
+
+   
+           
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
-            renderDustTemplate('/records/records_studyprogrammes.dust', { students: result }, $.proxy(function(text) {
+            renderDustTemplate('/records/records_studyprogrammes.dust', { students: result, files: files }, $.proxy(function(text) {
+
               this.element.append(text);
               this.element.removeClass('loading');
             }, this));
@@ -416,8 +432,6 @@
       prependTitle: false,
       readOnlyFields: true,
       fieldlessMode: true
-    });
-    $('[data-files]').recordFiles({
     });
   });
   
