@@ -1,13 +1,23 @@
 /*
  * There are three types of buttons here
  *
+ * Standard button
  *
+ * 	a.button[ | .button-large | .button-medium | .button-small ]
+ *          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
+ * 			[ | .button-not-rounded | .button-extra-rounded]
+ *          [ | .button-primary | .button-secondary | .button-success | .button-info | .button-warn | .button-fatal | .button-dark]
+ *			[ | .button-centered | .button-right | .button-left ]
+ *		span
+ * 			(BODY)
  *
- *
- *
+ *	a.button-rounded[ | .button-rounded-primary | .button-rounded-secondary | .button-rounded-success | .button-rounded-info | .button-rounded-warn | .button-rounded-fatal | .button-rounded-dark]
+ *		span
+ *			(BODY)
  */
  
 @import "../base/colors.scss";
+@import "../base/mixins.scss";
 
 $button-font-family: "Exo 2", Arial, sans-serif;
 
@@ -15,25 +25,32 @@ $button-small-height: 21px;
 $button-small-font-size: 12px;
 
 $button-medium-height: 27px;
-$button-medium-font-size: 14px;
+$button-medium-font-size: 15px;
 
 $button-large-height: 33px;
-$button-large-font-size: 16px;
+$button-large-font-size: 17px;
 
 a.button {
 	font-family: $button-font-family;
 	border-radius: 2px;
 	position: relative;
+	text-transform: uppercase;
+	vertical-align: center;
+	display: inline-block;
+	text-decoration: none;
+	@include prefix(user-select, moz o ms webkit, none);
 	
 	//button medium
 	font-size: $button-medium-font-size;
 	height: $button-medium-height;
-	padding: #{$button-medium-font-size - 8px} #{$button-medium-font-size - 4px};
+	line-height: $button-medium-height;
+	padding: 0 #{$button-medium-font-size};
 
 	&.button-large {
 		font-size: $button-large-font-size;
 		height: $button-large-height;
-		padding: #{$button-large-font-size - 8px} #{$button-large-font-size - 4px};
+		line-height: $button-large-height;
+		padding: 0 #{$button-large-font-size};
 	}
 	
 	&.button-medium {
@@ -42,12 +59,44 @@ a.button {
 	&.button-small {
 		font-size: $button-small-font-size;
 		height: $button-small-height;
-		padding: #{$button-small-font-size - 8px} #{$button-small-font-size - 4px};
+		line-height: $button-medium-height;
+		padding: 0 #{$button-small-font-size};
 	}
 	
 	&.button-dynamic-height {
 		width: 100%;
 		height: auto;
+		overflow-wrap: break-word;
+	}
+	&.button-dynamic-word-break {
+		height: auto;
+		width: auto;
+		& > span {
+			display: table-caption;
+		}
+	}
+	&.button-dynamic-word-break-full-width {
+		height: auto;
+		width: 100%;
+		& > span {
+			display: table-caption;
+		}
+	}
+	
+	&.button-dynamic-height, &.button-dynamic-word-break, &.button-dynamic-word-break-full-width {
+		padding: #{$button-medium-font-size/2} #{$button-medium-font-size};
+		line-height: $button-medium-font-size;
+		
+		&.button-small {
+			padding: #{$button-small-font-size/2} #{$button-small-font-size};
+			line-height: $button-small-font-size;
+		}
+		&.button-medium {
+		}
+		&.button-large {
+			padding: #{$button-large-font-size/2} #{$button-large-font-size};
+			line-height: $button-large-font-size;
+		}
 	}
 	
 	&.button-extra-rounded {
@@ -56,5 +105,91 @@ a.button {
 	
 	&.button-not-rounded {
 		border-radius: 0;
+	}
+	
+	&.button-primary {
+		@include colormapping($color-primary-background, $color-primary-text);
+	}
+	
+	&.button-secondary {
+		@include colormapping($color-secondary-background, $color-secondary-text);
+	}
+	
+	&.button-success {
+		@include colormapping($color-success-background, $color-success-text);
+	}
+	
+	&.button-info {
+		@include colormapping($color-info-background, $color-info-text);
+	}
+	
+	&.button-warn {
+		@include colormapping($color-warn-background, $color-warn-text);
+	}
+	
+	&.button-fatal {
+		@include colormapping($color-fatal-background, $color-fatal-text);
+	}
+	
+	&.button-dark {
+		@include colormapping($color-dark-background, $color-dark-text);
+	}
+	
+	text-align: center;
+	&.button-centered {
+	}
+	&.button-right {
+		text-align: right;
+	}
+	&.button-left {
+		text-align: left;
+	}
+}
+
+$button-rounded-size: 34px;
+$button-rounded-font-size: 16px;
+$button-rounded-font-family: "Exo 2", Arial, sans-serif;
+
+a.button-rounded {
+	width: $button-rounded-size;
+	height: $button-rounded-size;
+	border-radius: $button-rounded-size;
+	text-align: center;
+	font-size: $button-rounded-font-size;
+	text-transform: uppercase;
+	position: relative;
+	vertical-align: center;
+	display: inline-block;
+	line-height: $button-rounded-size;
+	font-family: $button-rounded-font-family;
+	cursor: pointer;
+	@include prefix(user-select, moz o ms webkit, none);
+
+	&.button-rounded-primary {
+		@include colormapping($color-primary-background, $color-primary-text);
+	}
+	
+	&.button-rounded-secondary {
+		@include colormapping($color-secondary-background, $color-secondary-text);
+	}
+	
+	&.button-rounded-success {
+		@include colormapping($color-success-background, $color-success-text);
+	}
+	
+	&.button-rounded-info {
+		@include colormapping($color-info-background, $color-info-text);
+	}
+	
+	&.button-rounded-warn {
+		@include colormapping($color-warn-background, $color-warn-text);
+	}
+	
+	&.button-rounded-fatal {
+		@include colormapping($color-fatal-background, $color-fatal-text);
+	}
+	
+	&.button-rounded-dark {
+		@include colormapping($color-dark-background, $color-dark-text);
 	}
 }

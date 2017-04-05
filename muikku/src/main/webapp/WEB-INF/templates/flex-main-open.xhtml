@@ -30,37 +30,52 @@
     </ui:insert>
     
     <ui:insert name="frontpage-navbar">
-	    <nav class="frontpage-navbar" data-clear-styles="">
-	      <div class="frontpage-navbar-wrapper">
-		      <div class="frontpage-navbar-logo"></div>
+	    <nav class="navbar" data-clear-styles="">
+	      <div class="navbar-wrapper">
+		      <div class="navbar-logo"></div>
 		      
-		      <div class="frontpage-navbar-items">
-		          <ul class="frontpage-navbar-items-container">
-		            <li class="frontpage-navbar-item frontpage-navbar-visible-mobile frontpage-navbar-visible-pad">
+		      <div class="navbar-items">
+		          <ul class="navbar-items-container">
+		            <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-down breakpoint-inline-block">
 			          <a href="#">
-			          	<span class="frontpage-navbar-icon icon-burger"></span>
+			          	<span class="navbar-icon icon-burger"></span>
 			          </a>
 			        </li>
-			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen frontpage-navbar-visible-pad">
+			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
 			          <a href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
 			        </li>
-			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen">
+			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
 			          <a href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
 			        </li>
-			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen">
+			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
 			          <a href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
 			        </li>
-			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen frontpage-navbar-visible-pad">
+			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
 			          <a href="#contact">
 			          	<span>#{i18n.text['plugin.navigation.link.contact']}</span>
 			          </a>
 			        </li>
-			        <li class="frontpage-navbar-item frontpage-navbar-visible-wide-and-medium-screen frontpage-navbar-visible-pad">
+			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
 			          <a href="/coursepicker">
-			          	<span class="frontpage-navbar-highlight-item">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+			          	<span class="navbar-highlight-item">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
 			          </a>
 			        </li>
 			      </ul>
+		      </div>
+		      <div class="navbar-default-options">
+		      	  <div class="navbar-default-options-container">
+		          	<a class="button button-primary" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+		           	  <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+		          	</a>
+		          	<div class="spacer spacer-horizontal spacer-small breakpoint breakpoint-visible breakpoint-small-mobile breakpoint-inline-block"></div>
+		          	<a class="label label-primary label-dynamic-word-break label-clickable forgotpassword-link breakpoint breakpoint-invisible breakpoint-small-mobile">
+		           	  <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+		          	</a>
+		          	<a class="button-rounded button-rounded-dark">
+		          	  <span>#{languageWidgetBackingBean.language}</span>
+		          	</a>
+		          	<div class="spacer spacer-horizontal spacer-small"></div>
+		          </div>
 		      </div>
 	      </div>
 	   </nav>

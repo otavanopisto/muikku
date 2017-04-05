@@ -6,38 +6,11 @@
 	#{$property}: $values;
 }
 
-@mixin wide-screen {
-	@media screen and (min-width: 1200px) {
-		@content;
-	}
-}
-
-@mixin medium-screen {
-	@media screen and (min-width: 1025px) and (max-width: 1199px) {
-		@content;
-	}
-}
-
-@mixin landscape-pad {
-	@media screen and (min-width: 769px) and (max-width: 1024px) {
-		@content;
-	}
-}
-
-@mixin portrait-pad {
-	@media screen and (min-width: 769px) and (max-width: 1024px) {
-		@content;
-	}
-}
-
-@mixin portrait-pad {
-	@media screen and (min-width: 769px) and (max-width: 1024px) {
-		@content;
-	}
-}
-
-@mixin mobile {
-	@media screen and (max-width: 767px) {
-		@content;
+@mixin colormapping($bgcolor, $textcolor) {
+	background-color: $bgcolor;
+	color: $textcolor;
+	@include prefix(transition, webkit moz o ms, background-color .3s);
+	&:hover, &:active {
+		background-color: darken($bgcolor, 10%);
 	}
 }

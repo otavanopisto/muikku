@@ -1,0 +1,135 @@
+/*
+ * Basic labels
+ *
+ * 	a.label[ | .label-large | .label-medium | .label-small ]
+ *          [ | .label-dynamic-height | .label-dynamic-word-break | .label-dynamic-word-break-full-width ]
+ *          [ | .label-primary | .label-secondary | .label-success | .label-info | .label-warn | .label-fatal | .label-dark]
+ *			[ | .label-clickable ]
+ *			[ | .label-centered | .label-right | .label-left ]
+ *		span
+ * 			(BODY)
+ *
+ */
+ 
+@import "../base/colors.scss";
+@import "../base/mixins.scss";
+
+$label-font-family: "Exo 2", Arial, sans-serif;
+
+$label-small-height: 21px;
+$label-small-font-size: 12px;
+
+$label-medium-height: 27px;
+$label-medium-font-size: 15px;
+
+$label-large-height: 33px;
+$label-large-font-size: 17px;
+
+a.label {
+	font-family: $label-font-family;
+	position: relative;
+	vertical-align: center;
+	
+	//label medium
+	font-size: $label-medium-font-size;
+	height: $label-medium-height;
+	line-height: $label-medium-height;
+	padding: 0 #{$label-medium-font-size};
+	display: inline-block;
+
+	&.label-large {
+		font-size: $label-large-font-size;
+		height: $label-large-height;
+		line-height: $label-large-height;
+		padding: 0 #{$label-large-font-size};
+	}
+	
+	&.label-medium {
+	}
+	
+	&.label-small {
+		font-size: $label-small-font-size;
+		height: $label-small-height;
+		line-height: $label-medium-height;
+		padding: 0 #{$label-small-font-size};
+	}
+	
+	&.label-dynamic-height {
+		width: 100%;
+		height: auto;
+		overflow-wrap: break-word;
+	}
+	&.label-dynamic-word-break {
+		height: auto;
+		width: auto;
+		& > span {
+			display: table-caption;
+		}
+	}
+	&.label-dynamic-word-break-full-width {
+		height: auto;
+		width: 100%;
+		& > span {
+			display: table-caption;
+		}
+	}
+	
+	&.label-dynamic-height, &.label-dynamic-word-break, &.label-dynamic-word-break-full-width {
+		padding: #{$label-medium-font-size/2} #{$label-medium-font-size};
+		line-height: $label-medium-font-size;
+		
+		&.label-small {
+			padding: #{$label-small-font-size/2} #{$label-small-font-size};
+			line-height: $label-small-font-size;
+		}
+		&.label-medium {
+		}
+		&.label-large {
+			padding: #{$label-large-font-size/2} #{$label-large-font-size};
+			line-height: $label-large-font-size;
+		}
+	}
+	
+	&.label-primary {
+		color: $color-primary-background;
+	}
+	
+	&.label-secondary {
+		color: $color-secondary-background;
+	}
+	
+	&.label-success {
+		color: $color-success-background;
+	}
+	
+	&.label-info {
+		color: $color-info-background;
+	}
+	
+	&.label-warn {
+		color: $color-warn-background;
+	}
+	
+	&.label-fatal {
+		color: $color-fatal-background;
+	}
+	
+	&.label-dark {
+		color: $color-dark-background;
+	}
+	
+	&.label-clickable {
+		cursor: pointer;
+		@include prefix(user-select, moz o ms webkit, none);
+	}
+	&.label-centered {
+		text-align: center;
+	}
+	&.label-right {
+		text-align: right;
+	}
+	
+	text-align: left;
+	&.label-left {
+	}
+}

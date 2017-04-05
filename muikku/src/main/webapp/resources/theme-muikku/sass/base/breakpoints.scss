@@ -1,0 +1,35 @@
+@mixin wide-screen {
+	@media screen and (min-width: 1200px) {
+		@content;
+	}
+}
+
+@mixin medium-screen {
+	@media screen and (min-width: 1025px) and (max-width: 1199px) {
+		@content;
+	}
+}
+
+@mixin landscape-pad {
+	@media screen and (min-width: 769px) and (max-width: 1024px) {
+		@content;
+	}
+}
+
+@mixin portrait-pad {
+	@media screen and (min-width: 451px) and (max-width: 768px) {
+		@content;
+	}
+}
+
+@mixin medium-mobile {
+	@media screen and (max-width: 450px) and (min-width: 321px) {
+		@content;
+	}
+}
+
+@mixin small-mobile {
+	@media screen and (max-width: 320px) {
+		@content;
+	}
+}
