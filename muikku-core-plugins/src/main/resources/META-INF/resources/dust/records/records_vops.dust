@@ -1,8 +1,19 @@
-{#.}
-  <div class="tr-study-programme-name lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"><h3>{studyProgrammeName}</h3></div>
-  <div class="tr-study-programme-studies lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-    <div class="flex-row">
-      <h1>VOPS-grid!</h1>
+  <div class="tr-vops lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+    <div class="tr-vops-row">
+      <div class="tr-vops-row-subject"></div>
+      <div class="tr-vops-row-items">      
+       {#subjects}
+          <div class="tr-vops-item">
+            <div class="tr-vops-item-name"><span>{name}</span></div>
+            <div class="tr-vops-item-courses">    
+              {#courses}
+                <div class="tr-vops-item-circle">
+                  <span>{name}</span><span>{state}</span><span>{evaluation}</span>        
+                </div>       
+              {/courses}
+            </div>
+          </div> 
+        {/subjects}     
+      </div>      
     </div>
   </div>
-{/.}

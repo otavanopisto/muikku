@@ -62,16 +62,46 @@
     _loadVops : function () { 
       this.element.addClass('loading');
       this._clear();      
-      var err = err;
+//      var err = err;
+//      var items = [];
+//
+//      
+//      while (items.length < 10) {
+//        var item = {};
+//        var coursesNo = Math.floor(Math.random() * 15) + 1;
+//        var states = ["done", "undone", "failed"]
+//        var courses = [];
+//        item.name = "Aine" + (items.length + 1);
+//        
+//        for (var c = 0; c < coursesNo; c++) {
+//          var stateNum = Math.floor(Math.random() * 3);
+//          var course = {};          
+//          course.name = "Kurssi-" + c;
+//          course.state = states[stateNum];
+//          if (course.state == 'done') {
+//            course.evaluation = Math.floor(Math.random() * 6) + 4;            
+//          }
+//          courses.push(course);          
+//        }
+//
+//        item.courses = courses;
+//        
+//        items.push(item);
+//      }
+      mApi().records.vops.read(666).on('$', $.proxy(function (vops, callback) {               
+      }, this).callback($.proxy(function(err, result) {        
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+        } else {
+          renderDustTemplate('/records/records_vops.dust', vops, $.proxy(function(text) {
+            this.element.append(text);
+            this.element.removeClass('loading');
+          }, this));
+        }                  
+      }), this));
       
-      if (err) {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
-      } else {
-        renderDustTemplate('/records/records_vops.dust', {}, $.proxy(function(text) {
-          this.element.append(text);
-          this.element.removeClass('loading');
-        }, this));
-      }      
+      
+     
     },
         
     _loadRecords : function () {
