@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import javax.ejb.Stateful;
@@ -25,7 +26,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @Path("/records")
 @RequestScoped
 @Stateful
-@Produces("*/*")
+@Produces("application/json")
 @RestCatchSchoolDataExceptions
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
@@ -40,6 +41,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
+  @Produces("*/*")
   public Response getFileContent(@PathParam("ID") Long fileId) {
     
     if (!sessionController.isLoggedIn()) {
@@ -66,6 +68,36 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     String contentType = file.getContentType();
     
     return Response.ok().type(contentType).entity(output).build();
+  }
+
+  @GET
+  @Path("/vops/{IDENTIFIER}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getVops(@PathParam("IDENTIFIER") String studentIdentifier) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    VopsRESTModel result = new VopsRESTModel(
+        Arrays.asList(
+            new VopsRESTModel.VopsRow("MAA", Arrays.asList(
+                new VopsRESTModel.VopsItem(1, true),
+                new VopsRESTModel.VopsItem(2, true),
+                new VopsRESTModel.VopsItem(3, true),
+                new VopsRESTModel.VopsItem(4, false),
+                new VopsRESTModel.VopsItem(5, false))),
+            new VopsRESTModel.VopsRow("AI", Arrays.asList(
+                new VopsRESTModel.VopsItem(1, true),
+                new VopsRESTModel.VopsItem(2, true),
+                new VopsRESTModel.VopsItem(3, false),
+                new VopsRESTModel.VopsItem(4, false))),
+            new VopsRESTModel.VopsRow("GE", Arrays.asList(
+                new VopsRESTModel.VopsItem(1, true),
+                new VopsRESTModel.VopsItem(2, false),
+                new VopsRESTModel.VopsItem(3, false)))));
+    
+    return Response.ok(result).build();
   }
   
 }
