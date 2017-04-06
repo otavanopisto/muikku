@@ -19,8 +19,10 @@
 @import "../base/breakpoints.scss";
 
 $navbar-height: 70px;
- 
-nav.navbar {
+$navbar-menu-width-pad: 350px;
+$navbar-menu-width-mobile: 250px;
+
+.navbar {
 	background-color: $navbar-default-background-color;
 	box-shadow: 0 0 10px $navbar-default-background-color;
 	box-sizing: border-box;
@@ -31,6 +33,13 @@ nav.navbar {
 	width: 100%;
 	z-index: 9;
 	font-family: 'Exo 2',Arial,sans-serif;
+	
+	.navbar-logo {
+		width: 175px;
+		background: url('/gfx/of-site-logo-text.png') no-repeat center center;
+		display: inline-block;
+		height: $navbar-height;
+	}
   
 	>.navbar-wrapper {
 		align-items: stretch;
@@ -42,33 +51,46 @@ nav.navbar {
 		
 		>.navbar-logo {
 			flex: 0 0 auto;
-			height: $navbar-height;
 			width: 10px;
+			background: none;
 			
 			@include wide-screen {
 				& {
-					width: 175px;	
+					width: 175px;
 					background: url('/gfx/of-site-logo-text.png') no-repeat center center;
 				}
 			}
 		}
 		
 		>.navbar-items {
-			flex: 1 0 auto;
+			position: relative;
+			flex: 1 1 auto;
 			height: 100%;
 			
-			>ul.navbar-items-container {
+			>.navbar-items-container {
+				position: relative;
 				list-style-type: none;
 				margin: 0;
 				padding: 0;
 				height: $navbar-height;
+				line-height: $navbar-height;
+				display: block;
+				
+				>.navbar-item {
+					margin: 0;
+					display: inline-block;
+					padding: 0 10px;
+					line-height: $navbar-height;
+					height: $navbar-height;
+					vertical-align: middle;
+				}
 			}
 		}
 		
 		>.navbar-default-options {
 			flex: 0 0 auto;	
 			
-			>div.navbar-default-options-container {
+			>.navbar-default-options-container {
 				align-items: center;
 				display: flex;
 				height: $navbar-height;
@@ -76,71 +98,5 @@ nav.navbar {
 			}
 		}
 		
-		li.navbar-item {
-			margin: 0;
-			padding: 0;
-			display: inline-block;
-			padding: 0 10px;
-			line-height: $navbar-height;
-			vertical-align: top;
-
-			a {
-				box-sizing: border-box;
-				color: $navbar-default-item-color;
-				display: flex;
-				font-size: 15px;
-				font-weight: 400;
-				text-align: center;
-				text-decoration: none;
-				text-transform: uppercase;
-				transition: border 0.5s ease-in-out;
-				height: $navbar-height;
-				justify-content: center;
-				align-items: center;
-      
-				>span.navbar-icon {
-					display: inline-block;
-					font-size: 26px;
-					font-family: muikku;
-					speak: none;
-					font-style: normal;
-					font-weight: normal;
-					font-variant: none;
-					text-transform: none;
-					line-height: 1;
-					@include prefix(font-smoothing, web moz o ms, antialiased);
-				}
-				
-				>span.navbar-highlight-item {
-					color: $navbar-default-item-highlight-color;
-				}
-				
-				>span.navbar-clear-item {
-					color: $navbar-default-item-clear-color;
-				}
-				
-				>span.navbar-dark-item {
-					color: $navbar-default-item-clear-color;
-				}
-      
-				&:hover {
-					color: $navbar-default-item-selected-color;
-				}
-      
-				&:active {
-					color: $navbar-default-item-selected-color;
-				}
-      
-    		}
-    		
-		}//navbar-item
-		
 	}//navbar-wrapper
-	
-	>.navbar-menu {
-		position: fixed;
-		top: 0;
-		bottom: 0;
-		width: 250px;
-	}
 }

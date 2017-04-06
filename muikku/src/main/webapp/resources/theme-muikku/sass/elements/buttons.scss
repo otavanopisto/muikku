@@ -6,12 +6,12 @@
  * 	a.button[ | .button-large | .button-medium | .button-small ]
  *          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
  * 			[ | .button-not-rounded | .button-extra-rounded]
- *          [ | .button-primary | .button-secondary | .button-success | .button-info | .button-warn | .button-fatal | .button-dark]
+ *          [ | .button-primary | .button-secondary | .button-success | .button-info | .button-warn | .button-fatal | .button-strong]
  *			[ | .button-centered | .button-right | .button-left ]
  *		span
  * 			(BODY)
  *
- *	a.button-rounded[ | .button-rounded-primary | .button-rounded-secondary | .button-rounded-success | .button-rounded-info | .button-rounded-warn | .button-rounded-fatal | .button-rounded-dark]
+ *	a.button-rounded[ | .button-rounded-primary | .button-rounded-secondary | .button-rounded-success | .button-rounded-info | .button-rounded-warn | .button-rounded-fatal | .button-rounded-strong]
  *		span
  *			(BODY)
  */
@@ -131,8 +131,8 @@ a.button {
 		@include colormapping($color-fatal-background, $color-fatal-text);
 	}
 	
-	&.button-dark {
-		@include colormapping($color-dark-background, $color-dark-text);
+	&.button-strong {
+		@include colormapping($color-strong-background, $color-strong-text);
 	}
 	
 	text-align: center;
@@ -189,7 +189,7 @@ a.button-rounded {
 		@include colormapping($color-fatal-background, $color-fatal-text);
 	}
 	
-	&.button-rounded-dark {
-		@include colormapping($color-dark-background, $color-dark-text);
+	&.button-rounded-strong {
+		@include colormapping($color-strong-background, $color-strong-text);
 	}
 }

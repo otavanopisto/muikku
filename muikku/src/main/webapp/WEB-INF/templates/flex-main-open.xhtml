@@ -37,27 +37,33 @@
 		      <div class="navbar-items">
 		          <ul class="navbar-items-container">
 		            <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-down breakpoint-inline-block">
-			          <a href="#">
-			          	<span class="navbar-icon icon-burger"></span>
+			          <a href="#" class="link link-icon">
+			          	<span class="icon icon-burger navbar-display-menu"></span>
 			          </a>
 			        </li>
 			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
-			          <a href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+			          <a href="#studying" class="link">
+			          	<span>#{i18n.text['plugin.navigation.link.studying']}</span>
+			          </a>
 			        </li>
 			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
-			          <a href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+			          <a href="#news" class="link">
+			          	<span>#{i18n.text['plugin.navigation.link.news']}</span>
+			          </a>
 			        </li>
 			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
-			          <a href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+			          <a href="#organization" class="link">
+			          	<span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span>
+			          </a>
 			        </li>
 			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
-			          <a href="#contact">
+			          <a href="#contact" class="link">
 			          	<span>#{i18n.text['plugin.navigation.link.contact']}</span>
 			          </a>
 			        </li>
 			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
-			          <a href="/coursepicker">
-			          	<span class="navbar-highlight-item">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+			          <a href="/coursepicker" class="link link-highlight">
+			          	<span>#{i18n.text['plugin.navigation.link.openMaterials']}</span>
 			          </a>
 			        </li>
 			      </ul>
@@ -71,13 +77,51 @@
 		          	<a class="label label-primary label-dynamic-word-break label-clickable forgotpassword-link breakpoint breakpoint-invisible breakpoint-small-mobile">
 		           	  <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
 		          	</a>
-		          	<a class="button-rounded button-rounded-dark">
+		          	<a class="button-rounded button-rounded-strong">
 		          	  <span>#{languageWidgetBackingBean.language}</span>
 		          	</a>
 		          	<div class="spacer spacer-horizontal spacer-small"></div>
 		          </div>
 		      </div>
 	      </div>
+	      <div class="navbar-menu" style="display:none">
+		      <div class="navbar-menu-container">
+		        <div class="navbar-menu-header">
+		        	<a class="button button-large button-primary" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+		           	  <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+		          	</a>
+		          	<a class="label label-large label-primary label-dynamic-word-break label-clickable forgotpassword-link">
+		           	  <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+		          	</a>
+		        </div>
+		        <div class="navbar-menu-items">
+		           <ul class="navbar-menu-items-container">
+			           <li class="navbar-item">
+			          	  <a href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+			           </li>
+			           <li class="navbar-item">
+			          	  <a href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+			           </li>
+			           <li class="navbar-item">
+			          	  <a href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+			           </li>
+			           <li class="navbar-item">
+			          	  <a href="#contact">
+				          	<span>#{i18n.text['plugin.navigation.link.contact']}</span>
+				          </a>
+			           </li>
+			           <li class="navbar-item">
+			          	  <a href="/coursepicker">
+				          	<span class="navbar-highlight-item">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+				          </a>
+			           </li>
+		           </ul>
+		        </div>
+		   		<div class="navbar-menu-footer breakpoint breakpoint-invisible breakpoint-small-mobile">
+		   			<div class="navbar-logo"></div>
+		   		</div>
+		       </div>
+		   </div>
 	   </nav>
 	</ui:insert>
 	  

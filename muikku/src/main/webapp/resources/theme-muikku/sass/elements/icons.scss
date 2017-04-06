@@ -1,3 +1,5 @@
-.icon-burger:before {
-	content: "\e609";
+.icon {
+	&.icon-burger:before {
+		content: "\e609";
+	}
 }

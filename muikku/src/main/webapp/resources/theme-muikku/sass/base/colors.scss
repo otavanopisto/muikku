@@ -23,15 +23,26 @@ $color-primary-text: #fff;
 $color-secondary-background: #00af00;
 $color-secondary-text: #fff;
 
-$color-dark-background: #343333;
-$color-dark-text: #fff;
+$color-strong-background: #343333;
+$color-strong-text: #fff;
+
+$color-base-list: (
+	(warn, $color-warn-background, $color-warn-text),
+	(info, $color-info-background, $color-info-text),
+	(fatal, $color-fatal-background, $color-fatal-text),
+	(success, $color-success-background, $color-success-text),
+	(loading, $color-loading-background, $color-loading-text),
+	(primary, $color-primary-background, $color-primary-text),
+	(secondary, $color-secondary-background, $color-secondary-text),
+	(strong, $color-strong-background, $color-strong-text)
+);
 
 //Navbar
 $navbar-default-background-color: #f5f5f5;
 $navbar-default-font-color: #343333; 
 
-$navbar-default-item-color: #969696;
-$navbar-default-item-highlight-color: #00af00;
-$navbar-default-item-selected-color: #009fe3;
-$navbar-default-item-clear-color: #fff;
-$navbar-default-item-dark-color: #000;
+$color-default-link: #343333;
+$color-highlight-link: #00af00;
+$color-selected-link: #009fe3;
+$color-clear-link: #fff;
+$color-strong-link: #000;

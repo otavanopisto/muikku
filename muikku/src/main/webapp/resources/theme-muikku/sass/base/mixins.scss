@@ -14,3 +14,19 @@
 		background-color: darken($bgcolor, 10%);
 	}
 }
+
+@mixin colorapplying($name, $colorlist) {
+	@each $colorelement in 	$colorlist {
+		&.#{$name}-#{nth($colorelement, 1)} {
+			color: nth($colorelement, 2);
+		}
+	}
+}
+
+@mixin colorapplying-with-mapping($name, $colorlist) {
+	@each $colorelement in 	$colorlist {
+		&.#{$name}-#{nth($colorelement, 1)} {
+			@include colormapping(nth($colorelement, 2), nth($colorelement, 3));
+		}
+	}
+}

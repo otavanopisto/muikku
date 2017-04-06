@@ -1,0 +1,62 @@
+/*
+ * Defines a link and its structure, links can be icons and can use the icon element class
+ *
+ * 	a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong]
+ *		span
+ *			(BODY)
+ *
+**/
+
+@import "../base/colors.scss";
+@import "../base/mixins.scss";
+
+.link {
+	box-sizing: border-box;
+	color: $color-default-link;
+	display: flex;
+	font-size: 15px;
+	font-weight: 400;
+	text-align: center;
+	text-decoration: none;
+	text-transform: uppercase;
+	transition: border 0.5s ease-in-out;
+	justify-content: center;
+	align-items: center;
+	color: $color-default-link;
+	  
+	&.link-icon {
+		display: inline-block;
+		font-size: 26px;
+		font-family: muikku;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: none;
+		text-transform: none;
+		@include prefix(font-smoothing, webkit moz o ms, antialiased);
+	}
+	
+	&.link-icon > * {
+		height: 100%;
+	}
+				
+	&.link-highlight {
+		color: $color-highlight-link;
+	}
+			
+	&.link-clear {
+		color: $color-clear-link;
+	}
+				
+	&.link-strong {
+		color: $color-strong-link;
+	}
+      
+	&:hover {
+		color: $color-selected-link;
+	}
+      
+	&:active {
+		color: $color-selected-link;
+	}
+}
