@@ -153,6 +153,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       String curriculumIdentifier = student.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(student.getCurriculumId()).toId() : null;
       
+      // #3069: User has evaluation fees if their study program begins with Internetix/
+      
+      boolean evaluationFees = studyProgramme != null && StringUtils.startsWith(studyProgramme.getName(), "Internetix/");
+      
       users.add(entityFactory.createEntity(
           student,
           studyProgramme,
@@ -163,6 +167,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           student.getStudyStartDate(),
           student.getStudyEndDate(),
           student.getStudyTimeEnd(),
+          evaluationFees,
           hidden,
           curriculumIdentifier));
     }
