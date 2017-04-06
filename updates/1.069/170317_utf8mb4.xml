@@ -18,7 +18,7 @@
     <sql>ALTER TABLE communicatormessage CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
     <!-- ALTER TABLE communicatormessage_tags CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
     <!-- ALTER TABLE communicatormessageattachment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
-    <sql>ALTER TABLE communicatormessagecategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; </sql>
+    <!-- ALTER TABLE communicatormessagecategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
     <!-- ALTER TABLE communicatormessageid CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
     <!-- ALTER TABLE communicatormessageidlabel CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
     <!-- ALTER TABLE communicatormessagerecipient CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
@@ -202,7 +202,7 @@
     <sql>ALTER TABLE communicatormessage CHANGE content content longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
     <!-- ALTER TABLE communicatormessageattachment CHANGE name name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
     <!-- ALTER TABLE communicatormessageattachment CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
-    <sql>ALTER TABLE communicatormessagecategory CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; </sql>
+    <!-- ALTER TABLE communicatormessagecategory CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
     <!-- ALTER TABLE communicatormessagerecipientworkspacegroup CHANGE archetype archetype varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
     <sql>ALTER TABLE communicatormessagesignature CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
     <sql>ALTER TABLE communicatormessagesignature CHANGE signature signature longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
