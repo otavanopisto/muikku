@@ -10,14 +10,18 @@
 					);
 			});
 		},
-		'cssAnimate': function(classAdd, css, callback){
+		'cssAnimate': function(options){
 			return this.each(function(index, element){
 				var $element = $(element);
-				$element.addClass(classAdd);
-				$element.onCssAnimationEnd(callback);
-				setTimeout(function(){
-					$element.css(css);
-				}, 10);
+				if (options.callback) {
+					$element.onCssAnimationEnd(options.callback);
+				}
+				if (options.addClass) {
+					$element.addClass(options.addClass);
+				}
+				if (options.removeClass) {
+					$element.removeClass(options.removeClass);
+				}
 			});
 		}
 	});

@@ -52,10 +52,10 @@
 		},
 
 		_hide : function(item) {
-			item.cssAnimate('animate-height-only', {
-				'height':'0',
-				'overflow':'hidden'
-			}, this._destroy.bind(this, item));
+			item.cssAnimate({
+				'addClass': 'notification-queue-item-_hiding_',
+				'callback': this._destroy.bind(this, item)
+			});
 		},
 
 		_setupItem : function(item) {
