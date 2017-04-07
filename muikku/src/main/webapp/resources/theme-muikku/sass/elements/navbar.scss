@@ -6,12 +6,11 @@
  *			div.navbar-logo
  *			div.navbar-items
  *				ul.navbar-items-container
- *					li.navbar-item.navbar-visible[wide-screen | wide-screen-and-medium-screen | medium-screen | pad | landscape-pad | portrait-pad | mobile | small-mobile]
- *						a
- *							span.[ | navbar-icon].[ | navbar-highlight-item | navbar-dark-item | navbar-clear-item ]
+ *					li.navbar-item
+ *						(BODY)
  *			div.navbar-default-options?
  *				div.navbar-default-options-container
- *					*.navbar-visible[wide-screen | wide-screen-and-medium-screen | medium-screen | pad | landscape-pad | portrait-pad | mobile | small-mobile]
+ *					(BODY)
  */
  
 @import "../base/mixins.scss";
@@ -19,12 +18,12 @@
 @import "../base/breakpoints.scss";
 
 $navbar-height: 70px;
-$navbar-menu-width-pad: 350px;
-$navbar-menu-width-mobile: 250px;
+$navbar-font: 'Exo 2',Arial,sans-serif;
 
 .navbar {
-	background-color: $navbar-default-background-color;
-	box-shadow: 0 0 10px $navbar-default-background-color;
+	background-color: $color-navbar-default-background;
+	box-shadow: 0 0 10px $color-navbar-default-background;
+	color: $color-navbar-default-text;
 	box-sizing: border-box;
 	left: 0;
 	position: fixed;
@@ -32,7 +31,7 @@ $navbar-menu-width-mobile: 250px;
 	top: 0;
 	width: 100%;
 	z-index: 9;
-	font-family: 'Exo 2',Arial,sans-serif;
+	font-family: $navbar-font;
 	
 	.navbar-logo {
 		width: 175px;
@@ -64,7 +63,7 @@ $navbar-menu-width-mobile: 250px;
 		
 		>.navbar-items {
 			position: relative;
-			flex: 1 1 auto;
+			flex: 1 0 auto;
 			height: 100%;
 			
 			>.navbar-items-container {
@@ -75,14 +74,15 @@ $navbar-menu-width-mobile: 250px;
 				height: $navbar-height;
 				line-height: $navbar-height;
 				display: block;
+				white-space: nowrap;
+				overflow: hidden;
 				
 				>.navbar-item {
 					margin: 0;
 					display: inline-block;
-					padding: 0 10px;
 					line-height: $navbar-height;
 					height: $navbar-height;
-					vertical-align: middle;
+					vertical-align: top;
 				}
 			}
 		}

@@ -12,6 +12,7 @@
  */
 
 @import "../base/colors.scss";
+@import "../base/mixins.scss";
 
 //ROOT
 .notification-queue {
@@ -55,6 +56,12 @@
 			padding-left: 36px;
 			word-wrap: break-word;
 			font-weight:400;
+			overflow: hidden;
+			@include prefix(transition, webkit ms o moz, height 0.3s);
+			
+			&.notification-queue-item-_hiding_ {
+				height: 0;
+			}
 			
  			&.notification-queue-item-info {
  				background-color: $color-info-background;
@@ -90,7 +97,7 @@
 				z-index:9999;
 			}
 
-			&.notification-queue-item a.notification-queue-item-close {
+			& .notification-queue-item-close {
 				background-image:url('/gfx/eventqueueclose.png');
 				top: 12px;
 				cursor: pointer;

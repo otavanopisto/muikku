@@ -1,0 +1,7 @@
+@import "../base/mixins.scss";
+
+* {
+	box-sizing: border-box;
+	line-height: 1;
+	@include prefix(drag, webkit ms o moz, none);
+}

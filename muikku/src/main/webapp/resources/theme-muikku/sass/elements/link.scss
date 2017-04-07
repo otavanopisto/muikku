@@ -1,7 +1,7 @@
 /*
  * Defines a link and its structure, links can be icons and can use the icon element class
  *
- * 	a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong]
+ * 	a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong][ | .link-full]
  *		span
  *			(BODY)
  *
@@ -11,21 +11,19 @@
 @import "../base/mixins.scss";
 
 .link {
-	box-sizing: border-box;
-	color: $color-default-link;
-	display: flex;
 	font-size: 15px;
 	font-weight: 400;
 	text-align: center;
 	text-decoration: none;
 	text-transform: uppercase;
 	transition: border 0.5s ease-in-out;
-	justify-content: center;
-	align-items: center;
-	color: $color-default-link;
-	  
+	color: $color-link-default-text;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	@include prefix(transition, moz ms webkit o, background-color .3s);
+	
 	&.link-icon {
-		display: inline-block;
 		font-size: 26px;
 		font-family: muikku;
 		speak: none;
@@ -36,27 +34,37 @@
 		@include prefix(font-smoothing, webkit moz o ms, antialiased);
 	}
 	
-	&.link-icon > * {
+	&.link-full {
+		width: 100%;
 		height: 100%;
+		display: flex;
+		align-items: center;
+		padding: 0 10px;
+		justify-content: center;
 	}
 				
 	&.link-highlight {
-		color: $color-highlight-link;
+		color: $color-link-highlight-text;
+		background-color: $color-link-highlight-background;
 	}
 			
 	&.link-clear {
-		color: $color-clear-link;
+		color: $color-link-clear-text;
+		background-color: $color-link-clear-background;
 	}
 				
 	&.link-strong {
-		color: $color-strong-link;
+		color: $color-link-strong-text;
+		background-color: $color-link-strong-background;
 	}
       
 	&:hover {
-		color: $color-selected-link;
+		color: $color-link-hover-text;
+		background-color: $color-link-hover-background;
 	}
       
 	&:active {
-		color: $color-selected-link;
+		color: $color-link-active-text;
+		background-color: $color-link-active-background;
 	}
 }

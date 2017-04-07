@@ -5,13 +5,14 @@
  *
  * 	a.button[ | .button-large | .button-medium | .button-small ]
  *          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
- * 			[ | .button-not-rounded | .button-extra-rounded]
+ * 			[ | .button-soft | .button-hard | .button-extra-soft]
  *          [ | .button-primary | .button-secondary | .button-success | .button-info | .button-warn | .button-fatal | .button-strong]
  *			[ | .button-centered | .button-right | .button-left ]
  *		span
  * 			(BODY)
  *
- *	a.button-rounded[ | .button-rounded-primary | .button-rounded-secondary | .button-rounded-success | .button-rounded-info | .button-rounded-warn | .button-rounded-fatal | .button-rounded-strong]
+ *	a.button-pill[ | .button-pill-primary | .button-pill-secondary | .button-pill-success 
+ *					| .button-pill-info | .button-pill-warn | .button-pill-fatal | .button-pill-strong]
  *		span
  *			(BODY)
  */
@@ -99,11 +100,14 @@ a.button {
 		}
 	}
 	
-	&.button-extra-rounded {
+	&.button-extra-soft {
 		border-radius: 5px;
 	}
 	
-	&.button-not-rounded {
+	&.button-soft {
+	}
+	
+	&.button-hard {
 		border-radius: 0;
 	}
 	
@@ -146,50 +150,50 @@ a.button {
 	}
 }
 
-$button-rounded-size: 34px;
-$button-rounded-font-size: 16px;
-$button-rounded-font-family: "Exo 2", Arial, sans-serif;
+$button-pill-size: 34px;
+$button-pill-font-size: 16px;
+$button-pill-font-family: "Exo 2", Arial, sans-serif;
 
-a.button-rounded {
-	width: $button-rounded-size;
-	height: $button-rounded-size;
-	border-radius: $button-rounded-size;
+a.button-pill {
+	width: $button-pill-size;
+	height: $button-pill-size;
+	border-radius: $button-pill-size;
 	text-align: center;
-	font-size: $button-rounded-font-size;
+	font-size: $button-pill-font-size;
 	text-transform: uppercase;
 	position: relative;
 	vertical-align: center;
 	display: inline-block;
-	line-height: $button-rounded-size;
-	font-family: $button-rounded-font-family;
+	line-height: $button-pill-size;
+	font-family: $button-pill-font-family;
 	cursor: pointer;
 	@include prefix(user-select, moz o ms webkit, none);
 
-	&.button-rounded-primary {
+	&.button-pill-primary {
 		@include colormapping($color-primary-background, $color-primary-text);
 	}
 	
-	&.button-rounded-secondary {
+	&.button-pill-secondary {
 		@include colormapping($color-secondary-background, $color-secondary-text);
 	}
 	
-	&.button-rounded-success {
+	&.button-pill-success {
 		@include colormapping($color-success-background, $color-success-text);
 	}
 	
-	&.button-rounded-info {
+	&.button-pill-info {
 		@include colormapping($color-info-background, $color-info-text);
 	}
 	
-	&.button-rounded-warn {
+	&.button-pill-warn {
 		@include colormapping($color-warn-background, $color-warn-text);
 	}
 	
-	&.button-rounded-fatal {
+	&.button-pill-fatal {
 		@include colormapping($color-fatal-background, $color-fatal-text);
 	}
 	
-	&.button-rounded-strong {
+	&.button-pill-strong {
 		@include colormapping($color-strong-background, $color-strong-text);
 	}
 }

@@ -3,11 +3,17 @@
 //With all the deprecated folder contents and all the deprecated
 //CSS requires in the files, it is development only
 
+@import "./base/mixins.scss";
+
 [data-clear-styles] {
 	all: initial;
-	box-sizing: border-box; 
+	box-sizing: border-box;
+	line-height: 1;
+	@include prefix(drag, webkit ms o moz, none);
 	* {
 		all: unset;
 		box-sizing: border-box; 
+		line-height: 1;
+		@include prefix(drag, webkit ms o moz, none);
 	}
 }
