@@ -1,205 +1,224 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="flex-base.xhtml">
-  
-  <ui:define name="body">
-    <ui:insert name="notification-queue">
-      <div class="notification-queue" data-clear-styles="">
-        <div class="notification-queue-items">
-          <ui:insert name="messages">
-            <ui:repeat var="message" value="#{facesContext.messageList}">
-              <ui:fragment rendered="#{message.severity.ordinal eq 0}">
-                <div data-severity="info" class="notification-queue-item notification-queue-item-info"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
-              </ui:fragment>
-              <ui:fragment rendered="#{message.severity.ordinal eq 1}">
-                <div data-severity="warn" class="notification-queue-item notification-queue-item-warn"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
-              </ui:fragment>
-              <ui:fragment rendered="#{message.severity.ordinal eq 2}">
-                <div data-severity="error" class="notification-queue-item notification-queue-item-error"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
-              </ui:fragment>
-              <ui:fragment rendered="#{message.severity.ordinal eq 3}">
-                <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
-              </ui:fragment>
-            </ui:repeat>
-            <h:messages globalOnly="false" style="display: none" />
-          </ui:insert>
-        </div>
-      </div>
-    </ui:insert>
-    
-    <ui:insert name="frontpage-navbar">
-	    <nav class="navbar" data-clear-styles="">
-	      <div class="navbar-wrapper">
-		      <div class="navbar-logo"></div>
-		      
-		      <div class="navbar-items">
-		          <ul class="navbar-items-container">
-		            <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-down breakpoint-inline-block">
-			          <a href="#" class="link link-icon">
-			          	<span class="icon icon-burger navbar-display-menu"></span>
-			          </a>
-			        </li>
-			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
-			          <a href="#studying" class="link">
-			          	<span>#{i18n.text['plugin.navigation.link.studying']}</span>
-			          </a>
-			        </li>
-			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
-			          <a href="#news" class="link">
-			          	<span>#{i18n.text['plugin.navigation.link.news']}</span>
-			          </a>
-			        </li>
-			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
-			          <a href="#organization" class="link">
-			          	<span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span>
-			          </a>
-			        </li>
-			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
-			          <a href="#contact" class="link">
-			          	<span>#{i18n.text['plugin.navigation.link.contact']}</span>
-			          </a>
-			        </li>
-			        <li class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
-			          <a href="/coursepicker" class="link link-highlight">
-			          	<span>#{i18n.text['plugin.navigation.link.openMaterials']}</span>
-			          </a>
-			        </li>
-			      </ul>
-		      </div>
-		      <div class="navbar-default-options">
-		      	  <div class="navbar-default-options-container">
-		          	<a class="button button-primary" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-		           	  <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-		          	</a>
-		          	<div class="spacer spacer-horizontal spacer-small breakpoint breakpoint-visible breakpoint-small-mobile breakpoint-inline-block"></div>
-		          	<a class="label label-primary label-dynamic-word-break label-clickable forgotpassword-link breakpoint breakpoint-invisible breakpoint-small-mobile">
-		           	  <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-		          	</a>
-		          	<a class="button-rounded button-rounded-strong">
-		          	  <span>#{languageWidgetBackingBean.language}</span>
-		          	</a>
-		          	<div class="spacer spacer-horizontal spacer-small"></div>
-		          </div>
-		      </div>
-	      </div>
-	      <div class="navbar-menu" style="display:none">
-		      <div class="navbar-menu-container">
-		        <div class="navbar-menu-header">
-		        	<a class="button button-large button-primary" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-		           	  <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-		          	</a>
-		          	<a class="label label-large label-primary label-dynamic-word-break label-clickable forgotpassword-link">
-		           	  <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-		          	</a>
-		        </div>
-		        <div class="navbar-menu-items">
-		           <ul class="navbar-menu-items-container">
-			           <li class="navbar-item">
-			          	  <a href="#studying"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
-			           </li>
-			           <li class="navbar-item">
-			          	  <a href="#news"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
-			           </li>
-			           <li class="navbar-item">
-			          	  <a href="#organization"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
-			           </li>
-			           <li class="navbar-item">
-			          	  <a href="#contact">
-				          	<span>#{i18n.text['plugin.navigation.link.contact']}</span>
-				          </a>
-			           </li>
-			           <li class="navbar-item">
-			          	  <a href="/coursepicker">
-				          	<span class="navbar-highlight-item">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
-				          </a>
-			           </li>
-		           </ul>
-		        </div>
-		   		<div class="navbar-menu-footer breakpoint breakpoint-invisible breakpoint-small-mobile">
-		   			<div class="navbar-logo"></div>
-		   		</div>
-		       </div>
-		   </div>
-	   </nav>
-	</ui:insert>
-	  
-	  <ui:insert name="of-header">
-	    <header class="of-header">
-	      <div class="of-header-wrapper">
-	      
-	        <div class="of-header-application-bubble-wrapper">
-		        <div class="of-header-application-bubble">
-	            <div class="application-title">#{i18n.text['plugin.header.studentApplicationBubble.title']}</div>
-	            <div class="application-description">#{i18n.text['plugin.header.studentApplicationBubble.description']}</div>
-	            <div class="application-link"><a href="http://www.otavanopisto.fi/hakulomakkeet" target="top">#{i18n.text['plugin.header.studentApplicationBubble.link']}</a></div>
-	          </div>
-	        </div>
-	        
-		      <div class="of-header-site-info-wrapper">
-		        <div class="of-header-site-info">
-		          <div class="site-info-logo"></div>
-		          <div class="site-info-wrapper">
-		            <div class="site-info-organization">#{i18n.text['plugin.header.site.author']}</div>
-		            <div class="site-info-name">
-		              <div class="site-info-name-firstpart">Muikku</div>
-		              <div class="site-info-name-secondpart">Verkko</div>
-		            </div>
-	            </div>
-	            <div class="site-info-description">#{i18n.text['plugin.header.site.description']}</div>
-	          </div>
-		      </div>
-		      
-		      <div class="of-header-open-materials-bubble-wrapper">
-			      <div class="of-header-open-materials-bubble">
-			        <div class="open-materials-title">#{i18n.text['plugin.header.openMaterialsBubble.title']}</div>
-	            <div class="open-materials-description">#{i18n.text['plugin.header.openMaterialsBubble.description']}</div>
-	            <div class="open-materials-link"><a href="/coursepicker">#{i18n.text['plugin.header.openMaterialsBubble.link']}</a></div>
-			      </div>
-			    </div>
-			    
-	      </div>
-	    </header>
-	  </ui:insert>
-	  
-	  <ui:insert name="of-announcement">
-	    <div class="of-announcement">
-	    
-	    </div>
-	  </ui:insert>
-    
-    <ui:insert name="main">
-      <main class="of-content">
-        <ui:insert name="main-content">
-          <div class="flex-grid">
-            <ui:insert name="grid-content"></ui:insert>
-          </div>
-        </ui:insert>
-      </main>
-    </ui:insert>
-    
-    <ui:insert name="footer">
-      <footer class="of-footer" id="contact">
-        <div class="frontpage-footer-container">
-          <div class="contact-info-container">
-            <h2>#{i18n.text['plugin.footer.contact.title']}</h2>
-            <div class="contact-info-row"><span class="icon-location"></span><span>#{i18n.text['plugin.footer.streetAddress.label']}</span><span>Otavantie 2 B, 50670 Otava</span></div>
-            <div class="contact-info-row"><span class="icon-phone"></span><span>#{i18n.text['plugin.footer.phoneNumber.label']}</span><span>015 194 3552</span></div>
-            <div class="contact-info-row"><span class="icon-email"></span><span>#{i18n.text['plugin.footer.emailAddress.label']}</span><span>info@otavanopisto.fi</span></div>
-            <div class="footer-legal-info-container">
-              <div class="legal-info">#{i18n.text['plugin.footer.termsOfUse.label']}</div>
-              <div class="legal-info">#{i18n.text['plugin.footer.personFileDescription.label']}</div>
-            </div>
-          </div>
-          <div class="logo-container">
-            <div class="footer-logo slogan"><img src="/gfx/alku_uudelle.jpg" alt="" title="" /></div>
-            <div class="footer-logo logo"><img src="/gfx/footer_logo.jpg" alt="" title="" /></div>
-          </div>
-        </div>
-      </footer>
-    </ui:insert>
-    
-  </ui:define>
-  
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" template="flex-base.xhtml">
+
+	<ui:define name="body">
+		<ui:insert name="notification-queue">
+			<div class="notification-queue" data-clear-styles="">
+				<div class="notification-queue-items">
+					<ui:insert name="messages">
+						<ui:repeat var="message" value="#{facesContext.messageList}">
+							<ui:fragment rendered="#{message.severity.ordinal eq 0}">
+								<div data-severity="info"
+									class="notification-queue-item notification-queue-item-info">
+									<span>#{message.summary}</span> <a href="javascript:void(null)"></a>
+								</div>
+							</ui:fragment>
+							<ui:fragment rendered="#{message.severity.ordinal eq 1}">
+								<div data-severity="warn"
+									class="notification-queue-item notification-queue-item-warn">
+									<span>#{message.summary}</span> <a href="javascript:void(null)"></a>
+								</div>
+							</ui:fragment>
+							<ui:fragment rendered="#{message.severity.ordinal eq 2}">
+								<div data-severity="error"
+									class="notification-queue-item notification-queue-item-error">
+									<span>#{message.summary}</span> <a href="javascript:void(null)"></a>
+								</div>
+							</ui:fragment>
+							<ui:fragment rendered="#{message.severity.ordinal eq 3}">
+								<div data-severity="fatal"
+									class="notification-queue-item notification-queue-item-fatal">
+									<span>#{message.summary}</span> <a href="javascript:void(null)"></a>
+								</div>
+							</ui:fragment>
+						</ui:repeat>
+						<h:messages globalOnly="false" style="display: none" />
+					</ui:insert>
+				</div>
+			</div>
+		</ui:insert>
+
+		<ui:insert name="frontpage-navbar">
+			<nav class="navbar" data-clear-styles="">
+				<div class="navbar-wrapper">
+					<div class="navbar-logo"></div>
+
+					<div class="navbar-items">
+						<ul class="navbar-items-container">
+							<li
+								class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-down breakpoint-inline-block">
+								<a data-interact-menu="#main-menu" href="#" class="link link-icon link-full"> <span
+									class="icon icon-burger navbar-display-menu"></span>
+							</a>
+							</li>
+							<li
+								class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
+								<a href="#studying" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.studying']}</span>
+							</a>
+							</li>
+							<li
+								class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
+								<a href="#news" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.news']}</span>
+							</a>
+							</li>
+							<li
+								class="navbar-item breakpoint breakpoint-visible breakpoint-screen breakpoint-inline-block">
+								<a href="#organization" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span>
+							</a>
+							</li>
+							<li
+								class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
+								<a href="#contact" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.contact']}</span>
+							</a>
+							</li>
+							<li
+								class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-up breakpoint-inline-block">
+								<a href="/coursepicker" class="link link-highlight link-full"> <span>#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+							</a>
+							</li>
+						</ul>
+					</div>
+					<div class="navbar-default-options">
+						<div class="navbar-default-options-container">
+							<a class="button button-primary"
+								jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+								<span>#{i18n.text['plugin.login.buttonLabel']}</span>
+							</a>
+							<div
+								class="spacer spacer-horizontal spacer-small breakpoint breakpoint-visible breakpoint-small-mobile breakpoint-inline-block"></div>
+							<a
+								class="label label-primary label-dynamic-word-break label-clickable forgotpassword-link breakpoint breakpoint-invisible breakpoint-small-mobile">
+								<span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+							</a> <a class="button-pill button-pill-strong"> <span>#{languageWidgetBackingBean.language}</span>
+							</a>
+							<div class="spacer spacer-horizontal spacer-small"></div>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<div class="menu" id="main-menu" data-clear-styles="">
+				<div class="menu-container">
+					<div class="menu-header">
+						<a class="button button-large button-primary"
+							jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+							<span>#{i18n.text['plugin.login.buttonLabel']}</span>
+						</a> <a
+							class="label label-large label-primary label-dynamic-word-break label-clickable forgotpassword-link">
+							<span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+						</a>
+					</div>
+					<div class="menu-body">
+						<ul class="menu-items">
+							<li class="menu-item"><a href="#studying" class="link link-full"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+							</li>
+							<li class="menu-item"><a href="#news" class="link link-full"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+							</li>
+							<li class="menu-item"><a href="#organization" class="link link-full"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+							</li>
+							<li class="menu-item"><a href="#contact" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.contact']}</span>
+							</a></li>
+							<li class="menu-item"><a href="/coursepicker"> <span
+									class="link link-highlight link-full">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+							</a></li>
+						</ul>
+					</div>
+					<div
+						class="menu-footer breakpoint breakpoint-invisible breakpoint-small-mobile">
+						<div class="menu-logo"></div>
+					</div>
+				</div>
+			</div>
+		</ui:insert>
+
+		<ui:insert name="of-header">
+			<header class="of-header">
+				<div class="of-header-wrapper">
+
+					<div class="of-header-application-bubble-wrapper">
+						<div class="of-header-application-bubble">
+							<div class="application-title">#{i18n.text['plugin.header.studentApplicationBubble.title']}</div>
+							<div class="application-description">#{i18n.text['plugin.header.studentApplicationBubble.description']}</div>
+							<div class="application-link">
+								<a href="http://www.otavanopisto.fi/hakulomakkeet" target="top">#{i18n.text['plugin.header.studentApplicationBubble.link']}</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="of-header-site-info-wrapper">
+						<div class="of-header-site-info">
+							<div class="site-info-logo"></div>
+							<div class="site-info-wrapper">
+								<div class="site-info-organization">#{i18n.text['plugin.header.site.author']}</div>
+								<div class="site-info-name">
+									<div class="site-info-name-firstpart">Muikku</div>
+									<div class="site-info-name-secondpart">Verkko</div>
+								</div>
+							</div>
+							<div class="site-info-description">#{i18n.text['plugin.header.site.description']}</div>
+						</div>
+					</div>
+
+					<div class="of-header-open-materials-bubble-wrapper">
+						<div class="of-header-open-materials-bubble">
+							<div class="open-materials-title">#{i18n.text['plugin.header.openMaterialsBubble.title']}</div>
+							<div class="open-materials-description">#{i18n.text['plugin.header.openMaterialsBubble.description']}</div>
+							<div class="open-materials-link">
+								<a href="/coursepicker">#{i18n.text['plugin.header.openMaterialsBubble.link']}</a>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</header>
+		</ui:insert>
+
+		<ui:insert name="of-announcement">
+			<div class="of-announcement"></div>
+		</ui:insert>
+
+		<ui:insert name="main">
+			<main class="of-content"> <ui:insert name="main-content">
+				<div class="flex-grid">
+					<ui:insert name="grid-content"></ui:insert>
+				</div>
+			</ui:insert> </main>
+		</ui:insert>
+
+		<ui:insert name="footer">
+			<footer class="of-footer" id="contact">
+				<div class="frontpage-footer-container">
+					<div class="contact-info-container">
+						<h2>#{i18n.text['plugin.footer.contact.title']}</h2>
+						<div class="contact-info-row">
+							<span class="icon-location"></span><span>#{i18n.text['plugin.footer.streetAddress.label']}</span><span>Otavantie
+								2 B, 50670 Otava</span>
+						</div>
+						<div class="contact-info-row">
+							<span class="icon-phone"></span><span>#{i18n.text['plugin.footer.phoneNumber.label']}</span><span>015
+								194 3552</span>
+						</div>
+						<div class="contact-info-row">
+							<span class="icon-email"></span><span>#{i18n.text['plugin.footer.emailAddress.label']}</span><span>info@otavanopisto.fi</span>
+						</div>
+						<div class="footer-legal-info-container">
+							<div class="legal-info">#{i18n.text['plugin.footer.termsOfUse.label']}</div>
+							<div class="legal-info">#{i18n.text['plugin.footer.personFileDescription.label']}</div>
+						</div>
+					</div>
+					<div class="logo-container">
+						<div class="footer-logo slogan">
+							<img src="/gfx/alku_uudelle.jpg" alt="" title="" />
+						</div>
+						<div class="footer-logo logo">
+							<img src="/gfx/footer_logo.jpg" alt="" title="" />
+						</div>
+					</div>
+				</div>
+			</footer>
+		</ui:insert>
+
+	</ui:define>
+
 </ui:composition>
