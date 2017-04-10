@@ -10,7 +10,7 @@
 	background-color: $bgcolor;
 	color: $textcolor;
 	@include prefix(transition, webkit moz o ms, background-color .3s);
-	&:hover, &:active {
+	&:hover, &:active, &.hover, &.active {
 		background-color: darken($bgcolor, 10%);
 	}
 }

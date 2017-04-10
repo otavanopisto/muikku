@@ -13,9 +13,9 @@
  *					(BODY)
  */
  
-@import "../base/mixins.scss";
-@import "../base/colors.scss";
-@import "../base/breakpoints.scss";
+@import "../base/mixins";
+@import "../base/colors";
+@import "../base/breakpoints";
 
 $navbar-height: 70px;
 $navbar-font: 'Exo 2',Arial,sans-serif;

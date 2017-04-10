@@ -7,11 +7,15 @@
  *
 **/
 
-@import "../base/colors.scss";
-@import "../base/mixins.scss";
+@import "../base/colors";
+@import "../base/mixins";
+
+$link-font-size-medium: 15px;
+$link-font-size-small: 14px;
+$link-font-size-large: 16px;
 
 .link {
-	font-size: 15px;
+	font-size: $link-font-size-medium;
 	font-weight: 400;
 	text-align: center;
 	text-decoration: none;
@@ -22,6 +26,23 @@
 	text-align: center;
 	vertical-align: middle;
 	@include prefix(transition, moz ms webkit o, background-color .3s);
+	
+	&.link-small {
+		font-size: $link-font-size-small;
+	}
+	&.link-medium {
+	}
+	&.link-large {
+		font-size: $link-font-size-large;
+	}
+	
+	&.link-soft {
+		font-weight: 300;
+	}
+	
+	&.link-hard {
+		font-weight: 500;
+	}
 	
 	&.link-icon {
 		font-size: 26px;
@@ -51,20 +72,38 @@
 	&.link-clear {
 		color: $color-link-clear-text;
 		background-color: $color-link-clear-background;
+		
+		&:hover, &.hover {
+			color: $color-link-clear-text;
+		}
+	      
+		&:active, &.active {
+			color: $color-link-clear-text;
+		}
 	}
 				
 	&.link-strong {
 		color: $color-link-strong-text;
 		background-color: $color-link-strong-background;
 	}
-      
-	&:hover {
+	
+	&:hover, &.hover {
 		color: $color-link-hover-text;
 		background-color: $color-link-hover-background;
 	}
       
-	&:active {
+	&:active, &.active {
 		color: $color-link-active-text;
 		background-color: $color-link-active-background;
+	}
+	
+	&.link-strong-effects {
+		&:hover, &.hover {
+			background-color: opacify($color-link-hover-background, 0.6);
+		}
+		
+		&:active, &.active {
+			background-color: opacify($color-link-hover-background, 0.6);
+		}
 	}
 }

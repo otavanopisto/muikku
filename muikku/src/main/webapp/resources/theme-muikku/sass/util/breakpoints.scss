@@ -17,7 +17,7 @@
  *      breakpoint breakpoint-invisible breakpoint-medium-screen-and-down
  */
  
-@import "../base/breakpoints.scss";
+@import "../base/breakpoints";
 
 .breakpoint.breakpoint-visible {
 	display: none !important;

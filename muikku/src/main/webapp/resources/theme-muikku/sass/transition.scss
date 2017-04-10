@@ -3,7 +3,7 @@
 //With all the deprecated folder contents and all the deprecated
 //CSS requires in the files, it is development only
 
-@import "./base/mixins.scss";
+@import "./base/mixins";
 
 [data-clear-styles] {
 	all: initial;

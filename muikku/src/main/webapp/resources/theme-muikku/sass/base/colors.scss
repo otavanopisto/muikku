@@ -48,9 +48,9 @@ $color-link-hover-text: #009fe3;
 $color-link-active-text: #009fe3;
 $color-link-clear-text: #fff;
 $color-link-strong-text: #000;
-$color-link-default-background: invisible;
-$color-link-highlight-background: invisible;
-$color-link-hover-background: invisible;
+$color-link-default-background: rgba(0, 0, 0, 0);
+$color-link-highlight-background: rgba(0, 0, 0, 0);
+$color-link-hover-background: rgba(0, 0, 0, 0);
 $color-link-active-background: rgba(0, 0, 0, 0.05);
 $color-link-clear-background: invisible;
 $color-link-strong-background: invisible;
@@ -58,6 +58,10 @@ $color-link-strong-background: invisible;
 //Menu
 $color-menu-default-background: #f5f5f5;
 $color-menu-default-text: #343333;
+
+//dropdown
+$color-dropdown-default-background: #494949;
+$color-dropdown-default-text: #fff;
 
 //Overlay
 $color-overlay-background: rgba(0,0,0,0.65);
