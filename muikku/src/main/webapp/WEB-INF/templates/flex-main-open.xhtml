@@ -49,7 +49,7 @@
 						<ul class="navbar-items-container">
 							<li
 								class="navbar-item breakpoint breakpoint-visible breakpoint-landscape-pad-and-down breakpoint-inline-block">
-								<a data-interact-menu="#main-menu" href="#" class="link link-icon link-full"> <span
+								<a data-interact-menu="#main-menu" class="link link-icon link-full"> <span
 									class="icon icon-burger navbar-display-menu"></span>
 							</a>
 							</li>
@@ -91,8 +91,19 @@
 							<a
 								class="label label-primary label-dynamic-word-break label-clickable forgotpassword-link breakpoint breakpoint-invisible breakpoint-small-mobile">
 								<span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-							</a> <a class="button-pill button-pill-strong"> <span>#{languageWidgetBackingBean.language}</span>
 							</a>
+							
+							<a class="button-pill button-pill-strong" data-interact-dropdown="#language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
+							<h:form class="dropdown" id="language-picker">
+								<ui:repeat value="#{i18n.languages}" var="locale">
+									<div class="dropdown-item">
+										<a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-soft link-small link-clear link-strong-effects">
+											<span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span>
+										</a>
+									</div>
+								</ui:repeat>
+							</h:form>
+							
 							<div class="spacer spacer-horizontal spacer-small"></div>
 						</div>
 					</div>
