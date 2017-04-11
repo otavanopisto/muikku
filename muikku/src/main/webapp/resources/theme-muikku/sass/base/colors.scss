@@ -1,6 +1,6 @@
 //Generic
-$color-warn-background: #ffce65;
-$color-warn-text: #6a4902;
+$color-warn-background: #ef6000;
+$color-warn-text: #fff;
 
 $color-info-background: #549fca;
 $color-info-text: #fff;
@@ -14,7 +14,7 @@ $color-error-text: #fff;
 $color-success-background: #49af4e;
 $color-success-text: #fff;
 
-$color-loading-background: #000;
+$color-loading-background: #343333;
 $color-loading-text: #fff;
 
 $color-primary-background: #009fe3;
@@ -26,15 +26,19 @@ $color-secondary-text: #fff;
 $color-strong-background: #343333;
 $color-strong-text: #fff;
 
+$color-clear-background: #fff;
+$color-clear-text: #343333;
+
 $color-base-list: (
+	(primary, $color-primary-background, $color-primary-text),
 	(warn, $color-warn-background, $color-warn-text),
 	(info, $color-info-background, $color-info-text),
 	(fatal, $color-fatal-background, $color-fatal-text),
 	(success, $color-success-background, $color-success-text),
 	(loading, $color-loading-background, $color-loading-text),
-	(primary, $color-primary-background, $color-primary-text),
 	(secondary, $color-secondary-background, $color-secondary-text),
-	(strong, $color-strong-background, $color-strong-text)
+	(strong, $color-strong-background, $color-strong-text),
+	(clear, $color-clear-background, $color-clear-text)
 );
 
 //Navbar
@@ -62,6 +66,13 @@ $color-menu-default-text: #343333;
 //dropdown
 $color-dropdown-default-background: #494949;
 $color-dropdown-default-text: #fff;
+
+//bubble
+$color-bubble-default-title: #009fe3;
+$color-bubble-default-content: #343333;
+$color-bubble-default-border: #02a0e3;
+$color-bubble-default-highlight-border: #ef6000;
+$color-bubble-default-background: #fff;
 
 //Overlay
 $color-overlay-background: rgba(0,0,0,0.65);

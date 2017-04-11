@@ -15,16 +15,29 @@
 	}
 }
 
-@mixin colorapplying($name, $colorlist) {
-	@each $colorelement in 	$colorlist {
+@mixin colorapplying-text($name, $colorlist) {
+	color: nth(nth($colorlist, 1),2);
+	@each $colorelement in $colorlist {
 		&.#{$name}-#{nth($colorelement, 1)} {
 			color: nth($colorelement, 2);
 		}
 	}
 }
 
+@mixin colorapplying($name, $colorlist) {
+	color: nth(nth($colorlist, 1),3);
+	background-color: nth(nth($colorlist, 1),2);
+	@each $colorelement in $colorlist {
+		&.#{$name}-#{nth($colorelement, 1)} {
+			color: nth($colorelement, 3);
+			background-color: nth($colorelement, 2);
+		}
+	}
+}
+
 @mixin colorapplying-with-mapping($name, $colorlist) {
-	@each $colorelement in 	$colorlist {
+	@include colormapping(nth(nth($colorlist, 1),2), nth(nth($colorlist, 1),3));
+	@each $colorelement in $colorlist {
 		&.#{$name}-#{nth($colorelement, 1)} {
 			@include colormapping(nth($colorelement, 2), nth($colorelement, 3));
 		}

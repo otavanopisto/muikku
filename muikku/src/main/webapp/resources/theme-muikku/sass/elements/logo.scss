@@ -1,0 +1,35 @@
+/**
+ * Standard logo for different usages
+ *
+ * img.logo[ | .logo-medium | .logo-large | .logo-small ]
+ *
+**/
+
+$logo-medium-size: 90px;
+$logo-large-size: 120px;
+$logo-small-size: 60px;
+
+.logo {
+	width: $logo-medium-size;
+	height: $logo-medium-size;
+	display: block;
+	position: relative;
+	
+	&.logo-medium {
+	}
+	&.logo-large {
+		width: $logo-large-size;
+		height: $logo-large-size;
+	}
+	&.logo-small {
+		width: $logo-small-size;
+		height: $logo-small-size;
+	}
+	&.logo-round {
+		border-radius: 100%;
+		overflow: hidden;
+	}
+	&.logo-cast-shadow {
+		box-shadow: 0 15px 15px rgba(0,0,0,0.2);
+	}
+}

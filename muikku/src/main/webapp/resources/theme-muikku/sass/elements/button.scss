@@ -5,8 +5,9 @@
  *
  * 	a.button[ | .button-large | .button-medium | .button-small ]
  *          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
- * 			[ | .button-soft | .button-hard | .button-extra-soft]
- *          [ | .button-primary | .button-secondary | .button-success | .button-info | .button-warn | .button-fatal | .button-strong]
+ * 			[ | .button-medium | .button-hard | .button-soft]
+ *			[ | .button-focus ]
+ *          [ COLORMAPPING ]
  *			[ | .button-centered | .button-right | .button-left ]
  *		span
  * 			(BODY)
@@ -39,6 +40,7 @@ a.button {
 	vertical-align: center;
 	display: inline-block;
 	text-decoration: none;
+	cursor: pointer;
 	@include prefix(user-select, moz o ms webkit, none);
 	
 	//button medium
@@ -100,44 +102,22 @@ a.button {
 		}
 	}
 	
-	&.button-extra-soft {
+	&.button-soft {
 		border-radius: 5px;
 	}
 	
-	&.button-soft {
+	&.button-medium {
 	}
 	
 	&.button-hard {
 		border-radius: 0;
 	}
 	
-	&.button-primary {
-		@include colormapping($color-primary-background, $color-primary-text);
+	&.button-focus {
+		font-weight: 500;
 	}
 	
-	&.button-secondary {
-		@include colormapping($color-secondary-background, $color-secondary-text);
-	}
-	
-	&.button-success {
-		@include colormapping($color-success-background, $color-success-text);
-	}
-	
-	&.button-info {
-		@include colormapping($color-info-background, $color-info-text);
-	}
-	
-	&.button-warn {
-		@include colormapping($color-warn-background, $color-warn-text);
-	}
-	
-	&.button-fatal {
-		@include colormapping($color-fatal-background, $color-fatal-text);
-	}
-	
-	&.button-strong {
-		@include colormapping($color-strong-background, $color-strong-text);
-	}
+	@include colorapplying-with-mapping(button, $color-base-list);
 	
 	text-align: center;
 	&.button-centered {
@@ -168,32 +148,6 @@ a.button-pill {
 	font-family: $button-pill-font-family;
 	cursor: pointer;
 	@include prefix(user-select, moz o ms webkit, none);
-
-	&.button-pill-primary {
-		@include colormapping($color-primary-background, $color-primary-text);
-	}
 	
-	&.button-pill-secondary {
-		@include colormapping($color-secondary-background, $color-secondary-text);
-	}
-	
-	&.button-pill-success {
-		@include colormapping($color-success-background, $color-success-text);
-	}
-	
-	&.button-pill-info {
-		@include colormapping($color-info-background, $color-info-text);
-	}
-	
-	&.button-pill-warn {
-		@include colormapping($color-warn-background, $color-warn-text);
-	}
-	
-	&.button-pill-fatal {
-		@include colormapping($color-fatal-background, $color-fatal-text);
-	}
-	
-	&.button-pill-strong {
-		@include colormapping($color-strong-background, $color-strong-text);
-	}
+	@include colorapplying-with-mapping(button-pill, $color-base-list);
 }

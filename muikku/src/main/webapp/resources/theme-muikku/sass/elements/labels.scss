@@ -3,7 +3,7 @@
  *
  * 	a.label[ | .label-large | .label-medium | .label-small ]
  *          [ | .label-dynamic-height | .label-dynamic-word-break | .label-dynamic-word-break-full-width ]
- *          [ | .label-primary | .label-secondary | .label-success | .label-info | .label-warn | .label-fatal | .label-dark]
+ *          [ COLORMAPPING ]
  *			[ | .label-clickable ]
  *			[ | .label-centered | .label-right | .label-left ]
  *		span
@@ -90,33 +90,7 @@ a.label {
 		}
 	}
 	
-	&.label-primary {
-		color: $color-primary-background;
-	}
-	
-	&.label-secondary {
-		color: $color-secondary-background;
-	}
-	
-	&.label-success {
-		color: $color-success-background;
-	}
-	
-	&.label-info {
-		color: $color-info-background;
-	}
-	
-	&.label-warn {
-		color: $color-warn-background;
-	}
-	
-	&.label-fatal {
-		color: $color-fatal-background;
-	}
-	
-	&.label-strong {
-		color: $color-strong-background;
-	}
+	@include colorapplying-text(label, $color-base-list);
 	
 	&.label-clickable {
 		cursor: pointer;

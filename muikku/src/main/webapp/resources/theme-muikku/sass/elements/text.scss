@@ -1,0 +1,142 @@
+/**
+ * Simple text and text sizing and styles
+ *
+ *	.text[ | .text-small | .text-medium | .text-large | .text-extra-large | .text-extra-extra-large | .text-banner ]
+ *		[ | .text-inline | .text-inline-block]
+ *		[ | .text-extra-thin| .text-thin | .text-normal | .text-thick | .text-bold | .text-extra-bold ]
+ *		[ COLORMAPPING ]
+ *		[ | .text-shadowed | .text-extra-shadowed]
+ *		[ | .text-uppercase | .text-lowercase]
+ *		[ | .text-left | .text-right | .text-centered ]
+ *		[ | .text-full]
+ *		[ | .text-responsive ]
+**/
+
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+$text-font-family: "Exo 2", Arial, sans-serif;
+
+.text {
+	font-family: $text-font-family;
+	font-weight: 400;
+	font-size: 14px;
+	display: block;
+	
+	&.text-inline {
+		display: inline;
+	}
+	
+	&.text-inline-block {
+		display: inline-block;
+	}
+	
+	&.text-small {
+		font-size: 13px;
+	}
+	
+	&.text-medium {
+	}
+	
+	&.text-large {
+		font-size: 15px;
+	}
+	
+	&.text-extra-large {
+		font-size: 25px;
+	}
+	
+	&.text-extra-extra-large {
+		font-size: 38px;
+	}
+	
+	&.text-banner {
+		font-size: 48px;
+	}
+	
+	&.text-thick {
+		font-weight: 500;
+	}
+	
+	&.text-bold {
+		font-weight: 700;
+	}
+	
+	&.text-extra-bold {
+		font-weight: 900;
+	}
+	
+	&.text-thin {
+		font-weight: 300;
+	}
+	
+	&.text-extra-thin {
+		font-weight: 200;
+	}
+	
+	&.text-shadowed {
+		text-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+	}
+	
+	&.text-extra-shadowed {
+		text-shadow: 0 0px 15px rgba(0, 0, 0, 0.6);
+	}
+	
+	&.text-uppercase {
+		text-transform: uppercase;
+	}
+	
+	&.text-lowercase {
+		text-transform: lowercase;
+	}
+	
+	&.text-separated {
+		line-height: 1.15;
+	}
+	
+	&.text-left {}
+	
+	&.text-centered {
+		text-align: center;
+	}
+	
+	&.text-right {
+		text-align: right;
+	}
+	
+	&.text-full {
+		width: 100%;
+	}
+	
+	@media screen and (max-width: $breakpoint-portrait-pad-max) {
+		&.text-responsive {
+			font-size: 12px;
+		
+			&.text-small {
+				font-size: 11px;
+			}
+			
+			&.text-medium {
+			}
+			
+			&.text-large {
+				font-size: 13px;
+			}
+			
+			&.text-extra-large {
+				font-size: 17px;
+			}
+			
+			&.text-extra-extra-large {
+				font-size: 28px;
+			}
+			
+			&.text-banner {
+				font-size: 32px;
+			}
+		}
+	}
+	
+	@include colorapplying-text(text, $color-base-list);
+}

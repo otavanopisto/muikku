@@ -1,0 +1,96 @@
+/**
+ * Simple and nice dynamic bubbles for content
+ *
+ *	div.bubble
+ *		div.bubble-title?
+ *			(BODY)
+ *		div.bubble-content?
+ *			(BODY)
+ *		div.bubble-button-container?
+ *			(BODY)
+ *
+**/
+
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+$bubble-size: 292px;
+$bubble-font: 'Exo 2',Arial,sans-serif;
+
+.bubble {
+	width: $bubble-size;
+	height: $bubble-size;
+	border: 6px solid $color-bubble-default-border;
+	border-radius: $bubble-size;
+	box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+	padding: 35px;
+	position: relative;
+	text-align: center;
+	display: block;
+	font-family: $bubble-font;
+	background-color: $color-bubble-default-background;
+	@include prefix(transition, webkit ms o moz, border-color 0.5s ease-in-out);
+	
+	&:hover {
+		border-color: $color-bubble-default-highlight-border;
+	}
+	
+	>.bubble-title {
+		color: $color-bubble-default-title;
+		font-size: 24px;
+		font-weight: 900;
+		text-transform: uppercase;
+		padding-top: 12px;
+		display: block;
+		text-align: center;
+		position: relative;
+	}
+	
+	>.bubble-content {
+		color: $color-bubble-default-content;
+		line-height: 1.15;
+		display: block;
+		padding-top: 12px;
+		font-weight: 300;
+		width: 120%;
+		margin-left: -10%;
+		text-align: center;
+		position: relative;
+	}
+	
+	>.bubble-button-container {
+		position: absolute;
+		display: block;
+		width: 100%;
+		text-align: center;
+		bottom: 0;
+		padding: 0px 64px 48px 64px;
+		left: 0;
+	}
+	
+	@media screen and (max-width: $breakpoint-portrait-pad-max) {
+		&.bubble-responsive {
+			border-radius: 10px;
+			width: 100%;
+			height: auto;
+			border: 0;
+			text-align: center;
+			padding: 10px;
+		
+			>.bubble-title {
+				width: 100%;
+			}
+			>.bubble-content {
+				width: 100%;
+				margin-left: 0;
+			}
+			>.bubble-button-container {
+				position: relative;
+				width: 150px;
+				display: inline-block;
+				padding: 15px 0 0 0;
+			}
+		}
+	}
+}

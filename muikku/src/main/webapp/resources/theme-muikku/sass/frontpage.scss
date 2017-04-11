@@ -3,10 +3,56 @@
 @import "elements/icons";
 @import "elements/navbar";
 @import "elements/notification-queue";
-@import "elements/buttons";
+@import "elements/button";
 @import "elements/labels";
-@import "elements/spacers";
 @import "elements/link";
 @import "elements/menu";
 @import "elements/icons";
 @import "elements/dropdown";
+@import "elements/hero";
+@import "elements/bubble";
+@import "elements/logo";
+@import "elements/text";
+@import "elements/separator";
+
+@import "base/breakpoints";
+
+//OVERRIDES
+//Add a space between the navbar login button and the next label
+.frontpage-navbar-login-button {
+	margin-right: 15px;
+}
+
+//Add a margin bottom to the muikkuverkko logo from the hero
+.frontpage-muikku-hero-logo-container > img {
+	margin-bottom: 30px;
+}
+
+//Add some space between the muikkuverkko text and the description
+.frontpage-muikku-hero > div:last-child {
+	width: 230px;
+	margin-top: 15px;
+	line-height: 1.3;
+}
+
+//make the logo container be a flexbox so that it can center things
+.frontpage-muikku-hero-logo-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+@media screen and (max-width: $breakpoint-portrait-pad-max) {
+	//we change the direction and the order of the header elements
+	.frontpage-muikku-hero-logo-container > img {
+		margin-bottom: 0;
+		margin-right: 15px;
+	}
+	.frontpage-muikku-hero {
+		order: -1;
+	}
+	.frontpage-muikku-hero-logo-container {
+		flex-direction: row;
+	}
+}
