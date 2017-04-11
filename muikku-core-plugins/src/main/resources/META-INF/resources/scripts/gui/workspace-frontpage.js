@@ -60,6 +60,24 @@
         }
       }, this));
     
+    // #1813: Workspace teachers
+    
+    mApi().user.staffMembers.read({
+      workspaceEntityId: workspaceEntityId
+    }).callback(function (err, staffMembers) {
+      if (!err && staffMembers) {
+        staffMembers.sort(function(a, b) {
+          var an = a.lastName + ' ' + a.firstName;
+          var bn = b.lastName + ' ' + b.firstName;
+          return an < bn ? -1 : an == bn ? 0 : 1;
+        });
+        //TODO: renderDustTemplate
+        //for (var i = 0; i < staffMembers.length; i++) {
+        //  console.log(staffMembers[i].firstName + ' ' + staffMembers[i].lastName + ' ' + staffMembers[i].email);
+        //}
+      }
+    });
+    
     if ($('.workspace-announcements-container').length > 0) {
 
       $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function() {
