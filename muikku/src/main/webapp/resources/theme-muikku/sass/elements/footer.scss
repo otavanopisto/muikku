@@ -1,0 +1,46 @@
+@import "../base/breakpoints";
+@import "../base/colors";
+
+$footer-height: 320px;
+
+.footer {
+	width: 100%;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: $color-footer-default-background;
+	height: $footer-height;
+
+	>.footer-container {
+		position: relative;
+		width: 100%;
+		max-width: $breakpoint-max-usable-screen;
+		display: flex;
+		height: $footer-height;
+		align-items: center;
+		justify-content: center;
+		
+		>.footer-item {
+			position: relative;
+			flex: 1 0 auto;
+			padding: 40px;
+			height: $footer-height;
+		}
+	}
+	
+	@media screen and (max-width: $breakpoint-portrait-pad-max) {
+		& {
+			height: auto;
+			
+			>.footer-container {
+				flex-direction: column;
+				height: auto;
+				
+				>.footer-item {
+					height: auto;
+				}
+			}
+		}
+	}
+}

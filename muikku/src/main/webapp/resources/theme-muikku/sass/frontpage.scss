@@ -1,4 +1,5 @@
-@import "util/breakpoints";
+@import "util/base";
+@import "util/fonts";
 
 @import "elements/icons";
 @import "elements/navbar";
@@ -14,13 +15,20 @@
 @import "elements/logo";
 @import "elements/text";
 @import "elements/separator";
+@import "elements/footer";
+
+//OVERRIDES
 
 @import "base/breakpoints";
 
-//OVERRIDES
 //Add a space between the navbar login button and the next label
-.frontpage-navbar-login-button {
+.frontpage-navbar-login-button, .frontpage-navbar-language-picker {
 	margin-right: 15px;
+}
+@include breakpoint-small-mobile {
+	.frontpage-navbar-login-button, .frontpage-navbar-language-picker {
+		margin-right: 0;
+	}
 }
 
 //Add a margin bottom to the muikkuverkko logo from the hero
@@ -43,6 +51,32 @@
 	justify-content: center;
 }
 
+//Remove the burguer menu on medium screens and up
+@media screen and (min-width: $breakpoint-medium-screen-min) {
+	.frontpage-navbar-display-menu {
+		display: none !important;
+	}
+}
+
+//Remove on landscape pad and down
+@media screen and (max-width: $breakpoint-landscape-pad-max) {
+	.frontpage-navbar-otavan-opisto, .frontpage-navbar-news {
+		display: none !important;
+	}
+}
+
+//Remove on portrait screens and down
+@media screen and (max-width: $breakpoint-portrait-pad-max) {
+	.frontpage-navbar-studying, .frontpage-navbar-contact, .frontpage-navbar-open-materials {
+		display: none !important;
+	}
+}
+
+//by default the aligment of the footer data items is left
+.footer-item > h2, .footer-item > p {
+	text-align: left;
+}
+
 @media screen and (max-width: $breakpoint-portrait-pad-max) {
 	//we change the direction and the order of the header elements
 	.frontpage-muikku-hero-logo-container > img {
@@ -55,4 +89,22 @@
 	.frontpage-muikku-hero-logo-container {
 		flex-direction: row;
 	}
+	
+	//remove the logo and stuff from the footer in small devices
+	.footer-item:last-child {
+		display: none !important;
+	}
+	
+	//This is for the footer to change the alignment in small screen
+	.frontpage-footer-data > h2, .frontpage-footer-data > p {
+		text-align: center;
+	}
+}
+
+//Set the logos to look nice :)
+.frontpage-footer-logos {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-around;
+	flex-direction: column;
 }

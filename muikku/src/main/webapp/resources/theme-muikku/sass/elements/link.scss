@@ -2,6 +2,7 @@
  * Defines a link and its structure, links can be icons and can use the icon element class
  *
  * 	a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong][ | .link-full]
+ *		[.link-uppercase][.link-lowercase]
  *		span
  *			(BODY)
  *
@@ -26,6 +27,8 @@ $link-font-size-large: 16px;
 	text-align: center;
 	vertical-align: middle;
 	@include prefix(transition, moz ms webkit o, background-color .3s);
+	@include prefix(user-select, moz ms webkit o, none);
+	cursor: pointer;
 	
 	&.link-small {
 		font-size: $link-font-size-small;
@@ -95,6 +98,14 @@ $link-font-size-large: 16px;
 	&:active, &.active {
 		color: $color-link-active-text;
 		background-color: $color-link-active-background;
+	}
+	
+	&.link-uppercase {
+		text-transform: uppercase;
+	}
+	
+	&.link-lowercase {
+		text-transform: lowercase;
 	}
 	
 	&.link-strong-effects {

@@ -5,12 +5,13 @@
  *
 **/
 
-$logo-medium-size: 90px;
-$logo-large-size: 120px;
-$logo-small-size: 60px;
+$logo-medium-size: 80px;
+$logo-large-size: 90px;
+$logo-extra-large-size: 100px;
+$logo-small-size: 70px;
+$logo-extra-small-size: 60px;
 
 .logo {
-	width: $logo-medium-size;
 	height: $logo-medium-size;
 	display: block;
 	position: relative;
@@ -18,12 +19,16 @@ $logo-small-size: 60px;
 	&.logo-medium {
 	}
 	&.logo-large {
-		width: $logo-large-size;
 		height: $logo-large-size;
 	}
 	&.logo-small {
-		width: $logo-small-size;
 		height: $logo-small-size;
+	}
+	&.logo-extra-large {
+		height: $logo-extra-large-size;
+	}
+	&.logo-extra-small {
+		height: $logo-extra-small-size;
 	}
 	&.logo-round {
 		border-radius: 100%;

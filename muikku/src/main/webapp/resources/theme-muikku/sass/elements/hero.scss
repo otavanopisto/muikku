@@ -23,7 +23,7 @@
 		justify-content: center;
 		margin: 0 auto;
 		height: 100%;
-		max-width: 1280px;
+		max-width: $breakpoint-max-usable-screen;
 		flex-flow: row nowrap;
 		padding: 24px;
 		

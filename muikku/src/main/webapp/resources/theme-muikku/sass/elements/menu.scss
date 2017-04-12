@@ -68,7 +68,7 @@ $menu-font: 'Exo 2',Arial,sans-serif;
 			margin-top: 23px;
 		}
 			
-		@include small-mobile {
+		@include breakpoint-small-mobile {
 			&>div {
 				margin: 11px 0 11px 0;
 			}
@@ -112,13 +112,13 @@ $menu-font: 'Exo 2',Arial,sans-serif;
 		left: -$menu-width-pad;
 	}
 	
-	@include medium-mobile {
+	@include breakpoint-medium-mobile {
 		& > .menu-container {
 			width: $menu-width-mobile;
 			left: -$menu-width-mobile;
 		}
 	}
-	@include small-mobile {
+	@include breakpoint-small-mobile {
 		& > .menu-container {
 			width: $menu-width-mobile;
 			left: -$menu-width-mobile;

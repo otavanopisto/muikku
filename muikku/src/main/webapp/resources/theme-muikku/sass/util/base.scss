@@ -4,4 +4,6 @@
 	box-sizing: border-box;
 	line-height: 1;
 	@include prefix(drag, webkit ms o moz, none);
+	padding:0;
+	margin: 0;
 }

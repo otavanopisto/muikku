@@ -23,6 +23,12 @@ $text-font-family: "Exo 2", Arial, sans-serif;
 	font-weight: 400;
 	font-size: 14px;
 	display: block;
+	position: relative;
+	
+	&.text-icon {
+		font-family: muikku;
+		speak: none;
+	}
 	
 	&.text-inline {
 		display: inline;
@@ -57,6 +63,10 @@ $text-font-family: "Exo 2", Arial, sans-serif;
 	
 	&.text-thick {
 		font-weight: 500;
+	}
+	
+	&.text-extra-thick {
+		font-weight: 600;
 	}
 	
 	&.text-bold {
@@ -95,7 +105,9 @@ $text-font-family: "Exo 2", Arial, sans-serif;
 		line-height: 1.15;
 	}
 	
-	&.text-left {}
+	&.text-left {
+		text-align: left;
+	}
 	
 	&.text-centered {
 		text-align: center;

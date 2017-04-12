@@ -1,44 +1,51 @@
 $breakpoint-medium-screen-max: 1199px;
+$breakpoint-wide-screen-min: #{$breakpoint-medium-screen-max + 1px};
 
 $breakpoint-landscape-pad-max: 1024px;
+$breakpoint-medium-screen-min: #{$breakpoint-landscape-pad-max + 1px};
 
 $breakpoint-portrait-pad-max: 768px;
+$breakpoint-landscape-pad-min: #{$breakpoint-portrait-pad-max + 1px};
 
 $breakpoint-medium-mobile-max: 450px;
+$breakpoint-portrait-pad-min: #{$breakpoint-medium-mobile-max + 1px};
 
 $breakpoint-small-mobile-max: 320px;
+$breakpoint-medium-mobile-min: #{$breakpoint-small-mobile-max + 1px};
 
-@mixin wide-screen {
-	@media screen and (min-width: #{$breakpoint-medium-screen-max + 1px}) {
+$breakpoint-max-usable-screen: 1280px;
+
+@mixin breakpoint-wide-screen {
+	@media screen and (min-width: $breakpoint-wide-screen-min) {
 		@content;
 	}
 }
 
-@mixin medium-screen {
-	@media screen and (min-width: #{$breakpoint-landscape-pad-max + 1px}) and (max-width: $breakpoint-medium-screen-max) {
+@mixin breakpoint-medium-screen {
+	@media screen and (min-width: $breakpoint-medium-screen-min) and (max-width: $breakpoint-medium-screen-max) {
 		@content;
 	}
 }
 
-@mixin landscape-pad {
-	@media screen and (min-width: #{$breakpoint-portrait-pad-max + 1px}) and (max-width: $breakpoint-landscape-pad-max) {
+@mixin breakpoint-landscape-pad {
+	@media screen and (min-width: $breakpoint-landscape-pad-min) and (max-width: $breakpoint-landscape-pad-max) {
 		@content;
 	}
 }
 
-@mixin portrait-pad {
-	@media screen and (min-width: #{$breakpoint-medium-mobile-max + 1px}) and (max-width: $breakpoint-portrait-pad-max) {
+@mixin breakpoint-portrait-pad {
+	@media screen and (min-width: $breakpoint-portrait-pad-min) and (max-width: $breakpoint-portrait-pad-max) {
 		@content;
 	}
 }
 
-@mixin medium-mobile {
-	@media screen and (min-width: #{$breakpoint-small-mobile-max + 1px}) and (max-width: $breakpoint-medium-mobile-max) {
+@mixin breakpoint-medium-mobile {
+	@media screen and (min-width: $breakpoint-medium-mobile-min) and (max-width: $breakpoint-medium-mobile-max) {
 		@content;
 	}
 }
 
-@mixin small-mobile {
+@mixin breakpoint-small-mobile {
 	@media screen and (max-width: $breakpoint-small-mobile-max) {
 		@content;
 	}
