@@ -1,10 +1,13 @@
-{?.}
-    {#.}
-      <div data-href="{@contextPath/}{link}" class="workspace-single-announcement lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full">
-        <div class="workspace-announcement-title">{caption}</div>
-        <div class="workspace-announcement-date">{#localize key="plugin.workspace.index.announcementStartDate" arg0=startDate /}</div>
-      </div>
-    {/.}
+{#staffMembers}
+  <div class="workspace-teacher">
+    <div class="workspace-teacher-name">
+      <span class="icon-user"></span>
+      <span class="workspace-teacher-firstname">{firstName}</span>
+      <span class="workspace-teacher-lastname">{lastName}</span>
+    </div>
+    <div class="workspace-teacher-email">{email}</div>
+  </div>
   {:else}
-    <div class="workspace-announcements-empty lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">{#localize key="plugin.workspace.index.announcementsEmpty"/}</div>
-{/.}
+    <div class="workspace-teachers-empty">{#localize key="plugin.workspace.index.teachersEmpty"/}</div>
+{/staffMembers}
+
