@@ -32,6 +32,7 @@ $navbar-font: 'Exo 2',Arial,sans-serif;
 	width: 100%;
 	z-index: 9;
 	font-family: $navbar-font;
+	box-shadow: 0 0 10px rgba(0,0,0,0.2);
 	
 	.navbar-logo {
 		width: 175px;

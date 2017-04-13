@@ -1,0 +1,83 @@
+/**
+ * Provides a handy carousel tool, make sure to include the carousel interaction js file
+ *
+ * 	div.carousel
+ *		div.carousel-item
+ *			div.carousel-video?
+ *				(BODY)
+ *			(BODY)?
+ *	div.carousel-controls
+ *
+**/
+
+@import "../base/mixins";
+@import "../base/colors";
+
+.carousel {
+	width: 100%;
+	position: relative;
+	padding: 10px;
+	
+	.carousel-item {
+		display: block;
+		width: 100%;
+		height: auto;
+		position: relative;
+		
+		.carousel-video {
+			width: 100%;
+			padding-bottom: 56.25%;
+			padding-top: 25px;
+			height: 0;
+			
+			iframe {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+}
+
+.carousel-controls {
+	display: block;
+	width: 100%;
+	margin: 0;
+	padding: 10px 0 20px 0;
+
+	.carousel-dots {
+		display: block;
+		width: 100%;
+		text-align: center;
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	.carousel-dots li {
+		margin: 0;
+		padding: 0;
+		display: inline-block;
+	}
+	
+	.carousel-dots button {
+		background: #afafaf;
+		border: solid 2px #fff;
+		border-radius: 100%;
+		cursor: pointer;
+		font-size: 0;
+		height: 17px;
+		margin: 0 10px;
+		outline: none;
+		padding: 0;
+		@include prefix(transition, moz ms webkit o, background 0.3);
+		vertical-align: top;
+		width: 17px;
+	}
+	
+	.carousel-dots .slick-active button {
+		background: #ef6000;
+	}
+}

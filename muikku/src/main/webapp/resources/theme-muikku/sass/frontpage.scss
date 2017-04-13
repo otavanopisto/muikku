@@ -16,10 +16,18 @@
 @import "elements/text";
 @import "elements/separator";
 @import "elements/footer";
+@import "elements/screen-container";
+@import "elements/ordered-container";
+@import "elements/card";
+@import "elements/carousel";
 
 //OVERRIDES
 
 @import "base/breakpoints";
+
+body {
+	padding-top: 70px;
+}
 
 //Add a space between the navbar login button and the next label
 .frontpage-navbar-login-button, .frontpage-navbar-language-picker {
@@ -77,6 +85,16 @@
 	text-align: left;
 }
 
+//Set the titles to the right size
+.frontpage-title {
+	font-size: 38px;
+	margin-left: 10px;
+}
+
+.frontpage-section {
+	margin-top: 70px;
+}
+
 @media screen and (max-width: $breakpoint-portrait-pad-max) {
 	//we change the direction and the order of the header elements
 	.frontpage-muikku-hero-logo-container > img {
@@ -99,6 +117,14 @@
 	.frontpage-footer-data > h2, .frontpage-footer-data > p {
 		text-align: center;
 	}
+	
+	.frontpage-title {
+		font-size: 26px;
+	}
+	
+	.frontpage-section {
+		margin-top: 25px;
+	}
 }
 
 //Set the logos to look nice :)
@@ -107,4 +133,44 @@
 	align-items: flex-end;
 	justify-content: space-around;
 	flex-direction: column;
+}
+
+.frontpage-section-content {
+	margin-top: 20px;
+}
+.frontpage-studying-card {
+	.card-title {
+		color: #5db5c5;
+	}
+	.button {
+		background-color: #5db5c5;
+		&:hover {
+			background-color: darken(#5db5c5, 20%);
+		}
+	}
+}
+.frontpage-school-card {
+	.card-title {
+		color: #f58220;
+	}
+	.button {
+		background-color: #f58220;
+		&:hover {
+			background-color: darken(#f58220, 20%);
+		}
+	}
+}
+.frontpage-courses-card {
+	.card-title {
+		color: #c64986;
+	}
+	.button {
+		background-color: #c64986;
+		&:hover {
+			background-color: darken(#c64986, 20%);
+		}
+	}
+}
+.frontpage-card-container {
+	padding: 10px;
 }
