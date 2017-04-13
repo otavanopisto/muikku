@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+    <sql>ALTER DATABASE CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE abstractwallentry CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE accesstoken CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE announcement CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE announcementattachment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE announcementusergroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE announcementworkspace CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE assesmentrequestnotification CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE assessmentrequest CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE assessmentrequestmessageid CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE authsource CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE authsourcesetting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE binarymaterial CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatorlabel CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE communicatormessage CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE communicatormessage_tags CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessageattachment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessagecategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE communicatormessageid CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessageidlabel CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessagerecipient CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessagerecipientgroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessagerecipientusergroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessagerecipientworkspacegroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE communicatormessagesignature CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE communicatormessagetemplate CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE communicatoruserlabel CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumerpermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumerscope CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE coopssession CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE courseidentifierentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE courseidentifierschooldataidentifier CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE courselistselection CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE defaultwidget CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentdefaults CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentforumarea CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentgrouppermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentroleentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentuser CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentuserpermissionoverride CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentwall CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE flag CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE flagshare CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE flagstudent CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE forumarea CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forumareagroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE forumareasubscription CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE forummessage CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forumthread CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE forumthreadreply CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE forumthreadsubscription CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE friend CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE friendrequest CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE gradingscaleentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE gradingscaleitementity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE grouppermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE guidancerequest CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE htmlmaterial CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE htmlmaterialrevision CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE htmlmaterialrevisionextensionproperty CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE htmlmaterialrevisionproperty CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE internalauth CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuser CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuseremail CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuserimage CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuserproperty CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuserpropertykey CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE locatedwidget CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE locatedwidgetsetting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE material CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE materialmeta CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE materialmetakey CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE materialproducer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE nopassedcoursesnotification CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE notifieractionentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE notifiermethodentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE notifieruseraction CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE passwordresetrequest CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE permission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE permissionoverride CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE plugin CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE pluginsetting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE pluginsettingkey CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE pluginusersetting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE pluginusersettingkey CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE processedscript CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE queryaudiofield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryconnectfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryconnectfieldcounterpart CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryconnectfieldoption CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryconnectfieldterm CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryfilefield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querymemofield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querymultiselectfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querymultiselectfieldoption CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryorganizerfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryselectfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryselectfieldoption CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querysorterfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querytextfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE requestedassessmentsupplementationnotification CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE requesttoken CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE resourcerights CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE resourcerolepermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE roleentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE rolepermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE roleschooldataidentifier CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE schooldatasource CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE studytimenotification CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE superuser CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE supplementationrequest CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemaccesstoken CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemroleentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemsetting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE tag CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE token CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE tokenpermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE tokenscope CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE transcriptofrecordsfile CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE updaterproperties CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE usercalendar CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usercontact CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE useremailentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE userentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userentityproperty CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE userfavouriteworkspace CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergroupentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE usergrouproleentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergrouprolepermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergroupuser CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergroupuserentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE useridentification CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpendingemailchange CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpendingpasswordchange CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpicture CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userschooldataidentifier CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE userwall CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userwallsubscription CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userwidget CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE wall CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE wallentry CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE wallentryreply CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE websocketticket CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE widget CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE widgetsetting CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE widgetspace CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacefolder CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceforumarea CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacegrouppermission CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE workspacejournalentry CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE workspacematerial CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialaudiofieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialaudiofieldanswerclip CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialconnectfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialevaluation CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialfield CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacematerialfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialfilefieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialfilefieldanswerfile CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacematerialmultiselectfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialmultiselectfieldansweroption CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialorganizerfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialproducer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialreply CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialselectfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialsorterfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE workspacematerialtextfieldanswer CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE workspacenode CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE workspaceroleentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacerootfolder CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacesettings CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacetoolsettings CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacetypeentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacetypegradingscale CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacetypeschooldataidentifier CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceuserentity CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceuserpermissionoverride CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceusersignup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacevisit CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacewall CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE abstractwallentry CHANGE text text varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE announcement CHANGE caption caption varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE announcement CHANGE content content longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE announcementattachment CHANGE name name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE announcementattachment CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE assesmentrequestnotification CHANGE studentIdentifier studentIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE assessmentrequest CHANGE message message varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE assessmentrequest CHANGE state state varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE authsource CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE authsource CHANGE strategy strategy varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE authsourcesetting CHANGE settingKey settingKey varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE authsourcesetting CHANGE value value varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE binarymaterial CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE communicatormessage CHANGE caption caption varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE communicatormessage CHANGE content content longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE communicatormessageattachment CHANGE name name varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessageattachment CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE communicatormessagecategory CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE communicatormessagerecipientworkspacegroup CHANGE archetype archetype varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE communicatormessagesignature CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE communicatormessagesignature CHANGE signature signature longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE communicatormessagetemplate CHANGE content content longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE communicatormessagetemplate CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE communicatoruserlabel CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumer CHANGE connectURI connectURI varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumer CHANGE consumerKey consumerKey varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumer CHANGE consumerSecret consumerSecret varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumer CHANGE displayName displayName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumerpermission CHANGE permission permission varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE consumerscope CHANGE scope scope varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE coopssession CHANGE algorithm algorithm varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE coopssession CHANGE sessionId sessionId varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE coopssession CHANGE type type varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE courseidentifierschooldataidentifier CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE courselistselection CHANGE context context varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE environmentroleentity CHANGE archetype archetype varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE flag CHANGE color color varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE flag CHANGE description description varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE flag CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forumarea CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forumarea CHANGE description description varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forumareagroup CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forummessage CHANGE message message longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE forumthread CHANGE title title varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE friendrequest CHANGE message message longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE gradingscaleentity CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE gradingscaleitementity CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE guidancerequest CHANGE DTYPE DTYPE varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE guidancerequest CHANGE message message varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE htmlmaterial CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE htmlmaterial CHANGE html html longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE htmlmaterialrevision CHANGE checksum checksum varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE htmlmaterialrevision CHANGE data data longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE htmlmaterialrevision CHANGE sessionId sessionId varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE htmlmaterialrevisionextensionproperty CHANGE propertyKey propertyKey varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE htmlmaterialrevisionextensionproperty CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE htmlmaterialrevisionproperty CHANGE propertyKey propertyKey varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE htmlmaterialrevisionproperty CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE internalauth CHANGE password password varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuser CHANGE firstName firstName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuser CHANGE lastName lastName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuseremail CHANGE address address varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuserimage CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuserproperty CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE localuserpropertykey CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE locatedwidgetsetting CHANGE value value varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE material CHANGE title title varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE material CHANGE license license varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE material CHANGE viewRestrict viewRestrict varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE materialmeta CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE materialmetakey CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE materialproducer CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE nopassedcoursesnotification CHANGE studentIdentifier studentIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE notifieractionentity CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE notifiermethodentity CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE notifieruseraction CHANGE allowance allowance varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE passwordresetrequest CHANGE resetHash resetHash varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE permission CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE permission CHANGE scope scope varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE plugin CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE pluginsetting CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE pluginsettingkey CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE pluginsettingkey CHANGE plugin plugin varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE pluginusersetting CHANGE value value varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE pluginusersettingkey CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE pluginusersettingkey CHANGE plugin plugin varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE processedscript CHANGE url url varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE queryconnectfieldoption CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryconnectfieldoption CHANGE text text varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryfield CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querymultiselectfieldoption CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE querymultiselectfieldoption CHANGE text text varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryselectfieldoption CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE queryselectfieldoption CHANGE text text varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE requestedassessmentsupplementationnotification CHANGE studentIdentifier studentIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE requestedassessmentsupplementationnotification CHANGE workspaceIdentifier workspaceIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE requesttoken CHANGE callback callback varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE requesttoken CHANGE verifier verifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE roleentity CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE roleschooldataidentifier CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE schooldatasource CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE studytimenotification CHANGE studentIdentifier studentIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE supplementationrequest CHANGE requestText requestText longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemaccesstoken CHANGE accessToken accessToken varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemaccesstoken CHANGE refreshToken refreshToken varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemroleentity CHANGE roleType roleType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemsetting CHANGE settingKey settingKey varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE systemsetting CHANGE settingValue settingValue longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE tag CHANGE text text varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE token CHANGE secret secret varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE token CHANGE token token varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE tokenpermission CHANGE permission permission varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE tokenscope CHANGE scope scope varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE transcriptofrecordsfile CHANGE fileName fileName varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE transcriptofrecordsfile CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE transcriptofrecordsfile CHANGE title title varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE transcriptofrecordsfile CHANGE description description varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE updaterproperties CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE updaterproperties CHANGE value value varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE usercalendar CHANGE calendarId calendarId varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usercalendar CHANGE calendarProvider calendarProvider varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usercontact CHANGE type type varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usercontact CHANGE value value varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE useremailentity CHANGE address address varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE userentity CHANGE defaultIdentifier defaultIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userentity CHANGE locale locale varchar(8) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userentityproperty CHANGE propertyKey propertyKey varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE userentityproperty CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergroup CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE usergroupentity CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE usergroupuserentity CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE useridentification CHANGE externalId externalId varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpendingemailchange CHANGE confirmationHash confirmationHash varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpendingemailchange CHANGE newEmail newEmail varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpendingpasswordchange CHANGE confirmationHash confirmationHash varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userpicture CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE userschooldataidentifier CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE websocketticket CHANGE ip ip varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE websocketticket CHANGE ticket ticket varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE widget CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE widget CHANGE visibility visibility varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE widgetsetting CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE widgetspace CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceentity CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspaceentity CHANGE urlName urlName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspaceentity CHANGE access access varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspaceentity CHANGE defaultMaterialLicense defaultMaterialLicense varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacefolder CHANGE folderType folderType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacefolder CHANGE viewRestrict viewRestrict varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE workspacejournalentry CHANGE html html longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <sql>ALTER TABLE workspacejournalentry CHANGE title title varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE workspacematerial CHANGE assignmentType assignmentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerial CHANGE correctAnswers correctAnswers varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialaudiofieldanswerclip CHANGE clipId clipId varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialaudiofieldanswerclip CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialaudiofieldanswerclip CHANGE fileName fileName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialevaluation CHANGE gradeIdentifier gradeIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialevaluation CHANGE gradeSchoolDataSource gradeSchoolDataSource varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialevaluation CHANGE gradingScaleIdentifier gradingScaleIdentifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialevaluation CHANGE gradingScaleSchoolDataSource gradingScaleSchoolDataSource varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialevaluation CHANGE verbalAssessment verbalAssessment longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialfield CHANGE embedId embedId varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacematerialfilefieldanswerfile CHANGE contentType contentType varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialfilefieldanswerfile CHANGE fileId fileId varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacematerialfilefieldanswerfile CHANGE fileName fileName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialorganizerfieldanswer CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialproducer CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialreply CHANGE state state varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacematerialsorterfieldanswer CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE workspacematerialtextfieldanswer CHANGE value value longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE workspacenode CHANGE urlName urlName varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <sql>ALTER TABLE workspacenode CHANGE title title varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;</sql>
+    <!-- ALTER TABLE workspaceroleentity CHANGE archetype archetype varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacetoolsettings CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; -->
+    <!-- ALTER TABLE workspacetypeentity CHANGE name name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspacetypeschooldataidentifier CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceuserentity CHANGE identifier identifier varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- ALTER TABLE workspaceusersignup CHANGE message message longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;-->
+    <!-- REPAIR TABLE abstractwallentry;-->
+	<!-- OPTIMIZE TABLE abstractwallentry;-->
+	<!-- REPAIR TABLE accesstoken;-->
+	<!-- OPTIMIZE TABLE accesstoken;-->
+    <sql>REPAIR TABLE announcement;</sql>
+    <sql>OPTIMIZE TABLE announcement;</sql>
+	<!-- REPAIR TABLE announcementattachment;-->
+	<!-- OPTIMIZE TABLE announcementattachment;-->
+	<!-- REPAIR TABLE announcementusergroup;-->
+	<!-- OPTIMIZE TABLE announcementusergroup;-->
+	<!-- REPAIR TABLE announcementworkspace;-->
+	<!-- OPTIMIZE TABLE announcementworkspace;-->
+	<!-- REPAIR TABLE assesmentrequestnotification;-->
+	<!-- OPTIMIZE TABLE assesmentrequestnotification;-->
+    <sql>REPAIR TABLE assessmentrequest;</sql>
+    <sql>OPTIMIZE TABLE assessmentrequest;</sql>
+	<!-- REPAIR TABLE assessmentrequestmessageid;-->
+	<!-- OPTIMIZE TABLE assessmentrequestmessageid;-->
+	<!-- REPAIR TABLE authsource;-->
+	<!-- OPTIMIZE TABLE authsource;-->
+	<!-- REPAIR TABLE authsourcesetting;-->
+	<!-- OPTIMIZE TABLE authsourcesetting;-->
+	<!-- REPAIR TABLE binarymaterial;-->
+	<!-- OPTIMIZE TABLE binarymaterial;-->
+	<!-- REPAIR TABLE communicatorlabel;-->
+	<!-- OPTIMIZE TABLE communicatorlabel;-->
+    <sql>REPAIR TABLE communicatormessage;</sql>
+    <sql>OPTIMIZE TABLE communicatormessage;</sql>
+	<!-- REPAIR TABLE communicatormessage_tags;-->
+	<!-- OPTIMIZE TABLE communicatormessage_tags;-->
+	<!-- REPAIR TABLE communicatormessageattachment;-->
+	<!-- OPTIMIZE TABLE communicatormessageattachment;-->
+    <sql>REPAIR TABLE communicatormessagecategory;</sql>
+    <sql>OPTIMIZE TABLE communicatormessagecategory;</sql>
+	<!-- REPAIR TABLE communicatormessageid;-->
+	<!-- OPTIMIZE TABLE communicatormessageid;-->
+	<!-- REPAIR TABLE communicatormessageidlabel;-->
+	<!-- OPTIMIZE TABLE communicatormessageidlabel;-->
+	<!-- REPAIR TABLE communicatormessagerecipient;-->
+	<!-- OPTIMIZE TABLE communicatormessagerecipient;-->
+	<!-- REPAIR TABLE communicatormessagerecipientgroup;-->
+	<!-- OPTIMIZE TABLE communicatormessagerecipientgroup;-->
+	<!-- REPAIR TABLE communicatormessagerecipientusergroup;-->
+	<!-- OPTIMIZE TABLE communicatormessagerecipientusergroup;-->
+	<!-- REPAIR TABLE communicatormessagerecipientworkspacegroup;-->
+	<!-- OPTIMIZE TABLE communicatormessagerecipientworkspacegroup;-->
+    <sql>REPAIR TABLE communicatormessagesignature;</sql>
+    <sql>OPTIMIZE TABLE communicatormessagesignature;</sql>
+    <sql>REPAIR TABLE communicatormessagetemplate;</sql>
+    <sql>OPTIMIZE TABLE communicatormessagetemplate;</sql>
+	<!-- REPAIR TABLE communicatoruserlabel;-->
+	<!-- OPTIMIZE TABLE communicatoruserlabel;-->
+	<!-- REPAIR TABLE consumer;-->
+	<!-- OPTIMIZE TABLE consumer;-->
+	<!-- REPAIR TABLE consumerpermission;-->
+	<!-- OPTIMIZE TABLE consumerpermission;-->
+	<!-- REPAIR TABLE consumerscope;-->
+	<!-- OPTIMIZE TABLE consumerscope;-->
+	<!-- REPAIR TABLE coopssession;-->
+	<!-- OPTIMIZE TABLE coopssession;-->
+	<!-- REPAIR TABLE courseidentifierentity;-->
+	<!-- OPTIMIZE TABLE courseidentifierentity;-->
+	<!-- REPAIR TABLE courseidentifierschooldataidentifier;-->
+	<!-- OPTIMIZE TABLE courseidentifierschooldataidentifier;-->
+	<!-- REPAIR TABLE courselistselection;-->
+	<!-- OPTIMIZE TABLE courselistselection;-->
+	<!-- REPAIR TABLE defaultwidget;-->
+	<!-- OPTIMIZE TABLE defaultwidget;-->
+	<!-- REPAIR TABLE environmentdefaults;-->
+	<!-- OPTIMIZE TABLE environmentdefaults;-->
+	<!-- REPAIR TABLE environmentforumarea;-->
+	<!-- OPTIMIZE TABLE environmentforumarea;-->
+	<!-- REPAIR TABLE environmentgrouppermission;-->
+	<!-- OPTIMIZE TABLE environmentgrouppermission;-->
+	<!-- REPAIR TABLE environmentroleentity;-->
+	<!-- OPTIMIZE TABLE environmentroleentity;-->
+	<!-- REPAIR TABLE environmentuser;-->
+	<!-- OPTIMIZE TABLE environmentuser;-->
+	<!-- REPAIR TABLE environmentuserpermissionoverride;-->
+	<!-- OPTIMIZE TABLE environmentuserpermissionoverride;-->
+	<!-- REPAIR TABLE environmentwall;-->
+	<!-- OPTIMIZE TABLE environmentwall;-->
+    <sql>REPAIR TABLE flag;</sql>
+    <sql>OPTIMIZE TABLE flag;</sql>
+	<!-- REPAIR TABLE flagshare;-->
+	<!-- OPTIMIZE TABLE flagshare;-->
+	<!-- REPAIR TABLE flagstudent;-->
+	<!-- OPTIMIZE TABLE flagstudent;-->
+    <sql>REPAIR TABLE forumarea;</sql>
+    <sql>OPTIMIZE TABLE forumarea;</sql>
+    <sql>REPAIR TABLE forumareagroup;</sql>
+    <sql>OPTIMIZE TABLE forumareagroup;</sql>
+	<!-- REPAIR TABLE forumareasubscription;-->
+	<!-- OPTIMIZE TABLE forumareasubscription;-->
+    <sql>REPAIR TABLE forummessage;</sql>
+    <sql>OPTIMIZE TABLE forummessage;</sql>
+    <sql>REPAIR TABLE forumthread;</sql>
+    <sql>OPTIMIZE TABLE forumthread;</sql>
+	<!-- REPAIR TABLE forumthreadreply;-->
+	<!-- OPTIMIZE TABLE forumthreadreply;-->
+	<!-- REPAIR TABLE forumthreadsubscription;-->
+	<!-- OPTIMIZE TABLE forumthreadsubscription;-->
+	<!-- REPAIR TABLE friend;-->
+	<!-- OPTIMIZE TABLE friend;-->
+	<!-- REPAIR TABLE friendrequest;-->
+	<!-- OPTIMIZE TABLE friendrequest;-->
+	<!-- REPAIR TABLE gradingscaleentity;-->
+	<!-- OPTIMIZE TABLE gradingscaleentity;-->
+	<!-- REPAIR TABLE gradingscaleitementity;-->
+	<!-- OPTIMIZE TABLE gradingscaleitementity;-->
+	<!-- REPAIR TABLE grouppermission;-->
+	<!-- OPTIMIZE TABLE grouppermission;-->
+    <sql>REPAIR TABLE guidancerequest;</sql>
+    <sql>OPTIMIZE TABLE guidancerequest;</sql>
+    <sql>REPAIR TABLE htmlmaterial;</sql>
+    <sql>OPTIMIZE TABLE htmlmaterial;</sql>
+    <sql>REPAIR TABLE htmlmaterialrevision;</sql>
+    <sql>OPTIMIZE TABLE htmlmaterialrevision;</sql>
+    <sql>REPAIR TABLE htmlmaterialrevisionextensionproperty;</sql>
+    <sql>OPTIMIZE TABLE htmlmaterialrevisionextensionproperty;</sql>
+    <sql>REPAIR TABLE htmlmaterialrevisionproperty;</sql>
+    <sql>OPTIMIZE TABLE htmlmaterialrevisionproperty;</sql>
+	<!-- REPAIR TABLE internalauth;-->
+	<!-- OPTIMIZE TABLE internalauth;-->
+	<!-- REPAIR TABLE localuser;-->
+	<!-- OPTIMIZE TABLE localuser;-->
+	<!-- REPAIR TABLE localuseremail;-->
+	<!-- OPTIMIZE TABLE localuseremail;-->
+	<!-- REPAIR TABLE localuserimage;-->
+	<!-- OPTIMIZE TABLE localuserimage;-->
+	<!-- REPAIR TABLE localuserproperty;-->
+	<!-- OPTIMIZE TABLE localuserproperty;-->
+	<!-- REPAIR TABLE localuserpropertykey;-->
+	<!-- OPTIMIZE TABLE localuserpropertykey;-->
+	<!-- REPAIR TABLE locatedwidget;-->
+	<!-- OPTIMIZE TABLE locatedwidget;-->
+	<!-- REPAIR TABLE locatedwidgetsetting;-->
+	<!-- OPTIMIZE TABLE locatedwidgetsetting;-->
+    <sql>REPAIR TABLE material;</sql>
+    <sql>OPTIMIZE TABLE material;</sql>
+	<!-- REPAIR TABLE materialmeta;-->
+	<!-- OPTIMIZE TABLE materialmeta;-->
+	<!-- REPAIR TABLE materialmetakey;-->
+	<!-- OPTIMIZE TABLE materialmetakey;-->
+	<!-- REPAIR TABLE materialproducer;-->
+	<!-- OPTIMIZE TABLE materialproducer;-->
+	<!-- REPAIR TABLE nopassedcoursesnotification;-->
+	<!-- OPTIMIZE TABLE nopassedcoursesnotification;-->
+	<!-- REPAIR TABLE notifieractionentity;-->
+	<!-- OPTIMIZE TABLE notifieractionentity;-->
+	<!-- REPAIR TABLE notifiermethodentity;-->
+	<!-- OPTIMIZE TABLE notifiermethodentity;-->
+	<!-- REPAIR TABLE notifieruseraction;-->
+	<!-- OPTIMIZE TABLE notifieruseraction;-->
+	<!-- REPAIR TABLE passwordresetrequest;-->
+	<!-- OPTIMIZE TABLE passwordresetrequest;-->
+	<!-- REPAIR TABLE permission;-->
+	<!-- OPTIMIZE TABLE permission;-->
+	<!-- REPAIR TABLE permissionoverride;-->
+	<!-- OPTIMIZE TABLE permissionoverride;-->
+	<!-- REPAIR TABLE plugin;-->
+	<!-- OPTIMIZE TABLE plugin;-->
+	<!-- REPAIR TABLE pluginsetting;-->
+	<!-- OPTIMIZE TABLE pluginsetting;-->
+	<!-- REPAIR TABLE pluginsettingkey;-->
+	<!-- OPTIMIZE TABLE pluginsettingkey;-->
+	<!-- REPAIR TABLE pluginusersetting;-->
+	<!-- OPTIMIZE TABLE pluginusersetting;-->
+	<!-- REPAIR TABLE pluginusersettingkey;-->
+	<!-- OPTIMIZE TABLE pluginusersettingkey;-->
+	<!-- REPAIR TABLE processedscript;-->
+	<!-- OPTIMIZE TABLE processedscript;-->
+	<!-- REPAIR TABLE queryaudiofield;-->
+	<!-- OPTIMIZE TABLE queryaudiofield;-->
+	<!-- REPAIR TABLE queryconnectfield;-->
+	<!-- OPTIMIZE TABLE queryconnectfield;-->
+	<!-- REPAIR TABLE queryconnectfieldcounterpart;-->
+	<!-- OPTIMIZE TABLE queryconnectfieldcounterpart;-->
+	<!-- REPAIR TABLE queryconnectfieldoption;-->
+	<!-- OPTIMIZE TABLE queryconnectfieldoption;-->
+	<!-- REPAIR TABLE queryconnectfieldterm;-->
+	<!-- OPTIMIZE TABLE queryconnectfieldterm;-->
+	<!-- REPAIR TABLE queryfield;-->
+	<!-- OPTIMIZE TABLE queryfield;-->
+	<!-- REPAIR TABLE queryfilefield;-->
+	<!-- OPTIMIZE TABLE queryfilefield;-->
+	<!-- REPAIR TABLE querymemofield;-->
+	<!-- OPTIMIZE TABLE querymemofield;-->
+	<!-- REPAIR TABLE querymultiselectfield;-->
+	<!-- OPTIMIZE TABLE querymultiselectfield;-->
+	<!-- REPAIR TABLE querymultiselectfieldoption;-->
+	<!-- OPTIMIZE TABLE querymultiselectfieldoption;-->
+	<!-- REPAIR TABLE queryorganizerfield;-->
+	<!-- OPTIMIZE TABLE queryorganizerfield;-->
+	<!-- REPAIR TABLE queryselectfield;-->
+	<!-- OPTIMIZE TABLE queryselectfield;-->
+	<!-- REPAIR TABLE queryselectfieldoption;-->
+	<!-- OPTIMIZE TABLE queryselectfieldoption;-->
+	<!-- REPAIR TABLE querysorterfield;-->
+	<!-- OPTIMIZE TABLE querysorterfield;-->
+	<!-- REPAIR TABLE querytextfield;-->
+	<!-- OPTIMIZE TABLE querytextfield;-->
+	<!-- REPAIR TABLE requestedassessmentsupplementationnotification;-->
+	<!-- OPTIMIZE TABLE requestedassessmentsupplementationnotification;-->
+	<!-- REPAIR TABLE requesttoken;-->
+	<!-- OPTIMIZE TABLE requesttoken;-->
+	<!-- REPAIR TABLE resourcerights;-->
+	<!-- OPTIMIZE TABLE resourcerights;-->
+	<!-- REPAIR TABLE resourcerolepermission;-->
+	<!-- OPTIMIZE TABLE resourcerolepermission;-->
+	<!-- REPAIR TABLE roleentity;-->
+	<!-- OPTIMIZE TABLE roleentity;-->
+	<!-- REPAIR TABLE rolepermission;-->
+	<!-- OPTIMIZE TABLE rolepermission;-->
+	<!-- REPAIR TABLE roleschooldataidentifier;-->
+	<!-- OPTIMIZE TABLE roleschooldataidentifier;-->
+	<!-- REPAIR TABLE schooldatasource;-->
+	<!-- OPTIMIZE TABLE schooldatasource;-->
+	<!-- REPAIR TABLE studytimenotification;-->
+	<!-- OPTIMIZE TABLE studytimenotification;-->
+	<!-- REPAIR TABLE superuser;-->
+	<!-- OPTIMIZE TABLE superuser;-->
+	<!-- REPAIR TABLE supplementationrequest;-->
+	<!-- OPTIMIZE TABLE supplementationrequest;-->
+	<!-- REPAIR TABLE systemaccesstoken;-->
+	<!-- OPTIMIZE TABLE systemaccesstoken;-->
+	<!-- REPAIR TABLE systemroleentity;-->
+	<!-- OPTIMIZE TABLE systemroleentity;-->
+	<!-- REPAIR TABLE systemsetting;-->
+	<!-- OPTIMIZE TABLE systemsetting;-->
+	<!-- REPAIR TABLE tag;-->
+	<!-- OPTIMIZE TABLE tag;-->
+	<!-- REPAIR TABLE token;-->
+	<!-- OPTIMIZE TABLE token;-->
+	<!-- REPAIR TABLE tokenpermission;-->
+	<!-- OPTIMIZE TABLE tokenpermission;-->
+	<!-- REPAIR TABLE tokenscope;-->
+	<!-- OPTIMIZE TABLE tokenscope;-->
+    <sql>REPAIR TABLE transcriptofrecordsfile;</sql>
+    <sql>OPTIMIZE TABLE transcriptofrecordsfile;</sql>
+	<!-- REPAIR TABLE updaterproperties;-->
+	<!-- OPTIMIZE TABLE updaterproperties;-->
+	<!-- REPAIR TABLE usercalendar;-->
+	<!-- OPTIMIZE TABLE usercalendar;-->
+	<!-- REPAIR TABLE usercontact;-->
+	<!-- OPTIMIZE TABLE usercontact;-->
+	<!-- REPAIR TABLE useremailentity;-->
+	<!-- OPTIMIZE TABLE useremailentity;-->
+	<!-- REPAIR TABLE userentity;-->
+	<!-- OPTIMIZE TABLE userentity;-->
+	<!-- REPAIR TABLE userentityproperty;-->
+	<!-- OPTIMIZE TABLE userentityproperty;-->
+	<!-- REPAIR TABLE userfavouriteworkspace;-->
+	<!-- OPTIMIZE TABLE userfavouriteworkspace;-->
+	<!-- REPAIR TABLE usergroup;-->
+	<!-- OPTIMIZE TABLE usergroup;-->
+	<!-- REPAIR TABLE usergroupentity;-->
+	<!-- OPTIMIZE TABLE usergroupentity;-->
+	<!-- REPAIR TABLE usergrouproleentity;-->
+	<!-- OPTIMIZE TABLE usergrouproleentity;-->
+	<!-- REPAIR TABLE usergrouprolepermission;-->
+	<!-- OPTIMIZE TABLE usergrouprolepermission;-->
+	<!-- REPAIR TABLE usergroupuser;-->
+	<!-- OPTIMIZE TABLE usergroupuser;-->
+	<!-- REPAIR TABLE usergroupuserentity;-->
+	<!-- OPTIMIZE TABLE usergroupuserentity;-->
+	<!-- REPAIR TABLE useridentification;-->
+	<!-- OPTIMIZE TABLE useridentification;-->
+	<!-- REPAIR TABLE userpendingemailchange;-->
+	<!-- OPTIMIZE TABLE userpendingemailchange;-->
+	<!-- REPAIR TABLE userpendingpasswordchange;-->
+	<!-- OPTIMIZE TABLE userpendingpasswordchange;-->
+	<!-- REPAIR TABLE userpicture;-->
+	<!-- OPTIMIZE TABLE userpicture;-->
+	<!-- REPAIR TABLE userschooldataidentifier;-->
+	<!-- OPTIMIZE TABLE userschooldataidentifier;-->
+	<!-- REPAIR TABLE userwall;-->
+	<!-- OPTIMIZE TABLE userwall;-->
+	<!-- REPAIR TABLE userwallsubscription;-->
+	<!-- OPTIMIZE TABLE userwallsubscription;-->
+	<!-- REPAIR TABLE userwidget;-->
+	<!-- OPTIMIZE TABLE userwidget;-->
+	<!-- REPAIR TABLE wall;-->
+	<!-- OPTIMIZE TABLE wall;-->
+	<!-- REPAIR TABLE wallentry;-->
+	<!-- OPTIMIZE TABLE wallentry;-->
+	<!-- REPAIR TABLE wallentryreply;-->
+	<!-- OPTIMIZE TABLE wallentryreply;-->
+	<!-- REPAIR TABLE websocketticket;-->
+	<!-- OPTIMIZE TABLE websocketticket;-->
+	<!-- REPAIR TABLE widget;-->
+	<!-- OPTIMIZE TABLE widget;-->
+	<!-- REPAIR TABLE widgetsetting;-->
+	<!-- OPTIMIZE TABLE widgetsetting;-->
+	<!-- REPAIR TABLE widgetspace;-->
+	<!-- OPTIMIZE TABLE widgetspace;-->
+	<!-- REPAIR TABLE workspaceentity;-->
+	<!-- OPTIMIZE TABLE workspaceentity;-->
+	<!-- REPAIR TABLE workspacefolder;-->
+	<!-- OPTIMIZE TABLE workspacefolder;-->
+	<!-- REPAIR TABLE workspaceforumarea;-->
+	<!-- OPTIMIZE TABLE workspaceforumarea;-->
+	<!-- REPAIR TABLE workspacegrouppermission;-->
+	<!-- OPTIMIZE TABLE workspacegrouppermission;-->
+    <sql>REPAIR TABLE workspacejournalentry;</sql>
+    <sql>OPTIMIZE TABLE workspacejournalentry;</sql>
+	<!-- REPAIR TABLE workspacematerial;-->
+	<!-- OPTIMIZE TABLE workspacematerial;-->
+	<!-- REPAIR TABLE workspacematerialaudiofieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialaudiofieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialaudiofieldanswerclip;-->
+	<!-- OPTIMIZE TABLE workspacematerialaudiofieldanswerclip;-->
+	<!-- REPAIR TABLE workspacematerialconnectfieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialconnectfieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialevaluation;-->
+	<!-- OPTIMIZE TABLE workspacematerialevaluation;-->
+	<!-- REPAIR TABLE workspacematerialfield;-->
+	<!-- OPTIMIZE TABLE workspacematerialfield;-->
+	<!-- REPAIR TABLE workspacematerialfieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialfieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialfilefieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialfilefieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialfilefieldanswerfile;-->
+	<!-- OPTIMIZE TABLE workspacematerialfilefieldanswerfile;-->
+	<!-- REPAIR TABLE workspacematerialmultiselectfieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialmultiselectfieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialmultiselectfieldansweroption;-->
+	<!-- OPTIMIZE TABLE workspacematerialmultiselectfieldansweroption;-->
+	<!-- REPAIR TABLE workspacematerialorganizerfieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialorganizerfieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialproducer;-->
+	<!-- OPTIMIZE TABLE workspacematerialproducer;-->
+	<!-- REPAIR TABLE workspacematerialreply;-->
+	<!-- OPTIMIZE TABLE workspacematerialreply;-->
+	<!-- REPAIR TABLE workspacematerialselectfieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialselectfieldanswer;-->
+	<!-- REPAIR TABLE workspacematerialsorterfieldanswer;-->
+	<!-- OPTIMIZE TABLE workspacematerialsorterfieldanswer;-->
+    <sql>REPAIR TABLE workspacematerialtextfieldanswer;</sql>
+    <sql>OPTIMIZE TABLE workspacematerialtextfieldanswer;</sql>
+    <sql>REPAIR TABLE workspacenode;</sql>
+    <sql>OPTIMIZE TABLE workspacenode;</sql>
+	<!-- REPAIR TABLE workspaceroleentity;-->
+	<!-- OPTIMIZE TABLE workspaceroleentity;-->
+	<!-- REPAIR TABLE workspacerootfolder;-->
+	<!-- OPTIMIZE TABLE workspacerootfolder;-->
+	<!-- REPAIR TABLE workspacesettings;-->
+	<!-- OPTIMIZE TABLE workspacesettings;-->
+	<!-- REPAIR TABLE workspacetoolsettings;-->
+	<!-- OPTIMIZE TABLE workspacetoolsettings;-->
+	<!-- REPAIR TABLE workspacetypeentity;-->
+	<!-- OPTIMIZE TABLE workspacetypeentity;-->
+	<!-- REPAIR TABLE workspacetypegradingscale;-->
+	<!-- OPTIMIZE TABLE workspacetypegradingscale;-->
+	<!-- REPAIR TABLE workspacetypeschooldataidentifier;-->
+	<!-- OPTIMIZE TABLE workspacetypeschooldataidentifier;-->
+	<!-- REPAIR TABLE workspaceuserentity;-->
+	<!-- OPTIMIZE TABLE workspaceuserentity;-->
+	<!-- REPAIR TABLE workspaceuserpermissionoverride;-->
+	<!-- OPTIMIZE TABLE workspaceuserpermissionoverride;-->
+	<!-- REPAIR TABLE workspaceusersignup;-->
+	<!-- OPTIMIZE TABLE workspaceusersignup;-->
+	<!-- REPAIR TABLE workspacevisit;-->
+	<!-- OPTIMIZE TABLE workspacevisit;-->
+	<!-- REPAIR TABLE workspacewall;-->
+	<!-- OPTIMIZE TABLE workspacewall;-->
+</update>
