@@ -3,78 +3,93 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf">
   
-   <!-- Studying -->
+	<!-- Studying -->
+	<section class="ordered-container-item frontpage-section">
+		<h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
+		<div class="ordered-container ordered-container-row ordered-container-responsive frontpage-section-content">
+			<div class="ordered-container-item frontpage-card-container">
+				<div class="card frontpage-studying-card">
+					<img class="card-image" src="/gfx/kuva_nettilukio.png" alt="" title=""/>
+					<div class="card-content">
+						<div class="card-title">#{i18n.text['plugin.studying.nettilukio.title']}</div>
+						<div class="card-text">#{i18n.text['plugin.studying.nettilukio.description']}</div>
+					</div>
+					<div class="card-footer">
+						<a href="http://www.nettilukio.fi/nettilukio_esittely" class="button">
+							#{i18n.text['plugin.studying.readMore.link']}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="ordered-container-item frontpage-card-container">
+				<div class="card frontpage-school-card">
+					<img class="card-image" src="/gfx/kuva_nettiperuskoulu.png" alt="" title=""/>
+					<div class="card-content">
+						<div class="card-title">#{i18n.text['plugin.studying.nettiperuskoulu.title']}</div>
+						<div class="card-text">#{i18n.text['plugin.studying.nettiperuskoulu.description']}</div>
+					</div>
+					<div class="card-footer">
+						<a href="http://www.nettilukio.fi/esittely_nettipk" class="button">
+							#{i18n.text['plugin.studying.readMore.link']}
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="ordered-container-item frontpage-card-container">
+				<div class="card frontpage-courses-card">
+					<img class="card-image" src="/gfx/kuva_aineopiskelu.png" alt="" title=""/>
+					<div class="card-content">
+						<div class="card-title">#{i18n.text['plugin.studying.aineopiskelu.title']}</div>
+						<div class="card-text">#{i18n.text['plugin.studying.aineopiskelu.description']}</div>
+					</div>
+					<div class="card-footer">
+						<a href="http://www.nettilukio.fi/esittely_nettipk" class="button">
+							#{i18n.text['plugin.studying.readMore.link']}
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="ordered-container-item frontpage-section">
+		<div class="carousel">
+			<div class="carousel-item">
+				<div class="carousel-video">
+					<iframe width="1280" height="720" src="https://www.youtube.com/embed/OD5Oj50vyh0?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
+				</div>
+			</div>
+			<div class="carousel-item">
+				<div class="carousel-video">
+					<iframe width="1280" height="720" src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
+				</div>
+			</div>
+			<div class="carousel-item">
+				<div class="carousel-video">
+	     	   		<iframe width="1280" height="720" src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
+	     	   	</div>
+	        </div>
+	        <div class="carousel-item">
+	        	<div class="carousel-video">
+					<iframe width="1280" height="720" src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
+				</div>
+			</div>
+        </div>
+        <div class="carousel-controls"></div>
+	</section>
+  <!-- 
   
-  <section id="studying" class="frontpage-section">
-    <h2 class="frontpage-section-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
-    <div class="frontpage-studying frontpage-box studying-left-box nettilukio">
-      <div class="studying-image"><img src="/gfx/kuva_nettilukio.png" alt="" title="" /></div>
-      <div class="studying-title">#{i18n.text['plugin.studying.nettilukio.title']}</div>
-      <div class="studying-description">#{i18n.text['plugin.studying.nettilukio.description']}</div>
-      <div class="studying-read-more">
-        <a href="http://www.nettilukio.fi/nettilukio_esittely" target="top" class="studying-read-more-link">#{i18n.text['plugin.studying.readMore.link']}</a>
-      </div>
-    </div>
-    <div class="frontpage-studying frontpage-box studying-center-box nettiperuskoulu">
-      <div class="studying-image"><img src="/gfx/kuva_nettiperuskoulu.png" alt="" title="" /></div>
-      <div class="studying-title">#{i18n.text['plugin.studying.nettiperuskoulu.title']}</div>
-      <div class="studying-description">#{i18n.text['plugin.studying.nettiperuskoulu.description']}</div>
-      <div class="studying-read-more">
-        <a href="http://www.nettiperuskoulu.fi/esittely_nettipk" target="top" class="studying-read-more-link">#{i18n.text['plugin.studying.readMore.link']}</a>
-      </div>
-    </div>
-    <div class="frontpage-studying frontpage-box studying-right-box aineopiskelu">
-      <div class="studying-image"><img src="/gfx/kuva_aineopiskelu.png" alt="" title="" /></div>
-      <div class="studying-title">#{i18n.text['plugin.studying.aineopiskelu.title']}</div>
-      <div class="studying-description">#{i18n.text['plugin.studying.aineopiskelu.description']}</div>
-      <div class="studying-read-more">
-        <a href="http://aineopiskelu.otavanopisto.fi/esittely_aineopiskelu" target="top" class="studying-read-more-link">#{i18n.text['plugin.studying.readMore.link']}</a>
-      </div>
-    </div>
-  </section>
-  
-  <!-- Videos -->
+  Videos
   
   <section id="videos" class="frontpage-section">
     <div class="frontpage-videos frontpage-box">
-      <div class="carousel-videos-wrapper">
-        
-        <div class="carousel-video-container">
-          <div class="carousel-video ar169">
-            <iframe width="1280" height="720" src="https://www.youtube.com/embed/OD5Oj50vyh0?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-          </div>
-          <div class="carousel-video-description"></div>
-        </div>
-        
-        <div class="carousel-video-container">
-          <div class="carousel-video ar169">
-            <iframe width="1280" height="720" src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-          </div>
-          <div class="carousel-video-description"></div>
-        </div>
-        
-        <div class="carousel-video-container">
-          <div class="carousel-video ar169">
-            <iframe width="1280" height="720" src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-          </div>
-          <div class="carousel-video-description"></div>
-        </div>
-        
-        <div class="carousel-video-container">
-          <div class="carousel-video ar169">
-            <iframe width="1280" height="720" src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-          </div>
-          <div class="carousel-video-description"></div>
-        </div>
-        
-      </div>
+      
     </div>
     <div class="carousel-video-controls-wrapper">
       
     </div>
   </section>
   
-  <!-- News -->
+  News
   
   <section id="news" class="frontpage-section">
     <h2 class="frontpage-section-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
@@ -130,7 +145,7 @@
     
   </section>
   
-  <!-- Otavan Opisto -->
+  Otavan Opisto
   
   <section id="organization" class="frontpage-section">
     <div class="frontpage-organization frontpage-box">
@@ -154,5 +169,5 @@
 	    </div>
     </div>
   </section>
-  
+   -->
 </ui:composition>
