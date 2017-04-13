@@ -71,10 +71,12 @@
           var bn = b.lastName + ' ' + b.firstName;
           return an < bn ? -1 : an == bn ? 0 : 1;
         });
-        //TODO: renderDustTemplate
-        //for (var i = 0; i < staffMembers.length; i++) {
-        //  console.log(staffMembers[i].firstName + ' ' + staffMembers[i].lastName + ' ' + staffMembers[i].email);
-        //}
+        renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
+          staffMembers: staffMembers
+        }, $.proxy(function (text) {
+          // TODO target element
+          $('.workspace-frontpage-footer').append($.parseHTML(text));
+        }, this));
       }
     });
     
