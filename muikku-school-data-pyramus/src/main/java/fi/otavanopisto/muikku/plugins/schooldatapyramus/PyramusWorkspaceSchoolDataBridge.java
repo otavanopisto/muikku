@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
@@ -23,6 +24,7 @@ import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.pyramus.rest.model.Course;
+import fi.otavanopisto.pyramus.rest.model.CourseDescription;
 import fi.otavanopisto.pyramus.rest.model.CourseEducationSubtype;
 import fi.otavanopisto.pyramus.rest.model.CourseEducationType;
 import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
@@ -133,6 +135,21 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     if (createdCourse == null) {
       logger.severe(String.format("Failed to create new course based on course %d", pyramusCourseId));
       return null;
+    }
+
+    // #2915: Copy additional course descriptions
+    
+    CourseDescription[] courseDescriptions = pyramusClient.get(String.format("/courses/courses/%d/descriptions", pyramusCourseId), CourseDescription[].class);
+    if (ArrayUtils.isNotEmpty(courseDescriptions)) {
+      for (int i = 0; i < courseDescriptions.length; i++) {
+        pyramusClient.post(
+          String.format("/courses/courses/%d/descriptions", createdCourse.getId()),
+          new CourseDescription(
+            null,
+            createdCourse.getId(),
+            courseDescriptions[i].getCourseDescriptionCategoryId(),
+            courseDescriptions[i].getDescription()));
+      }
     }
     
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifierMapper.getWorkspaceIdentifier(createdCourse.getId()), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
