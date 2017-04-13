@@ -97,7 +97,7 @@
               result[i].link = baseUrl + "?announcementId=" + result[i].id;
             }
             
-            renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
+            renderDustTemplate('workspace/workspace-frontpage-announcements.dust', result, $.proxy(function (text) {
               var element = $(text);
               $('.workspace-announcements-container').append(element);
               $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
