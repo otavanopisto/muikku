@@ -350,6 +350,12 @@ public class ElasticSearchProvider implements SearchProvider {
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
     return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
+
+  @Override
+  public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+    
+    return null;
+  }
   
   @Override
   public SearchResult searchWorkspaces(

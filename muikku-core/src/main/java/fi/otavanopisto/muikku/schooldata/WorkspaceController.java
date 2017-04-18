@@ -3,10 +3,12 @@ package fi.otavanopisto.muikku.schooldata;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
@@ -34,6 +36,8 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -78,6 +82,9 @@ public class WorkspaceController {
 
   @Inject
   private WorkspaceMaterialProducerDAO workspaceMaterialProducerDAO;
+  
+  @Inject
+  private SearchProvider searchProvider;
 
   /* Workspace */
 
@@ -115,6 +122,11 @@ public class WorkspaceController {
 
   public List<Workspace> listWorkspaces(String schoolDataSource) {
     return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
+  }
+  
+  public List<Workspace> listWorkspacesBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+    SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
+    return null;
   }
   
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description) {

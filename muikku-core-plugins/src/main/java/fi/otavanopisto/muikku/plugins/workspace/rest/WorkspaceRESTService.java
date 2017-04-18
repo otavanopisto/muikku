@@ -263,7 +263,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response
-        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace)))
+        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace), workspace.getSubjectIdentifier()))
         .build();
   }
 
@@ -436,6 +436,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               String name = (String) result.get("name");
               String description = (String) result.get("description");
               String nameExtension = (String) result.get("nameExtension");
+              String subjectIdentifier = (String) result.get("subjectIdentifier");
               
               Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
               Set<String> curriculumIdentifiers = new HashSet<String>();
@@ -450,7 +451,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               }
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
               }
             }
           }
@@ -511,7 +512,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
+    return Response.ok(createRestModel(
+        workspaceEntity,
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        convertWorkspaceCurriculumIds(workspace),
+        workspace.getSubjectIdentifier()
+    )).build();
   }
   
   @GET
@@ -752,7 +760,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
+    return Response.ok(createRestModel(
+        workspaceEntity,
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        convertWorkspaceCurriculumIds(workspace),
+        workspace.getSubjectIdentifier()
+    )).build();
   }
   
   @GET
@@ -1784,7 +1799,13 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, Set<String> curriculumIdentifiers) {
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
+      WorkspaceEntity workspaceEntity,
+      String name,
+      String nameExtension,
+      String description,
+      Set<String> curriculumIdentifiers,
+      String subjectIdentifier) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
 
@@ -1799,7 +1820,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getDefaultMaterialLicense(),
         numVisits, 
         lastVisit,
-        curriculumIdentifiers);
+        curriculumIdentifiers,
+        subjectIdentifier);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {

@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.ejb.Stateful;
@@ -18,7 +20,10 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -37,6 +42,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private CourseMetaController courseMetaController;
   
   @GET
   @Path("/files/{ID}/content")
@@ -79,23 +90,20 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
     
-    VopsRESTModel result = new VopsRESTModel(
-        Arrays.asList(
-            new VopsRESTModel.VopsRow("MAA", Arrays.asList(
-                new VopsRESTModel.VopsItem(1, true),
-                new VopsRESTModel.VopsItem(2, true),
-                new VopsRESTModel.VopsItem(3, true),
-                new VopsRESTModel.VopsItem(4, false),
-                new VopsRESTModel.VopsItem(5, false))),
-            new VopsRESTModel.VopsRow("AI", Arrays.asList(
-                new VopsRESTModel.VopsItem(1, true),
-                new VopsRESTModel.VopsItem(2, true),
-                new VopsRESTModel.VopsItem(3, false),
-                new VopsRESTModel.VopsItem(4, false))),
-            new VopsRESTModel.VopsRow("GE", Arrays.asList(
-                new VopsRESTModel.VopsItem(1, true),
-                new VopsRESTModel.VopsItem(2, false),
-                new VopsRESTModel.VopsItem(3, false)))));
+    List<Subject> subjects = courseMetaController.listSubjects();
+    subjects = subjects.subList(0, Math.max(9, subjects.size()));
+    
+    List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
+    for (Subject subject : subjects) {
+      rows.add(new VopsRESTModel.VopsRow(subject.getName(), Arrays.asList(
+        new VopsRESTModel.VopsItem(1, true),
+        new VopsRESTModel.VopsItem(2, true),
+        new VopsRESTModel.VopsItem(3, true),
+        new VopsRESTModel.VopsItem(4, false),
+        new VopsRESTModel.VopsItem(5, false))));
+    }
+    
+    VopsRESTModel result = new VopsRESTModel(rows);
     
     return Response.ok(result).build();
   }
