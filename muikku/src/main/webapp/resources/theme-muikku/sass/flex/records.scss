@@ -49,12 +49,6 @@
   max-width: 652px;
 }
 
-
-.tr-vops-rows {
-    max-width: 652px; 
-    min-width: 260px;
-}
-
 .tr-vops-row {
   margin-top:10px;
   display:flex;
@@ -69,15 +63,14 @@
   min-width: 50px;  
 }
 
-.tr-vops-item-courses {
-
-}
-
-
 .tr-vops-item-title {
   flex: 0 0 30px;
+  display:flex;
   height: 30px;
+  min-width: 30px;  
   margin-left:10px;
+  align-items: center;
+  justify-content: center;
   color: #dadada;
 }
 
@@ -87,6 +80,7 @@
   height: 30px;
   background-color: #c8c6c6;
   margin-left:10px;
+  align-items: center;
   border-radius: 50%;
   flex: 0 0 30px;
   

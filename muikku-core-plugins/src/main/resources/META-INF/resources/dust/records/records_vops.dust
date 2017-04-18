@@ -1,48 +1,21 @@
 <div class="tr-vops mf-item ">
-  <div class="tr-vops-content" >
-<!-- lg-flex-cell-full md-flex-cell-full sm-flex-cell-full -->
-
-<!--   <div class="tr-vops-row sm-flex-hide"> -->
-<!--     <div class="tr-vops-row-subject"></div> -->
-<!--       <div class="tr-vops-row-items">       -->
-<!--         <div class="tr-vops-item"> -->
-<!--           <div class="tr-vops-item-name"><span>Aine</span></div> -->
-<!--           <div class="tr-vops-item-courses">     -->
-<!--             {#coursetitlenos} -->
-<!--               <div class="tr-vops-item-title" data-no="{courseNumber}"> -->
-<!--                 <span>{.}</span> -->
-<!--               </div>        -->
-<!--             {/coursetitlenos} -->
-<!--           </div> -->
-<!--         </div>          -->
-<!--       </div>    -->
-<!--     </div>     -->
- 
+  <div class="tr-vops-content">
+    <div class="tr-vops-row sm-flex-hide">
+      <div class="tr-vops-item-name"><span>Aine</span></div>   
+        {#coursetitlenos}
+          <div class="tr-vops-item-title" data-no="{courseNumber}">
+            <span>{.}</span>
+          </div>       
+        {/coursetitlenos}
+    </div>       
     {#rows}
       <div class="tr-vops-row">
-              <div class="tr-vops-item-name">{subject}</div>
-              {#items}
-                <div title="Kurssi {courseNumber}"class="tr-vops-item-circle{?completed} completed{/completed}" data-no="{courseNumber}">
-                </div>       
-              {/items}
-     
+        <div class="tr-vops-item-name">{subject}</div>
+        {#items}
+          <div title="Kurssi {courseNumber}"class="tr-vops-item-circle{?completed} completed{/completed}" data-no="{courseNumber}">
+          </div>       
+        {/items}
       </div>
     {/rows}
-
-<!--   <div class="tr-vops-row"> -->
-<!--     <div class="tr-vops-row-subject"></div> -->
-<!--       <div class="tr-vops-row-items">       -->
-<!--         <div class="tr-vops-item"> -->
-<!--           <div class="tr-vops-item-name"><span>Aine</span></div> -->
-<!--           <div class="tr-vops-item-courses">     -->
-<!--             {#coursetitlenos} -->
-<!--               <div class="tr-vops-item-title" data-no="{courseNumber}"> -->
-<!--                 <span>{.}</span> -->
-<!--               </div>        -->
-<!--             {/coursetitlenos} -->
-<!--           </div> -->
-<!--         </div>          -->
-<!--       </div>    -->
-<!--     </div> -->    
   </div>
 </div>
