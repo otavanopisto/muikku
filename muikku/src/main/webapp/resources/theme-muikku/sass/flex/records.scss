@@ -23,8 +23,76 @@
       @include generic-loader(50px);
       margin-left: 50%;
       margin-top: 50%;
-    }
-    
+    }    
+  }  
+}
+.tr-vops {
+  width: 100%;
+}
+
+
+.tr-vops-content {
+  padding:20px;
+  margin-left:auto;
+  margin-right:auto;
+  min-width: 260px;
+  overflow-x: auto;
+  max-width: 652px;
+}
+
+.tr-vops-content {
+  padding:20px;
+  margin-left:auto;
+  margin-right:auto;
+  min-width: 260px;
+  overflow-x: auto;
+  max-width: 652px;
+}
+
+
+.tr-vops-rows {
+    max-width: 652px; 
+    min-width: 260px;
+}
+
+.tr-vops-row {
+  margin-top:10px;
+  display:flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+
+.tr-vops-item-name {
+  flex: 0 0 50px;
+  text-align: center;
+  min-width: 50px;  
+}
+
+.tr-vops-item-courses {
+
+}
+
+
+.tr-vops-item-title {
+  flex: 0 0 30px;
+  height: 30px;
+  margin-left:10px;
+  color: #dadada;
+}
+
+
+.tr-vops-item-circle {
+  min-width: 30px;
+  height: 30px;
+  background-color: #c8c6c6;
+  margin-left:10px;
+  border-radius: 50%;
+  flex: 0 0 30px;
+  
+  &.completed {
+    background-color: $item-grade-passing-background-color;
+  
   }
   
 }
