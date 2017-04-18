@@ -31,7 +31,7 @@ public class FeedRESTService extends PluginRESTService {
   private static final long serialVersionUID = -10681497398136513L;
 
   @Inject
-  private FeedDAO feedDao;
+  private FeedDAO feedDAO;
 
   @Inject
   private FeedItemDAO feedItemDao;
@@ -52,14 +52,14 @@ public class FeedRESTService extends PluginRESTService {
     List<Feed> feeds = new ArrayList<>();
     
     for (String name : namesList) {
-      Feed feed = feedDao.findByName(name);
+      Feed feed = feedDAO.findByName(name);
       if (feed == null) {
         return Response
             .status(Status.NOT_FOUND)
             .entity("Feed not found: " + name)
             .build();
       }
-      feeds.add(feedDao.findByName(name));
+      feeds.add(feedDAO.findByName(name));
     }
     
     List<FeedItem> feedItems = feedItemDao.findByFeeds(feeds, numItems, order);
