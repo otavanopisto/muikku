@@ -68,14 +68,15 @@
     display: inline-block;
     padding: 12px;
     white-space: nowrap;
+    margin-right:40px;
   } 
   
   .mf-dropdown-arrow {
-    border-left: 1px solid $environment-button-dropdown-background-color;
-    display: inline-block;
-    float: right;
-    padding: 4px 4px 3px 4px;
-    font-size: 2.45em;    
+    border-left: 1px solid #f6c06d;
+    padding: 4px 4px 3px 2px;
+    font-size: 2.45em;
+    position: absolute;
+    right:0;
   } 
   
 }
