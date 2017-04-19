@@ -60,6 +60,25 @@
         }
       }, this));
     
+    // #1813: Workspace teachers
+    
+    mApi().user.staffMembers.read({
+      workspaceEntityId: workspaceEntityId
+    }).callback(function (err, staffMembers) {
+      if (!err && staffMembers) {
+        staffMembers.sort(function(a, b) {
+          var an = a.lastName + ' ' + a.firstName;
+          var bn = b.lastName + ' ' + b.firstName;
+          return an < bn ? -1 : an == bn ? 0 : 1;
+        });
+        renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
+          staffMembers: staffMembers
+        }, $.proxy(function (text) {
+          $('.workspace-teachers-container').append($.parseHTML(text));
+        }, this));
+      }
+    });
+    
     if ($('.workspace-announcements-container').length > 0) {
 
       $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function() {
@@ -79,7 +98,7 @@
               result[i].link = baseUrl + "?announcementId=" + result[i].id;
             }
             
-            renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
+            renderDustTemplate('workspace/workspace-frontpage-announcements.dust', result, $.proxy(function (text) {
               var element = $(text);
               $('.workspace-announcements-container').append(element);
               $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});
