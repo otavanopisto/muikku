@@ -182,7 +182,9 @@ public class DefaultSchoolDataWorkspaceListener {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-          workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+          // #3091: Users removed in school data source should be permanently deleted as merely archiving
+          // them would still lead the workspace to be shown in the student's Transcript of Records view
+          workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
         }
       } else {
         logger.warning("could not remove workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
