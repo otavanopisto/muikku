@@ -9,13 +9,13 @@ public class FeedPluginDescriptor implements PluginDescriptor {
   @Override
   public void init() {
   }
-	
-	@Override
-	public String getName() {
-		return "feed";
-	}
-	
-	public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
-	}
-	
+
+  @Override
+  public String getName() {
+    return "feed";
+  }
+
+  public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
+  }
+
 }
