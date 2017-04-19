@@ -120,7 +120,7 @@ public class FeedItem {
   @Column
   private String image;
 
-  @ManyToOne(targetEntity = Feed.class, optional = false)
+  @ManyToOne(optional = false)
   @JsonIgnore
   private Feed feed;
 }
