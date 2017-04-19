@@ -686,7 +686,6 @@ ul.blogs-content-wrapper {
   .site-link {
     background: $of-organization-site-link-background-color;
     color: $of-organization-site-link-color;
-
   }
   
   .newsletter-link {
@@ -850,8 +849,8 @@ footer.of-footer {
   width: calc(100% - 20px);
 }
 
-ul.carousel-video-controls,
-ul.carousel-image-controls {
+.carousel-video-controls,
+.carousel-image-controls {
   @include flexbox;
   justify-content: center;
   list-style-type: none;
