@@ -2,8 +2,6 @@ package fi.otavanopisto.muikku.plugins.feed;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -73,15 +71,6 @@ public class FeedSynchronizer {
         List<SyndEntry> entries = syndFeed.getEntries();
         
         for (SyndEntry entry : entries) {
-          OffsetDateTime publicationDate = null;
-          
-          if (entry.getPublishedDate() != null) {
-            // The API doesn't expose the time zone used so we need to use UTC
-            // https://github.com/rometools/rome/issues/188
-            publicationDate = OffsetDateTime.ofInstant(
-                entry.getPublishedDate().toInstant(),
-                ZoneOffset.UTC);
-          }
           feedItemDao.create(
               entry.getTitle(),
               entry.getLink(),
@@ -89,7 +78,7 @@ public class FeedSynchronizer {
               entry.getDescription() == null
                   ? null
                   : clean(entry.getDescription().getValue()),
-              publicationDate,
+              entry.getPublishedDate(),
               (String)null,
               feed);
         }

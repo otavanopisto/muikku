@@ -1,6 +1,6 @@
 package fi.otavanopisto.muikku.plugins.feed.model;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ public class FeedItem {
       String link,
       String author,
       String description,
-      OffsetDateTime publicationDate,
+      Date publicationDate,
       String image,
       Feed feed
   ) {
@@ -72,11 +72,11 @@ public class FeedItem {
     this.description = description;
   }
 
-  public OffsetDateTime getPublicationDate() {
+  public Date getPublicationDate() {
     return publicationDate;
   }
 
-  public void setPublicationDate(OffsetDateTime publicationDate) {
+  public void setPublicationDate(Date publicationDate) {
     this.publicationDate = publicationDate;
   }
 
@@ -115,12 +115,12 @@ public class FeedItem {
   private String description;
 
   @Column
-  private OffsetDateTime publicationDate;
+  private Date publicationDate;
 
   @Column
   private String image;
 
-  @ManyToOne(targetEntity = Feed.class, optional = false)
+  @ManyToOne(optional = false)
   @JsonIgnore
   private Feed feed;
 }

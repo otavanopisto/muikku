@@ -1,7 +1,7 @@
 package fi.otavanopisto.muikku.plugins.feed;
 
-import java.time.OffsetDateTime;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -23,7 +23,7 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
     String link,
     String author,
     String description,
-    OffsetDateTime publicationDate,
+    Date publicationDate,
     String image,
     Feed feed
   ) {
@@ -46,24 +46,18 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
 	  return findByFeeds(Collections.singletonList(feed), numItems, FeedSortOrder.DESCENDING);
 	}
 
-	public List<FeedItem> findByFeeds(
-	    List<Feed> feeds,
-	    int numItems,
-	    FeedSortOrder order
-  ) {
-		EntityManager entityManager = getEntityManager(); 
-		
-		if (feeds == null || feeds.size() == 0) {
-		  return Collections.emptyList();
-		}
-    
+  public List<FeedItem> findByFeeds(List<Feed> feeds, int numItems, FeedSortOrder order) {
+    EntityManager entityManager = getEntityManager();
+
+    if (feeds == null || feeds.size() == 0) {
+      return Collections.emptyList();
+    }
+
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<FeedItem> criteria = criteriaBuilder.createQuery(FeedItem.class);
     Root<FeedItem> root = criteria.from(FeedItem.class);
     criteria.select(root);
-    criteria.where(
-        root.get(FeedItem_.feed).in(feeds)
-    );
+    criteria.where(root.get(FeedItem_.feed).in(feeds));
     switch (order) {
     case ASCENDING:
       criteria.orderBy(criteriaBuilder.asc(root.get(FeedItem_.publicationDate)));
@@ -72,11 +66,8 @@ public class FeedItemDAO extends CorePluginsDAO<FeedItem> {
       criteria.orderBy(criteriaBuilder.desc(root.get(FeedItem_.publicationDate)));
       break;
     }
-    
-    return entityManager
-        .createQuery(criteria)
-        .setMaxResults(numItems)
-        .getResultList();
+
+    return entityManager.createQuery(criteria).setMaxResults(numItems).getResultList();
 	}
 	
   public void deleteAll() {

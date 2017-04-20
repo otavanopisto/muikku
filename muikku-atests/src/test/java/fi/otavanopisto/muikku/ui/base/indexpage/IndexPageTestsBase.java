@@ -19,7 +19,17 @@ public class IndexPageTestsBase extends AbstractUITest {
   @Test
   public void indexPageTest() throws IOException {
     navigate("", true);
-    assertVisible("main.content");
+    waitForPresent(".of-header-wrapper");
+    assertVisible(".of-header-wrapper");
+    waitForPresent("#studying");
+    assertVisible("#studying");
+    waitForPresent("#videos");
+    assertVisible("#videos");
+    waitForPresent("#news");
+    assertVisible("#news");
+    waitForPresent("#organization");
+    assertVisible("#organization");
+    
   }
   
   @Test
