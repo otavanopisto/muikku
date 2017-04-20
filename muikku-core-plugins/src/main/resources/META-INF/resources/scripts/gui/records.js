@@ -60,6 +60,12 @@
     },
 
     _loadVops : function () { 
+//      $('.tr-vops-legend-content').on('click', '.tr-vops-legend-items', $.proxy(function(event) {
+//             
+//      }, this));
+      
+
+      
       this.element.addClass('loading');
       this._clear();      
       
@@ -82,15 +88,21 @@
           renderDustTemplate('/records/records_vops.dust', result, $.proxy(function(text) {
             this.element.append(text);
             this.element.removeClass('loading');
+            
+            $('.tr-vops-legend-content').click( function() {
+              
+              var state = $('.tr-vops-legend-content').hasClass('open') ? 'open' : 'closed';                 
+              if(state == 'open'){
+                $(this).removeClass('open');                 
+                $(this).addClass('closed');                
+              } else {
+                $(this).removeClass('closed');                 
+                $(this).addClass('open');                                    
+              }              
+            });
           }, this));
         }            
       }, this));
-  
-              
-
-      
-      
-     
     },
         
     _loadRecords : function () {
@@ -426,22 +438,6 @@
       this.element.off('click', '.tr-task-evaluated');
     }
   });
-  
-  $.widget("custom.vops", {
-    _create : function() {
-      renderDustTemplate('/records/records_view_forms.dust', {}, $.proxy(function(text) {
-        this.element.append(text);
-      }, this));      
-    }
-  }); 
-  
-  $.widget("custom.forms", {
-    _create : function() {
-      renderDustTemplate('/records/records_view_forms.dust', {}, $.proxy(function(text) {
-        this.element.append(text);
-      }, this));      
-    }     
-  });  
   
   $(document).ready(function(){
     $('[data-grades]').records({
