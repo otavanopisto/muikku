@@ -31,7 +31,6 @@
   width: 100%;
 }
 
-
 .tr-vops-content {
   position: relative;
   padding: 0 20px 20px;
@@ -42,37 +41,26 @@
   max-width: 652px;
 }
 
-.tr-vops-legend-content-state {
-  position: absolute;
-  right:0;
-  top:0;
-  font-size: 20px;
-  width: 20px;  
-  height: 20px;
-  color: #8f8e8f;
-  
-}
 
-
-.tr-vops-legend-container{
+.tr-vops-legend-container {
   position: relative;
 }
 
-.tr-vops-legend-button{
+.tr-vops-legend-button {
   
 }
 
-.tr-vops-legend-content-title{
-  font-size: 15px;  
+.tr-vops-legend-content-title {
+  font-size: 15px;   
   padding-left: 10px;
   color: $environment-link-color;
 }
 
 
-.tr-vops-legend-content{
-  background-color: #fbfbfb;
-  border-top: 1px solid #f3f3f3;
-  border-bottom: 1px solid #f3f3f3;
+.tr-vops-legend-content {
+  background-color: $environment-legend-background-color;
+  border-top: 1px solid $environment-legend-border-color;
+  border-bottom: 1px solid $environment-legend-border-color;
   padding: 5px;
   overflow-y: hidden;
   max-height: 25px;
@@ -108,7 +96,7 @@
   display: inline-block;
   height:20px;
   width: 20px;
-  background-color: #c8c6c6;
+  background-color: $environment-background-dim-color;
   margin-right:10px;    
   &.completed {
     background-color: $item-grade-passing-background-color;    
@@ -145,7 +133,7 @@
 .tr-vops-item-circle {
   min-width: 30px;
   height: 30px;
-  background-color: #c8c6c6;
+  background-color: $environment-background-dim-color;
   margin-left:10px;
   align-items: center;
   border-radius: 50%;
