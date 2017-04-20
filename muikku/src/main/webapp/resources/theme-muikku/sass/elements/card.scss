@@ -10,10 +10,9 @@
  *
 **/
 
-@import "../base/breakpoints";
-
 @import "../base/colors";
 @import "../base/breakpoints";
+@import "../base/mixins";
 
 $card-font-family: "Exo 2", Arial, sans-serif;
 
@@ -27,19 +26,23 @@ $card-font-family: "Exo 2", Arial, sans-serif;
 	font-family: $card-font-family;
 	border-radius: 3px;
 	height: 100%;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-	transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+	min-height: 45px;
 	
-	&:hover {
-		box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+	&.card-shadowed {
+		box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+		transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+			
+		&:hover {
+			box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+		}
 	}
 	
-	>.card-image {
+	.card-image {
 		width: 100%;
 		position: relative;
 	}
 	
-	>.card-content {
+	.card-content {
 		width: 100%;
 		padding: 20px 20px 10px 20px;
 		font-weight: 400;
@@ -60,6 +63,8 @@ $card-font-family: "Exo 2", Arial, sans-serif;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			
+			@include colorapplying-text(card-title, $color-base-list);
+			
 			@media screen and (max-width: $breakpoint-portrait-pad-max) {
 				& {
 					font-size: 20px;
@@ -68,7 +73,7 @@ $card-font-family: "Exo 2", Arial, sans-serif;
 		}
 	}
 	
-	>.card-footer {
+	.card-footer {
 		text-align: left;
 		width: 100%;
 		padding: 0px 20px 20px 20px;

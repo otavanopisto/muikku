@@ -1,5 +1,14 @@
-jQuery(document).ready(function(){
-	$('[data-interact-dropdown]').click(function(e){
+$(document.body).click(function(){
+  $('.dropdown').cssAnimate({
+    removeClass: 'dropdown-_visible_',
+    callback: function(){
+      $('.menu').removeClass('dropdown-_displayed_');
+    }
+  });
+});
+
+window.interaction.register(function(root){
+	$(root).find('[data-interact-dropdown]').addBack('[data-interact-dropdown]').click(function(e){
 		var target = $(e.currentTarget).attr('data-interact-dropdown');
 		
 		var position = $(e.currentTarget).position();
@@ -14,14 +23,5 @@ jQuery(document).ready(function(){
 		setTimeout(function(){
 			$(target).addClass('dropdown-_visible_');
 		}, 10);
-	});
-	
-	$(document.body).click(function(){
-		$('.dropdown').cssAnimate({
-			removeClass: 'dropdown-_visible_',
-			callback: function(){
-				$('.menu').removeClass('dropdown-_displayed_');
-			}
-		});
 	});
 });

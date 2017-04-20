@@ -50,7 +50,7 @@
 							<li
 								class="navbar-item frontpage-navbar-display-menu">
 								<a data-interact-menu="#main-menu" class="link link-icon link-full"> <span
-									class="icon icon-burger navbar-display-menu"></span>
+									class="icon icon-navicon navbar-display-menu"></span>
 							</a>
 							</li>
 							<li
@@ -87,7 +87,7 @@
 								<span>#{i18n.text['plugin.login.buttonLabel']}</span>
 							</a>
 							<a
-								class="label label-primary label-dynamic-word-break label-clickable forgotpassword-link breakpoint breakpoint-invisible breakpoint-small-mobile">
+								class="label label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword">
 								<span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
 							</a>
 							
@@ -117,7 +117,7 @@
 							jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
 							<span>#{i18n.text['plugin.login.buttonLabel']}</span>
 						</a> <a
-							class="label label-large label-primary label-dynamic-word-break label-clickable forgotpassword-link">
+							class="label label-large label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword">
 							<span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
 						</a>
 					</div>
@@ -131,8 +131,8 @@
 							</li>
 							<li class="menu-item"><a href="#contact" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.contact']}</span>
 							</a></li>
-							<li class="menu-item"><a href="/coursepicker"> <span
-									class="link link-highlight link-full">#{i18n.text['plugin.navigation.link.openMaterials']}</span>
+							<li class="menu-item"><a href="/coursepicker" class="link link-highlight link-full">
+								<span>#{i18n.text['plugin.navigation.link.openMaterials']}</span>
 							</a></li>
 						</ul>
 					</div>
@@ -203,7 +203,7 @@
 		<div class="separator separator-strong"></div>
 
 		<ui:insert name="main">
-			<main class="screen-container frontpage-main">
+			<main class="screen-container frontpage-main background-container">
 				<div class="screen-container-wrapper ordered-container frontpage-main-container">
 					<ui:insert name="grid-content"></ui:insert>
 				</div>
@@ -240,7 +240,7 @@
 						</p>
 						<br/>
 						<p class="text text-extra-separated">
-							<span class="text text-icon icon-phone text-inline text-clear"></span>
+							<span class="text text-icon icon-envelope text-inline text-clear"></span>
 							&#160;&#160;
 							<span class="text text-extra-thick text-inline text-clear">
 								#{i18n.text['plugin.footer.emailAddress.label']}

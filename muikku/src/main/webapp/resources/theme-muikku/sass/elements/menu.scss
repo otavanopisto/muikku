@@ -102,6 +102,12 @@ $menu-font: 'Exo 2',Arial,sans-serif;
 			>.menu-item {
 				display: block;
 				height: 70px;
+				
+				@include breakpoint-small-mobile {
+					& {
+						height: 45px;
+					}
+				}
 			}
 		}
 	}

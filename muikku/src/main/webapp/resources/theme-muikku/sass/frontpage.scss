@@ -1,14 +1,12 @@
 @import "util/base";
 @import "util/fonts";
 
-@import "elements/icons";
 @import "elements/navbar";
 @import "elements/notification-queue";
 @import "elements/button";
 @import "elements/labels";
 @import "elements/link";
 @import "elements/menu";
-@import "elements/icons";
 @import "elements/dropdown";
 @import "elements/hero";
 @import "elements/bubble";
@@ -20,6 +18,10 @@
 @import "elements/ordered-container";
 @import "elements/card";
 @import "elements/carousel";
+@import "elements/background-container";
+@import "elements/feed";
+@import "elements/dialog";
+@import "elements/form";
 
 //OVERRIDES
 
@@ -32,11 +34,6 @@ body {
 //Add a space between the navbar login button and the next label
 .frontpage-navbar-login-button, .frontpage-navbar-language-picker {
 	margin-right: 15px;
-}
-@include breakpoint-small-mobile {
-	.frontpage-navbar-login-button, .frontpage-navbar-language-picker {
-		margin-right: 0;
-	}
 }
 
 //Add a margin bottom to the muikkuverkko logo from the hero
@@ -135,12 +132,12 @@ body {
 	flex-direction: column;
 }
 
-.frontpage-section-content {
+.frontpage-studying-section-content, .frontpage-news-section-content {
 	margin-top: 20px;
 }
 .frontpage-studying-card {
 	.card-title {
-		color: #5db5c5;
+		color: #5db5c5 !important;
 	}
 	.button {
 		background-color: #5db5c5;
@@ -151,7 +148,7 @@ body {
 }
 .frontpage-school-card {
 	.card-title {
-		color: #f58220;
+		color: #f58220 !important;
 	}
 	.button {
 		background-color: #f58220;
@@ -162,7 +159,7 @@ body {
 }
 .frontpage-courses-card {
 	.card-title {
-		color: #c64986;
+		color: #c64986 !important;
 	}
 	.button {
 		background-color: #c64986;
@@ -173,4 +170,83 @@ body {
 }
 .frontpage-card-container {
 	padding: 10px;
+}
+.frontpage-otavan-opisto-card {
+	padding: 20px;
+	margin-bottom: 20px;
+}
+.frontpage-otavan-opisto-card-social-media-and-description {
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+	
+	@media screen and (max-width: $breakpoint-portrait-pad-max){
+		& {
+			flex-direction: column;
+		}
+	}
+	
+	.frontpage-otavan-opisto-card-social-media {
+		flex: 0 0 430px;
+		text-align: left;
+		
+		.button-social {
+			margin: 10px 10px 20px 0;
+		}
+		
+		@media screen and (max-width: $breakpoint-portrait-pad-max){
+			& {
+				text-align: center;
+				flex: 0 0 auto;
+				order: 2;
+			}
+		}
+	}
+
+	.frontpage-newsletter-button {
+		margin-top: 10px;
+		margin-bottom: 20px;
+	}
+	
+	.frontpage-otavan-opisto-card-description {
+		flex: 1 1 0;
+		text-align: left;
+		
+		@media screen and (max-width: $breakpoint-portrait-pad-max){
+			& {
+				text-align: center;
+				order: 1;
+			}
+		}
+		
+		.text > p {
+			margin: 15px 0 15px 0;
+			
+			@media screen and (min-width: $breakpoint-landscape-pad-min){
+				& {
+					font-size: 17px;
+					margin: 17px 0 17px 0;
+				}
+			}
+		}
+	}
+}
+
+.frontpage-otavan-opisto-card-logo {
+	text-align: left;
+	margin-top: 20px;
+	order: 1;
+	
+	@media screen and (max-width: $breakpoint-portrait-pad-max){
+		& {
+			text-align: center;
+			order: -1;
+		}
+	}
+}
+
+@media screen and (max-width: $breakpoint-medium-mobile-max){
+	.navbar-default-options .frontpage-forgotpassword {
+		display: none;
+	}
 }

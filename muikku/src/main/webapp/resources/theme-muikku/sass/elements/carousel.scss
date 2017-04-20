@@ -1,7 +1,7 @@
 /**
  * Provides a handy carousel tool, make sure to include the carousel interaction js file
  *
- * 	div.carousel
+ * 	div.carousel[ | .carousel-unpadded]
  *		div.carousel-item
  *			div.carousel-video?
  *				(BODY)
@@ -17,6 +17,10 @@
 	width: 100%;
 	position: relative;
 	padding: 10px;
+	
+	&.carousel-unpadded {
+		padding: 0;
+	}
 	
 	.carousel-item {
 		display: block;

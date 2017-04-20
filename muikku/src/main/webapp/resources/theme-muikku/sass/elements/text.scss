@@ -7,7 +7,7 @@
  *		[ COLORMAPPING ]
  *		[ | .text-shadowed | .text-extra-shadowed]
  *		[ | .text-uppercase | .text-lowercase]
- *		[ | .text-left | .text-right | .text-centered ]
+ *		[ | .text-left | .text-right | .text-centered | .text-justify ]
  *		[ | .text-full]
  *		[ | .text-responsive ]
 **/
@@ -105,12 +105,20 @@ $text-font-family: "Exo 2", Arial, sans-serif;
 		line-height: 1.15;
 	}
 	
+	&.text-extra-separated {
+		line-height: 1.3;
+	}
+	
 	&.text-left {
 		text-align: left;
 	}
 	
 	&.text-centered {
 		text-align: center;
+	}
+	
+	&.text-justify {
+		text-align: justify;
 	}
 	
 	&.text-right {

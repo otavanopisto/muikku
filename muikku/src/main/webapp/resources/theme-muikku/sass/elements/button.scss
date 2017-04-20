@@ -130,9 +130,10 @@ a.button {
 	}
 }
 
+$button-pill-font-family: "Exo 2", Arial, sans-serif;
+
 $button-pill-size: 34px;
 $button-pill-font-size: 16px;
-$button-pill-font-family: "Exo 2", Arial, sans-serif;
 
 a.button-pill {
 	width: $button-pill-size;
@@ -150,4 +151,30 @@ a.button-pill {
 	@include prefix(user-select, moz o ms webkit, none);
 	
 	@include colorapplying-with-mapping(button-pill, $color-base-list);
+}
+
+$button-social-size: 40px;
+a.button-social {
+	width: $button-social-size;
+	height: $button-social-size;
+	border-radius: $button-social-size;
+	font-family: muikku;
+	font-variant: normal;
+	text-transform: none;
+	text-decoration: none;
+	speak: none;
+	background-color: $color-button-social-default-background;
+	color: $color-button-social-default-text;
+	text-align: center;
+	vertical-align: center;
+	line-height: $button-social-size;
+	cursor: pointer;
+	display: inline-block;
+	@include prefix(transition, moz ms o webkit, color .3s, background-color .3s);
+	@include prefix(user-select, moz ms o webkit, none);
+	
+	&:hover, &.hover, &:active, &.active {
+		background-color: $color-button-social-highlight-background;
+		color: $color-button-social-highlight-text;
+	}
 }

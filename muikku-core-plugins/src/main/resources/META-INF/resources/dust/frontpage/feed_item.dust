@@ -1,0 +1,11 @@
+<ul class="feed">
+{#entries}
+  <li class="feed-item">
+    <span class="feed-item-description">
+      <a href="{link|s}" target="top">{title}</a>
+      {description|s}
+    </span>
+    <span class="feed-item-date">{publicationDate|formatDate}</span>
+  </li>
+{/entries}
+</ul>
