@@ -42,12 +42,15 @@ $button-large-font-size: 17px;
   font-size: $button-medium-font-size;
   height: $button-medium-height;
   line-height: $button-medium-height;
+  overflow: hidden;
   padding: 0 $button-medium-font-size;
   position: relative;
   text-align: center;
   text-decoration: none;
+  text-overflow: ellipsis;
   text-transform: uppercase;
-  vertical-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
 
   &.button-large {
     font-size: $button-large-font-size;
@@ -69,11 +72,13 @@ $button-large-font-size: 17px;
   &.button-dynamic-height {
     height: auto;
     overflow-wrap: break-word;
+    white-space: auto;
     width: 100%;
   }
 
   &.button-dynamic-word-break {
     height: auto;
+    white-space: auto;
     width: auto;
 
     > span {
