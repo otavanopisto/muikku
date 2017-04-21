@@ -1,3 +1,16 @@
+//
+// Basic feed list for RSS feeds
+//
+// ul.feed
+//   li.feed-item
+//     span.feed-item-description
+//       a
+//         (BODY)
+//       (BODY)
+//     span.feed-item-date
+//       (BODY)
+//
+
 @import "../base/colors";
 @import "../base/mixins";
 
