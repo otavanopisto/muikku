@@ -1,4 +1,4 @@
-//Generic
+// Generic
 $color-warn-background: #ef6000;
 $color-warn-text: #fff;
 
@@ -41,11 +41,12 @@ $color-base-list: (
 	(clear, $color-clear-background, $color-clear-text)
 );
 
-//Navbar
+// Navbar
 $color-navbar-default-background: #f5f5f5;
-$color-navbar-default-text: #343333; 
+$color-navbar-default-text: #343333;
+$color-navbar-default-shadow: rgba(0, 0, 0, 0.2);
 
-//Links
+// Links
 $color-link-default-text: #343333;
 $color-link-highlight-text: #00af00;
 $color-link-hover-text: #009fe3;
@@ -59,49 +60,76 @@ $color-link-active-background: rgba(0, 0, 0, 0.05);
 $color-link-clear-background: invisible;
 $color-link-strong-background: invisible;
 
-//Menu
+// Menu
 $color-menu-default-background: #f5f5f5;
 $color-menu-default-text: #343333;
 
-//dropdown
+// dropdown
 $color-dropdown-default-background: #494949;
+
 $color-dropdown-default-text: #fff;
 
-//bubble
+$color-dropdown-default-shadow: rgba(0, 0, 0, 0.3);
+
+// bubble
 $color-bubble-default-title: #009fe3;
 $color-bubble-default-content: #343333;
 $color-bubble-default-border: #02a0e3;
 $color-bubble-default-highlight-border: #ef6000;
 $color-bubble-default-background: #fff;
+$color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
 
-//footer
+// footer
 $color-footer-default-background: #454545;
 $color-footer-default-text: #fff;
 
-//card
+// card
 $color-card-default-background: #fff;
 $color-card-default-border: #e2e3e3;
 $color-card-default-text: #343333;
+$color-card-default-shadow-one: rgba(0, 0, 0, 0.12);
+$color-card-default-shadow-two: rgba(0, 0, 0, 0.24);
+$color-card-default-shadow-one-hover: rgba(0, 0, 0, 0.25);
+$color-card-default-shadow-two-hover: rgba(0, 0, 0, 0.22);
 
-//dialog
+// dialog
 $color-dialog-default-background: #fff;
 $color-dialog-default-border: #e2e3e3;
 $color-dialog-default-text: #343333;
 $color-dialog-default-title-text: #343333;
 
-//Overlay
-$color-overlay-background: rgba(0,0,0,0.65);
+// Overlay
+$color-overlay-background: rgba(0, 0, 0, 0.65);
 
-//Background
+// Background
 $color-background-container-default-background: #f5f5f5;
 $color-background-container-default-text: #343333;
 
-//social button
+// social button
 $color-button-social-default-background: #454545;
 $color-button-social-default-text: #fff;
 $color-button-social-highlight-background: #009fe3;
 $color-button-social-highlight-text: #fff;
 
-//feed
+// feed
 $color-feed-default-text: #343333;
 $color-feed-default-date: #8c8c8c;
+
+// carousel
+$color-carousel-default-dot-background: #afafaf;
+$color-carousel-default-dot-border: #fff;
+$color-carousel-default-dot-active-background: #ef6000;
+
+// hero
+$color-hero-default-background: #0089c6;
+
+// logo
+$color-logo-default-shadow: rgba(0, 0, 0, 0.2);
+
+// notification queue
+$color-notification-queue-item-container-background: #666;
+$color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
+$color-notification-queue-item-text: #fff;
+
+// text
+$color-text-default-shadow: rgba(0, 0, 0, 0.3);

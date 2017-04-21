@@ -6,99 +6,97 @@ $dialog-font-family: "Exo 2", Arial, sans-serif;
 $dialog-button-close-height: 45px;
 
 .dialog {
-	display: none;
-	opacity: 0;
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: $color-overlay-background;
-	@include prefix(transition, moz ms webkit o, opacity 0.3s);
-	align-items: center;
-	justify-content: center;
-	z-index: 10;
-	
-	> .dialog-window {
-		position: relative;
-		padding: 20px;
-		border-radius: 3px;
-		overflow: hidden;
-		background-color: $color-dialog-default-background;
-		border: solid 1px $color-dialog-default-border;
-		max-width: 450px;
-		font-family: $dialog-font-family;
-		
-		@media screen and (max-width: $breakpoint-medium-mobile-max) {
-			& {
-				width: 100%;
-				height: 100%;
-				border-radius: 0;
-				border: none;
-				max-width: none;
-			}
-		}
-		
-		.dialog-header {
-			position: relative;
-			width: 100%;
-			color: $color-dialog-default-title-text;
-			border-bottom: solid 1px $color-dialog-default-border;
-			padding-bottom: 20px;
-			margin-bottom: 20px;
-		
-			.dialog-title {
-				position: relative;
-				width: 100%;
-				text-align: center;
-				font-weight: 500;
-			}
-		}
-		
-		.dialog-close {
-			font-size: 18px;
-			text-align: center;
-			vertical-align: center;
-			line-height: $dialog-button-close-height;
-			top: 50%;
-			margin-top: -#{$dialog-button-close-height/2};
-			cursor: pointer;
-			height: $dialog-button-close-height;
-			position: absolute;
-			right: 8px;
-			width: $dialog-button-close-height;
-			border-radius: $dialog-button-close-height;
-			@include prefix(transition, moz ms o webkit, background-color 0.3s);
-			
-			&:active {
-				background-color: $color-dialog-default-border;
-			}
-		}
-		
-		.dialog-footer {
-			position: relative;
-			width: 100%;
-			display: flex;
-			flex-direction: row-reverse;
-			
-			>* {
-				margin-left: 10px;
-			}
-		}
-		
-		.dialog-content {
-			position: relative;
-			width: 100%;
-			text-align: justify;
-			padding-bottom: 20px;
-		}
-	}
-	
-	&.dialog-_displayed_ {
-		display: flex;
-	}
-	
-	&.dialog-_visible_ {
-		opacity: 1;
-	}
+  @include prefix(transition, moz ms webkit o, opacity 0.3s);
+  align-items: center;
+  background-color: $color-overlay-background;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 10;
+
+  > .dialog-window {
+    background-color: $color-dialog-default-background;
+    border: solid 1px $color-dialog-default-border;
+    border-radius: 3px;
+    font-family: $dialog-font-family;
+    max-width: 450px;
+    overflow: hidden;
+    padding: 20px;
+    position: relative;
+
+    @media screen and (max-width: $breakpoint-medium-mobile-max) {
+      border: 0;
+      border-radius: 0;
+      height: 100%;
+      max-width: none;
+      width: 100%;
+    }
+
+    .dialog-header {
+      border-bottom: solid 1px $color-dialog-default-border;
+      color: $color-dialog-default-title-text;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      position: relative;
+      width: 100%;
+
+      .dialog-title {
+        font-weight: 500;
+        position: relative;
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+    .dialog-close {
+      @include prefix(transition, moz ms o webkit, background-color 0.3s);
+      border-radius: $dialog-button-close-height;
+      cursor: pointer;
+      font-size: 18px;
+      height: $dialog-button-close-height;
+      line-height: $dialog-button-close-height;
+      margin-top: -#{$dialog-button-close-height / 2};
+      position: absolute;
+      right: 8px;
+      text-align: center;
+      top: 50%;
+      vertical-align: center;
+      width: $dialog-button-close-height;
+
+      &:active {
+        background-color: $color-dialog-default-border;
+      }
+    }
+
+    .dialog-footer {
+      display: flex;
+      flex-direction: row-reverse;
+      position: relative;
+      width: 100%;
+
+      >* {
+        margin-left: 10px;
+      }
+    }
+
+    .dialog-content {
+      padding-bottom: 20px;
+      position: relative;
+      text-align: justify;
+      width: 100%;
+    }
+  }
+
+  &.dialog-_displayed_ {
+    display: flex;
+  }
+
+  &.dialog-_visible_ {
+    opacity: 1;
+  }
 }

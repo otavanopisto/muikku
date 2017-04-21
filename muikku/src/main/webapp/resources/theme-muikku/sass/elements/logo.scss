@@ -1,9 +1,9 @@
-/**
- * Standard logo for different usages
- *
- * img.logo[ | .logo-medium | .logo-large | .logo-small ]
- *
-**/
+//
+// Standard logo for different usages
+//
+// img.logo[ | .logo-medium | .logo-large | .logo-small ]
+//
+//
 
 $logo-medium-size: 80px;
 $logo-large-size: 90px;
@@ -12,29 +12,35 @@ $logo-small-size: 70px;
 $logo-extra-small-size: 60px;
 
 .logo {
-	height: $logo-medium-size;
-	display: block;
-	position: relative;
-	
-	&.logo-medium {
-	}
-	&.logo-large {
-		height: $logo-large-size;
-	}
-	&.logo-small {
-		height: $logo-small-size;
-	}
-	&.logo-extra-large {
-		height: $logo-extra-large-size;
-	}
-	&.logo-extra-small {
-		height: $logo-extra-small-size;
-	}
-	&.logo-round {
-		border-radius: 100%;
-		overflow: hidden;
-	}
-	&.logo-cast-shadow {
-		box-shadow: 0 15px 15px rgba(0,0,0,0.2);
-	}
+  display: block;
+  height: $logo-medium-size;
+  position: relative;
+
+//  &.logo-medium {
+//  }
+
+  &.logo-large {
+    height: $logo-large-size;
+  }
+
+  &.logo-small {
+    height: $logo-small-size;
+  }
+
+  &.logo-extra-large {
+    height: $logo-extra-large-size;
+  }
+
+  &.logo-extra-small {
+    height: $logo-extra-small-size;
+  }
+
+  &.logo-round {
+    border-radius: 100%;
+    overflow: hidden;
+  }
+
+  &.logo-cast-shadow {
+    box-shadow: 0 15px 15px $color-logo-default-shadow;
+  }
 }

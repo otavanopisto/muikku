@@ -1,31 +1,33 @@
 $form-font-family: "Exo 2", Arial, sans-serif;
 
 .form {
-	width: 100%;
-	position: relative;
-	
-	.form-row {
-		padding-bottom: 20px;
-		position: relative;
-		width: 100%;
-		label {
-			width: 50%;
-			display: inline-block;
-			text-align: right;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			padding: 0 10px;
-			height: 24px;
-			vertical-align: top;
-			font-family: $form-font-family;
-		}
-		input {
-			width: 50%;
-			display: inline-block;
-			text-align: center;
-			height: 24px;
-			vertical-align: top;
-			font-family: $form-font-family;
-		}
-	}
+  position: relative;
+  width: 100%;
+
+  .form-row {
+    padding-bottom: 20px;
+    position: relative;
+    width: 100%;
+
+    label {
+      display: inline-block;
+      font-family: $form-font-family;
+      height: 24px;
+      overflow: hidden;
+      padding: 0 10px;
+      text-align: right;
+      text-overflow: ellipsis;
+      vertical-align: top;
+      width: 50%;
+    }
+
+    input {
+      display: inline-block;
+      font-family: $form-font-family;
+      height: 24px;
+      text-align: center;
+      vertical-align: top;
+      width: 50%;
+    }
+  }
 }

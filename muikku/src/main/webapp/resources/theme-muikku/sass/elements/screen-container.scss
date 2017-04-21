@@ -1,22 +1,21 @@
-/**
- * Provides the max screen sizer container for insane screens
- *
- * 	div.scren-container
- *		div.screen-container-wrapper
- *			(BODY)
- *
-**/
+//
+// Provides the max screen sizer container for insane screens
+//
+//   div.scren-container
+//    div.screen-container-wrapper
+//      (BODY)
+//
 
 @import "../base/breakpoints";
 
 .screen-container {
-	width: 100%;
-	text-align: center;
-	display: block;
-	
-	.screen-container-wrapper {
-		width: 100%;
-		max-width: $breakpoint-max-usable-screen;
-		display: inline-block;
-	}
+  display: block;
+  text-align: center;
+  width: 100%;
+
+  .screen-container-wrapper {
+    display: inline-block;
+    max-width: $breakpoint-max-usable-screen;
+    width: 100%;
+  }
 }

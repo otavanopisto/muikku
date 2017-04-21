@@ -1,96 +1,97 @@
-/**
- * Simple and nice dynamic bubbles for content
- *
- *	div.bubble
- *		div.bubble-title?
- *			(BODY)
- *		div.bubble-content?
- *			(BODY)
- *		div.bubble-button-container?
- *			(BODY)
- *
-**/
+//
+// Simple and nice dynamic bubbles for content
+//
+//  div.bubble
+//    div.bubble-title?
+//      (BODY)
+//    div.bubble-content?
+//      (BODY)
+//    div.bubble-button-container?
+//      (BODY)
+//
 
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/breakpoints";
 
 $bubble-size: 292px;
-$bubble-font: 'Exo 2',Arial,sans-serif;
+$bubble-font: 'Exo 2', Arial, sans-serif;
 
 .bubble {
-	width: $bubble-size;
-	height: $bubble-size;
-	border: 6px solid $color-bubble-default-border;
-	border-radius: $bubble-size;
-	box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-	padding: 35px;
-	position: relative;
-	text-align: center;
-	display: block;
-	font-family: $bubble-font;
-	background-color: $color-bubble-default-background;
-	@include prefix(transition, webkit ms o moz, border-color 0.5s ease-in-out);
-	
-	&:hover {
-		border-color: $color-bubble-default-highlight-border;
-	}
-	
-	>.bubble-title {
-		color: $color-bubble-default-title;
-		font-size: 24px;
-		font-weight: 900;
-		text-transform: uppercase;
-		padding-top: 12px;
-		display: block;
-		text-align: center;
-		position: relative;
-	}
-	
-	>.bubble-content {
-		color: $color-bubble-default-content;
-		line-height: 1.15;
-		display: block;
-		padding-top: 12px;
-		font-weight: 300;
-		width: 120%;
-		margin-left: -10%;
-		text-align: center;
-		position: relative;
-	}
-	
-	>.bubble-button-container {
-		position: absolute;
-		display: block;
-		width: 100%;
-		text-align: center;
-		bottom: 0;
-		padding: 0px 64px 48px 64px;
-		left: 0;
-	}
-	
-	@media screen and (max-width: $breakpoint-portrait-pad-max) {
-		&.bubble-responsive {
-			border-radius: 10px;
-			width: 100%;
-			height: auto;
-			border: 0;
-			text-align: center;
-			padding: 10px;
-		
-			>.bubble-title {
-				width: 100%;
-			}
-			>.bubble-content {
-				width: 100%;
-				margin-left: 0;
-			}
-			>.bubble-button-container {
-				position: relative;
-				width: 150px;
-				display: inline-block;
-				padding: 15px 0 0 0;
-			}
-		}
-	}
+  @include prefix(transition, webkit ms o moz, border-color 0.5s ease-in-out);
+  background-color: $color-bubble-default-background;
+  border: 6px solid $color-bubble-default-border;
+  border-radius: $bubble-size;
+  box-shadow: 0 20px 60px $color-bubble-default-shadow;
+  display: block;
+  font-family: $bubble-font;
+  height: $bubble-size;
+  padding: 35px;
+  position: relative;
+  text-align: center;
+  width: $bubble-size;
+
+  &:hover {
+    border-color: $color-bubble-default-highlight-border;
+  }
+
+  >.bubble-title {
+    color: $color-bubble-default-title;
+    display: block;
+    font-size: 24px;
+    font-weight: 900;
+    padding-top: 12px;
+    position: relative;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  >.bubble-content {
+    color: $color-bubble-default-content;
+    display: block;
+    font-weight: 300;
+    line-height: 1.15;
+    margin-left: -10%;
+    padding-top: 12px;
+    position: relative;
+    text-align: center;
+    width: 120%;
+  }
+
+  >.bubble-button-container {
+    bottom: 0;
+    display: block;
+    left: 0;
+    padding: 0 64px 48px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+
+  @media screen and (max-width: $breakpoint-portrait-pad-max) {
+    &.bubble-responsive {
+      border: 0;
+      border-radius: 10px;
+      height: auto;
+      padding: 10px;
+      text-align: center;
+      width: 100%;
+
+      >.bubble-title {
+        width: 100%;
+      }
+
+      >.bubble-content {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      >.bubble-button-container {
+        display: inline-block;
+        padding: 15px 0 0;
+        position: relative;
+        width: 150px;
+      }
+    }
+  }
 }

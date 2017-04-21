@@ -1,56 +1,55 @@
-/**
- * A hero section for the site
- *
- * 	header.hero
- *		div.hero-wrapper
- *			div.hero-item...
- *				(BODY)
-**/
+//
+// A hero section for the site
+//
+//   header.hero
+//    div.hero-wrapper
+//      div.hero-item...
+//        (BODY)
+//
 
 @import "../base/breakpoints";
+@import "../base/colors";
 
 .hero {
-	background: url("/gfx/of-site-header-background.png") no-repeat center center #0089c6;
-	background-size: cover;
-	height: 520px;
-	width: 100%;
-	display: block;
-	
-	>.hero-wrapper {
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		margin: 0 auto;
-		height: 100%;
-		max-width: $breakpoint-max-usable-screen;
-		flex-flow: row nowrap;
-		padding: 24px;
-		
-		>.hero-item {
-			flex: 1 1 auto;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-direction: column;
-			position: relative;
-		}
-	}
-	
-	@media screen and (max-width: $breakpoint-portrait-pad-max) {
-		& {
-			height: auto;
-			background-image: url("/gfx/of-site-header-background-mobile.jpg");
+  background: url("/gfx/of-site-header-background.png") no-repeat center center $color-hero-default-background;
+  background-size: cover;
+  display: block;
+  height: 520px;
+  width: 100%;
 
-			>.hero-wrapper {
-				flex-direction: column;
-				padding: 24px 0 0 0;
-				
-				>.hero-item {
-					width: 100%;
-					padding: 0 24px 24px 24px;
-				}
-			}
-		}
-	}
+  >.hero-wrapper {
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: $breakpoint-max-usable-screen;
+    padding: 24px;
+    position: relative;
+
+    >.hero-item {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+  }
+
+  @media screen and (max-width: $breakpoint-portrait-pad-max) {
+    background-image: url("/gfx/of-site-header-background-mobile.jpg");
+    height: auto;
+
+    .hero-wrapper {
+      flex-direction: column;
+      padding: 24px 0 0;
+
+      .hero-item {
+        padding: 0 24px 24px;
+        width: 100%;
+      }
+    }
+  }
 }

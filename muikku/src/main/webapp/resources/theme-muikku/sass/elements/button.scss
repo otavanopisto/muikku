@@ -1,23 +1,23 @@
-/*
- * There are three types of buttons here
- *
- * Standard button
- *
- * 	a.button[ | .button-large | .button-medium | .button-small ]
- *          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
- * 			[ | .button-medium | .button-hard | .button-soft]
- *			[ | .button-focus ]
- *          [ COLORMAPPING ]
- *			[ | .button-centered | .button-right | .button-left ]
- *		span
- * 			(BODY)
- *
- *	a.button-pill[ | .button-pill-primary | .button-pill-secondary | .button-pill-success 
- *					| .button-pill-info | .button-pill-warn | .button-pill-fatal | .button-pill-strong]
- *		span
- *			(BODY)
- */
- 
+//
+// There are three types of buttons here
+//
+// Standard button
+//
+//   a.button[ | .button-large | .button-medium | .button-small ]
+//          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
+//       [ | .button-medium | .button-hard | .button-soft]
+//      [ | .button-focus ]
+//          [ COLORMAPPING ]
+//      [ | .button-centered | .button-right | .button-left ]
+//    span
+//       (BODY)
+//
+//  a.button-pill[ | .button-pill-primary | .button-pill-secondary | .button-pill-success
+//          | .button-pill-info | .button-pill-warn | .button-pill-fatal | .button-pill-strong]
+//    span
+//      (BODY)
+//
+
 @import "../base/colors";
 @import "../base/mixins";
 
@@ -32,102 +32,109 @@ $button-medium-font-size: 15px;
 $button-large-height: 33px;
 $button-large-font-size: 17px;
 
-a.button {
-	font-family: $button-font-family;
-	border-radius: 2px;
-	position: relative;
-	text-transform: uppercase;
-	vertical-align: center;
-	display: inline-block;
-	text-decoration: none;
-	cursor: pointer;
-	@include prefix(user-select, moz o ms webkit, none);
-	
-	//button medium
-	font-size: $button-medium-font-size;
-	height: $button-medium-height;
-	line-height: $button-medium-height;
-	padding: 0 #{$button-medium-font-size};
+.button {
+  @include colorapplying-with-mapping(button, $color-base-list);
+  @include prefix(user-select, moz o ms webkit, none);
+  border-radius: 2px;
+  cursor: pointer;
+  display: inline-block;
+  font-family: $button-font-family;
+  font-size: $button-medium-font-size;
+  height: $button-medium-height;
+  line-height: $button-medium-height;
+  padding: 0 $button-medium-font-size;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: center;
 
-	&.button-large {
-		font-size: $button-large-font-size;
-		height: $button-large-height;
-		line-height: $button-large-height;
-		padding: 0 #{$button-large-font-size};
-	}
-	
-	&.button-medium {
-	}
-	
-	&.button-small {
-		font-size: $button-small-font-size;
-		height: $button-small-height;
-		line-height: $button-medium-height;
-		padding: 0 #{$button-small-font-size};
-	}
-	
-	&.button-dynamic-height {
-		width: 100%;
-		height: auto;
-		overflow-wrap: break-word;
-	}
-	&.button-dynamic-word-break {
-		height: auto;
-		width: auto;
-		& > span {
-			display: table-caption;
-		}
-	}
-	&.button-dynamic-word-break-full-width {
-		height: auto;
-		width: 100%;
-		& > span {
-			display: table-caption;
-		}
-	}
-	
-	&.button-dynamic-height, &.button-dynamic-word-break, &.button-dynamic-word-break-full-width {
-		padding: #{$button-medium-font-size/2} #{$button-medium-font-size};
-		line-height: $button-medium-font-size;
-		
-		&.button-small {
-			padding: #{$button-small-font-size/2} #{$button-small-font-size};
-			line-height: $button-small-font-size;
-		}
-		&.button-medium {
-		}
-		&.button-large {
-			padding: #{$button-large-font-size/2} #{$button-large-font-size};
-			line-height: $button-large-font-size;
-		}
-	}
-	
-	&.button-soft {
-		border-radius: 5px;
-	}
-	
-	&.button-medium {
-	}
-	
-	&.button-hard {
-		border-radius: 0;
-	}
-	
-	&.button-focus {
-		font-weight: 500;
-	}
-	
-	@include colorapplying-with-mapping(button, $color-base-list);
-	
-	text-align: center;
-	&.button-centered {
-	}
-	&.button-right {
-		text-align: right;
-	}
-	&.button-left {
-		text-align: left;
-	}
+  &.button-large {
+    font-size: $button-large-font-size;
+    height: $button-large-height;
+    line-height: $button-large-height;
+    padding: 0 $button-large-font-size;
+  }
+
+//  &.button-medium {
+//  }
+
+  &.button-small {
+    font-size: $button-small-font-size;
+    height: $button-small-height;
+    line-height: $button-medium-height;
+    padding: 0 $button-small-font-size;
+  }
+
+  &.button-dynamic-height {
+    height: auto;
+    overflow-wrap: break-word;
+    width: 100%;
+  }
+
+  &.button-dynamic-word-break {
+    height: auto;
+    width: auto;
+
+    > span {
+      display: table-caption;
+    }
+  }
+
+  &.button-dynamic-word-break-full-width {
+    height: auto;
+    width: 100%;
+
+    > span {
+      display: table-caption;
+    }
+  }
+
+  &.button-dynamic-height,
+  &.button-dynamic-word-break,
+  &.button-dynamic-word-break-full-width {
+    line-height: $button-medium-font-size;
+    padding: #{$button-medium-font-size / 2} $button-medium-font-size;
+
+    &.button-small {
+      line-height: $button-small-font-size;
+      padding: #{$button-small-font-size / 2} $button-small-font-size;
+    }
+
+//    &.button-medium {
+//    }
+
+    &.button-large {
+      line-height: $button-large-font-size;
+      padding: #{$button-large-font-size / 2} $button-large-font-size;
+    }
+  }
+
+  &.button-soft {
+    border-radius: 5px;
+  }
+
+//  &.button-medium {
+//  }
+
+  &.button-hard {
+    border-radius: 0;
+  }
+
+  &.button-focus {
+    font-weight: 500;
+  }
+
+//  &.button-centered {
+//  }
+
+  &.button-right {
+    text-align: right;
+  }
+
+  &.button-left {
+    text-align: left;
+  }
 }
 
 $button-pill-font-family: "Exo 2", Arial, sans-serif;
@@ -135,46 +142,49 @@ $button-pill-font-family: "Exo 2", Arial, sans-serif;
 $button-pill-size: 34px;
 $button-pill-font-size: 16px;
 
-a.button-pill {
-	width: $button-pill-size;
-	height: $button-pill-size;
-	border-radius: $button-pill-size;
-	text-align: center;
-	font-size: $button-pill-font-size;
-	text-transform: uppercase;
-	position: relative;
-	vertical-align: center;
-	display: inline-block;
-	line-height: $button-pill-size;
-	font-family: $button-pill-font-family;
-	cursor: pointer;
-	@include prefix(user-select, moz o ms webkit, none);
-	
-	@include colorapplying-with-mapping(button-pill, $color-base-list);
+.button-pill {
+  @include colorapplying-with-mapping(button-pill, $color-base-list);
+  @include prefix(user-select, moz o ms webkit, none);
+  border-radius: $button-pill-size;
+  cursor: pointer;
+  display: inline-block;
+  font-family: $button-pill-font-family;
+  font-size: $button-pill-font-size;
+  height: $button-pill-size;
+  line-height: $button-pill-size;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: center;
+  width: $button-pill-size;
 }
 
 $button-social-size: 40px;
-a.button-social {
-	width: $button-social-size;
-	height: $button-social-size;
-	border-radius: $button-social-size;
-	font-family: muikku;
-	font-variant: normal;
-	text-transform: none;
-	text-decoration: none;
-	speak: none;
-	background-color: $color-button-social-default-background;
-	color: $color-button-social-default-text;
-	text-align: center;
-	vertical-align: center;
-	line-height: $button-social-size;
-	cursor: pointer;
-	display: inline-block;
-	@include prefix(transition, moz ms o webkit, color .3s, background-color .3s);
-	@include prefix(user-select, moz ms o webkit, none);
-	
-	&:hover, &.hover, &:active, &.active {
-		background-color: $color-button-social-highlight-background;
-		color: $color-button-social-highlight-text;
-	}
+
+.button-social {
+  @include prefix(transition, moz ms o webkit, color 0.3s, background-color 0.3s);
+  @include prefix(user-select, moz ms o webkit, none);
+  background-color: $color-button-social-default-background;
+  border-radius: $button-social-size;
+  color: $color-button-social-default-text;
+  cursor: pointer;
+  display: inline-block;
+  font-family: muikku;
+  font-variant: normal;
+  height: $button-social-size;
+  line-height: $button-social-size;
+  speak: none;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  vertical-align: center;
+  width: $button-social-size;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-button-social-highlight-background;
+    color: $color-button-social-highlight-text;
+  }
 }

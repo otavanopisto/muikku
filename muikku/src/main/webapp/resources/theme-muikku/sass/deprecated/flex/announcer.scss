@@ -22,34 +22,34 @@
 }
 
 #ui-datepicker-div{
-  z-index: 1000 !important; 
+  z-index: 1000 !important;
 }
 
-  
+
 /* create announcement */
 
 
 .an-announcement-create-body{
-  
+
   .mf-textfield {
     width: 100%;
-  } 
-  
+  }
+
   .an-announcement-targetgroup {
     cursor: pointer;
     float: left;
-    margin-top: 0 !important;  
-      
+    margin-top: 0 !important;
+
     &:not(:first-child) {
       margin-left: 10px;
       margin-top: 0 !important;
     }
-    
-  } 
-  
+
+  }
+
   .an-announcement-targetgroup-name {
     float: left;
-    font-family: inherit;    
+    font-family: inherit;
     margin-left: 10px;
     margin-top: 0 !important;
     padding: 9px 0;
@@ -57,38 +57,38 @@
     &::before {
       margin-right:5px;
       font-family: $environment-icon-family;
-    }     
+    }
 
-    
+
     &.usergroup {
 
       &::before {
         color: $target-group-color;
 
       }
-           
+
     }
-      
+
     &.workspace {
 
       &::before {
         color: $target-workspace-color;
-      }     
-    
-    } 
+      }
 
-    
+    }
+
+
     &:hover {
       color: $target-remove-font-color;
-      
+
       &::before {
         color: $target-remove-color;
       }
-      
-    }      
-        
-  }  
-  
+
+    }
+
+  }
+
 }
 
 .an-announcements-view-container{}
@@ -105,16 +105,16 @@
     &.workspace{
       border-left: 3px solid $target-workspace-color;
     }
-    
+
     &.ACTIVE {
-      
+
     }
-    
+
     &.ENDED {
       opacity: 0.5;
     }
-    
-    &.UPCOMING {    
+
+    &.UPCOMING {
       .an-announcement-dates {
         background: $environment-background-active-color;
         color: $environment-alt-font-color;
@@ -152,7 +152,7 @@
   padding-bottom: 10px;
   padding-left: 10px;
   padding-top: 10px;
-  text-overflow: ellipsis;  
+  text-overflow: ellipsis;
   white-space: nowrap;
   &.workspace {
     color: $target-workspace-color;
@@ -162,7 +162,7 @@
 .an-announcement-content{
   height: 70px;
   overflow: hidden;
-  padding: 5px 10px 10px; 
+  padding: 5px 10px 10px;
   text-overflow: ellipsis;
 }
 
@@ -172,25 +172,25 @@
 }
 
 .an-textfield{
-  width: 100%;  
+  width: 100%;
 }
 
 .an-archiving-container{
-  width: 100%; 
+  width: 100%;
 }
 
 .an-archiving-ids-container{
   padding: 15px;
-  
+
   span {
     background-color: $environment-background-selected-color;
     padding: 5px;
   }
-  
+
   span:not(:first-child){
     margin-left: 5px;
-  } 
- 
+  }
+
 }
 
 /* Archive announcement */
@@ -198,5 +198,3 @@
 .an-archive-title{
   padding-left: 10px;
 }
-
-@import "../../transition.scss";

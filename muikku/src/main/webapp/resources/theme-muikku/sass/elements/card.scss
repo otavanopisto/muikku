@@ -1,14 +1,14 @@
-/**
- * A default nice looking card designed to be inside a container
- *
- * div.card
- *		img.card-image?
- *		div.card-content?
- *			div.card-title
- *			div.card-text
- *		div.card-footer?
- *
-**/
+//
+// A default nice looking card designed to be inside a container
+//
+// div.card
+//    img.card-image?
+//    div.card-content?
+//      div.card-title
+//      div.card-text
+//    div.card-footer?
+//
+//
 
 @import "../base/colors";
 @import "../base/breakpoints";
@@ -17,66 +17,62 @@
 $card-font-family: "Exo 2", Arial, sans-serif;
 
 .card {
-	background-color: $color-card-default-background;
-	border: solid 1px $color-card-default-border;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-	font-family: $card-font-family;
-	border-radius: 3px;
-	height: 100%;
-	min-height: 45px;
-	
-	&.card-shadowed {
-		box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-		transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
-			
-		&:hover {
-			box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-		}
-	}
-	
-	.card-image {
-		width: 100%;
-		position: relative;
-	}
-	
-	.card-content {
-		width: 100%;
-		padding: 20px 20px 10px 20px;
-		font-weight: 400;
-		line-height: 1.15;
-		min-height: 100px;
-		color: $color-card-default-text;
-		position: relative;
-		text-align: left;
-		min-height: 118px;
-		flex-grow: 1;
-		
-		>.card-title {
-			text-transform: uppercase;
-			line-height: 1;
-			padding-bottom: 20px;
-			font-size: 26px;
-			font-weight: 300;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			
-			@include colorapplying-text(card-title, $color-base-list);
-			
-			@media screen and (max-width: $breakpoint-portrait-pad-max) {
-				& {
-					font-size: 20px;
-				}
-			}
-		}
-	}
-	
-	.card-footer {
-		text-align: left;
-		width: 100%;
-		padding: 0px 20px 20px 20px;
-		position: relative;
-	}
+  background-color: $color-card-default-background;
+  border: solid 1px $color-card-default-border;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  font-family: $card-font-family;
+  height: 100%;
+  min-height: 45px;
+  overflow: hidden;
+  width: 100%;
+
+  &.card-shadowed {
+    box-shadow: 0 1px 3px $color-card-default-shadow-one, 0 1px 2px $color-card-default-shadow-two;
+    transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+    &:hover {
+      box-shadow: 0 1px 3px $color-card-default-shadow-one-hover, 0 1px 2px $color-card-default-shadow-two-hover;
+    }
+  }
+
+  .card-image {
+    position: relative;
+    width: 100%;
+  }
+
+  .card-content {
+    color: $color-card-default-text;
+    flex-grow: 1;
+    font-weight: 400;
+    line-height: 1.15;
+    min-height: 118px;
+    padding: 20px 20px 10px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+
+    .card-title {
+      @include colorapplying-text(card-title, $color-base-list);
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+      overflow: hidden;
+      padding-bottom: 20px;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+
+      @media screen and (max-width: $breakpoint-portrait-pad-max) {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .card-footer {
+    padding: 0 20px 20px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+  }
 }

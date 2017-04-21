@@ -6,7 +6,7 @@
 
 #coursesList > div.loading{
     padding: 20px;
-  
+
     &:after {
       @include generic-loader(50px);
       margin-left: auto;
@@ -14,14 +14,14 @@
       display: block;
     }
 
-} 
+}
 
-.cp-course { 
+.cp-course {
   margin:0 0 5px 0;
   &.not-published {
     font-style:italic;
     opacity:0.8;
-   
+
     .cp-course-header-name {
       color: $item-header-hidden-font-color;
     }
@@ -33,7 +33,7 @@
     font-size: 21px;
     margin-right: 5px;
     vertical-align: top;
-  }  
+  }
 
   .cp-course-details {
     position:relative;
@@ -42,11 +42,11 @@
 }
 
 .cp-course-details-open {
-  
+
   .cp-course-header-container {
     font-weight:400;
-  } 
-  
+  }
+
 }
 
 .cp-course-header-container {
@@ -54,7 +54,7 @@
 }
 
 .cp-course-long {
-  
+
 }
 
 .cp-course-extension {
@@ -85,9 +85,7 @@
 }
 
 .cp-course-description-text {
-  font-size:14px; 
+  font-size:14px;
   padding:0 10px;
   min-height:30px;
 }
-
-@import "../../transition.scss";

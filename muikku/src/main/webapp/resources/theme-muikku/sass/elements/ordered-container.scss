@@ -1,46 +1,44 @@
-/**
- * Provides a flexbox based container that orders and organizes and allows for location changes
- *
- * 	.ordered-container[ | .ordered-container-column | .ordered-container-row][ | .ordered-container-responsive]
- *		.ordered-item
- *			(BODY)
- *
-**/
+//
+// Provides a flexbox based container that orders and organizes and allows for location changes
+//
+//   .ordered-container[ | .ordered-container-column | .ordered-container-row][ | .ordered-container-responsive]
+//    .ordered-item
+//      (BODY)
+//
 
 @import "../base/breakpoints";
 
 .ordered-container {
-	display: flex;
-	flex-direction: column;
-	width: 100%;
-	position: relative;
-	min-height: 25px;
-	
-	>.ordered-container-item {
-		position: relative;
-		width: 100%;
-		min-height: 25px;
-		overflow: hidden;
-	}
-	
-	&.ordered-container-row {
-		flex-direction: row;
-		
-		>.ordered-container-item {
-			flex: 1 1 0;
-			width: auto;
-		}
-		
-		&.ordered-container-responsive {
-			@media screen and (max-width: $breakpoint-portrait-pad-max) {
-				& {
-					flex-direction: column;
-					>.ordered-container-item {
-						flex: 0 0 auto;
-						width: 100%;
-					}
-				}
-			}
-		}
-	}
+  display: flex;
+  flex-direction: column;
+  min-height: 25px;
+  position: relative;
+  width: 100%;
+
+  >.ordered-container-item {
+    min-height: 25px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  &.ordered-container-row {
+    flex-direction: row;
+
+    >.ordered-container-item {
+      flex: 1 1 0;
+      width: auto;
+    }
+
+    &.ordered-container-responsive {
+      @media screen and (max-width: $breakpoint-portrait-pad-max) {
+        flex-direction: column;
+
+        >.ordered-container-item {
+          flex: 0 0 auto;
+          width: 100%;
+        }
+      }
+    }
+  }
 }

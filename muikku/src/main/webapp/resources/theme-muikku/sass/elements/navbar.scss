@@ -1,103 +1,101 @@
-/*
- * This element is a navbar for the muikku theme
- *
- * 	nav.navbar
- * 		div.navbar-wrapper
- *			div.navbar-logo
- *			div.navbar-items
- *				ul.navbar-items-container
- *					li.navbar-item
- *						(BODY)
- *			div.navbar-default-options?
- *				div.navbar-default-options-container
- *					(BODY)
- */
- 
+//
+// This element is a navbar for the muikku theme
+//
+//   nav.navbar
+//     div.navbar-wrapper
+//      div.navbar-logo
+//      div.navbar-items
+//        ul.navbar-items-container
+//          li.navbar-item
+//            (BODY)
+//      div.navbar-default-options?
+//        div.navbar-default-options-container
+//          (BODY)
+//
+
 @import "../base/mixins";
 @import "../base/colors";
 @import "../base/breakpoints";
 
 $navbar-height: 70px;
-$navbar-font: 'Exo 2',Arial,sans-serif;
+$navbar-font: 'Exo 2', Arial, sans-serif;
 
 .navbar {
-	background-color: $color-navbar-default-background;
-	box-shadow: 0 0 10px $color-navbar-default-background;
-	color: $color-navbar-default-text;
-	box-sizing: border-box;
-	left: 0;
-	position: fixed;
-	right: 0;
-	top: 0;
-	width: 100%;
-	z-index: 9;
-	font-family: $navbar-font;
-	box-shadow: 0 0 10px rgba(0,0,0,0.2);
-	
-	.navbar-logo {
-		width: 175px;
-		background: url('/gfx/of-site-logo-text.png') no-repeat center center;
-		display: inline-block;
-		height: $navbar-height;
-	}
-  
-	>.navbar-wrapper {
-		align-items: stretch;
-		display: flex;
-		flex-flow: row nowrap;
-		margin: 0 auto;
-		max-width: 1280px;
-		height: $navbar-height;
-		
-		>.navbar-logo {
-			flex: 0 0 auto;
-			width: 10px;
-			background: none;
-			
-			@include breakpoint-wide-screen {
-				& {
-					width: 175px;
-					background: url('/gfx/of-site-logo-text.png') no-repeat center center;
-				}
-			}
-		}
-		
-		>.navbar-items {
-			position: relative;
-			flex: 1 0 auto;
-			height: 100%;
-			
-			>.navbar-items-container {
-				position: relative;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-				height: $navbar-height;
-				line-height: $navbar-height;
-				display: block;
-				white-space: nowrap;
-				overflow: hidden;
-				
-				>.navbar-item {
-					margin: 0;
-					display: inline-block;
-					line-height: $navbar-height;
-					height: $navbar-height;
-					vertical-align: top;
-				}
-			}
-		}
-		
-		>.navbar-default-options {
-			flex: 0 0 auto;	
-			
-			>.navbar-default-options-container {
-				align-items: center;
-				display: flex;
-				height: $navbar-height;
-				justify-content: center;
-			}
-		}
-		
-	}//navbar-wrapper
+  background-color: $color-navbar-default-background;
+  box-shadow: 0 0 10px $color-navbar-default-shadow;
+  box-sizing: border-box;
+  color: $color-navbar-default-text;
+  font-family: $navbar-font;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 9;
+
+  .navbar-logo {
+    background: url("/gfx/of-site-logo-text.png") no-repeat center center;
+    display: inline-block;
+    height: $navbar-height;
+    width: 175px;
+  }
+
+  .navbar-wrapper {
+    align-items: stretch;
+    display: flex;
+    flex-flow: row nowrap;
+    height: $navbar-height;
+    margin: 0 auto;
+    max-width: 1280px;
+
+    .navbar-logo {
+      background: none;
+      flex: 0 0 auto;
+      width: 10px;
+
+      @include breakpoint-wide-screen {
+        background: url("/gfx/of-site-logo-text.png") no-repeat center center;
+        width: 175px;
+      }
+    }
+
+    .navbar-items {
+      flex: 1 0 auto;
+      height: 100%;
+      position: relative;
+
+      .navbar-items-container {
+        display: block;
+        height: $navbar-height;
+        line-height: $navbar-height;
+        list-style-type: none;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+        position: relative;
+        white-space: nowrap;
+      }
+    }
+
+    .navbar-item {
+      display: inline-block;
+      height: $navbar-height;
+      line-height: $navbar-height;
+      margin: 0;
+      vertical-align: top;
+    }
+
+    .navbar-default-options {
+      flex: 0 0 auto;
+
+      .navbar-default-options-container {
+        align-items: center;
+        display: flex;
+        height: $navbar-height;
+        justify-content: center;
+      }
+    }
+
+  }
+
 }

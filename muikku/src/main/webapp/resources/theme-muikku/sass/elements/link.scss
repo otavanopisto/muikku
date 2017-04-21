@@ -1,12 +1,11 @@
-/*
- * Defines a link and its structure, links can be icons and can use the icon element class
- *
- * 	a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong][ | .link-full]
- *		[.link-uppercase][.link-lowercase]
- *		span
- *			(BODY)
- *
-**/
+//
+// Defines a link and its structure, links can be icons and can use the icon element class
+//
+//   a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong][ | .link-full]
+//    [.link-uppercase][.link-lowercase]
+//    span
+//      (BODY)
+//
 
 @import "../base/colors";
 @import "../base/mixins";
@@ -16,105 +15,112 @@ $link-font-size-small: 14px;
 $link-font-size-large: 16px;
 
 .link {
-	font-size: $link-font-size-medium;
-	font-weight: 400;
-	text-align: center;
-	text-decoration: none;
-	text-transform: uppercase;
-	transition: border 0.5s ease-in-out;
-	color: $color-link-default-text;
-	display: inline-block;
-	text-align: center;
-	vertical-align: middle;
-	@include prefix(transition, moz ms webkit o, background-color .3s);
-	@include prefix(user-select, moz ms webkit o, none);
-	cursor: pointer;
-	
-	&.link-small {
-		font-size: $link-font-size-small;
-	}
-	&.link-medium {
-	}
-	&.link-large {
-		font-size: $link-font-size-large;
-	}
-	
-	&.link-soft {
-		font-weight: 300;
-	}
-	
-	&.link-hard {
-		font-weight: 500;
-	}
-	
-	&.link-icon {
-		font-size: 26px;
-		font-family: muikku;
-		speak: none;
-		font-style: normal;
-		font-weight: normal;
-		font-variant: none;
-		text-transform: none;
-		@include prefix(font-smoothing, webkit moz o ms, antialiased);
-	}
-	
-	&.link-full {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		padding: 0 10px;
-		justify-content: center;
-	}
-				
-	&.link-highlight {
-		color: $color-link-highlight-text;
-		background-color: $color-link-highlight-background;
-	}
-			
-	&.link-clear {
-		color: $color-link-clear-text;
-		background-color: $color-link-clear-background;
-		
-		&:hover, &.hover {
-			color: $color-link-clear-text;
-		}
-	      
-		&:active, &.active {
-			color: $color-link-clear-text;
-		}
-	}
-				
-	&.link-strong {
-		color: $color-link-strong-text;
-		background-color: $color-link-strong-background;
-	}
-	
-	&:hover, &.hover {
-		color: $color-link-hover-text;
-		background-color: $color-link-hover-background;
-	}
-      
-	&:active, &.active {
-		color: $color-link-active-text;
-		background-color: $color-link-active-background;
-	}
-	
-	&.link-uppercase {
-		text-transform: uppercase;
-	}
-	
-	&.link-lowercase {
-		text-transform: lowercase;
-	}
-	
-	&.link-strong-effects {
-		&:hover, &.hover {
-			background-color: opacify($color-link-hover-background, 0.6);
-		}
-		
-		&:active, &.active {
-			background-color: opacify($color-link-hover-background, 0.6);
-		}
-	}
+  @include prefix(transition, moz ms webkit o, background-color 0.3s);
+  @include prefix(user-select, moz ms webkit o, none);
+  color: $color-link-default-text;
+  cursor: pointer;
+  display: inline-block;
+  font-size: $link-font-size-medium;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: border 0.5s ease-in-out;
+  vertical-align: middle;
+
+  &.link-small {
+    font-size: $link-font-size-small;
+  }
+
+//  &.link-medium {
+//  }
+
+  &.link-large {
+    font-size: $link-font-size-large;
+  }
+
+  &.link-soft {
+    font-weight: 300;
+  }
+
+  &.link-hard {
+    font-weight: 500;
+  }
+
+  &.link-icon {
+    @include prefix(font-smoothing, webkit moz o ms, antialiased);
+    font-family: muikku;
+    font-size: 26px;
+    font-style: normal;
+    font-variant: none;
+    font-weight: normal;
+    speak: none;
+    text-transform: none;
+  }
+
+  &.link-full {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    padding: 0 10px;
+    width: 100%;
+  }
+
+  &.link-highlight {
+    background-color: $color-link-highlight-background;
+    color: $color-link-highlight-text;
+  }
+
+  &.link-clear {
+    background-color: $color-link-clear-background;
+    color: $color-link-clear-text;
+
+    &:hover,
+    &.hover {
+      color: $color-link-clear-text;
+    }
+
+    &:active,
+    &.active {
+      color: $color-link-clear-text;
+    }
+  }
+
+  &.link-strong {
+    background-color: $color-link-strong-background;
+    color: $color-link-strong-text;
+  }
+
+  &:hover,
+  &.hover {
+    background-color: $color-link-hover-background;
+    color: $color-link-hover-text;
+  }
+
+  &:active,
+  &.active {
+    background-color: $color-link-active-background;
+    color: $color-link-active-text;
+  }
+
+  &.link-uppercase {
+    text-transform: uppercase;
+  }
+
+  &.link-lowercase {
+    text-transform: lowercase;
+  }
+
+  &.link-strong-effects {
+    &:hover,
+    &.hover {
+      background-color: opacify($color-link-hover-background, 0.6);
+    }
+
+    &:active,
+    &.active {
+      background-color: opacify($color-link-hover-background, 0.6);
+    }
+  }
 }

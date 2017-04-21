@@ -1,20 +1,19 @@
-/**
- * In order for menu to work properly you need to include the js for menu in the interactions
- * folder otherwise it'll be always hidden, you need to add the data-interact-menu="#menuid" property
- * for it to display
- *
- *	div.menu
- *		div.menu-container
- *			div.menu-header?
- *				(BODY)
- *			div.menu-body
- *				(BODY)
- *			div.menu-footer?
- *				(BODY)
- *
- *		{BODY} div.menu-logo
- *
-**/
+//
+// In order for menu to work properly you need to include the js for menu in the interactions
+// folder otherwise it'll be always hidden, you need to add the data-interact-menu="#menuid" property
+// for it to display
+//
+//  div.menu
+//    div.menu-container
+//      div.menu-header?
+//        (BODY)
+//      div.menu-body
+//        (BODY)
+//      div.menu-footer?
+//        (BODY)
+//
+//    {BODY} div.menu-logo
+//
 
 @import "../base/colors";
 @import "../base/mixins";
@@ -22,130 +21,119 @@
 
 $menu-width-pad: 350px;
 $menu-width-mobile: 250px;
-$menu-font: 'Exo 2',Arial,sans-serif;
+$menu-font: 'Exo 2', Arial, sans-serif;
 
 .menu {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	background-color: $color-overlay-background;
-	z-index: 99;
-	font-family: $menu-font;
-	display: none;
-	opacity: 0;
-	@include prefix(transition, moz webkit ms o, opacity .3s);
-	
-	.menu-logo {
-		width: 175px;
-		background: url('/gfx/of-site-logo-text.png') no-repeat center center;
-		display: inline-block;
-		height: 70px;
-	}
-	
-	&.menu-hidden {
-		left: -$menu-width-mobile;
-	}
-		
-	>.menu-container {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: flex-start;
-		@include prefix(transition, webkit moz o ms, left .3s);
-			
-		>* {
-			margin: 17px 0 17px 0;
-			text-align: center;
-		}
-			
-		>*:fist-child {
-			margin-top: 23px;
-		}
-			
-		@include breakpoint-small-mobile {
-			&>div {
-				margin: 11px 0 11px 0;
-			}
-		}
-			
-		background-color: $color-menu-default-background;
-		border-right: solid 1px darken($color-menu-default-background, 30%);
+  @include prefix(transition, moz webkit ms o, opacity 0.3s);
+  background-color: $color-overlay-background;
+  bottom: 0;
+  display: none;
+  font-family: $menu-font;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 99;
 
-		>.menu-header {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 100%;
-			flex-direction: column;
-		}
-			
-		>.menu-body {
-			width: 100%;
-			position: relative;
-		}
-		
-		>.menu-footer {
-		}
-		
-		.menu-items {
-			list-style-type: none;
-			margin: 0;
-			padding: 0;
-			width: 100%;
-					
-			>.menu-item {
-				display: block;
-				height: 70px;
-				
-				@include breakpoint-small-mobile {
-					& {
-						height: 45px;
-					}
-				}
-			}
-		}
-	}
-	
-	//Width decisions
-	& > .menu-container {
-		width: $menu-width-pad;
-		left: -$menu-width-pad;
-	}
-	
-	@include breakpoint-medium-mobile {
-		& > .menu-container {
-			width: $menu-width-mobile;
-			left: -$menu-width-mobile;
-		}
-	}
-	@include breakpoint-small-mobile {
-		& > .menu-container {
-			width: $menu-width-mobile;
-			left: -$menu-width-mobile;
-		}
-	}
-	
-	&.menu-_displayed_ {
-		display: block;
-	}
-	
-	&.menu-_visible_ {
-		>.menu-container {
-			left: 0;
-		}
-		opacity: 1;
-	}
-	
-	&.menu-_dragging_ {
-		>.menu-container {
-			transition: none;
-		}
-		transition: none;
-	}
+  .menu-logo {
+    background: url("/gfx/of-site-logo-text.png") no-repeat center center;
+    display: inline-block;
+    height: 70px;
+    width: 175px;
+  }
+
+  &.menu-hidden {
+    left: -$menu-width-mobile;
+  }
+
+  .menu-container {
+    @include prefix(transition, webkit moz o ms, left 0.3s);
+    align-items: center;
+    background-color: $color-menu-default-background;
+    border-right: solid 1px darken($color-menu-default-background, 30%);
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    left: -$menu-width-pad;
+    position: absolute;
+    top: 0;
+    width: $menu-width-pad;
+
+    @include breakpoint-medium-mobile {
+      left: -$menu-width-mobile;
+      width: $menu-width-mobile;
+    }
+
+    @include breakpoint-small-mobile {
+      left: -$menu-width-mobile;
+      width: $menu-width-mobile;
+
+      > div {
+        margin: 11px 0;
+      }
+    }
+
+    >* {
+      margin: 17px 0;
+      text-align: center;
+    }
+
+    >*:fist-child {
+      margin-top: 23px;
+    }
+
+    >.menu-header {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    }
+
+    >.menu-body {
+      position: relative;
+      width: 100%;
+    }
+
+//    >.menu-footer {
+//    }
+
+    .menu-items {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+
+      .menu-item {
+        display: block;
+        height: 70px;
+
+        @include breakpoint-small-mobile {
+          height: 45px;
+        }
+      }
+    }
+  }
+
+  &.menu-_displayed_ {
+    display: block;
+  }
+
+  &.menu-_visible_ {
+    opacity: 1;
+
+    >.menu-container {
+      left: 0;
+    }
+  }
+
+  &.menu-_dragging_ {
+    transition: none;
+
+    >.menu-container {
+      transition: none;
+    }
+  }
 }

@@ -4,38 +4,39 @@
 $feed-font-family: "Exo 2", Arial, sans-serif;
 
 .feed {
-	width: 100%;
-	list-style-type: none;
-	font-family: $feed-font-family;
-	font-size: 14px;
-	color: $color-feed-default-text;
-	font-weight: 300;
+  color: $color-feed-default-text;
+  font-family: $feed-font-family;
+  font-size: 14px;
+  font-weight: 300;
+  list-style-type: none;
+  width: 100%;
 
-	.feed-item-description {
-		display: block;
-		width: 100%;
-		text-align: justify;
-		margin-bottom: 6px;
-		line-height: 20px;
+  .feed-item-description {
+    display: block;
+    line-height: 20px;
+    margin-bottom: 6px;
+    text-align: justify;
+    width: 100%;
 
-		a {
-			margin-right: 4px;
-			font-weight: 600;
-			display: inline;
-			text-transform: none;
-			text-decoration: none;
-			color: $color-feed-default-text;
-			@include prefix(transition, webkit ms o moz, color .3s);
-			
-			&:hover, &:active {
-				color: $color-primary-background;
-			}
-		}
-	}
-	
-	.feed-item-date {
-		color: $color-feed-default-date;
-		margin-bottom: 20px;
-		display: block;
-	}
+    a {
+      @include prefix(transition, webkit ms o moz, color 0.3s);
+      color: $color-feed-default-text;
+      display: inline;
+      font-weight: 600;
+      margin-right: 4px;
+      text-decoration: none;
+      text-transform: none;
+
+      &:hover,
+      &:active {
+        color: $color-primary-background;
+      }
+    }
+  }
+
+  .feed-item-date {
+    color: $color-feed-default-date;
+    display: block;
+    margin-bottom: 20px;
+  }
 }

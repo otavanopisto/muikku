@@ -1,16 +1,15 @@
-/*
- * Basic labels
- *
- * 	a.label[ | .label-large | .label-medium | .label-small ]
- *          [ | .label-dynamic-height | .label-dynamic-word-break | .label-dynamic-word-break-full-width ]
- *          [ COLORMAPPING ]
- *			[ | .label-clickable ]
- *			[ | .label-centered | .label-right | .label-left ]
- *		span
- * 			(BODY)
- *
- */
- 
+//
+// Basic labels
+//
+//   a.label[ | .label-large | .label-medium | .label-small ]
+//          [ | .label-dynamic-height | .label-dynamic-word-break | .label-dynamic-word-break-full-width ]
+//          [ COLORMAPPING ]
+//      [ | .label-clickable ]
+//      [ | .label-centered | .label-right | .label-left ]
+//    span
+//       (BODY)
+//
+
 @import "../base/colors";
 @import "../base/mixins";
 
@@ -25,85 +24,90 @@ $label-medium-font-size: 15px;
 $label-large-height: 33px;
 $label-large-font-size: 17px;
 
-a.label {
-	font-family: $label-font-family;
-	position: relative;
-	vertical-align: center;
-	
-	//label medium
-	font-size: $label-medium-font-size;
-	height: $label-medium-height;
-	line-height: $label-medium-height;
-	padding: 0 #{$label-medium-font-size};
-	display: inline-block;
+.label {
+  @include colorapplying-text(label, $color-base-list);
+  display: inline-block;
+  font-family: $label-font-family;
+  font-size: $label-medium-font-size;
+  height: $label-medium-height;
+  line-height: $label-medium-height;
+  padding: 0 $label-medium-font-size;
+  position: relative;
+  text-align: left;
+  vertical-align: center;
 
-	&.label-large {
-		font-size: $label-large-font-size;
-		height: $label-large-height;
-		line-height: $label-large-height;
-		padding: 0 #{$label-large-font-size};
-	}
-	
-	&.label-medium {
-	}
-	
-	&.label-small {
-		font-size: $label-small-font-size;
-		height: $label-small-height;
-		line-height: $label-medium-height;
-		padding: 0 #{$label-small-font-size};
-	}
-	
-	&.label-dynamic-height {
-		width: 100%;
-		height: auto;
-		overflow-wrap: break-word;
-	}
-	&.label-dynamic-word-break {
-		height: auto;
-		width: auto;
-		& > span {
-			display: table-caption;
-		}
-	}
-	&.label-dynamic-word-break-full-width {
-		height: auto;
-		width: 100%;
-		& > span {
-			display: table-caption;
-		}
-	}
-	
-	&.label-dynamic-height, &.label-dynamic-word-break, &.label-dynamic-word-break-full-width {
-		padding: #{$label-medium-font-size/2} #{$label-medium-font-size};
-		line-height: $label-medium-font-size;
-		
-		&.label-small {
-			padding: #{$label-small-font-size/2} #{$label-small-font-size};
-			line-height: $label-small-font-size;
-		}
-		&.label-medium {
-		}
-		&.label-large {
-			padding: #{$label-large-font-size/2} #{$label-large-font-size};
-			line-height: $label-large-font-size;
-		}
-	}
-	
-	@include colorapplying-text(label, $color-base-list);
-	
-	&.label-clickable {
-		cursor: pointer;
-		@include prefix(user-select, moz o ms webkit, none);
-	}
-	&.label-centered {
-		text-align: center;
-	}
-	&.label-right {
-		text-align: right;
-	}
-	
-	text-align: left;
-	&.label-left {
-	}
+  &.label-large {
+    font-size: $label-large-font-size;
+    height: $label-large-height;
+    line-height: $label-large-height;
+    padding: 0 $label-large-font-size;
+  }
+
+//  &.label-medium {
+//  }
+
+  &.label-small {
+    font-size: $label-small-font-size;
+    height: $label-small-height;
+    line-height: $label-medium-height;
+    padding: 0 $label-small-font-size;
+  }
+
+  &.label-dynamic-height {
+    height: auto;
+    overflow-wrap: break-word;
+    width: 100%;
+  }
+
+  &.label-dynamic-word-break {
+    height: auto;
+    width: auto;
+
+    >span {
+      display: table-caption;
+    }
+  }
+
+  &.label-dynamic-word-break-full-width {
+    height: auto;
+    width: 100%;
+
+    >span {
+      display: table-caption;
+    }
+  }
+
+  &.label-dynamic-height,
+  &.label-dynamic-word-break,
+  &.label-dynamic-word-break-full-width {
+    line-height: $label-medium-font-size;
+    padding: #{$label-medium-font-size / 2} $label-medium-font-size;
+
+    &.label-small {
+      line-height: $label-small-font-size;
+      padding: #{$label-small-font-size / 2} $label-small-font-size;
+    }
+//    &.label-medium {
+//    }
+    &.label-large {
+      line-height: $label-large-font-size;
+      padding: #{$label-large-font-size / 2} $label-large-font-size;
+    }
+  }
+
+  &.label-clickable {
+    @include prefix(user-select, moz o ms webkit, none);
+    cursor: pointer;
+  }
+
+  &.label-centered {
+    text-align: center;
+  }
+
+  &.label-right {
+    text-align: right;
+  }
+
+//  &.label-left {
+//  }
 }

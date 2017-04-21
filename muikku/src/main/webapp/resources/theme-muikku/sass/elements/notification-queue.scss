@@ -1,123 +1,96 @@
-/*
- * This element represents the display of the notification queue
- * That usually shows at the top of the screen
- *
- * 	div.notification-queue
- * 		div.notification-queue-items
- *			div.notification-queue-item.notification-queue-item-[info | warn | error | fatal | success | loading]
- *				span
- *                  (BODY)
- *				div.notification-queue-item-close
- *			...
- */
+//
+// This element represents the display of the notification queue
+// That usually shows at the top of the screen
+//
+//   div.notification-queue
+//     div.notification-queue-items
+//      div.notification-queue-item.notification-queue-item-[info | warn | error | fatal | success | loading]
+//        span
+//                  (BODY)
+//        div.notification-queue-item-close
+//      ...
+//
 
 @import "../base/colors";
 @import "../base/mixins";
 
-//ROOT
+// ROOT
 .notification-queue {
-	position: fixed;
- 	top: 0;
- 	left: 0;
- 	right: 0;
- 	z-index: 99999;
- 	height: 0;
- 	text-align: center;
- 	line-height:0;
- 	
- 	//LIST CONTAINER
- 	>.notification-queue-items {
- 		position: relative;
- 		display: inline-block;
- 		max-width: 100%;
- 		width: 600px;
- 		box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
- 		border-bottom-right-radius: 4px;
- 		border-bottom-left-radius: 4px;
- 		background: #666;
- 		font-family: "Exo 2", Arial, sans-serif;
-		font-size: 14px;
-		font-weight: 300;
-		line-height: 1;
- 		
- 		>.notification-queue-item {
- 			position: relative;
- 			display: block;
- 			margin: 0;
- 			width: 100%;
- 			text-align: center;
-			color: #fff;
-			font-size: 16px;
-			height: 44px;
-			margin-bottom: 1px;
-			z-index: 2;
-			position: relative;
-			padding-right: 36px;
-			padding-left: 36px;
-			word-wrap: break-word;
-			font-weight:400;
-			overflow: hidden;
-			@include prefix(transition, webkit ms o moz, height 0.3s);
-			
-			&.notification-queue-item-_hiding_ {
-				height: 0;
-			}
-			
- 			&.notification-queue-item-info {
- 				background-color: $color-info-background;
- 				color: $color-info-text;
- 			}
- 			
- 			&.notification-queue-item-warn {
- 				background-color: $color-warn-background;
- 				color: $color-warn-text;
- 			}
- 			
- 			&.notification-queue-item-error {
- 				background-color: $color-error-background;
- 				color: $color-error-text;
- 			}
- 			
- 			&.notification-queue-item-fatal {
-				background-color: $color-fatal-background;
- 				color: $color-fatal-text;
-			}
-			
-			&.notification-queue-item-success {
-				background-color: $color-success-background;
- 				color: $color-success-text;
-			}
-			
-			&.notification-queue-item-loading {
-				background-color: $color-loading-background;
- 				color: $color-loading-text;
-				background-image:url('/gfx/eventqueueloader.png');
-				background-position: 8px center;
-				background-repeat: no-repeat;
-				z-index:9999;
-			}
+  height: 0;
+  left: 0;
+  line-height: 0;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 99999;
 
-			& .notification-queue-item-close {
-				background-image:url('/gfx/eventqueueclose.png');
-				top: 12px;
-				cursor: pointer;
-				height: 24px;
-				position: absolute;
-				right: 8px;
-				width: 24px;
-			}
- 			
- 			&:last-child {
- 				border-bottom-right-radius: 4px;
-				border-bottom-left-radius: 4px;
-				margin-bottom: 0;
- 			}
- 			
- 			>span {
- 				padding-top:12px;
- 				padding-bottom: 16px;
- 				display: inline-block;
- 			}
- 		}
- 	}
+  // LIST CONTAINER
+  .notification-queue-items {
+    background: $color-notification-queue-item-container-background;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 0 8px $color-notification-queue-item-container-shadow;
+    display: inline-block;
+    font-family: "Exo 2", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1;
+    max-width: 100%;
+    position: relative;
+    width: 600px;
+
+    .notification-queue-item {
+      @include prefix(transition, webkit ms o moz, height 0.3s);
+      @include colorapplying-with-mapping-no-effects(notification-queue-item, $color-base-list);
+      color: $color-notification-queue-item-text;
+      display: block;
+      font-size: 16px;
+      font-weight: 400;
+      height: 44px;
+      margin: 0;
+      margin-bottom: 1px;
+      overflow: hidden;
+      padding-left: 36px;
+      padding-right: 36px;
+      position: relative;
+      text-align: center;
+      width: 100%;
+      word-wrap: break-word;
+      z-index: 2;
+
+      .notification-queue-item-_hiding_ {
+        height: 0;
+      }
+
+      &.notification-queue-item-loading {
+        background-color: $color-loading-background;
+        background-image: url("/gfx/eventqueueloader.png");
+        background-position: 8px center;
+        background-repeat: no-repeat;
+      }
+
+      .notification-queue-item-close {
+        background-image: url("/gfx/eventqueueclose.png");
+        cursor: pointer;
+        height: 24px;
+        position: absolute;
+        right: 8px;
+        top: 12px;
+        width: 24px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        margin-bottom: 0;
+      }
+
+      >span {
+        display: inline-block;
+        padding-bottom: 16px;
+        padding-top: 12px;
+      }
+    }
+  }
 }
