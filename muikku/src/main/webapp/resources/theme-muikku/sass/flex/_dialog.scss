@@ -79,12 +79,13 @@
   }
   
   .ui-dialog-content {
-    margin: 10px 0 0;
-    line-height: 1.5em;
-    padding: 0.5em 1em;
-    overflow: auto;
-    position: relative;
     color: #362b36;
+    line-height: 1.5em;
+    margin: 10px 0 0;
+    overflow: auto;
+    padding: 0.5em 1em;
+    position: relative;
+    text-transform: none;
     
     label {
       font-weight: 400;
