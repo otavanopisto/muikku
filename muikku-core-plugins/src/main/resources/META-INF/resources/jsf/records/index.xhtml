@@ -44,21 +44,18 @@
               </div>             
               <ul style="display: none">
                 <li data-value="vops">
-                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.vops']}</span>
+                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.studyplan']}</span>
                 </li>
                 <li data-value="records">
                   <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.records']}</span>
-                </li>
-                <li data-value="forms">
-                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.forms']}</span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
       </ui:insert>      
-      <div class="mf-content-area flex-row">
-        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      <div class="mf-content-area">
+        <div>
           <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
           </div>
           <div class="tr-content-main flex-row" data-files="#{transcriptofRecordsBackingBean.files}">

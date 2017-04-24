@@ -23,8 +23,125 @@
       @include generic-loader(50px);
       margin-left: 50%;
       margin-top: 50%;
-    }
-    
+    }    
+  }  
+}
+
+.tr-vops {
+  width: 100%;
+}
+
+.tr-vops-content {
+  position: relative;
+  padding: 0 20px 20px;
+  margin-left:auto;
+  margin-right:auto;
+  min-width: 260px;
+  overflow-x: auto;
+  max-width: 652px;
+}
+
+
+.tr-vops-legend-container {
+  position: relative;
+}
+
+.tr-vops-legend-button {
+  
+}
+
+.tr-vops-legend-content-title {
+  font-size: 15px;   
+  padding-left: 10px;
+  color: $environment-link-color;
+}
+
+
+.tr-vops-legend-content {
+  background-color: $environment-legend-background-color;
+  border-top: 1px solid $environment-legend-border-color;
+  border-bottom: 1px solid $environment-legend-border-color;
+  padding: 5px;
+  overflow-y: hidden;
+  max-height: 25px;
+  transition-property: all;
+  transition-duration: .5s;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+  cursor: pointer;
+
+  &.closed {
+    max-height: 25px;
+  }
+  
+  &.open {
+   max-height: 100px;
+  }
+}  
+
+
+.tr-vops-legend-items {
+  padding: 20px 0 0 20px;
+  display: flex;
+  align-items: center;
+  flex-flow: row wrap;  
+  
+  .tr-vops-legend-item {
+    margin-bottom: 10px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+  }
+}
+.tr-vops-legend-item-grid {
+  display: inline-block;
+  height:20px;
+  width: 20px;
+  background-color: $environment-background-dim-color;
+  margin-right:10px;    
+  &.completed {
+    background-color: $item-grade-passing-background-color;    
+  }
+}
+
+
+.tr-vops-row {
+  margin-top:10px;
+  display:flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+
+.tr-vops-item-name {
+  flex: 0 0 50px;
+  text-align: center;
+  min-width: 50px;  
+}
+
+.tr-vops-item-title {
+  flex: 0 0 30px;
+  display:flex;
+  height: 30px;
+  min-width: 30px;  
+  margin-left:10px;
+  align-items: center;
+  justify-content: center;
+  color: #dadada;
+}
+
+
+.tr-vops-item-circle {
+  min-width: 30px;
+  height: 30px;
+  background-color: $environment-background-dim-color;
+  margin-left:10px;
+  align-items: center;
+  border-radius: 50%;
+  flex: 0 0 30px;
+  
+  &.completed {
+    background-color: $item-grade-passing-background-color;
+  
   }
   
 }
