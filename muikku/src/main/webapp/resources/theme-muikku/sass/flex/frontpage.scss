@@ -8,6 +8,39 @@
 @import "_notif-queue";
 @import "_connectionlost";
 
+// Old unbranded front page styles
+
+/* frontpage (.fp-*) */
+  
+.fp-announcement {
+  > div {
+    padding-left:10px;
+  }
+  
+  &.environment {
+    border-left: 5px solid #fda726;
+  }
+  
+  &.workspace {
+    border-left: 5px solid #e163ed;
+  }
+  
+  &:not(:first-child) {
+    margin-top:10px;
+  }
+  
+  .fp-announcement-info-workspace {
+    font-size:10px;
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;    
+  }
+  
+}
+
+// New OO Branded front page styles
+
 body {
   background: $of-body-background-color;
   color: $of-body-font-color;
