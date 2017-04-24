@@ -1,226 +1,251 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf">
-  
-	<!-- Studying -->
-	<section id="studying" class="ordered-container-item frontpage-section">
-		<h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
-		<div class="ordered-container ordered-container-row ordered-container-responsive frontpage-studying-section-content">
-			<div class="ordered-container-item frontpage-card-container">
-				<div class="card frontpage-studying-card">
-					<img class="card-image" src="/gfx/kuva_nettilukio.png" alt="" title=""/>
-					<div class="card-content">
-						<div class="card-title">#{i18n.text['plugin.studying.nettilukio.title']}</div>
-						<div class="card-text">#{i18n.text['plugin.studying.nettilukio.description']}</div>
-					</div>
-					<div class="card-footer">
-						<a href="http://www.nettilukio.fi/nettilukio_esittely" class="button">
-							#{i18n.text['plugin.studying.readMore.link']}
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="ordered-container-item frontpage-card-container">
-				<div class="card frontpage-school-card">
-					<img class="card-image" src="/gfx/kuva_nettiperuskoulu.png" alt="" title=""/>
-					<div class="card-content">
-						<div class="card-title">#{i18n.text['plugin.studying.nettiperuskoulu.title']}</div>
-						<div class="card-text">#{i18n.text['plugin.studying.nettiperuskoulu.description']}</div>
-					</div>
-					<div class="card-footer">
-						<a href="http://www.nettilukio.fi/esittely_nettipk" class="button">
-							#{i18n.text['plugin.studying.readMore.link']}
-						</a>
-					</div>
-				</div>
-			</div>
-			<div class="ordered-container-item frontpage-card-container">
-				<div class="card frontpage-courses-card">
-					<img class="card-image" src="/gfx/kuva_aineopiskelu.png" alt="" title=""/>
-					<div class="card-content">
-						<div class="card-title">#{i18n.text['plugin.studying.aineopiskelu.title']}</div>
-						<div class="card-text">#{i18n.text['plugin.studying.aineopiskelu.description']}</div>
-					</div>
-					<div class="card-footer">
-						<a href="http://www.nettilukio.fi/esittely_nettipk" class="button">
-							#{i18n.text['plugin.studying.readMore.link']}
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	
-	<!-- Carousel -->
-	<section id="videos" class="ordered-container-item frontpage-section">
-		<div class="carousel">
-			<div class="carousel-item">
-				<div class="carousel-video">
-					<iframe width="1280" height="720" src="https://www.youtube.com/embed/OD5Oj50vyh0?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-				</div>
-			</div>
-			<div class="carousel-item">
-				<div class="carousel-video">
-					<iframe width="1280" height="720" src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-				</div>
-			</div>
-			<div class="carousel-item">
-				<div class="carousel-video">
-	     	   		<iframe width="1280" height="720" src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-	     	   	</div>
-	        </div>
-	        <div class="carousel-item">
-	        	<div class="carousel-video">
-					<iframe width="1280" height="720" src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0" style="border:0;" allowfullscreen="allowfullscreen"></iframe>
-				</div>
-			</div>
+
+  <!-- Studying -->
+  <section id="studying"
+    class="ordered-container-item frontpage-section">
+    <h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
+    <div
+      class="ordered-container ordered-container-row ordered-container-responsive frontpage-studying-section-content">
+      <div class="ordered-container-item frontpage-card-container">
+        <div class="card frontpage-studying-card">
+          <img class="card-image" src="/gfx/kuva_nettilukio.png" alt=""
+            title="" />
+          <div class="card-content">
+            <div class="card-title">#{i18n.text['plugin.studying.nettilukio.title']}</div>
+            <div class="card-text">#{i18n.text['plugin.studying.nettilukio.description']}</div>
+          </div>
+          <div class="card-footer">
+            <a href="http://www.nettilukio.fi/nettilukio_esittely"
+              class="button">
+              #{i18n.text['plugin.studying.readMore.link']} </a>
+          </div>
         </div>
-        <div class="carousel-controls"></div>
-	</section>
-	
-	<!-- Other details -->
-	<section id="news" class="ordered-container-item frontpage-section">
-	
-		<h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
-	
-		<div class="ordered-container frontpage-news-section-content">
-			<!-- Events and news -->
-			<div class="ordered-container-item ordered-container">
-				<div class="ordered-container-item ordered-container ordered-container-row ordered-container-responsive">
-				
-					<!-- Events -->
-					<div class="ordered-container-item frontpage-card-container">
-						<div class="card">
-							<div class="card-content">
-								<h2 class="card-title">
-									#{i18n.text['plugin.frontpageBoxTitle.events']}
-								</h2>
-								<div class="frontpage-events-container"></div>
-							</div>
-						</div>
-					</div>
-					
-					<!-- News -->
-					<div class="ordered-container-item frontpage-card-container">
-						<div class="card">
-							<div class="card-content">
-								<h2 class="card-title">
-									#{i18n.text['plugin.frontpageBoxTitle.news']}
-								</h2>
-								<div class="frontpage-news-container"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<!-- Otavan opisto and blog -->
-			<div class="ordered-container-item ordered-container">
-				<div class="ordered-container-item ordered-container ordered-container-row ordered-container-responsive">
-				
-					<!-- Otavan opisto -->
-					<div class="ordered-container-item frontpage-card-container">
-						<div class="card">
-							<div class="carousel carousel-unpadded">
-								<div class="carousel-item">
-									<img class="card-image" src="/gfx/kuva1.jpg" alt="" title=""/>
-									<div class="card-content">
-										<div class="card-text">
-											#{i18n.text['plugin.images.description.image1']}
-										</div>
-									</div>
-								</div>
-        
-        						<div class="carousel-item">
-        							<img class="card-image" src="/gfx/kuva2.jpg" alt="" title=""/>
-									<div class="card-content">
-										<div class="card-text">
-											#{i18n.text['plugin.images.description.image2']}
-										</div>
-									</div>
-        						</div>
-        
-        						<div class="carousel-item">
-        							<img class="card-image" src="/gfx/kuva3.jpg" alt="" title=""/>
-									<div class="card-content">
-										<div class="card-text">
-											#{i18n.text['plugin.images.description.image3']}
-										</div>
-									</div>
-        						</div>
-        
-        						<div class="carousel-item">
-        							<img class="card-image" src="/gfx/kuva4.jpg" alt="" title=""/>
-									<div class="card-content">
-										<div class="card-text">
-											#{i18n.text['plugin.images.description.image4']}
-										</div>
-									</div>
-        						</div>
-        						
-        						<div class="carousel-item">
-									<img class="card-image" src="/gfx/kuva5.jpg" alt="" title=""/>
-									<div class="card-content">
-										<div class="card-text">
-											#{i18n.text['plugin.images.description.image5']}
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="carousel-controls"></div>
-						</div>
-					</div>
-					
-					<!-- Blog -->
-					<div class="ordered-container-item frontpage-card-container">
-						<div class="card">
-							<div class="card-content">
-								<h2 class="card-title">
-									#{i18n.text['plugin.frontpageBoxTitle.blogs']}
-								</h2>
-								<div class="frontpage-blogs-container"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-	
-	<!-- Otavan Opisto info -->
-	<section id="organization" class="ordered-container-item frontpage-card-container">
-		<div class="card frontpage-otavan-opisto-card">
-			<div class="frontpage-otavan-opisto-card-container ordered-container">
-				<div class="frontpage-otavan-opisto-card-social-media-and-description ordered-item">
-					<div class="frontpage-otavan-opisto-card-social-media">
-						<h2 class="text text-extra-large text-extra-thick text-strong">
-							#{i18n.text['plugin.organization.some.title']}
-						</h2>
-						<a class="button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
-						<a class="button-social icon icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
-						<a class="button-social icon icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
-						<a class="button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
-						<a class="button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
-					</div>
-					<div class="frontpage-otavan-opisto-card-description">
-						<div class="text text-large text-strong text-justify text-extra-separated">
-							<h:outputText value="#{i18n.text['plugin.organization.description']}" escape="false"/>
-						</div>
-						<a href="http://www.otavanopisto.fi" target="top" class="button button-large frontpage-website-button">
-							www.otavanopisto.fi
-						</a>
-						<br/>
-						<a href="http://www.otavanopisto.fi/uutiskirje" target="top" class="button button-warn button-large frontpage-newsletter-button">
-							#{i18n.text['plugin.organization.newsletter.link']}
-						</a>
-					</div>
-				</div>
-				<div class="frontpage-otavan-opisto-card-logo ordered-item">
-					<img src="/gfx/of-organization-logo.jpg" alt="Logo" title="Logo" />
-				</div>
-			</div>
-		</div>
-	</section>
-	
+      </div>
+      <div class="ordered-container-item frontpage-card-container">
+        <div class="card frontpage-school-card">
+          <img class="card-image" src="/gfx/kuva_nettiperuskoulu.png"
+            alt="" title="" />
+          <div class="card-content">
+            <div class="card-title">#{i18n.text['plugin.studying.nettiperuskoulu.title']}</div>
+            <div class="card-text">#{i18n.text['plugin.studying.nettiperuskoulu.description']}</div>
+          </div>
+          <div class="card-footer">
+            <a href="http://www.nettilukio.fi/esittely_nettipk"
+              class="button">
+              #{i18n.text['plugin.studying.readMore.link']} </a>
+          </div>
+        </div>
+      </div>
+      <div class="ordered-container-item frontpage-card-container">
+        <div class="card frontpage-courses-card">
+          <img class="card-image" src="/gfx/kuva_aineopiskelu.png"
+            alt="" title="" />
+          <div class="card-content">
+            <div class="card-title">#{i18n.text['plugin.studying.aineopiskelu.title']}</div>
+            <div class="card-text">#{i18n.text['plugin.studying.aineopiskelu.description']}</div>
+          </div>
+          <div class="card-footer">
+            <a href="http://www.nettilukio.fi/esittely_nettipk"
+              class="button">
+              #{i18n.text['plugin.studying.readMore.link']} </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Carousel -->
+  <section id="videos" class="ordered-container-item frontpage-section">
+    <div class="carousel">
+      <div class="carousel-item">
+        <div class="carousel-video">
+          <iframe width="1280" height="720"
+            src="https://www.youtube.com/embed/OD5Oj50vyh0?rel=0&amp;showinfo=0"
+            style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="carousel-video">
+          <iframe width="1280" height="720"
+            src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0"
+            style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="carousel-video">
+          <iframe width="1280" height="720"
+            src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0"
+            style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <div class="carousel-video">
+          <iframe width="1280" height="720"
+            src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0"
+            style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-controls"></div>
+  </section>
+
+  <!-- Other details -->
+  <section id="news" class="ordered-container-item frontpage-section">
+
+    <h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
+
+    <div class="ordered-container frontpage-news-section-content">
+      <!-- Events and news -->
+      <div class="ordered-container-item ordered-container">
+        <div
+          class="ordered-container-item ordered-container ordered-container-row ordered-container-responsive">
+
+          <!-- Events -->
+          <div class="ordered-container-item frontpage-card-container">
+            <div class="card">
+              <div class="card-content">
+                <h2 class="card-title">
+                  #{i18n.text['plugin.frontpageBoxTitle.events']}</h2>
+                <div class="frontpage-events-container"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- News -->
+          <div class="ordered-container-item frontpage-card-container">
+            <div class="card">
+              <div class="card-content">
+                <h2 class="card-title">
+                  #{i18n.text['plugin.frontpageBoxTitle.news']}</h2>
+                <div class="frontpage-news-container"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Otavan opisto and blog -->
+      <div class="ordered-container-item ordered-container">
+        <div
+          class="ordered-container-item ordered-container ordered-container-row ordered-container-responsive">
+
+          <!-- Otavan opisto -->
+          <div class="ordered-container-item frontpage-card-container">
+            <div class="card">
+              <div class="carousel carousel-unpadded">
+                <div class="carousel-item">
+                  <img class="card-image" src="/gfx/kuva1.jpg" alt=""
+                    title="" />
+                  <div class="card-content">
+                    <div class="card-text">
+                      #{i18n.text['plugin.images.description.image1']}</div>
+                  </div>
+                </div>
+
+                <div class="carousel-item">
+                  <img class="card-image" src="/gfx/kuva2.jpg" alt=""
+                    title="" />
+                  <div class="card-content">
+                    <div class="card-text">
+                      #{i18n.text['plugin.images.description.image2']}</div>
+                  </div>
+                </div>
+
+                <div class="carousel-item">
+                  <img class="card-image" src="/gfx/kuva3.jpg" alt=""
+                    title="" />
+                  <div class="card-content">
+                    <div class="card-text">
+                      #{i18n.text['plugin.images.description.image3']}</div>
+                  </div>
+                </div>
+
+                <div class="carousel-item">
+                  <img class="card-image" src="/gfx/kuva4.jpg" alt=""
+                    title="" />
+                  <div class="card-content">
+                    <div class="card-text">
+                      #{i18n.text['plugin.images.description.image4']}</div>
+                  </div>
+                </div>
+
+                <div class="carousel-item">
+                  <img class="card-image" src="/gfx/kuva5.jpg" alt=""
+                    title="" />
+                  <div class="card-content">
+                    <div class="card-text">
+                      #{i18n.text['plugin.images.description.image5']}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-controls"></div>
+            </div>
+          </div>
+
+          <!-- Blog -->
+          <div class="ordered-container-item frontpage-card-container">
+            <div class="card">
+              <div class="card-content">
+                <h2 class="card-title">
+                  #{i18n.text['plugin.frontpageBoxTitle.blogs']}</h2>
+                <div class="frontpage-blogs-container"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Otavan Opisto info -->
+  <section id="organization"
+    class="ordered-container-item frontpage-card-container">
+    <div class="card frontpage-otavan-opisto-card">
+      <div
+        class="frontpage-otavan-opisto-card-container ordered-container">
+        <div
+          class="frontpage-otavan-opisto-card-social-media-and-description ordered-item">
+          <div class="frontpage-otavan-opisto-card-social-media">
+            <h2
+              class="text text-extra-large text-extra-thick text-strong">
+              #{i18n.text['plugin.organization.some.title']}</h2>
+            <a class="button-social icon icon-some-facebook"
+              href="https://www.facebook.com/otavanopisto" target="top"></a>
+            <a class="button-social icon icon-some-twitter"
+              href="https://twitter.com/OtavanOpisto" target="top"></a>
+            <a class="button-social icon icon-some-instagram"
+              href="https://www.instagram.com/otavanopisto/"
+              target="top"></a> <a
+              class="button-social icon icon-some-pinterest"
+              href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
+            <a class="button-social icon icon-some-linkedin"
+              href="https://www.linkedin.com/company/106028"
+              target="top"></a>
+          </div>
+          <div class="frontpage-otavan-opisto-card-description">
+            <div
+              class="text text-large text-strong text-justify text-extra-separated">
+              <h:outputText
+                value="#{i18n.text['plugin.organization.description']}"
+                escape="false" />
+            </div>
+            <a href="http://www.otavanopisto.fi" target="top"
+              class="button button-large frontpage-website-button">
+              www.otavanopisto.fi </a> <br /> <a
+              href="http://www.otavanopisto.fi/uutiskirje" target="top"
+              class="button button-warn button-large frontpage-newsletter-button">
+              #{i18n.text['plugin.organization.newsletter.link']} </a>
+          </div>
+        </div>
+        <div class="frontpage-otavan-opisto-card-logo ordered-item">
+          <img src="/gfx/of-organization-logo.jpg" alt="Logo"
+            title="Logo" />
+        </div>
+      </div>
+    </div>
+  </section>
+
 </ui:composition>

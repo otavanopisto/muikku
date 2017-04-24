@@ -1,68 +1,80 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="#{sessionBackingBean.loggedIn ? '/WEB-INF/templates/flex-main-env.xhtml' : '/WEB-INF/templates/flex-main-open.xhtml'}">
-  
-  <ui:param name="activeTrail" value="index"/>
-  
+
+  <ui:param name="activeTrail" value="index" />
+
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
-    <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
-    <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
-    
-	<ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="/scripts/controllers/frontpage.js"/>
-    </ui:fragment>
-    
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="/scripts/gui/widget-visits.js"/>
-      <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js"/>
-      <script defer="defer" jsf:name="/scripts/gui/widget-messages.js"/>
-      <script defer="defer" jsf:name="/scripts/gui/widget-announcements.js"/>
-      <script defer="defer" jsf:name="/scripts/gui/widget-last-workspace.js"/>
-      <script defer="defer" jsf:name="/scripts/gui/check-contact-info.js"/>
-    </ui:fragment>
-    
-  </ui:define>
-  
-  <ui:define name="styles">
-  
+    <script defer="defer" type="text/javascript"
+      src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
+    <script defer="defer" jsf:name="/scripts/gui/locales.js" />
+    <script defer="defer" type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js" />
+    <script defer="defer" type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
+    <script defer="defer" type="text/javascript"
+      src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js" />
+    <script defer="defer" jsf:name="/scripts/gui/dustloader.js" />
+
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <link rel="stylesheet" type="text/css" href="/css/frontpage.css"/>
+      <script defer="defer" jsf:name="/scripts/controllers/frontpage.js" />
     </ui:fragment>
-    
+
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/flex-main.css"/>
-      <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
+      <script defer="defer" jsf:name="/scripts/gui/widget-visits.js" />
+      <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js" />
+      <script defer="defer" jsf:name="/scripts/gui/widget-messages.js" />
+      <script defer="defer"
+        jsf:name="/scripts/gui/widget-announcements.js" />
+      <script defer="defer"
+        jsf:name="/scripts/gui/widget-last-workspace.js" />
+      <script defer="defer"
+        jsf:name="/scripts/gui/check-contact-info.js" />
     </ui:fragment>
-    
-  </ui:define>  
-  
+
+  </ui:define>
+
+  <ui:define name="styles">
+
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
+      <link rel="stylesheet" type="text/css" href="/css/frontpage.css" />
+    </ui:fragment>
+
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <link rel="stylesheet" type="text/css"
+        href="/css/deprecated/flex/flex-main.css" />
+      <link rel="stylesheet" type="text/css"
+        href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css" />
+    </ui:fragment>
+
+  </ui:define>
+
   <ui:define name="grid-content">
     <!--  If user is unauthenticated -->
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
       <ui:include src="/index_unauth.xhtml" />
     </ui:fragment>
-    
+
     <!--  If user is authenticated -->
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
       <div class="flex-row">
-        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
+        <div
+          class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
           <div class="box box-max-width">
-            <div id="visits"></div> 
+            <div id="visits"></div>
             <div id="workspaces"></div>
           </div>
         </div>
-        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-4 sm-flex-order-4">
+        <div
+          class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-4 sm-flex-order-4">
           <div class="box box-max-width">
             <div id="messages"></div>
           </div>
         </div>
-        <div class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-2 sm-flex-order-2">
+        <div
+          class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-2 sm-flex-order-2">
           <div class="box box-max-width">
             <div id="announcements"></div>
           </div>
@@ -71,6 +83,6 @@
     </ui:fragment>
 
   </ui:define>
-  
-  
+
+
 </ui:composition>
