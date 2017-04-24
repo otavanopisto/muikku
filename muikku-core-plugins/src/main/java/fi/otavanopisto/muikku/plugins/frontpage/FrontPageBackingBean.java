@@ -22,10 +22,10 @@ public class FrontPageBackingBean {
   @Transactional
   public String init() {
     
-    if ("no" == pluginSettingsController.getPluginSetting("frontPage", "brandedFrontPage")) {
-      brandedFrontPage = true;
-    } else {
+    if ("no".equals(pluginSettingsController.getPluginSetting("frontPage", "brandedFrontPage"))) {
       brandedFrontPage = false;
+    } else {
+      brandedFrontPage = true;
     }
    
     if (!brandedFrontPage) {
