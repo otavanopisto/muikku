@@ -44,7 +44,7 @@ public class ProfileBackingBean {
     List<UserAddress> userAddresses = userController.listUserAddresses(user);
     List<UserPhoneNumber> userPhoneNumbers = userController.listUserPhoneNumbers(user);
     
-    displayName = user.getDisplayName();
+    displayName = user.getNickName() == null ? user.getDisplayName() : String.format("%s %s (%s)", user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
     
     addresses = new ArrayList<>();
     for (UserAddress userAddress : userAddresses) {

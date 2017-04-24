@@ -71,9 +71,12 @@ public class SessionBackingBean {
         User user = userController.findUserByDataSourceAndIdentifier(activeSchoolDataSource, activeUserIdentifier);
         if (user != null) {
           if (!loggedUserRoleArchetype.equals(EnvironmentRoleArchetype.STUDENT)) {
-            loggedUserName = String.format("%s (%s)", user.getDisplayName(), resolveLoggedUserRoleText());
-          } else {
-            loggedUserName = user.getDisplayName();
+            loggedUserName = String.format("%s %s (%s)", user.getFirstName(), user.getLastName(), resolveLoggedUserRoleText());
+          }
+          else {
+            loggedUserName = user.getNickName() == null
+              ? user.getDisplayName()
+              : String.format("%s %s (%s)", user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
           }
         }
       }

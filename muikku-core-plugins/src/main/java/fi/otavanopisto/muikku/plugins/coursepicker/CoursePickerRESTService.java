@@ -426,7 +426,9 @@ public class CoursePickerRESTService extends PluginRESTService {
       workspaceName += String.format(" (%s)", workspace.getNameExtension()); 
     }
 
-    String userName = user.getDisplayName();
+    String userName = user.getNickName() == null
+      ? user.getDisplayName()
+      : String.format("%s \"%s\" %s (%s)", user.getFirstName(), user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
 
     for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
       teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
