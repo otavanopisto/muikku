@@ -1235,6 +1235,7 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStaffMembers(
       @QueryParam("searchString") String searchString,
+      @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
     
@@ -1244,7 +1245,7 @@ public class UserRESTService extends AbstractRESTService {
     
     List<fi.otavanopisto.muikku.rest.model.StaffMember> staffMembers = new ArrayList<>();
     Set<Long> userGroupFilters = null;
-    Set<Long> workspaceFilters = null;
+    Set<Long> workspaceFilters = workspaceEntityId == null ? null : Collections.singleton(workspaceEntityId); 
     List<SchoolDataIdentifier> userIdentifiers = null; 
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");

@@ -275,11 +275,15 @@ dt {
     .lu-user-name {
       @include no-select;
       color: $environment-logged-in-font-color;
-      text-transform: uppercase;
-      min-width: 100px;
-      padding: 13px 6px 14px 20px;
       float: left;
       height: 1.5em;
+      margin: 13px 6px 14px 20px;
+      max-width: 270px;
+      min-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
       
       a {
         color: $environment-logged-in-font-color;
