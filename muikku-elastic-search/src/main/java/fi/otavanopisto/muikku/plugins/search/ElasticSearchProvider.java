@@ -353,8 +353,28 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+    BoolQueryBuilder query = boolQuery();
+    query.must(termQuery("published", Boolean.TRUE));
+    query.must(termQuery("subjectIdentifier", subjectIdentifier));
+    query.must(termQuery("courseNumber", courseNumber));
+      
+    SearchRequestBuilder requestBuilder = elasticClient
+      .prepareSearch("muikku")
+      .setTypes("Workspace")
+      .setFrom(0)
+      .setSize(50);
+
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHit[] results = response.getHits().getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
     
-    return null;
+    SearchResult result = new SearchResult(searchResults.size(), 0, 50, searchResults);
+    return result;
   }
   
   @Override

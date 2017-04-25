@@ -26,8 +26,6 @@ public class VopsController {
     
     String mathSyllabus = loadStringProperty(student, "mathSyllabus");
     String finnish = loadStringProperty(student, "finnish");
-    boolean swedish = loadBoolProperty(student, "swedish");
-    boolean english = loadBoolProperty(student, "english");
     boolean german = loadBoolProperty(student, "german");
     boolean french = loadBoolProperty(student, "french");
     boolean italian = loadBoolProperty(student, "italian");

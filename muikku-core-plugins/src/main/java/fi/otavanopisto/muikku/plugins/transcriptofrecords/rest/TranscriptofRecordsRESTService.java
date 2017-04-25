@@ -40,6 +40,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 1L;
+  private static final int MAX_COURSE_NUMBER = 20;
   
   @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
@@ -94,17 +95,29 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/vops/{IDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response getVops(@PathParam("IDENTIFIER") String studentIdentifier) {
+  public Response getVops(@PathParam("IDENTIFIER") String studentIdentifierString) {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
     
-    User student = userController.findUserByIdentifier(SchoolDataIdentifier.fromId(studentIdentifier));
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
+    
+    if (studentIdentifier == null) {
+      return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
+    }
+    
+    if (!Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
+    }
+    
+    User student = userController.findUserByIdentifier(studentIdentifier);
     
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
     for (Subject subject : subjects) {
+      for (int i=0; i<MAX_COURSE_NUMBER; i++) {
+      }
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         rows.add(new VopsRESTModel.VopsRow(
             subject.getCode(),
