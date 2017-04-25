@@ -254,8 +254,11 @@
       var userEntityId = $(this._requestCard).attr('data-user-entity-id');
       var workspaceEntityId = $(this._requestCard).attr('data-workspace-entity-id');
       
-      mApi().workspace.workspaces.journal.read(workspaceEntityId, {userEntityId: userEntityId})
-        .callback($.proxy(function (err, journalEntries) {
+      mApi().workspace.workspaces.journal.read(workspaceEntityId, {
+        userEntityId: userEntityId,
+        firstResult: 0, 
+        maxResults: 512 
+      }).callback($.proxy(function (err, journalEntries) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           }

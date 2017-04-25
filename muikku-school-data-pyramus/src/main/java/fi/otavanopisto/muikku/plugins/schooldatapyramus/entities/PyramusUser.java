@@ -21,6 +21,7 @@ public class PyramusUser extends AbstractUser implements User {
                      OffsetDateTime studyStartDate,
                      OffsetDateTime studyEndDate,
                      OffsetDateTime studyTimeEnd,
+                     boolean evaluationFees,
                      boolean hidden) {
     
     super(identifier, 
@@ -37,7 +38,7 @@ public class PyramusUser extends AbstractUser implements User {
         studyEndDate, 
         studyTimeEnd, 
         hidden, 
-        studyProgrammeName != null && studyProgrammeName.startsWith("Internetix/"),
+        evaluationFees,
         curriculumIdentifier);
   }
 
