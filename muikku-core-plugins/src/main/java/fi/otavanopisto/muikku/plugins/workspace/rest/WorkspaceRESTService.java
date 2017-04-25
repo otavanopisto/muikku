@@ -1055,7 +1055,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    boolean evaluationFees = user.hasEvaluationFees() && workspace.isEvaluationFeeApplicable();
+    // #3069: If the user has evaluation fees and a school set, all workspaces have an
+    // evaluation fee. Otherwise it depends on the applicability of the workspace itself.
+    
+    boolean evaluationFees = user.hasEvaluationFees() && (StringUtils.isNotEmpty(user.getSchool()) || workspace.isEvaluationFeeApplicable());
 
     return Response.ok(new WorkspaceFeeInfo(evaluationFees)).build();
   }

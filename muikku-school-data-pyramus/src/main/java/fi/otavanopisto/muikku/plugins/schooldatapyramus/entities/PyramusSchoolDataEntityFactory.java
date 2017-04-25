@@ -100,6 +100,7 @@ public class PyramusSchoolDataEntityFactory {
         null,
         null,
         null,
+        false,
         hidden);
   }
 
@@ -115,7 +116,7 @@ public class PyramusSchoolDataEntityFactory {
 
   public User createEntity(fi.otavanopisto.pyramus.rest.model.Student student, fi.otavanopisto.pyramus.rest.model.StudyProgramme studyProgramme,
       String nationality, String language, String municipality, String school, OffsetDateTime studyStartDate, OffsetDateTime studyEndDate,
-      OffsetDateTime studyTimeEnd, boolean hidden, String curriculumIdentifer) {
+      OffsetDateTime studyTimeEnd, boolean evaluationFees, boolean hidden, String curriculumIdentifer) {
     StringBuilder displayName = new StringBuilder();
 
     displayName.append(student.getFirstName()).append(' ').append(student.getLastName());
@@ -141,6 +142,7 @@ public class PyramusSchoolDataEntityFactory {
         studyStartDate,
         studyEndDate,
         studyTimeEnd,
+        evaluationFees,
         hidden);
   }
 
@@ -280,6 +282,7 @@ public class PyramusSchoolDataEntityFactory {
             (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "pakollinen")) ||    
             (Objects.equals(educationTypeCode, "peruskoulu") && Objects.equals(educationSubtypeCode, "valinnainen"))) {
           courseFeeApplicable = false;
+          break;
         }
       }
     }

@@ -19,7 +19,7 @@
     </div>
   </div>
   {?submitDate}
-    <div class="assignment-evaluate-button icon-evaluate" title="Arvioi tehtävä"></div>
+    <div class="assignment-evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"/}"></div>
   {/submitDate}
   <div class="assignment-literal-evaluation-wrapper" style="display:none;">
     <div class="assignment-literal-evaluation-label">{#localize key="plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"/}</div>
