@@ -74,7 +74,7 @@ $button-large-font-size: 17px;
   &.button-dynamic-height {
     height: auto;
     overflow-wrap: break-word;
-    white-space: auto;
+    white-space: normal;
     width: 100%;
   }
 

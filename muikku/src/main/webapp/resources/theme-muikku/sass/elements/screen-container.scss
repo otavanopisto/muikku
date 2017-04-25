@@ -9,12 +9,12 @@
 @import "../base/breakpoints";
 
 .screen-container {
-  display: block;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 
   .screen-container-wrapper {
-    display: inline-block;
     max-width: $breakpoint-max-usable-screen;
     width: 100%;
   }

@@ -23,11 +23,11 @@ $color-primary-text: #fff;
 $color-secondary-background: #00af00;
 $color-secondary-text: #fff;
 
-$color-strong-background: #343333;
-$color-strong-text: #fff;
+$color-inverse-background: #343333;
+$color-inverse-text: #fff;
 
-$color-clear-background: #fff;
-$color-clear-text: #343333;
+$color-default-background: #fff;
+$color-default-text: #343333;
 
 $color-base-list: (
 	(primary, $color-primary-background, $color-primary-text),
@@ -37,8 +37,8 @@ $color-base-list: (
 	(success, $color-success-background, $color-success-text),
 	(loading, $color-loading-background, $color-loading-text),
 	(secondary, $color-secondary-background, $color-secondary-text),
-	(strong, $color-strong-background, $color-strong-text),
-	(clear, $color-clear-background, $color-clear-text)
+	(inverse, $color-inverse-background, $color-inverse-text),
+	(default, $color-default-background, $color-default-text)
 );
 
 // Navbar
@@ -51,14 +51,12 @@ $color-link-default-text: #343333;
 $color-link-highlight-text: #00af00;
 $color-link-hover-text: #009fe3;
 $color-link-active-text: #009fe3;
-$color-link-clear-text: #fff;
-$color-link-strong-text: #000;
+$color-link-inverse-text: #fff;
 $color-link-default-background: rgba(0, 0, 0, 0);
 $color-link-highlight-background: rgba(0, 0, 0, 0);
 $color-link-hover-background: rgba(0, 0, 0, 0);
 $color-link-active-background: rgba(0, 0, 0, 0.05);
-$color-link-clear-background: invisible;
-$color-link-strong-background: invisible;
+$color-link-inverse-background: invisible;
 
 // Menu
 $color-menu-default-background: #f5f5f5;
@@ -132,4 +130,4 @@ $color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
 $color-notification-queue-item-text: #fff;
 
 // text
-$color-text-default-shadow: rgba(0, 0, 0, 0.3);
+$color-text-banner-shadow: rgba(0, 0, 0, 0.6);

@@ -31,67 +31,96 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     speak: none;
   }
 
+  &.text-banner-description {
+    font-size: 15px;
+    font-weight: 200;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  &.text-banner-verkko {
+    font-size: 48px;
+    text-shadow: 0 5px 10px $color-text-banner-shadow;
+    font-weight: 200;
+    line-height: 0.9;
+
+    @media screen and (max-width: $breakpoint-portrait-pad-max) {
+      font-size: 32px;
+    }
+  }
+
+  &.text-banner-muikku {
+    text-shadow: 0 5px 10px $color-text-banner-shadow;
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 0.9;
+
+    @media screen and (max-width: $breakpoint-portrait-pad-max) {
+      font-size: 32px;
+    }
+  }
+
+  &.text-banner-author {
+    font-size: 38px;
+    font-weight: 200;
+    font-transform: uppercase;
+
+    @media screen and (max-width: $breakpoint-portrait-pad-max) {
+      font-size: 17px;
+    }
+  }
+
+  &.text-default-multiparagraph {
+    font-size: 17px;
+
+    p {
+      margin: 17px 0;
+    }
+
+    @media screen and (max-width: $breakpoint-medium-mobile-max) {
+      font-size: 15px;
+
+      p {
+        margin: 15px 0;
+      }
+    }
+  }
+
+  &.text-default-title {
+    font-size: 38px;
+    font-weight: 300;
+  }
+
+  &.text-responsive-title {
+    font-size: 38px;
+    font-weight: 300;
+
+    @media screen and (max-width: $breakpoint-portrait-pad-max) {
+      font-size: 26px;
+    }
+  }
+
+  &.text-strong-subtitle {
+    font-weight: 600;
+    font-size: 25px;
+  }
+
+  &.text-default-label {
+    font-weight: 300;
+    font-size: 14px;
+  }
+
+  &.text-strong-label {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
   &.text-inline {
     display: inline;
   }
 
   &.text-inline-block {
     display: inline-block;
-  }
-
-  &.text-small {
-    font-size: 13px;
-  }
-
-//  &.text-medium {
-//  }
-
-  &.text-large {
-    font-size: 15px;
-  }
-
-  &.text-extra-large {
-    font-size: 25px;
-  }
-
-  &.text-extra-extra-large {
-    font-size: 38px;
-  }
-
-  &.text-banner {
-    font-size: 48px;
-  }
-
-  &.text-thick {
-    font-weight: 500;
-  }
-
-  &.text-extra-thick {
-    font-weight: 600;
-  }
-
-  &.text-bold {
-    font-weight: 700;
-  }
-
-  &.text-extra-bold {
-    font-weight: 900;
-  }
-
-  &.text-thin {
-    font-weight: 300;
-  }
-
-  &.text-extra-thin {
-    font-weight: 200;
-  }
-
-  &.text-shadowed {
-    text-shadow: 0 5px 10px $color-text-default-shadow;
-  }
-
-  &.text-extra-shadowed {
-    text-shadow: 0 0 15px $color-text-default-shadow, 0 0 15px $color-text-default-shadow;
   }
 
   &.text-uppercase {
@@ -102,60 +131,7 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     text-transform: lowercase;
   }
 
-  &.text-separated {
-    line-height: 1.15;
-  }
-
-  &.text-extra-separated {
-    line-height: 1.3;
-  }
-
-  &.text-left {
-    text-align: left;
-  }
-
-  &.text-centered {
-    text-align: center;
-  }
-
-  &.text-justify {
-    text-align: justify;
-  }
-
-  &.text-right {
-    text-align: right;
-  }
-
   &.text-full {
     width: 100%;
-  }
-
-  @media screen and (max-width: $breakpoint-portrait-pad-max) {
-    &.text-responsive {
-      font-size: 12px;
-
-      &.text-small {
-        font-size: 11px;
-      }
-
-//      &.text-medium {
-//      }
-
-      &.text-large {
-        font-size: 13px;
-      }
-
-      &.text-extra-large {
-        font-size: 17px;
-      }
-
-      &.text-extra-extra-large {
-        font-size: 28px;
-      }
-
-      &.text-banner {
-        font-size: 32px;
-      }
-    }
   }
 }

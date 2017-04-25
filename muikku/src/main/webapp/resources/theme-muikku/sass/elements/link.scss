@@ -1,7 +1,7 @@
 //
 // Defines a link and its structure, links can be icons and can use the icon element class
 //
-//   a.link[ | .link-icon | .link-highlight | .link-clear | .link-strong][ | .link-full]
+//   a.link[ | .link-icon | .link-highlight | .link-default | .link-inverse][ | .link-full]
 //    [.link-uppercase][.link-lowercase]
 //    span
 //      (BODY)
@@ -25,7 +25,6 @@ $link-font-size-large: 16px;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  transition: border 0.5s ease-in-out;
   vertical-align: middle;
 
   &.link-small {
@@ -72,24 +71,9 @@ $link-font-size-large: 16px;
     color: $color-link-highlight-text;
   }
 
-  &.link-clear {
-    background-color: $color-link-clear-background;
-    color: $color-link-clear-text;
-
-    &:hover,
-    &.hover {
-      color: $color-link-clear-text;
-    }
-
-    &:active,
-    &.active {
-      color: $color-link-clear-text;
-    }
-  }
-
-  &.link-strong {
-    background-color: $color-link-strong-background;
-    color: $color-link-strong-text;
+  &.link-inverse {
+    background-color: $color-link-inverse-background;
+    color: $color-link-inverse-text;
   }
 
   &:hover,
@@ -112,14 +96,16 @@ $link-font-size-large: 16px;
     text-transform: lowercase;
   }
 
-  &.link-strong-effects {
+  &.link-inverse {
     &:hover,
     &.hover {
+      color: $color-link-inverse-text;
       background-color: opacify($color-link-hover-background, 0.6);
     }
 
     &:active,
     &.active {
+      color: $color-link-inverse-text;
       background-color: opacify($color-link-hover-background, 0.6);
     }
   }

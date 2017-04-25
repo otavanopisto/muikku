@@ -55,6 +55,10 @@ body {
   img {
     margin-bottom: 30px;
   }
+
+  .text {
+    text-align: center;
+  }
 }
 
 // Remove the burger menu on medium screens and up
@@ -238,15 +242,6 @@ body {
     @media screen and (max-width: $breakpoint-portrait-pad-max){
       order: 1;
       text-align: center;
-    }
-
-    .text > p {
-      margin: 15px 0;
-
-      @media screen and (min-width: $breakpoint-landscape-pad-min){
-        font-size: 17px;
-        margin: 17px 0;
-      }
     }
   }
 }

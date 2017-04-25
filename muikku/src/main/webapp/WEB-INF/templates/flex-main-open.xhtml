@@ -67,12 +67,12 @@
             <div class="navbar-default-options-container">
               <a class="button button-primary frontpage-navbar-login-button" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}"><span>#{i18n.text['plugin.login.buttonLabel']}</span></a>
               <a class="label label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
-              <a class="button-pill button-pill-strong frontpage-navbar-language-picker" data-interact-dropdown="#language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
+              <a class="button-pill button-pill-inverse frontpage-navbar-language-picker" data-interact-dropdown="#language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
               <h:form class="dropdown" id="language-picker">
                 <div class="dropdown-container">
                   <ui:repeat value="#{i18n.languages}" var="locale">
                     <div class="dropdown-item">
-                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-soft link-small link-clear link-strong-effects"><span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span></a>
+                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-small link-inverse"><span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span></a>
                     </div>
                   </ui:repeat>
                 </div>
@@ -131,13 +131,13 @@
           <div class="hero-item frontpage-muikku-hero">
             <div class="frontpage-muikku-hero-logo-container">
               <img class="logo logo-round logo-cast-shadow logo-large" src="/gfx/of-site-logo.png"></img>
-              <div class="text text-centered">
-                <div class="text text-clear text-extra-large text-extra-thin text-uppercase text-responsive">#{i18n.text['plugin.header.site.author']}</div>
-                <div class="text text-clear text-banner text-extra-shadowed text-extra-bold text-responsive">MUIKKU</div>
-                <div class="text text-clear text-banner text-shadowed text-extra-thin text-separated text-responsive">VERKKO</div>
+              <div class="text">
+                <div class="text text-default text-banner-author">#{i18n.text['plugin.header.site.author']}</div>
+                <div class="text text-default text-banner-muikku">MUIKKU</div>
+                <div class="text text-default text-banner-verkko">VERKKO</div>
               </div>
             </div>
-            <div class="text text-clear text-large text-extra-thin text-uppercase text-centered">#{i18n.text['plugin.header.site.description']}</div>
+            <div class="text text-default text-banner-description">#{i18n.text['plugin.header.site.description']}</div>
           </div>
           <div class="hero-item">
             <div class="bubble bubble-responsive">
@@ -152,7 +152,7 @@
       </header>
     </ui:insert>
 
-    <div class="separator separator-strong"></div>
+    <div class="separator separator-inverse"></div>
 
     <ui:insert name="main">
       <main class="screen-container frontpage-main background-container">
@@ -167,32 +167,32 @@
         <div class="footer-container">
           <div class="footer-item frontpage-footer-data">
             <br />
-            <h2 class="text text-extra-extra-large text-clear text-thin">#{i18n.text['plugin.footer.contact.title']}</h2>
+            <h2 class="text text-default-title text-default">#{i18n.text['plugin.footer.contact.title']}</h2>
             <br />
             <br />
-            <p class="text text-extra-separated">
-              <span class="text text-icon icon-location text-inline text-clear"></span>&#160;&#160;
-              <span class="text text-extra-thick text-inline text-clear">#{i18n.text['plugin.footer.streetAddress.label']} </span>&#160;
-              <span class="text text-thin text-inline text-clear">Otavantie 2 B, 50670 Otava</span>
+            <p class="text">
+              <span class="text text-icon icon-location text-inline text-default"></span>&#160;&#160;
+              <b class="text text-inline text-strong-label text-default">#{i18n.text['plugin.footer.streetAddress.label']} </b>&#160;
+              <span class="text text-default-label text-inline text-default">Otavantie 2 B, 50670 Otava</span>
             </p>
             <br />
-            <p class="text text-extra-separated">
-              <span class="text text-icon icon-phone text-inline text-clear"></span>&#160;&#160; 
-              <span class="text text-extra-thick text-inline text-clear">#{i18n.text['plugin.footer.phoneNumber.label']} </span> &#160;
-              <span class="text text-thin text-inline text-clear">015 194 3552</span>
+            <p class="text">
+              <span class="text text-icon icon-phone text-inline text-default"></span>&#160;&#160;
+              <b class="text text-inline text-strong-label text-default">#{i18n.text['plugin.footer.phoneNumber.label']} </b> &#160;
+              <span class="text text-default-label text-inline text-default">015 194 3552</span>
             </p>
             <br />
-            <p class="text text-extra-separated">
-              <span class="text text-icon icon-envelope text-inline text-clear"></span>&#160;&#160; 
-              <span class="text text-extra-thick text-inline text-clear">#{i18n.text['plugin.footer.emailAddress.label']} </span> &#160;
-              <span class="text text-thin text-inline text-clear">info@otavanopisto.fi</span>
+            <p class="text">
+              <span class="text text-icon icon-envelope text-inline text-default"></span>&#160;&#160;
+              <b class="text text-inline text-strong-label text-default">#{i18n.text['plugin.footer.emailAddress.label']} </b> &#160;
+              <span class="text text-default-label text-inline text-default">info@otavanopisto.fi</span>
             </p>
             <br />
             <br />
-            <p class="text text-extra-separated">
-              <a class="link link-clear link-small link-uppercase">#{i18n.text['plugin.footer.termsOfUse.label']}</a>&#160;&#160;&#160;&#160; 
-              <a class="link link-clear link-small link-uppercase">#{i18n.text['plugin.footer.personFileDescription.label']}</a>
-            </p>
+            <!-- <p class="text">
+              <a class="link link-small link-uppercase">#{i18n.text['plugin.footer.termsOfUse.label']}</a>&#160;&#160;&#160;&#160;
+              <a class="link link-small link-uppercase">#{i18n.text['plugin.footer.personFileDescription.label']}</a>
+            </p>-->
           </div>
           <div class="footer-item frontpage-footer-logos">
             <img src="/gfx/alku_uudelle.jpg" alt="" title="" class="logo" /> <img src="/gfx/footer_logo.jpg" alt="" title="" class="logo" />

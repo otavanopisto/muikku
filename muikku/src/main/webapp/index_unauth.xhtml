@@ -6,7 +6,7 @@
   <!-- Studying -->
   <section id="studying"
     class="ordered-container-item frontpage-section">
-    <h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
+    <h2 class="text text-responsive-title frontpage-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
     <div
       class="ordered-container ordered-container-row ordered-container-responsive frontpage-studying-section-content">
       <div class="ordered-container-item frontpage-card-container">
@@ -95,7 +95,7 @@
   <!-- Other details -->
   <section id="news" class="ordered-container-item frontpage-section">
 
-    <h2 class="text text-left text-thin frontpage-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
+    <h2 class="text text-responsive-title frontpage-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
 
     <div class="ordered-container frontpage-news-section-content">
       <!-- Events and news -->
@@ -209,28 +209,18 @@
         <div
           class="frontpage-otavan-opisto-card-social-media-and-description ordered-item">
           <div class="frontpage-otavan-opisto-card-social-media">
-            <h2
-              class="text text-extra-large text-extra-thick text-strong">
-              #{i18n.text['plugin.organization.some.title']}</h2>
-            <a class="button-social icon icon-some-facebook"
-              href="https://www.facebook.com/otavanopisto" target="top"></a>
-            <a class="button-social icon icon-some-twitter"
-              href="https://twitter.com/OtavanOpisto" target="top"></a>
-            <a class="button-social icon icon-some-instagram"
-              href="https://www.instagram.com/otavanopisto/"
-              target="top"></a> <a
-              class="button-social icon icon-some-pinterest"
-              href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
-            <a class="button-social icon icon-some-linkedin"
-              href="https://www.linkedin.com/company/106028"
-              target="top"></a>
+            <h2 class="text text-strong-subtitle text-inverse">
+              #{i18n.text['plugin.organization.some.title']}
+            </h2>
+            <a class="button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
+            <a class="button-social icon icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
+            <a class="button-social icon icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
+            <a class="button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
+            <a class="button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
           </div>
           <div class="frontpage-otavan-opisto-card-description">
-            <div
-              class="text text-large text-strong text-justify text-extra-separated">
-              <h:outputText
-                value="#{i18n.text['plugin.organization.description']}"
-                escape="false" />
+            <div class="text text-inverse text-default-multiparagraph">
+              <h:outputText value="#{i18n.text['plugin.organization.description']}" escape="false" />
             </div>
             <a href="http://www.otavanopisto.fi" target="top"
               class="button button-large frontpage-website-button">
