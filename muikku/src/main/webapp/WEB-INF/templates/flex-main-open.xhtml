@@ -10,31 +10,23 @@
           <ui:insert name="messages">
             <ui:repeat var="message" value="#{facesContext.messageList}">
               <ui:fragment rendered="#{message.severity.ordinal eq 0}">
-                <div data-severity="info"
-                  class="notification-queue-item notification-queue-item-info">
-                  <span>#{message.summary}</span> <a
-                    href="javascript:void(null)"></a>
+                <div data-severity="info" class="notification-queue-item notification-queue-item-info">
+                  <span>#{message.summary}</span><a href="javascript:void(null)"></a>
                 </div>
               </ui:fragment>
               <ui:fragment rendered="#{message.severity.ordinal eq 1}">
-                <div data-severity="warn"
-                  class="notification-queue-item notification-queue-item-warn">
-                  <span>#{message.summary}</span> <a
-                    href="javascript:void(null)"></a>
+                <div data-severity="warn" class="notification-queue-item notification-queue-item-warn">
+                  <span>#{message.summary}</span><a href="javascript:void(null)"></a>
                 </div>
               </ui:fragment>
               <ui:fragment rendered="#{message.severity.ordinal eq 2}">
-                <div data-severity="error"
-                  class="notification-queue-item notification-queue-item-error">
-                  <span>#{message.summary}</span> <a
-                    href="javascript:void(null)"></a>
+                <div data-severity="error" class="notification-queue-item notification-queue-item-error">
+                  <span>#{message.summary}</span><a href="javascript:void(null)"></a>
                 </div>
               </ui:fragment>
               <ui:fragment rendered="#{message.severity.ordinal eq 3}">
-                <div data-severity="fatal"
-                  class="notification-queue-item notification-queue-item-fatal">
-                  <span>#{message.summary}</span> <a
-                    href="javascript:void(null)"></a>
+                <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal">
+                  <span>#{message.summary}</span><a href="javascript:void(null)"></a>
                 </div>
               </ui:fragment>
             </ui:repeat>
@@ -52,53 +44,35 @@
           <div class="navbar-items">
             <ul class="navbar-items-container">
               <li class="navbar-item frontpage-navbar-display-menu">
-                <a data-interact-menu="#main-menu"
-                class="link link-icon link-full"> <span
-                  class="icon icon-navicon navbar-display-menu"></span>
-              </a>
+                <a data-interact-menu="#main-menu" class="link link-icon link-full"><span class="icon icon-navicon navbar-display-menu"></span></a>
               </li>
-              <li class="navbar-item frontpage-navbar-studying"><a
-                href="#studying" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.studying']}</span>
-              </a></li>
-              <li class="navbar-item frontpage-navbar-news"><a
-                href="#news" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.news']}</span>
-              </a></li>
+              <li class="navbar-item frontpage-navbar-studying">
+                <a href="#studying" class="link link-full"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+              </li>
+              <li class="navbar-item frontpage-navbar-news">
+                <a href="#news" class="link link-full"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+              </li>
               <li class="navbar-item frontpage-navbar-otavan-opisto">
-                <a href="#organization" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span>
-              </a>
+                <a href="#organization" class="link link-full"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
               </li>
-              <li class="navbar-item frontpage-navbar-contact"><a
-                href="#contact" class="link link-full"> <span>#{i18n.text['plugin.navigation.link.contact']}</span>
-              </a></li>
+              <li class="navbar-item frontpage-navbar-contact">
+                <a href="#contact" class="link link-full"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
+              </li>
               <li class="navbar-item frontpage-navbar-open-materials">
-                <a href="/coursepicker"
-                class="link link-highlight link-full"> <span>#{i18n.text['plugin.navigation.link.openMaterials']}</span>
-              </a>
+                <a href="/coursepicker" class="link link-highlight link-full"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
               </li>
             </ul>
           </div>
           <div class="navbar-default-options">
             <div class="navbar-default-options-container">
-              <a
-                class="button button-primary frontpage-navbar-login-button"
-                jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-              </a> <a
-                class="label label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword">
-                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-              </a> <a
-                class="button-pill button-pill-strong frontpage-navbar-language-picker"
-                data-interact-dropdown="#language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
+              <a class="button button-primary frontpage-navbar-login-button" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}"><span>#{i18n.text['plugin.login.buttonLabel']}</span></a>
+              <a class="label label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
+              <a class="button-pill button-pill-strong frontpage-navbar-language-picker" data-interact-dropdown="#language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
               <h:form class="dropdown" id="language-picker">
                 <div class="dropdown-container">
                   <ui:repeat value="#{i18n.languages}" var="locale">
                     <div class="dropdown-item">
-                      <a
-                        jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}"
-                        class="link link-full link-soft link-small link-clear link-strong-effects">
-                        <span>#{i18n.text['plugin.navigation.language.'
-                          .concat(locale)]}</span>
-                      </a>
+                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-soft link-small link-clear link-strong-effects"><span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span></a>
                     </div>
                   </ui:repeat>
                 </div>
@@ -112,31 +86,26 @@
       <div class="menu" id="main-menu">
         <div class="menu-container">
           <div class="menu-header">
-            <a class="button button-large button-primary"
-              jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
-              <span>#{i18n.text['plugin.login.buttonLabel']}</span>
-            </a> <a
-              class="label label-large label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword">
-              <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
-            </a>
+            <a class="button button-large button-primary" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}"><span>#{i18n.text['plugin.login.buttonLabel']}</span></a>
+            <a class="label label-large label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
           </div>
           <div class="menu-body">
             <ul class="menu-items">
-              <li class="menu-item"><a href="#studying"
-                class="link link-full"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
+              <li class="menu-item">
+                <a href="#studying" class="link link-full"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
               </li>
-              <li class="menu-item"><a href="#news"
-                class="link link-full"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
+              <li class="menu-item">
+                <a href="#news" class="link link-full"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
               </li>
-              <li class="menu-item"><a href="#organization"
-                class="link link-full"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
+              <li class="menu-item">
+                <a href="#organization" class="link link-full"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
               </li>
-              <li class="menu-item"><a href="#contact"
-                class="link link-full"> <span>#{i18n.text['plugin.navigation.link.contact']}</span>
-              </a></li>
-              <li class="menu-item"><a href="/coursepicker"
-                class="link link-highlight link-full"> <span>#{i18n.text['plugin.navigation.link.openMaterials']}</span>
-              </a></li>
+              <li class="menu-item">
+                <a href="#contact" class="link link-full"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
+              </li>
+              <li class="menu-item">
+                <a href="/coursepicker" class="link link-highlight link-full"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
+              </li>
             </ul>
           </div>
           <div
@@ -152,53 +121,30 @@
         <div class="hero-wrapper">
           <div class="hero-item">
             <div class="bubble bubble-responsive">
-              <div class="bubble-title">
-                #{i18n.text['plugin.header.studentApplicationBubble.title']}
-              </div>
-              <div class="bubble-content">
-                #{i18n.text['plugin.header.studentApplicationBubble.description']}
-              </div>
+              <div class="bubble-title">#{i18n.text['plugin.header.studentApplicationBubble.title']}</div>
+              <div class="bubble-content">#{i18n.text['plugin.header.studentApplicationBubble.description']}</div>
               <div class="bubble-button-container">
-                <a
-                  class="button button-soft button-dynamic-height button-warn button-focus">
-                  #{i18n.text['plugin.header.studentApplicationBubble.link']}
-                </a>
+                <a class="button button-soft button-dynamic-height button-warn button-focus">#{i18n.text['plugin.header.studentApplicationBubble.link']}</a>
               </div>
             </div>
           </div>
           <div class="hero-item frontpage-muikku-hero">
             <div class="frontpage-muikku-hero-logo-container">
-              <img class="logo logo-round logo-cast-shadow logo-large"
-                src="/gfx/of-site-logo.png"></img>
+              <img class="logo logo-round logo-cast-shadow logo-large" src="/gfx/of-site-logo.png"></img>
               <div class="text text-centered">
-                <div
-                  class="text text-clear text-extra-large text-extra-thin text-uppercase text-responsive">
-                  #{i18n.text['plugin.header.site.author']}</div>
-                <div
-                  class="text text-clear text-banner text-extra-shadowed text-extra-bold text-responsive">
-                  MUIKKU</div>
-                <div
-                  class="text text-clear text-banner text-shadowed text-extra-thin text-separated text-responsive">
-                  VERKKO</div>
+                <div class="text text-clear text-extra-large text-extra-thin text-uppercase text-responsive">#{i18n.text['plugin.header.site.author']}</div>
+                <div class="text text-clear text-banner text-extra-shadowed text-extra-bold text-responsive">MUIKKU</div>
+                <div class="text text-clear text-banner text-shadowed text-extra-thin text-separated text-responsive">VERKKO</div>
               </div>
             </div>
-            <div
-              class="text text-clear text-large text-extra-thin text-uppercase text-centered">
-              #{i18n.text['plugin.header.site.description']}</div>
+            <div class="text text-clear text-large text-extra-thin text-uppercase text-centered">#{i18n.text['plugin.header.site.description']}</div>
           </div>
           <div class="hero-item">
             <div class="bubble bubble-responsive">
-              <div class="bubble-title">
-                #{i18n.text['plugin.header.openMaterialsBubble.title']}
-              </div>
-              <div class="bubble-content">
-                #{i18n.text['plugin.header.openMaterialsBubble.description']}
-              </div>
+              <div class="bubble-title">#{i18n.text['plugin.header.openMaterialsBubble.title']}</div>
+              <div class="bubble-content">#{i18n.text['plugin.header.openMaterialsBubble.description']}</div>
               <div class="bubble-button-container">
-                <a
-                  class="button button-soft button-dynamic-height button-warn">
-                  #{i18n.text['plugin.header.openMaterialsBubble.link']}
-                </a>
+                <a class="button button-soft button-dynamic-height button-warn">#{i18n.text['plugin.header.openMaterialsBubble.link']}</a>
               </div>
             </div>
           </div>
@@ -210,8 +156,7 @@
 
     <ui:insert name="main">
       <main class="screen-container frontpage-main background-container">
-      <div
-        class="screen-container-wrapper ordered-container frontpage-main-container">
+      <div class="screen-container-wrapper ordered-container frontpage-main-container">
         <ui:insert name="grid-content"></ui:insert>
       </div>
       </main>
@@ -222,53 +167,35 @@
         <div class="footer-container">
           <div class="footer-item frontpage-footer-data">
             <br />
-            <h2 class="text text-extra-extra-large text-clear text-thin">
-              #{i18n.text['plugin.footer.contact.title']}</h2>
+            <h2 class="text text-extra-extra-large text-clear text-thin">#{i18n.text['plugin.footer.contact.title']}</h2>
             <br />
             <br />
             <p class="text text-extra-separated">
-              <span
-                class="text text-icon icon-location text-inline text-clear"></span>
-              &#160;&#160; <span
-                class="text text-extra-thick text-inline text-clear">
-                #{i18n.text['plugin.footer.streetAddress.label']} </span>
-              &#160; <span class="text text-thin text-inline text-clear">Otavantie
-                2 B, 50670 Otava</span>
+              <span class="text text-icon icon-location text-inline text-clear"></span>&#160;&#160;
+              <span class="text text-extra-thick text-inline text-clear">#{i18n.text['plugin.footer.streetAddress.label']} </span>&#160;
+              <span class="text text-thin text-inline text-clear">Otavantie 2 B, 50670 Otava</span>
             </p>
             <br />
             <p class="text text-extra-separated">
-              <span
-                class="text text-icon icon-phone text-inline text-clear"></span>
-              &#160;&#160; <span
-                class="text text-extra-thick text-inline text-clear">
-                #{i18n.text['plugin.footer.phoneNumber.label']} </span> &#160;
-              <span class="text text-thin text-inline text-clear">015
-                194 3552</span>
+              <span class="text text-icon icon-phone text-inline text-clear"></span>&#160;&#160; 
+              <span class="text text-extra-thick text-inline text-clear">#{i18n.text['plugin.footer.phoneNumber.label']} </span> &#160;
+              <span class="text text-thin text-inline text-clear">015 194 3552</span>
             </p>
             <br />
             <p class="text text-extra-separated">
-              <span
-                class="text text-icon icon-envelope text-inline text-clear"></span>
-              &#160;&#160; <span
-                class="text text-extra-thick text-inline text-clear">
-                #{i18n.text['plugin.footer.emailAddress.label']} </span> &#160;
+              <span class="text text-icon icon-envelope text-inline text-clear"></span>&#160;&#160; 
+              <span class="text text-extra-thick text-inline text-clear">#{i18n.text['plugin.footer.emailAddress.label']} </span> &#160;
               <span class="text text-thin text-inline text-clear">info@otavanopisto.fi</span>
             </p>
             <br />
             <br />
             <p class="text text-extra-separated">
-              <a class="link link-clear link-small link-uppercase">
-                #{i18n.text['plugin.footer.termsOfUse.label']} </a>
-              &#160;&#160;&#160;&#160; <a
-                class="link link-clear link-small link-uppercase">
-                #{i18n.text['plugin.footer.personFileDescription.label']}
-              </a>
+              <a class="link link-clear link-small link-uppercase">#{i18n.text['plugin.footer.termsOfUse.label']}</a>&#160;&#160;&#160;&#160; 
+              <a class="link link-clear link-small link-uppercase">#{i18n.text['plugin.footer.personFileDescription.label']}</a>
             </p>
           </div>
           <div class="footer-item frontpage-footer-logos">
-            <img src="/gfx/alku_uudelle.jpg" alt="" title=""
-              class="logo" /> <img src="/gfx/footer_logo.jpg" alt=""
-              title="" class="logo" />
+            <img src="/gfx/alku_uudelle.jpg" alt="" title="" class="logo" /> <img src="/gfx/footer_logo.jpg" alt="" title="" class="logo" />
           </div>
         </div>
       </footer>

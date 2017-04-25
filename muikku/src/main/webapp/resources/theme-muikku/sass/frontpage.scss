@@ -57,7 +57,7 @@ body {
   }
 }
 
-// Remove the burguer menu on medium screens and up
+// Remove the burger menu on medium screens and up
 @media screen and (min-width: $breakpoint-medium-screen-min) {
   .frontpage-navbar-display-menu {
     display: none !important;
