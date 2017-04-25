@@ -34,15 +34,15 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   &.text-banner-description {
     font-size: 15px;
     font-weight: 200;
-    text-transform: uppercase;
     text-align: center;
+    text-transform: uppercase;
   }
 
   &.text-banner-verkko {
     font-size: 48px;
-    text-shadow: 0 5px 10px $color-text-banner-shadow;
     font-weight: 200;
     line-height: 0.9;
+    text-shadow: 0 5px 10px $color-text-banner-shadow;
 
     @media screen and (max-width: $breakpoint-portrait-pad-max) {
       font-size: 32px;
@@ -50,10 +50,10 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   }
 
   &.text-banner-muikku {
-    text-shadow: 0 5px 10px $color-text-banner-shadow;
-    font-weight: 900;
     font-size: 48px;
+    font-weight: 900;
     line-height: 0.9;
+    text-shadow: 0 5px 10px $color-text-banner-shadow;
 
     @media screen and (max-width: $breakpoint-portrait-pad-max) {
       font-size: 32px;
@@ -63,7 +63,7 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   &.text-banner-author {
     font-size: 38px;
     font-weight: 200;
-    font-transform: uppercase;
+    text-transform: uppercase;
 
     @media screen and (max-width: $breakpoint-portrait-pad-max) {
       font-size: 17px;
@@ -101,18 +101,18 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   }
 
   &.text-strong-subtitle {
-    font-weight: 600;
     font-size: 25px;
+    font-weight: 600;
   }
 
   &.text-default-label {
-    font-weight: 300;
     font-size: 14px;
+    font-weight: 300;
   }
 
   &.text-strong-label {
-    font-weight: 600;
     font-size: 14px;
+    font-weight: 600;
   }
 
   &.text-inline {

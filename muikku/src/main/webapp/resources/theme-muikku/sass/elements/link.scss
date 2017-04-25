@@ -74,6 +74,18 @@ $link-font-size-large: 16px;
   &.link-inverse {
     background-color: $color-link-inverse-background;
     color: $color-link-inverse-text;
+
+    &:hover,
+    &.hover {
+      background-color: opacify($color-link-hover-background, 0.6);
+      color: $color-link-inverse-text;
+    }
+
+    &:active,
+    &.active {
+      background-color: opacify($color-link-hover-background, 0.6);
+      color: $color-link-inverse-text;
+    }
   }
 
   &:hover,
@@ -94,19 +106,5 @@ $link-font-size-large: 16px;
 
   &.link-lowercase {
     text-transform: lowercase;
-  }
-
-  &.link-inverse {
-    &:hover,
-    &.hover {
-      color: $color-link-inverse-text;
-      background-color: opacify($color-link-hover-background, 0.6);
-    }
-
-    &:active,
-    &.active {
-      color: $color-link-inverse-text;
-      background-color: opacify($color-link-hover-background, 0.6);
-    }
   }
 }
