@@ -70,7 +70,7 @@
       this._clear();      
       
       mApi().records.vops
-      .read(666)
+      .read(MUIKKU_LOGGED_USER)
       .on('$', $.proxy(function (vops, callback) {
          var maxitems = 15;
          var titleItems = [];
