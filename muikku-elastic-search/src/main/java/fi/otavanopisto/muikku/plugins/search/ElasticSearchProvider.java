@@ -357,6 +357,7 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjectIdentifier", subjectIdentifier));
     query.must(termQuery("courseNumber", courseNumber));
+    query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")
