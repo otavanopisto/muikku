@@ -125,10 +125,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   subject.getSchoolDataSource(),
                   subject.getIdentifier(),
                   i);
-          if (workspaces.isEmpty()) {
+          if (!workspaces.isEmpty()) {
             items.add(new VopsRESTModel.VopsItem(i, false));
-          } else {
-            items.add(new VopsRESTModel.VopsItem(i, true));
           }
         }
         rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
