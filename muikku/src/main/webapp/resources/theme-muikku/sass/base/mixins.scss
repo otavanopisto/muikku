@@ -1,4 +1,4 @@
-@mixin prefix($property, $prefixes: (), $values...) {
+@mixin prefix($property, $prefixes, $values...) {
   @each $prefix in $prefixes {
     #{"-" + $prefix + "-" + $property}: $values;
   }
