@@ -63,7 +63,8 @@
     // #1813: Workspace teachers
     
     mApi().user.staffMembers.read({
-      workspaceEntityId: workspaceEntityId
+      workspaceEntityId: workspaceEntityId,
+      properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
     }).callback(function (err, staffMembers) {
       if (!err && staffMembers) {
         staffMembers.sort(function(a, b) {

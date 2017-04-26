@@ -1,17 +1,20 @@
 package fi.otavanopisto.muikku.rest.model;
 
+import java.util.Map;
+
 public class StaffMember {
 
   public StaffMember() {
   }
 
-  public StaffMember(String id, Long userEntityId, String firstName, String lastName, String email) {
+  public StaffMember(String id, Long userEntityId, String firstName, String lastName, String email, Map<String, String> properties) {
     super();
     this.id = id;
     this.userEntityId = userEntityId;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
+    this.properties = properties;
   }
 
   public String getId() {
@@ -54,9 +57,18 @@ public class StaffMember {
     this.email = email;
   }
 
+  public Map<String, String> getProperties() {
+    return properties;
+  }
+
+  public void setProperties(Map<String, String> properties) {
+    this.properties = properties;
+  }
+
   private String id;
   private Long userEntityId;
   private String firstName;
-  private String lastName;;
+  private String lastName;
   private String email;
+  private Map<String, String> properties;
 }

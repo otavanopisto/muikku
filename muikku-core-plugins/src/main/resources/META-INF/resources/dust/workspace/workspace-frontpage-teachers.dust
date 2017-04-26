@@ -11,6 +11,7 @@
         <span class="workspace-teacher-lastname">{lastName}</span>
       </div>
       <div class="workspace-teacher-email">{email}</div>
+      <div>Puhelin: {properties.profile-phone}</div>
     </div>
   </div>
   {:else}
