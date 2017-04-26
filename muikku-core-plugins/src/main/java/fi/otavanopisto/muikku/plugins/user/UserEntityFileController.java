@@ -17,7 +17,6 @@ public class UserEntityFileController {
   private UserEntityFileDAO userEntityFileDAO;
 
   public UserEntityFile storeUserEntityFile(String identifier, String name, String contentType, byte[] data, UserEntityFileVisibility visibility) {
-    System.out.println("store " + identifier + " with file name " + name);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     UserEntityFile userEntityFile = userEntityFileDAO.findByUserEntityAndIdentifier(userEntity, identifier);
     if (userEntityFile == null) {
