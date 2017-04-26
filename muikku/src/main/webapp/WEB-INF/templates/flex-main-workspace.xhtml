@@ -79,7 +79,7 @@
         </ui:fragment>
         <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
           <a jsf:outcome="/jsf/profile/profile.jsf">
-            <object class="lu-picture sm-flex-hide" data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpg">
+            <object class="lu-picture sm-flex-hide" data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpeg">
               <img class="lu-picture sm-flex-hide" src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
             </object>
           </a>
