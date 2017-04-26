@@ -12,10 +12,9 @@
           <div class="logged-user" id="loggedUser">
             <div class="lu-badge-container">
               <a jsf:outcome="/jsf/profile/profile.jsf">
-                <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpg">
+                <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpeg">
                   <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
                 </object>
-<!--                 <span class="lu-picture" id="loggedUserPicture"/> -->
               </a>
               <div class="lu-info-container">
                 <div class="lu-user-name">

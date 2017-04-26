@@ -250,16 +250,16 @@ dt {
   object,
   img {
     border: 2px solid $environment-logged-in-border-color;
+    border-radius: 100%;
+    box-sizing: border-box;
+    display: inline-block;
     height: 48px;
-    width: 48px; 
+    margin: 0 5px 0 auto;
+    overflow: hidden;
     position: relative;
     top: 0;
-    box-sizing: border-box; 
-    display: inline-block;
-    border-radius: 100%;
-    margin: 0 5px 0 auto;
-    z-index: 15;
-    overflow: hidden;
+    width: 48px;
+    z-index: 15; 
   }
   
   .lu-info-container {
