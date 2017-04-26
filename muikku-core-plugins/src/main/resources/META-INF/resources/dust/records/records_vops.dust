@@ -64,6 +64,7 @@
           <div title="Kurssi {courseNumber}" class="tr-vops-item mandatory {?completed}passed{/completed}" data-no="{courseNumber}">
           </div>       
         {/items}       
+<!-- 
           <div title="Kurssi N" class="tr-vops-item optional-school failing" data-no="{courseNumber}">
             <span>T</span>
           </div>    
@@ -86,6 +87,7 @@
           <div title="Kurssi N" class="tr-vops-item optional-national failed" data-no="{courseNumber}">
             <span>H</span>  
           </div>  
+           -->
       </div>
     {/rows}
   </div>
