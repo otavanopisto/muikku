@@ -1,7 +1,7 @@
 @import "vars";
 @import "vars_backup";
 @import "styles";
-
+@import "jquery.datepicker";
 
 #profile { 
   
@@ -66,14 +66,11 @@
     }
     
     .profile-change-password {
-      background: $environment-profile-button-background-color;
-      color: $environment-profile-button-font-color;
+      color: $environment-link-color;
       cursor: pointer;
       display: inline-block;
       font-size: 14px;
       font-weight: 400;
-      padding: 6px 8px;
-      text-transform: uppercase;
     }
 
     .profile-change-address-municipality-container {
@@ -81,15 +78,58 @@
     }
     
     .profile-change-address-municipality {
-      background: $environment-profile-button-background-color;
-      color: $environment-profile-button-font-color;
+      color: $environment-link-color;
       cursor: pointer;
       display: inline-block;
       font-size: 14px;
       font-weight: 400;
-      padding: 6px 8px;
-      text-transform: uppercase;
     }
+    
+    .profile-basicinfo-section {
+
+    }
+    
+    .profile-vacationinfo-section {
+
+    }
+    
+    .profile-vacation-wrapper {
+      @include flexbox;
+      align-items: flex-start;
+      flex-flow: row nowrap;
+    
+      .profile-vacation-date {
+        border-sizing: border-box;
+        flex: 1 1 50%;
+        
+        &:first-child {
+          padding: 0 5px 0 0;
+        }
+        
+        &:last-child {
+          padding: 0 0 0 5px;
+        }
+        
+      }
+    
+    }
+    
+    .profile-button-wrapper {
+      margin: 10px 0 0;
+    
+      .save-profile-fields {
+        background: $environment-profile-button-background-color;
+        color: $environment-profile-button-font-color;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 6px 8px;
+        text-transform: uppercase;
+      }
+    
+    }
+    
   }
   
   .profile-section-links-container {

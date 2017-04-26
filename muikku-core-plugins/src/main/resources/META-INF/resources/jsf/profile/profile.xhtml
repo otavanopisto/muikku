@@ -42,20 +42,20 @@
                 <div class="profile-data-wrapper">
                   <h1 class="profile-user-realname">#{profileBackingBean.displayName}</h1>
                     <ui:fragment rendered="#{!empty(profileBackingBean.emails)}">
-                      <h2>#{i18n.text['plugin.profile.emailsLabel']}</h2>
+                      <label>#{i18n.text['plugin.profile.emailsLabel']}</label>
                       <ui:repeat var="email" value="#{profileBackingBean.emails}">
                         <div class="profile-user-email">#{email}</div>
                       </ui:repeat>
                     </ui:fragment>
                     <ui:fragment rendered="#{!empty(profileBackingBean.addresses)}">
-                      <h2>#{i18n.text['plugin.profile.addressesLabel']}</h2>
+                      <label>#{i18n.text['plugin.profile.addressesLabel']}</label>
                       <ui:repeat var="address" value="#{profileBackingBean.addresses}">
                         <div class="profile-user-address">#{address}</div>
                       </ui:repeat>
                     </ui:fragment>
                     
                     <ui:fragment rendered="#{!empty(profileBackingBean.phoneNumbers)}">
-                      <h2>#{i18n.text['plugin.profile.phoneNumbers']}</h2>
+                      <label>#{i18n.text['plugin.profile.phoneNumbers']}</label>
                       <ui:repeat var="phoneNumber" value="#{profileBackingBean.phoneNumbers}">
                         <div class="profile-user-phone-number">#{phoneNumber}</div>
                       </ui:repeat>
@@ -69,24 +69,28 @@
                       <div class="profile-change-address-municipality">#{i18n.text['plugin.profile.changeAddressMunicipality.buttonLabel']}</div>
                     </div>
                     
-                    <div>
-                      <form>
-                        <div>
-                          <span>Puhelinnumero</span><input type="text" name="profile-phone" size="20"/>
+                    <form>
+                      <div class="profile-basicinfo-section">
+                        <div class="profile-phone-wrapper">
+                          <label>#{i18n.text['plugin.profile.phoneNumber.label']}</label><input type="text" name="profile-phone" size="20"/>
                         </div>
-                        <div>
-                          <span>Loma alkaa</span><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
+                      </div>
+                      <div class="profile-vacationinfo-section">
+                        <div class="profile-vacation-wrapper">
+                          <div class="profile-vacation-date">
+	                          <label>#{i18n.text['plugin.profile.awayStartDate.label']}</label><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
+	                        </div>
+	                        <div class="profile-vacation-date">
+	                          <label>#{i18n.text['plugin.profile.awayEndDate.label']}</label><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
+	                        </div>
                         </div>
-                        <div>
-                          <span>Loma loppuu</span><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
-                        </div>
-                        <div>
+                        
+                        <div class="profile-button-wrapper">
                           <div class="save-profile-fields">Tallenna</div>
                         </div>
-                      </form>
+                      
                     </div>
-                    
-                    
+                  </form>
                 </div>
                 
               </div>
