@@ -13,12 +13,15 @@
       this._currentSort = '';
       this._cardsLoaded = 0;
       this._cardsTotal = 0;
+      this._filterFunctions = [];
+      this._activeFilters = [];
       this.element.on("loadStart", $.proxy(this._onLoadStart, this));
       this.element.on("loadEnd", $.proxy(this._onLoadEnd, this));
       this.element.on("cardLoaded", $.proxy(this._onCardLoaded, this));
       this.element.on("discardCard", $.proxy(this._onDiscardCard, this));
-      this.element.on("cardStateChange", $.proxy(this._onCardStateChange, this))
+      this.element.on("cardStateChange", $.proxy(this._onCardStateChange, this));
       this._setupSorters();
+      this._setupFilters();
       this._initializeView();
     },
     _initializeView: function() {
@@ -28,10 +31,12 @@
       if (workspaceEntityId) {
         this._sortProperty = 'evaluation-workspace-sort';
         $('.evaluation-cards-title h3').text($('#workspaceName').val());
+        $('.eval-filters').show();
         $('.icon-sort-workspace-alpha-asc').hide();
         $('.icon-sort-workspace-alpha-desc').hide();
       }
       else {
+        $('.eval-filters').hide();
         this._sortProperty = 'evaluation-default-sort';
         $('.evaluation-cards-title h3').text(getLocaleText("plugin.evaluation.evaluationRequestsTitle"));
       }
@@ -123,10 +128,10 @@
           }
         }, this)); 
     },
-    _isImportant(workspaceUserEntityId) {
+    _isImportant: function(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._importantRequests) >= 0;
     },
-    _isUnimportant(workspaceUserEntityId) {
+    _isUnimportant: function(workspaceUserEntityId) {
       return $.inArray(workspaceUserEntityId, this._unimportantRequests) >= 0;
     },
     _resetImportance: function(card) {
@@ -445,6 +450,110 @@
         this._sortFunctions['sort-workspace-alpha-desc']();
       }, this));
 
+    },
+    
+    _setupFilters: function() {
+      // Text filter
+      this._filterFunctions['text'] = $.proxy(function(card) {
+        var text = $('input.eval-searchfield').val();
+        var cmp =  $(card).find('.evaluation-card-student').text() +
+          $(card).find('.evaluation-card-study-programme').text() +
+          $(card).find('.workspace-name').text();
+        return cmp.toLowerCase().indexOf(text.toLowerCase()) >= 0;
+      }, this);
+      var textSearchFunction = $.proxy(function() {
+        if ($('input.eval-searchfield').val()) {
+          $('div.remove-search-results').show();
+          this._activeFilters.push('text');
+        }
+        else {
+          $('div.remove-search-results').hide();
+          this._activeFilters.splice($.inArray('text', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this);
+      $('input.eval-searchfield').on('keypress', $.proxy(function(e) {
+        if (e.which === 13) {
+          textSearchFunction();
+        }
+      }, this));
+      $('button.eval-searchbutton').click($.proxy(function() {
+        textSearchFunction();
+      }, this));
+      $('div.remove-search-results').click($.proxy(function() {
+        $('input.eval-searchfield').val('');
+        textSearchFunction();
+      }, this));
+      // Evaluated filter
+      this._filterFunctions['evaluated'] = $.proxy(function(card) {
+        return $(card).attr('data-evaluated') == 'true';
+      }, this);
+      $('input.filter-evaluated').click($.proxy(function() {
+        if ($('input.filter-evaluated').is(':checked')) {
+          this._activeFilters.push('evaluated');
+        }
+        else {
+          this._activeFilters.splice($.inArray('evaluated', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
+      // Evaluation request filter
+      this._filterFunctions['evaluation-request'] = $.proxy(function(card) {
+        return $(card).attr('data-assessment-request-date') != '';
+      }, this);
+      $('input.filter-evaluation-request').click($.proxy(function() {
+        if ($('input.filter-evaluation-request').is(':checked')) {
+          this._activeFilters.push('evaluation-request');
+        }
+        else {
+          this._activeFilters.splice($.inArray('evaluation-request', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
+      // Supplementation request filter
+      this._filterFunctions['supplementation-request'] = $.proxy(function(card) {
+        return $(card).attr('data-evaluated') == 'true' && $(card).attr('data-graded') == '';
+      }, this);
+      $('input.filter-supplementation-request').click($.proxy(function() {
+        if ($('input.filter-supplementation-request').is(':checked')) {
+          this._activeFilters.push('supplementation-request');
+        }
+        else {
+          this._activeFilters.splice($.inArray('supplementation-request', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
+      // Not evaluated filter
+      this._filterFunctions['no-evaluation'] = $.proxy(function(card) {
+        return $(card).attr('data-evaluated') != 'true';
+      }, this);
+      $('input.filter-no-evaluation').click($.proxy(function() {
+        if ($('input.filter-no-evaluation').is(':checked')) {
+          this._activeFilters.push('no-evaluation');
+        }
+        else {
+          this._activeFilters.splice($.inArray('no-evaluation', this._activeFilters), 1);
+        }
+        this._filter();
+      }, this));
+    },
+    
+    _filter: function() {
+      $('.evaluation-card').each($.proxy(function(index, card) {
+        var match = true;
+        for (var i = 0; i < this._activeFilters.length; i++) {
+          match = this._filterFunctions[this._activeFilters[i]](card);
+          if (!match) {
+            break;
+          }
+        }
+        if (match) {
+          $(card).show();
+        }
+        else {
+          $(card).hide();
+        }
+      }, this));
     }
   });
 
@@ -455,7 +564,9 @@
       fieldlessMode: true
     });
     $(document).trigger("loadStart", $('.evaluation-cards-container'));
+
     // Grading scales
+    
     mApi().evaluation.compositeGradingScales
       .read()
       .callback($.proxy(function (err, gradingScales) {
@@ -467,10 +578,87 @@
         }
         $(document).trigger("loadEnd", $('.evaluation-cards-container'));
       }, this)); 
+
+    // My workspaces
+
+    mApi().workspace.workspaces
+      .read({userId: MUIKKU_LOGGED_USER_ID})
+      .callback($.proxy(function (err, workspaces) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          var workspaceContainer = $('ul.evaluation-my-workspaces');
+          workspaces.sort(function(a, b) {
+            return a.name.localeCompare(b.name);
+          });
+          for (var i = 0; i < workspaces.length; i++) {
+            var workspaceName = workspaces[i].name;
+            if (workspaces[i].nameExtension) {
+              workspaceName += ' (' + workspaces[i].nameExtension + ')';
+            }
+            var workspaceItem = $('<li>')
+              .append($('<a>')
+                .attr('href', '/evaluation2?workspaceEntityId=' + workspaces[i].id)
+                .text(workspaceName)
+              );
+            workspaceContainer.append(workspaceItem);
+          }
+        }
+      }, this));
+
+    $('.eval-home').on('click', function() {
+      location.href = location.href.split("?")[0];
+    });
+
+    $('.eval-workspaces').on('click', function() {
+      var evalWorkspacesVisibility = $('.evaluation-workspaces-wrapper').attr('data-visibility');
+      
+      if (evalWorkspacesVisibility == 'hidden') {
+        $('.evaluation-workspaces-wrapper')
+          .show()
+          .animate({
+            left: 0 + "px"
+        }, 300, "swing", function() {
+          $('.evaluation-workspaces-wrapper').attr('data-visibility', 'visible');
+        });
+      }
+      else {
+        $('.evaluation-workspaces-wrapper')
+          .animate({
+            left: 0 - $('.evaluation-workspaces-wrapper').width() + "px"
+        }, 250, "swing", function() {
+          $('.evaluation-workspaces-wrapper').hide();
+          $('.evaluation-workspaces-wrapper').attr('data-visibility', 'hidden');
+        });
+      }
+    });
+    
+    $('.eval-filters').on('click', function() {
+      var evalFiltersVisibility = $('.evaluation-filters-wrapper').attr('data-visibility');
+      
+      if (evalFiltersVisibility == 'hidden') {
+        $('.evaluation-filters-wrapper')
+          .show()
+          .animate({
+            right: 0 + "px"
+        }, 300, "swing", function() {
+          $('.evaluation-filters-wrapper').attr('data-visibility', 'visible');
+        });
+      }
+      else {
+        $('.evaluation-filters-wrapper')
+          .animate({
+            right: 0 - $('.evaluation-filters-wrapper').width() + "px"
+        }, 250, "swing", function() {
+          $('.evaluation-filters-wrapper').hide();
+          $('.evaluation-filters-wrapper').attr('data-visibility', 'hidden');
+        });
+      }
+    });
+    
+    
   });
   
-  $('.eval-home').on('click', function() {
-    location.href = location.href.split("?")[0];
-  });
   
 }).call(this);

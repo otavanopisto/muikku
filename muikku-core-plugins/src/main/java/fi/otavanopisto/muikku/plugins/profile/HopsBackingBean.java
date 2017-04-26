@@ -58,7 +58,7 @@ public class HopsBackingBean {
       transferCreditYears = loadStringProperty(user, "transferCreditYears");
       completionYears = loadStringProperty(user, "completionYears");
       mathSyllabus = loadStringProperty(user, "mathSyllabus");
-      finnish = loadBoolProperty(user, "finnish");
+      finnish = loadStringProperty(user, "finnish");
       swedish = loadBoolProperty(user, "swedish");
       english = loadBoolProperty(user, "english");
       german = loadBoolProperty(user, "german");
@@ -86,7 +86,7 @@ public class HopsBackingBean {
     saveStringProperty(user, "transferCreditYears", transferCreditYears);
     saveStringProperty(user, "completionYears", completionYears);
     saveStringProperty(user, "mathSyllabus", mathSyllabus);
-    saveBoolProperty(user, "finnish", finnish);
+    saveStringProperty(user, "finnish", finnish);
     saveBoolProperty(user, "swedish", swedish);
     saveBoolProperty(user, "english", english);
     saveBoolProperty(user, "german", german);
@@ -191,11 +191,11 @@ public class HopsBackingBean {
     this.mathSyllabus = mathSyllabus;
   }
   
-  public boolean isFinnish() {
+  public String getFinnish() {
     return finnish;
   }
   
-  public void setFinnish(boolean finnish) {
+  public void setFinnish(String finnish) {
     this.finnish = finnish;
   }
 
@@ -279,7 +279,7 @@ public class HopsBackingBean {
   private String transferCreditYears;
   private String completionYears;
   private String mathSyllabus;
-  private boolean finnish;
+  private String finnish;
   private boolean swedish;
   private boolean english;
   private boolean german;

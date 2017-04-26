@@ -82,14 +82,19 @@
       </div>
     </section>
     
-    <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('LIST_WORKSPACE_ANNOUNCEMENTS')}">
-      <section class="flex-row">
-        <!--  <div class="workspace-frontpage-teachers lg-flex-cell-first md-flex-cell-first lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-2"></div> -->
-        <div class="workspace-frontpage-announcements lg-flex-cell-full md-flex-cell-full sm-flex-cell-full sm-flex-order-1">
-          <h1 class="workspace-block-title">#{i18n.text['plugin.workspace.index.announcementsTitle']}</h1>
-          <div class="flex-row workspace-announcements-container flex-align-items-center"></div>
-        </div>
-      </section>
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn}"> 
+	    <section class="flex-row">
+	      <div class="workspace-frontpage-teachers lg-flex-cell-first md-flex-cell-first lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-1">
+	        <h1 class="workspace-block-title">#{i18n.text['plugin.workspace.index.teachersTitle']}</h1>
+	        <div class="workspace-teachers-container"></div>
+	      </div>
+	      <ui:fragment rendered="#{sessionBackingBean.hasWorkspacePermission('LIST_WORKSPACE_ANNOUNCEMENTS')}">
+	       <div class="workspace-frontpage-announcements lg-flex-cell-last md-flex-cell-last lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full sm-flex-order-2">
+	         <h1 class="workspace-block-title">#{i18n.text['plugin.workspace.index.announcementsTitle']}</h1>
+	         <div class="workspace-announcements-container"></div>
+	       </div>
+	     </ui:fragment>
+	    </section>
     </ui:fragment>
     
     <section class="flex-row workspace-frontpage-material-page">

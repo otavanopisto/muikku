@@ -70,7 +70,7 @@
       this._clear();      
       
       mApi().records.vops
-      .read(666)
+      .read(MUIKKU_LOGGED_USER)
       .on('$', $.proxy(function (vops, callback) {
          var maxitems = 15;
          var titleItems = [];
@@ -359,8 +359,11 @@
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           }
           else {
-            mApi().workspace.workspaces.journal.read(workspaceEntityId, {userEntityId: this.options.userEntityId})
-              .callback($.proxy(function (err, journalEntries) {
+            mApi().workspace.workspaces.journal.read(workspaceEntityId, {
+              userEntityId: this.options.userEntityId,
+              firstResult: 0, 
+              maxResults: 512 
+            }).callback($.proxy(function (err, journalEntries) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 }

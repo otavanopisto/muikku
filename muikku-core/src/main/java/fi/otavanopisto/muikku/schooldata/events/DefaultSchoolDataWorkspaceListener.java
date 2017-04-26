@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.schooldata.events;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -158,7 +159,13 @@ public class DefaultSchoolDataWorkspaceListener {
                   }
                 }
                 workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
-                workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+                try {
+                  // TODO Fails if AssessmentRequestMessageId or WorkspaceUserPermissionOverride refer to WorkspaceUserEntity
+                  workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+                }
+                catch (Exception e) {
+                  logger.log(Level.SEVERE, String.format("Failed to delete WorkspaceUserEntity %d", workspaceUserEntity.getId()), e);
+                }
               }
               else {
                 workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
@@ -180,9 +187,20 @@ public class DefaultSchoolDataWorkspaceListener {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
       if (workspaceEntity != null) {
         SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(event.getIdentifier(), event.getDataSource());
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-          workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+
+          // #3091: Users removed in school data source should be permanently deleted as merely archiving
+          // them would still lead the workspace to be shown in the student's Transcript of Records view
+          
+          try {
+            // TODO Fails if AssessmentRequestMessageId or WorkspaceUserPermissionOverride refer to WorkspaceUserEntity
+            workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+          }
+          catch (Exception e) {
+            logger.log(Level.SEVERE, String.format("Failed to delete WorkspaceUserEntity %d", workspaceUserEntity.getId()), e);
+          }
+        
         }
       } else {
         logger.warning("could not remove workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");

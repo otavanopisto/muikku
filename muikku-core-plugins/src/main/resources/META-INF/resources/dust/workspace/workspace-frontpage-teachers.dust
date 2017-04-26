@@ -1,0 +1,13 @@
+{#staffMembers}
+  <div class="workspace-teacher">
+    <div class="workspace-teacher-name">
+      <span class="icon-user"></span>
+      <span class="workspace-teacher-firstname">{firstName}</span>
+      <span class="workspace-teacher-lastname">{lastName}</span>
+    </div>
+    <div class="workspace-teacher-email">{email}</div>
+  </div>
+  {:else}
+    <div class="workspace-teachers-empty">{#localize key="plugin.workspace.index.teachersEmpty"/}</div>
+{/staffMembers}
+

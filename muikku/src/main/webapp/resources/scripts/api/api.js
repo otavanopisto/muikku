@@ -121,6 +121,7 @@
         async: async,
         traditional: true,
         contentType: 'application/json', // http://stackoverflow.com/a/17660503
+        cache: false,
         beforeSend: $.proxy(function (xhr, settings) {
           this._xhrs.push(xhr);
         }, this),

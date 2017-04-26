@@ -882,7 +882,9 @@
         } else {
           mApi().communicator.cacheClear();
           $(document).trigger("Communicator:messageread");
-          successCallback();
+          if (successCallback) {
+            successCallback();
+          }
         }
       }, this));
     },
@@ -900,7 +902,9 @@
         } else {
           mApi().communicator.cacheClear();
           $(document).trigger("Communicator:messageread");
-          successCallback();
+          if (successCallback) {
+            successCallback();
+          }
         }
       }, this));
     },    

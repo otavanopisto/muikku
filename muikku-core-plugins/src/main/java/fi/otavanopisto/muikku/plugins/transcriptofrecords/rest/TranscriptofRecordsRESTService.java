@@ -1,6 +1,8 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.ejb.Stateful;
@@ -17,9 +19,16 @@ import javax.ws.rs.core.StreamingOutput;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
+import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -31,12 +40,25 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 1L;
+  private static final int MAX_COURSE_NUMBER = 20;
   
   @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private CourseMetaController courseMetaController;
+  
+  @Inject
+  private VopsController vopsController;
+    
+  @Inject
+  private UserController userController;
   
   @GET
   @Path("/files/{ID}/content")
@@ -73,29 +95,42 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @GET
   @Path("/vops/{IDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
-  public Response getVops(@PathParam("IDENTIFIER") String studentIdentifier) {
+  public Response getVops(@PathParam("IDENTIFIER") String studentIdentifierString) {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
     
-    VopsRESTModel result = new VopsRESTModel(
-        Arrays.asList(
-            new VopsRESTModel.VopsRow("MAA", Arrays.asList(
-                new VopsRESTModel.VopsItem(1, true),
-                new VopsRESTModel.VopsItem(2, true),
-                new VopsRESTModel.VopsItem(3, true),
-                new VopsRESTModel.VopsItem(4, false),
-                new VopsRESTModel.VopsItem(5, false))),
-            new VopsRESTModel.VopsRow("AI", Arrays.asList(
-                new VopsRESTModel.VopsItem(1, true),
-                new VopsRESTModel.VopsItem(2, true),
-                new VopsRESTModel.VopsItem(3, false),
-                new VopsRESTModel.VopsItem(4, false))),
-            new VopsRESTModel.VopsRow("GE", Arrays.asList(
-                new VopsRESTModel.VopsItem(1, true),
-                new VopsRESTModel.VopsItem(2, false),
-                new VopsRESTModel.VopsItem(3, false)))));
+    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromId(studentIdentifierString);
+    
+    if (studentIdentifier == null) {
+      return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
+    }
+    
+    if (!Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
+    }
+    
+    User student = userController.findUserByIdentifier(studentIdentifier);
+    
+    List<Subject> subjects = courseMetaController.listSubjects();
+    List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
+    for (Subject subject : subjects) {
+      for (int i=0; i<MAX_COURSE_NUMBER; i++) {
+      }
+      if (vopsController.subjectAppliesToStudent(student, subject)) {
+        rows.add(new VopsRESTModel.VopsRow(
+            subject.getCode(),
+            Arrays.asList(
+              new VopsRESTModel.VopsItem(1, true),
+              new VopsRESTModel.VopsItem(2, true),
+              new VopsRESTModel.VopsItem(3, true),
+              new VopsRESTModel.VopsItem(4, false),
+              new VopsRESTModel.VopsItem(5, false))));
+      }
+    }
+    
+    VopsRESTModel result = new VopsRESTModel(rows);
     
     return Response.ok(result).build();
   }

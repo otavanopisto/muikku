@@ -965,14 +965,6 @@ $item-grade-failing-color;
     }
   }
   
-  .evaluation-search {
-    background-color: $evaluation-search-wrapper-background-color;
-    
-    &.shadow {
-      background-color: $evaluation-search-wrapper-background-boxshadow-color;
-    }
-  }  
-  
   .modal {
     background-color: $evaluation-modal-background-color;
     
