@@ -59,7 +59,7 @@
       word-wrap: break-word;
       z-index: 2;
 
-      .notification-queue-item-_hiding_ {
+      &.notification-queue-item-_hiding_ {
         height: 0;
       }
 
