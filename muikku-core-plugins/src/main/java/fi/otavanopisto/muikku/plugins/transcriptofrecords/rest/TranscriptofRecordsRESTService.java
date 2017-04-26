@@ -27,6 +27,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -40,7 +41,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 1L;
-  private static final int MAX_COURSE_NUMBER = 20;
+  private static final int MAX_COURSE_NUMBER = 15;
   
   @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
@@ -116,17 +117,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
     for (Subject subject : subjects) {
-      for (int i=0; i<MAX_COURSE_NUMBER; i++) {
-      }
       if (vopsController.subjectAppliesToStudent(student, subject)) {
-        rows.add(new VopsRESTModel.VopsRow(
-            subject.getCode(),
-            Arrays.asList(
-              new VopsRESTModel.VopsItem(1, true),
-              new VopsRESTModel.VopsItem(2, true),
-              new VopsRESTModel.VopsItem(3, true),
-              new VopsRESTModel.VopsItem(4, false),
-              new VopsRESTModel.VopsItem(5, false))));
+        List<VopsRESTModel.VopsItem> items = new ArrayList<>();
+        for (int i=1; i<MAX_COURSE_NUMBER; i++) {
+          List<Workspace> workspaces =
+              workspaceController.listWorkspacesBySubjectIdentifierAndCourseNumber(
+                  subject.getSchoolDataSource(),
+                  subject.getIdentifier(),
+                  i);
+          if (!workspaces.isEmpty()) {
+            items.add(new VopsRESTModel.VopsItem(i, false));
+          }
+        }
+        rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
       }
     }
     

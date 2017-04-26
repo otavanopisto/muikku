@@ -313,7 +313,8 @@ public class PyramusSchoolDataEntityFactory {
         course.getEndDate(), 
         course.getArchived(), 
         courseFeeApplicable,
-        curriculumIdentifiers);
+        curriculumIdentifiers,
+        course.getCourseNumber());
   }
 
   public WorkspaceType createEntity(CourseType courseType) {

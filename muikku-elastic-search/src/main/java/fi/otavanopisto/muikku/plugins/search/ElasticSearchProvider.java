@@ -357,14 +357,18 @@ public class ElasticSearchProvider implements SearchProvider {
     query.must(termQuery("published", Boolean.TRUE));
     query.must(termQuery("subjectIdentifier", subjectIdentifier));
     query.must(termQuery("courseNumber", courseNumber));
+    // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
       
     SearchRequestBuilder requestBuilder = elasticClient
       .prepareSearch("muikku")
       .setTypes("Workspace")
       .setFrom(0)
-      .setSize(50);
+      .setSize(50)
+      .setQuery(query);
+    
+    logger.log(Level.INFO, "searchWorkspaces query: " + requestBuilder.internalBuilder());
 
-    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    SearchResponse response = requestBuilder.execute().actionGet();
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {

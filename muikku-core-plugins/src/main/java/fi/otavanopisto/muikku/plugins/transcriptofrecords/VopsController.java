@@ -20,7 +20,11 @@ public class VopsController {
       return false;
     }
     
-    if ("RUB".equals(subject.getCode())) {
+    if (subject.getCode().startsWith("RU")) {
+      return true;
+    }
+    
+    if (subject.getCode().startsWith("EN")) {
       return true;
     }
     

@@ -3,13 +3,14 @@ package fi.otavanopisto.muikku.schooldata;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.RoleSchoolDataIdentifierDAO;
@@ -126,7 +127,29 @@ public class WorkspaceController {
   
   public List<Workspace> listWorkspacesBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
     SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
-    return null;
+    List<Workspace> retval = new ArrayList<>();
+    List<Map<String, Object>> results = sr.getResults();
+    for (Map<String, Object> result : results) {
+      String searchId = (String) result.get("id");
+      if (StringUtils.isNotBlank(searchId)) {
+        String[] id = searchId.split("/", 2);
+        if (id.length == 2) {
+          String dataSource = id[1];
+          String identifier = id[0];
+
+          SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+          
+          Workspace workspace = findWorkspace(workspaceIdentifier);
+          if (workspace != null) {
+            retval.add(workspace);
+          } else {
+            logger.log(Level.WARNING, "Workspace not found for identifier in index: %s", workspaceIdentifier);
+          }
+        }
+      }
+    }
+      
+    return retval;
   }
   
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description) {
