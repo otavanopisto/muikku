@@ -41,7 +41,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 1L;
-  private static final int MAX_COURSE_NUMBER = 20;
+  private static final int MAX_COURSE_NUMBER = 15;
   
   @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
@@ -119,7 +119,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsItem> items = new ArrayList<>();
-        for (int i=0; i<MAX_COURSE_NUMBER; i++) {
+        for (int i=1; i<MAX_COURSE_NUMBER; i++) {
           List<Workspace> workspaces =
               workspaceController.listWorkspacesBySubjectIdentifierAndCourseNumber(
                   subject.getSchoolDataSource(),

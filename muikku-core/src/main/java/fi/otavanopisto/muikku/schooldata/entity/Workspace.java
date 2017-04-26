@@ -105,6 +105,8 @@ public interface Workspace extends SchoolDataEntity {
   public boolean isEvaluationFeeApplicable();
 
   public String getViewLink();
+  
+  public Integer getCourseNumber();
 
   @IndexId
   public String getSearchId();
