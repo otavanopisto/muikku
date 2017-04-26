@@ -3,17 +3,48 @@
     <div class="tr-vops-legend-button">    
       <div class="tr-vops-legend-content">
         <div class="tr-vops-legend-content-state"></div> 
-        <div class="tr-vops-legend-content-title"><span>Mitä värit tarkoittavat?</span></div> 
+        <div class="tr-vops-legend-content-title"><span>{#localize key="plugin.records.studyplan.legend.title" /}</span></div> 
+        <div class="tr-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.colors" /}</div>  
         <div class="tr-vops-legend-items">
+
           <div class="tr-vops-legend-item">
-            <div class="tr-vops-legend-item-grid"></div>
-            <div>Suorittamaton</div>
+            <div class="tr-vops-legend-item-grid tr-vops-item"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.neutral" /}</div>
           </div>       
-          <div class="tr-vops-legend-item" data-no="{courseNumber}">
-            <div class="tr-vops-legend-item-grid completed"></div>
-            <div>Suoritettu</div>
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item failing"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.failing" /}</div>
+          </div>   
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item planned"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.planned" /}</div>
+          </div>             
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item passed"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.passed" /}</div>
           </div>                         
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item failed"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.failed" /}</div>
+          </div>  
+  
         </div>
+        <div class="tr-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.shapes" /}</div>
+        <div class="tr-vops-legend-items">
+
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item mandatory"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.mandatory" /}</div>
+          </div>       
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item optional-school"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.optional.school" /}</div>
+          </div>                         
+          <div class="tr-vops-legend-item" data-no="{courseNumber}">
+            <div class="tr-vops-legend-item-grid tr-vops-item optional-national"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.optional.national" /}</div>
+          </div> 
+        </div>        
       </div>
     </div>    
   </div>
@@ -30,9 +61,33 @@
       <div class="tr-vops-row">
         <div class="tr-vops-item-name">{subject}</div>
         {#items}
-          <div title="Kurssi {courseNumber}" class="tr-vops-item-circle{?completed} completed{/completed}" data-no="{courseNumber}">
+          <div title="Kurssi {courseNumber}" class="tr-vops-item mandatory {?completed}passed{/completed}" data-no="{courseNumber}">
           </div>       
         {/items}       
+<!-- 
+          <div title="Kurssi N" class="tr-vops-item optional-school failing" data-no="{courseNumber}">
+            <span>T</span>
+          </div>    
+          <div title="Kurssi N" class="tr-vops-item optional-school passed" data-no="{courseNumber}">
+            <span>6</span>          
+          </div>    
+          <div title="Kurssi N" class="tr-vops-item mandatory failing" data-no="{courseNumber}">
+            <span>T</span>
+          </div>  
+          <div title="Kurssi N" class="tr-vops-item optional-national failing" data-no="{courseNumber}">
+            <span>T</span>
+          </div>                        
+          <div title="Kurssi N" class="tr-vops-item optional-school passed" data-no="{courseNumber}">
+            <span>6</span>  
+          </div>  
+          <div title="Kurssi N" class="tr-vops-item optional-school planned" data-no="{courseNumber}">
+          </div>  
+          <div title="Kurssi N" class="tr-vops-item optional-national planned" data-no="{courseNumber}">
+          </div>  
+          <div title="Kurssi N" class="tr-vops-item optional-national failed" data-no="{courseNumber}">
+            <span>H</span>  
+          </div>  
+           -->
       </div>
     {/rows}
   </div>
