@@ -142,6 +142,35 @@ public class UserRESTService extends AbstractRESTService {
     return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
   }
 
+  @GET
+  @Path("/properties/{USERENTITYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getUserEntityProperties(@PathParam("USERENTITYID") Long userEntityId, @QueryParam("properties") String keys) {
+    // TODO Security (maybe via visibility in userEntityProperty?)
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    List<UserEntityProperty> storedProperties = new ArrayList<UserEntityProperty>();
+    List<fi.otavanopisto.muikku.rest.model.UserEntityProperty> restProperties = new ArrayList<fi.otavanopisto.muikku.rest.model.UserEntityProperty>();
+    if (StringUtils.isBlank(keys)) {
+      storedProperties = userEntityController.listUserEntityProperties(userEntity);
+      for (UserEntityProperty property : storedProperties) {
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue()));
+      }
+    }
+    else {
+      UserEntityProperty storedProperty;
+      String[] keyArray = keys.split(",");
+      for (int i = 0; i < keyArray.length; i++) {
+        storedProperty = userEntityController.getUserEntityPropertyByKey(userEntity, keyArray[i]);
+        String value = storedProperty == null ? null : storedProperty.getValue();
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value));
+      }
+    }
+    return Response.ok(restProperties).build();
+  }
+
   @POST
   @Path("/property")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)

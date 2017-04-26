@@ -285,9 +285,62 @@
   });
 
   $(document).ready(function() {
+    
+    // Profile image support
+    
     $('.profile-image-uploader').profileImage();
     $('.profile-change-picture').on('click', $.proxy(function() {
       $('.profile-image-input').click();
+    }, this));
+    
+    // Profile vacation fields initialization
+    
+    var dateField = $('input[name="profile-vacation-start"]'); 
+    dateField.datepicker({
+      "dateFormat": getLocaleText('datePattern')
+    });
+    var dateField = $('input[name="profile-vacation-end"]'); 
+    dateField.datepicker({
+      "dateFormat": getLocaleText('datePattern')
+    });
+    
+    // Load profile field values
+    
+    mApi().user.properties.read(
+      MUIKKU_LOGGED_USER_ID, {
+        properties: 'profile-phone,profile-vacation-start,profile-vacation-end'  
+      })
+      .callback($.proxy(function(err, properties) {
+
+        var props = {};
+        for (var i = 0; i < properties.length; i++) {
+          props[properties[i].key] = properties[i].value;
+        }
+
+        $('input[name="profile-phone"]').val(props['profile-phone']);
+        
+        if (props['profile-vacation-start']) {
+          $('input[name="profile-vacation-start"]').datepicker('setDate', moment(props['profile-vacation-start']).toDate());
+        }
+        
+        if (props['profile-vacation-end']) {
+          $('input[name="profile-vacation-end"]').datepicker('setDate', moment(props['profile-vacation-end']).toDate());
+        }
+
+      }, this));
+    
+    // Save profile field values
+    
+    $('.save-profile-fields').on('click', $.proxy(function() {
+      
+      mApi().user.property.create({key: 'profile-phone', value: $('input[name="profile-phone"]').val()});
+      
+      var vacationStartDate = $('input[name="profile-vacation-start"]').datepicker('getDate');
+      mApi().user.property.create({key: 'profile-vacation-start', value: vacationStartDate == null ? null : vacationStartDate.toISOString()});
+      
+      var vacationEndDate = $('input[name="profile-vacation-end"]').datepicker('getDate');
+      mApi().user.property.create({key: 'profile-vacation-end', value: vacationEndDate == null ? null : vacationEndDate.toISOString()});
+
     }, this));
   });
   
