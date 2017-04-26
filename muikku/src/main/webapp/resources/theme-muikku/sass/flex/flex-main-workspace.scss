@@ -70,20 +70,19 @@ blockquote{
 }
 
 .lu-picture {
-  border:2px solid #fff;
+  border: 2px solid $environment-logged-in-border-color;
+  border-radius: 100%;
   box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
-  height:48px;
-  width:48px;      
-  box-sizing:border-box; 
-  display:inline-block;
-  border-radius:100%;
-  margin:0 10px 0 0;
-  z-index:15;
-  background-size:100% auto;
-  border:2px solid #fff;
-  overflow:hidden;
-  background-image:url('/gfx/default-user-picture.jpg');
+  box-sizing: border-box;
+  display: inline-block;
   float:right;
+  height: 48px;
+  margin:0 10px 0 0;
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  width: 48px;
+  z-index: 15; 
   
   &:hover {
     box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
