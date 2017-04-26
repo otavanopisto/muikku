@@ -1250,7 +1250,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName" };
+      String[] fields = new String[] { "firstName", "lastName", "userEntityId" };
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
@@ -1295,7 +1295,7 @@ public class UserRESTService extends AbstractRESTService {
           
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
             studentIdentifier.toId(),
-            (Long) o.get("userEntityId"),
+            new Long((Integer) o.get("userEntityId")),
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             email));
