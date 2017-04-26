@@ -52,6 +52,7 @@
 		},
 
 		_hide : function(item) {
+		  console.log('from default')
 			item.cssAnimate({
 				'addClass': 'notification-queue-item-_hiding_',
 				'callback': this._destroy.bind(this, item)

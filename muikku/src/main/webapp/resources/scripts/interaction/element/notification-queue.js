@@ -60,7 +60,8 @@ window.interaction.register(function(root){
 		},
 
 		_hide : function(item) {
-			item.cssAnimate({
+		  console.log('from interaction');
+			$(item).cssAnimate({
 				'addClass': 'notification-queue-item-_hiding_',
 				'callback': this._destroy.bind(this, item)
 			});
