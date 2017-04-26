@@ -1294,7 +1294,8 @@ public class UserRESTService extends AbstractRESTService {
           String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
           
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
-            studentIdentifier.toId(), 
+            studentIdentifier.toId(),
+            (Long) o.get("userEntityId"),
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
             email));
