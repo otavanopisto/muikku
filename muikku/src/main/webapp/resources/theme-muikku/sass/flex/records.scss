@@ -58,7 +58,7 @@
 
 
 .tr-vops-legend-content {
-  background-color: $environment-legend-background-color;
+/*   background-color: $environment-legend-background-color; */
   border-top: 1px solid $environment-legend-border-color;
   border-bottom: 1px solid $environment-legend-border-color;
   padding: 5px;
@@ -74,17 +74,21 @@
   }
   
   &.open {
-   max-height: 100px;
+   max-height: 200px;
   }
 }  
 
+.tr-vops-legend-topic {
+   padding: 20px 0 0 20px; 
+   font-weight: 600;
+}
 
 .tr-vops-legend-items {
-  padding: 20px 0 0 20px;
+  padding: 10px 0 0 20px;
   display: flex;
   align-items: center;
   flex-flow: row wrap;  
-  
+
   .tr-vops-legend-item {
     margin-bottom: 10px;
     margin-right: 10px;
@@ -92,16 +96,7 @@
     align-items: center;
   }
 }
-.tr-vops-legend-item-grid {
-  display: inline-block;
-  height:20px;
-  width: 20px;
-  background-color: $environment-background-dim-color;
-  margin-right:10px;    
-  &.completed {
-    background-color: $item-grade-passing-background-color;    
-  }
-}
+
 
 
 .tr-vops-row {
@@ -130,21 +125,61 @@
 }
 
 
-.tr-vops-item-circle {
-  min-width: 30px;
-  height: 30px;
-  background-color: $environment-background-dim-color;
-  margin-left:10px;
+
+
+.tr-vops-item{
   align-items: center;
-  border-radius: 50%;
+  background-color: $environment-background-dim-color;
+  box-sizing: border-box;
+  display:flex;
   flex: 0 0 30px;
+  height: 30px;
+  justify-content: center;
+  margin-left:10px;
+  min-width: 30px;
+
   
-  &.completed {
-    background-color: $item-grade-passing-background-color;
-  
+  &.mandatory {
+    border-radius: 50%;
   }
+  &.optional-school {
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;     
+    
+  } 
+  &.optional-national {
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom-right-radius: 15px;   
+  }
+
+  &.passed {
+    border: 3px solid #50c04d;
+  }
+
+  &.failing {
+    border: 3px solid #fcd500;;
+  }  
   
+  &.failed {
+    background-color: $item-grade-failed-color;
+    color: #fff;
+  }      
+
+  &.planned {
+    border: 3px solid #a7edad;
+  }      
 }
+
+.tr-vops-legend-item-grid {
+  height: 20px;
+  min-width: 20px;
+  margin-right: 10px;
+  flex: 0 0 20px;
+
+}
+
 
 .tr-item-workspace-assessment {
   cursor: pointer;
@@ -191,11 +226,11 @@
  
 
       &.passing {
-        background-color: $item-grade-passing-background-color;
+        background-color: $item-grade-passing-color;
       }
       
       &.non-passing {
-        background-color: $item-grade-failing-background-color;
+        background-color: $item-grade-failing-color;
       }
       
     }
@@ -220,11 +255,12 @@
       padding: 5px 10px;
       
       &.passing {
-        background-color: $item-grade-passing-background-color;
+        background-color: $item-grade-passing-color;
       }
       
       &.non-passing {
-        background-color: $item-grade-failing-background-color;
+        background-color: 
+$item-grade-failing-color;
       }
       
     }
@@ -332,11 +368,12 @@
     color: $item-grade-font-color;
     
     &.passing {
-      background-color: $item-grade-passing-background-color;
+      background-color: $item-grade-passing-color;
     }
     
     &.non-passing {
-      background-color: $item-grade-failing-background-color;
+      background-color: 
+$item-grade-failing-color;
     }
     
   }
