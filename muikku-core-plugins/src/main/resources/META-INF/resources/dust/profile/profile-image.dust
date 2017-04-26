@@ -1,0 +1,3 @@
+<div class="profile-image-dialog" title="KUVADIALOGI" data-button-ok-text="OOKOO" data-button-cancel-text="EE OO OOKOO">
+  <div class="profile-image-container"></div>
+</div>

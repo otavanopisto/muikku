@@ -1,13 +1,122 @@
 (function() {
 
+  $.widget("custom.profileImage", {
+    _create : function() {
+      $('.profile-image-input').on('change', $.proxy(this._onFileInputChange, this));
+    },
+    _onFileInputChange : function (event) {
+      var file = event.target.files[0];
+      var formData = new FormData($('.profile-image-form')[0]);
+      
+      // Upload source image
+      
+      $.ajax({
+        url: CONTEXTPATH + '/tempFileUploadServlet',
+        type: 'POST',
+        data: formData,
+        success: $.proxy(function(xhr) {
+          mApi().user.files
+            .create({
+              contentType: xhr.fileContentType,
+              fileId: xhr.fileId,
+              identifier: 'profile-image-original',
+              name: file.name,
+              visibility: 'PUBLIC'
+            })
+            .callback($.proxy(function(err, result) {
+
+              // Create cropping dialog
+              
+              renderDustTemplate('profile/profile-image.dust', {}, $.proxy(function (text) {
+                var dialog = $(text);
+                
+                // Show cropping dialog
+                
+                $(text).dialog({
+                  modal: true, 
+                  resizable: false,
+                  width: 640,
+                  height: 480,
+                  dialogClass: "profile-image-dialog",
+                  close: function() {
+                    $(this).dialog().remove();
+                    $('.profile-image-input').val('');
+                  },
+                  open: function() {
+
+                    // Initialize Croppie
+                    
+                    var rnd = Math.floor(Math.random() * 1000) + 1
+                    $(this).find('.profile-image-container').croppie({
+                      url: '/rest/user/files/user/' + MUIKKU_LOGGED_USER_ID  + '/identifier/profile-image-original?h=' + rnd,
+                      points: [0, 0, 200, 200],
+                      viewport: {
+                        width: 256,
+                        height: 256,
+                        type: 'square'
+                      },
+                      boundary: {
+                        width: 640,
+                        height: 300
+                      }
+                    });
+                  },
+                  buttons: [{
+                    'text': dialog.data('button-ok-text'),
+                    'class': 'ok-button',
+                    'click': function(event) {
+                      
+                      // Create thumbnails
+
+                      var saveImage = $.proxy(function(size) {
+                        $(this).find('.profile-image-container').croppie('result', {
+                          type: 'base64',
+                          size: {width: size},
+                          format: 'jpeg',
+                          quality: 0.8,
+                          circle: false
+                        }).then(function(data) {
+                          mApi().user.files
+                            .create({
+                              contentType: 'image/jpeg',
+                              base64Data: data,
+                              identifier: 'profile-image-' + size,
+                              name: 'profile-' + size + '.jpg',
+                              visibility: 'PUBLIC'
+                            });
+                        });
+                      }, this);
+                      
+                      var sizes = [96, 256];
+                      for (var i = 0;  i < sizes.length; i++) {
+                        saveImage(sizes[i]);
+                      }
+                      $(this).dialog('close');
+                    }
+                  }, {
+                    'text': dialog.data('button-cancel-text'),
+                    'class': 'cancel-button',
+                    'click': function(event) {
+                      $(this).dialog('close');
+                    }
+                  }]
+                });
+              }, this));
+              
+            }, this));
+        }, this),
+        cache: false,
+        contentType: false,
+        processData: false
+      })
+    }
+  });
+  
   function changeLink(event){
-   var clickedLink = $(event.target).closest(".profile-section-link");
-   var allLinks = $(event.target).closest(".profile-section-links").find(".profile-section-link");
-   
-   $(allLinks).removeClass("active");
-   $(clickedLink).addClass("active");
-   
-    
+    var clickedLink = $(event.target).closest(".profile-section-link");
+    var allLinks = $(event.target).closest(".profile-section-links").find(".profile-section-link");
+    $(allLinks).removeClass("active");
+    $(clickedLink).addClass("active");
   }
   
   function changeAddressMunicipality() {
@@ -28,9 +137,7 @@
             address = addresses[i];
           }
         }
-        renderDustTemplate(
-            'profile/profile-change-address-hometown.dust',
-            {
+        renderDustTemplate('profile/profile-change-address-hometown.dust', {
               address: address,
               municipality: oldStudent.municipality
             },
@@ -176,6 +283,13 @@
   
   $(document).on('click', '.profile-change-address-municipality', function (event, data) {
     changeAddressMunicipality();
+  });
+
+  $(document).ready(function() {
+    $('.profile-image-uploader').profileImage();
+    $('.profile-picture-wrapper').on('click', $.proxy(function() {
+      $('.profile-image-input').click();
+    }, this));
   });
   
 }).call(this);
