@@ -247,7 +247,8 @@ dt {
   float: right;
   font-weight: 400;
 
-  .lu-picture {
+  object,
+  img {
     border: 2px solid $environment-logged-in-border-color;
     height: 48px;
     width: 48px; 
@@ -258,8 +259,6 @@ dt {
     border-radius: 100%;
     margin: 0 5px 0 auto;
     z-index: 15;
-    background-size: 100% auto;
-    background-image: url('/gfx/default-user-picture.jpg');
     overflow: hidden;
   }
   

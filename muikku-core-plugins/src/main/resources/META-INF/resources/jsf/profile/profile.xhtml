@@ -29,7 +29,10 @@
             <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
               <div class="profile-content">
                 <div class="profile-picture-wrapper">
-                  <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/>
+                  <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-256" type="image/jpg">
+								    <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
+								  </object>
+                  <div class="profile-change-picture">#{i18n.text['plugin.profile.changePictureLabel']}</div>
                 </div>
                 <div class="profile-image-uploader" style="display:none;">
                   <form class="profile-image-form">

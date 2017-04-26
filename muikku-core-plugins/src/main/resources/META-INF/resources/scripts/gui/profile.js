@@ -35,8 +35,8 @@
                 $(text).dialog({
                   modal: true, 
                   resizable: false,
-                  width: 640,
-                  height: 480,
+                  width: 320,
+                  height: 460,
                   dialogClass: "profile-image-dialog",
                   close: function() {
                     $(this).dialog().remove();
@@ -49,21 +49,20 @@
                     var rnd = Math.floor(Math.random() * 1000) + 1
                     $(this).find('.profile-image-container').croppie({
                       url: '/rest/user/files/user/' + MUIKKU_LOGGED_USER_ID  + '/identifier/profile-image-original?h=' + rnd,
-                      points: [0, 0, 200, 200],
                       viewport: {
-                        width: 256,
-                        height: 256,
+                        width: 128,
+                        height: 128,
                         type: 'square'
                       },
                       boundary: {
-                        width: 640,
-                        height: 300
+                        width: 256,
+                        height: 256
                       }
                     });
                   },
                   buttons: [{
                     'text': dialog.data('button-ok-text'),
-                    'class': 'ok-button',
+                    'class': 'send-button',
                     'click': function(event) {
                       
                       // Create thumbnails
@@ -287,7 +286,7 @@
 
   $(document).ready(function() {
     $('.profile-image-uploader').profileImage();
-    $('.profile-picture-wrapper').on('click', $.proxy(function() {
+    $('.profile-change-picture').on('click', $.proxy(function() {
       $('.profile-image-input').click();
     }, this));
   });
