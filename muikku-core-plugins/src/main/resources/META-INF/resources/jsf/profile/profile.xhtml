@@ -69,24 +69,28 @@
                       <div class="profile-change-address-municipality">#{i18n.text['plugin.profile.changeAddressMunicipality.buttonLabel']}</div>
                     </div>
                     
-                    <div>
-                      <form>
-                        <div>
-                          <span>Puhelinnumero</span><input type="text" name="profile-phone" size="20"/>
+                    <form>
+                      <div class="profile-basicinfo-section">
+                        <div class="profile-phone-wrapper">
+                          <label>#{i18n.text['plugin.profile.phoneNumber.label']}</label><input type="text" name="profile-phone" size="20"/>
                         </div>
-                        <div>
-                          <span>Loma alkaa</span><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
+                      </div>
+                      <div class="profile-vacationinfo-section">
+                        <div class="profile-vacation-wrapper">
+                          <div class="profile-vacation-date">
+	                          <label>#{i18n.text['plugin.profile.awayStartDate.label']}</label><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
+	                        </div>
+	                        <div class="profile-vacation-date">
+	                          <label>#{i18n.text['plugin.profile.awayEndDate.label']}</label><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
+	                        </div>
                         </div>
-                        <div>
-                          <span>Loma loppuu</span><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
-                        </div>
-                        <div>
+                        
+                        <div class="profile-button-wrapper">
                           <div class="save-profile-fields">Tallenna</div>
                         </div>
-                      </form>
+                      
                     </div>
-                    
-                    
+                  </form>
                 </div>
                 
               </div>
