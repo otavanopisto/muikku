@@ -221,6 +221,10 @@ h1.workspace-block-title {
       color: $environment-link-color;
     }
     
+    &.vacation-period {
+      font-weight: 400;
+    }
+    
   }
   
 }
