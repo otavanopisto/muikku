@@ -47,58 +47,77 @@
 	});
 })(jQuery);
 
-window.interaction = {};
-window.interaction.register = function(){
-	var args = Array.prototype.slice.call(arguments);
-	var fn = args.pop();
+(function($){
 
-	var exec = function(){
-		window.interaction.registry.push(fn);
-		if (window.interaction.setUpInteraction.ran){
-			fn(document);
-		}
-	}
+  function loadCss(url){
+    $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', url));
+  }
 
-	if (args.length === 0){
-		exec();
-	}
+  function loadScript(url, callback){
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
 
-	var counter = 0;
-	args.forEach(function(library){
-	  if (library.indexOf(".css", library.length - 4) !== -1){
-	    $('head').append( $('<link rel="stylesheet" type="text/css" />').attr('href', library) );
-	    counter++;
-      if (counter === args.length) {
-        exec();
-      }
+    if (callback){
+      script.onload = callback;
+      script.onerror = callback;
+    }
+
+    document.head.appendChild(script);
+  }
+
+  widgets = [];
+  $.defineWidget = function(selector, name, dependencies, widget){
+
+    var fn = function(root){
+      $(root).find(selector).addBack(selector)[name]();
+    };
+
+    var exec = function(){
+      widgets.push(fn);
+      fn(document.body);
+    }
+
+    if (!dependencies.length){
+      exec();
       return;
-	  }
+    }
 
-	  var script=document.createElement('script');
-	  script.type='text/javascript';
-	  script.src=library;
-	  script.onload = function(){
-	    counter++;
-      if (counter === args.length) {
-        exec();
+    var counter = 0;
+    dependencies.forEach(function(library){
+      if (library.indexOf(".css", library.length - 4) !== -1){
+        loadCss(library);
+
+        counter++;
+        if (counter === dependencies.length) {
+          exec();
+        }
+        return;
       }
-	  }
-	  script.onerror = script.onload;
 
-	  document.head.appendChild(script);
-	});
-};
-window.interaction.registry = [];
-window.interaction.setUpInteraction = function setUp(root) {
-	window.interaction.registry.forEach(function(fn){
-		fn(root);
-	});
-}
-window.interaction.require = function(src){
-	$.getScript(src);
-}
+      loadScript(library, function(){
+        counter++;
+        if (counter === dependencies.length) {
+          exec();
+        }
+      });
 
-$(document).ready(function(){
-	window.interaction.setUpInteraction(document);
-	window.interaction.setUpInteraction.ran = true;
-});
+    });
+  }
+
+  $.fn.setupWidgets = function(){
+    var root = this;
+    widgets.forEach(function(fn){
+      fn(root);
+    });
+  }
+
+  $.requireWidget = function(src){
+    loadScript(src);
+  }
+
+  $(document).ready(function(){
+    $(document.body).setupWidgets();
+  });
+
+})(jQuery);

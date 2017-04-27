@@ -44,7 +44,7 @@
           <div class="navbar-items">
             <ul class="navbar-items-container">
               <li class="navbar-item frontpage-navbar-display-menu">
-                <a data-interact-menu="#main-menu" class="link link-icon link-full"><span class="icon icon-navicon navbar-display-menu"></span></a>
+                <a class="link link-icon link-full frontpage-interact-show-menu"><span class="icon icon-navicon navbar-display-menu"></span></a>
               </li>
               <li class="navbar-item frontpage-navbar-studying">
                 <a href="#studying" class="link link-full"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
@@ -67,7 +67,7 @@
             <div class="navbar-default-options-container">
               <a class="button button-primary frontpage-navbar-login-button" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}"><span>#{i18n.text['plugin.login.buttonLabel']}</span></a>
               <a class="label label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
-              <a class="button-pill button-pill-inverse frontpage-navbar-language-picker" data-interact-dropdown="#language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
+              <a class="button-pill button-pill-inverse frontpage-interact-show-language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
               <h:form class="dropdown" id="language-picker">
                 <div class="dropdown-container">
                   <ui:repeat value="#{i18n.languages}" var="locale">
