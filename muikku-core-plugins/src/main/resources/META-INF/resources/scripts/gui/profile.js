@@ -1,5 +1,7 @@
-(function() {
+/* global moment */
 
+(function() {
+  
   $.widget("custom.profileImage", {
     _create : function() {
       $('.profile-image-input').on('change', $.proxy(this._onFileInputChange, this));
@@ -296,12 +298,11 @@
     
     // Profile vacation fields initialization
     
-    var dateField = $('input[name="profile-vacation-start"]'); 
-    dateField.datepicker({
+
+    $('input[name="profile-vacation-start"]').datepicker({
       "dateFormat": getLocaleText('datePattern')
     });
-    var dateField = $('input[name="profile-vacation-end"]'); 
-    dateField.datepicker({
+    $('input[name="profile-vacation-end"]').datepicker({
       "dateFormat": getLocaleText('datePattern')
     });
     
