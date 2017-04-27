@@ -166,16 +166,67 @@
 }
 
 h1.workspace-block-title {
+  font-size: 26px;
   font-weight: 300;
   margin: 0 0 10px;
   padding: 0;
-  font-size: 26px;
 }
 
 .workspace-frontpage-teachers {
   background: #fff;
+  margin-top: 10px;
   padding: 20px;
-  margin-top: 10px; 
+  
+  .workspace-teachers-empty {
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 300;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .workspace-teacher {
+    @include flexbox;
+    align-items: flex-start;
+    padding: 5px 0 10px;
+    position: relative;
+  }
+  
+  .workspace-teacher-profile-picture {
+    border-radius: 5px;
+    flex: 0 0 58px;
+    height: 48px;
+    width: 48px;
+    
+    object,
+    img {
+      border: 2px solid #fff;
+      border-radius: 100%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      display: block;
+      height: 48px;
+      width: 48px;
+    }
+    
+  }
+  
+  .workspace-teacher-info {
+    flex: 1 1 auto;
+  }
+  
+  .workspace-teacher-info {
+    margin: 0 0 0 4px;
+    
+    &.email {
+      color: $environment-link-color;
+    }
+    
+    &.vacation-period {
+      font-weight: 400;
+    }
+    
+  }
+  
 }
 
 .workspace-frontpage-announcements {

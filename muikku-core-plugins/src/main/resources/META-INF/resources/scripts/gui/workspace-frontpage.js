@@ -1,3 +1,5 @@
+/* global moment */
+
 (function() { 'use strict';
 
   $(document).ready(function() {
@@ -60,6 +62,37 @@
         }
       }, this));
     
+    // #1813: Workspace teachers
+    
+    mApi().user.staffMembers.read({
+      workspaceEntityId: workspaceEntityId,
+      properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
+    }).callback(function (err, staffMembers) {
+      if (!err && staffMembers) {
+        staffMembers.sort(function(a, b) {
+          var an = a.lastName + ' ' + a.firstName;
+          var bn = b.lastName + ' ' + b.firstName;
+          return an < bn ? -1 : an == bn ? 0 : 1;
+        });
+        for (var i = 0; i < staffMembers.length; i++) {
+          var props = staffMembers[i].properties;
+          if (props['profile-vacation-start'] && props['profile-vacation-end']) {
+            var bd = moment(props['profile-vacation-start']).toDate();
+            var ed = moment(props['profile-vacation-end']).toDate();
+            var nd = new Date();
+            if (nd >= bd && nd <= ed) {
+              props['profile-vacation-active'] = '1';
+            }
+          }
+        }
+        renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
+          staffMembers: staffMembers
+        }, $.proxy(function (text) {
+          $('.workspace-teachers-container').append($.parseHTML(text));
+        }, this));
+      }
+    });
+    
     if ($('.workspace-announcements-container').length > 0) {
 
       $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function() {
@@ -79,7 +112,7 @@
               result[i].link = baseUrl + "?announcementId=" + result[i].id;
             }
             
-            renderDustTemplate('workspace/workspace_frontpage_announcements.dust', result, $.proxy(function (text) {
+            renderDustTemplate('workspace/workspace-frontpage-announcements.dust', result, $.proxy(function (text) {
               var element = $(text);
               $('.workspace-announcements-container').append(element);
               $('.workspace-announcements-container').perfectScrollbar({"suppressScrollY" : true});

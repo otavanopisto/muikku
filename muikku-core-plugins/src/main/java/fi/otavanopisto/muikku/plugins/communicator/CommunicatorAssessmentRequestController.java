@@ -75,28 +75,28 @@ public class CommunicatorAssessmentRequestController {
   }
 
   private String assessmentRequestTitle(Workspace workspace, User user) {
-    String userName = user.getDisplayName();
+    String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
     return getText("plugin.communicator.assessmentrequest.title", userName, workspaceName);
   }
   
   private String assessmentCancelledTitle(Workspace workspace, User user) {
-    String userName = user.getDisplayName();
+    String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
     return getText("plugin.communicator.assessmentrequest.title.cancelled", userName, workspaceName);
   }
   
   private String assessmentRequestBody(Workspace workspace, User user, String message) {
-    String userName = user.getDisplayName();
+    String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
     return getText("plugin.communicator.assessmentrequest.body", userName, workspaceName, message);
   }
   
   private String assessmentCancelledBody(Workspace workspace, User user) {
-    String userName = user.getDisplayName();
+    String userName = getUserDisplayName(user);
     String workspaceName = getWorkspaceDisplayName(workspace);
     
     return getText("plugin.communicator.assessmentrequest.body.cancelled", userName, workspaceName);
@@ -106,6 +106,10 @@ public class CommunicatorAssessmentRequestController {
     return StringUtils.isBlank(workspace.getNameExtension()) ? 
       workspace.getName() : 
       String.format("%s (%s)", workspace.getName(), workspace.getNameExtension());
+  }
+  
+  private String getUserDisplayName(User user) {
+    return user.getNickName() == null ? user.getDisplayName() : String.format("%s \"%s\" %s (%s)", user.getFirstName(), user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
   }
 
   public CommunicatorMessage sendAssessmentRequestMessage(WorkspaceAssessmentRequest assessmentRequest) {
