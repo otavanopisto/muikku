@@ -91,6 +91,7 @@
                         saveImage(sizes[i]);
                       }
                       $(this).dialog('close');
+                      window.location.reload(true);
                     }
                   }, {
                     'text': dialog.data('button-cancel-text'),
