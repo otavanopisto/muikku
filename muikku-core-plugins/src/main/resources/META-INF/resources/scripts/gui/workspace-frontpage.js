@@ -72,6 +72,17 @@
           var bn = b.lastName + ' ' + b.firstName;
           return an < bn ? -1 : an == bn ? 0 : 1;
         });
+        for (var i = 0; i < staffMembers.length; i++) {
+          var props = staffMembers[i].properties;
+          if (props['profile-vacation-start'] && props['profile-vacation-end']) {
+            var bd = moment(props['profile-vacation-start']).toDate();
+            var ed = moment(props['profile-vacation-end']).toDate();
+            var nd = new Date();
+            if (nd >= bd && nd <= ed) {
+              props['profile-vacation-active'] = '1';
+            }
+          }
+        }
         renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
           staffMembers: staffMembers
         }, $.proxy(function (text) {

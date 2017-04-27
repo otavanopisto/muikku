@@ -12,6 +12,8 @@
       </div>
       <div class="workspace-teacher-email">{email}</div>
       <div>Puhelin: {properties.profile-phone}</div>
+      <div>Lomaflagi: {properties.profile-vacation-active}</div>
+      <div>Lomaa: {properties.profile-vacation-start|formatDate} - {properties.profile-vacation-end|formatDate}</div>
     </div>
   </div>
   {:else}
