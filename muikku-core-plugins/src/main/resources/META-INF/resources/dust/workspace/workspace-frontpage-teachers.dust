@@ -7,13 +7,13 @@
     </div>
     <div class="workspace-teacher-info">
       <div class="workspace-teacher-name">
-        <span class="workspace-teacher-firstname">{firstName}</span>
-        <span class="workspace-teacher-lastname">{lastName}</span>
+        <span class="workspace-teacher-info firstname">{firstName}</span>
+        <span class="workspace-teacher-info lastname">{lastName}</span>
       </div>
-      <div class="workspace-teacher-email">{email}</div>
-      <div>Puhelin: {properties.profile-phone}</div>
+      <div class="workspace-teacher-info email">{email}</div>
+      <div class="workspace-teacher-info phone">Puhelin: {properties.profile-phone}</div>
       <div>Lomaflagi: {properties.profile-vacation-active}</div>
-      <div>Lomaa: {properties.profile-vacation-start|formatDate} - {properties.profile-vacation-end|formatDate}</div>
+      <div class="workspace-teacher-info vacation-period">Lomaa: {properties.profile-vacation-start|formatDate} - {properties.profile-vacation-end|formatDate}</div>
     </div>
   </div>
   {:else}

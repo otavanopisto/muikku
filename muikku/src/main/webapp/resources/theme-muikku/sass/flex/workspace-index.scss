@@ -187,7 +187,7 @@ h1.workspace-block-title {
   
   .workspace-teacher {
     @include flexbox;
-    align-items: center;
+    align-items: flex-start;
     padding: 5px 0 10px;
     position: relative;
   }
@@ -214,17 +214,14 @@ h1.workspace-block-title {
     flex: 1 1 auto;
   }
   
-  .workspace-teacher-firstname,
-  .workspace-teacher-lastname {
+  .workspace-teacher-info {
     margin: 0 4px;
+    
+    &.email {
+      color: $environment-link-color;
+    }
+    
   }
-  
-  .workspace-teacher-email {
-    color: $environment-link-color;
-    line-height: 1.2em;
-    margin: 0 4px;
-  }
-  
   
 }
 
