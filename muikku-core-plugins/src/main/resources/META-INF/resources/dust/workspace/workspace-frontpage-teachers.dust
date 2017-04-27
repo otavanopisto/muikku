@@ -15,7 +15,7 @@
       <div class="workspace-teacher-info phone">Puhelin: {properties.profile-phone}</div>
       {/properties.profile-phone}
       {?properties.profile-vacation-active}
-        <div class="workspace-teacher-info vacation-period">{#localize key="plugin.workspace.index.teachersVacationPeriod.label"/}: {properties.profile-vacation-start|formatDate} - {properties.profile-vacation-end|formatDate}</div>
+        <div class="workspace-teacher-info vacation-period">{#localize key="plugin.workspace.index.teachersVacationPeriod.label"/} {properties.profile-vacation-start|formatDate} - {properties.profile-vacation-end|formatDate}</div>
       {/properties.profile-vacation-active}
     </div>
   </div>
