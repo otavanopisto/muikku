@@ -26,10 +26,10 @@
       background: $environment-profile-button-background-color;
       box-sizing: border-box;
       color: $environment-profile-button-font-color;
+      cursor: pointer;
       font-size: 12px;
       line-height: 1;
       padding: 8px;
-      cursor: pointer;
       text-transform: uppercase;
       width: 100%;
     }
@@ -45,91 +45,77 @@
   
   .profile-data-wrapper {
     margin: 0 0 0 166px;
+  }
   
-    h1.profile-user-realname {
-      font-size: 20px;
-      font-weight: 300;
+  .profile-user-realname {
+    font-size: 20px;
+    font-weight: 300;
+  }
+  
+  h2 {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 10px 0 2px;
+  }
+  
+  .profile-change-password-container {
+    margin: 10px 0;
+  }
+  
+  .profile-change-password {
+    color: $environment-link-color;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .profile-change-address-municipality-container {
+    margin: 10px 0;
+  }
+  
+  .profile-change-address-municipality {
+    color: $environment-link-color;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  .profile-vacation-wrapper {
+    @include flexbox;
+    align-items: flex-start;
+    flex-flow: row nowrap;
+  }
+  
+  .profile-vacation-date {
+    box-sizing: border-box;
+    flex: 1 1 50%;
+    
+    &:first-child {
+      padding: 0 5px 0 0;
     }
     
-    h2 {
-      font-size: 16px;
-      font-weight: 300;
-      margin: 10px 0 2px;
+    &:last-child {
+      padding: 0 0 0 5px;
     }
     
-    .profile-user-email {
-      
-    }
-    
-    .profile-change-password-container {
-      margin: 10px 0;
-    }
-    
-    .profile-change-password {
-      color: $environment-link-color;
+  }
+  
+  .profile-button-wrapper {
+    margin: 10px 0 0;
+  
+    .save-profile-fields {
+      background: $environment-profile-button-background-color;
+      color: $environment-profile-button-font-color;
       cursor: pointer;
       display: inline-block;
       font-size: 14px;
       font-weight: 400;
+      padding: 6px 8px;
+      text-transform: uppercase;
     }
-
-    .profile-change-address-municipality-container {
-      margin: 10px 0;
-    }
-    
-    .profile-change-address-municipality {
-      color: $environment-link-color;
-      cursor: pointer;
-      display: inline-block;
-      font-size: 14px;
-      font-weight: 400;
-    }
-    
-    .profile-basicinfo-section {
-
-    }
-    
-    .profile-vacationinfo-section {
-
-    }
-    
-    .profile-vacation-wrapper {
-      @include flexbox;
-      align-items: flex-start;
-      flex-flow: row nowrap;
-    
-      .profile-vacation-date {
-        border-sizing: border-box;
-        flex: 1 1 50%;
-        
-        &:first-child {
-          padding: 0 5px 0 0;
-        }
-        
-        &:last-child {
-          padding: 0 0 0 5px;
-        }
-        
-      }
-    
-    }
-    
-    .profile-button-wrapper {
-      margin: 10px 0 0;
-    
-      .save-profile-fields {
-        background: $environment-profile-button-background-color;
-        color: $environment-profile-button-font-color;
-        cursor: pointer;
-        display: inline-block;
-        font-size: 14px;
-        font-weight: 400;
-        padding: 6px 8px;
-        text-transform: uppercase;
-      }
-    
-    }
-    
+  
   }
   
   .profile-section-links-container {

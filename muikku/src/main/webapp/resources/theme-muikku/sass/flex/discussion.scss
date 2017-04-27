@@ -149,10 +149,10 @@
   color: $user-picture-font-color;
   font-size: 20px;
   height: 20px;
-  padding: 8px;
   line-height: 1;
+  margin: 0 auto;
+  padding: 8px;
   text-align: center;
-  margin: 0 auto;    
   width: 20px;
   
   &.default {
