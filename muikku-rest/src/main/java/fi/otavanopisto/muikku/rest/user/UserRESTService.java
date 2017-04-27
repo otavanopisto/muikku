@@ -306,7 +306,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName" };
+      String[] fields = new String[] { "firstName", "lastName", "nickName" };
 
       SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
           userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
@@ -339,7 +339,8 @@ public class UserRESTService extends AbstractRESTService {
           students.add(new fi.otavanopisto.muikku.rest.model.Student(
             studentIdentifier.toId(), 
             (String) o.get("firstName"),
-            (String) o.get("lastName"), 
+            (String) o.get("lastName"),
+            (String) o.get("nickName"),
             (String) o.get("studyProgrammeName"), 
             hasImage,
             (String) o.get("nationality"), 
@@ -418,7 +419,8 @@ public class UserRESTService extends AbstractRESTService {
     Student student = new Student(
         studentIdentifier.toId(), 
         user.getFirstName(), 
-        user.getLastName(), 
+        user.getLastName(),
+        user.getNickName(),
         user.getStudyProgrammeName(),
         false, 
         user.getNationality(), 
@@ -1084,7 +1086,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
-			String[] fields = new String[] { "firstName", "lastName" };
+			String[] fields = new String[] { "firstName", "lastName", "nickName" };
 
 			SearchResult result = elasticSearchProvider.searchUsers(searchString, 
 			    fields, 
