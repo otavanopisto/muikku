@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -140,6 +141,35 @@ public class UserRESTService extends AbstractRESTService {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     UserEntityProperty property = userEntityController.getUserEntityPropertyByKey(loggedUserEntity, key);
     return Response.ok(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(key, property == null ? null : property.getValue())).build();
+  }
+
+  @GET
+  @Path("/properties/{USERENTITYID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response getUserEntityProperties(@PathParam("USERENTITYID") Long userEntityId, @QueryParam("properties") String keys) {
+    // TODO Security (maybe via visibility in userEntityProperty?)
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    List<UserEntityProperty> storedProperties = new ArrayList<UserEntityProperty>();
+    List<fi.otavanopisto.muikku.rest.model.UserEntityProperty> restProperties = new ArrayList<fi.otavanopisto.muikku.rest.model.UserEntityProperty>();
+    if (StringUtils.isBlank(keys)) {
+      storedProperties = userEntityController.listUserEntityProperties(userEntity);
+      for (UserEntityProperty property : storedProperties) {
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(property.getKey(), property.getValue()));
+      }
+    }
+    else {
+      UserEntityProperty storedProperty;
+      String[] keyArray = keys.split(",");
+      for (int i = 0; i < keyArray.length; i++) {
+        storedProperty = userEntityController.getUserEntityPropertyByKey(userEntity, keyArray[i]);
+        String value = storedProperty == null ? null : storedProperty.getValue();
+        restProperties.add(new fi.otavanopisto.muikku.rest.model.UserEntityProperty(keyArray[i], value));
+      }
+    }
+    return Response.ok(restProperties).build();
   }
 
   @POST
@@ -1237,6 +1267,7 @@ public class UserRESTService extends AbstractRESTService {
   @RESTPermit (handling = Handling.INLINE)
   public Response searchStaffMembers(
       @QueryParam("searchString") String searchString,
+      @QueryParam("properties") String properties,
       @QueryParam("workspaceEntityId") Long workspaceEntityId,
       @QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
       @QueryParam("maxResults") @DefaultValue("10") Integer maxResults) {
@@ -1252,7 +1283,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName" };
+      String[] fields = new String[] { "firstName", "lastName", "userEntityId" };
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
@@ -1271,6 +1302,7 @@ public class UserRESTService extends AbstractRESTService {
       List<Map<String, Object>> results = result.getResults();
 
       if (results != null && !results.isEmpty()) {
+        String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
         for (Map<String, Object> o : results) {
           String studentId = (String) o.get("id");
           if (StringUtils.isBlank(studentId)) {
@@ -1295,11 +1327,23 @@ public class UserRESTService extends AbstractRESTService {
           
           String email = userEmailEntityController.getUserDefaultEmailAddress(studentIdentifier, false);
           
+          Long userEntityId = new Long((Integer) o.get("userEntityId"));
+          UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+          Map<String, String> propertyMap = new HashMap<String, String>();
+          if (userEntity != null) {
+            for (int i = 0; i < propertyArray.length; i++) {
+              UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
+              propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
+            }
+          }
+          
           staffMembers.add(new fi.otavanopisto.muikku.rest.model.StaffMember(
-            studentIdentifier.toId(), 
+            studentIdentifier.toId(),
+            new Long((Integer) o.get("userEntityId")),
             (String) o.get("firstName"),
             (String) o.get("lastName"), 
-            email));
+            email,
+            propertyMap));
         }
       }
     }

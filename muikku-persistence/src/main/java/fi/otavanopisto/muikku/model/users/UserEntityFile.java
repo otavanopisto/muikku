@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,27 +14,23 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import fi.otavanopisto.muikku.model.users.UserEntity;
 
 @Entity
-@Deprecated
-public class UserPicture {
+public class UserEntityFile {
 
-  /**
-   * Returns internal unique id
-   * 
-   * @return Internal unique id
-   */
   public Long getId() {
     return id;
   }
   
-  public UserEntity getUser() {
-    return user;
+  public UserEntity getUserEntity() {
+    return userEntity;
   }
 
-  public void setUser(UserEntity user) {
-    this.user = user;
+  public void setUserEntity(UserEntity userEntity) {
+    this.userEntity = userEntity;
   }
 
   public String getContentType() {
@@ -41,6 +39,14 @@ public class UserPicture {
 
   public void setContentType(String contentType) {
     this.contentType = contentType;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public byte[] getData() {
@@ -59,20 +65,55 @@ public class UserPicture {
     this.lastModified = lastModified;
   }
 
+  public String getIdentifier() {
+    return identifier;
+  }
+
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
+  }
+  
+  public UserEntityFileVisibility getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(UserEntityFileVisibility visibility) {
+    this.visibility = visibility;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
   @ManyToOne
-  private UserEntity user;
+  private UserEntity userEntity;
   
+  @NotNull
+  @Column (nullable=false)
+  @NotEmpty
+  private String identifier;
+
+  @NotNull
+  @Column (nullable=false)
+  @NotEmpty
+  private String name;
+  
+  @NotNull
+  @Column (nullable=false)
+  @NotEmpty
   private String contentType;
   
-  @Column (length=1073741824)
+  @NotNull
+  @NotEmpty
+  @Column (length=1073741824, nullable=false)
   private byte[] data;
   
   @NotNull
   @Column (nullable=false)
   @Temporal (value=TemporalType.TIMESTAMP)
   private Date lastModified;
+
+  @Enumerated (EnumType.STRING)
+  private UserEntityFileVisibility visibility;
+
 }
