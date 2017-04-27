@@ -30,8 +30,8 @@
               <div class="profile-content">
                 <div class="profile-picture-wrapper">
                   <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-256" type="image/jpeg">
-								    <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
-								  </object>
+                    <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
+                  </object>
                   <div class="profile-change-picture">#{i18n.text['plugin.profile.changePictureLabel']}</div>
                 </div>
                 <div class="profile-image-uploader" style="display:none;">
@@ -69,28 +69,30 @@
                       <div class="profile-change-address-municipality">#{i18n.text['plugin.profile.changeAddressMunicipality.buttonLabel']}</div>
                     </div>
                     
-                    <form>
-                      <div class="profile-basicinfo-section">
-                        <div class="profile-phone-wrapper">
-                          <label>#{i18n.text['plugin.profile.phoneNumber.label']}</label><input type="text" name="profile-phone" size="20"/>
+                    <ui:fragment rendered="#{not sessionBackingBean.isStudent}">
+                      <form>
+                        <div class="profile-basicinfo-section">
+                          <div class="profile-phone-wrapper">
+                            <label>#{i18n.text['plugin.profile.phoneNumber.label']}</label><input type="text" name="profile-phone" size="20"/>
+                          </div>
                         </div>
-                      </div>
-                      <div class="profile-vacationinfo-section">
-                        <div class="profile-vacation-wrapper">
-                          <div class="profile-vacation-date">
-	                          <label>#{i18n.text['plugin.profile.awayStartDate.label']}</label><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
-	                        </div>
-	                        <div class="profile-vacation-date">
-	                          <label>#{i18n.text['plugin.profile.awayEndDate.label']}</label><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
-	                        </div>
-                        </div>
+                        <div class="profile-vacationinfo-section">
+                          <div class="profile-vacation-wrapper">
+                            <div class="profile-vacation-date">
+                              <label>#{i18n.text['plugin.profile.awayStartDate.label']}</label><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
+                            </div>
+                            <div class="profile-vacation-date">
+                              <label>#{i18n.text['plugin.profile.awayEndDate.label']}</label><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
+                            </div>
+                          </div>
+                          
+                          <div class="profile-button-wrapper">
+                            <div class="save-profile-fields">Tallenna</div>
+                          </div>
                         
-                        <div class="profile-button-wrapper">
-                          <div class="save-profile-fields">Tallenna</div>
-                        </div>
-                      
-                    </div>
-                  </form>
+                      </div>
+                    </form>
+                  </ui:fragment>
                 </div>
                 
               </div>

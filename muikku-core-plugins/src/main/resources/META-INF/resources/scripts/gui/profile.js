@@ -91,6 +91,7 @@
                         saveImage(sizes[i]);
                       }
                       $(this).dialog('close');
+                      window.location.reload(true);
                     }
                   }, {
                     'text': dialog.data('button-cancel-text'),
@@ -340,7 +341,8 @@
       
       var vacationEndDate = $('input[name="profile-vacation-end"]').datepicker('getDate');
       mApi().user.property.create({key: 'profile-vacation-end', value: vacationEndDate == null ? null : vacationEndDate.toISOString()});
-
+      
+      $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.profile.properties.saved"));      
     }, this));
   });
   
