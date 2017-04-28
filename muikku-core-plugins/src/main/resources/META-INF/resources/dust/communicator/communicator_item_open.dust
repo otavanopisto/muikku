@@ -11,7 +11,11 @@
                     <span class="icon-arrow-right cm-message-recipient-arrow"></span>
                     {?recipients}
                       {#recipients}
-                        <span class="cm-message-recipient-name">{firstName} {lastName}</span>
+                        {?isStudent}
+                          <span class="cm-message-recipient-name">{?nickName}{nickName}{:else}{firstName}{/nickName} {lastName}</span>
+                        {:else}
+                          <span class="cm-message-recipient-name">{?nickName}{firstName} "{nickName}"{:else}{firstName}{/nickName} {lastName}</span>
+                        {/isStudent}
                       {/recipients}
                     {/recipients}
                     

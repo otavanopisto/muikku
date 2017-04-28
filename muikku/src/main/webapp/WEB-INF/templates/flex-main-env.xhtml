@@ -30,15 +30,16 @@
               </div>
             </div>
           </div>
-          <div class="language">
-            <h:form>
-              <div class="language-container">
-                <ui:repeat value="#{i18n.languages}" var="locale">
-                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
-                </ui:repeat>
-              </div>
-            </h:form>
-          </div>
+          <div class="site-locale">
+	          <div class="selected-language">#{languageWidgetBackingBean.language}</div>
+	            <h:form>
+	              <div class="language-selection-container" data-visibility-status="hidden">
+	                <ui:repeat value="#{i18n.languages}" var="locale">
+	                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+	                </ui:repeat>
+	              </div>
+	            </h:form>
+	          </div>
         </ui:fragment>
         <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
           <div class="loginbox-container">
@@ -49,15 +50,16 @@
 	              </a>
 	            </div>
 	          </div>
-		        <div class="language">
-		          <h:form>
-		            <div class="language-container">
-		              <ui:repeat value="#{i18n.languages}" var="locale">
-		                <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
-		              </ui:repeat>
-		            </div>
-		          </h:form>
-		        </div>
+		        <div class="site-locale">
+                <div class="selected-language">#{languageWidgetBackingBean.language}</div>
+                <h:form>
+                  <div class="language-selection-container" data-visibility-status="hidden">
+                    <ui:repeat value="#{i18n.languages}" var="locale">
+                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+                    </ui:repeat>
+                  </div>
+                </h:form>
+              </div>
 	          <div class="forgotpassword-link-container">
 	            <a href="#" class="forgotpassword-link">#{i18n.text['plugin.forgotpassword.forgotLink']}</a>
 	          </div>

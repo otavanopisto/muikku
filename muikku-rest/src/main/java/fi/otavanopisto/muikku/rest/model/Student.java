@@ -7,13 +7,14 @@ public class Student {
   public Student() {
   }
 
-  public Student(String id, String firstName, String lastName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
+  public Student(String id, String firstName, String lastName, String nickName, String studyProgrammeName, Boolean hasImage, String nationality, String language, String municipality, String school,
       String email, Date studyStartDate, Date studyEndDate, Date studyTimeEnd, String curriculumIdentifier,
       boolean updatedByStudent) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.nickName = nickName;
     this.studyProgrammeName = studyProgrammeName;
     this.hasImage = hasImage;
     this.nationality = nationality;
@@ -50,6 +51,14 @@ public class Student {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getNickName() {
+    return nickName;
+  }
+
+  public void setNickName(String nickName) {
+    this.nickName = nickName;
   }
 
   public String getStudyProgrammeName() {
@@ -151,6 +160,7 @@ public class Student {
   private String id;
   private String firstName;
   private String lastName;
+  private String nickName;
   private String studyProgrammeName;
   private Boolean hasImage;
   private String nationality;

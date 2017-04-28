@@ -34,7 +34,7 @@
   </ui:define>  
   
   <ui:define name="mf-content-master"> 
-    <div class="communicator" data-group-messaging-permission="#{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')}">
+    <div class="communicator" data-group-messaging-permission="#{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')}" data-student="#{sessionBackingBean.getIsStudent()}">
       <div class="mf-view-header flex-row flex-align-items-center">
         <div class="mf-view-title-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8">
           <h2 class="mf-view-title">#{i18n.text['plugin.communicator.pageTitle']}</h2>
