@@ -84,6 +84,12 @@ blockquote{
   width: 48px;
   z-index: 15; 
   
+  object,
+  img {
+    height: 44px;
+    width: 44px;
+  }
+  
   &:hover {
     box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
   }

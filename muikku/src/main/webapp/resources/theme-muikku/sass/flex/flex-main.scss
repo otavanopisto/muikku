@@ -247,8 +247,7 @@ dt {
   float: right;
   font-weight: 400;
 
-  object,
-  img {
+  .lu-picture {
     border: 2px solid $environment-logged-in-border-color;
     border-radius: 100%;
     box-sizing: border-box;
@@ -260,8 +259,15 @@ dt {
     top: 0;
     width: 48px;
     z-index: 15; 
+    
+    object,
+    img {
+      height: 44px;
+      width: 44px;
+    }
+    
   }
-  
+
   .lu-info-container {
     border: 2px solid $environment-logged-in-border-color;
     background: $environment-logged-in-background-color;
