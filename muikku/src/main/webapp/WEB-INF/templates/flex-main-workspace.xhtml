@@ -79,21 +79,24 @@
         </ui:fragment>
         <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
           <a jsf:outcome="/jsf/profile/profile.jsf">
-            <object class="lu-picture sm-flex-hide" data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpeg">
-              <img class="lu-picture sm-flex-hide" src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
-            </object>
+            <span class="lu-picture sm-flex-hide">
+	            <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpeg">
+	              <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
+	            </object>
+            </span>
           </a>
         </ui:fragment>
         
-        <div class="language sm-flex-hide">
-          <h:form>
-            <div class="language-container">
-              <ui:repeat value="#{i18n.languages}" var="locale">
-                <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
-              </ui:repeat>
-            </div>
-          </h:form>
-        </div>
+        <div class="site-locale sm-flex-hide">
+            <div class="selected-language">#{languageWidgetBackingBean.language}</div>
+            <h:form>
+              <div class="language-selection-container" data-visibility-status="hidden">
+                <ui:repeat value="#{i18n.languages}" var="locale">
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+                </ui:repeat>
+              </div>
+            </h:form>
+          </div>
 
         <!-- MOBILE NAVIGATION - NAVMORE -->
         <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
