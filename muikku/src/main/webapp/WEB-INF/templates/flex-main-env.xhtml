@@ -32,14 +32,14 @@
           </div>
           <div class="site-locale">
 	          <div class="selected-language">#{languageWidgetBackingBean.language}</div>
-	            <h:form>
-	              <div class="language-selection-container" data-visibility-status="hidden">
-	                <ui:repeat value="#{i18n.languages}" var="locale">
-	                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
-	                </ui:repeat>
-	              </div>
-	            </h:form>
-	          </div>
+            <h:form>
+              <div class="language-selection-container" data-visibility-status="hidden">
+                <ui:repeat value="#{i18n.languages}" var="locale">
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+                </ui:repeat>
+              </div>
+            </h:form>
+          </div>
         </ui:fragment>
         <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
           <div class="loginbox-container">

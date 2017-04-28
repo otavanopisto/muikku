@@ -199,25 +199,30 @@
     
     <!--  If user is authenticated -->
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <div class="flex-row">
-        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
-          <div class="box box-max-width">
-            <div id="visits"></div> 
-            <div id="workspaces"></div>
-          </div>
-        </div>
-        <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-4 sm-flex-order-4">
-          <div class="box box-max-width">
-            <div id="messages"></div>
-          </div>
-        </div>
-        <div class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-2 sm-flex-order-2">
-          <div class="box box-max-width">
-            <div id="announcements"></div>
-          </div>
-        </div>
-      </div>
-    </ui:fragment>
+	    <ui:fragment rendered="#{sessionBackingBean.isStudent}">
+	      <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full md-flex-order-1 sm-flex-order-1">
+	        <div id="last-workspace">
+	        
+	        </div>
+	      </div>
+	    </ui:fragment>
+	    <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
+	      <div class="box box-max-width">
+	        <div id="visits"></div> 
+	        <div id="workspaces"></div>
+	      </div>
+	    </div>
+	    <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-4 sm-flex-order-4">
+	      <div class="box box-max-width">
+	        <div id="messages"></div>
+	      </div>
+	    </div>
+	    <div class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-2 sm-flex-order-2">
+	      <div class="box box-max-width">
+	        <div id="announcements"></div>
+	      </div>
+	    </div>
+	  </ui:fragment>
 
   </ui:define>
   
