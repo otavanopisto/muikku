@@ -141,24 +141,24 @@ blockquote{
     display: none;
     min-width: 100px;
     position: absolute;
+    right: 7px;
     text-align: center;
     top: 54px;
-    right: 7px;
     z-index: 99;
     
     &::after {
-      bottom: 100%;
-      right: 12px;
       border: solid transparent;
-      content: " ";
-      height: 0;
-      width: 0;
-      position: absolute;
-      pointer-events: none;
       border-color: rgba(73, 73, 73, 0);
       border-bottom-color: $of-navigation-locale-selection-arrow-background-color;
       border-width: 4px;
+      bottom: 100%;
+      content: " ";
+      height: 0;
       margin-left: -4px;
+      pointer-events: none;
+      position: absolute;
+      right: 12px;
+      width: 0;
     }
     
   }
