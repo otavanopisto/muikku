@@ -45,7 +45,7 @@
           renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
             staffMembers: staffMembers
           }, $.proxy(function (text) {
-            $('.workspace-teachers-container').append($.parseHTML(text));
+            this.element.append($.parseHTML(text));
           }, this));
         }
       });
