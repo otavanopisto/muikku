@@ -53,7 +53,7 @@
         replyCreatedMap[reply.id] = reply;
       });
 
-      var generateFullName = (function(user, showFullNamePermission){
+      var generateFullName = (function(user){
         if (user.nickName) {
           if (this.options.showFullNamePermission)
             return user.firstName + ' "' + user.nickName + '" ' + user.lastName;
@@ -89,7 +89,6 @@
             //everything should be done with promises
             if (reply.parentReplyId){
               var replyCreatorId = replyCreatedMap[reply.parentReplyId].creator;
-              var replyParentCreatorFullName;
 
               //Array find not supported in IE :(
               users.forEach(function(usr){
