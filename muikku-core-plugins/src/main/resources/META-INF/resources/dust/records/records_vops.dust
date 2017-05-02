@@ -65,6 +65,7 @@
             <div class="tr-vops-item-menu"></div>
           </div>       
         {/items}       
+<!--         
           <div title="Kurssi N" class="tr-vops-item optional-school incomplete" data-no="{courseNumber}">
             <span>T</span>
             <div class="tr-vops-item-menu"></div>
@@ -94,7 +95,8 @@
           <div title="Kurssi N" class="tr-vops-item optional-national failed" data-no="{courseNumber}">
             <span>H</span>  
             <div class="tr-vops-item-menu"></div>            
-          </div>  
+          </div>
+ -->            
       </div>
     {/rows}
   </div>
