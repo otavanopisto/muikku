@@ -12,14 +12,14 @@
             <div>{#localize key="plugin.records.studyplan.legend.title.neutral" /}</div>
           </div>       
           <div class="tr-vops-legend-item">
-            <div class="tr-vops-legend-item-grid tr-vops-item failing"></div>
-            <div>{#localize key="plugin.records.studyplan.legend.title.failing" /}</div>
+            <div class="tr-vops-legend-item-grid tr-vops-item incomplete"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.incomplete" /}</div>
           </div>   
           <div class="tr-vops-legend-item">
             <div class="tr-vops-legend-item-grid tr-vops-item planned"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.planned" /}</div>
           </div>             
-          <div class="tr-vops-legend-item"">
+          <div class="tr-vops-legend-item">
             <div class="tr-vops-legend-item-grid tr-vops-item passed"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.passed" /}</div>
           </div>                         
@@ -54,6 +54,7 @@
         {#coursetitlenos}
           <div class="tr-vops-item-title" data-no="{courseNumber}">
             <span>{.}</span>
+
           </div>       
         {/coursetitlenos}
     </div>       
@@ -62,32 +63,39 @@
         <div class="tr-vops-item-name">{subject}</div>
         {#items}
           <div title="Kurssi {courseNumber}" class="tr-vops-item mandatory {?completed}passed{/completed}" data-no="{courseNumber}">
+            <div class="tr-vops-item-menu"></div>
           </div>       
         {/items}       
-<!-- 
-          <div title="Kurssi N" class="tr-vops-item optional-school failing" data-no="{courseNumber}">
+          <div title="Kurssi N" class="tr-vops-item optional-school incomplete" data-no="{courseNumber}">
             <span>T</span>
+            <div class="tr-vops-item-menu"></div>
           </div>    
           <div title="Kurssi N" class="tr-vops-item optional-school passed" data-no="{courseNumber}">
-            <span>6</span>          
+            <span>6</span>
+            <div class="tr-vops-item-menu"></div>          
           </div>    
-          <div title="Kurssi N" class="tr-vops-item mandatory failing" data-no="{courseNumber}">
+          <div title="Kurssi N" class="tr-vops-item mandatory incomplete" data-no="{courseNumber}">
             <span>T</span>
+            <div class="tr-vops-item-menu"></div>           
           </div>  
-          <div title="Kurssi N" class="tr-vops-item optional-national failing" data-no="{courseNumber}">
+          <div title="Kurssi N" class="tr-vops-item optional-national incomplete" data-no="{courseNumber}">
             <span>T</span>
+            <div class="tr-vops-item-menu"></div>            
           </div>                        
           <div title="Kurssi N" class="tr-vops-item optional-school passed" data-no="{courseNumber}">
             <span>6</span>  
+            <div class="tr-vops-item-menu"></div>            
           </div>  
           <div title="Kurssi N" class="tr-vops-item optional-school planned" data-no="{courseNumber}">
+            <div class="tr-vops-item-menu"></div>          
           </div>  
-          <div title="Kurssi N" class="tr-vops-item optional-national planned" data-no="{courseNumber}">
+          <div title="Kurssi N" class="tr-vops-item optional-national signed" data-no="{courseNumber}">
+            <div class="tr-vops-item-menu"></div>          
           </div>  
           <div title="Kurssi N" class="tr-vops-item optional-national failed" data-no="{courseNumber}">
             <span>H</span>  
+            <div class="tr-vops-item-menu"></div>            
           </div>  
-           -->
       </div>
     {/rows}
   </div>
