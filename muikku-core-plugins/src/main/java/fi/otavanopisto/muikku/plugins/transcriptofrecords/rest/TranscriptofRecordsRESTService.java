@@ -17,6 +17,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsController;
@@ -28,8 +30,10 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -60,6 +64,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
   @Inject
   private UserController userController;
+ 
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @GET
   @Path("/files/{ID}/content")
@@ -126,7 +133,17 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   subject.getIdentifier(),
                   i);
           if (!workspaces.isEmpty()) {
-            items.add(new VopsRESTModel.VopsItem(i, false));
+            boolean workspaceUserExists = false;
+            findWorkspaceUser: for (Workspace workspace : workspaces) {
+              WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+              WorkspaceUserEntity workspaceUser = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+              if (workspaceUser != null) {
+                workspaceUserExists = true;
+                break findWorkspaceUser;
+              }
+            }
+            
+            items.add(new VopsRESTModel.VopsItem(i, workspaceUserExists));
           }
         }
         rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
