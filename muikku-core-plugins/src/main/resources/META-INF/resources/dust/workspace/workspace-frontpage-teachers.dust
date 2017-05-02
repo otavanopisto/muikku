@@ -1,5 +1,5 @@
 {#staffMembers}
-  <div class="workspace-teacher">
+  <div class="workspace-teacher" data-id="{id}">
     <div class="workspace-teacher-profile-picture">
       <object data="/rest/user/files/user/{userEntityId}/identifier/profile-image-96" type="image/jpeg">
         <img src="/gfx/default-user-picture.jpg" />
@@ -11,6 +11,7 @@
         <span class="workspace-teacher-info lastname">{lastName}</span>
       </div>
       <div class="workspace-teacher-info email">{email}</div>
+      <div class="workspace-teacher-info sendmessage icon-envelope"></div>
       {?properties.profile-phone}
         <div class="workspace-teacher-info phone">{#localize key="plugin.workspace.index.phone.label"/}: {properties.profile-phone}</div>
       {/properties.profile-phone}
@@ -22,4 +23,3 @@
   {:else}
     <div class="workspace-teachers-empty">{#localize key="plugin.workspace.index.teachersEmpty"/}</div>
 {/staffMembers}
-
