@@ -31,19 +31,18 @@
         </div>
         <div class="tr-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.shapes" /}</div>
         <div class="tr-vops-legend-items">
-
           <div class="tr-vops-legend-item">
             <div class="tr-vops-legend-item-grid tr-vops-item mandatory"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.mandatory" /}</div>
           </div>       
-          <div class="tr-vops-legend-item"">
-            <div class="tr-vops-legend-item-grid tr-vops-item optional-school"></div>
-            <div>{#localize key="plugin.records.studyplan.legend.title.optional.school" /}</div>
-          </div>                         
           <div class="tr-vops-legend-item" data-no="{courseNumber}">
             <div class="tr-vops-legend-item-grid tr-vops-item optional-national"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.optional.national" /}</div>
           </div> 
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item optional-school"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.optional.school" /}</div>
+          </div>                         
         </div>        
       </div>
     </div>    
