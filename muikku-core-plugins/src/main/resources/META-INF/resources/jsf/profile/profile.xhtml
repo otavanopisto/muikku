@@ -12,11 +12,13 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/profile.js"/>  
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/profile.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/croppie/croppie.js"/>
   </ui:define>
 
   <ui:define name="main-functionality-styles">
     <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/profile.css"/>
+    <link rel="stylesheet" type="text/css" href="/scripts/croppie/croppie.css"/>
   </ui:define>  
 
   <ui:define name="mf-content-master"> 
@@ -27,25 +29,33 @@
             <section class="section-for-articles lg-flex-cell-11 md-flex-cell-10 sm-flex-cell-full">
               <div class="profile-content">
                 <div class="profile-picture-wrapper">
-                  <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/>
+                  <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-256" type="image/jpeg">
+                    <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
+                  </object>
+                  <div class="profile-change-picture">#{i18n.text['plugin.profile.changePictureLabel']}</div>
+                </div>
+                <div class="profile-image-uploader" style="display:none;">
+                  <form class="profile-image-form">
+                    <input class="profile-image-input" name="file" type="file" accept="image/*"/>
+                  </form>
                 </div>
                 <div class="profile-data-wrapper">
                   <h1 class="profile-user-realname">#{profileBackingBean.displayName}</h1>
                     <ui:fragment rendered="#{!empty(profileBackingBean.emails)}">
-                      <h2>#{i18n.text['plugin.profile.emailsLabel']}</h2>
+                      <label>#{i18n.text['plugin.profile.emailsLabel']}</label>
                       <ui:repeat var="email" value="#{profileBackingBean.emails}">
                         <div class="profile-user-email">#{email}</div>
                       </ui:repeat>
                     </ui:fragment>
                     <ui:fragment rendered="#{!empty(profileBackingBean.addresses)}">
-                      <h2>#{i18n.text['plugin.profile.addressesLabel']}</h2>
+                      <label>#{i18n.text['plugin.profile.addressesLabel']}</label>
                       <ui:repeat var="address" value="#{profileBackingBean.addresses}">
                         <div class="profile-user-address">#{address}</div>
                       </ui:repeat>
                     </ui:fragment>
                     
                     <ui:fragment rendered="#{!empty(profileBackingBean.phoneNumbers)}">
-                      <h2>#{i18n.text['plugin.profile.phoneNumbers']}</h2>
+                      <label>#{i18n.text['plugin.profile.phoneNumbers']}</label>
                       <ui:repeat var="phoneNumber" value="#{profileBackingBean.phoneNumbers}">
                         <div class="profile-user-phone-number">#{phoneNumber}</div>
                       </ui:repeat>
@@ -58,7 +68,31 @@
                     <div class="profile-change-address-municipality-container">
                       <div class="profile-change-address-municipality">#{i18n.text['plugin.profile.changeAddressMunicipality.buttonLabel']}</div>
                     </div>
-
+                    
+                    <ui:fragment rendered="#{not sessionBackingBean.isStudent}">
+                      <form>
+                        <div class="profile-basicinfo-section">
+                          <div class="profile-phone-wrapper">
+                            <label>#{i18n.text['plugin.profile.phoneNumber.label']}</label><input type="text" name="profile-phone" size="20"/>
+                          </div>
+                        </div>
+                        <div class="profile-vacationinfo-section">
+                          <div class="profile-vacation-wrapper">
+                            <div class="profile-vacation-date">
+                              <label>#{i18n.text['plugin.profile.awayStartDate.label']}</label><input type="text" class="date-field" name="profile-vacation-start" size="20"/>
+                            </div>
+                            <div class="profile-vacation-date">
+                              <label>#{i18n.text['plugin.profile.awayEndDate.label']}</label><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
+                            </div>
+                          </div>
+                          
+                          <div class="profile-button-wrapper">
+                            <div class="save-profile-fields">#{i18n.text['plugin.profile.save.button']}</div>
+                          </div>
+                        
+                      </div>
+                    </form>
+                  </ui:fragment>
                 </div>
                 
               </div>

@@ -12,7 +12,11 @@
           <div class="logged-user" id="loggedUser">
             <div class="lu-badge-container">
               <a jsf:outcome="/jsf/profile/profile.jsf">
-                <span class="lu-picture" id="loggedUserPicture"/>
+                <span class="lu-picture">
+	                <object data="/rest/user/files/user/#{sessionBackingBean.loggedUserId}/identifier/profile-image-96" type="image/jpeg">
+	                  <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}" />
+	                </object>
+                </span>
               </a>
               <div class="lu-info-container">
                 <div class="lu-user-name">
@@ -26,11 +30,12 @@
               </div>
             </div>
           </div>
-          <div class="language">
+          <div class="site-locale">
+	          <div class="selected-language">#{languageWidgetBackingBean.language}</div>
             <h:form>
-              <div class="language-container">
+              <div class="language-selection-container" data-visibility-status="hidden">
                 <ui:repeat value="#{i18n.languages}" var="locale">
-                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.shorten.' .concat(locale)]}</a>
+                  <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
                 </ui:repeat>
               </div>
             </h:form>
@@ -45,15 +50,16 @@
 	              </a>
 	            </div>
 	          </div>
-		        <div class="language">
-		          <h:form>
-		            <div class="language-container">
-		              <ui:repeat value="#{i18n.languages}" var="locale">
-		                <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.language.' .concat(locale)]}</a>
-		              </ui:repeat>
-		            </div>
-		          </h:form>
-		        </div>
+		        <div class="site-locale">
+                <div class="selected-language">#{languageWidgetBackingBean.language}</div>
+                <h:form>
+                  <div class="language-selection-container" data-visibility-status="hidden">
+                    <ui:repeat value="#{i18n.languages}" var="locale">
+                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}">#{i18n.text['plugin.navigation.language.' .concat(locale)]}</a>
+                    </ui:repeat>
+                  </div>
+                </h:form>
+              </div>
 	          <div class="forgotpassword-link-container">
 	            <a href="#" class="forgotpassword-link">#{i18n.text['plugin.forgotpassword.forgotLink']}</a>
 	          </div>

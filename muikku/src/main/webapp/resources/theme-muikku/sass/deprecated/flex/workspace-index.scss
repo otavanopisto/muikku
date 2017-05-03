@@ -186,41 +186,46 @@ h1.workspace-block-title {
   }
   
   .workspace-teacher {
+    @include flexbox;
+    align-items: flex-start;
     padding: 5px 0 10px;
     position: relative;
   }
   
-  .workspace-teacher-name {
-    font-size: 16px;
+  .workspace-teacher-profile-picture {
+    border-radius: 5px;
+    flex: 0 0 58px;
+    height: 48px;
+    width: 48px;
     
-    .icon-user {
-      background: #31acf6;
+    object,
+    img {
+      border: 2px solid #fff;
       border-radius: 100%;
-      color: $environment-icon-font-color;
-      font-size: 12px;
-      height: 13px;
-      margin: 0 4px 0 0;
-      padding: 4px;
-      width: 13px;
-    }
-    
-    span {
-      display: inline-block;      
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      display: block;
+      height: 48px;
+      width: 48px;
     }
     
   }
   
-  .workspace-teacher-firstname,
-  .workspace-teacher-lastname {
-    margin: 0 4px;
+  .workspace-teacher-info {
+    flex: 1 1 auto;
   }
   
-  .workspace-teacher-email {
-    color: $environment-link-color;
-    line-height: 1.2em;
-    margin: 0 4px 0 28px;
+  .workspace-teacher-info {
+    margin: 0 0 0 4px;
+    
+    &.email {
+      color: $environment-link-color;
+    }
+    
+    &.vacation-period {
+      font-weight: 400;
+    }
+    
   }
-  
   
 }
 

@@ -804,7 +804,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       SearchProvider elasticSearchProvider = searchProviderIterator.next();
 
       if (elasticSearchProvider != null) {
-        String[] fields = new String[] { "firstName", "lastName" };
+        String[] fields = new String[] { "firstName", "lastName", "nickName" };
 
         SearchResult result = elasticSearchProvider.searchUsers(
             searchString,

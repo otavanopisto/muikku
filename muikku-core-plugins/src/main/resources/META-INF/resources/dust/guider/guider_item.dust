@@ -2,7 +2,7 @@
 <div class="mf-item gt-user closed flex-row" data-user-identifier="{id}">
   <div class="mf-item-header-name gt-user-name lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
    <div class="gt-user-meta-topic flex-row">
-     <span>{firstName} {lastName} ({studyProgrammeName})</span>
+     <span>{firstName}{?nickName} "{nickName}"{/nickName} {lastName} ({studyProgrammeName})</span>
      <span class="gt-email-field">{email}</span>
    </div>
   </div>
@@ -11,7 +11,6 @@
     </div>
     <div class="gt-user-details-toolbar mf-item-tools">
       <div class="gt-tool-view-profile mf-item-tool-btn"><span>{#localize key="plugin.guider.actions.showprofile"/}</span></div>
-<!--        <div class="gt-tool-send-mail mf-item-tool-btn"><span>Lähetä viesti</span></div>  -->
     </div>
   </div>
   <div class=""></div>

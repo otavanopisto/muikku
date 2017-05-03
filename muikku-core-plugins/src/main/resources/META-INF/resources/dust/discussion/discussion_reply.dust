@@ -1,11 +1,13 @@
 <div class="mf-subitem {?isReply}di-reply-reply{/isReply} di-message di-reply open lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top" {?parentReplyId}data-parent-id="{parentReplyId}"{/parentReplyId} data-id="{id}">
   <div class="di-message-topic mf-item-topic flex-row">    
-    <div class="di-message-meta lg-flex-cell-13 md-flex-cell-13 sm-flex-cell-13">
+    <div class="di-message-meta lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
       <input type="hidden" name="mf-person-id" value="{sender}"/>
       <div class="flex-row flex-align-items-center">
-        <div class="lg-flex-cell-1 md-flex-cell-1 sm-flex-hide">
-          <div class="di-user-picture default usr-{userRandomNo}">{nameLetter}</div>
-        </div>  
+        <div class="di-user-picture-container lg-flex-cell-1 md-flex-cell-1 sm-flex-hide">
+          <object data="/rest/user/files/user/{userEntityId}/identifier/profile-image-96" type="image/jpeg">
+            <div class="di-user-picture default usr-{userRandomNo}">{nameLetter}</div> 
+          </object>
+        </div>
         <div class="di-message-details di-message-details-reply lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-full">
           <span class="di-reply-title-creator" title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
           <span class="di-reply-title-date" title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
@@ -16,8 +18,7 @@
         </div> 
       </div>
     </div>        
-    <div class="lg-flex-cell-3 md-flex-cell-3 sm-flex-cell-3">         
-    </div>  
+ 
   </div>
   {?deleted}
     <div class="mf-item-empty-container flex-row flex-align-items-center">

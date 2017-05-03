@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>drop table UserPicture;</sql>
+  <sql>create table UserEntityFile (id bigint not null auto_increment, contentType varchar(255) not null, data longblob not null, identifier varchar(255) not null, lastModified datetime not null, name varchar(255) not null, visibility varchar(255), userEntity_id bigint, primary key (id));</sql>
+  <sql>alter table UserEntityFile add constraint FKr87asich6tb601ta9dxjnmm6m foreign key (userEntity_id) references UserEntity (id);</sql>
+
+</update>

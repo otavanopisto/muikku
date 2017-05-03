@@ -70,20 +70,25 @@ blockquote{
 }
 
 .lu-picture {
-  border:2px solid #fff;
-  box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
-  height:48px;
-  width:48px;      
-  box-sizing:border-box; 
-  display:inline-block;
-  border-radius:100%;
-  margin:0 10px 0 0;
-  z-index:15;
-  background-size:100% auto;
-  border:2px solid #fff;
-  overflow:hidden;
-  background-image:url('/gfx/default-user-picture.jpg');
-  float:right;
+  border: 2px solid $environment-logged-in-border-color;
+  border-radius: 100%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  display: inline-block;
+  float: right;
+  height: 48px;
+  margin: 0 10px 0 0;
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  width: 48px;
+  z-index: 15; 
+  
+  object,
+  img {
+    height: 44px;
+    width: 44px;
+  }
   
   &:hover {
     box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
@@ -106,75 +111,76 @@ blockquote{
 }
 
 /* Language */
-.language { 
-  float:right;
-  position:relative;
-  margin:0 10px 0 0;
-  background:#2e72a0;
-  height:48px;
-  width:48px;
-  box-sizing:border-box;
-  display:inline-block;
-  border-radius:100%;
-  z-index:15;
-  text-align:center;
-  padding:0;
-  overflow:hidden;
-  box-shadow:0 0 10px rgba(0, 0, 0, 0.05);
-  transition:border-radius 0.1s ease-in-out;
+.site-locale {
+  float: right;
+  margin: 0 10px 0 0;
+  position: relative;
   
-  &:hover,
-  &:focus,
-  &:active {
-    border-radius:5px;
-    box-shadow:none;
-    background:#fff;
-    overflow:visible;
+  .selected-language {
+    background: $of-navigation-locale-selected-background-color;
+    border-radius: 100%;
+    box-sizing: border-box;
+    color: $of-navigation-locale-selected-text-color;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 300;
+    height: 48px; 
+    line-height: 1;
+    overflow: hidden;
+    padding: 12px 10px;
+    text-align: center;
+    transition: border-radius 0.1s ease-in-out;
+    width: 48px;
+    z-index: 15;
+  }
+  
+  .language-selection-container {
+    background: $of-navigation-locale-selection-background-color;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px $of-navigation-locale-selection-boxshadow-color;
+    display: none;
+    min-width: 100px;
+    position: absolute;
+    right: 7px;
+    text-align: center;
+    top: 54px;
+    z-index: 99;
     
-    .language-container {
-      position:absolute;
-      background:#fff; 
-      border-radius:none;
-      border-radius:5px;
-      
-      a {
-        color:#569bca;
-        line-height:1;
-        
-        &:first-of-type {
-          border-top-left-radius:5px;
-          border-top-right-radius:5px;
-        }
-        
-        &:last-child {
-          border-bottom-left-radius:5px;
-          border-bottom-right-radius:5px;
-        }
-        
-        &:hover {
-          color:#fff;
-          background:#2e72a0;
-          text-decoration:none;
-        }
-        
-      }
-      
+    &::after {
+      border: solid transparent;
+      border-color: rgba(73, 73, 73, 0);
+      border-bottom-color: $of-navigation-locale-selection-arrow-background-color;
+      border-width: 4px;
+      bottom: 100%;
+      content: " ";
+      height: 0;
+      margin-left: -4px;
+      pointer-events: none;
+      position: absolute;
+      right: 12px;
+      width: 0;
     }
-
-  }
-
-  a {  
-    text-decoration:none; 
-    padding:12px 10px;  
-    color:#fff;   
-    font-size:22px;
-    font-weight:300;
-    display:block;
-    min-width:28px;
-    min-height:24px;
-    line-height:1;
-  }
     
+  }
+  
+  a {  
+    border-radius: 5px;
+    color: $of-navigation-locale-selection-link-color;   
+    display: block;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1;
+    padding: 10px;  
+    text-decoration: none;
+    white-space: nowrap; 
+    
+    &:hover {
+      background: #000;
+      text-decoration: none;
+    }
+    
+  }
+  
 }
   
 #footer {
