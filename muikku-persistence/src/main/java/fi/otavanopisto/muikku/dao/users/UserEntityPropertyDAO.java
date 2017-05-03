@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.dao.users;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -38,6 +40,21 @@ public class UserEntityPropertyDAO extends CoreDAO<UserEntityProperty> {
     );
     
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public List<UserEntityProperty> listByUserEntity(UserEntity userEntity) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserEntityProperty> criteria = criteriaBuilder.createQuery(UserEntityProperty.class);
+    Root<UserEntityProperty> root = criteria.from(UserEntityProperty.class);
+    criteria.select(root);
+    
+    criteria.where(
+      criteriaBuilder.equal(root.get(UserEntityProperty_.userEntity), userEntity)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
   }
   
   public UserEntityProperty updateValue(UserEntityProperty userEntityProperty, String value) {

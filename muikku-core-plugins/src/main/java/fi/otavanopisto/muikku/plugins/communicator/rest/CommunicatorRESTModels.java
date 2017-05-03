@@ -136,8 +136,13 @@ public class CommunicatorRESTModels {
       UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
       fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
 
-      return new CommunicatorMessageRecipientRESTModel(recipient.getId(), recipient.getCommunicatorMessage().getId(), 
-          recipient.getRecipient(), user.getFirstName(), user.getLastName());
+      return new CommunicatorMessageRecipientRESTModel(
+          recipient.getId(),
+          recipient.getCommunicatorMessage().getId(), 
+          recipient.getRecipient(),
+          user.getFirstName(),
+          user.getLastName(),
+          user.getNickName());
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }

@@ -38,6 +38,7 @@
             prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
             prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
             userRandomNo: (user.id % 6) + 1,
+            userEntityId: user.id,
             nameLetter: creatorFullName.substring(0,1),
             isEdited: thread.lastModified == thread.created ? false : true,
             canEdit: thread.creator === MUIKKU_LOGGED_USER_ID ? true : false
@@ -86,6 +87,7 @@
               prettyDate: formatDate(d) + ' ' + formatTime(d),
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
+              userEntityId: user.id,
               nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
               replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null

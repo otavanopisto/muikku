@@ -72,6 +72,10 @@ public class UserEntityController implements Serializable {
   public UserEntityProperty getUserEntityPropertyByKey(UserEntity userEntity, String key) {
     return userEntityPropertyDAO.findByUserEntityAndKey(userEntity, key);
   }
+
+  public List<UserEntityProperty> listUserEntityProperties(UserEntity userEntity) {
+    return userEntityPropertyDAO.listByUserEntity(userEntity);
+  }
   
   public UserEntityProperty setUserEntityProperty(UserEntity userEntity, String key, String value) {
     UserEntityProperty userEntityProperty = getUserEntityPropertyByKey(userEntity, key);

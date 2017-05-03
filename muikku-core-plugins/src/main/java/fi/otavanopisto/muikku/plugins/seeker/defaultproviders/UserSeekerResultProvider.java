@@ -26,7 +26,7 @@ public class UserSeekerResultProvider extends AbstractSeekerResultProvider {
     
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName"};
+      String[] fields = new String[] { "firstName", "lastName", "nickName"};
       SearchResult result = elasticSearchProvider.search(searchTerm, fields, 0, 10, User.class);
       return searchResultProcessor.process(result);
     }
