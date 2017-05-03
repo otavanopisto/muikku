@@ -70,11 +70,14 @@
         .callback(mainCallback);
     },
     loadThread: function (threadId, firstResult, maxResults, callback) {
+      var isStudent = $('.communicator').attr('data-student') == 'true';
       mApi().communicator.messages
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderFullName = isStudent
+            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
           message.senderHasPicture = message.sender.hasImage;
           message.caption = $('<div>').html(message.caption).text();
           
@@ -125,11 +128,14 @@
         .callback(mainCallback);
     },
     loadThread: function (threadId, firstResult, maxResults, callback) {
+      var isStudent = $('.communicator').attr('data-student') == 'true';
       mApi().communicator.unread
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderFullName = isStudent
+            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
           message.senderHasPicture = message.sender.hasImage;
           message.caption = $('<div>').html(message.caption).text();
           
@@ -181,11 +187,14 @@
         .callback(mainCallback);
     },
     loadThread: function (threadId, firstResult, maxResults, callback) {
+      var isStudent = $('.communicator').attr('data-student') == 'true';
       mApi().communicator.userLabels.messages
         .read(this._labelId, threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderFullName = isStudent
+            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
           message.senderHasPicture = message.sender.hasImage;
           message.caption = $('<div>').html(message.caption).text();
           
@@ -235,11 +244,14 @@
     },
 
     loadThread: function (threadId, firstResult, maxResults, callback) {
+      var isStudent = $('.communicator').attr('data-student') == 'true';
       mApi().communicator.sentitems
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderFullName = isStudent
+            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
           message.senderHasPicture = message.sender.hasImage;
           message.caption = $('<div>').html(message.caption).text();
           
@@ -293,11 +305,14 @@
     },
   
     loadThread: function (threadId, firstResult, maxResults, callback) {
+      var isStudent = $('.communicator').attr('data-student') == 'true';
       mApi().communicator.trash
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = message.sender.firstName + ' ' + message.sender.lastName;
+          message.senderFullName = isStudent
+            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
           message.senderHasPicture = message.sender.hasImage;
           message.caption = $('<div>').html(message.caption).text();
           
@@ -418,7 +433,10 @@
             });
           }, this));
           
-          renderDustTemplate('communicator/communicator_items.dust', { items: data, sent: this._folderId == 'sent' }, $.proxy(function (text) {
+          renderDustTemplate('communicator/communicator_items.dust', {
+            items: data, sent: this._folderId == 'sent',
+            isStudent: $('.communicator').attr('data-student') == 'true' ? 1 : ''
+          }, $.proxy(function (text) {
             this.element
               .html(text)
               .removeClass('loading');
@@ -1520,12 +1538,15 @@
     
     _createRecipientLoad: function (messageId) {
       return $.proxy(function (callback) {
+        var isStudent = $('.communicator').attr('data-student') == 'true';
         mApi().communicator.communicatormessages.read(messageId)
           .on('$', function(reply, replyCallback) {
             mApi().communicator.communicatormessages.sender
               .read(messageId)
               .callback(function(err, user) {
-                reply.senderFullName = user.firstName + ' ' + user.lastName;
+                reply.senderFullName = isStudent
+                  ? (user.nickName ? user.nickName : user.firstName) + ' ' + user.lastName
+                  : (user.nickName ? user.firstName + ' "' + user.nickName + '"' : user.firstName) + ' ' + user.lastName
                 reply.senderHasPicture = user.hasImage;                
                 replyCallback();
 
@@ -1561,6 +1582,7 @@
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
+              var isStudent = $('.communicator').attr('data-student') == 'true';
               var data = {
                 replyMessage: message,
                 hasSignature: hasSignature
@@ -1572,7 +1594,9 @@
                 if (this.options.mode == "replyall") {
                   // Add all the recipients
                   $.each(message.recipients,  $.proxy(function (index, recipient) {
-                    var recipientFullName = recipient.firstName + " " + recipient.lastName;
+                    var recipientFullName = isStudent
+                      ? (recipient.nickName ? recipient.nickName : recipient.firstName) + ' ' + recipient.lastName
+                      : (recipient.nickName ? recipient.firstName + ' "' + recipient.nickName + '"' : recipient.firstName) + ' ' + recipient.lastName;
                     
                     if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
                       this._addRecipient('USER', recipient.userId, recipientFullName);
@@ -1596,7 +1620,9 @@
                   this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
                 }
                 
-                var senderFullName = message.sender.firstName  + " " + message.sender.lastName;
+                var senderFullName = isStudent
+                  ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+                  : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
                 this._addRecipient('USER', message.sender.id, senderFullName);                       
                 
                 if (callback) {
@@ -1716,8 +1742,8 @@
     },
     
     _createUserSearch: function (term) {
+      var isStudent = $('.communicator').attr('data-student') == 'true';
       var existingUserIds = this._getRecipientIds();
-      
       return $.proxy(function (callback) {
         mApi().user.users
           .read({ 'searchString' : term, 'onlyDefaultUsers': true })
@@ -1726,7 +1752,13 @@
               callback(err);
             } else {
               callback(null, $.map(results||[], function (result) {
-                var label = result.firstName + " " + result.lastName;
+                var label;
+                if (isStudent) {
+                  label = (result.nickName ? result.nickName : result.firstName) + ' ' + result.lastName;
+                }
+                else {
+                  label = (result.nickName ? result.firstName + ' "' + result.nickName + '" ' : result.firstName) + ' ' + result.lastName; 
+                }
                 if (result.email) {
                   label = label + " (" + result.email + ")"
                 }
@@ -1955,10 +1987,13 @@
           this.setOlderThreadId(thread.olderThreadId);
           this.setNewerThreadId(thread.newerThreadId);
           
-          renderDustTemplate('communicator/communicator_items_open.dust', {messages: messages, labels : labels}, $.proxy(function(text) {
+          renderDustTemplate('communicator/communicator_items_open.dust', {
+            messages: messages,
+            labels: labels,
+            isStudent: $('.communicator').attr('data-student') == 'true' ? 1 : ''
+          }, $.proxy(function(text) {
             this.element.html(text);
             
-            var communicator = $(".communicator").communicator("instance");
             var folderController = communicator.folderController(folderId);
             folderController.markAsRead(threadId, function () {
               mApi().communicator.cacheClear();
@@ -2091,7 +2126,8 @@
     webshim.polyfill('forms');
     $('.communicator').communicator({
       maxMessageCount: 50,
-      groupMessagingPermission: $('.communicator').attr('data-group-messaging-permission') == 'true'
+      groupMessagingPermission: $('.communicator').attr('data-group-messaging-permission') == 'true',
+      isStudent: $('.communicator').attr('data-student') == 'true'
     });
   });
 

@@ -1,0 +1,13 @@
+<ul class="blogs-content-wrapper">
+{#entries}
+  <li>
+    {@eq key=$idx value="0" type="number"}
+      <div class="feed-content"><a href="{link|s}" target="top"><div class="feed-item-title">{title}</div></a></div>
+      <div class="feed-content"><div class="feed-item-date">{publicationDate|formatDate}</div></div>
+      <div class="feed-content"><div class="feed-item-description">{description|s}</div></div>
+    {:else}
+      <div class="feed-content"><a href="{link|s}" target="top"><div class="feed-item-title">{title}</div></a> <div class="feed-item-date">{publicationDate|formatDate}</div></div>
+    {/eq}
+  </li>
+{/entries}
+</ul>

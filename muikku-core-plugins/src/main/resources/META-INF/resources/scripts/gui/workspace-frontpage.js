@@ -1,3 +1,5 @@
+/* global moment */
+
 (function() { 'use strict';
 
   $(document).ready(function() {
@@ -63,7 +65,8 @@
     // #1813: Workspace teachers
     
     mApi().user.staffMembers.read({
-      workspaceEntityId: workspaceEntityId
+      workspaceEntityId: workspaceEntityId,
+      properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
     }).callback(function (err, staffMembers) {
       if (!err && staffMembers) {
         staffMembers.sort(function(a, b) {
@@ -71,6 +74,29 @@
           var bn = b.lastName + ' ' + b.firstName;
           return an < bn ? -1 : an == bn ? 0 : 1;
         });
+        for (var i = 0; i < staffMembers.length; i++) {
+          var props = staffMembers[i].properties;
+          if (props['profile-vacation-start'] && props['profile-vacation-end']) {
+            var bd = moment(props['profile-vacation-start']).toDate();
+            bd.setHours(0);
+            bd.setMinutes(0)
+            bd.setSeconds(0)
+            bd.setMilliseconds(0);
+            var ed = moment(props['profile-vacation-end']).toDate();
+            ed.setHours(0);
+            ed.setMinutes(0)
+            ed.setSeconds(0)
+            ed.setMilliseconds(0);
+            var nd = new Date();
+            nd.setHours(0);
+            nd.setMinutes(0)
+            nd.setSeconds(0)
+            nd.setMilliseconds(0);
+            if (nd >= bd && nd <= ed) {
+              props['profile-vacation-period'] = bd.getTime() == ed.getTime() ? formatDate(bd) : formatDate(bd) + ' - ' + formatDate(ed);
+            }
+          }
+        }
         renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
           staffMembers: staffMembers
         }, $.proxy(function (text) {
