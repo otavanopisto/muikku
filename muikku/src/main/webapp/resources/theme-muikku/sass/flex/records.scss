@@ -14,6 +14,10 @@
 
 /* Transcript of records (.tr-*) */
 
+
+/* Classes */
+
+
 .tr-content-main {
   
   &.loading {
@@ -32,22 +36,20 @@
 }
 
 .tr-vops-content {
+  
   position: relative;
-  padding: 0 20px 20px;
+  padding: 0 20px 200px;
   margin-left:auto;
   margin-right:auto;
   min-width: 260px;
   overflow-x: auto;
+  overflow-y: hidden;
   max-width: 652px;
 }
 
 
 .tr-vops-legend-container {
   position: relative;
-}
-
-.tr-vops-legend-button {
-  
 }
 
 .tr-vops-legend-content-title {
@@ -58,7 +60,6 @@
 
 
 .tr-vops-legend-content {
-/*   background-color: $environment-legend-background-color; */
   border-top: 1px solid $environment-legend-border-color;
   border-bottom: 1px solid $environment-legend-border-color;
   padding: 5px;
@@ -97,8 +98,6 @@
   }
 }
 
-
-
 .tr-vops-row {
   margin-top:10px;
   display:flex;
@@ -124,10 +123,57 @@
   color: #dadada;
 }
 
+.tr-vops-item-menu{
+  width: 100px;
+  height: 100px;
+  box-shadow: $environment-menu-shadow;
+  border: 1px solid $environment-border-color;
+  position:absolute;
+  top: 36px;
+  left: -4px;
+  z-index: 13; 
+  background-color: $environment-background-color;
+  border-radius: 3px;
+  padding:10px;
+  display:none;
+  
+  &::after, 
+  &::before {
+    margin-top: 10px;      
+    bottom: 100%;
+    border: solid transparent;
+    content: " ";
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }    
 
+  &::after {
+    border-color: $environment-border-color;
+    border-top: solid transparent;
+    border-left: solid transparent;
+    border-right: solid transparent;
+    border-bottom-color: #fff;
+    border-width: 7px;
+    margin-left: 1px;
+  }
+  
+  &::before {
+    border-color: #fff;
+    border-top: solid transparent;
+    border-left: solid transparent;
+    border-right: solid transparent;      
+    border-width: 8px;      
+    border-bottom-color:  $environment-border-color;
+
+  }    
+  
+}
 
 
 .tr-vops-item{
+  position: relative;
   align-items: center;
   background-color: $environment-background-dim-color;
   box-sizing: border-box;
@@ -137,17 +183,27 @@
   justify-content: center;
   margin-left:10px;
   min-width: 30px;
+  cursor: pointer;
 
+  span {
+    pointer-events: none;
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;    
+  }
   
   &.mandatory {
-    border-radius: 50%;
+    border-radius: 50%;        
   }
+  
   &.optional-school {
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
     border-top-left-radius: 15px;     
     
   } 
+  
   &.optional-national {
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
@@ -156,21 +212,156 @@
 
   &.passed {
     border: 3px solid #50c04d;
+
+    .tr-vops-item-menu {
+      border: 1px solid #50c04d;
+      top: 34px;      
+      left: -6px;
+      
+      &::after {
+        border-color: #50c04d;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+      
+      &::before {
+        border-color: #fff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;        
+        border-bottom-color: #50c04d;
+        border-width: 8px;
+      }     
+   }
   }
 
-  &.failing {
-    border: 3px solid #fcd500;;
+  &.incomplete {
+    border: 3px solid #fcd500;
+
+    .tr-vops-item-menu {
+      border: 1px solid #fcd500;
+      top: 34px;      
+      left: -6px;
+            
+      &::after {
+        border-color: #fcd500;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;        
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+      
+      &::before {
+        border-color: #fff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;        
+        border-bottom-color: #fcd500;
+        border-width: 8px;     
+      }        
+   }
+
   }  
   
   &.failed {
     background-color: $item-grade-failed-color;
     color: #fff;
+
+    .tr-vops-item-menu {
+      border: 1px solid $item-grade-failed-color;
+      top: 37px;      
+      left: -6px;
+            
+      &::after {
+        border-color: $item-grade-failed-color;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;        
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+      
+      &::before {
+        border-color: #fff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;           
+        border-bottom-color: $item-grade-failed-color;
+        border-width: 8px;
+
+      }        
+   }
+
   }      
 
   &.planned {
-    border: 3px solid #a7edad;
+    border: 3px solid #4d67ff;
+
+    .tr-vops-item-menu {
+      border: 1px solid #4d67ff;
+      top: 34px;      
+      left: -6px;      
+      
+      &::after {
+        border-color: #4d67ff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;        
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+      
+      &::before {
+        border-color: #fff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;              
+        border-bottom-color: #4d67ff;
+        border-width: 8px;
+      }      
+    }
+  }  
+  
+  &.signed {
+     background-color: #4d67ff;
+
+    .tr-vops-item-menu {
+      border: 1px solid #4d67ff;
+      top: 37px;      
+      left: -6px;      
+      
+      &::after {
+        border-color: #4d67ff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;        
+        border-bottom-color: #fff;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+      
+      &::before {
+        border-color: #fff;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;              
+        border-bottom-color: #4d67ff;
+        border-width: 8px;
+      }      
+    }
   }      
 }
+
+
+
 
 .tr-vops-legend-item-grid {
   height: 20px;
@@ -259,8 +450,7 @@
       }
       
       &.non-passing {
-        background-color: 
-$item-grade-failing-color;
+        background-color: $item-grade-failing-color;
       }
       
     }
@@ -372,8 +562,7 @@ $item-grade-failing-color;
     }
     
     &.non-passing {
-      background-color: 
-$item-grade-failing-color;
+      background-color: $item-grade-failing-color;
     }
     
   }
