@@ -288,6 +288,11 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return persist(workspaceUserEntity);
   }
 
+  public WorkspaceUserEntity updateWorkspaceUserRole(WorkspaceUserEntity workspaceUserEntity, WorkspaceRoleEntity workspaceUserRole) {
+    workspaceUserEntity.setWorkspaceUserRole(workspaceUserRole);
+    return persist(workspaceUserEntity);
+  }
+
   public WorkspaceUserEntity updateUserSchoolDataIdentifier(WorkspaceUserEntity workspaceUserEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
     workspaceUserEntity.setUserSchoolDataIdentifier(userSchoolDataIdentifier);
     return persist(workspaceUserEntity);
