@@ -1,7 +1,6 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,7 +29,6 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
-import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -135,8 +133,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
           if (!workspaces.isEmpty()) {
             boolean workspaceUserExists = false;
             findWorkspaceUser: for (Workspace workspace : workspaces) {
-              WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-              WorkspaceUserEntity workspaceUser = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+              WorkspaceEntity workspaceEntity =
+                  workspaceController.findWorkspaceEntity(workspace);
+              WorkspaceUserEntity workspaceUser =
+                  workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
+                      workspaceEntity,
+                      studentIdentifier);
               if (workspaceUser != null) {
                 workspaceUserExists = true;
                 break findWorkspaceUser;
@@ -154,5 +156,4 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     return Response.ok(result).build();
   }
-  
 }
