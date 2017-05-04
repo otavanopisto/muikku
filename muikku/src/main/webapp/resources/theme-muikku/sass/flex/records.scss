@@ -9,7 +9,7 @@
 @import "audio-field";
 @import "file-field";
 @import "_evaluation_material_styles";
-@import "correct_answers"; 
+@import "correct_answers";
 
 
 /* Transcript of records (.tr-*) */
@@ -19,16 +19,16 @@
 
 
 .tr-content-main {
-  
+
   &.loading {
     height: 200px;
-    
+
     &::before {
       @include generic-loader(50px);
       margin-left: 50%;
       margin-top: 50%;
-    }    
-  }  
+    }
+  }
 }
 
 .tr-vops {
@@ -36,7 +36,7 @@
 }
 
 .tr-vops-content {
-  
+
   position: relative;
   padding: 0 20px 200px;
   margin-left:auto;
@@ -53,7 +53,7 @@
 }
 
 .tr-vops-legend-content-title {
-  font-size: 15px;   
+  font-size: 15px;
   padding-left: 10px;
   color: $environment-link-color;
 }
@@ -73,14 +73,14 @@
   &.closed {
     max-height: 25px;
   }
-  
+
   &.open {
    max-height: 200px;
   }
-}  
+}
 
 .tr-vops-legend-topic {
-   padding: 20px 0 0 20px; 
+   padding: 20px 0 0 20px;
    font-weight: 600;
 }
 
@@ -88,7 +88,7 @@
   padding: 10px 0 0 20px;
   display: flex;
   align-items: center;
-  flex-flow: row wrap;  
+  flex-flow: row wrap;
 
   .tr-vops-legend-item {
     margin-bottom: 10px;
@@ -109,14 +109,14 @@
 .tr-vops-item-name {
   flex: 0 0 50px;
   text-align: center;
-  min-width: 50px;  
+  min-width: 50px;
 }
 
 .tr-vops-item-title {
   flex: 0 0 30px;
   display:flex;
   height: 30px;
-  min-width: 30px;  
+  min-width: 30px;
   margin-left:10px;
   align-items: center;
   justify-content: center;
@@ -131,15 +131,15 @@
   position:absolute;
   top: 36px;
   left: -4px;
-  z-index: 13; 
+  z-index: 13;
   background-color: $environment-background-color;
   border-radius: 3px;
   padding:10px;
   display:none;
-  
-  &::after, 
+
+  &::after,
   &::before {
-    margin-top: 10px;      
+    margin-top: 10px;
     bottom: 100%;
     border: solid transparent;
     content: " ";
@@ -147,7 +147,7 @@
     width: 0;
     position: absolute;
     pointer-events: none;
-  }    
+  }
 
   &::after {
     border-color: $environment-border-color;
@@ -158,17 +158,17 @@
     border-width: 7px;
     margin-left: 1px;
   }
-  
+
   &::before {
     border-color: #fff;
     border-top: solid transparent;
     border-left: solid transparent;
-    border-right: solid transparent;      
-    border-width: 8px;      
+    border-right: solid transparent;
+    border-width: 8px;
     border-bottom-color:  $environment-border-color;
 
-  }    
-  
+  }
+
 }
 
 
@@ -187,27 +187,27 @@
 
   span {
     pointer-events: none;
-    -webkit-user-select: none;  
-    -moz-user-select: none;    
-    -ms-user-select: none;      
-    user-select: none;    
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
-  
+
   &.mandatory {
-    border-radius: 50%;        
+    border-radius: 50%;
   }
-  
+
   &.optional-school {
     border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
-    border-top-left-radius: 15px;     
-    
-  } 
-  
+    border-top-left-radius: 15px;
+
+  }
+
   &.optional-national {
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
-    border-bottom-right-radius: 15px;   
+    border-bottom-right-radius: 15px;
   }
 
   &.passed {
@@ -215,9 +215,9 @@
 
     .tr-vops-item-menu {
       border: 1px solid #50c04d;
-      top: 34px;      
+      top: 34px;
       left: -6px;
-      
+
       &::after {
         border-color: #50c04d;
         border-top: solid transparent;
@@ -227,15 +227,15 @@
         border-width: 7px;
         margin-left: 1px;
       }
-      
+
       &::before {
         border-color: #fff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;        
+        border-right: solid transparent;
         border-bottom-color: #50c04d;
         border-width: 8px;
-      }     
+      }
    }
   }
 
@@ -244,120 +244,120 @@
 
     .tr-vops-item-menu {
       border: 1px solid #fcd500;
-      top: 34px;      
+      top: 34px;
       left: -6px;
-            
+
       &::after {
         border-color: #fcd500;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;        
+        border-right: solid transparent;
         border-bottom-color: #fff;
         border-width: 7px;
         margin-left: 1px;
       }
-      
+
       &::before {
         border-color: #fff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;        
+        border-right: solid transparent;
         border-bottom-color: #fcd500;
-        border-width: 8px;     
-      }        
+        border-width: 8px;
+      }
    }
 
-  }  
-  
+  }
+
   &.failed {
     background-color: $item-grade-failed-color;
     color: #fff;
 
     .tr-vops-item-menu {
       border: 1px solid $item-grade-failed-color;
-      top: 37px;      
+      top: 37px;
       left: -6px;
-            
+
       &::after {
         border-color: $item-grade-failed-color;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;        
+        border-right: solid transparent;
         border-bottom-color: #fff;
         border-width: 7px;
         margin-left: 1px;
       }
-      
+
       &::before {
         border-color: #fff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;           
+        border-right: solid transparent;
         border-bottom-color: $item-grade-failed-color;
         border-width: 8px;
 
-      }        
+      }
    }
 
-  }      
+  }
 
   &.planned {
     border: 3px solid #4d67ff;
 
     .tr-vops-item-menu {
       border: 1px solid #4d67ff;
-      top: 34px;      
-      left: -6px;      
-      
+      top: 34px;
+      left: -6px;
+
       &::after {
         border-color: #4d67ff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;        
+        border-right: solid transparent;
         border-bottom-color: #fff;
         border-width: 7px;
         margin-left: 1px;
       }
-      
+
       &::before {
         border-color: #fff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;              
+        border-right: solid transparent;
         border-bottom-color: #4d67ff;
         border-width: 8px;
-      }      
+      }
     }
-  }  
-  
+  }
+
   &.signed {
      background-color: #4d67ff;
 
     .tr-vops-item-menu {
       border: 1px solid #4d67ff;
-      top: 37px;      
-      left: -6px;      
-      
+      top: 37px;
+      left: -6px;
+
       &::after {
         border-color: #4d67ff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;        
+        border-right: solid transparent;
         border-bottom-color: #fff;
         border-width: 7px;
         margin-left: 1px;
       }
-      
+
       &::before {
         border-color: #fff;
         border-top: solid transparent;
         border-left: solid transparent;
-        border-right: solid transparent;              
+        border-right: solid transparent;
         border-bottom-color: #4d67ff;
         border-width: 8px;
-      }      
+      }
     }
-  }      
+  }
 }
 
 
@@ -378,14 +378,14 @@
 
 .tr-study-programme-name {
   padding-left: 5px;
-  h3 {  
+  h3 {
     color:#32acf6;
     font-weight:700;
   }
 }
 
 .tr-study-programme-studies {
-  padding: 5px 15px; 
+  padding: 5px 15px;
 }
 
 .tr-transfer-credits-title {
@@ -400,82 +400,82 @@
     font-weight: 700;
     font-size: 16px;
   }
-  
+
 }
 .tr-item-header-details {
- 
+
   .tr-item-header-detail {
     display: inline-block;
-  
+
     &.grade {
       box-sizing: border-box;
       color: $item-grade-font-color;
       font-size: 12px;
       margin-left: 5px;
-      padding: 0 6px; 
+      padding: 0 6px;
       text-transform: uppercase;
- 
+
 
       &.passing {
         background-color: $item-grade-passing-color;
       }
-      
+
       &.non-passing {
         background-color: $item-grade-failing-color;
       }
-      
+
     }
 
   }
-  
+
 }
 
 .tr-item-description-title {
-  
+
   span {
     font-size: 19px;
     font-weight: 700;
-    
+
     &.tr-item-long {
       margin-left: 10px;
-    }    
-    
+    }
+
     &.grade {
       color: $item-grade-font-color;
-      margin-left: 3px; 
+      margin-left: 3px;
       padding: 5px 10px;
-      
+
       &.passing {
         background-color: $item-grade-passing-color;
       }
-      
+
       &.non-passing {
         background-color: $item-grade-failing-color;
       }
-      
+
     }
-    
+
     &:not(:first-child) {
       margin-left: 10px;
     }
-    
+
   }
-  
+
 }
 
 .tr-item-description-content {
-  
+
   span {
     display: inline-block;
     margin-left: 10px;
   }
-  
+
 }
 
 .tr-user-files{
   padding: 0 10px;
   margin-bottom: 10px;
-  
+
 }
 
 .tr-user-file{
@@ -483,12 +483,12 @@
   display:inline-block;
   margin-bottom: 5px;
   padding:5px;
-  
+
   a {
     color: $environment-alt-font-color;
     text-decoration: none;
   }
-  
+
   &:not(:first-child){
    margin-left:5px;
   }
@@ -503,68 +503,68 @@
 
 
 .tr-task-content-container{
-  padding: 15px;  
+  padding: 15px;
 }
 
 .tr-task-content{
-  background-color: #fff;  
+  background-color: #fff;
 }
 
 .tr-task-not-evaluated {
   span:not(:first-child) {
     margin-left: 10px;
-  }  
-    
+  }
+
 }
 
 .tr-task-evaluated {
-  
+
   &:hover {
     background-color: $environment-background-dim-color;
     cursor: pointer;
   }
-  
-  
+
+
   .content-container {
     background-color: $environment-background-light-dim-color;
-  }  
-  
+  }
+
   .title {
-  
+
     span {
       box-sizing: border-box;
       display: inline-block;
-            
+
       &:not(:first-child) {
         margin-left: 10px;
       }
-      
+
     }
-  
+
   }
-  
+
   .content {
     padding: 15px;
   }
-  
+
 }
 
 .tr-task-evaluated-grade {
   background-color: $environment-background-dim-color;
-  color: $environment-font-disabled-color; 
+  color: $environment-font-disabled-color;
   padding:5px 10px;
 
   &.grade {
     color: $item-grade-font-color;
-    
+
     &.passing {
       background-color: $item-grade-passing-color;
     }
-    
+
     &.non-passing {
       background-color: $item-grade-failing-color;
     }
-    
+
   }
 
 }
@@ -577,4 +577,30 @@
   font-style: italic;
   margin: 5px 0 10px;
   padding: 2px;
+}
+
+.hops-form-wrapper {
+  label {
+    margin: 0;
+    padding: 0;
+  }
+
+  input:not(:first-child) {
+    margin-left: 5px;
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    font-size: 15px;
+    padding: 5px;
+    width: 200px;
+
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+
+  .hops-form-section {
+    padding: 15px;
+  }
 }
