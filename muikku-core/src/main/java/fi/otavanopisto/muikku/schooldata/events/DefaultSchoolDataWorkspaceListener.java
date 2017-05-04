@@ -172,6 +172,12 @@ public class DefaultSchoolDataWorkspaceListener {
               }
             }
           }
+          else {
+            WorkspaceRoleEntity workspaceRoleEntity = workspaceController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getRoleDataSource(), event.getRoleIdentifier());
+            if (workspaceRoleEntity != null && !workspaceRoleEntity.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
+              workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
+            }
+          }
         }
       } else {
         logger.warning("could not update workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
