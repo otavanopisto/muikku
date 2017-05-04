@@ -54,6 +54,8 @@ import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.rest.model.Student;
@@ -65,6 +67,7 @@ import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -102,6 +105,9 @@ public class UserRESTService extends AbstractRESTService {
 
 	@Inject
 	private UserEntityController userEntityController;
+
+	@Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private EnvironmentUserController environmentUserController;
@@ -1302,6 +1308,7 @@ public class UserRESTService extends AbstractRESTService {
       List<Map<String, Object>> results = result.getResults();
 
       if (results != null && !results.isEmpty()) {
+        WorkspaceEntity workspaceEntity = workspaceEntityId == null ? null : workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
         String[] propertyArray = StringUtils.isEmpty(properties) ? new String[0] : properties.split(",");
         for (Map<String, Object> o : results) {
           String studentId = (String) o.get("id");
@@ -1334,6 +1341,15 @@ public class UserRESTService extends AbstractRESTService {
             for (int i = 0; i < propertyArray.length; i++) {
               UserEntityProperty userEntityProperty = userEntityController.getUserEntityPropertyByKey(userEntity, propertyArray[i]);
               propertyMap.put(propertyArray[i], userEntityProperty == null ? null : userEntityProperty.getValue());
+            }
+          }
+          
+          // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
+          
+          if (workspaceEntity != null) {
+            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+            if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
+              continue;
             }
           }
           

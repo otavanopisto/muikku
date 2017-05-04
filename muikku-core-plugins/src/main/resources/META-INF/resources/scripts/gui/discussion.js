@@ -79,9 +79,7 @@
             var d = moment(reply.created).toDate();
             var ld = moment(reply.lastModified).toDate();
             var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
-
             var creatorFullName = generateFullName(user);
-
             var replyParentCreatorFullName = null;
 
             //I must search for the creator rather than indexing it in an object
@@ -560,10 +558,6 @@
     },
 
     _loadMoreReplies: function () {
-      this.element
-        .html('')
-        .addClass('loading');
-
       this._firstResult += this.options.maxReplyCount;
 
       var tasks = [this._createThreadRepliesLoad(this._areaId, this._threadId)];
