@@ -24,18 +24,18 @@
             if (props['profile-vacation-start'] && props['profile-vacation-end']) {
               var bd = moment(props['profile-vacation-start']).toDate();
               bd.setHours(0);
-              bd.setMinutes(0)
-              bd.setSeconds(0)
+              bd.setMinutes(0);
+              bd.setSeconds(0);
               bd.setMilliseconds(0);
               var ed = moment(props['profile-vacation-end']).toDate();
               ed.setHours(0);
-              ed.setMinutes(0)
-              ed.setSeconds(0)
+              ed.setMinutes(0);
+              ed.setSeconds(0);
               ed.setMilliseconds(0);
               var nd = new Date();
               nd.setHours(0);
-              nd.setMinutes(0)
-              nd.setSeconds(0)
+              nd.setMinutes(0);
+              nd.setSeconds(0);
               nd.setMilliseconds(0);
               if (nd >= bd && nd <= ed) {
                 props['profile-vacation-period'] = bd.getTime() == ed.getTime() ? formatDate(bd) : formatDate(bd) + ' - ' + formatDate(ed);
