@@ -11,7 +11,7 @@
         <span class="workspace-teacher-info lastname">{lastName}</span>
       </div>
       <div class="workspace-teacher-info email">{email}</div>
-      <div class="workspace-teacher-info sendmessage icon-envelope"></div>
+      <div class="workspace-teacher-info message sendmessage icon-envelope"><span>{#localize key="plugin.workspace.index.message.label"/}</span></div>
       {?properties.profile-phone}
         <div class="workspace-teacher-info phone">{#localize key="plugin.workspace.index.phone.label"/}: {properties.profile-phone}</div>
       {/properties.profile-phone}
