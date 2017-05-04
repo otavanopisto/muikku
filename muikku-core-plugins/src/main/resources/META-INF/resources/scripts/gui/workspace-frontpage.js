@@ -12,7 +12,7 @@
       mApi().user.staffMembers.read({
         workspaceEntityId: this.options.workspaceEntityId,
         properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
-      }).callback(function (err, staffMembers) {
+      }).callback($.proxy(function (err, staffMembers) {
         if (!err && staffMembers) {
           staffMembers.sort(function(a, b) {
             var an = a.lastName + ' ' + a.firstName;
@@ -48,7 +48,7 @@
             this.element.append($.parseHTML(text));
           }, this));
         }
-      });
+      }, this));
     },
     _sendMessage: function (event) {
       var teacherId = $(event.target).closest(".workspace-teacher").attr("data-id");
