@@ -7,7 +7,7 @@
       workspaceEntityId: undefined
     },
     _create : function() {
-      this.element.on('click', '.workspace-teacher-info.sendmessage', $.proxy(this._sendMessage, this));
+      this.element.on('click', '.workspace-teacher-info.message', $.proxy(this._sendMessage, this));
       
       mApi().user.staffMembers.read({
         workspaceEntityId: this.options.workspaceEntityId,
