@@ -1,11 +1,11 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-main-env.xhtml">
-  
+
   <ui:param name="activeTrail" value="index"/>
-  
+
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" jsf:name="/scripts/gui/locales.js"/>
@@ -13,11 +13,11 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
-    
+
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
       <script defer="defer" jsf:name="scripts/gui/login.js"/>
     </ui:fragment>
-    
+
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
       <script defer="defer" jsf:name="/scripts/gui/widget-visits.js"/>
       <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js"/>
@@ -26,17 +26,17 @@
       <script defer="defer" jsf:name="/scripts/gui/widget-last-workspace.js"/>
       <script defer="defer" jsf:name="/scripts/gui/check-contact-info.js"/>
     </ui:fragment>
-    
+
   </ui:define>
-  
+
   <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/css/flex/flex-main.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/flex-main.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/css/flex/frontpage-nonbranded.css"/>
-  </ui:define>  
-  
+    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/frontpage-nonbranded.css"/>
+  </ui:define>
+
   <ui:define name="grid-content">
-    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}"> 
+    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
       <div class="flex-row lg-flex-hide md-flex-hide flex-align-items-center">
         <div class="sm-flex-cell-8 sm-flex-cell-first">
           <div class="login">
@@ -45,19 +45,19 @@
                 <span>#{i18n.text['plugin.login.buttonLabel']}</span>
               </a>
             </div>
-          </div>  
+          </div>
         </div>
-        
+
         <div class="sm-flex-cell-8  sm-flex-cell-last">
           <div class="forgot-password">
             <div class="bt-generic bt-forgotpassword">
               <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
             </div>
-          </div> 
+          </div>
         </div>
       </div>
     </ui:fragment>
-    
+
     <div class="flex-row">
       <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
         <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first">
@@ -76,7 +76,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-last">
           <div class="box">
             <div id="siteGuide">
@@ -95,13 +95,13 @@
           </div>
         </div>
       </ui:fragment>
-      
+
       <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
       <ui:fragment rendered="#{sessionBackingBean.isStudent}">
         <div class="flex-row">
           <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full md-flex-order-1 sm-flex-order-1">
             <div id="last-workspace">
-            
+
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@
       <div class="flex-row">
         <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
           <div class="box box-max-width">
-            <div id="visits"></div> 
+            <div id="visits"></div>
             <div id="workspaces"></div>
           </div>
         </div>
@@ -128,6 +128,6 @@
     </div>
 
   </ui:define>
-  
-  
+
+
 </ui:composition>
