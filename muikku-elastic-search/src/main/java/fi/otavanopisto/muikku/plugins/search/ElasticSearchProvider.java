@@ -366,7 +366,7 @@ public class ElasticSearchProvider implements SearchProvider {
       .setSize(50)
       .setQuery(query);
     
-    logger.log(Level.INFO, "searchWorkspaces query: " + requestBuilder.internalBuilder());
+    // logger.log(Level.INFO, "searchWorkspaces query: " + requestBuilder.internalBuilder());
 
     SearchResponse response = requestBuilder.execute().actionGet();
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();

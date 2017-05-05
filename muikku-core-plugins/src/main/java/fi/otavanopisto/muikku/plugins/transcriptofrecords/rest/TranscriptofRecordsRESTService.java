@@ -142,8 +142,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
           if (!workspaces.isEmpty()) {
             boolean workspaceUserExists = false;
             findWorkspaceUser: for (Workspace workspace : workspaces) {
-              WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-              WorkspaceUserEntity workspaceUser = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+              WorkspaceEntity workspaceEntity =
+                  workspaceController.findWorkspaceEntity(workspace);
+              WorkspaceUserEntity workspaceUser =
+                  workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
+                      workspaceEntity,
+                      studentIdentifier);
               if (workspaceUser != null) {
                 workspaceUserExists = true;
                 break findWorkspaceUser;
