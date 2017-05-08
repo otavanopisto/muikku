@@ -50,8 +50,19 @@
     loadThreadRepliesDetails: function(replies, callback) {
       var replyCreatedMap = {};
       $.each(replies, function (index, reply) {
-        replyCreatedMap[reply.id] = reply.created;
+        replyCreatedMap[reply.id] = reply;
       });
+
+      var generateFullName = (function(user){
+        if (user.nickName) {
+          if (this.options.showFullNamePermission)
+            return user.firstName + ' "' + user.nickName + '" ' + user.lastName;
+          else
+            return user.nickName + ' ' + user.lastName;
+        } else {
+          return user.firstName + ' ' + user.lastName;
+        }
+      }).bind(this);
 
       var calls = $.map(replies, $.proxy(function (reply) {
         return this._createUserInfoLoad(reply.creator);
@@ -68,16 +79,21 @@
             var d = moment(reply.created).toDate();
             var ld = moment(reply.lastModified).toDate();
             var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
+            var creatorFullName = generateFullName(user);
+            var replyParentCreatorFullName = null;
 
-            var creatorFullName;
+            //I must search for the creator rather than indexing it in an object
+            //because the calls are parallell and are tangled, this is to refactor...
+            //everything should be done with promises
+            if (reply.parentReplyId){
+              var replyCreatorId = replyCreatedMap[reply.parentReplyId].creator;
 
-            if (user.nickName) {
-              if (this.options.showFullNamePermission)
-                creatorFullName = user.firstName + ' "' + user.nickName + '" ' + user.lastName;
-              else
-                creatorFullName = user.nickName + ' ' + user.lastName;
-            } else {
-              creatorFullName = user.firstName + ' ' + user.lastName;
+              //Array find not supported in IE :(
+              users.forEach(function(usr){
+                if (usr.id === replyCreatorId){
+                  replyParentCreatorFullName = generateFullName(usr);
+                }
+              });
             }
 
             return {
@@ -90,7 +106,8 @@
               userEntityId: user.id,
               nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
-              replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId]).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId]).toDate()) : null
+              replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) : null,
+              replyParentCreatorFullName: replyParentCreatorFullName
             };
           }, this)));
         }
