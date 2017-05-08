@@ -223,14 +223,14 @@ h1.workspace-block-title {
 
     &.message {
       align-items: center;
-      color: #fff;
-      cursor: pointer;
       background-color: #09f;
       border-radius: 3px;
+      color: #fff;
+      cursor: pointer;
       display: flex;
       justify-content: center;
-      max-width: 100px;
       margin: 5px 0 0 5px;
+      max-width: 100px;
       padding: 5px;
     }
     
