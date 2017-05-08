@@ -54,11 +54,24 @@
       var teacherId = $(event.target).closest(".workspace-teacher").attr("data-id");
 
       mApi().user.users.basicinfo.read(teacherId, {}).callback($.proxy(function (err, staffMember) {
+        
+        var messageCaption = [$('h1.workspace-title').text()];
+        var captionExtra = $('div.workspace-additional-info-wrapper').text(); 
+        if (captionExtra) {
+          messageCaption.push('(' + captionExtra + ')');
+        }
+        captionExtra = $('span.workspace-duration').text();
+        if (captionExtra) {
+          messageCaption.push(captionExtra);
+        }
+        messageCaption = getLocaleText("plugin.workspace.index.newMessageCaption", messageCaption.join(' '));
+        
         if (!err && staffMember) {
           var options = {
             groupMessagingPermission: false,
             isStudent: true,
-            userRecipients: [staffMember]
+            userRecipients: [staffMember],
+            initialCaption: messageCaption
           };
           
           var dialog = $('<div>')

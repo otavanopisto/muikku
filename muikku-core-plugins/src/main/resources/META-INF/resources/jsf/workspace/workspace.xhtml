@@ -70,7 +70,7 @@
         <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
           <div class="workspace-meta-item-wrapper">
             <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseDatesLabel']}</span>
-            <span class="workspace-meta-desc">
+            <span class="workspace-meta-desc workspace-duration">
               <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
                 <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
                 <f:param value="#{workspaceIndexBackingBean.endDate}"/>
