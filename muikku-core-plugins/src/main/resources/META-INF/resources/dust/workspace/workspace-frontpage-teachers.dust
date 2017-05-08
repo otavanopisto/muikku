@@ -11,13 +11,13 @@
         <span class="workspace-teacher-info lastname">{lastName}</span>
       </div>
       <div class="workspace-teacher-info email">{email}</div>
-      <div class="workspace-teacher-info message icon-envelope"><span>{#localize key="plugin.workspace.index.message.label"/}</span></div>
       {?properties.profile-phone}
         <div class="workspace-teacher-info phone">{#localize key="plugin.workspace.index.phone.label"/}: {properties.profile-phone}</div>
       {/properties.profile-phone}
       {?properties.profile-vacation-period}
         <div class="workspace-teacher-info vacation-period">{#localize key="plugin.workspace.index.teachersVacationPeriod.label"/} {properties.profile-vacation-period}</div>
       {/properties.profile-vacation-period}
+      <div class="workspace-teacher-info message icon-envelope"><span>{#localize key="plugin.workspace.index.message.label"/}</span></div>
     </div>
   </div>
   {:else}
