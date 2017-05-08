@@ -7,6 +7,7 @@
       isStudent: true,
       replyMessageId: undefined,
       userRecipients: undefined,
+      initialCaption: undefined,
       ckeditor: {
         uploadUrl: '/communicatorAttachmentUploadServlet',
         toolbar: [
@@ -155,6 +156,10 @@
               renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
                 this.element.html(text);
                 
+                if (this.options.initialCaption) {
+                  $(this.element).find('input[name="caption"]').val(this.options.initialCaption);
+                }
+                
                 if (this.options.mode == "replyall") {
                   // Add all the recipients
                   $.each(message.recipients,  $.proxy(function (index, recipient) {
@@ -202,6 +207,10 @@
           
           renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
             this.element.html(text);
+
+            if (this.options.initialCaption) {
+              $(this.element).find('input[name="caption"]').val(this.options.initialCaption);
+            }
             
             if (this.options.userRecipients) {
               $.each(this.options.userRecipients, $.proxy(function (index, recipient) {
