@@ -612,7 +612,7 @@
     });
     
     $('.eval-old-evaluation').on('click', function() {
-      /* ToDo: location */
+      location.href = location.href.replace('evaluation2', 'evaluation');
     });
 
     $('.eval-workspaces').on('click', function() {
