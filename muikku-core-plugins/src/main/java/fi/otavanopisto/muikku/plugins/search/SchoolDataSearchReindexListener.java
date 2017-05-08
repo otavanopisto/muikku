@@ -81,16 +81,18 @@ public class SchoolDataSearchReindexListener {
     active = true;
     tasks = event.getTasks();
     
-    if (tasks.contains(Task.USERS)) {
-      setOffset("userIndex", 0);
-    }
-    
-    if (tasks.contains(Task.WORKSPACES)) {
-      setOffset("workspaceIndex", 0);
-    }
-    
-    if (tasks.contains(Task.USER_GROUPS)) {
-      setOffset("groupIndex", 0);
+    if (!event.isResume()) {
+      if (tasks.contains(Task.USERS)) {
+        setOffset("userIndex", 0);
+      }
+      
+      if (tasks.contains(Task.WORKSPACES)) {
+        setOffset("workspaceIndex", 0);
+      }
+      
+      if (tasks.contains(Task.USER_GROUPS)) {
+        setOffset("groupIndex", 0);
+      }
     }
     
     logger.log(Level.INFO, "Reindex initiated.");
