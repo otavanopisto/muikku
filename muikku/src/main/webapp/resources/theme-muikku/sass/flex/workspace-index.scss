@@ -222,15 +222,16 @@ h1.workspace-block-title {
     }
 
     &.message {
+      align-items: center;
       color: #fff;
       cursor: pointer;
-      border-radius: 3px;
       background-color: #09f;
-      padding: 5px;
-      max-width: 100px;
-      justify-content: center;
-      align-items: center;
+      border-radius: 3px;
       display: flex;
+      justify-content: center;
+      max-width: 100px;
+      margin: 5px 0 0 5px;
+      padding: 5px;
     }
     
     &.vacation-period {
