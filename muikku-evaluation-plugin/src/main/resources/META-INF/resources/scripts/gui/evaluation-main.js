@@ -610,6 +610,10 @@
     $('.eval-home').on('click', function() {
       location.href = location.href.split("?")[0];
     });
+    
+    $('.eval-old-evaluation').on('click', function() {
+      /* ToDo: location */
+    });
 
     $('.eval-workspaces').on('click', function() {
       var evalWorkspacesVisibility = $('.evaluation-workspaces-wrapper').attr('data-visibility');

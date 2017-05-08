@@ -99,6 +99,13 @@ body {
       width: 34px;
     }
     
+    &.icon-evaluate {
+      font-size: 30px;
+      height: 30px;
+      padding: 11px;
+      width: 30px;
+    }
+    
     &:hover {
       text-shadow: 0 0 15px $evaluation-navigation-item-textshadow-color;
     }
