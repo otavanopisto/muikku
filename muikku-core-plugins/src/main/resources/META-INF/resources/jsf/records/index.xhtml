@@ -40,15 +40,17 @@
                 <span class="mf-dropdown-arrow icon-arrow-down"/>
               </div>
               <ul style="display: none">
-                <li data-value="vops">
-                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.studyplan']}</span>
-                </li>
                 <li data-value="records">
                   <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.records']}</span>
                 </li>
-                <li data-value="hops-form">
-                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.hops']}</span>
-                </li>
+                <ui:fragment rendered="#{transcriptofRecordsBackingBean.showStudies}">
+                  <li data-value="vops">
+                    <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.studyplan']}</span>
+                  </li>
+                  <li data-value="hops-form">
+                    <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.hops']}</span>
+                  </li>
+                </ui:fragment>
               </ul>
             </div>
           </div>
