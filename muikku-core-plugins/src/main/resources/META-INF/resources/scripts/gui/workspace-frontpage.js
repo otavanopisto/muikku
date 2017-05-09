@@ -25,11 +25,13 @@
               var begin = moment(props['profile-vacation-start']).startOf('day');
               var end = moment(props['profile-vacation-end']).startOf('day');
               var now = moment().startOf('day');
-              if (now.isSame(begin)) {
-                props['profile-vacation-period'] = formatDate(begin.toDate());
-              }
-              else if (now.isBetween(begin, end)) {
-                props['profile-vacation-period'] = formatDate(begin.toDate()) + ' - ' + formatDate(end.toDate());
+              if (now.isSame(begin) || now.isBefore(begin) || now.isBetween(begin, end)) {
+                if (begin.isSame(end)) {
+                  props['profile-vacation-period'] = formatDate(begin.toDate());
+                }
+                else {
+                  props['profile-vacation-period'] = formatDate(begin.toDate()) + ' - ' + formatDate(end.toDate());
+                }
               }
             }
           }
