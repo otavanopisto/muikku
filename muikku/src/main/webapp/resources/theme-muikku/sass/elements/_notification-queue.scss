@@ -42,7 +42,7 @@
 
     .notification-queue-item {
       @include prefix(transition, webkit ms o moz, height 0.3s);
-      @include colorapplying-with-mapping-no-effects(notification-queue-item, $color-base-list);
+      @include color-theme-simple(notification-queue-item);;
       color: $color-notification-queue-item-text;
       display: block;
       font-size: 16px;

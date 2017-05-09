@@ -53,7 +53,7 @@ $card-font-family: "Exo 2", Arial, sans-serif;
     width: 100%;
 
     .card-title {
-      @include colorapplying-text(card-title, $color-base-list);
+      @include color-theme-text-only(card-title);
       font-size: 26px;
       font-weight: 300;
       line-height: 1;

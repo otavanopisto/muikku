@@ -19,7 +19,7 @@
 $text-font-family: "Exo 2", Arial, sans-serif;
 
 .text {
-  @include colorapplying-text(text, $color-base-list);
+  @include color-theme-text-only(text);
   display: block;
   font-family: $text-font-family;
   font-size: 14px;

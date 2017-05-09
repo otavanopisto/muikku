@@ -25,7 +25,7 @@ $label-large-height: 33px;
 $label-large-font-size: 17px;
 
 .label {
-  @include colorapplying-text(label, $color-base-list);
+  @include color-theme-text-only(label);
   display: inline-block;
   font-family: $label-font-family;
   font-size: $label-medium-font-size;

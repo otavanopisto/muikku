@@ -35,7 +35,7 @@ $button-large-height: 33px;
 $button-large-font-size: 17px;
 
 .button {
-  @include colorapplying-with-mapping(button, $color-base-list);
+  @include color-theme-with-effects(button);
   @include prefix(user-select, moz o ms webkit, none);
   border-radius: 2px;
   cursor: pointer;
@@ -150,7 +150,7 @@ $button-pill-size: 34px;
 $button-pill-font-size: 16px;
 
 .button-pill {
-  @include colorapplying-with-mapping(button-pill, $color-base-list);
+  @include color-theme-with-effects(button-pill);
   @include prefix(user-select, moz o ms webkit, none);
   border-radius: $button-pill-size;
   cursor: pointer;
