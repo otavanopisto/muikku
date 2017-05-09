@@ -1,8 +1,11 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -17,6 +20,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
@@ -74,6 +80,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private EnvironmentUserController environmentUserController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private Logger logger;
 
   @GET
   @Path("/files/{ID}/content")
@@ -111,6 +123,16 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/vops/{IDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
   public Response getVops(@PathParam("IDENTIFIER") String studentIdentifierString) {
+    
+    String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
+    EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
+    if (educationTypeMappingString != null) {
+      try {
+        educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);
+      } catch (IOException e) {
+        logger.log(Level.INFO, "Education type mapping not set");
+      }
+    }
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
@@ -140,8 +162,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   subject.getIdentifier(),
                   i);
           if (!workspaces.isEmpty()) {
+            SchoolDataIdentifier educationTypeIdentifier = null;
             boolean workspaceUserExists = false;
-            findWorkspaceUser: for (Workspace workspace : workspaces) {
+            for (Workspace workspace : workspaces) {
               WorkspaceEntity workspaceEntity =
                   workspaceController.findWorkspaceEntity(workspace);
               WorkspaceUserEntity workspaceUser =
@@ -150,11 +173,21 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                       studentIdentifier);
               if (workspaceUser != null) {
                 workspaceUserExists = true;
-                break findWorkspaceUser;
+                break;
               }
             }
-
-            items.add(new VopsRESTModel.VopsItem(i, workspaceUserExists));
+            for (Workspace workspace : workspaces) {
+              educationTypeIdentifier = workspace.getEducationTypeIdentifier();
+              if (educationTypeIdentifier != null) {
+                break;
+              }
+            }
+            items.add(new VopsRESTModel.VopsItem(
+                i,
+                workspaceUserExists,
+                educationTypeIdentifier.toId(),
+                educationTypeMapping.getMandatority(educationTypeIdentifier)
+            ));
           }
         }
         rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
