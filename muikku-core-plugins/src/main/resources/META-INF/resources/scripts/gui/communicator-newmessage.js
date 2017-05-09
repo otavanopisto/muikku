@@ -168,10 +168,10 @@
                   
                   // Add sender if it's not the logged user
                   if (message.senderId != MUIKKU_LOGGED_USER_ID) {
-                    var senderFullName = isStudent
+                    var notMeSenderFullName = isStudent
                       ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
                       : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-                    recipients.push(this._recipient('USER', message.sender.id, senderFullName));                       
+                    recipients.push(this._recipient('USER', message.sender.id, notMeSenderFullName));                       
                   }
 
                   // Add all the recipients
