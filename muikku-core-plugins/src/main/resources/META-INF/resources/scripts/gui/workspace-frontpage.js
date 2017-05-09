@@ -25,7 +25,7 @@
               var begin = moment(props['profile-vacation-start']).startOf('day');
               var end = moment(props['profile-vacation-end']).startOf('day');
               var now = moment().startOf('day');
-              if (now.isSame(begin) || now.isBefore(begin) || now.isBetween(begin, end)) {
+              if (now.isSame(end) || now.isBefore(end)) {
                 if (begin.isSame(end)) {
                   props['profile-vacation-period'] = formatDate(begin.toDate());
                 }
