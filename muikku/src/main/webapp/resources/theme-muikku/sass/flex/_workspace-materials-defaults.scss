@@ -553,6 +553,16 @@
   
   p {
     margin: 15px 0;
+    
+    // CONTENT VIEW RESTRICTION 
+    &.content-view-restricted-message {
+      background: #f9f9f9;
+      font-size: 20px;
+      font-style: italic;
+      padding: 60px 20px;
+      text-align: center;
+    }
+    
   }
   
   a {
@@ -920,8 +930,8 @@
       }
       
       .material-producer {
-        padding: 0;
         color: #000;
+        padding: 0;
         text-transform: uppercase;
       }
     
@@ -947,15 +957,6 @@
       
     }
   
-  }
-
-  // CONTENT VIEW RESTRICTION 
-  p.content-view-restricted-message {
-    text-align: center;
-    font-style: italic;
-    font-size: 20px;
-    padding: 60px 20px;
-    background: #f9f9f9;
   }
 
 }
