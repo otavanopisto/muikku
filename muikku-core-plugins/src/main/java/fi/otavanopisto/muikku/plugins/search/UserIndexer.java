@@ -105,8 +105,14 @@ public class UserIndexer {
           
           extra.put("groups", userGroupIds);
 
-          String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
-          extra.put("email", userDefaultEmailAddress);
+          if (EnvironmentRoleArchetype.TEACHER.equals(archetype) ||
+              EnvironmentRoleArchetype.STUDY_GUIDER.equals(archetype) ||
+              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(archetype) ||
+              EnvironmentRoleArchetype.MANAGER.equals(archetype) ||
+              EnvironmentRoleArchetype.ADMINISTRATOR.equals(archetype)) {
+            String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
+            extra.put("email", userDefaultEmailAddress);
+          }
           
           indexer.index(User.class.getSimpleName(), user, extra);
         } else
