@@ -113,7 +113,7 @@ public class TranscriptofRecordsBackingBean {
   public Boolean getShowStudies() {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
     if (loggedUserEntity != null) {
-      String studyViewStudents = pluginSettingsController.getPluginSetting("transcript-of-records", "studyViewStudents");
+      String studyViewStudents = pluginSettingsController.getPluginSetting("transcriptofrecords", "studyViewStudents");
       if (studyViewStudents != null) {
         String[] ids = studyViewStudents.split(",");
         for (int i = 0; i < ids.length; i++) {
