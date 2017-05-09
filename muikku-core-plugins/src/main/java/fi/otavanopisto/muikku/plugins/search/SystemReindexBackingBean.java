@@ -29,13 +29,16 @@ public class SystemReindexBackingBean {
   
   @Parameter
   private String task;
+
+  @Parameter
+  private Boolean resume;
   
   @Inject
   private Event<SearchReindexEvent> reindexEvent;
   
   @Inject
   private SessionController sessionController;
-  
+
 	@RequestAction
 	public String init() {
 	  if (sessionController.hasPermission(MuikkuPermissions.ADMIN, null)) {
@@ -52,7 +55,7 @@ public class SystemReindexBackingBean {
 	      tasks = Arrays.asList(Task.values());
 	    }
 	    
-	    reindexEvent.fire(new SearchReindexEvent(tasks));
+	    reindexEvent.fire(new SearchReindexEvent(tasks, resume != null ? resume : false));
 	  }
 	  
 	  return "/index.jsf?faces-redirect=true";
@@ -66,4 +69,11 @@ public class SystemReindexBackingBean {
     this.task = task;
   }
 	
+	public void setResume(Boolean resume) {
+	  this.resume = resume;
+	}
+	
+	public Boolean getResume() {
+	  return resume;
+	}
 }
