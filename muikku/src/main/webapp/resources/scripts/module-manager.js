@@ -92,7 +92,10 @@
       requeriments();
       return;
     }
-    requeriments.forEach(load);
+    requeriments.forEach(function(src){
+      states[src] = 0;
+      load(src);
+    });
     callback();
   }
 
@@ -100,7 +103,10 @@
    * wait until everything is loaded to trigger
    */
   window.loadModules = function(requeriments, callback){
-    requeriments.forEach(load);
+    requeriments.forEach(function(src){
+      states[src] = 0;
+      load(src);
+    });
     readyCallback = callback;
   }
 })();

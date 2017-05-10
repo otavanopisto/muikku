@@ -51,7 +51,6 @@ module(function(){
     },
 
     _hide : function(item) {
-      console.log('from interaction');
       $(item).cssAnimate({
         'addClass': 'notification-queue-item-_hiding_',
         'callback': this._destroy.bind(this, item)

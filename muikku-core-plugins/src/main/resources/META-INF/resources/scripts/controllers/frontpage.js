@@ -45,9 +45,7 @@ loadModules([
     });
   });
 
-  $(document).on("reset-password", function(e, data){
-    var email = data.fields.email;
-
+  function resetPassword(email){
     if (email === null) {
       $('.notification-queue').notificationQueue('notify', 'error', getLocaleText("plugin.forgotpassword.forgotPasswordDialog.email.invalid"));
     } else if (email === '') {
@@ -67,16 +65,21 @@ loadModules([
         $('.frontpage-forgotpassword-dialog').dialogWidget('close');
       }
     });
-  });
+  }
 
   var frontpageDialogCreated = false;
   $(".frontpage-forgotpassword").click(function(){
     if (!frontpageDialogCreated){
       renderDustTemplate("frontpage/forgotpassword_dialog.dust", {}, function(text){
-        var html = $(text);
-        html.appendTo(document.body);
-        html.dialogWidget();
-        html.dialogWidget('open');
+        var dialog = $(text);
+        dialog.appendTo(document.body);
+        dialog.dialogWidget();
+        dialog.find(".form").formWidget({
+          "onSubmit": function(data){
+            resetPassword(data.fields.email);
+          }
+        });
+        dialog.dialogWidget('open');
         frontpageDialogCreated = true;
       });
     } else {

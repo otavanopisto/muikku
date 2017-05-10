@@ -1,32 +1,29 @@
 module(function(){
   $.widget("custom.formWidget", {
+    options: {
+      "onSubmit": null
+    },
     _create: function(){
-      var self = this;
-      var submitEvent = $(self.element).data("form-submit-event");
+      $(this.element).submit(this._onFormSubmit.bind(this));
+    },
+    _onFormSubmit: function(e){
+      e.preventDefault();
+      var form = $(this.element);
 
-      if (!submitEvent && console && console.warn){
-        console.warn("No submit event was set for ", self.element);
+      if (!this.options.onSubmit){
+        return false;
       }
 
-      $(self.element).submit(function(e){
-        e.preventDefault();
-        var form = $(self.element);
-
-        if (!submitEvent){
-          return false;
-        }
-
-        var fields = {};
-        form.find("[name]").each(function(){
-          var input = $(this);
-          fields[input.attr("name")] = input.val();
-        });
-        $(document).trigger(submitEvent, {
-          fields: fields
-        });
-
-        return false;
+      var fields = {};
+      form.find("[name]").each(function(){
+        var input = $(this);
+        fields[input.attr("name")] = input.val();
       });
+      this.options.onSubmit({
+        "fields": fields
+      });
+
+      return false;
     }
   });
 });
