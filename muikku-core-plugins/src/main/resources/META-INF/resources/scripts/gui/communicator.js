@@ -35,7 +35,7 @@
     },
 
     restoreItems: function (ids, callback) {
-      throw Error("removeItem not implemented");
+      throw Error("restoreItems not implemented");
     },
     
     readThreadMessageCount: function (communicatorMessageId, callback) {
