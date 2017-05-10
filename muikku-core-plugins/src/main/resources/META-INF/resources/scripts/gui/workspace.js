@@ -96,8 +96,8 @@
             buttons: [{
               'text': dialog.data('button-request-text'),
               'class': 'save-evaluation-button',
-              'click': function(event) {
-                
+              'click': function() {
+                $('.save-evaluation-button').prop('disabled', true);
                 var workspaceEntityId = $('.workspaceEntityId').val();
                 var message = $('#evaluationRequestAdditionalMessage').val();
 
