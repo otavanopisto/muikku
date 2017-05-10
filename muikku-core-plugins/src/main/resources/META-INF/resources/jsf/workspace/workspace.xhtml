@@ -15,12 +15,15 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-activity.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-frontpage.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/communicator-newmessage.js"/>
     <ui:include src="workspace-material-scripts.xhtml"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
+    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/communicator.css"/>
     <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/workspace-index.css"/>  
     <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/circle.css"/>  
+    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/flex-main-functionality.css"/>    
     <link rel="StyleSheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/magnific-popup.min.css"/>
     <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>  
   </ui:define>
@@ -67,7 +70,7 @@
         <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
           <div class="workspace-meta-item-wrapper">
             <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseDatesLabel']}</span>
-            <span class="workspace-meta-desc">
+            <span class="workspace-meta-desc workspace-duration">
               <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
                 <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
                 <f:param value="#{workspaceIndexBackingBean.endDate}"/>

@@ -22,6 +22,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchIndexer;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -43,6 +44,9 @@ public class UserIndexer {
 
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private EnvironmentUserController environmentUserController;
@@ -100,6 +104,15 @@ public class UserIndexer {
           }
           
           extra.put("groups", userGroupIds);
+
+          if (EnvironmentRoleArchetype.TEACHER.equals(archetype) ||
+              EnvironmentRoleArchetype.STUDY_GUIDER.equals(archetype) ||
+              EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(archetype) ||
+              EnvironmentRoleArchetype.MANAGER.equals(archetype) ||
+              EnvironmentRoleArchetype.ADMINISTRATOR.equals(archetype)) {
+            String userDefaultEmailAddress = userEmailEntityController.getUserDefaultEmailAddress(userEntity, false);
+            extra.put("email", userDefaultEmailAddress);
+          }
           
           indexer.index(User.class.getSimpleName(), user, extra);
         } else

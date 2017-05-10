@@ -342,7 +342,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName", "nickName" };
+      String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
       SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
           userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
@@ -1122,7 +1122,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
-			String[] fields = new String[] { "firstName", "lastName", "nickName" };
+			String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
 			SearchResult result = elasticSearchProvider.searchUsers(searchString, 
 			    fields, 
@@ -1289,7 +1289,7 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName", "userEntityId" };
+      String[] fields = new String[] { "firstName", "lastName", "userEntityId", "email" };
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 

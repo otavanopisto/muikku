@@ -218,7 +218,20 @@ h1.workspace-block-title {
     margin: 0 0 0 4px;
     
     &.email {
-      color: $environment-link-color;
+      color: $environment-font-color;
+    }
+
+    &.message {
+      align-items: center;
+      background-color: #09f;
+      border-radius: 3px;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      margin: 5px 0 0 5px;
+      max-width: 100px;
+      padding: 5px;
     }
     
     &.vacation-period {
