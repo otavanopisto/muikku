@@ -1,8 +1,4 @@
-$.defineWidget(
-  ".dialog",
-  "dialogWidget",
-  [],
-
+module(function(){
   $.widget("custom.dialogWidget", {
     _create: function(){
       var self = this;
@@ -33,5 +29,5 @@ $.defineWidget(
         $(document.body).css({'overflow': 'hidden'});
       },310);
     }
-  })
-);
+  });
+});

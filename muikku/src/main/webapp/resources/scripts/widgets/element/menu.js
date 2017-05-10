@@ -1,7 +1,4 @@
-$.defineWidget(
-  ".menu",
-  "menuWidget",
-  [],
+module(function(){
   $.widget("custom.menuWidget", {
     _create: function(){
       var self = this;
@@ -37,7 +34,6 @@ $.defineWidget(
       var startingPoint = self.touchCordX;
       $menuCont = self.element.children('.menu-container');
       var diff = e.originalEvent.changedTouches[0].pageX - startingPoint;
-      console.log(diff);
 
       var absoluteDifference = Math.abs(diff - parseInt($menuCont.css('left')));
       self.touchMovementX = self.touchMovementX + absoluteDifference;;
@@ -93,5 +89,6 @@ $.defineWidget(
         }
       });
     }
-  })
-);
+  });
+
+});

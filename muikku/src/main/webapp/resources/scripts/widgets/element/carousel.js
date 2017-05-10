@@ -1,12 +1,7 @@
-$.defineWidget(
-  ".carousel",
-
-  "carouselWidget",
-
-  [
-    "//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js",
-    "//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.css"
-  ],
+module([
+  "//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js",
+  "//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.css"
+], function(){
 
   $.widget("custom.carouselWidget", {
     _create: function(){
@@ -29,6 +24,6 @@ $.defineWidget(
         ]
       });
     }
-  })
+  });
 
-);
+});

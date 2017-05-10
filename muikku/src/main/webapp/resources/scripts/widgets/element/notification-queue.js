@@ -1,7 +1,4 @@
-$.defineWidget(
-  ".notification-queue",
-  "notificationQueue",
-  [],
+module(function(){
   $.widget("custom.notificationQueue", {
     options : {
       'severity-info' : {
@@ -79,5 +76,5 @@ $.defineWidget(
     _destroy : function(item) {
       item.remove();
     }
-  })
-);
+  });
+});

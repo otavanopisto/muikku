@@ -1,7 +1,4 @@
-$.defineWidget(
-  ".form",
-  "formWidget",
-  [],
+module(function(){
   $.widget("custom.formWidget", {
     _create: function(){
       var self = this;
@@ -31,5 +28,5 @@ $.defineWidget(
         return false;
       });
     }
-  })
-);
+  });
+});

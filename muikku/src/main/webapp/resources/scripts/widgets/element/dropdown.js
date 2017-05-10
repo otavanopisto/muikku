@@ -1,8 +1,4 @@
-$.defineWidget(
-  ".dropdown",
-  "dropdownWidget",
-  [],
-
+module(function(){
   $.widget("custom.dropdownWidget", {
     _create: function(){
       var self = this;
@@ -45,5 +41,5 @@ $.defineWidget(
         self.element.addClass('dropdown-_visible_');
       }, 10);
     }
-  })
-);
+  });
+});

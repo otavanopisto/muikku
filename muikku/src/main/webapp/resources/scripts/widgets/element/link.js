@@ -1,19 +1,15 @@
-function scrollToSection(anchor) {
-  var topOffset = 90;
-  var scrollTop = $(anchor).offset().top - topOffset;
+module(function(){
+  function scrollToSection(anchor) {
+    var topOffset = 90;
+    var scrollTop = $(anchor).offset().top - topOffset;
 
-  $('html, body').stop().animate({
-    scrollTop : scrollTop
-  }, {
-    duration : 500,
-    easing : "easeInOutQuad"
-  });
-}
-
-$.defineWidget(
-  ".link",
-  "linkWidget",
-  [],
+    $('html, body').stop().animate({
+      scrollTop : scrollTop
+    }, {
+      duration : 500,
+      easing : "easeInOutQuad"
+    });
+  }
 
   $.widget("custom.linkWidget", {
     _create: function(){
@@ -26,5 +22,5 @@ $.defineWidget(
         }
       });
     }
-  })
-);
+  });
+});

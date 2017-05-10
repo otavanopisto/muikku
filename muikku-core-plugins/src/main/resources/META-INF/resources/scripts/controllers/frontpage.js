@@ -1,12 +1,17 @@
-(function() {
-
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/carousel.js.jsf");
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/dialog.js.jsf");
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/dropdown.js.jsf");
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/form.js.jsf");
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/link.js.jsf");
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/menu.js.jsf");
-  $.requireWidget(CONTEXTPATH + "/javax.faces.resource/scripts/interaction/element/notification-queue.js.jsf");
+loadModules([
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/carousel.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dialog.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dropdown.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/form.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/link.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/menu.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/notification-queue.js.jsf"
+], function(){
+  $(".carousel").carouselWidget();
+  $(".dropdown").dropdownWidget();
+  $(".link").linkWidget();
+  $(".menu").menuWidget();
+  $(".notification-queue").notificationQueue();
 
   $(".frontpage-interact-show-language-picker").click(function(e){
     $("#language-picker").dropdownWidget('open', e.currentTarget);
@@ -70,7 +75,7 @@
       renderDustTemplate("frontpage/forgotpassword_dialog.dust", {}, function(text){
         var html = $(text);
         html.appendTo(document.body);
-        html.setupWidgets();
+        html.dialogWidget();
         html.dialogWidget('open');
         frontpageDialogCreated = true;
       });
@@ -79,4 +84,4 @@
     }
   });
 
-}).call(this);
+});
