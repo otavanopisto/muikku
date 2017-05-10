@@ -11,6 +11,17 @@
   
   $.extend(CommunicatorFolderController.prototype, {
     
+    getToolset: function () {
+      return {
+        parameters: {
+          delete: true,
+          restore: false,
+          label: true,
+          markRead: true
+        }
+      }
+    },
+    
     loadItems: function (firstResult, maxResults, mainCallback) {
       throw Error("loadItems not implemented");
     },
@@ -23,6 +34,10 @@
       throw Error("removeItem not implemented");
     },
 
+    restoreItems: function (ids, callback) {
+      throw Error("restoreItems not implemented");
+    },
+    
     readThreadMessageCount: function (communicatorMessageId, callback) {
       throw Error("readThreadMessageCount not implemented");
     },
@@ -281,6 +296,13 @@
   };
   
   $.extend(CommunicatorTrashFolderController.prototype, CommunicatorFolderController.prototype, {
+
+    getToolset: function () {
+      var toolset = this._super.getToolset();
+      toolset.parameters.restore = true;
+      return toolset;
+    },
+    
     removeItems: function (ids, callback) {
       var calls = $.map(ids, function (id) {
         return function (callback) {
@@ -327,6 +349,17 @@
         .callback(callback);
     },
     
+    restoreItems: function (ids, callback) {
+      var calls = $.map(ids, function (id) {
+        return function (callback) {
+          mApi().communicator.trash.restore
+            .update(id)
+            .callback(callback);
+        };
+      })
+      
+      async.series(calls, callback);
+    },
     markAsRead: function (threadId, callback) {
       mApi().communicator.trash.markasread.create(threadId).callback(callback);    
     },
@@ -346,6 +379,7 @@
       this._folderId = this.options.folderId;
       $('.mf-controls-container').on('click', '.mf-label-link', $.proxy(this._onAddLabelToMessagesClick, this));
       $('.mf-controls-container').on('click', '.cm-delete-thread', $.proxy(this._onDeleteClick, this));
+      $('.mf-controls-container').on('click', '.cm-restore-thread', $.proxy(this._onRestoreClick, this));
       $('.mf-controls-container').on('click', '.icon-message-unread', $.proxy(this._onMarkUnreadClick, this));
       $('.mf-controls-container').on('click', '.icon-message-read', $.proxy(this._onMarkReadClick, this));
       $('.mf-controls-container').on('click', '.cm-add-label-menu', $.proxy(this._onAddLabelMenuClick, this));         
@@ -360,7 +394,12 @@
     
     loadFolder: function (id) {
       this._folderId = id;
-      this._reload();
+      this._reload($.proxy(function () {
+        var folderController = this.element.closest('.communicator')
+          .communicator('folderController', this._folderId);
+        var toolset = folderController.getToolset();
+        $('.mf-controls-container').messageTools('toolset', 'thread', toolset.parameters);
+      }, this));
     },
     
     folderId: function () {
@@ -487,6 +526,15 @@
         .communicator('deleteThreads', selectedThreads);
     },
     
+    _onRestoreClick: function (event) {
+      if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
+        return;
+      
+      var selectedThreads = this._getSelectedThreads();
+      this.element.closest('.communicator') 
+        .communicator('restoreThreads', selectedThreads);
+    },
+    
     _onMarkUnreadClick: function (event) {
       if ($(event.target).closest(".mf-tool-container").hasClass("disabled"))
         return;
@@ -542,12 +590,14 @@
       
       if (selectedThreads.length === 0) {
         communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").addClass("disabled");
+        communicatorElement.find(".cm-restore-thread").closest(".mf-tool-container").addClass("disabled");
         markMessages.closest(".mf-tool-container").addClass("disabled");
         markMessages.attr("title", getLocaleText("plugin.communicator.tool.title.unread"));
         markMessages.removeClass("icon-message-read");
         markMessages.addClass("icon-message-unread"); 
       } else {
         communicatorElement.find(".cm-delete-thread").closest(".mf-tool-container").removeClass("disabled");
+        communicatorElement.find(".cm-restore-thread").closest(".mf-tool-container").removeClass("disabled");
         communicatorElement.find(".cm-mark-thread").closest(".mf-tool-container").removeClass("disabled");
         
         if(hasUnread == true) {
@@ -713,7 +763,7 @@
     _create : function(){
       this.toolset(this.options.value);
     },
-    toolset: function(value) {   
+    toolset: function(value, parameters) {   
       var toolTemplate = null;
       if ( value === undefined ) {
         return this.options.value;
@@ -722,21 +772,21 @@
       switch (this.options.value) {
         case 'message':
           toolTemplate = 'communicator/communicator_tools_message.dust';
-          this._loadTools(toolTemplate);
+          this._loadTools(toolTemplate, parameters);
           break;
         case 'thread':
           toolTemplate = 'communicator/communicator_tools_thread.dust';
-          this._loadTools(toolTemplate);
+          this._loadTools(toolTemplate, parameters);
           break;
         case 'settings':
           toolTemplate = 'communicator/communicator_tools_settings.dust';
-          this._loadTools(toolTemplate);
+          this._loadTools(toolTemplate, parameters);
           break;          
       }      
     },
     
-    _loadTools: function(toolSet) {
-      renderDustTemplate(toolSet, {}, $.proxy(function (text) {
+    _loadTools: function(toolSet, parameters) {
+      renderDustTemplate(toolSet, { toolset: parameters }, $.proxy(function (text) {
         this.element.html(text);
       }, this));
     }
@@ -844,7 +894,6 @@
         this._updateSelected(id);
         
         this.element.find('.cm-thread-container').hide();
-        $('.mf-controls-container').messageTools( 'toolset', 'thread');       
         this.element.find('.cm-messages-container')
           .communicatorMessages('loadFolder', id)
           .show();
@@ -861,12 +910,16 @@
     loadThread: function (threadId) {
       var folderId = this.element.find('.cm-messages-container')
         .communicatorMessages('folderId');
+      var folderController = this.element.closest('.communicator')
+        .communicator('folderController', folderId);
       
       this._updateHash(folderId, threadId);
       this._updateSelected(folderId);
       
       this.element.find('.cm-messages-container').hide();
-      $('.mf-controls-container').messageTools( 'toolset', 'message');     
+      
+      var toolset = folderController.getToolset();
+      $('.mf-controls-container').messageTools('toolset', 'message', toolset.parameters);     
       this.element.find('.cm-thread-container')
         .empty()
         .communicatorThread('loadThread', folderId, threadId)
@@ -884,6 +937,20 @@
       this._removeThreads(threads, $.proxy(function () {
         this.reloadFolder();
         $(document).trigger("Communicator:threaddeleted");
+      }, this));
+    },
+    
+    restoreThread: function (folderId, threadId) {
+      this.restoreThreads([{
+        folderId: folderId,
+        id: threadId
+      }]);
+    },
+    
+    restoreThreads: function (threads) {
+      this._restoreThreads(threads, $.proxy(function () {
+        this.reloadFolder();
+        $(document).trigger("Communicator:threadrestored");
       }, this));
     },
 
@@ -1300,6 +1367,26 @@
       async.series(calls, mainCallback);
     },
     
+    _restoreThreads: function (threads, mainCallback) {
+      var folderMap = {};
+      
+      $.each(threads, function (index, thread) {
+        if (!folderMap[thread.folderId]) {
+          folderMap[thread.folderId] = [];
+        }
+        
+        folderMap[thread.folderId].push(thread.id);
+      });
+      
+      var calls = $.map(folderMap, $.proxy(function (ids, folderId) {
+        return $.proxy(function (callback) {
+          this._folderControllers[folderId].restoreItems(ids, callback);
+        }, this);
+      }, this));
+      
+      async.series(calls, mainCallback);
+    },
+    
     _onNewMessageButtonClick: function (event) {
       this.newMessageDialog();
     },
@@ -1440,6 +1527,7 @@
       this._threadId = null;
       controls.on('click', '.icon-goback', $.proxy(this._onBackClick, this));
       controls.on('click', '.cm-delete-message', $.proxy(this._onDeleteClick, this));
+      controls.on('click', '.cm-restore-message', $.proxy(this._onRestoreClick, this));
       controls.on('click', '.mf-label-message-link', $.proxy(this._onAddLabelToMessageClick, this));    
       controls.on('click', '.cm-add-label-message-menu', $.proxy(this._onAddLabelMenuClick, this));     
       controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
@@ -1532,6 +1620,12 @@
       this.element.closest('.communicator') 
         .communicator('deleteThread', this._folderId, this._threadId);
     },
+    
+    _onRestoreClick: function () {
+      this.element.closest('.communicator')
+        .communicator('restoreThread', this._folderId, this._threadId);
+    },
+    
     _onAddLabelMenuClick: function (event) {
       
       var labelObjs = $('.cm-categories').find('.mf-label');      

@@ -338,6 +338,18 @@ public class CommunicatorController {
     }
   }
 
+  public void unTrashAllThreadMessages(UserEntity user, CommunicatorMessageId messageId) {
+    List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId, true, false);
+    for (CommunicatorMessageRecipient recipient : received) {
+      communicatorMessageRecipientDAO.updateTrashedByReceiver(recipient, false);
+    }
+    
+    List<CommunicatorMessage> sentMessages = communicatorMessageDAO.listMessagesInSentThread(user, messageId, true, false);
+    for (CommunicatorMessage message : sentMessages) {
+      communicatorMessageDAO.updateTrashedBySender(message, false);
+    }
+  }
+
   public void archiveTrashedMessages(UserEntity user, CommunicatorMessageId threadId) {
     List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, threadId, true, false);
     for (CommunicatorMessageRecipient recipient : received) {
