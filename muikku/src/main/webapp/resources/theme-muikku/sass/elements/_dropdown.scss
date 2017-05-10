@@ -52,11 +52,11 @@
     width: 0;
   }
 
-  &.dropdown-_displayed_ {
+  &.displayed {
     display: block;
   }
 
-  &.dropdown-_visible_ {
+  &.visible {
     opacity: 1;
   }
 }

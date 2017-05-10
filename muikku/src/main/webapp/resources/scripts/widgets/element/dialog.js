@@ -13,17 +13,17 @@ module(function(){
       var self = this;
       self.element.cssAnimate({
         condition: ":visible",
-        removeClass: 'dialog-_visible_',
+        removeClass: 'visible',
         callback: function(){
-          self.element.removeClass('dialog-_displayed_');
+          self.element.removeClass('displayed');
         }
       });
     },
     open(){
       var self = this;
-      self.element.addClass('dialog-_displayed_');
+      self.element.addClass('displayed');
       setTimeout(function(){
-        self.element.addClass('dialog-_visible_');
+        self.element.addClass('visible');
       }, 10);
       setTimeout(function(){
         $(document.body).css({'overflow': 'hidden'});

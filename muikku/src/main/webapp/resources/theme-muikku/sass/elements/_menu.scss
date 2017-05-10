@@ -117,11 +117,11 @@ $menu-font: 'Exo 2', Arial, sans-serif;
     }
   }
 
-  &.menu-_displayed_ {
+  &.displayed {
     display: block;
   }
 
-  &.menu-_visible_ {
+  &.visible {
     opacity: 1;
 
     >.menu-container {
@@ -129,7 +129,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
     }
   }
 
-  &.menu-_dragging_ {
+  &.dragging {
     transition: none;
 
     >.menu-container {

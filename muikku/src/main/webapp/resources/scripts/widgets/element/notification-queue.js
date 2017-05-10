@@ -68,7 +68,8 @@ module(function(){
       }
 
       $(item).cssAnimate({
-        'addClass': 'notification-queue-item-_hiding_',
+        "condition": ":visible",
+        'addClass': 'hidden',
         'callback': this._destroy.bind(this, item)
       });
     },

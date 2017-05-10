@@ -21,7 +21,7 @@ module(function(){
       var $touchTarget = $(e.target);
       $touchTarget.addClass("active").parent('.link, .button').addClass("active");
 
-      self.element.addClass("menu-_dragging_");
+      self.element.addClass("dragging");
       self.touchCordX = e.originalEvent.changedTouches[0].pageX;
       self.touchMovementX = 0;
       self.touchTarget = $touchTarget;
@@ -48,7 +48,7 @@ module(function(){
 
     _touchend: function(e){
       var self = this;
-      self.element.removeClass("menu-_dragging_");
+      self.element.removeClass("dragging");
       $menuCont = self.element.children('.menu-container');
       var width = self.element.width();
       var diff = parseInt($menuCont.css("left"));
@@ -73,9 +73,9 @@ module(function(){
     },
     open: function(){
       var self = this;
-      self.element.addClass('menu-_displayed_');
+      self.element.addClass('displayed');
       setTimeout(function(){
-        self.element.addClass('menu-_visible_');
+        self.element.addClass('visible');
       }, 10);
       $(document.body).css({'overflow': 'hidden'});
     },
@@ -83,9 +83,10 @@ module(function(){
       var self = this;
       $(document.body).css({'overflow': ''});
       self.element.cssAnimate({
-        removeClass: 'menu-_visible_',
+        condition: ":visible",
+        removeClass: 'visible',
         callback: function(){
-          self.element.removeClass('menu-_displayed_');
+          self.element.removeClass('displayed');
         }
       });
     }

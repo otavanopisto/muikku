@@ -31,7 +31,7 @@ $card-font-family: "Exo 2", Arial, sans-serif;
     box-shadow: 0 1px 3px $color-card-default-shadow-one, 0 1px 2px $color-card-default-shadow-two;
     transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
-    &:hover {
+    &:hover, &.hover {
       box-shadow: 0 1px 3px $color-card-default-shadow-one-hover, 0 1px 2px $color-card-default-shadow-two-hover;
     }
   }

@@ -17,9 +17,9 @@ module(function(){
 
       self.element.cssAnimate({
         condition: ":visible",
-        removeClass: 'dropdown-_visible_',
+        removeClass: 'visible',
         callback: function(){
-          self.element.removeClass('dropdown-_displayed_');
+          self.element.removeClass('displayed');
         }
       });
     },
@@ -36,9 +36,9 @@ module(function(){
         left: left
       });
 
-      self.element.addClass('dropdown-_displayed_');
+      self.element.addClass('displayed');
       setTimeout(function(){
-        self.element.addClass('dropdown-_visible_');
+        self.element.addClass('visible');
       }, 10);
     }
   });

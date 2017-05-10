@@ -40,7 +40,9 @@ $feed-font-family: "Exo 2", Arial, sans-serif;
       text-transform: none;
 
       &:hover,
-      &:active {
+      &:active,
+      &.hover,
+      &.active {
         color: $color-primary-background;
       }
     }
