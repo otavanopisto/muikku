@@ -213,10 +213,10 @@
                   
                   this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
                 } else {
-                  var senderFullName = isStudent
+                  var replySenderFullName = isStudent
                     ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
                     : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-                  this._addRecipient('USER', message.sender.id, senderFullName);                       
+                  this._addRecipient('USER', message.sender.id, replySenderFullName);                       
                 }
                 
                 if (callback) {
