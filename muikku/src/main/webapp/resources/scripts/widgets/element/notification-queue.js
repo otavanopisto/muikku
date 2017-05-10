@@ -46,11 +46,27 @@ module(function(){
       }
     },
 
+    //Backwards compatibility hack
+    notification: function (severity, message) {
+      this.oldVersion = true;
+      return this.notify(severity, message, true);
+    },
+
     remove : function(item) {
       this._hide($(item));
     },
 
     _hide : function(item) {
+
+      //Backwards compatibility hack
+      if (this.oldVersion){
+        this.element.hide("blind", {
+          'duration': 1000,
+          'easing': 'easeOutBounce'
+        });
+        return;
+      }
+
       $(item).cssAnimate({
         'addClass': 'notification-queue-item-_hiding_',
         'callback': this._destroy.bind(this, item)
