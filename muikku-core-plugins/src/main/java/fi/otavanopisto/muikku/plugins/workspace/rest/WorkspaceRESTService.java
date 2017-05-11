@@ -2228,11 +2228,9 @@ public class WorkspaceRESTService extends PluginRESTService {
       Set<UserEntity> workspaceUserEntities = new HashSet<>();
       
       if (elasticSearchProvider != null) {
-        String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
-
         SearchResult studentSearchResult = elasticSearchProvider.searchUsers(
-            "",
-            fields,
+            null,
+            new String[0],
             Arrays.asList(EnvironmentRoleArchetype.STUDENT),
             (Collection<Long>)null,
             Collections.singletonList(workspaceEntityId),
