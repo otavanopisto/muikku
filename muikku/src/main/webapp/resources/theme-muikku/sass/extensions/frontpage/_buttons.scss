@@ -1,0 +1,18 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+.frontpage.button {
+  &.frontpage-button-login {
+    @include color-theme($color-frontpage-button-login, true);
+    @include breakpoint-up($breakpoint-medium-mobile){
+      margin-right: 14px;
+    }
+  }
+}
+
+.frontpage.button-pill {
+  &.frontpage-button-pill-language-selector {
+    margin-right: 14px;
+  }
+}

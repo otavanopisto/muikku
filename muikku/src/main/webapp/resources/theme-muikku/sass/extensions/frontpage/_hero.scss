@@ -1,0 +1,11 @@
+@import "../../elements/hero";
+
+.frontpage.hero {
+  margin-top: $navbar-height;
+
+  @include breakpoint-down($breakpoint-landscape-pad) {
+    .hero-item:nth-child(2) {
+      order: -1
+    }
+  }
+}

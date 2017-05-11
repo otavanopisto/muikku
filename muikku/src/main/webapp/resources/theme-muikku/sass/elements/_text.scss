@@ -19,7 +19,7 @@
 $text-font-family: "Exo 2", Arial, sans-serif;
 
 .text {
-  @include color-theme-text-only(text);
+  @include color-theme($color-text-theme, false);
   display: block;
   font-family: $text-font-family;
   font-size: 14px;
@@ -31,88 +31,10 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     speak: none;
   }
 
-  &.text-banner-description {
-    font-size: 15px;
-    font-weight: 200;
-    text-align: center;
-    text-transform: uppercase;
-  }
-
-  &.text-banner-verkko {
-    font-size: 48px;
-    font-weight: 200;
-    line-height: 0.9;
-    text-shadow: 0 5px 10px $color-text-banner-shadow;
-
-    @media screen and (max-width: $breakpoint-portrait-pad-max) {
-      font-size: 32px;
-    }
-  }
-
-  &.text-banner-muikku {
-    font-size: 48px;
-    font-weight: 900;
-    line-height: 0.9;
-    text-shadow: 0 5px 10px $color-text-banner-shadow;
-
-    @media screen and (max-width: $breakpoint-portrait-pad-max) {
-      font-size: 32px;
-    }
-  }
-
-  &.text-banner-author {
-    font-size: 38px;
-    font-weight: 200;
-    text-transform: uppercase;
-
-    @media screen and (max-width: $breakpoint-portrait-pad-max) {
-      font-size: 17px;
-    }
-  }
-
-  &.text-default-multiparagraph {
-    font-size: 17px;
-
+  &.text-multiparagraph {
     p {
       margin: 17px 0;
     }
-
-    @media screen and (max-width: $breakpoint-medium-mobile-max) {
-      font-size: 15px;
-
-      p {
-        margin: 15px 0;
-      }
-    }
-  }
-
-  &.text-default-title {
-    font-size: 38px;
-    font-weight: 300;
-  }
-
-  &.text-responsive-title {
-    font-size: 38px;
-    font-weight: 300;
-
-    @media screen and (max-width: $breakpoint-portrait-pad-max) {
-      font-size: 26px;
-    }
-  }
-
-  &.text-strong-subtitle {
-    font-size: 25px;
-    font-weight: 600;
-  }
-
-  &.text-default-label {
-    font-size: 14px;
-    font-weight: 300;
-  }
-
-  &.text-strong-label {
-    font-size: 14px;
-    font-weight: 600;
   }
 
   &.text-inline {

@@ -38,7 +38,7 @@
     }
   }
 
-  @media screen and (max-width: $breakpoint-portrait-pad-max) {
+  @include breakpoint-down($breakpoint-landscape-pad) {
     background-image: url("/gfx/of-site-header-background-mobile.jpg");
     height: auto;
 

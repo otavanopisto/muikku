@@ -1,0 +1,12 @@
+.frontpage.container {
+  &.frontpage-container-muikku-logo {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    @include breakpoint-down($breakpoint-landscape-pad) {
+      flex-direction: row;
+    }
+  }
+}

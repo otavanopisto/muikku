@@ -53,7 +53,7 @@ $navbar-font: 'Exo 2', Arial, sans-serif;
       flex: 0 0 auto;
       width: 10px;
 
-      @include breakpoint-wide-screen {
+      @include breakpoint-up($breakpoint-wide-screen) {
         background: url("/gfx/of-site-logo-text.png") no-repeat center center;
         width: 175px;
       }

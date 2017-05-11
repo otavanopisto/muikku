@@ -27,15 +27,6 @@ $card-font-family: "Exo 2", Arial, sans-serif;
   overflow: hidden;
   width: 100%;
 
-  &.card-shadowed {
-    box-shadow: 0 1px 3px $color-card-default-shadow-one, 0 1px 2px $color-card-default-shadow-two;
-    transition: box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-
-    &:hover, &.hover {
-      box-shadow: 0 1px 3px $color-card-default-shadow-one-hover, 0 1px 2px $color-card-default-shadow-two-hover;
-    }
-  }
-
   .card-image {
     position: relative;
     width: 100%;
@@ -53,7 +44,6 @@ $card-font-family: "Exo 2", Arial, sans-serif;
     width: 100%;
 
     .card-title {
-      @include color-theme-text-only(card-title);
       font-size: 26px;
       font-weight: 300;
       line-height: 1;
@@ -62,7 +52,7 @@ $card-font-family: "Exo 2", Arial, sans-serif;
       text-overflow: ellipsis;
       text-transform: uppercase;
 
-      @media screen and (max-width: $breakpoint-portrait-pad-max) {
+      @include breakpoint-down($breakpoint-landscape-pad) {
         font-size: 20px;
       }
     }

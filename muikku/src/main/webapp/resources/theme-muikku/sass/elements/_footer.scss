@@ -39,7 +39,7 @@ $footer-height: 320px;
     }
   }
 
-  @media screen and (max-width: $breakpoint-portrait-pad-max) {
+  @include breakpoint-down($breakpoint-portrait-pad) {
     height: auto;
 
     .footer-container {

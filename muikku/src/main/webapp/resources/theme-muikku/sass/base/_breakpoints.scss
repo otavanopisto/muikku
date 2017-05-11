@@ -1,52 +1,44 @@
-$breakpoint-medium-screen-max: 1199px;
-$breakpoint-wide-screen-min: #{$breakpoint-medium-screen-max + 1px};
-
-$breakpoint-landscape-pad-max: 1024px;
-$breakpoint-medium-screen-min: #{$breakpoint-landscape-pad-max + 1px};
-
-$breakpoint-portrait-pad-max: 768px;
-$breakpoint-landscape-pad-min: #{$breakpoint-portrait-pad-max + 1px};
-
-$breakpoint-medium-mobile-max: 450px;
-$breakpoint-portrait-pad-min: #{$breakpoint-medium-mobile-max + 1px};
-
-$breakpoint-small-mobile-max: 320px;
-$breakpoint-medium-mobile-min: #{$breakpoint-small-mobile-max + 1px};
+$breakpoint-small-mobile: (false, 320);
+$breakpoint-medium-mobile: (320, 450);
+$breakpoint-portrait-pad: (450, 768);
+$breakpoint-landscape-pad: (768, 1024);
+$breakpoint-medium-screen: (1024, 1199);
+$breakpoint-wide-screen: (1199, false);
 
 $breakpoint-max-usable-screen: 1280px;
 
-@mixin breakpoint-wide-screen {
-  @media screen and (min-width: $breakpoint-wide-screen-min) {
-    @content;
+@mixin breakpoint-only($breakpoint) {
+  @if (nth($breakpoint, 1) == false){
+    @media screen and (max-width: #{nth($breakpoint, 2)}px) {
+      @content;
+    }
+  } @else if (nth($breakpoint, 2) == false) {
+    @media screen and (min-width: #{nth($breakpoint, 1) + 1}px) {
+      @content;
+    }
+  } @else {
+    @media screen and (min-width: #{nth($breakpoint, 1) + 1}px) and (max-width: #{nth($breakpoint, 2)}px) {
+      @content;
+    }
   }
 }
 
-@mixin breakpoint-medium-screen {
-  @media screen and (min-width: $breakpoint-medium-screen-min) and (max-width: $breakpoint-medium-screen-max) {
+@mixin breakpoint-down($breakpoint){
+  @if (nth($breakpoint, 2) == false){
     @content;
+  } @else {
+    @media screen and (max-width: #{nth($breakpoint, 2)}px) {
+      @content;
+    }
   }
 }
 
-@mixin breakpoint-landscape-pad {
-  @media screen and (min-width: $breakpoint-landscape-pad-min) and (max-width: $breakpoint-landscape-pad-max) {
+@mixin breakpoint-up($breakpoint){
+  @if (nth($breakpoint, 1) == false){
     @content;
-  }
-}
-
-@mixin breakpoint-portrait-pad {
-  @media screen and (min-width: $breakpoint-portrait-pad-min) and (max-width: $breakpoint-portrait-pad-max) {
-    @content;
-  }
-}
-
-@mixin breakpoint-medium-mobile {
-  @media screen and (min-width: $breakpoint-medium-mobile-min) and (max-width: $breakpoint-medium-mobile-max) {
-    @content;
-  }
-}
-
-@mixin breakpoint-small-mobile {
-  @media screen and (max-width: $breakpoint-small-mobile-max) {
-    @content;
+  } @else {
+    @media screen and (min-width: #{nth($breakpoint, 1) + 1}px) {
+      @content;
+    }
   }
 }

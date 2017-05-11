@@ -29,7 +29,7 @@ $dialog-button-close-height: 45px;
     padding: 20px;
     position: relative;
 
-    @media screen and (max-width: $breakpoint-medium-mobile-max) {
+    @include breakpoint-down($breakpoint-medium-mobile) {
       border: 0;
       border-radius: 0;
       height: 100%;

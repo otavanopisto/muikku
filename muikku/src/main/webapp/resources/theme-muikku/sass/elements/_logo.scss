@@ -6,42 +6,11 @@
 
 @import "../base/colors";
 
-$logo-medium-size: 80px;
-$logo-large-size: 90px;
-$logo-extra-large-size: 100px;
-$logo-small-size: 70px;
-$logo-extra-small-size: 60px;
+$logo-default-size: 80px;
 
 .logo {
   display: block;
-  height: $logo-medium-size;
+  height: $logo-default-size;
   position: relative;
-
-//  &.logo-medium {
-//  }
-
-  &.logo-large {
-    height: $logo-large-size;
-  }
-
-  &.logo-small {
-    height: $logo-small-size;
-  }
-
-  &.logo-extra-large {
-    height: $logo-extra-large-size;
-  }
-
-  &.logo-extra-small {
-    height: $logo-extra-small-size;
-  }
-
-  &.logo-round {
-    border-radius: 100%;
-    overflow: hidden;
-  }
-
-  &.logo-cast-shadow {
-    box-shadow: 0 15px 15px $color-logo-default-shadow;
-  }
+  overflow: hidden;
 }

@@ -31,7 +31,7 @@
     }
 
     &.ordered-container-responsive {
-      @media screen and (max-width: $breakpoint-portrait-pad-max) {
+      @include breakpoint-down($breakpoint-portrait-pad) {
         flex-direction: column;
 
         >.ordered-container-item {

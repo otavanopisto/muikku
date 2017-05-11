@@ -1,92 +1,143 @@
 // Generic
-$color-warn-background: #ef6000;
-$color-warn-text: #fff;
+$color-warn: #ef6000;
+$color-warn-contrast: #fff;
 
-$color-info-background: #549fca;
-$color-info-text: #fff;
+$color-info: #549fca;
+$color-info-contrast: #fff;
 
-$color-fatal-background: #bf3000;
-$color-fatal-text: #fff;
+$color-fatal: #bf3000;
+$color-fatal-contrast: #fff;
 
-$color-error-background: #ff6600;
-$color-error-text: #fff;
+$color-error: #ff6600;
+$color-error-contrast: #fff;
 
-$color-success-background: #49af4e;
-$color-success-text: #fff;
+$color-success: #49af4e;
+$color-success-contrast: #fff;
 
-$color-loading-background: #343333;
-$color-loading-text: #fff;
+$color-loading: #343333;
+$color-loading-contrast: #fff;
 
-$color-primary-background: #009fe3;
-$color-primary-text: #fff;
+$color-primary: #009fe3;
+$color-primary-contrast: #fff;
 
-$color-secondary-background: #00af00;
-$color-secondary-text: #fff;
+$color-secondary: #00af00;
+$color-secondary-contrast: #fff;
 
-$color-inverse-background: #343333;
-$color-inverse-text: #fff;
+$color-inverse: #343333;
+$color-inverse-contrast: #fff;
 
-$color-default-background: #fff;
-$color-default-text: #343333;
+$color-default: #fff;
+$color-default-contrast: #343333;
 
-$color-base-list: (
-	(primary, $color-primary-background, $color-primary-text),
-	(warn, $color-warn-background, $color-warn-text),
-	(info, $color-info-background, $color-info-text),
-	(fatal, $color-fatal-background, $color-fatal-text),
-	(error, $color-error-background, $color-error-text),
-	(success, $color-success-background, $color-success-text),
-	(loading, $color-loading-background, $color-loading-text),
-	(secondary, $color-secondary-background, $color-secondary-text),
-	(inverse, $color-inverse-background, $color-inverse-text),
-	(default, $color-default-background, $color-default-text)
+// Notification queue item theme
+$color-notification-queue-item-theme: (
+  (default, background $color-default, text $color-default-contrast),
+  (notification-queue-item-primary, background $color-primary, text $color-primary-contrast),
+  (notification-queue-item-warn, background $color-warn, text $color-warn-contrast),
+  (notification-queue-item-info, background $color-info, text $color-info-contrast),
+  (notification-queue-item-fatal, background $color-fatal, text $color-fatal-contrast),
+  (notification-queue-item-error, background $color-error, text $color-error-contrast),
+  (notification-queue-item-success, background $color-success, text $color-success-contrast),
+  (notification-queue-item-loading, background $color-loading, text $color-loading-contrast),
+  (notification-queue-item-secondary, background $color-secondary, text $color-secondary-contrast),
+  (notification-queue-item-inverse, background $color-inverse, text $color-inverse-contrast)
 );
 
-//HELPERS
+// Button theme
+$color-button-theme: (
+  (default, background $color-default, text $color-default-contrast),
+  (button-primary, background $color-primary, text $color-primary-contrast),
+  (button-warn, background $color-warn, text $color-warn-contrast),
+  (button-info, background $color-info, text $color-info-contrast),
+  (button-fatal, background $color-fatal, text $color-fatal-contrast),
+  (button-error, background $color-error, text $color-error-contrast),
+  (button-success, background $color-success, text $color-success-contrast),
+  (button-loading, background $color-loading, text $color-loading-contrast),
+  (button-secondary, background $color-secondary, text $color-secondary-contrast),
+  (button-inverse, background $color-inverse, text $color-inverse-contrast)
+);
 
-@mixin _color-map($bgcolor, $textcolor) {
-  background-color: $bgcolor;
-  color: $textcolor;
-  @include prefix(transition, webkit moz o ms, background-color 0.3s);
+$color-frontpage-button-login: (
+  (default, background $color-primary, text $color-primary-contrast),
+);
 
-  &:hover,
-  &:active,
-  &.hover,
-  &.active {
-    background-color: darken($bgcolor, 10%);
-  }
-}
+// Button pill theme
+$color-button-pill-theme: (
+  (default, background $color-default, text $color-default-contrast),
+  (button-pill-primary, background $color-primary, text $color-primary-contrast),
+  (button-pill-warn, background $color-warn, text $color-warn-contrast),
+  (button-pill-info, background $color-info, text $color-info-contrast),
+  (button-pill-fatal, background $color-fatal, text $color-fatal-contrast),
+  (button-pill-error, background $color-error, text $color-error-contrast),
+  (button-pill-success, background $color-success, text $color-success-contrast),
+  (button-pill-loading, background $color-loading, text $color-loading-contrast),
+  (button-pill-secondary, background $color-secondary, text $color-secondary-contrast),
+  (button-pill-inverse, background $color-inverse, text $color-inverse-contrast)
+);
 
-//GENERICS
+// Label theme
+$color-label-theme: (
+  (default, text $color-inverse),
+  (label-primary, text $color-primary),
+  (label-warn, text $color-warn),
+  (label-info, text $color-info),
+  (label-fatal, text $color-fatal),
+  (label-error, text $color-error),
+  (label-success, text $color-success),
+  (label-loading, text $color-loading),
+  (label-secondary, text $color-secondary),
+  (label-inverse, text $color-default)
+);
 
-@mixin color-theme-text-only($name) {
-  color: nth(nth($color-base-list, 1), 2);
-  @each $colorelement in $color-base-list {
-    &.#{$name}-#{nth($colorelement, 1)} {
-      color: nth($colorelement, 2);
-    }
-  }
-}
+$color-frontpage-label-forgot-password: (
+  (default, text $color-primary),
+);
 
-@mixin color-theme-simple($name) {
-  background-color: nth(nth($color-base-list, 1), 2);
-  color: nth(nth($color-base-list, 1), 3);
-  @each $colorelement in $color-base-list {
-    &.#{$name}-#{nth($colorelement, 1)} {
-      background-color: nth($colorelement, 2);
-      color: nth($colorelement, 3);
-    }
-  }
-}
+//Text
+$color-text-theme: (
+  (default, text $color-inverse),
+  (text-primary, text $color-primary),
+  (text-warn, text $color-warn),
+  (text-info, text $color-info),
+  (text-fatal, text $color-fatal),
+  (text-error, text $color-error),
+  (text-success, text $color-success),
+  (text-loading, text $color-loading),
+  (text-secondary, text $color-secondary),
+  (text-inverse, text $color-default)
+);
 
-@mixin color-theme-with-effects($name) {
-  @include _color-map(nth(nth($color-base-list, 1), 2), nth(nth($color-base-list, 1), 3));
-  @each $colorelement in $color-base-list {
-    &.#{$name}-#{nth($colorelement, 1)} {
-      @include _color-map(nth($colorelement, 2), nth($colorelement, 3));
-    }
-  }
-}
+$color-frontpage-text-muikku-description-theme: (
+  (default, text $color-default),
+);
+
+$color-frontpage-text-muikku-author-theme: (
+  (default, text $color-default),
+);
+
+$color-frontpage-text-muikku-theme: (
+  (default, text $color-default),
+);
+$color-frontpage-text-muikku-text-shadow: rgba(0, 0, 0, 0.3);
+
+$color-frontpage-text-verkko-theme: (
+  (default, text $color-default),
+);
+$color-frontpage-text-verkko-text-shadow: rgba(0, 0, 0, 0.6);
+
+//Separator
+$color-separator-theme: (
+  (default, background $color-default),
+  (separator-primary, background $color-primary),
+  (separator-warn, text $color-warn),
+  (separator-info, background $color-info),
+  (separator-fatal, background $color-fatal),
+  (separator-error, background $color-error),
+  (separator-success, background $color-success),
+  (separator-loading, background $color-loading),
+  (separator-secondary, background $color-secondary),
+  (separator-inverse, background $color-inverse)
+);
 
 // Navbar
 $color-navbar-default-background: #f5f5f5;
@@ -132,10 +183,6 @@ $color-footer-default-text: #fff;
 $color-card-default-background: #fff;
 $color-card-default-border: #e2e3e3;
 $color-card-default-text: #343333;
-$color-card-default-shadow-one: rgba(0, 0, 0, 0.12);
-$color-card-default-shadow-two: rgba(0, 0, 0, 0.24);
-$color-card-default-shadow-one-hover: rgba(0, 0, 0, 0.25);
-$color-card-default-shadow-two-hover: rgba(0, 0, 0, 0.22);
 
 // dialog
 $color-dialog-default-background: #fff;
@@ -159,6 +206,7 @@ $color-button-social-highlight-text: #fff;
 // feed
 $color-feed-default-text: #343333;
 $color-feed-default-date: #8c8c8c;
+$color-feed-item-description-active: $color-primary;
 
 // carousel
 $color-carousel-default-dot-background: #afafaf;
@@ -169,7 +217,7 @@ $color-carousel-default-dot-active-background: #ef6000;
 $color-hero-default-background: #0089c6;
 
 // logo
-$color-logo-default-shadow: rgba(0, 0, 0, 0.2);
+$color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 
 // notification queue
 $color-notification-queue-item-container-background: #666;

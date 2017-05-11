@@ -3,17 +3,14 @@
 //
 // Standard button
 //
-//   a.button[ | .button-large | .button-medium | .button-small ]
-//          [ | .button-dynamic-height | .button-dynamic-word-break | .button-dynamic-word-break-full-width ]
-//       [ | .button-medium | .button-hard | .button-soft]
-//      [ | .button-focus ]
-//          [ COLORMAPPING ]
-//      [ | .button-centered | .button-right | .button-left ]
+//   a.button
+//   [ | button-dynamic-height | button-dynamic-word-break | button-dynamic-word-break-full-width].
+//   [ | button-right | button-left]
+//   [ | {theme}]
 //    span
 //       (BODY)
 //
-//  a.button-pill[ | .button-pill-primary | .button-pill-secondary | .button-pill-success
-//          | .button-pill-info | .button-pill-warn | .button-pill-fatal | .button-pill-strong]
+//  a.button-pill[ | {theme}]
 //    span
 //      (BODY)
 //
@@ -24,28 +21,21 @@
 @import "../base/mixins";
 
 $button-font-family: "Exo 2", Arial, sans-serif;
-
-$button-small-height: 21px;
-$button-small-font-size: 12px;
-
-$button-medium-height: 27px;
-$button-medium-font-size: 15px;
-
-$button-large-height: 33px;
-$button-large-font-size: 17px;
+$button-default-height: 27px;
+$button-default-font-size: 15px;
 
 .button {
-  @include color-theme-with-effects(button);
+  @include color-theme($color-button-theme, true);
   @include prefix(user-select, moz o ms webkit, none);
   border-radius: 2px;
   cursor: pointer;
   display: inline-block;
   font-family: $button-font-family;
-  font-size: $button-medium-font-size;
-  height: $button-medium-height;
-  line-height: $button-medium-height;
+  font-size: $button-default-font-size;
+  height: $button-default-height;
+  line-height: $button-default-height;
   overflow: hidden;
-  padding: 0 $button-medium-font-size;
+  padding: 0 $button-default-font-size;
   position: relative;
   text-align: center;
   text-decoration: none;
@@ -53,23 +43,6 @@ $button-large-font-size: 17px;
   text-transform: uppercase;
   vertical-align: middle;
   white-space: nowrap;
-
-  &.button-large {
-    font-size: $button-large-font-size;
-    height: $button-large-height;
-    line-height: $button-large-height;
-    padding: 0 $button-large-font-size;
-  }
-
-//  &.button-medium {
-//  }
-
-  &.button-small {
-    font-size: $button-small-font-size;
-    height: $button-small-height;
-    line-height: $button-medium-height;
-    padding: 0 $button-small-font-size;
-  }
 
   &.button-dynamic-height {
     height: auto;
@@ -100,40 +73,9 @@ $button-large-font-size: 17px;
   &.button-dynamic-height,
   &.button-dynamic-word-break,
   &.button-dynamic-word-break-full-width {
-    line-height: $button-medium-font-size;
-    padding: #{$button-medium-font-size / 2} $button-medium-font-size;
-
-    &.button-small {
-      line-height: $button-small-font-size;
-      padding: #{$button-small-font-size / 2} $button-small-font-size;
-    }
-
-//    &.button-medium {
-//    }
-
-    &.button-large {
-      line-height: $button-large-font-size;
-      padding: #{$button-large-font-size / 2} $button-large-font-size;
-    }
+    line-height: $button-default-font-size;
+    padding: #{$button-default-font-size / 2} $button-default-font-size;
   }
-
-  &.button-soft {
-    border-radius: 5px;
-  }
-
-//  &.button-medium {
-//  }
-
-  &.button-hard {
-    border-radius: 0;
-  }
-
-  &.button-focus {
-    font-weight: 500;
-  }
-
-//  &.button-centered {
-//  }
 
   &.button-right {
     text-align: right;
@@ -150,7 +92,7 @@ $button-pill-size: 34px;
 $button-pill-font-size: 16px;
 
 .button-pill {
-  @include color-theme-with-effects(button-pill);
+  @include color-theme($color-button-pill-theme, true);
   @include prefix(user-select, moz o ms webkit, none);
   border-radius: $button-pill-size;
   cursor: pointer;

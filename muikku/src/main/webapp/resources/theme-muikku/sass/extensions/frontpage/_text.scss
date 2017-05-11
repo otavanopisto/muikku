@@ -1,0 +1,53 @@
+.frontpage.text {
+  &.frontpage-text-muikku-description {
+    @include color-theme($color-frontpage-text-muikku-description-theme, false);
+    line-height: 1.3;
+    margin-top: 15px;
+    width: 330px;
+    font-size: 15px;
+    font-weight: 200;
+    text-align: center;
+  }
+  &.frontpage-text-muikku-author {
+    @include color-theme($color-frontpage-text-muikku-author-theme, false);
+    font-size: 25px;
+    font-weight: 200;
+    line-height: 0.95;
+    text-align: center;
+
+    @include breakpoint-down($breakpoint-landscape-pad){
+      font-size: 17px;
+      text-align: left;
+    }
+  }
+  &.frontpage-text-muikku {
+    @include color-theme($color-frontpage-text-muikku-theme, false);
+    font-size: 48px;
+    font-weight: 900;
+    line-height: 0.9;
+    text-align: center;
+    text-shadow: 0 5px 10px $color-frontpage-text-muikku-text-shadow;
+
+    @include breakpoint-down($breakpoint-landscape-pad){
+      font-size: 32px;
+      text-align: left;
+    }
+  }
+  &.frontpage-text-verkko {
+    @include color-theme($color-frontpage-text-verkko-theme, false);
+    font-size: 48px;
+    letter-spacing: 5px;
+    text-indent: 10px;
+    font-weight: 300;
+    line-height: 0.9;
+    text-align: center;
+    text-shadow: 0 5px 10px $color-frontpage-text-verkko-text-shadow;
+
+    @include breakpoint-down($breakpoint-landscape-pad){
+      font-size: 32px;
+      text-align: left;
+      letter-spacing: 3px;
+      text-indent: 0;
+    }
+  }
+}

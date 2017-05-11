@@ -37,37 +37,42 @@
     </ui:insert>
 
     <ui:insert name="frontpage-navbar">
-      <nav class="navbar">
+      <nav class="frontpage navbar">
         <div class="navbar-wrapper">
           <div class="navbar-logo"></div>
 
           <div class="navbar-items">
             <ul class="navbar-items-container">
-              <li class="navbar-item frontpage-navbar-display-menu">
-                <a class="link link-icon link-full frontpage-interact-show-menu"><span class="icon icon-navicon navbar-display-menu"></span></a>
+              <li class="frontpage navbar-item frontpage-navbar-item-menu-button">
+                <a class="link link-icon link-full frontpage-interact-show-menu">
+                  <span class="icon icon-navicon navbar-display-menu"></span>
+                </a>
               </li>
-              <li class="navbar-item frontpage-navbar-studying">
+              <li class="navbar-item frontpage-navbar-item-studying">
                 <a href="#studying" class="link link-full"><span>#{i18n.text['plugin.navigation.link.studying']}</span></a>
               </li>
-              <li class="navbar-item frontpage-navbar-news">
+              <li class="navbar-item frontpage-navbar-item-news">
                 <a href="#news" class="link link-full"><span>#{i18n.text['plugin.navigation.link.news']}</span></a>
               </li>
-              <li class="navbar-item frontpage-navbar-otavan-opisto">
+              <li class="navbar-item frontpage-navbar-item-otavan-opisto">
                 <a href="#organization" class="link link-full"><span>#{i18n.text['plugin.navigation.link.otavanOpisto']}</span></a>
               </li>
-              <li class="navbar-item frontpage-navbar-contact">
+              <li class="navbar-item frontpage-navbar-item-contact">
                 <a href="#contact" class="link link-full"><span>#{i18n.text['plugin.navigation.link.contact']}</span></a>
               </li>
-              <li class="navbar-item frontpage-navbar-open-materials">
+              <li class="navbar-item frontpage-navbar-item-open-materials">
                 <a href="/coursepicker" class="link link-highlight link-full"><span>#{i18n.text['plugin.navigation.link.openMaterials']}</span></a>
               </li>
             </ul>
           </div>
           <div class="navbar-default-options">
             <div class="navbar-default-options-container">
-              <a class="button button-primary frontpage-navbar-login-button" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}"><span>#{i18n.text['plugin.login.buttonLabel']}</span></a>
-              <a class="label label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
-              <a class="button-pill button-pill-inverse frontpage-interact-show-language-picker"> <span>#{languageWidgetBackingBean.language}</span></a>
+              <a class="frontpage button frontpage-button-login"
+              jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
+                <span>#{i18n.text['plugin.login.buttonLabel']}</span>
+              </a>
+              <a class="frontpage label label-dynamic-word-break label-clickable frontpage-label-forgot-password"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
+              <a class="frontpage button-pill button-pill-inverse frontpage-button-pill-language-selector"> <span>#{languageWidgetBackingBean.language}</span></a>
               <h:form class="dropdown" id="language-picker">
                 <div class="dropdown-container">
                   <ui:repeat value="#{i18n.languages}" var="locale">
@@ -77,8 +82,6 @@
                   </ui:repeat>
                 </div>
               </h:form>
-
-              <div class="spacer spacer-horizontal spacer-small"></div>
             </div>
           </div>
         </div>
@@ -117,7 +120,7 @@
     </ui:insert>
 
     <ui:insert name="of-header">
-      <header class="hero">
+      <header class="frontpage hero">
         <div class="hero-wrapper">
           <div class="hero-item">
             <div class="bubble bubble-responsive">
@@ -128,16 +131,16 @@
               </div>
             </div>
           </div>
-          <div class="hero-item frontpage-muikku-hero">
-            <div class="frontpage-muikku-hero-logo-container">
-              <img class="logo logo-round logo-cast-shadow logo-large" src="/gfx/of-site-logo.png"></img>
-              <div class="text">
-                <div class="text text-default text-banner-author">#{i18n.text['plugin.header.site.author']}</div>
-                <div class="text text-default text-banner-muikku">MUIKKU</div>
-                <div class="text text-default text-banner-verkko">VERKKO</div>
+          <div class="hero-item">
+            <div class="frontpage container frontpage-container-muikku-logo">
+              <img class="frontpage logo frontpage-logo-muikku-verkko" src="/gfx/of-site-logo.png"></img>
+              <div class="frontpage text text-uppercase">
+                <div class="frontpage text frontpage-text-muikku-author">#{i18n.text['plugin.header.site.author']}</div>
+                <div class="frontpage text frontpage-text-muikku">MUIKKU</div>
+                <div class="frontpage text frontpage-text-verkko">VERKKO</div>
               </div>
             </div>
-            <div class="text text-default text-banner-description">#{i18n.text['plugin.header.site.description']}</div>
+            <div class="frontpage text text-uppercase frontpage-text-muikku-description">#{i18n.text['plugin.header.site.description']}</div>
           </div>
           <div class="hero-item">
             <div class="bubble bubble-responsive">
