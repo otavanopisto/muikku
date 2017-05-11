@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class WorkspaceJournalController {
     workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date(), Boolean.FALSE);
   }
 
-  public List<WorkspaceJournalEntry> listEntries(WorkspaceEntity workspaceEntity, int firstResult, int maxResults) {
-    return workspaceJournalEntryDAO.listByWorkspaceEntityId(workspaceEntity, firstResult, maxResults);
+  public List<WorkspaceJournalEntry> listEntriesForStudents(WorkspaceEntity workspaceEntity, Collection<UserEntity> userEntities, int firstResult, int maxResults) {
+    return workspaceJournalEntryDAO.listByWorkspaceEntityAndUserEntities(workspaceEntity, userEntities, firstResult, maxResults);
   }
   
   public List<WorkspaceJournalEntry> listEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity, int firstResult, int maxResults) {
