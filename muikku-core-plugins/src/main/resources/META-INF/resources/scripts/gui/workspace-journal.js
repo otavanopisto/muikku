@@ -164,14 +164,12 @@
   });
 
   $(document).on('click', '.journal-delete-button', function(event) {
-    var id = $(this).attr('data-entry-id');
-    confirmJournalEntryDeleteRequest(id);
+    confirmJournalEntryDeleteRequest($(this).attr('data-entry-id'));
   });
 
-  $(document).on('click', '.workspace-journal-new-entry-button',
-      function(event) {
-        newJournalEntry();
-      });
+  $(document).on('click', '.workspace-journal-new-entry-button', function(event) {
+    newJournalEntry();
+  });
 
   $(document).on('click', '.journal-edit-button', function(event) {
     editJournalEntry($(this).closest('.workspace-single-journal-entry'));

@@ -156,8 +156,15 @@
               renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
                 this.element.html(text);
                 
+                // #2821: Prevent form submit when pressing enter in a text field 
+                var captionField = $(this.element).find('input[name="caption"]');
+                captionField.on('keypress', function(event) {
+                  if (event.keyCode == 13) {
+                    event.preventDefault();
+                  }
+                });
                 if (this.options.initialCaption) {
-                  $(this.element).find('input[name="caption"]').val(this.options.initialCaption);
+                  $(captionField).val(this.options.initialCaption);
                 }
                 
                 // If the message was sent by 'me', reply defaults for the other recipients
@@ -233,8 +240,15 @@
           renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
             this.element.html(text);
 
+            // #2821: Prevent form submit when pressing enter in a text field 
+            var captionField = $(this.element).find('input[name="caption"]');
+            captionField.on('keypress', function(event) {
+              if (event.keyCode == 13) {
+                event.preventDefault();
+              }
+            });
             if (this.options.initialCaption) {
-              $(this.element).find('input[name="caption"]').val(this.options.initialCaption);
+              $(captionField).val(this.options.initialCaption);
             }
             
             if (this.options.userRecipients) {
