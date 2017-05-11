@@ -1079,6 +1079,12 @@
           renderDustTemplate('/discussion/discussion_create_message.dust', parameters, $.proxy(function (text) {
             this.element.html(text);
 
+            // #2821: Prevent form submit when pressing enter in a text field
+            this.element.find('input[name="title"]').on('keypress', function(event) {
+              if (event.keyCode == 13) {
+                event.preventDefault();
+              }
+            });
             if (this.options.areaId) {
               this.element.find('*[name="forumAreaId"]').val(this.options.areaId);
             }
@@ -1202,6 +1208,12 @@
 
           renderDustTemplate('/discussion/discussion_create_reply.dust', reply, $.proxy(function (text) {
             this.element.html(text);
+            // #2821: Prevent form submit when pressing enter in a text field
+            this.element.find('input[name="title"]').on('keypress', function(event) {
+              if (event.keyCode == 13) {
+                event.preventDefault();
+              }
+            });
             if (this.options.content) {
               this.element.find('*[name="message"]').val(this.options.content);
             }
@@ -1288,7 +1300,12 @@
 
           renderDustTemplate('/discussion/discussion_edit_message.dust', parameters, $.proxy(function (text) {
             this.element.html(text);
-
+            // #2821: Prevent form submit when pressing enter in a text field
+            this.element.find('input[name="title"]').on('keypress', function(event) {
+              if (event.keyCode == 13) {
+                event.preventDefault();
+              }
+            });
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
               draftKey: 'discussion-edit-message-' + this.options.areaId + '-' + this.options.threadId,
               on: {
@@ -1386,6 +1403,12 @@
         } else {
           renderDustTemplate('/discussion/discussion_edit_reply.dust', reply, $.proxy(function (text) {
             this.element.html(text);
+            // #2821: Prevent form submit when pressing enter in a text field
+            this.element.find('input[name="title"]').on('keypress', function(event) {
+              if (event.keyCode == 13) {
+                event.preventDefault();
+              }
+            });
             this._messageEditor = CKEDITOR.replace(this.element.find('textarea[name="message"]')[0], $.extend(this.options.ckeditor, {
               draftKey: 'discussion-edit-reply-message-' + this.options.areaId + '-' + this.options.threadId + '-' +  this.options.replyId,
               on: {
