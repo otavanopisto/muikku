@@ -17,6 +17,15 @@ function openInSN(template, options, formSendFunction, formContentFunction) {
     var sendBtn = $(tabDiv).find("input[name='send']");
     var elements = $(tabDiv).find("form");
     
+    // #2821: Prevent form submit when pressing enter in a text field 
+    $(textfields).each(function(index, field) {
+      $(field).on('keypress', function(event) {
+        if (event.keyCode == 13) {
+          event.preventDefault();
+        }
+      });
+    });
+    
     // Discussion - TODO: replace with formParameters 
     if (options != null && options.actionType == "edit") {
       var editableContent = options.message;
