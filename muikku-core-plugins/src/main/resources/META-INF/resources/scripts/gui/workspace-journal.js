@@ -5,6 +5,8 @@
     _create : function() {
       this._student = undefined;
       this.loadPage(this.options.workspaceId, this._student, 1);
+      if (this.options.canListAllEntries)
+        this._loadStudents(this.options.workspaceId);
 
       $(document).on('change', '#studentSelectField', $.proxy(this._onStudentSelectFieldChange, this));
       this.element.on('click', '.wj-page-link-load-more:not(.disabled)', $.proxy(this._onLoadMoreClick, this));
@@ -29,6 +31,11 @@
           } else {
             var template = this.options.canListAllEntries ? 'journal/journalentries_teacher.dust' : 'journal/journalentries_my.dust';
             
+            if ((page == 1) && (journalEntries.length == 0))
+              $("#noEntriesMessage").show();
+            else
+              $("#noEntriesMessage").hide();
+            
             renderDustTemplate(template, journalEntries, function(text) {
               $("#journalEntries").append(text);
             });
@@ -45,6 +52,23 @@
     },
     clearResults: function() {
       $("#journalEntries").empty();
+    },
+    _loadStudents: function(workspaceId) {
+      mApi().workspace.workspaces.students.read(workspaceId, { 
+        archived: false, 
+        orderBy: 'name' })
+      .callback($.proxy(function (err, students) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          $.each(students, function (ind, student) {
+            $("<option/>", {
+              'value': student.studentEntityId
+            }).text(student.lastName + ', ' + student.firstName).appendTo("#studentSelectField");
+          });
+        }
+      }, this)); 
     },
     _onStudentSelectFieldChange: function() {
       var selectedStudent = $("#studentSelectField").val();
