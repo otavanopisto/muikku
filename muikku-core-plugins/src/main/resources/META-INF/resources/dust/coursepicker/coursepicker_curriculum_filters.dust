@@ -6,7 +6,7 @@
         <li id="{type}-{id}" class="cp-curriculum-filter{@eq key=defaultCurriculum value=identifier} selected{/eq}" data-id="{identifier}">
           <a class="mf-category-item-plain">
             <span>{name}</span>
-          </a></li>    
+          </a>
         </li>    
       {/curriculums}
     </ul>
