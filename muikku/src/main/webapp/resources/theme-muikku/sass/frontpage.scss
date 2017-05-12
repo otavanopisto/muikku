@@ -18,10 +18,10 @@
 @import "elements/ordered-container";
 @import "elements/card";
 @import "elements/carousel";
-@import "elements/background-container";
 @import "elements/feed";
 @import "elements/dialog";
 @import "elements/form";
+@import "elements/container";
 
 @import "extensions/frontpage/buttons";
 @import "extensions/frontpage/card";
@@ -31,3 +31,6 @@
 @import "extensions/frontpage/logo";
 @import "extensions/frontpage/container";
 @import "extensions/frontpage/text";
+@import "extensions/frontpage/screen-container";
+@import "extensions/frontpage/ordered-container";
+@import "extensions/frontpage/footer";

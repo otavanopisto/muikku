@@ -5,6 +5,10 @@ module([
 
   $.widget("custom.carouselWidget", {
     _create: function(){
+      $(this.element).find(".carousel-item").each((index, element)=>{
+        $(element).show();
+      });
+
       $(this.element).slick({
         appendDots: $(this.element).siblings(".carousel-controls"),
         arrows: false,

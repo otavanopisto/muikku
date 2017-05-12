@@ -1,0 +1,73 @@
+//NAVBAR
+$color-frontpage-button-login: (
+  (default, background $color-primary, text $color-primary-contrast),
+);
+
+$color-frontpage-label-forgot-password: (
+  (default, text $color-primary),
+);
+
+//HERO
+$color-frontpage-text-muikku-description-theme: (
+  (default, text $color-default),
+);
+
+$color-frontpage-text-muikku-author-theme: (
+  (default, text $color-default),
+);
+
+$color-frontpage-text-muikku-theme: (
+  (default, text $color-default),
+);
+$color-frontpage-text-muikku-text-shadow: rgba(0, 0, 0, 0.3);
+
+$color-frontpage-text-verkko-theme: (
+  (default, text $color-default),
+);
+$color-frontpage-text-verkko-text-shadow: rgba(0, 0, 0, 0.6);
+
+$color-frontpage-text-title-theme: (
+  (default, text $color-primary),
+);
+
+//STUDYING
+$color-frontpage-card-studying-title: #5db5c5;
+$color-frontpage-button-studying-readmore-theme: (
+  (default, text #fff, background $color-frontpage-card-studying-title),
+);
+
+$color-frontpage-card-school-title: #f58220;
+$color-frontpage-button-school-readmore-theme: (
+  (default, text #fff, background $color-frontpage-card-school-title),
+);
+
+$color-frontpage-card-courses-title: #c64986;
+$color-frontpage-button-courses-readmore-theme: (
+  (default, text #fff, background $color-frontpage-card-courses-title),
+);
+
+//Otavan opisto card
+$color-frontpage-text-otavan-opisto-info-title-theme: (
+  (default, text $color-inverse),
+);
+
+$color-frontpage-text-otavan-opisto-description-theme: (
+  (default, text $color-inverse),
+);
+
+$color-frontpage-button-website-theme: (
+  (default, text $color-primary-contrast, background $color-primary),
+);
+
+$color-frontpage-button-newsletter-theme: (
+  (default, text $color-warn-contrast, background $color-warn),
+);
+
+//FOOTER
+$color-frontpage-text-contact-us-theme: (
+  (default, text $color-default),
+);
+
+$color-frontpage-text-contact-us-information-theme: (
+  (default, text $color-default),
+);

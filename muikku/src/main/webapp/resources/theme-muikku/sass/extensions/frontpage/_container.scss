@@ -1,3 +1,6 @@
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
 .frontpage.container {
   &.frontpage-container-muikku-logo {
     align-items: center;
@@ -7,6 +10,30 @@
 
     @include breakpoint-down($breakpoint-landscape-pad) {
       flex-direction: row;
+    }
+  }
+  &.frontpage-container-section {
+    margin-top: 70px;
+    padding: 0 10px 0 10px;
+
+    @include breakpoint-down($breakpoint-portrait-pad){
+      margin-top: 25px;
+    }
+  }
+  &.frontpage-container-otavan-opisto-social-media {
+    flex: 0 0 430px;
+    text-align: left;
+
+    @include breakpoint-down($breakpoint-portrait-pad) {
+      flex: 0 0 auto;
+      order: 2;
+      text-align: center;
+    }
+  }
+  &.frontpage-container-otavan-opisto-description {
+    @include breakpoint-down($breakpoint-portrait-pad) {
+      text-align: center;
+      margin-bottom: 20px;
     }
   }
 }

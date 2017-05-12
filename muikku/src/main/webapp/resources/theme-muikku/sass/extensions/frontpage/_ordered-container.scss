@@ -1,0 +1,50 @@
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+$frontpage-orderd-container-separation: 10;
+
+.frontpage.ordered-container {
+  &.frontpage-ordered-container-studying, &.frontpage-ordered-container-news-subcontainer {
+    >.ordered-container-item {
+      margin-bottom: #{$frontpage-orderd-container-separation}px
+    }
+    @include breakpoint-up($breakpoint-medium-screen){
+      width: calc(100% + #{$frontpage-orderd-container-separation*2}px);
+      margin-left: -#{$frontpage-orderd-container-separation}px;
+      >.ordered-container-item {
+        margin: 0 #{$frontpage-orderd-container-separation}px #{$frontpage-orderd-container-separation}px #{$frontpage-orderd-container-separation}px;
+      }
+    }
+  }
+
+  &.frontpage-ordered-container-news {
+    @include breakpoint-up($breakpoint-medium-screen){
+      >.ordered-container-item {
+        margin-bottom: #{$frontpage-orderd-container-separation}px;
+      }
+    }
+  }
+
+  &.frontpage-ordered-container-otavan-opisto-info {
+    >.ordered-container-item.frontpage-ordered-container-item-otavan-opisto-social-media {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    @include breakpoint-up($breakpoint-medium-screen){
+      >.ordered-container-item.frontpage-ordered-container-item-otavan-opisto-social-media {
+        flex-direction: row;
+      }
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      >.ordered-container-item.frontpage-ordered-container-item-otavan-opisto-logo {
+        order: -1;
+        text-align: center;
+
+        >img {
+          height: 60px;
+        }
+      }
+    }
+  }
+}

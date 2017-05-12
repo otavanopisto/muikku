@@ -13,13 +13,8 @@
 @import "../base/colors";
 
 .carousel {
-  padding: 10px;
   position: relative;
   width: 100%;
-
-  &.carousel-unpadded {
-    padding: 0;
-  }
 
   .carousel-item {
     display: block;
@@ -47,7 +42,7 @@
 .carousel-controls {
   display: block;
   margin: 0;
-  padding: 10px 0 20px;
+  padding: 20px 0 20px;
   width: 100%;
 
   .carousel-dots {

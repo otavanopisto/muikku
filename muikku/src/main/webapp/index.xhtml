@@ -57,13 +57,11 @@
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
 
       <!-- Studying -->
-      <section id="studying"
-        class="ordered-container-item frontpage-section">
-        <h2 class="text text-responsive-title frontpage-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
-        <div
-          class="ordered-container ordered-container-row ordered-container-responsive frontpage-studying-section-content">
-          <div class="ordered-container-item frontpage-card-container">
-            <div class="card frontpage-studying-card">
+      <section id="studying" class="frontpage container frontpage-container-section">
+        <h2 class="frontpage text frontpage-text-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
+        <div class="frontpage ordered-container ordered-container-row ordered-container-responsive frontpage-ordered-container-studying">
+          <div class="ordered-container-item">
+            <div class="frontpage card frontpage-card-studying">
               <img class="card-image" src="/gfx/kuva_nettilukio.png" alt=""
                 title="" />
               <div class="card-content">
@@ -72,13 +70,13 @@
               </div>
               <div class="card-footer">
                 <a href="http://www.nettilukio.fi/nettilukio_esittely"
-                  class="button">
+                  class="frontpage button frontpage-button-studying-readmore">
                   #{i18n.text['plugin.studying.readMore.link']} </a>
               </div>
             </div>
           </div>
-          <div class="ordered-container-item frontpage-card-container">
-            <div class="card frontpage-school-card">
+          <div class="ordered-container-item">
+            <div class="frontpage card frontpage-card-school">
               <img class="card-image" src="/gfx/kuva_nettiperuskoulu.png"
                 alt="" title="" />
               <div class="card-content">
@@ -87,13 +85,13 @@
               </div>
               <div class="card-footer">
                 <a href="http://www.nettilukio.fi/esittely_nettipk"
-                  class="button">
+                  class="frontpage button frontpage-button-school-readmore">
                   #{i18n.text['plugin.studying.readMore.link']} </a>
               </div>
             </div>
           </div>
-          <div class="ordered-container-item frontpage-card-container">
-            <div class="card frontpage-courses-card">
+          <div class="ordered-container-item">
+            <div class="frontpage card frontpage-card-courses">
               <img class="card-image" src="/gfx/kuva_aineopiskelu.png"
                 alt="" title="" />
               <div class="card-content">
@@ -102,7 +100,7 @@
               </div>
               <div class="card-footer">
                 <a href="http://www.nettilukio.fi/esittely_nettipk"
-                  class="button">
+                  class="frontpage button frontpage-button-courses-readmore">
                   #{i18n.text['plugin.studying.readMore.link']} </a>
               </div>
             </div>
@@ -111,7 +109,7 @@
       </section>
 
       <!-- Carousel -->
-      <section id="videos" class="ordered-container-item frontpage-section">
+      <section id="videos" class="frontpage container frontpage-container-section">
         <div class="carousel">
           <div class="carousel-item">
             <div class="carousel-video">
@@ -120,21 +118,21 @@
                 style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
             </div>
           </div>
-          <div class="carousel-item">
+          <div class="carousel-item" style="display:none">
             <div class="carousel-video">
               <iframe width="1280" height="720"
                 src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0"
                 style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
             </div>
           </div>
-          <div class="carousel-item">
+          <div class="carousel-item" style="display:none">
             <div class="carousel-video">
               <iframe width="1280" height="720"
                 src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0"
                 style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
             </div>
           </div>
-          <div class="carousel-item">
+          <div class="carousel-item" style="display:none">
             <div class="carousel-video">
               <iframe width="1280" height="720"
                 src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0"
@@ -146,18 +144,18 @@
       </section>
 
       <!-- Other details -->
-      <section id="news" class="ordered-container-item frontpage-section">
+      <section id="news" class="frontpage container frontpage-container-section">
 
-        <h2 class="text text-responsive-title frontpage-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
+        <h2 class="frontpage text frontpage-text-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
 
-        <div class="ordered-container frontpage-news-section-content">
+        <div class="frontpage ordered-container frontpage-ordered-container-news">
+
           <!-- Events and news -->
-          <div class="ordered-container-item ordered-container">
-            <div
-              class="ordered-container-item ordered-container ordered-container-row ordered-container-responsive">
+          <div class="ordered-container-item">
+            <div class="frontpage ordered-container ordered-container-row ordered-container-responsive frontpage-ordered-container-news-subcontainer">
 
               <!-- Events -->
-              <div class="ordered-container-item frontpage-card-container">
+              <div class="ordered-container-item">
                 <div class="card">
                   <div class="card-content">
                     <h2 class="card-title">
@@ -168,7 +166,7 @@
               </div>
 
               <!-- News -->
-              <div class="ordered-container-item frontpage-card-container">
+              <div class="ordered-container-item">
                 <div class="card">
                   <div class="card-content">
                     <h2 class="card-title">
@@ -177,18 +175,18 @@
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
 
           <!-- Otavan opisto and blog -->
-          <div class="ordered-container-item ordered-container">
-            <div
-              class="ordered-container-item ordered-container ordered-container-row ordered-container-responsive">
+          <div class="ordered-container-item">
+            <div class="frontpage ordered-container ordered-container-row ordered-container-responsive frontpage-ordered-container-news-subcontainer">
 
               <!-- Otavan opisto -->
               <div class="ordered-container-item frontpage-card-container">
                 <div class="card">
-                  <div class="carousel carousel-unpadded">
+                  <div class="carousel">
                     <div class="carousel-item">
                       <img class="card-image" src="/gfx/kuva1.jpg" alt=""
                         title="" />
@@ -198,7 +196,7 @@
                       </div>
                     </div>
 
-                    <div class="carousel-item">
+                    <div class="carousel-item" style="display:none">
                       <img class="card-image" src="/gfx/kuva2.jpg" alt=""
                         title="" />
                       <div class="card-content">
@@ -207,7 +205,7 @@
                       </div>
                     </div>
 
-                    <div class="carousel-item">
+                    <div class="carousel-item" style="display:none">
                       <img class="card-image" src="/gfx/kuva3.jpg" alt=""
                         title="" />
                       <div class="card-content">
@@ -216,7 +214,7 @@
                       </div>
                     </div>
 
-                    <div class="carousel-item">
+                    <div class="carousel-item" style="display:none">
                       <img class="card-image" src="/gfx/kuva4.jpg" alt=""
                         title="" />
                       <div class="card-content">
@@ -225,7 +223,7 @@
                       </div>
                     </div>
 
-                    <div class="carousel-item">
+                    <div class="carousel-item" style="display:none">
                       <img class="card-image" src="/gfx/kuva5.jpg" alt=""
                         title="" />
                       <div class="card-content">
@@ -254,40 +252,48 @@
       </section>
 
       <!-- Otavan Opisto info -->
-      <section id="organization"
-        class="ordered-container-item frontpage-card-container">
-        <div class="card frontpage-otavan-opisto-card">
-          <div
-            class="frontpage-otavan-opisto-card-container ordered-container">
-            <div
-              class="frontpage-otavan-opisto-card-social-media-and-description ordered-item">
-              <div class="frontpage-otavan-opisto-card-social-media">
-                <h2 class="text text-strong-subtitle text-inverse">
+      <section id="organization" class="frontpage container frontpage-container-section frontpage-card-container">
+
+        <!-- Otavan opisto card -->
+        <div class="frontpage card frontpage-card-otavan-opisto">
+
+          <!-- Otavan opisto info -->
+          <div class="frontpage ordered-container frontpage-ordered-container-otavan-opisto-info">
+            <div class="ordered-container-item frontpage-ordered-container-item-otavan-opisto-social-media">
+
+              <!-- Social media -->
+              <div class="frontpage container frontpage-container-otavan-opisto-social-media">
+                <h2 class="frontpage text text-uppercase frontpage-text-otavan-opisto-info-title">
                   #{i18n.text['plugin.organization.some.title']}
                 </h2>
-                <a class="button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
-                <a class="button-social icon icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
-                <a class="button-social icon icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
-                <a class="button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
-                <a class="button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
+                <a class="frontpage button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
+                <a class="frontpage button-social icon icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
+                <a class="frontpage button-social icon icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
+                <a class="frontpage button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
+                <a class="frontpage button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
               </div>
-              <div class="frontpage-otavan-opisto-card-description">
-                <div class="text text-inverse text-default-multiparagraph">
+
+              <!-- Description -->
+              <div class="frontpage container frontpage-container-otavan-opisto-description">
+                <div class="frontpage text text-multiparagraph frontpage-text-otavan-opisto-info-description">
                   <h:outputText value="#{i18n.text['plugin.organization.description']}" escape="false" />
                 </div>
-                <a href="http://www.otavanopisto.fi" target="top"
-                  class="button button-large frontpage-website-button">
-                  www.otavanopisto.fi </a> <br /> <a
-                  href="http://www.otavanopisto.fi/uutiskirje" target="top"
-                  class="button button-warn button-large frontpage-newsletter-button">
-                  #{i18n.text['plugin.organization.newsletter.link']} </a>
+                <a href="http://www.otavanopisto.fi" target="top" class="frontpage button frontpage-button-website">
+                  www.otavanopisto.fi
+                </a>
+                <br/>
+                <a href="http://www.otavanopisto.fi/uutiskirje" target="top" class="frontpage button frontpage-button-newsletter">
+                  #{i18n.text['plugin.organization.newsletter.link']}
+                </a>
               </div>
             </div>
-            <div class="frontpage-otavan-opisto-card-logo ordered-item">
-              <img src="/gfx/of-organization-logo.jpg" alt="Logo"
-                title="Logo" />
+
+            <!-- Otavan opisto logo -->
+            <div class="ordered-container-item frontpage-ordered-container-item-otavan-opisto-logo">
+              <img src="/gfx/of-organization-logo.jpg" alt="logo" title="logo" />
             </div>
           </div>
+
         </div>
       </section>
     </ui:fragment>

@@ -1,4 +1,5 @@
-@import "../../elements/hero";
+@import "../../base/colors";
+@import "../../base/mixins";
 
 .frontpage.hero {
   margin-top: $navbar-height;

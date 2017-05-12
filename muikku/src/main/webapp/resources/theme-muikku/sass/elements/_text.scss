@@ -25,8 +25,13 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   font-size: 14px;
   font-weight: 400;
   position: relative;
+  text-align: left;
 
-  &.text-icon {
+  b {
+    font-weight: 600;
+  }
+
+  &.text-icon, .text-icon {
     font-family: muikku;
     speak: none;
   }

@@ -158,47 +158,41 @@
     <div class="separator separator-inverse"></div>
 
     <ui:insert name="main">
-      <main class="screen-container frontpage-main background-container">
-      <div class="screen-container-wrapper ordered-container frontpage-main-container">
+      <main class="frontpage screen-container">
+      <div class="screen-container-wrapper">
         <ui:insert name="grid-content"></ui:insert>
       </div>
       </main>
     </ui:insert>
 
     <ui:insert name="footer">
-      <footer class="footer" id="contact">
+      <footer class="frontpage footer" id="contact">
         <div class="footer-container">
-          <div class="footer-item frontpage-footer-data">
-            <br />
-            <h2 class="text text-default-title text-default">#{i18n.text['plugin.footer.contact.title']}</h2>
-            <br />
-            <br />
-            <p class="text">
-              <span class="text text-icon icon-location text-inline text-default"></span>&#160;&#160;
-              <b class="text text-inline text-strong-label text-default">#{i18n.text['plugin.footer.streetAddress.label']} </b>&#160;
-              <span class="text text-default-label text-inline text-default">Otavantie 2 B, 50670 Otava</span>
+          <div class="footer-item frontpage-footer-item-contact">
+            <h2 class="frontpage text frontpage-text-contact-us">#{i18n.text['plugin.footer.contact.title']}</h2>
+            <p class="frontpage text frontpage-text-contact-us-information">
+              <span class="text-icon icon-location"></span>
+              <b>#{i18n.text['plugin.footer.streetAddress.label']}</b>
+              <span>Otavantie 2 B, 50670 Otava</span>
             </p>
-            <br />
-            <p class="text">
-              <span class="text text-icon icon-phone text-inline text-default"></span>&#160;&#160;
-              <b class="text text-inline text-strong-label text-default">#{i18n.text['plugin.footer.phoneNumber.label']} </b> &#160;
-              <span class="text text-default-label text-inline text-default">015 194 3552</span>
+            <p class="frontpage text frontpage-text-contact-us-information">
+              <span class="text-icon icon-phone"></span>
+              <b>#{i18n.text['plugin.footer.phoneNumber.label']}</b>
+              <span>015 194 3552</span>
             </p>
-            <br />
-            <p class="text">
-              <span class="text text-icon icon-envelope text-inline text-default"></span>&#160;&#160;
-              <b class="text text-inline text-strong-label text-default">#{i18n.text['plugin.footer.emailAddress.label']} </b> &#160;
-              <span class="text text-default-label text-inline text-default">info@otavanopisto.fi</span>
+            <p class="frontpage text frontpage-text-contact-us-information">
+              <span class="text-icon icon-envelope"></span>
+              <b>#{i18n.text['plugin.footer.emailAddress.label']}</b>
+              <span>info@otavanopisto.fi</span>
             </p>
-            <br />
-            <br />
             <!-- <p class="text">
               <a class="link link-small link-uppercase">#{i18n.text['plugin.footer.termsOfUse.label']}</a>&#160;&#160;&#160;&#160;
               <a class="link link-small link-uppercase">#{i18n.text['plugin.footer.personFileDescription.label']}</a>
             </p>-->
           </div>
-          <div class="footer-item frontpage-footer-logos">
-            <img src="/gfx/alku_uudelle.jpg" alt="" title="" class="logo" /> <img src="/gfx/footer_logo.jpg" alt="" title="" class="logo" />
+          <div class="footer-item frontpage-footer-item-logos">
+            <img src="/gfx/alku_uudelle.jpg" alt="" title="" class="logo" />
+            <img src="/gfx/footer_logo.jpg" alt="" title="" class="logo" />
           </div>
         </div>
       </footer>

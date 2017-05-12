@@ -57,10 +57,6 @@ $color-button-theme: (
   (button-inverse, background $color-inverse, text $color-inverse-contrast)
 );
 
-$color-frontpage-button-login: (
-  (default, background $color-primary, text $color-primary-contrast),
-);
-
 // Button pill theme
 $color-button-pill-theme: (
   (default, background $color-default, text $color-default-contrast),
@@ -89,10 +85,6 @@ $color-label-theme: (
   (label-inverse, text $color-default)
 );
 
-$color-frontpage-label-forgot-password: (
-  (default, text $color-primary),
-);
-
 //Text
 $color-text-theme: (
   (default, text $color-inverse),
@@ -106,24 +98,6 @@ $color-text-theme: (
   (text-secondary, text $color-secondary),
   (text-inverse, text $color-default)
 );
-
-$color-frontpage-text-muikku-description-theme: (
-  (default, text $color-default),
-);
-
-$color-frontpage-text-muikku-author-theme: (
-  (default, text $color-default),
-);
-
-$color-frontpage-text-muikku-theme: (
-  (default, text $color-default),
-);
-$color-frontpage-text-muikku-text-shadow: rgba(0, 0, 0, 0.3);
-
-$color-frontpage-text-verkko-theme: (
-  (default, text $color-default),
-);
-$color-frontpage-text-verkko-text-shadow: rgba(0, 0, 0, 0.6);
 
 //Separator
 $color-separator-theme: (
@@ -162,9 +136,7 @@ $color-menu-default-text: #343333;
 
 // dropdown
 $color-dropdown-default-background: #494949;
-
 $color-dropdown-default-text: #fff;
-
 $color-dropdown-default-shadow: rgba(0, 0, 0, 0.3);
 
 // bubble
@@ -226,3 +198,5 @@ $color-notification-queue-item-text: #fff;
 
 // text
 $color-text-banner-shadow: rgba(0, 0, 0, 0.6);
+
+@import "colors/frontpage";

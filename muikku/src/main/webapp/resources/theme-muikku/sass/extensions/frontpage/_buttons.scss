@@ -9,10 +9,35 @@
       margin-right: 14px;
     }
   }
+
+  &.frontpage-button-studying-readmore {
+    @include color-theme($color-frontpage-button-studying-readmore-theme, true);
+  }
+
+  &.frontpage-button-school-readmore {
+    @include color-theme($color-frontpage-button-school-readmore-theme, true);
+  }
+
+  &.frontpage-button-courses-readmore {
+    @include color-theme($color-frontpage-button-courses-readmore-theme, true);
+  }
+
+  &.frontpage-button-website {
+    @include color-theme($color-frontpage-button-website-theme, true);
+    margin-bottom: 10px;
+  }
+
+  &.frontpage-button-newsletter {
+    @include color-theme($color-frontpage-button-newsletter-theme, true);
+  }
 }
 
 .frontpage.button-pill {
   &.frontpage-button-pill-language-selector {
     margin-right: 14px;
   }
+}
+
+.frontpage.button-social {
+  margin: 10px 10px 20px 0;
 }
