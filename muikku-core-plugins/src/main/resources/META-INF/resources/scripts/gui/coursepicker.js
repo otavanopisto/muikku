@@ -318,7 +318,7 @@
       curriculumOptions.each(function () {
         var curriculumLi = $(this);
         if (curriculumLi.hasClass('selected')) {
-          var curriculumId = curriculumLi.find(".cp-curriculum-filter").attr("data-id");
+          var curriculumId = curriculumLi.attr("data-id");
           selectedCurriculums.push(curriculumId);
         }
       });
