@@ -193,12 +193,14 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             if (workspaceUserExists) {
               state = CourseCompletionState.ENROLLED;
             }
-            if (!workspaceAssessments.isEmpty()) {
-              WorkspaceAssessment workspaceAssessment = workspaceAssessments.get(0);
+            for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
+              if (!workspaceAssessment.getPassing()) {
+                state = CourseCompletionState.FAILED;
+              }
+            }
+            for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
               if (workspaceAssessment.getPassing()) {
                 state = CourseCompletionState.ASSESSED;
-              } else {
-                state = CourseCompletionState.FAILED;
               }
             }
             items.add(new VopsRESTModel.VopsItem(
