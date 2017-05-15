@@ -34,7 +34,6 @@ public class TranscriptOfRecordsController {
     boolean french = loadBoolProperty(student, "french");
     boolean italian = loadBoolProperty(student, "italian");
     boolean spanish = loadBoolProperty(student, "spanish");
-    String science = loadStringProperty(student, "science");
     String religion = loadStringProperty(student, "religion");
 
     String code = subject.getCode();
