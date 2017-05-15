@@ -180,7 +180,7 @@
   });
   
   $(document).ready(function() {
-    mApi().feed.feeds.read("avoimet_verkostot,eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
+    mApi().feed.feeds.read("eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
       renderDustTemplate('frontpage/feed_blogs.dust', {entries: blogs}, function(text) {
         $(".frontpage-posts-container").html(text);
       });
