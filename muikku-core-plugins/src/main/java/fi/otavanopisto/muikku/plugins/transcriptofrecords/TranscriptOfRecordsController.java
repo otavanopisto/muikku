@@ -25,14 +25,6 @@ public class TranscriptOfRecordsController {
       return false;
     }
 
-    if (subject.getCode().startsWith("RU")) {
-      return true;
-    }
-
-    if (subject.getCode().startsWith("EN")) {
-      return true;
-    }
-
     String mathSyllabus = loadStringProperty(student, "mathSyllabus");
     String finnish = loadStringProperty(student, "finnish");
     boolean german = loadBoolProperty(student, "german");

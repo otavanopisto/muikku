@@ -157,6 +157,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
+    int numCourses = 0;
+    int numMandatoryCourses = 0;
+    
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsItem> items = new ArrayList<>();
@@ -189,6 +192,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 break;
               }
             }
+            Mandatority mandatority = educationTypeMapping.getMandatority(educationSubtypeIdentifier);
             CourseCompletionState state = CourseCompletionState.NOT_ENROLLED;
             if (workspaceUserExists) {
               state = CourseCompletionState.ENROLLED;
@@ -196,26 +200,31 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
               if (!workspaceAssessment.getPassing()) {
                 state = CourseCompletionState.FAILED;
+                break;
               }
             }
             for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
               if (workspaceAssessment.getPassing()) {
                 state = CourseCompletionState.ASSESSED;
+                numCourses++;
+                if (mandatority == Mandatority.MANDATORY) {
+                  numMandatoryCourses++;
+                }
+                break;
               }
             }
             items.add(new VopsRESTModel.VopsItem(
                 i,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
-                educationTypeMapping.getMandatority(educationSubtypeIdentifier)
-            ));
+                mandatority));
           }
         }
         rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
       }
     }
 
-    VopsRESTModel result = new VopsRESTModel(rows);
+    VopsRESTModel result = new VopsRESTModel(rows, numCourses, numMandatoryCourses);
 
     return Response.ok(result).build();
   }

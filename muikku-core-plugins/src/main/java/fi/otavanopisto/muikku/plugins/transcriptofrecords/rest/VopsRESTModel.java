@@ -56,14 +56,27 @@ public class VopsRESTModel {
     List<VopsItem> items;
   }
   
-  public VopsRESTModel(List<VopsRow> rows) {
+  public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses) {
     super();
     this.rows = rows;
+    this.numCourses = numCourses;
+    this.numMandatoryCourses = numMandatoryCourses;
   }
   
   public List<VopsRow> getRows() {
     return rows;
   }
+  
+  public int getNumCourses() {
+    return numCourses;
+  }
+  
+  public int getNumMandatoryCourses() {
+    return numMandatoryCourses;
+  }
+  
+  int numMandatoryCourses;
+  int numCourses;
   
   List<VopsRow> rows;
 }
