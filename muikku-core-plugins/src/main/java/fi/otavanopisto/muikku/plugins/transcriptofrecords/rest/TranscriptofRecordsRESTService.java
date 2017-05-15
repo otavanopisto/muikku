@@ -82,13 +82,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private EnvironmentUserController environmentUserController;
-  
+
   @Inject
   private PluginSettingsController pluginSettingsController;
-  
+
   @Inject
   private GradingController gradingController;
-  
+
   @Inject
   private Logger logger;
 
@@ -128,7 +128,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/vops/{IDENTIFIER}")
   @RESTPermit(handling = Handling.INLINE)
   public Response getVops(@PathParam("IDENTIFIER") String studentIdentifierString) {
-    
+
     String educationTypeMappingString = pluginSettingsController.getPluginSetting("transcriptofrecords", "educationTypeMapping");
     EducationTypeMapping educationTypeMapping = new EducationTypeMapping();
     if (educationTypeMappingString != null) {
@@ -177,9 +177,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
                       workspaceEntity,
                       studentIdentifier);
-              workspaceAssessments.addAll(gradingController.listWorkspaceAssessments(
-                  SchoolDataIdentifier.fromId(workspace.getIdentifier()),
-                  SchoolDataIdentifier.fromId(student.getIdentifier())));
+              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getSchoolDataSource(), workspace.getIdentifier());
+              workspaceAssessments.addAll(gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier));
               if (workspaceUser != null) {
                 workspaceUserExists = true;
               }
