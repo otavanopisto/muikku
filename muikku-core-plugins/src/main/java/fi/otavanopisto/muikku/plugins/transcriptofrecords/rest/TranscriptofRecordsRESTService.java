@@ -34,12 +34,14 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFil
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
@@ -83,6 +85,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private GradingController gradingController;
   
   @Inject
   private Logger logger;
@@ -161,6 +166,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   subject.getSchoolDataSource(),
                   subject.getIdentifier(),
                   i);
+          List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
           if (!workspaces.isEmpty()) {
             SchoolDataIdentifier educationTypeIdentifier = null;
             boolean workspaceUserExists = false;
@@ -171,9 +177,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
                       workspaceEntity,
                       studentIdentifier);
+              workspaceAssessments.addAll(gradingController.listWorkspaceAssessments(
+                  SchoolDataIdentifier.fromId(workspace.getIdentifier()),
+                  SchoolDataIdentifier.fromId(student.getIdentifier())));
               if (workspaceUser != null) {
                 workspaceUserExists = true;
-                break;
               }
             }
             for (Workspace workspace : workspaces) {
@@ -182,9 +190,21 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 break;
               }
             }
+            CourseCompletionState state = CourseCompletionState.NOT_ENROLLED;
+            if (workspaceUserExists) {
+              state = CourseCompletionState.ENROLLED;
+            }
+            if (!workspaceAssessments.isEmpty()) {
+              WorkspaceAssessment workspaceAssessment = workspaceAssessments.get(0);
+              if (workspaceAssessment.getPassing()) {
+                state = CourseCompletionState.ASSESSED;
+              } else {
+                state = CourseCompletionState.FAILED;
+              }
+            }
             items.add(new VopsRESTModel.VopsItem(
                 i,
-                workspaceUserExists ? CourseCompletionState.NOT_ENROLLED : CourseCompletionState.ENROLLED,
+                state,
                 educationTypeIdentifier.toId(),
                 educationTypeMapping.getMandatority(educationTypeIdentifier)
             ));
