@@ -184,7 +184,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             }
             items.add(new VopsRESTModel.VopsItem(
                 i,
-                workspaceUserExists,
+                workspaceUserExists ? CourseCompletionState.NOT_ENROLLED : CourseCompletionState.ENROLLED,
                 educationTypeIdentifier.toId(),
                 educationTypeMapping.getMandatority(educationTypeIdentifier)
             ));
