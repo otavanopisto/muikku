@@ -157,6 +157,7 @@
     
     _loadStudentWorkspaces: function (studentIdentifier, callback) {
       mApi().workspace.workspaces
+        .cacheClear()
         .read({ includeArchivedWorkspaceUsers: true, userIdentifier: studentIdentifier, includeUnpublished: true, orderBy: ['alphabet'], maxResults: 500 })
         .on('$', $.proxy(function (workspaceEntity, callback) {
           mApi().workspace.workspaces.students.assessments
