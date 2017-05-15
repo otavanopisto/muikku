@@ -168,7 +168,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   i);
           List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
           if (!workspaces.isEmpty()) {
-            SchoolDataIdentifier educationTypeIdentifier = null;
+            SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
             for (Workspace workspace : workspaces) {
               WorkspaceEntity workspaceEntity =
@@ -184,8 +184,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               }
             }
             for (Workspace workspace : workspaces) {
-              educationTypeIdentifier = workspace.getEducationTypeIdentifier();
-              if (educationTypeIdentifier != null) {
+              educationSubtypeIdentifier = workspace.getEducationSubtypeIdentifier();
+              if (educationSubtypeIdentifier != null) {
                 break;
               }
             }
@@ -206,8 +206,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             items.add(new VopsRESTModel.VopsItem(
                 i,
                 state,
-                educationTypeIdentifier.toId(),
-                educationTypeMapping.getMandatority(educationTypeIdentifier)
+                educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
+                educationTypeMapping.getMandatority(educationSubtypeIdentifier)
             ));
           }
         }

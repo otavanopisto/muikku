@@ -261,6 +261,7 @@ public class PyramusSchoolDataEntityFactory {
   public Workspace createEntity(
       Course course,
       SchoolDataIdentifier educationTypeIdentifier,
+      SchoolDataIdentifier educationSubtypeIdentifier,
       Map<String, List<String>> educationTypeCodeMap
   ) {
     if (course == null) {
@@ -314,7 +315,8 @@ public class PyramusSchoolDataEntityFactory {
         course.getArchived(), 
         courseFeeApplicable,
         curriculumIdentifiers,
-        course.getCourseNumber());
+        course.getCourseNumber(),
+        educationSubtypeIdentifier);
   }
 
   public WorkspaceType createEntity(CourseType courseType) {

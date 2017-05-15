@@ -4,11 +4,11 @@ import java.util.List;
 
 public class VopsRESTModel {
   public static class VopsItem {
-    public VopsItem(int courseNumber, CourseCompletionState state, String educationType, Mandatority mandatority) {
+    public VopsItem(int courseNumber, CourseCompletionState state, String educationSubtype, Mandatority mandatority) {
       super();
       this.courseNumber = courseNumber;
       this.state = state;
-      this.educationType = educationType;
+      this.educationSubtype = educationSubtype;
       this.mandatority = mandatority;
     }
     
@@ -18,8 +18,11 @@ public class VopsRESTModel {
     public CourseCompletionState getState() {
       return state;
     }
-    public String getEducationType() {
-      return educationType;
+    public String getEducationSubtype() {
+      return educationSubtype;
+    }
+    public void setEducationSubtype(String educationSubtype) {
+      this.educationSubtype = educationSubtype;
     }
     public Mandatority getMandatority() {
       return mandatority;
@@ -30,7 +33,7 @@ public class VopsRESTModel {
 
     private int courseNumber;
     private CourseCompletionState state;
-    private String educationType;
+    private String educationSubtype;
     private Mandatority mandatority;
   }
   

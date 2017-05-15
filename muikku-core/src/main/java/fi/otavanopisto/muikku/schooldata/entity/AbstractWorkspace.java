@@ -14,7 +14,8 @@ public abstract class AbstractWorkspace implements Workspace {
   public AbstractWorkspace(String identifier, String name, String nameExtension, String viewLink,
       SchoolDataIdentifier workspaceTypeId, String courseIdentifierIdentifier, String description,
       String subjectIdentifier, SchoolDataIdentifier educationTypeIdentifier, Date modified, Double length, String lengthUnitIdentifier,
-      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber) {
+      OffsetDateTime beginDate, OffsetDateTime endDate, boolean archived, boolean evaluationFeeApplicable, Set<SchoolDataIdentifier> curriculumIdentifiers, Integer courseNumber,
+      SchoolDataIdentifier educationSubtypeIdentifier) {
     super();
     this.identifier = identifier;
     this.name = name;
@@ -34,6 +35,7 @@ public abstract class AbstractWorkspace implements Workspace {
     this.evaluationFeeApplicable = evaluationFeeApplicable;
     this.curriculumIdentifiers = curriculumIdentifiers;
     this.courseNumber = courseNumber;
+    this.educationSubtypeIdentifier = educationSubtypeIdentifier;
   }
   
   @Override
@@ -105,6 +107,11 @@ public abstract class AbstractWorkspace implements Workspace {
   }
   
   @Override
+  public SchoolDataIdentifier getEducationSubtypeIdentifier() {
+    return educationSubtypeIdentifier;
+  }
+  
+  @Override
   public Double getLength() {
     return length;
   }
@@ -168,6 +175,7 @@ public abstract class AbstractWorkspace implements Workspace {
   private String description;
   private String subjectIdentifier;
   private SchoolDataIdentifier educationTypeIdentifier;
+  private SchoolDataIdentifier educationSubtypeIdentifier;
   private Date modified;
   private Double length;
   private String lengthUnitIdentifier;
