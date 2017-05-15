@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
@@ -15,7 +14,7 @@ public class TranscriptOfRecordsController {
   @Inject
   private UserSchoolDataController userSchoolDataController;
   
-  private Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
+  private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
 
   public boolean subjectAppliesToStudent(User student, Subject subject) {
     if (subject.getCode() == null) {
