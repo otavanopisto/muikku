@@ -40,38 +40,55 @@ public class TranscriptOfRecordsController {
     boolean french = loadBoolProperty(student, "french");
     boolean italian = loadBoolProperty(student, "italian");
     boolean spanish = loadBoolProperty(student, "spanish");
-    String science = loadStringProperty(student, "science");
     String religion = loadStringProperty(student, "religion");
 
-    if (Objects.equals(subject.getCode(), mathSyllabus)) {
-      return true;
+    String code = subject.getCode();
+
+    if ("MAA".equals(mathSyllabus) && "MAB".equals(code)) {
+      return false;
     }
 
-    if (Objects.equals(subject.getCode(), finnish)) {
-      return true;
+    if ("MAB".equals(mathSyllabus) && "MAA".equals(code)) {
+      return false;
     }
 
-    if (german && subject.getCode().startsWith("SA")) {
-      return true;
+    if ("S2".equals(finnish) && "AI".equals(code)) {
+      return false;
     }
 
-    if (french && subject.getCode().startsWith("RA")) {
-      return true;
+    if ("AI".equals(finnish) && "S2".equals(code)) {
+      return false;
     }
 
-    if (italian && subject.getCode().startsWith("IT")) {
-      return true;
+    if (!german && subject.getCode().startsWith("SA")) {
+      return false;
     }
 
-    if (spanish && subject.getCode().startsWith("ES")) {
-      return true;
+    if (!french && subject.getCode().startsWith("RA")) {
+      return false;
     }
 
-    if (Objects.equals(subject.getCode(), religion)) {
-      return true;
+    if (!italian && subject.getCode().startsWith("IT")) {
+      return false;
     }
 
-    return false;
+    if (!spanish && subject.getCode().startsWith("ES")) {
+      return false;
+    }
+
+    if ("UX".equals(religion) && ("UE".equals(code) || "ET".equals(code))) {
+      return false;
+    }
+
+    if ("UE".equals(religion) && ("UX".equals(code) || "ET".equals(code))) {
+      return false;
+    }
+
+    if ("ET".equals(religion) && ("UE".equals(code) || "UX".equals(code))) {
+      return false;
+    }
+
+    return true;
   }
 
   public String loadStringProperty(User user, String propertyName) {
