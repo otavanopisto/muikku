@@ -58,7 +58,13 @@
       <div class="tr-vops-row">
         <div class="tr-vops-item-name">{subject}</div>
         {#items}
-          <div title="Kurssi {courseNumber}" class="tr-vops-item mandatory {?completed}passed{/completed}" data-no="{courseNumber}">
+          <div title="Kurssi {courseNumber}"
+          	   class="tr-vops-item{~s}
+          	   		{?completed}passed{/completed}{~s}
+          	   		{@eq key=mandatority value="MANDATORY"}mandatory{/eq}{~s}
+          	   		{@eq key=mandatority value="SCHOOL_LEVEL_OPTIONAL"}optional-school{/eq}{~s}
+          	   		{@eq key=mandatority value="NATIONAL_LEVEL_OPTIONAL"}optional-national{/eq}"
+          	   data-no="{courseNumber}">
             <div class="tr-vops-item-menu"></div>
           </div>       
         {/items}       
