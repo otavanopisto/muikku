@@ -195,24 +195,24 @@
 }
 
 
-.tr-vops-item{
-  position: relative;
+.tr-vops-item {
   align-items: center;
   background-color: $environment-background-dim-color;
   box-sizing: border-box;
-  display:flex;
+  cursor: pointer;
+  display: flex;
   flex: 0 0 30px;
   height: 30px;
   justify-content: center;
-  margin-left:10px;
+  margin-left: 10px;
   min-width: 30px;
-  cursor: pointer;
+  position: relative;
 
   span {
     pointer-events: none;
-    -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    -webkit-user-select: none;
     user-select: none;
   }
 
@@ -221,16 +221,16 @@
   }
 
   &.optional-school {
-    border-bottom-right-radius: 15px;
     border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
     border-top-left-radius: 15px;
 
   }
 
   &.optional-national {
-    border-top-right-radius: 15px;
-    border-top-left-radius: 15px;
     border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
   }
 
   &.passed {
@@ -238,15 +238,15 @@
 
     .tr-vops-item-menu {
       border: 1px solid $item-state-passed-color;
-      top: 34px;
       left: -6px;
+      top: 34px;
 
       &::after {
+        border-bottom-color: $environment-arrow-border-color;
         border-color: $item-state-passed-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $environment-arrow-border-color;
+        border-top: solid transparent;
         border-width: 7px;
         margin-left: 1px;
       }
@@ -351,12 +351,12 @@
   }
 
   &.enrolled {
-     background-color: $item-state-between-color;
-
+    background-color: $item-state-between-color;
+    
     .tr-vops-item-menu {
       border: 1px solid $item-state-between-color;
-      top: 37px;
       left: -6px;
+      top: 37px;
 
       &::after {
         border-bottom-color: $environment-arrow-border-color;      
@@ -514,8 +514,8 @@
 
 
 .tr-user-file-size {
-  margin-left: 10px;
   font-weight: 300;
+  margin-left: 10px;
 }
 
 
