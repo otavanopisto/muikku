@@ -2,6 +2,7 @@
 @import "styles";
 
 // These are for task styles
+
 @import "vars_backup";
 @import "connect-field";
 @import "organizer-field";
@@ -12,10 +13,10 @@
 @import "correct_answers";
 
 
-/* Transcript of records (.tr-*) */
+// Transcript of records (.tr-*) 
 
 
-/* Classes */
+// Classes 
 
 
 .tr-content-main {
@@ -60,17 +61,15 @@
 
 
 .tr-vops-legend-content {
-  border-top: 1px solid $environment-legend-border-color;
   border-bottom: 1px solid $environment-legend-border-color;
+  border-top: 1px solid $environment-legend-border-color;
   cursor: pointer;  
   max-height: 25px;
-
   overflow-y: hidden;
   padding: 5px;
-  transition-duration: .5s;
+  transition-duration: 0.5s;
   transition-property: all;
   transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
-
 
   &.closed {
     max-height: 25px;
@@ -131,7 +130,7 @@
 .tr-vops-item-title {
   align-items: center;
   color: $environment-button-disabled-font-color;
-  display:f lex;
+  display: flex;
   flex: 0 0 30px;
   height: 30px;
   justify-content: center;
@@ -139,7 +138,7 @@
   min-width: 30px;
 }
 
-.tr-vops-item-men u{
+.tr-vops-item-menu {
   background-color: $environment-background-color;
   border: 1px solid $environment-border-color;
   border-radius: 3px;
@@ -148,21 +147,21 @@
   height: 100px;
   left: -4px;
   padding: 10px;
-  position:absolute;
+  position: absolute;
   top: 36px;
   width: 100px;
   z-index: 13;
 
   &::after,
   &::before {
-    bottom: 100%;
     border: solid transparent;
+    bottom: 100%;
     content: " ";
     height: 0;
     margin-top: 10px;
-    width: 0;
-    position: absolute;
     pointer-events: none;
+    position: absolute;
+    width: 0;
   }
 
   &::after {
