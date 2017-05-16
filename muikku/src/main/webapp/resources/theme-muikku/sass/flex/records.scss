@@ -77,13 +77,13 @@
   }
 
   &.open {
-   max-height: 200px;
+    max-height: 200px;
   }
 }
 
 .tr-vops-legend-topic {
-   font-weight: 600;  
-   padding: 20px 0 0 20px;
+  font-weight: 600;  
+  padding: 20px 0 0 20px;
 }
 
 .tr-vops-legend-items {
@@ -100,34 +100,25 @@
   }
 }
 
-.tr-vops-progress-courses-container {
- 
-  
-  
-}
-
 .tr-vops-progress-courses {
-  display: flex;
-  min-height: 40px;
-  justify-content: center;
   align-items: center;
+  display: flex;
   font-size: 16px;
+  justify-content: center;
+  min-height: 40px;
 
   span {
-   margin-left: 15px;
-  
+    margin-left: 15px;
   }
- 
-  
 }
 
 
 
 .tr-vops-row {
-  margin-top: 10px;
-  display: flex;
   align-items: center;
+  display: flex;
   flex-direction: row;
+  margin-top: 10px;
 }
 
 
@@ -148,7 +139,7 @@
   min-width: 30px;
 }
 
-.tr-vops-item-menu{
+.tr-vops-item-men u{
   background-color: $environment-background-color;
   border: 1px solid $environment-border-color;
   border-radius: 3px;
@@ -185,12 +176,12 @@
   }
 
   &::before {
-    border-bottom-color:  $environment-border-color;
+    border-bottom-color: $environment-border-color;
     border-color: $environment-arrow-border-color;
     border-left: solid transparent;
     border-right: solid transparent;
-    border-width: 8px;
     border-top: solid transparent;
+    border-width: 8px;
   }
 }
 
