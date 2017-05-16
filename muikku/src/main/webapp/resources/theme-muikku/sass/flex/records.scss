@@ -39,8 +39,8 @@
 
   position: relative;
   padding: 0 20px 200px;
-  margin-left:auto;
-  margin-right:auto;
+  margin-left: auto;
+  margin-right: auto;
   min-width: 260px;
   overflow-x: auto;
   overflow-y: hidden;
@@ -267,29 +267,28 @@
 
     .tr-vops-item-menu {
       border: 1px solid $item-state-incomplete-color;
-      top: 34px;
       left: -6px;
+      top: 34px;
 
       &::after {
+        border-bottom-color: $environment-arrow-border-color;
         border-color: $item-state-incomplete-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $environment-arrow-border-color;
+        border-top: solid transparent;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
+        border-bottom-color: $item-state-incomplete-color;
         border-color: $environment-arrow-border-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $item-state-incomplete-color;
+        border-top: solid transparent;
         border-width: 8px;
       }
-   }
-
+    }
   }
 
   &.failed {
@@ -298,30 +297,28 @@
 
     .tr-vops-item-menu {
       border: 1px solid $item-grade-failed-color;
-      top: 37px;
       left: -6px;
+      top: 37px;
 
       &::after {
+        border-bottom-color: $environment-arrow-border-color;
         border-color: $item-grade-failed-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $environment-arrow-border-color;
+        border-top: solid transparent;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
+        border-bottom-color: $item-grade-failed-color;
         border-color: $environment-arrow-border-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $item-grade-failed-color;
+        border-top: solid transparent;
         border-width: 8px;
-
       }
-   }
-
+    }
   }
 
   &.planned {
@@ -333,21 +330,21 @@
       left: -6px;
 
       &::after {
+        border-bottom-color: $environment-arrow-border-color;
         border-color: $item-state-between-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $environment-arrow-border-color;
+        border-top: solid transparent;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
+        border-bottom-color: $item-state-between-color;
         border-color: $environment-arrow-border-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $item-state-between-color;
+        border-top: solid transparent;
         border-width: 8px;
       }
     }
@@ -362,36 +359,32 @@
       left: -6px;
 
       &::after {
+        border-bottom-color: $environment-arrow-border-color;      
         border-color: $item-state-between-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $environment-arrow-border-color;
+        border-top: solid transparent;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
+        border-bottom-color: $item-state-between-color;
         border-color: $environment-arrow-border-color;
-        border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: $item-state-between-color;
+        border-top: solid transparent;
         border-width: 8px;
       }
     }
   }
 }
 
-
-
-
 .tr-vops-legend-item-grid {
-  height: 20px;
-  min-width: 20px;
-  margin-right: 10px;
   flex: 0 0 20px;
-
+  height: 20px;
+  margin-right: 10px;
+  min-width: 20px;
 }
 
 
@@ -401,9 +394,10 @@
 
 .tr-study-programme-name {
   padding-left: 5px;
+  
   h3 {
     color: $environment-item-subheader-font-color;
-    font-weight:700;
+    font-weight: 700;
   }
 }
 
@@ -495,13 +489,13 @@
 
 }
 
-.tr-user-files{
+.tr-user-files {
   padding: 0 10px;
   margin-bottom: 10px;
 
 }
 
-.tr-user-file{
+.tr-user-file {
   background-color: $environment-file-background-color;
   display: inline-block;
   margin-bottom: 5px;
@@ -512,16 +506,16 @@
     text-decoration: none;
   }
 
-  &:not(:first-child){
-   margin-left: 5px;
+  &:not(:first-child) {
+    margin-left: 5px;
   }
 
 }
 
 
-.tr-user-file-size{
-  margin-left:10px;
-  font-weight:300;
+.tr-user-file-size {
+  margin-left: 10px;
+  font-weight: 300;
 }
 
 
