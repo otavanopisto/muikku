@@ -23,6 +23,11 @@
             <div>{#localize key="plugin.records.studyplan.legend.title.passed" /}</div>
           </div>
           <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item enrolled"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.enrolled" /}</div>
+          </div>
+
+          <div class="tr-vops-legend-item"">
             <div class="tr-vops-legend-item-grid tr-vops-item failed"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.failed" /}</div>
           </div>
@@ -45,6 +50,13 @@
       </div>
     </div>
   </div>
+  <div class="tr-vops-progress-courses-container">
+    <div class="tr-vops-progress-courses">
+      <span>{#localize key="plugin.records.studyplan.progress.title.courses.all" arg0=numCourses /}</span>
+      <span>{#localize key="plugin.records.studyplan.progress.title.courses.mandatory" arg0=numMandatoryCourses /}</span>
+    </div>  
+  </div>
+
   <div class="tr-vops-content">
     <div class="tr-vops-row sm-flex-hide">
       <div class="tr-vops-item-name"><span>{#localize key="plugin.records.title.subject" /}</span></div>
@@ -60,7 +72,7 @@
         {#items}
           <div title="Kurssi {courseNumber}"
           	   class="tr-vops-item{~s}
-          	   		{@eq key=state value="ENROLLED"}signed{~s}{/eq}
+          	   		{@eq key=state value="ENROLLED"}enrolled{~s}{/eq}
                     {@eq key=state value="FAILED"}failed{~s}{/eq}
                     {@eq key=state value="PLANNED"}planned{~s}{/eq}
                     {@eq key=state value="MARKED_INCOMPLETE"}incomplete{~s}{/eq}
@@ -96,7 +108,7 @@
 <!--           <div title="Kurssi N" class="tr-vops-item optional-school planned" data-no="{courseNumber}"> -->
 <!--             <div class="tr-vops-item-menu"></div>           -->
 <!--           </div>   -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-national signed" data-no="{courseNumber}"> -->
+<!--           <div title="Kurssi N" class="tr-vops-item optional-national enrolled" data-no="{courseNumber}"> -->
 <!--             <div class="tr-vops-item-menu"></div>           -->
 <!--           </div>   -->
 <!--           <div title="Kurssi N" class="tr-vops-item optional-national failed" data-no="{courseNumber}"> -->

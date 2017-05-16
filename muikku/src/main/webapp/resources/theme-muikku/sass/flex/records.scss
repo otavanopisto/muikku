@@ -98,6 +98,29 @@
   }
 }
 
+.tr-vops-progress-courses-container {
+ 
+  
+  
+}
+
+.tr-vops-progress-courses {
+  display: flex;
+  min-height: 40px;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+
+  span {
+   margin-left: 15px;
+  
+  }
+ 
+  
+}
+
+
+
 .tr-vops-row {
   margin-top:10px;
   display:flex;
@@ -330,7 +353,7 @@
     }
   }
 
-  &.signed {
+  &.enrolled {
      background-color: #4d67ff;
 
     .tr-vops-item-menu {
