@@ -92,9 +92,7 @@
         }
         updateData[$element.attr("name")] = $element.val();
       });
-      console.log(updateData);
       mApi().records.hops.update(updateData).callback((function(err,data){
-        console.log(data);
         if (err){
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
