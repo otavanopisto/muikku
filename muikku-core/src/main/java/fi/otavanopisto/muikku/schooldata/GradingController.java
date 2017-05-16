@@ -152,6 +152,24 @@ public class GradingController {
     
     return gradingSchoolDataController.listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
   }
+  
+  public WorkspaceAssessment findLatestWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
+    List<WorkspaceAssessment> workspaceAssessments = listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
+    workspaceAssessments.sort((WorkspaceAssessment a, WorkspaceAssessment b) -> {
+      if (a == null) {
+        return -1;
+      }
+      if (b == null) {
+        return 1;
+      }
+      return a.getDate().compareTo(b.getDate());
+    });
+    if (workspaceAssessments.isEmpty()) {
+      return null;
+    } else {
+      return workspaceAssessments.get(workspaceAssessments.size()-1);
+    }
+  }
  
   public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataIdentifier workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
     return gradingSchoolDataController.updateWorkspaceAssessment(workspaceAssesmentIdentifier.getDataSource(),

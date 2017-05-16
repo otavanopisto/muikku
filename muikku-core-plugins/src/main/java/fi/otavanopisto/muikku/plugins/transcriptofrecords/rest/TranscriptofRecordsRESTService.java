@@ -135,7 +135,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       try {
         educationTypeMapping = new ObjectMapper().readValue(educationTypeMappingString, EducationTypeMapping.class);
       } catch (IOException e) {
-        logger.log(Level.INFO, "Education type mapping not set");
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Education type mapping not set").build();
       }
     }
 
@@ -181,7 +181,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                       workspaceEntity,
                       studentIdentifier);
               SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
-              workspaceAssessments.addAll(gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier));
+              WorkspaceAssessment workspaceAssesment = gradingController.findLatestWorkspaceAssessment(workspaceIdentifier, studentIdentifier);
+              if (workspaceAssesment != null) {
+                workspaceAssessments.add(workspaceAssesment);
+              }
+
               if (workspaceUser != null) {
                 workspaceUserExists = true;
               }
