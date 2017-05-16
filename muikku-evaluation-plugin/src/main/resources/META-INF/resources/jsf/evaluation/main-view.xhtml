@@ -61,8 +61,9 @@
       <input type="hidden" name="workspaceName" id="workspaceName" value="#{evaluationMainViewBackingBean.workspaceName}"/>
     
       <div class="evaluation-navigation">
-        <div class="eval-nav-item eval-home icon-home"></div>
-        <div class="eval-nav-item eval-workspaces icon-books"></div>
+        <div class="eval-nav-item eval-home icon-home" title="#{i18n.text['plugin.evaluation.tooltips.frontpage']}"></div>
+        <div class="eval-nav-item eval-workspaces icon-books" title="#{i18n.text['plugin.evaluation.tooltips.workspaces']}"></div>
+        <div class="eval-nav-item eval-old-evaluation icon-evaluate" title="#{i18n.text['plugin.evaluation.tooltips.oldEvaluation']}"></div>
         <div class="eval-search-wrapper">
           <div class="eval-search-container">
             <input type="text" name="search" class="eval-searchfield" placeholder="#{i18n.text['plugin.evaluation.search.searchTextfieldPlaceholder']}"/>
@@ -70,7 +71,7 @@
             <div class="remove-search-results icon-close" style="display:none;"></div>
           </div>
         </div>
-        <div class="eval-nav-item eval-filters icon-filter"></div>        
+        <div class="eval-nav-item eval-filters icon-filter" title="#{i18n.text['plugin.evaluation.tooltips.filters']}"></div>        
       </div>
       
       <div class="evaluation-filters-wrapper" data-visibility="hidden">

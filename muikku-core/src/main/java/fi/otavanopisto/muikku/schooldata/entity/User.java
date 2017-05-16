@@ -1,10 +1,21 @@
 package fi.otavanopisto.muikku.schooldata.entity;
 
 import java.time.OffsetDateTime;
+
 import fi.otavanopisto.muikku.search.annotations.IndexId;
 import fi.otavanopisto.muikku.search.annotations.Indexable;
+import fi.otavanopisto.muikku.search.annotations.IndexableFieldOption;
 
-@Indexable (name = "User")
+@Indexable (
+  name = "User",
+  options = {
+    @IndexableFieldOption (
+      name = "email",
+      type = "string",
+      index = "not_analyzed"
+    )
+  }
+)
 public interface User extends SchoolDataEntity {
 
   public String getIdentifier();

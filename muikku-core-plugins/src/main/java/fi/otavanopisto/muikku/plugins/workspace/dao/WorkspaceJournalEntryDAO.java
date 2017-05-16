@@ -1,7 +1,10 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -9,11 +12,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry_;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry_;
 
 public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEntry> {
 
@@ -52,7 +55,7 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
     
     return query.getResultList();
   }
-  
+
   public List<WorkspaceJournalEntry> listByWorkspaceEntityIdAndUserEntityId(WorkspaceEntity workspaceEntity, UserEntity userEntity, 
       int firstResult, int maxResults) {
     EntityManager entityManager = getEntityManager();
@@ -65,6 +68,32 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntity.getId()),
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.userEntityId), userEntity.getId()),
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
+        )
+    );
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceJournalEntry_.created)));
+
+    TypedQuery<WorkspaceJournalEntry> query = entityManager.createQuery(criteria);
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
+  }
+
+  public List<WorkspaceJournalEntry> listByWorkspaceEntityAndUserEntities(WorkspaceEntity workspaceEntity,
+      Collection<UserEntity> userEntities, int firstResult, int maxResults) {
+    EntityManager entityManager = getEntityManager();
+
+    Set<Long> userEntityIds = userEntities.stream().map(userEntity -> userEntity.getId()).collect(Collectors.toSet());
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceJournalEntry> criteria = criteriaBuilder.createQuery(WorkspaceJournalEntry.class);
+    Root<WorkspaceJournalEntry> root = criteria.from(WorkspaceJournalEntry.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.workspaceEntityId), workspaceEntity.getId()),
+            root.get(WorkspaceJournalEntry_.userEntityId).in(userEntityIds),
             criteriaBuilder.equal(root.get(WorkspaceJournalEntry_.archived), Boolean.FALSE)
         )
     );

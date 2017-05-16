@@ -11,6 +11,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -138,6 +139,21 @@ public class CommunicatorTrashRESTService extends PluginRESTService {
     CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
 
     communicatorController.archiveTrashedMessages(user, threadId);
+    
+    return Response.noContent().build();
+  }
+  
+  @PUT
+  @Path ("/trash/{COMMUNICATORMESSAGEID}/restore")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response deleteReceivedMessages(
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.unTrashAllThreadMessages(user, messageId);
     
     return Response.noContent().build();
   }

@@ -1,5 +1,5 @@
 {#staffMembers}
-  <div class="workspace-teacher">
+  <div class="workspace-teacher" data-id="{id}">
     <div class="workspace-teacher-profile-picture">
       <object data="/rest/user/files/user/{userEntityId}/identifier/profile-image-96" type="image/jpeg">
         <img src="/gfx/default-user-picture.jpg" />
@@ -17,9 +17,9 @@
       {?properties.profile-vacation-period}
         <div class="workspace-teacher-info vacation-period">{#localize key="plugin.workspace.index.teachersVacationPeriod.label"/} {properties.profile-vacation-period}</div>
       {/properties.profile-vacation-period}
+      <div class="workspace-teacher-info message icon-envelope"><span>{#localize key="plugin.workspace.index.message.label"/}</span></div>
     </div>
   </div>
   {:else}
     <div class="workspace-teachers-empty">{#localize key="plugin.workspace.index.teachersEmpty"/}</div>
 {/staffMembers}
-

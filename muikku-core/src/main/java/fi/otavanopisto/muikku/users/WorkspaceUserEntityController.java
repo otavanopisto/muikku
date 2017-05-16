@@ -159,6 +159,10 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.updateIdentifier(workspaceUserEntity, identifier);
   }
 
+  public WorkspaceUserEntity updateWorkspaceUserRole(WorkspaceUserEntity workspaceUserEntity, WorkspaceRoleEntity workspaceUserRole) {
+    return workspaceUserEntityDAO.updateWorkspaceUserRole(workspaceUserEntity, workspaceUserRole);
+  }
+
   public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     workspaceUserEntityDAO.delete(workspaceUserEntity);
   }
