@@ -85,36 +85,6 @@
             <div class="tr-vops-item-menu"></div>
           </div>
         {/items}
-<!--           <div title="Kurssi N" class="tr-vops-item optional-school incomplete" data-no="{courseNumber}"> -->
-<!--             <span>T</span> -->
-<!--             <div class="tr-vops-item-menu"></div> -->
-<!--           </div>     -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-school passed" data-no="{courseNumber}"> -->
-<!--             <span>6</span> -->
-<!--             <div class="tr-vops-item-menu"></div>           -->
-<!--           </div>     -->
-<!--           <div title="Kurssi N" class="tr-vops-item mandatory incomplete" data-no="{courseNumber}"> -->
-<!--             <span>T</span> -->
-<!--             <div class="tr-vops-item-menu"></div>            -->
-<!--           </div>   -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-national incomplete" data-no="{courseNumber}"> -->
-<!--             <span>T</span> -->
-<!--             <div class="tr-vops-item-menu"></div>             -->
-<!--           </div>                         -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-school passed" data-no="{courseNumber}"> -->
-<!--             <span>6</span>   -->
-<!--             <div class="tr-vops-item-menu"></div>             -->
-<!--           </div>   -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-school planned" data-no="{courseNumber}"> -->
-<!--             <div class="tr-vops-item-menu"></div>           -->
-<!--           </div>   -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-national enrolled" data-no="{courseNumber}"> -->
-<!--             <div class="tr-vops-item-menu"></div>           -->
-<!--           </div>   -->
-<!--           <div title="Kurssi N" class="tr-vops-item optional-national failed" data-no="{courseNumber}"> -->
-<!--             <span>H</span>   -->
-<!--             <div class="tr-vops-item-menu"></div>             -->
-<!--           </div>       -->
       </div>
     {/rows}
   </div>
