@@ -26,7 +26,6 @@
             <div class="tr-vops-legend-item-grid tr-vops-item enrolled"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.enrolled" /}</div>
           </div>
-
           <div class="tr-vops-legend-item"">
             <div class="tr-vops-legend-item-grid tr-vops-item failed"></div>
             <div>{#localize key="plugin.records.studyplan.legend.title.failed" /}</div>

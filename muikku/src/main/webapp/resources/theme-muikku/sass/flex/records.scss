@@ -143,7 +143,7 @@
   margin-left:10px;
   align-items: center;
   justify-content: center;
-  color: #dadada;
+  color: $environment-button-disabled-font-color;
 }
 
 .tr-vops-item-menu{
@@ -177,13 +177,13 @@
     border-top: solid transparent;
     border-left: solid transparent;
     border-right: solid transparent;
-    border-bottom-color: #fff;
+    border-bottom-color: $environment-arrow-border-color;
     border-width: 7px;
     margin-left: 1px;
   }
 
   &::before {
-    border-color: #fff;
+    border-color: $environment-arrow-border-color;
     border-top: solid transparent;
     border-left: solid transparent;
     border-right: solid transparent;
@@ -234,58 +234,58 @@
   }
 
   &.passed {
-    border: 3px solid #50c04d;
+    border: 3px solid $item-state-passed-color;
 
     .tr-vops-item-menu {
-      border: 1px solid #50c04d;
+      border: 1px solid $item-state-passed-color;
       top: 34px;
       left: -6px;
 
       &::after {
-        border-color: #50c04d;
+        border-color: $item-state-passed-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #fff;
+        border-bottom-color: $environment-arrow-border-color;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
-        border-color: #fff;
+        border-color: $environment-arrow-border-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #50c04d;
+        border-bottom-color: $item-state-passed-color;
         border-width: 8px;
       }
    }
   }
 
   &.incomplete {
-    border: 3px solid #fcd500;
+    border: 3px solid $item-state-incomplete-color;
 
     .tr-vops-item-menu {
-      border: 1px solid #fcd500;
+      border: 1px solid $item-state-incomplete-color;
       top: 34px;
       left: -6px;
 
       &::after {
-        border-color: #fcd500;
+        border-color: $item-state-incomplete-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #fff;
+        border-bottom-color: $environment-arrow-border-color;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
-        border-color: #fff;
+        border-color: $environment-arrow-border-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #fcd500;
+        border-bottom-color: $item-state-incomplete-color;
         border-width: 8px;
       }
    }
@@ -294,7 +294,7 @@
 
   &.failed {
     background-color: $item-grade-failed-color;
-    color: #fff;
+    color: $environment-alt-font-color;
 
     .tr-vops-item-menu {
       border: 1px solid $item-grade-failed-color;
@@ -306,13 +306,13 @@
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #fff;
+        border-bottom-color: $environment-arrow-border-color;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
-        border-color: #fff;
+        border-color: $environment-arrow-border-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
@@ -325,58 +325,58 @@
   }
 
   &.planned {
-    border: 3px solid #4d67ff;
+    border: 3px solid $item-state-between-color;
 
     .tr-vops-item-menu {
-      border: 1px solid #4d67ff;
+      border: 1px solid $item-state-between-color;
       top: 34px;
       left: -6px;
 
       &::after {
-        border-color: #4d67ff;
+        border-color: $item-state-between-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #fff;
+        border-bottom-color: $environment-arrow-border-color;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
-        border-color: #fff;
+        border-color: $environment-arrow-border-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #4d67ff;
+        border-bottom-color: $item-state-between-color;
         border-width: 8px;
       }
     }
   }
 
   &.enrolled {
-     background-color: #4d67ff;
+     background-color: $item-state-between-color;
 
     .tr-vops-item-menu {
-      border: 1px solid #4d67ff;
+      border: 1px solid $item-state-between-color;
       top: 37px;
       left: -6px;
 
       &::after {
-        border-color: #4d67ff;
+        border-color: $item-state-between-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #fff;
+        border-bottom-color: $environment-arrow-border-color;
         border-width: 7px;
         margin-left: 1px;
       }
 
       &::before {
-        border-color: #fff;
+        border-color: $environment-arrow-border-color;
         border-top: solid transparent;
         border-left: solid transparent;
         border-right: solid transparent;
-        border-bottom-color: #4d67ff;
+        border-bottom-color: $item-state-between-color;
         border-width: 8px;
       }
     }
@@ -402,7 +402,7 @@
 .tr-study-programme-name {
   padding-left: 5px;
   h3 {
-    color:#32acf6;
+    color: $environment-item-subheader-font-color;
     font-weight:700;
   }
 }
@@ -503,7 +503,7 @@
 
 .tr-user-file{
   background-color: $environment-file-background-color;
-  display:inline-block;
+  display: inline-block;
   margin-bottom: 5px;
   padding:5px;
 
@@ -513,7 +513,7 @@
   }
 
   &:not(:first-child){
-   margin-left:5px;
+   margin-left: 5px;
   }
 
 }
@@ -530,7 +530,7 @@
 }
 
 .tr-task-content{
-  background-color: #fff;
+  background-color: $environment-background-color;
 }
 
 .tr-task-not-evaluated {
