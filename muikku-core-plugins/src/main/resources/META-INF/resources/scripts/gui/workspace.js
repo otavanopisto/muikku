@@ -70,27 +70,9 @@
   });
 
   $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
-    
-    if ($(this).attr('data-state') == 'unassessed') {
+    if ($.inArray($(this).attr('data-state'), ['unassessed', 'pending', 'canceled', 'pass', 'fail'])) {
       confirmEvaluationRequest(); 
     }
-    
-    if ($(this).attr('data-state') == 'pending') {
-      confirmEvaluationCancellation();
-    }
-    
-    if ($(this).attr('data-state') == 'canceled') {
-      confirmEvaluationRequest(); 
-    }
-    
-    if ($(this).attr('data-state') == 'pass') {
-      confirmEvaluationRequest(); 
-    }
-    
-    if ($(this).attr('data-state') == 'fail') {
-      confirmEvaluationRequest();
-    }
-    
   });
 
   function confirmEvaluationRequest() {
@@ -114,8 +96,8 @@
             buttons: [{
               'text': dialog.data('button-request-text'),
               'class': 'save-evaluation-button',
-              'click': function(event) {
-                
+              'click': function() {
+                $('.save-evaluation-button').prop('disabled', true);
                 var workspaceEntityId = $('.workspaceEntityId').val();
                 var message = $('#evaluationRequestAdditionalMessage').val();
 
