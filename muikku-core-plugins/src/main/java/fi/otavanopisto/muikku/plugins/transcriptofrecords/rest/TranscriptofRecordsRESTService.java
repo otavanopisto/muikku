@@ -180,7 +180,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
                       workspaceEntity,
                       studentIdentifier);
-              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getSchoolDataSource(), workspace.getIdentifier());
+              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
               workspaceAssessments.addAll(gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier));
               if (workspaceUser != null) {
                 workspaceUserExists = true;
