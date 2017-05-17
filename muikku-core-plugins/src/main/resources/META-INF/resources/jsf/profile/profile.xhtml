@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"  
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-config-view.xhtml">
@@ -19,9 +19,9 @@
   <ui:define name="main-functionality-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/profile.css"/>
     <link rel="stylesheet" type="text/css" href="/scripts/croppie/croppie.css"/>
-  </ui:define>  
+  </ui:define>
 
-  <ui:define name="mf-content-master"> 
+  <ui:define name="mf-content-master">
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
       <div id="profile">
         <ui:insert name="mf-content-area">
@@ -53,22 +53,22 @@
                         <div class="profile-user-address">#{address}</div>
                       </ui:repeat>
                     </ui:fragment>
-                    
+
                     <ui:fragment rendered="#{!empty(profileBackingBean.phoneNumbers)}">
                       <label>#{i18n.text['plugin.profile.phoneNumbers']}</label>
                       <ui:repeat var="phoneNumber" value="#{profileBackingBean.phoneNumbers}">
                         <div class="profile-user-phone-number">#{phoneNumber}</div>
                       </ui:repeat>
                     </ui:fragment>
-                    
+
                     <div class="profile-change-password-container">
                       <div class="profile-change-password">#{i18n.text['plugin.profile.changePassword.buttonLabel']}</div>
                     </div>
-  
+
                     <div class="profile-change-address-municipality-container">
                       <div class="profile-change-address-municipality">#{i18n.text['plugin.profile.changeAddressMunicipality.buttonLabel']}</div>
                     </div>
-                    
+
                     <ui:fragment rendered="#{not sessionBackingBean.isStudent}">
                       <form>
                         <div class="profile-basicinfo-section">
@@ -85,16 +85,16 @@
                               <label>#{i18n.text['plugin.profile.awayEndDate.label']}</label><input type="text" class="date-field" name="profile-vacation-end" size="20"/>
                             </div>
                           </div>
-                          
+
                           <div class="profile-button-wrapper">
                             <div class="save-profile-fields">#{i18n.text['plugin.profile.save.button']}</div>
                           </div>
-                        
+
                       </div>
                     </form>
                   </ui:fragment>
                 </div>
-                
+
               </div>
             </section>
             <nav id="profileSectionNavigation" class="gc-navigation lg-flex-cell-5 md-flex-cell-6 sm-flex-hide">
@@ -103,16 +103,14 @@
                   <li class="profile-section-link active" data-link="personal">
                     <a jsf:outcome="profile.jsf">#{i18n.text['plugin.profile.links.personal']}</a>
                   </li>
-                  <li class="profile-section-link" data-link="hops">
-                    <a jsf:outcome="hops.jsf">#{i18n.text['plugin.profile.links.HOPS']}</a>
-                  </li>                  <!-- To Be Added In The Future 
+                  <!-- To Be Added In The Future
                   <li class="profile-section-links">Työtilat</li>
                   <li class="profile-section-links">Suoritusrekisteri</li>
                   <li class="profile-section-links">Kaverit</li>
                    -->
                 </ul>
               </div>
-            </nav>    
+            </nav>
           </div>
         </ui:insert>
       </div>
