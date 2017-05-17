@@ -74,6 +74,9 @@
                     .addClass('muikku-connect-field-correct-number'));
               }
               return result;
+            }, this),
+            hideCorrectAnswers: $.proxy(function() {
+              this._element.find(".muikku-connect-field-correct-number").remove();
             }, this)
           });
         
@@ -282,6 +285,10 @@
         }
       },
       _swapElements: function(term, counterpart){
+        
+        //Remove correct answers when elements are swapped
+        $(counterpart).parent().find(".muikku-connect-field-correct-number").remove();
+        
         var termIndex = $(term).parent().find('.muikku-connect-field-term').index(term);
         var counterPartIndex = $(counterpart).parent().find('.muikku-connect-field-counterpart').index(counterpart);
         var occupyingElement = this._element.find( '.muikku-connect-field-counterpart:eq( '+termIndex+' )' );
