@@ -1,0 +1,90 @@
+<div class="tr-vops mf-item ">
+  <div class="tr-vops-legend-container">
+    <div class="tr-vops-legend-button">
+      <div class="tr-vops-legend-content">
+        <div class="tr-vops-legend-content-state"></div>
+        <div class="tr-vops-legend-content-title"><span>{#localize key="plugin.records.studyplan.legend.title" /}</span></div>
+        <div class="tr-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.colors" /}</div>
+        <div class="tr-vops-legend-items">
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.neutral" /}</div>
+          </div>
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item incomplete"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.incomplete" /}</div>
+          </div>
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item planned"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.planned" /}</div>
+          </div>
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item passed"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.passed" /}</div>
+          </div>
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item enrolled"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.enrolled" /}</div>
+          </div>
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item failed"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.failed" /}</div>
+          </div>
+        </div>
+        <div class="tr-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.shapes" /}</div>
+        <div class="tr-vops-legend-items">
+          <div class="tr-vops-legend-item">
+            <div class="tr-vops-legend-item-grid tr-vops-item mandatory"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.mandatory" /}</div>
+          </div>
+          <div class="tr-vops-legend-item" data-no="{courseNumber}">
+            <div class="tr-vops-legend-item-grid tr-vops-item optional-national"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.optional.national" /}</div>
+          </div>
+          <div class="tr-vops-legend-item"">
+            <div class="tr-vops-legend-item-grid tr-vops-item optional-school"></div>
+            <div>{#localize key="plugin.records.studyplan.legend.title.optional.school" /}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tr-vops-progress-courses-container">
+    <div class="tr-vops-progress-courses">
+      <span>{#localize key="plugin.records.studyplan.progress.title.courses.all" arg0=numCourses /}</span>
+      <span>{#localize key="plugin.records.studyplan.progress.title.courses.mandatory" arg0=numMandatoryCourses /}</span>
+    </div>  
+  </div>
+
+  <div class="tr-vops-content">
+    <div class="tr-vops-row sm-flex-hide">
+      <div class="tr-vops-item-name"><span>{#localize key="plugin.records.title.subject" /}</span></div>
+        {#coursetitlenos}
+          <div class="tr-vops-item-title" data-no="{courseNumber}">
+            <span>{.}</span>
+          </div>
+        {/coursetitlenos}
+    </div>
+    {#rows}
+      <div class="tr-vops-row">
+        <div class="tr-vops-item-name">{subject}</div>
+        {#items}
+          <div title="Kurssi {courseNumber}"
+          	   class="tr-vops-item{~s}
+          	   		{@eq key=state value="ENROLLED"}enrolled{~s}{/eq}
+                    {@eq key=state value="FAILED"}failed{~s}{/eq}
+                    {@eq key=state value="PLANNED"}planned{~s}{/eq}
+                    {@eq key=state value="MARKED_INCOMPLETE"}incomplete{~s}{/eq}
+                    {@eq key=state value="ASSESSED"}passed{~s}{/eq}
+
+          	   		{@eq key=mandatority value="MANDATORY"}mandatory{/eq}{~s}
+          	   		{@eq key=mandatority value="SCHOOL_LEVEL_OPTIONAL"}optional-school{/eq}{~s}
+          	   		{@eq key=mandatority value="NATIONAL_LEVEL_OPTIONAL"}optional-national{/eq}"
+          	   data-no="{courseNumber}">
+            <div class="tr-vops-item-menu"></div>
+          </div>
+        {/items}
+      </div>
+    {/rows}
+  </div>
+</div>

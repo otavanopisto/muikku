@@ -46,6 +46,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
@@ -263,7 +264,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response
-        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace)))
+        .ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace), workspace.getSubjectIdentifier()))
         .build();
   }
 
@@ -436,6 +437,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               String name = (String) result.get("name");
               String description = (String) result.get("description");
               String nameExtension = (String) result.get("nameExtension");
+              String subjectIdentifier = (String) result.get("subjectIdentifier");
               
               Object curriculumIdentifiersObject = result.get("curriculumIdentifiers");
               Set<String> curriculumIdentifiers = new HashSet<String>();
@@ -450,7 +452,7 @@ public class WorkspaceRESTService extends PluginRESTService {
               }
               
               if (StringUtils.isNotBlank(name)) {
-                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers));
+                workspaces.add(createRestModel(workspaceEntity, name, nameExtension, description, curriculumIdentifiers, subjectIdentifier));
               }
             }
           }
@@ -511,7 +513,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
+    return Response.ok(createRestModel(
+        workspaceEntity,
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        convertWorkspaceCurriculumIds(workspace),
+        workspace.getSubjectIdentifier()
+    )).build();
   }
   
   @GET
@@ -752,7 +761,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
-    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getNameExtension(), workspace.getDescription(), convertWorkspaceCurriculumIds(workspace))).build();
+    return Response.ok(createRestModel(
+        workspaceEntity,
+        workspace.getName(),
+        workspace.getNameExtension(),
+        workspace.getDescription(),
+        convertWorkspaceCurriculumIds(workspace),
+        workspace.getSubjectIdentifier()
+    )).build();
   }
   
   @GET
@@ -804,7 +820,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       SearchProvider elasticSearchProvider = searchProviderIterator.next();
 
       if (elasticSearchProvider != null) {
-        String[] fields = new String[] { "firstName", "lastName", "nickName" };
+        String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
         SearchResult result = elasticSearchProvider.searchUsers(
             searchString,
@@ -1075,6 +1091,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       if (user != null) {
         UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+        
+        // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
+        
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+        if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
+          continue;
+        }
+        
         workspaceStaffMembers.add(new WorkspaceStaffMember(workspaceUser.getIdentifier().toId(),
           workspaceUser.getUserIdentifier().toId(),
           userEntity != null ? userEntity.getId() : null,
@@ -1787,7 +1811,13 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterial.getAssignmentType(), workspaceMaterial.getCorrectAnswers(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
-  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, Set<String> curriculumIdentifiers) {
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace createRestModel(
+      WorkspaceEntity workspaceEntity,
+      String name,
+      String nameExtension,
+      String description,
+      Set<String> curriculumIdentifiers,
+      String subjectIdentifier) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
 
@@ -1802,7 +1832,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getDefaultMaterialLicense(),
         numVisits, 
         lastVisit,
-        curriculumIdentifiers);
+        curriculumIdentifiers,
+        subjectIdentifier);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
@@ -2210,7 +2241,54 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
-      entries = workspaceJournalController.listEntries(workspaceEntity, firstResult, maxResults);
+      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+      if (!searchProviderIterator.hasNext()) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("No search provider found").build();
+      }
+      SearchProvider elasticSearchProvider = searchProviderIterator.next();
+
+      Set<UserEntity> workspaceUserEntities = new HashSet<>();
+      
+      if (elasticSearchProvider != null) {
+        SearchResult studentSearchResult = elasticSearchProvider.searchUsers(
+            null,
+            new String[0],
+            Arrays.asList(EnvironmentRoleArchetype.STUDENT),
+            (Collection<Long>)null,
+            Collections.singletonList(workspaceEntityId),
+            (Collection<SchoolDataIdentifier>) null,
+            Boolean.FALSE,
+            Boolean.FALSE,
+            false,
+            0,
+            maxResults != null ? maxResults : Integer.MAX_VALUE);
+        
+        List<Map<String, Object>> results = studentSearchResult.getResults();
+
+        if (results != null && !results.isEmpty()) {
+          for (Map<String, Object> o : results) {
+            String foundStudentId = (String) o.get("id");
+            if (StringUtils.isBlank(foundStudentId)) {
+              logger.severe("Could not process user found from search index because it had a null id");
+              continue;
+            }
+            
+            String[] studentIdParts = foundStudentId.split("/", 2);
+            SchoolDataIdentifier foundStudentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+            if (foundStudentIdentifier == null) {
+              logger.severe(String.format("Could not process user found from search index with id %s", foundStudentId));
+              continue;
+            }
+            
+            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, foundStudentIdentifier);
+            if (workspaceUserEntity != null) {
+              workspaceUserEntities.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+            }
+          }
+        }
+      }
+      
+      entries = workspaceJournalController.listEntriesForStudents(workspaceEntity, workspaceUserEntities, firstResult, maxResults);
     }
     else {
       if (userEntityId != null) {

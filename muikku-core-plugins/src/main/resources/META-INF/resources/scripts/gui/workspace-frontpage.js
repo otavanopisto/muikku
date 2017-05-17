@@ -2,9 +2,97 @@
 
 (function() { 'use strict';
 
+  $.widget("custom.workspaceTeachers", {
+    options: {
+      workspaceEntityId: undefined
+    },
+    _create : function() {
+      this.element.on('click', '.workspace-teacher-info.message', $.proxy(this._sendMessage, this));
+      
+      mApi().user.staffMembers.read({
+        workspaceEntityId: this.options.workspaceEntityId,
+        properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
+      }).callback($.proxy(function (err, staffMembers) {
+        if (!err && staffMembers) {
+          staffMembers.sort(function(a, b) {
+            var an = a.lastName + ' ' + a.firstName;
+            var bn = b.lastName + ' ' + b.firstName;
+            return an < bn ? -1 : an == bn ? 0 : 1;
+          });
+          for (var i = 0; i < staffMembers.length; i++) {
+            var props = staffMembers[i].properties;
+            if (props['profile-vacation-start'] && props['profile-vacation-end']) {
+              var begin = moment(props['profile-vacation-start']).startOf('day');
+              var end = moment(props['profile-vacation-end']).startOf('day');
+              var now = moment().startOf('day');
+              if (now.isSame(end) || now.isBefore(end)) {
+                if (begin.isSame(end)) {
+                  props['profile-vacation-period'] = formatDate(begin.toDate());
+                }
+                else {
+                  props['profile-vacation-period'] = formatDate(begin.toDate()) + ' - ' + formatDate(end.toDate());
+                }
+              }
+            }
+          }
+          renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
+            staffMembers: staffMembers
+          }, $.proxy(function (text) {
+            this.element.append($.parseHTML(text));
+          }, this));
+        }
+      }, this));
+    },
+    _sendMessage: function (event) {
+      var teacherId = $(event.target).closest(".workspace-teacher").attr("data-id");
+
+      mApi().user.users.basicinfo.read(teacherId, {}).callback($.proxy(function (err, staffMember) {
+        
+        var messageCaption = [$('h1.workspace-title').text()];
+        var captionExtra = $('div.workspace-additional-info-wrapper').text(); 
+        if (captionExtra) {
+          messageCaption.push('(' + captionExtra + ')');
+        }
+        captionExtra = $('span.workspace-duration').text();
+        if (captionExtra) {
+          messageCaption.push(captionExtra);
+        }
+        messageCaption = getLocaleText("plugin.workspace.index.newMessageCaption", messageCaption.join(' '));
+        
+        if (!err && staffMember) {
+          var options = {
+            groupMessagingPermission: false,
+            isStudent: true,
+            userRecipients: [staffMember],
+            initialCaption: messageCaption
+          };
+          
+          var dialog = $('<div>')
+            .communicatorCreateMessageDialog($.extend(options||{}, {
+              groupMessagingPermission: this.options.groupMessagingPermission
+            }));
+          
+          dialog.on('dialogReady', function(e) {
+            $(document.body).css({
+              paddingBottom: dialog.height() + 50 + 'px'
+            }).addClass('footerDialogOpen');
+          });
+          
+          dialog.on('dialogClose', function(e) {
+            $(document.body).removeClass('footerDialogOpen').removeAttr('style');
+          });
+          
+          $('#socialNavigation')
+            .empty()
+            .append(dialog);
+        }
+      }, this));
+    }
+  });
+
   $(document).ready(function() {
     var workspaceEntityId = $('.workspaceEntityId').val();
-    
+
     $(document)
       .muikkuMaterialLoader({
         workspaceEntityId: workspaceEntityId,
@@ -62,49 +150,6 @@
         }
       }, this));
     
-    // #1813: Workspace teachers
-    
-    mApi().user.staffMembers.read({
-      workspaceEntityId: workspaceEntityId,
-      properties: 'profile-phone,profile-vacation-start,profile-vacation-end'
-    }).callback(function (err, staffMembers) {
-      if (!err && staffMembers) {
-        staffMembers.sort(function(a, b) {
-          var an = a.lastName + ' ' + a.firstName;
-          var bn = b.lastName + ' ' + b.firstName;
-          return an < bn ? -1 : an == bn ? 0 : 1;
-        });
-        for (var i = 0; i < staffMembers.length; i++) {
-          var props = staffMembers[i].properties;
-          if (props['profile-vacation-start'] && props['profile-vacation-end']) {
-            var bd = moment(props['profile-vacation-start']).toDate();
-            bd.setHours(0);
-            bd.setMinutes(0)
-            bd.setSeconds(0)
-            bd.setMilliseconds(0);
-            var ed = moment(props['profile-vacation-end']).toDate();
-            ed.setHours(0);
-            ed.setMinutes(0)
-            ed.setSeconds(0)
-            ed.setMilliseconds(0);
-            var nd = new Date();
-            nd.setHours(0);
-            nd.setMinutes(0)
-            nd.setSeconds(0)
-            nd.setMilliseconds(0);
-            if (nd >= bd && nd <= ed) {
-              props['profile-vacation-period'] = bd.getTime() == ed.getTime() ? formatDate(bd) : formatDate(bd) + ' - ' + formatDate(ed);
-            }
-          }
-        }
-        renderDustTemplate('workspace/workspace-frontpage-teachers.dust', {
-          staffMembers: staffMembers
-        }, $.proxy(function (text) {
-          $('.workspace-teachers-container').append($.parseHTML(text));
-        }, this));
-      }
-    });
-    
     if ($('.workspace-announcements-container').length > 0) {
 
       $('.workspace-announcements-container').on('click', '.workspace-single-announcement', function() {
@@ -132,6 +177,10 @@
           }
         }, this));
     }
+    
+    $('.workspace-teachers-container').workspaceTeachers({
+      workspaceEntityId: workspaceEntityId
+    });
   });
 
 }).call(this);

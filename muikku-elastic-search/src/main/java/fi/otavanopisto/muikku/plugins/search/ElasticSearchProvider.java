@@ -350,6 +350,36 @@ public class ElasticSearchProvider implements SearchProvider {
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
     return searchWorkspaces(schoolDataSource, subjects, identifiers, null, null, freeText, null, null, includeUnpublished, start, maxResults, null);
   }
+
+  @Override
+  public SearchResult searchWorkspaces(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+    BoolQueryBuilder query = boolQuery();
+    query.must(termQuery("published", Boolean.TRUE));
+    query.must(termQuery("subjectIdentifier", subjectIdentifier));
+    query.must(termQuery("courseNumber", courseNumber));
+    // query.must(termQuery("access", WorkspaceAccess.LOGGED_IN));
+      
+    SearchRequestBuilder requestBuilder = elasticClient
+      .prepareSearch("muikku")
+      .setTypes("Workspace")
+      .setFrom(0)
+      .setSize(50)
+      .setQuery(query);
+    
+    // logger.log(Level.INFO, "searchWorkspaces query: " + requestBuilder.internalBuilder());
+
+    SearchResponse response = requestBuilder.execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHit[] results = response.getHits().getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+    
+    SearchResult result = new SearchResult(searchResults.size(), 0, 50, searchResults);
+    return result;
+  }
   
   @Override
   public SearchResult searchWorkspaces(

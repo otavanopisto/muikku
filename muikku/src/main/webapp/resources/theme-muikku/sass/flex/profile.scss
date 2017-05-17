@@ -3,8 +3,8 @@
 @import "styles";
 @import "jquery.datepicker";
 
-#profile { 
-  
+#profile {
+
   .profile-content {
     background: $environment-profile-background-color;
     box-sizing: border-box;
@@ -12,7 +12,7 @@
     padding: 20px;
     position: relative;
   }
-  
+
   .profile-picture-wrapper {
     border: 3px solid $environment-profile-picture-border;
     box-shadow: $environment-profile-picture-box-shadow;
@@ -21,7 +21,7 @@
     position: absolute;
     top: 20px;
     width: 128px;
-    
+
     .profile-change-picture {
       background: $environment-profile-button-background-color;
       box-sizing: border-box;
@@ -33,7 +33,7 @@
       text-transform: uppercase;
       width: 100%;
     }
-    
+
     object,
     img {
       border: 0 none;
@@ -42,26 +42,26 @@
       width: 128px;
     }
   }
-  
+
   .profile-data-wrapper {
     margin: 0 0 0 166px;
   }
-  
+
   .profile-user-realname {
     font-size: 20px;
     font-weight: 300;
   }
-  
+
   h2 {
     font-size: 16px;
     font-weight: 300;
     margin: 10px 0 2px;
   }
-  
+
   .profile-change-password-container {
     margin: 10px 0;
   }
-  
+
   .profile-change-password {
     color: $environment-link-color;
     cursor: pointer;
@@ -73,7 +73,7 @@
   .profile-change-address-municipality-container {
     margin: 10px 0;
   }
-  
+
   .profile-change-address-municipality {
     color: $environment-link-color;
     cursor: pointer;
@@ -81,30 +81,30 @@
     font-size: 14px;
     font-weight: 400;
   }
-  
+
   .profile-vacation-wrapper {
     @include flexbox;
     align-items: flex-start;
     flex-flow: row nowrap;
   }
-  
+
   .profile-vacation-date {
     box-sizing: border-box;
     flex: 1 1 50%;
-    
+
     &:first-child {
       padding: 0 5px 0 0;
     }
-    
+
     &:last-child {
       padding: 0 0 0 5px;
     }
-    
+
   }
-  
+
   .profile-button-wrapper {
     margin: 10px 0 0;
-  
+
     .save-profile-fields {
       background: $environment-profile-button-background-color;
       color: $environment-profile-button-font-color;
@@ -115,9 +115,9 @@
       padding: 6px 8px;
       text-transform: uppercase;
     }
-  
+
   }
-  
+
   .profile-section-links-container {
     background: $environment-profile-background-color;
     box-sizing: border-box;
@@ -137,18 +137,18 @@
     margin: 0 0 1px;
     padding: 5px;
     text-transform: uppercase;
-    
+
     &:hover,
     &.active {
       background: $environment-profile-section-background-color;
       color: $environment-profile-section-font-color;
       font-weight: 400;
-      
+
       a {
         color: $environment-profile-section-font-color;
-      }        
+      }
     }
-  }  
+  }
 }
 
 .hops-form-wrapper {
@@ -156,11 +156,11 @@
     margin: 0;
     padding: 0;
   }
-  
+
   input:not(:first-child) {
     margin-left: 5px;
   }
-  
+
   input[type="text"],
   input[type="date"] {
     font-size: 15px;
@@ -169,10 +169,10 @@
 
     &:not(:first-child) {
       margin-left: 10px;
-    }  
+    }
   }
-  
+
   .hops-form-section {
     padding: 15px;
-  } 
+  }
 }

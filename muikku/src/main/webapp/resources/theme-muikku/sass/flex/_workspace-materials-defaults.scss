@@ -1,439 +1,4 @@
-// MATERIAL LOADING
-.workspace-material-queued-html,
-.workspace-material-loading {
-  background-image: url("gfx/workspace-material-loading.gif"); 
-  background-repeat: no-repeat;
-  background-position: center;
-  min-height: 500px;
-}
-
-// TASK FIELD SAVED LABEL
-.muikku-field-save-state-label {
-  position: absolute;
-  z-index: 2;
-  margin-top: -16px;
-  border-top: 1px solid #fff;
-  border-radius: 3px;
-  margin-left: 4px;
-  padding: 4px;
-  background: #9cf3c7;
-  font-size: 12px;
-  line-height: 12px;
-  display: inline-block;
-  z-index: 999;
-}
-
-// VERTICAL SCROLLING WRAPPER FOR TABLES
-.table-wrapper,
-.math-wrapper {
-  max-width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-// WRAPPER FOR TEXTFIELDS
-.textfield-wrapper {
-  display: inline-block;
-  position: relative;
-
-  // Hint text for textfields
-  span.muikku-text-field-hint {
-    display: block;
-    visibility: hidden;
-    opacity: 0;
-    position: absolute;
-    z-index: 2;
-    left: 4px;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    padding: 2px 8px;
-    background: #f8ed8e;
-    border-top-right-radius: 3px;
-    border-bottom-right-radius: 3px;
-    color: #4c4c4c;
-    white-space: nowrap;
-    font-style: italic;
-    transition: opacity 0.2s ease-in-out;
-    border-left: 3px solid #978c33;
-    font-size: 14px;
-  }
-
-}
-
-// INPUT OVERRIDES
-input[type="text"],
-input[type="url"] {
-  width: auto;
-  height: auto;
-  border: 2px solid #abdbed;
-  border-radius: 3px;
-  display: inline-block;
-  padding: 4px 8px;
-  outline: none;
-  font-size: 16px;
-  color: #000;
-  max-width: 100%;
-  box-sizing: border-box;
-  margin: 4px 3px;
-  
-  &[readonly="readonly"] {
-    background: #fcfcfc !important;
-    border: 2px dotted #eaeaea !important;
-    color: #7c7c7c !important;
-    
-    &:hover {
-      border: 2px dotted #eee;
-      color: #555555 !important;
-    }
-
-  }
-  
-  &:focus,
-  &:hover {
-    border: 2px solid #8dd6f1;
-    box-shadow: none;
-    
-    span.muikku-text-field-hint {
-      display: block;
-      border-bottom-left-radius: 3px;
-      border-bottom-right-radius: 3px;
-      background: #0099ff;
-      color: #fff;
-      font-size: 12px;
-    }
-
-  }
-  
-  &::-webkit-input-placeholder {
-    color: #b4b4b4;
-    font-style: italic;
-  }
-  
-  // older Firefox
-  &:-moz-placeholder {
-    color: #b4b4b4;
-    font-style: italic;
-  }
-  
-  // Firefox 19+
-  &::-moz-placeholder { 
-    color: #b4b4b4;
-    font-style: italic;
-  }
-   
-  &:-ms-input-placeholder { 
-    color: #b4b4b4;
-    font-style: italic;
-  }
-  
-  &::input-placeholder {
-    color: #b4b4b4;
-    font-style: italic;
-  }
-  
-}
-
-// TEXTAREA OVERRIDES
-textarea {
-  height: auto;
-  border: 2px solid #abdbed;
-  border-radius: 3px;
-  display: inline-block;
-  padding: 4px 8px;
-  outline: none;
-  color: #4c4c4c;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  text-align: left;
-  margin: 0;
-  line-height: 1.7em;
-  
-  &[readonly="readonly"] {
-    background: #fcfcfc !important;
-    border: 2px dotted #eaeaea !important;
-    color: #7c7c7c !important;
-    
-    &:hover {
-      border: 2px dotted #eee !important;
-      color: #555555 !important;
-    }
-    
-  }
-  
-  &:focus,
-  &:hover {
-    border: 2px solid #8dd6f1;
-    box-shadow: none;
-  }
-
-}
-
-// SELECT & OPTION OVERRIDES */
-select {
-  background: #fff;
-  border: 2px solid #abdbed;
-  outline: none;
-  color: #000;
-  display: inline-block;
-  margin: 4px;
-  border-radius: 3px;
-  padding: 0 5px;
-  max-width: 100%;
-  word-wrap: break-word;
-  vertical-align: middle;
-  
-  &:focus,
-  &:hover {
-    border: 2px solid #8dd6f1;
-  }
-  
-  &[disabled="disabled"] {
-    border: 2px solid #cae1fc;
-    color: #7c7c7c;
-    
-    &:hover {
-      border: 2px solid #cae1fc;
-      color: #7c7c7c;
-    }
-
-  }
-
-  option {
-    background: #fff;
-    font-weight: 300;
-    padding: 5px 10px;
-  }
-  
-}
-
-// RADIO BUTTON & CHECKBOX HORTZ WRAPPER
-span.radiobutton-horizontal,
-span.checkbox-horizontal {
-
-  > span {
-    display: inline-block;
-  }
-
-}
-
-// RADIO BUTTON & CHECKBOX VERTZ WRAPPER
-span.radiobutton-vertical,
-span.checkbox-vertical {
-  display: inline-block;
-  vertical-align: middle;
-  
-  > span {
-    display: block;
-  }
-  
-}
-
-// RADIO BUTTON & CHECKBOX OVERRIDES
-input[type="radio"],
-input[type="checkbox"] {
-  margin: 0 10px;
-  background: #fff;
-  outline: none;
-  display: inline-block;
-  border-radius: 3px;
-  display: inline-block;
-  box-shadow: 0 0 0 2px rgba(0,153,255,0.4);
-  
-  &:hover {
-    box-shadow: 0 0 0 2px rgba(0,153,255,0.6);
-  }
-  
-}
-
-// TASK FIELD UNSAVED, SAVED, SAVING
-input[type="text"],
-textarea,
-select {
-
-  &.muikku-field-unsaved {
-    border: 2px solid #e4e630;
-    
-    &:hover {
-      border:2px solid #e4e630;
-    }
-  }
-  
-  &.muikku-field-saving {
-    animation: saving-fields 4s ease infinite;
-  }
-
-  &.muikku-field-saved {
-    border: 2px solid #9cf3c7;
-    
-    &:hover {
-      border: 2px solid #9cf3c7;
-    }
-    
-  }
-
-}
-
-// CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
-.muikku-select-field,
-.muikku-checkbox-field {
-
-  &.muikku-field-unsaved {
-  
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow: 0 0 0 2px #e4e630;
-      
-      &:hover {
-        box-shadow: 0 0 0 2px #e4e630;
-      }
-    
-    }
-    
-  }
-  
-  &.muikku-field-saving {
-  
-    input[type="checkbox"],
-    input[type="radio"] {
-      animation: saving-checkbox-radio 4s ease infinite;
-      box-shadow: 0 0 0 2px #e4e630;
-    }
-    
-  }
-
-  &.muikku-field-saved {
-  
-    input[type="checkbox"],
-    input[type="radio"] {
-      box-shadow: 0 0 0 2px #9cf3c7;
-    
-      &:hover {
-        box-shadow: 0 0 0 2px #9cf3c7;
-      }
-      
-    }
-    
-  }
-
-}
-
-// GENERIC PAGE ELEMENTS
-blockquote {
-  font-family: 'Open Sans', Arial, sans-serif;
-  font-style: italic;
-  padding: 2px 0;
-  border-style: solid;
-  border-color: #eee;
-  border-width: 0;
-  color: #777;
-  font-size: 20px;
-  margin: 0 40px;
-
-  p {
-    margin: 10px 0;
-  }
-
-}
-
-.cke_contents_ltr blockquote {
-  padding-left: 20px;
-  padding-right: 8px;
-  border-left-width: 8px;
-}
-
-.cke_contents_rtl blockquote {
-  padding-left: 8px;
-  padding-right: 20px;
-  border-right-width: 8px;
-}
-
-p, h1, h2, h3, h4, h5, h6 {
-  word-wrap: break-word;
-}
-
-label,select,option,input,textarea {
-  font-size: 100%;
-  font-weight: 300;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 300;
-}
-
-h1,
-h2 {
-
-  &:first-child {
-    margin: 20px 0;
-  }
-  
-}
-
-h1,
-h2,
-h3,
-h4 {
-  margin: 40px 0 20px;
-  color: #38393a;
-  text-transform: none;
-  line-height: 1.3em;
-}
-
-h1 {
-  font-size: 30px;
-}
-  
-h2 {
-  font-size: 26px;
-}
-
-h3 {
-  margin: 20px 0;
-  font-size: 23px;
-}
-
-h4 {
-  margin: 20px 0;
-  font-size: 19px;
-  font-weight: 400;
-}
-article img {
-  max-width: 100% !important;
-  height: auto !important;
-}
-
-a > img {
-  cursor: -webkit-zoom-in;
-  cursor: -moz-zoom-in;
-}
-
-.muikku-word-definition {
-  background: #c4ffd6 none repeat scroll 0 0;
-  border: 2px solid #fff;
-  border-radius: 3px;
-  box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
-  color: #000;
-  font-size: 14px;
-  font-weight: 300;
-  line-height: 1.5em;
-  margin: 10px 0 0;
-  max-width: 250px;
-  padding: 5px 10px;
-  position: absolute;
-  z-index: 20;
-}
-    
-mark[data-muikku-word-definition] {
-  background: transparent;
-  border-bottom: 1px dashed #007925;
-  color: #007925;
-  cursor: help;
-  font-weight: 400;
-  position: relative;
-}
-
-// DOCUMENT
-.workspace-materials-view-page.material-view { 
+.workspace-materials-view-page { // This is article containing single material page
   padding: 10px 20px;
   margin: 30px auto;
   position: relative;
@@ -448,320 +13,792 @@ mark[data-muikku-word-definition] {
     }
     
   }
+  
+  &.material-reading-view { // Reading is a bit wider than normal material view so we need to increase max-width a bit
+  
+    // If material page is PDF
+    &[data-binary-type="pdf"] { 
+      max-width: 695px;
+      padding: 0;
 
-}
-          
-figure.image {
-  margin: 5px;
-  position: relative;
-  width: auto;
-  line-height: 1;
+      h2 {
+        padding: 20px 20px 10px;
+      }
+      
+    }
+  
+  }
+
+  
+  // MATERIAL LOADING
+  .workspace-material-queued-html,
+  .workspace-material-loading {
+    background-image: url("gfx/workspace-material-loading.gif"); 
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 500px;
+  }
+
+  // TASK FIELD SAVED LABEL
+  .muikku-field-save-state-label {
+    position: absolute;
+    z-index: 2;
+    margin-top: -16px;
+    border-top: 1px solid #fff;
+    border-radius: 3px;
+    margin-left: 4px;
+    padding: 4px;
+    background: #9cf3c7;
+    font-size: 12px;
+    line-height: 12px;
+    display: inline-block;
+    z-index: 999;
+  }
+  
+  // VERTICAL SCROLLING WRAPPER FOR TABLES
+  .table-wrapper,
+  .math-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  
+  // WRAPPER FOR TEXTFIELDS
+  .textfield-wrapper {
+    display: inline-block;
+    position: relative;
+  
+    // Hint text for textfields
+    span.muikku-text-field-hint {
+      display: block;
+      visibility: hidden;
+      opacity: 0;
+      position: absolute;
+      z-index: 2;
+      left: 4px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+      padding: 2px 8px;
+      background: #f8ed8e;
+      border-top-right-radius: 3px;
+      border-bottom-right-radius: 3px;
+      color: #4c4c4c;
+      white-space: nowrap;
+      font-style: italic;
+      transition: opacity 0.2s ease-in-out;
+      border-left: 3px solid #978c33;
+      font-size: 14px;
+    }
+  
+  }
+
+  // INPUT OVERRIDES
+  input[type="text"],
+  input[type="url"] {
+    width: auto;
+    height: auto;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 4px 8px;
+    outline: none;
+    font-size: 16px;
+    color: #000;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 4px 3px;
+    
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 2px dotted #eaeaea !important;
+      color: #7c7c7c !important;
+      
+      &:hover {
+        border: 2px dotted #eee;
+        color: #555555 !important;
+      }
+  
+    }
+    
+    &:focus,
+    &:hover {
+      border: 2px solid #8dd6f1;
+      box-shadow: none;
+      
+      span.muikku-text-field-hint {
+        display: block;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        background: #0099ff;
+        color: #fff;
+        font-size: 12px;
+      }
+  
+    }
+    
+    &::-webkit-input-placeholder {
+      color: #b4b4b4;
+      font-style: italic;
+    }
+    
+    // older Firefox
+    &:-moz-placeholder {
+      color: #b4b4b4;
+      font-style: italic;
+    }
+    
+    // Firefox 19+
+    &::-moz-placeholder { 
+      color: #b4b4b4;
+      font-style: italic;
+    }
+     
+    &:-ms-input-placeholder { 
+      color: #b4b4b4;
+      font-style: italic;
+    }
+    
+    &::input-placeholder {
+      color: #b4b4b4;
+      font-style: italic;
+    }
+    
+  }
+
+  // TEXTAREA OVERRIDES
+  textarea {
+    height: auto;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    display: inline-block;
+    padding: 4px 8px;
+    outline: none;
+    color: #4c4c4c;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+    margin: 0;
+    line-height: 1.7em;
+    
+    &[readonly="readonly"] {
+      background: #fcfcfc !important;
+      border: 2px dotted #eaeaea !important;
+      color: #7c7c7c !important;
+      
+      &:hover {
+        border: 2px dotted #eee !important;
+        color: #555555 !important;
+      }
+      
+    }
+    
+    &:focus,
+    &:hover {
+      border: 2px solid #8dd6f1;
+      box-shadow: none;
+    }
+  
+  }
+  
+  .word-count-container {
+    font-size: 13px;
+    line-height: 1;
+    text-align: right;
+    
+    .word-count-title {
+      display: inline-block;
+      padding: 2px;
+    }
+    
+    .word-count {
+      background: #f3faff;
+      display: inline-block;
+      padding: 2px;
+    }
+    
+  }
+
+  // SELECT & OPTION OVERRIDES */
+  select {
+    background: #fff;
+    border: 2px solid #abdbed;
+    outline: none;
+    color: #000;
+    display: inline-block;
+    margin: 4px;
+    border-radius: 3px;
+    padding: 0 5px;
+    max-width: 100%;
+    word-wrap: break-word;
+    vertical-align: middle;
+    
+    &:focus,
+    &:hover {
+      border: 2px solid #8dd6f1;
+    }
+    
+    &[disabled="disabled"] {
+      border: 2px solid #cae1fc;
+      color: #7c7c7c;
+      
+      &:hover {
+        border: 2px solid #cae1fc;
+        color: #7c7c7c;
+      }
+  
+    }
+  
+    option {
+      background: #fff;
+      font-weight: 300;
+      padding: 5px 10px;
+    }
+    
+  }
+
+  // RADIO BUTTON & CHECKBOX HORTZ WRAPPER
+  span.radiobutton-horizontal,
+  span.checkbox-horizontal {
+  
+    > span {
+      display: inline-block;
+    }
+  
+  }
+
+  // RADIO BUTTON & CHECKBOX VERTZ WRAPPER
+  span.radiobutton-vertical,
+  span.checkbox-vertical {
+    display: inline-block;
+    vertical-align: middle;
+    
+    > span {
+      display: block;
+    }
+    
+  }
+
+  // RADIO BUTTON & CHECKBOX OVERRIDES
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin: 0 10px;
+    background: #fff;
+    outline: none;
+    display: inline-block;
+    border-radius: 3px;
+    display: inline-block;
+    box-shadow: 0 0 0 2px rgba(0,153,255,0.4);
+    
+    &:hover {
+      box-shadow: 0 0 0 2px rgba(0,153,255,0.6);
+    }
+    
+  }
+
+  // TASK FIELD UNSAVED, SAVED, SAVING
+  input[type="text"],
+  textarea,
+  select {
+  
+    &.muikku-field-unsaved {
+      border: 2px solid #e4e630;
+      
+      &:hover {
+        border:2px solid #e4e630;
+      }
+    }
+    
+    &.muikku-field-saving {
+      animation: saving-fields 4s ease infinite;
+    }
+  
+    &.muikku-field-saved {
+      border: 2px solid #9cf3c7;
+      
+      &:hover {
+        border: 2px solid #9cf3c7;
+      }
+      
+    }
+  
+  }
+
+  // CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
+  .muikku-select-field,
+  .muikku-checkbox-field {
+  
+    &.muikku-field-unsaved {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow: 0 0 0 2px #e4e630;
+        
+        &:hover {
+          box-shadow: 0 0 0 2px #e4e630;
+        }
+      
+      }
+      
+    }
+    
+    &.muikku-field-saving {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        animation: saving-checkbox-radio 4s ease infinite;
+        box-shadow: 0 0 0 2px #e4e630;
+      }
+      
+    }
+  
+    &.muikku-field-saved {
+    
+      input[type="checkbox"],
+      input[type="radio"] {
+        box-shadow: 0 0 0 2px #9cf3c7;
+      
+        &:hover {
+          box-shadow: 0 0 0 2px #9cf3c7;
+        }
+        
+      }
+      
+    }
+  
+  }
+
+  // GENERIC PAGE ELEMENTS
+  blockquote {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-style: italic;
+    padding: 2px 0;
+    border-style: solid;
+    border-color: #eee;
+    border-width: 0;
+    color: #777;
+    font-size: 20px;
+    margin: 0 40px;
+  
+    p {
+      margin: 10px 0;
+    }
+  
+  }
+  
+  .cke_contents_ltr blockquote {
+    padding-left: 20px;
+    padding-right: 8px;
+    border-left-width: 8px;
+  }
+  
+  .cke_contents_rtl blockquote {
+    padding-left: 8px;
+    padding-right: 20px;
+    border-right-width: 8px;
+  }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+  }
+  
+  label,select,option,input,textarea {
+    font-size: 100%;
+    font-weight: 300;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 300;
+  }
+  
+  h1,
+  h2 {
+  
+    &:first-child {
+      margin: 20px 0;
+    }
+    
+  }
+  
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 40px 0 20px;
+    color: #38393a;
+    text-transform: none;
+    line-height: 1.3em;
+  }
+  
+  h1 {
+    font-size: 30px;
+  }
+    
+  h2 {
+    font-size: 26px;
+  }
+  
+  h3 {
+    margin: 20px 0;
+    font-size: 23px;
+  }
+  
+  h4 {
+    margin: 20px 0;
+    font-size: 19px;
+    font-weight: 400;
+  }
+  article img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
   
   a > img {
     cursor: -webkit-zoom-in;
     cursor: -moz-zoom-in;
   }
   
-  .image-details {
+  .muikku-word-definition {
+    background: #c4ffd6 none repeat scroll 0 0;
+    border: 2px solid #fff;
+    border-radius: 3px;
+    box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
+    color: #000;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.5em;
+    margin: 10px 0 0;
+    max-width: 250px;
+    padding: 5px 10px;
     position: absolute;
-    right: 0;
-    left: auto;
-    top: 5px;
+    z-index: 20;
   }
     
-  .icon-copyright {
-    display: block;
+  mark[data-muikku-word-definition] {
+    background: transparent;
+    border-bottom: 1px dashed #007925;
+    color: #007925;
+    cursor: help;
+    font-weight: 400;
+    position: relative;
+  }
+          
+  figure.image {
+    margin: 5px;
+    position: relative;
+    width: auto;
+    line-height: 1;
     
-    &::before {
-      cursor: pointer;
-      font-size: 26px;
-      line-height: 1;
-      color: #fff;
-      background: #0099ff;
-      border-radius: 100%;
-      float: right;
-      margin: 0 5px 0 0;
+    a > img {
+      cursor: -webkit-zoom-in;
+      cursor: -moz-zoom-in;
     }
     
-    .image-details-container {
-      display: none;
-      margin: 30px 0 0;
-      font-family: 'Open Sans', Arial, sans-serif;
-      opacity: 0.9;
-      background: #fff;
-      padding: 15px 10px;
-      font-size: 13px;
-      word-wrap: break-word;
-      
-      span.image-details-label {
-        padding: 0 5px 0 0;
-      }
-      
-      a {
-        color: #0099ff;
-        padding: 0;
-        line-height: 140%;
-        word-wrap: break-word;
-      }
-      
-      span {
-        color: #000;
-        padding: 0;
-        line-height: 140%;
-        word-wrap: break-word;
-      }
-      
+    .image-details {
+      position: absolute;
+      right: 0;
+      left: auto;
+      top: 5px;
     }
-    
-    &:hover {
-      left: 0;
+      
+    .icon-copyright {
+      display: block;
+      
+      &::before {
+        cursor: pointer;
+        font-size: 26px;
+        line-height: 1;
+        color: #fff;
+        background: #0099ff;
+        border-radius: 100%;
+        float: right;
+        margin: 0 5px 0 0;
+      }
       
       .image-details-container {
-        display: block;
-      }
-    
-    }
-    
-  }
-
-  figcaption {
-    max-width: 100%;
-    background: #f0fbf8;
-    font-style: italic;
-    font-size: 13px;
-    padding: 4px 8px 8px;
-    line-height: 130%;
-    border-radius: 2px;
-    box-sizing: border-box;
-    text-align: left;
-  }
-  
-}
-
-p {
-  margin: 15px 0;
-}
-
-a {
-  color: $link;
-}
-
-em, i {
-  font-style: italic;
-  font-weight: 300;
-}
-
-strong, b {
-  font-weight: 400;
-  font-style: inherit;
-}
-
-table {
-  margin: initial;
-  padding: initial;
-  font-size: 14px;
-}
-
-table[cellspacing] {
-  border-collapse: separate;
-  border-spacing: 50px;
-}
-
-table[cellpadding] td{
-  border-collapse: separate;
-  padding: 50px;
-}
-
-@for $i from 0 through 49 {
-  table[cellspacing="#{$i}"] {
-    border-spacing: #{$i}px;
-  }
-  
-  table[cellpadding="#{$i}"] td {
-    padding: #{$i}px;
-  }
-  
-}
-
-td {
-  padding: initial;
-  margin: initial;
-  width: auto;
-  max-width: 100%;
-}
-
-label {
-  display: inline;
-}
-
-ul {
-  list-style-position: outside;
-}
-
-ol {
-  list-style-type: decimal;
-  list-style-position: outside;
-}
-
-ul, ol {
-  margin: 16px 0;
-  padding: 0 0 0 30px;
-
-  li {
-    margin: 0;
-    padding: 0;
-  }
-
-}
-
-sub {
-  vertical-align: sub;
-  font-size: 70%;
-}
-
-sup {
-  vertical-align: super;
-  font-size: 70%;
-}
-
-.clear {
-  clear: both;
-}
-
-// ASSIGNMENT'S SUBMIT BUTTON */
-.muikku-save-page-wrapper {
-  text-align: center;
-  margin: 20px -15px 15px;
-  clear: both;
-
-  button {
-    font-size: 14px;
-    color: #fff;
-    background: #71bced;
-    box-shadow: none;
-    border: 0;
-    border-radius: 2px;
-    font-weight: 400;
-    text-transform: uppercase;
-    padding: 12px;
-    transition: background 0.8s ease-in-out;
-    margin: 0 5px 5px;
-    min-width: 120px;
-    outline: none;
-    position: relative;
-    line-height: 1;
-    cursor: pointer;
-    display: inline-block;
-  
-    &.muikku-assignment-button {
-    
-      &.muikku-evaluated-assignment {
+        display: none;
+        margin: 30px 0 0;
+        font-family: 'Open Sans', Arial, sans-serif;
+        opacity: 0.9;
         background: #fff;
-        color: #666;
-        font-style: italic;
-        cursor: default;
+        padding: 15px 10px;
+        font-size: 13px;
+        word-wrap: break-word;
+        
+        span.image-details-label {
+          padding: 0 5px 0 0;
+        }
+        
+        a {
+          color: #0099ff;
+          padding: 0;
+          line-height: 140%;
+          word-wrap: break-word;
+        }
+        
+        span {
+          color: #000;
+          padding: 0;
+          line-height: 140%;
+          word-wrap: break-word;
+        }
+        
       }
       
-      // Check Exercise
-      &.muikku-check-exercises {
-        background: $exercise-color;
+      &:hover {
+        left: 0;
+        
+        .image-details-container {
+          display: block;
+        }
+      
       }
       
-      // Submit Assignment
-      &.muikku-submit-assignment {
-        background: $assignment-color;
-      }
-      
-      // Withdraw Assingment
-      &.muikku-withdraw-assignment {
-        background: darken($assignment-color, 10%);
-      }
-      
-      // Update Assignment
-      &.muikku-update-assignment {
-        background: lighten($assignment-color, 5%);
-      }
-      
+    }
+  
+    figcaption {
+      max-width: 100%;
+      background: #f0fbf8;
+      font-style: italic;
+      font-size: 13px;
+      padding: 4px 8px 8px;
+      line-height: 130%;
+      border-radius: 2px;
+      box-sizing: border-box;
+      text-align: left;
     }
     
-    // Show Correct Answers
-    &.muikku-show-correct-answers-button,
-    &.muikku-hide-correct-answers-button {
-      background: $exerciseCorrectAnswersOnRequest;
+  }
+  
+  p {
+    margin: 15px 0;
+    
+    // CONTENT VIEW RESTRICTION 
+    &.content-view-restricted-message {
+      background: #f9f9f9;
+      font-size: 20px;
+      font-style: italic;
+      padding: 60px 20px;
+      text-align: center;
     }
     
-    // Show Assignment's Evaluation
-    &.muikku-show-evaluation-button {
-      
-      &.failed {
-        background: $evaluation-failed-color;
-      }
-      
-      &.incomplete {
-        background: $evaluation-incomplete-color;
-      }
-      
-      &.passed {
-        background: $evaluation-passed-color;
-      }
-      
-    }
-     
   }
   
-}
-
-
-.evaluation-container {
-
-  .assignment-grade-container,
-  .assignment-date-container,
-  .assignment-literal-container {
-    margin: 10px 0; 
+  a {
+    color: $link;
   }
   
-  .assignment-literal-label,
-  .assignment-grade-label,
-  .assignment-date-label {
-    font-size: 16px;
+  em, i {
+    font-style: italic;
+    font-weight: 300;
+  }
+  
+  strong, b {
     font-weight: 400;
+    font-style: inherit;
   }
   
-  .assignment-grade-label,
-  .assignment-date-label {
-    display: inline-block;
-    padding: 0 10px 0 0;
-  }
-  
-  .assignment-grade-data {
-    background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
-    border-radius: 5px;
-    display: inline-block;
-    margin: 0 0 0 5px;
-    min-width: 16px;
-    padding: 3px 6px;
-    text-align: center;
-  }
-  
-  .assignment-literal-data {
-    background: $evaluation-modal-assignment-evaluated-literal-background-color;
-    border-radius: 3px;
+  table {
+    margin: initial;
+    padding: initial;
     font-size: 14px;
-    line-height: 20px;
-    padding: 1px 10px;
-    
-    p {
-      margin: 10px 0;
-    }
- 
   }
   
+  table[cellspacing] {
+    border-collapse: separate;
+    border-spacing: 50px;
+  }
   
+  table[cellpadding] td{
+    border-collapse: separate;
+    padding: 50px;
+  }
   
-}
-  
-.workspace-materials-view-page {
+  @for $i from 0 through 49 {
+    table[cellspacing="#{$i}"] {
+      border-spacing: #{$i}px;
+    }
     
+    table[cellpadding="#{$i}"] td {
+      padding: #{$i}px;
+    }
+    
+  }
+  
+  td {
+    padding: initial;
+    margin: initial;
+    width: auto;
+    max-width: 100%;
+  }
+  
+  label {
+    display: inline;
+  }
+  
+  ul {
+    list-style-position: outside;
+  }
+  
+  ol {
+    list-style-type: decimal;
+    list-style-position: outside;
+  }
+  
+  ul, ol {
+    margin: 16px 0;
+    padding: 0 0 0 30px;
+  
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  
+  }
+  
+  sub {
+    vertical-align: sub;
+    font-size: 70%;
+  }
+  
+  sup {
+    vertical-align: super;
+    font-size: 70%;
+  }
+  
+  .clear {
+    clear: both;
+  }
+
+  // ASSIGNMENT'S SUBMIT BUTTON */
+  .muikku-save-page-wrapper {
+    text-align: center;
+    margin: 20px -15px 15px;
+    clear: both;
+  
+    button {
+      font-size: 14px;
+      color: #fff;
+      background: #71bced;
+      box-shadow: none;
+      border: 0;
+      border-radius: 2px;
+      font-weight: 400;
+      text-transform: uppercase;
+      padding: 12px;
+      transition: background 0.8s ease-in-out;
+      margin: 0 5px 5px;
+      min-width: 120px;
+      outline: none;
+      position: relative;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-block;
+    
+      &.muikku-assignment-button {
+      
+        &.muikku-evaluated-assignment {
+          background: #fff;
+          color: #666;
+          font-style: italic;
+          cursor: default;
+        }
+        
+        // Check Exercise
+        &.muikku-check-exercises {
+          background: $exercise-color;
+        }
+        
+        // Submit Assignment
+        &.muikku-submit-assignment {
+          background: $assignment-color;
+        }
+        
+        // Withdraw Assingment
+        &.muikku-withdraw-assignment {
+          background: darken($assignment-color, 10%);
+        }
+        
+        // Update Assignment
+        &.muikku-update-assignment {
+          background: lighten($assignment-color, 5%);
+        }
+        
+      }
+      
+      // Show Correct Answers
+      &.muikku-show-correct-answers-button,
+      &.muikku-hide-correct-answers-button {
+        background: $exerciseCorrectAnswersOnRequest;
+      }
+      
+      // Show Assignment's Evaluation
+      &.muikku-show-evaluation-button {
+        
+        &.failed {
+          background: $evaluation-failed-color;
+        }
+        
+        &.incomplete {
+          background: $evaluation-incomplete-color;
+        }
+        
+        &.passed {
+          background: $evaluation-passed-color;
+        }
+        
+      }
+       
+    }
+    
+  }
+
+  .evaluation-container {
+  
+    .assignment-grade-container,
+    .assignment-date-container,
+    .assignment-literal-container {
+      margin: 10px 0; 
+    }
+    
+    .assignment-literal-label,
+    .assignment-grade-label,
+    .assignment-date-label {
+      font-size: 16px;
+      font-weight: 400;
+    }
+    
+    .assignment-grade-label,
+    .assignment-date-label {
+      display: inline-block;
+      padding: 0 10px 0 0;
+    }
+    
+    .assignment-grade-data {
+      background: $evaluation-modal-assignment-evaluated-grade-info-background-color;
+      border-radius: 5px;
+      display: inline-block;
+      margin: 0 0 0 5px;
+      min-width: 16px;
+      padding: 3px 6px;
+      text-align: center;
+    }
+    
+    .assignment-literal-data {
+      background: $evaluation-modal-assignment-evaluated-literal-background-color;
+      border-radius: 3px;
+      font-size: 14px;
+      line-height: 20px;
+      padding: 1px 10px;
+      
+      p {
+        margin: 10px 0;
+      }
+   
+    }
+    
+  }
+  
+      
   span.muikku-field-examples {
     border-radius: 3px;
     padding: 3px;
@@ -892,63 +929,54 @@ sup {
     }
     
   }
-  
-}
 
-footer.article-details {
-  border-top: 2px solid #e6f2c4;
-  clear: both;
-  font-size: 13px;
-  line-height: 1.2em;
-  margin: 0 -20px -10px;
-  padding: 5px 20px; 
-   
-  .producers-override {
-    margin: 10px 0;
-  
-    .material-producers-label {
-      color: #727272;
-      padding: 0 5px 0 0;
-      text-transform: uppercase;
+  footer.article-details {
+    border-top: 2px solid #e6f2c4;
+    clear: both;
+    font-size: 13px;
+    line-height: 1.2em;
+    margin: 0 -20px -10px;
+    padding: 5px 20px; 
+     
+    .producers-override {
+      margin: 10px 0;
+    
+      .material-producers-label {
+        color: #727272;
+        padding: 0 5px 0 0;
+        text-transform: uppercase;
+      }
+      
+      .material-producer {
+        color: #000;
+        padding: 0;
+        text-transform: uppercase;
+      }
+    
     }
     
-    .material-producer {
-      padding: 0;
-      color: #000;
-      text-transform: uppercase;
-    }
+    .license-override {
+      margin: 10px 0;
+    
+      .material-license-label {
+        color: #727272;
+        padding: 0 5px 0 0;
+        text-transform: uppercase;
+      }
   
-  }
-  
-  .license-override {
-    margin: 10px 0;
-  
-    .material-license-label {
-      color: #727272;
-      padding: 0 5px 0 0;
-      text-transform: uppercase;
-    }
-
-    .material-license {
-      padding: 0;
-      
-      a {
-        color: #09f;
+      .material-license {
+        padding: 0;
+        
+        a {
+          color: #09f;
+        }
+        
       }
       
     }
-    
+  
   }
 
-}
-
-// CONTENT VIEW RESTRICTION 
-p.content-view-restricted-message {
-  text-align: center;
-  font-style: italic;
-  font-size: 20px;
-  padding: 60px 20px;
-  background: #f9f9f9;
 }
 
 .workspace-materials-view-page[data-view-restricted="true"] {

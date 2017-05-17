@@ -2,6 +2,7 @@
 @import "styles";
 
 // These are for task styles
+
 @import "vars_backup";
 @import "connect-field";
 @import "organizer-field";
@@ -9,25 +10,373 @@
 @import "audio-field";
 @import "file-field";
 @import "_evaluation_material_styles";
-@import "correct_answers"; 
+@import "correct_answers";
 
 
-/* Transcript of records (.tr-*) */
+// Transcript of records (.tr-*) 
+
+
+// Classes 
+
 
 .tr-content-main {
-  
+
   &.loading {
     height: 200px;
-    
+
     &::before {
       @include generic-loader(50px);
       margin-left: 50%;
       margin-top: 50%;
     }
-    
   }
-  
 }
+
+.tr-vops {
+  width: 100%;
+}
+
+.tr-vops-content {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 652px;
+  min-width: 260px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 20px 200px;
+  position: relative;
+
+}
+
+
+.tr-vops-legend-container {
+  position: relative;
+}
+
+.tr-vops-legend-content-title {
+  color: $environment-link-color;
+  font-size: 15px;
+  padding-left: 10px;
+}
+
+
+.tr-vops-legend-content {
+  border-bottom: 1px solid $environment-legend-border-color;
+  border-top: 1px solid $environment-legend-border-color;
+  cursor: pointer;  
+  max-height: 25px;
+  overflow-y: hidden;
+  padding: 5px;
+  transition-duration: 0.5s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+
+  &.closed {
+    max-height: 25px;
+  }
+
+  &.open {
+    max-height: 200px;
+  }
+}
+
+.tr-vops-legend-topic {
+  font-weight: 600;  
+  padding: 20px 0 0 20px;
+}
+
+.tr-vops-legend-items {
+  align-items: center;
+  display: flex;
+  flex-flow: row wrap;
+  padding: 10px 0 0 20px;
+  
+  .tr-vops-legend-item {
+    align-items: center;
+    display: flex;
+    margin-bottom: 10px;
+    margin-right: 10px;
+  }
+}
+
+.tr-vops-progress-courses {
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  min-height: 40px;
+
+  span {
+    margin-left: 15px;
+  }
+}
+
+
+
+.tr-vops-row {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+
+.tr-vops-item-name {
+  flex: 0 0 50px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.tr-vops-item-title {
+  align-items: center;
+  color: $environment-button-disabled-font-color;
+  display: flex;
+  flex: 0 0 30px;
+  height: 30px;
+  justify-content: center;
+  margin-left: 10px;
+  min-width: 30px;
+}
+
+.tr-vops-item-menu {
+  background-color: $environment-background-color;
+  border: 1px solid $environment-border-color;
+  border-radius: 3px;
+  box-shadow: $environment-menu-shadow;
+  display: none;
+  height: 100px;
+  left: -4px;
+  padding: 10px;
+  position: absolute;
+  top: 36px;
+  width: 100px;
+  z-index: 13;
+
+  &::after,
+  &::before {
+    border: solid transparent;
+    bottom: 100%;
+    content: " ";
+    height: 0;
+    margin-top: 10px;
+    pointer-events: none;
+    position: absolute;
+    width: 0;
+  }
+
+  &::after {
+    border-bottom-color: $environment-arrow-border-color;
+    border-color: $environment-border-color;
+    border-left: solid transparent;
+    border-right: solid transparent;
+    border-top: solid transparent;
+    border-width: 7px;
+    margin-left: 1px;
+  }
+
+  &::before {
+    border-bottom-color: $environment-border-color;
+    border-color: $environment-arrow-border-color;
+    border-left: solid transparent;
+    border-right: solid transparent;
+    border-top: solid transparent;
+    border-width: 8px;
+  }
+}
+
+
+.tr-vops-item {
+  align-items: center;
+  background-color: $environment-background-dim-color;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 30px;
+  height: 30px;
+  justify-content: center;
+  margin-left: 10px;
+  min-width: 30px;
+  position: relative;
+
+  span {
+    pointer-events: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  &.mandatory {
+    border-radius: 50%;
+  }
+
+  &.optional-school {
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+
+  }
+
+  &.optional-national {
+    border-bottom-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+  }
+
+  &.passed {
+    border: 3px solid $item-state-passed-color;
+
+    .tr-vops-item-menu {
+      border: 1px solid $item-state-passed-color;
+      left: -6px;
+      top: 34px;
+
+      &::after {
+        border-bottom-color: $environment-arrow-border-color;
+        border-color: $item-state-passed-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+
+      &::before {
+        border-color: $environment-arrow-border-color;
+        border-top: solid transparent;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-bottom-color: $item-state-passed-color;
+        border-width: 8px;
+      }
+   }
+  }
+
+  &.incomplete {
+    border: 3px solid $item-state-incomplete-color;
+
+    .tr-vops-item-menu {
+      border: 1px solid $item-state-incomplete-color;
+      left: -6px;
+      top: 34px;
+
+      &::after {
+        border-bottom-color: $environment-arrow-border-color;
+        border-color: $item-state-incomplete-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+
+      &::before {
+        border-bottom-color: $item-state-incomplete-color;
+        border-color: $environment-arrow-border-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 8px;
+      }
+    }
+  }
+
+  &.failed {
+    background-color: $item-grade-failed-color;
+    color: $environment-alt-font-color;
+
+    .tr-vops-item-menu {
+      border: 1px solid $item-grade-failed-color;
+      left: -6px;
+      top: 37px;
+
+      &::after {
+        border-bottom-color: $environment-arrow-border-color;
+        border-color: $item-grade-failed-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+
+      &::before {
+        border-bottom-color: $item-grade-failed-color;
+        border-color: $environment-arrow-border-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 8px;
+      }
+    }
+  }
+
+  &.planned {
+    border: 3px solid $item-state-between-color;
+
+    .tr-vops-item-menu {
+      border: 1px solid $item-state-between-color;
+      left: -6px;
+      top: 34px;
+
+      &::after {
+        border-bottom-color: $environment-arrow-border-color;
+        border-color: $item-state-between-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+
+      &::before {
+        border-bottom-color: $item-state-between-color;
+        border-color: $environment-arrow-border-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 8px;
+      }
+    }
+  }
+
+  &.enrolled {
+    background-color: $item-state-between-color;
+    
+    .tr-vops-item-menu {
+      border: 1px solid $item-state-between-color;
+      left: -6px;
+      top: 37px;
+
+      &::after {
+        border-bottom-color: $environment-arrow-border-color;      
+        border-color: $item-state-between-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 7px;
+        margin-left: 1px;
+      }
+
+      &::before {
+        border-bottom-color: $item-state-between-color;
+        border-color: $environment-arrow-border-color;
+        border-left: solid transparent;
+        border-right: solid transparent;
+        border-top: solid transparent;
+        border-width: 8px;
+      }
+    }
+  }
+}
+
+.tr-vops-legend-item-grid {
+  flex: 0 0 20px;
+  height: 20px;
+  margin-right: 10px;
+  min-width: 20px;
+}
+
 
 .tr-item-workspace-assessment {
   cursor: pointer;
@@ -35,14 +384,15 @@
 
 .tr-study-programme-name {
   padding-left: 5px;
-  h3 {  
-    color:#32acf6;
-    font-weight:700;
+  
+  h3 {
+    color: $environment-item-subheader-font-color;
+    font-weight: 700;
   }
 }
 
 .tr-study-programme-studies {
-  padding: 5px 15px; 
+  padding: 5px 15px;
 }
 
 .tr-transfer-credits-title {
@@ -57,171 +407,171 @@
     font-weight: 700;
     font-size: 16px;
   }
-  
+
 }
 .tr-item-header-details {
- 
+
   .tr-item-header-detail {
     display: inline-block;
-  
+
     &.grade {
       box-sizing: border-box;
       color: $item-grade-font-color;
       font-size: 12px;
       margin-left: 5px;
-      padding: 0 6px; 
+      padding: 0 6px;
       text-transform: uppercase;
- 
+
 
       &.passing {
-        background-color: $item-grade-passing-background-color;
+        background-color: $item-grade-passing-color;
       }
-      
+
       &.non-passing {
-        background-color: $item-grade-failing-background-color;
+        background-color: $item-grade-failing-color;
       }
-      
+
     }
 
   }
-  
+
 }
 
 .tr-item-description-title {
-  
+
   span {
     font-size: 19px;
     font-weight: 700;
-    
+
     &.tr-item-long {
       margin-left: 10px;
-    }    
-    
+    }
+
     &.grade {
       color: $item-grade-font-color;
-      margin-left: 3px; 
+      margin-left: 3px;
       padding: 5px 10px;
-      
+
       &.passing {
-        background-color: $item-grade-passing-background-color;
+        background-color: $item-grade-passing-color;
       }
-      
+
       &.non-passing {
-        background-color: $item-grade-failing-background-color;
+        background-color: $item-grade-failing-color;
       }
-      
+
     }
-    
+
     &:not(:first-child) {
       margin-left: 10px;
     }
-    
+
   }
-  
+
 }
 
 .tr-item-description-content {
-  
+
   span {
     display: inline-block;
     margin-left: 10px;
   }
-  
+
 }
 
-.tr-user-files{
+.tr-user-files {
   padding: 0 10px;
   margin-bottom: 10px;
-  
+
 }
 
-.tr-user-file{
+.tr-user-file {
   background-color: $environment-file-background-color;
-  display:inline-block;
+  display: inline-block;
   margin-bottom: 5px;
   padding:5px;
-  
+
   a {
     color: $environment-alt-font-color;
     text-decoration: none;
   }
-  
-  &:not(:first-child){
-   margin-left:5px;
+
+  &:not(:first-child) {
+    margin-left: 5px;
   }
 
 }
 
 
-.tr-user-file-size{
-  margin-left:10px;
-  font-weight:300;
+.tr-user-file-size {
+  font-weight: 300;
+  margin-left: 10px;
 }
 
 
 .tr-task-content-container{
-  padding: 15px;  
+  padding: 15px;
 }
 
 .tr-task-content{
-  background-color: #fff;  
+  background-color: $environment-background-color;
 }
 
 .tr-task-not-evaluated {
   span:not(:first-child) {
     margin-left: 10px;
-  }  
-    
+  }
+
 }
 
 .tr-task-evaluated {
-  
+
   &:hover {
     background-color: $environment-background-dim-color;
     cursor: pointer;
   }
-  
-  
+
+
   .content-container {
     background-color: $environment-background-light-dim-color;
-  }  
-  
+  }
+
   .title {
-  
+
     span {
       box-sizing: border-box;
       display: inline-block;
-            
+
       &:not(:first-child) {
         margin-left: 10px;
       }
-      
+
     }
-  
+
   }
-  
+
   .content {
     padding: 15px;
   }
-  
+
 }
 
 .tr-task-evaluated-grade {
   background-color: $environment-background-dim-color;
-  color: $environment-font-disabled-color; 
+  color: $environment-font-disabled-color;
   padding:5px 10px;
 
   &.grade {
     color: $item-grade-font-color;
-    
+
     &.passing {
-      background-color: $item-grade-passing-background-color;
+      background-color: $item-grade-passing-color;
     }
-    
+
     &.non-passing {
-      background-color: $item-grade-failing-background-color;
+      background-color: $item-grade-failing-color;
     }
-    
+
   }
 
 }
@@ -234,4 +584,30 @@
   font-style: italic;
   margin: 5px 0 10px;
   padding: 2px;
+}
+
+.hops-form-wrapper {
+  label {
+    margin: 0;
+    padding: 0;
+  }
+
+  input:not(:first-child) {
+    margin-left: 5px;
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    font-size: 15px;
+    padding: 5px;
+    width: 200px;
+
+    &:not(:first-child) {
+      margin-left: 10px;
+    }
+  }
+
+  .hops-form-section {
+    padding: 15px;
+  }
 }

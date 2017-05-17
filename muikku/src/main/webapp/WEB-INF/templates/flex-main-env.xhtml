@@ -120,7 +120,7 @@
         <!-- EVALUATION -->
         <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')}">
           <div class="dock-static-navi-button-evaluation sm-flex-hide" title="#{i18n.text['plugin.evaluation.evaluation']}">
-            <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top">
+            <a jsf:outcome="/jsf/evaluation/main-view.jsf" class="icon-evaluate" target="top">
               <span style="display:none" class="dock-notification"></span>
             </a>
           </div>
@@ -146,7 +146,7 @@
                 <!-- EVALUATION -->
                 <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')}">
                   <div class="dock-static-navi-button-evaluation lg-flex-hide md-flex-hide">
-                    <a jsf:outcome="/jsf/evaluation/index.jsf" class="icon-evaluate" target="top"><span>#{i18n.text['plugin.evaluation.evaluation']}</span></a>
+                    <a jsf:outcome="/jsf/evaluation/main-view.jsf" class="icon-evaluate" target="top"><span>#{i18n.text['plugin.evaluation.evaluation']}</span></a>
                   </div>
                 </ui:fragment>
                 <!-- ANNOUNCER -->

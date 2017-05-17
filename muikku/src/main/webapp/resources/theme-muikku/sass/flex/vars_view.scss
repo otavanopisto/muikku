@@ -510,11 +510,11 @@ div.box {
     color: $item-grade-font-color;
     
     &.passing {
-      background-color: $item-grade-passing-background-color;
+      background-color: $item-grade-passing-color;
     }
     
     &.failing {
-      background-color: $item-grade-failing-background-color;
+      background-color: $item-grade-failing-color;
     }
   
   }
@@ -523,7 +523,7 @@ div.box {
     color: $item-button-font-color;
     
     &.add {
-      background-color: $item-button-add-background-color;
+      background-color: $item-default-button-background-color;
     }   
   }
 
