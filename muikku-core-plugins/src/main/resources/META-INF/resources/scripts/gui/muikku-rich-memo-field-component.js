@@ -67,7 +67,7 @@
     // #3120 memo word counter (functionality)
     _countWords: function() {
       var text = $(this._editor.getData()).text();
-      $(this._wordCountContainer).find('.word-count').text(text == '' ? 0 : text.split(/\s+/).length);
+      $(this._wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
     },
 
     _onInstanceReady: function (event, data) {

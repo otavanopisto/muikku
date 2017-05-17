@@ -539,17 +539,23 @@
           memoFieldElement.after(wordCountContainer);
           var countMethod = function() {
             var text = memoFieldElement.val().trim();
-            $(wordCountContainer).find('.word-count').text(text == '' ? 0 : text.split(/\s+/).length);
+            $(wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
           };
-          var timer = undefined;
+          var timer = null;
           memoFieldElement.on('focus', $.proxy(function() {
+            if (timer) {
+              clearInterval(timer);
+            }
             timer = setInterval($.proxy(function() {
               countMethod();
             }, this), 1000);
           }, this));
           memoFieldElement.on('blur', $.proxy(function() {
             countMethod();
-            clearInterval(timer);
+            if (timer) {
+              clearInterval(timer);
+              timer = null;
+            }
           }, this));
           countMethod();
         }
