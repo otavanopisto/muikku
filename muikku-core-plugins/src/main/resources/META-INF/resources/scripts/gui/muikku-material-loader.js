@@ -530,6 +530,35 @@
           memoFieldElement.addClass('ckeditor-field');
         }
         $(object).replaceWith(memoFieldElement);
+        
+        // #3120 memo word counter (non-richedit)
+        if (data.meta.richedit != true) {
+          var wordCountContainer = $('<div class="word-count-container">')
+            .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
+            .append('<span class="word-count">');
+          memoFieldElement.after(wordCountContainer);
+          var countMethod = function() {
+            var text = memoFieldElement.val().trim();
+            $(wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
+          };
+          var timer = null;
+          memoFieldElement.on('focus', $.proxy(function() {
+            if (timer) {
+              clearInterval(timer);
+            }
+            timer = setInterval($.proxy(function() {
+              countMethod();
+            }, this), 1000);
+          }, this));
+          memoFieldElement.on('blur', $.proxy(function() {
+            countMethod();
+            if (timer) {
+              clearInterval(timer);
+              timer = null;
+            }
+          }, this));
+          countMethod();
+        }
       }
     }
   });
