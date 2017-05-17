@@ -5,9 +5,10 @@ import fi.otavanopisto.muikku.schooldata.entity.Subject;
 
 public class PyramusSubject implements Subject {
 
-	public PyramusSubject(String identifier, String name) {
+	public PyramusSubject(String identifier, String name, String code) {
 		this.name = name;
 		this.identifier = identifier;
+		this.code = code;
 	}
 
 	@Override
@@ -24,7 +25,13 @@ public class PyramusSubject implements Subject {
 	public String getName() {
 		return name;
 	}
+	
+	@Override
+	public String getCode() {
+	  return code;
+	}
 
 	private String name;
 	private String identifier;
+	private String code;
 }

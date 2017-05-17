@@ -33,52 +33,38 @@
     <div class="flex-row">
       <h1 class="workspace-generic-view-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">#{i18n.text['plugin.workspace.journal.pageTitle']} - #{workspaceBackingBean.workspaceName}</h1>
     </div>
-    
-		<ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
+
+    <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
       <div class="flex-row">
-  			<div class="workspace-journal-new-entry-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-  				<div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
-  			</div>
+        <div class="workspace-journal-new-entry-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+          <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
+        </div>
       </div>
-		</ui:fragment>
+    </ui:fragment>
 
     <form method="get" id="studentSelectForm">
       <div class="flex-row">
-  			<ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
-  				<div class="workspace-journal-teacher-tools-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-  					<div class="workspace-journal-select-student-container flex-row flex-align-items-center">
-  						<span class="journal-select-student-label lg-flex-cell-1 md-flex-cell-1 sm-flex-cell-1">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
-              <select 
-                id="studentSelectField"
-                class="journal-select-student-selection lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15"
-                name="studentId"
-                size="1"
-                jsf:value="#{workspaceJournalBackingBean.studentId}">
-                <option jsfc="f:selectItem" value="#{null}" itemLabel="#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}" />
-  							<ui:repeat value="#{workspaceJournalBackingBean.workspaceStudents}"
-  							           var="student"
-  							           jsfc="f:selectItems"
-  							           itemLabel="#{student.user.lastName.concat(', ').concat(student.user.firstName)}"
-  							           itemValue="#{student.userEntity.id}">
-  								<option></option>
-  							</ui:repeat>
-  						</select>
-  					</div>
-  				</div>
-  			</ui:fragment>
+        <ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
+          <div class="workspace-journal-teacher-tools-container lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
+            <div class="workspace-journal-select-student-container flex-row flex-align-items-center">
+              <span class="journal-select-student-label lg-flex-cell-1 md-flex-cell-1 sm-flex-cell-1">#{i18n.text['plugin.workspace.journal.studentFilter.label']}</span>
+                
+              <select id="studentSelectField" class="journal-select-student-selection lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-15"
+                name="studentId" size="1">
+                <option value="">#{i18n.text['plugin.workspace.journal.studentFilter.showAll']}</option>
+              </select>
+            </div>
+          </div>
+        </ui:fragment>
       </div>
     </form>
-    
+
     <div class="journal workspace-journal-content-wrapper flex-row flex-align-items-center" data-canListAllEntries="#{workspaceJournalBackingBean.canListAllEntries}" data-myJournal="#{workspaceJournalBackingBean.myJournal}">
       <ui:fragment rendered="#{workspaceJournalBackingBean.myJournal and not workspaceJournalBackingBean.canListAllEntries}">
-        <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
-          <div class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
-        </ui:fragment>
+        <div id="noEntriesMessage" style="display:none;" class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.noEntries']}</div>
       </ui:fragment>
       <ui:fragment rendered="#{workspaceJournalBackingBean.canListAllEntries}">
-        <ui:fragment rendered="#{fn:length(workspaceJournalBackingBean.journalEntries) lt 1}">
-          <div class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.studentHasNoEntries']}</div>
-        </ui:fragment>
+        <div id="noEntriesMessage" style="display:none;" class="workspace-journal-no-entries lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">#{i18n.text['plugin.workspace.journal.studentHasNoEntries']}</div>
       </ui:fragment>
 
       <div id="journalEntries" class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">

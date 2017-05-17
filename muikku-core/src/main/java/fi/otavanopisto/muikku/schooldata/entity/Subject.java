@@ -6,4 +6,6 @@ public interface Subject extends SchoolDataEntity {
 	
 	public String getName();
 	
+	public String getCode();
+	
 }

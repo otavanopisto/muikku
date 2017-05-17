@@ -321,6 +321,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       return null;
     
     SchoolDataIdentifier educationTypeIdentifier = null;
+    SchoolDataIdentifier educationSubtypeIdentifier = null;
    
     if (course.getSubjectId() != null) {
       Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.otavanopisto.pyramus.rest.model.Subject.class);
@@ -348,6 +349,10 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
         CourseEducationSubtype[] courseEducationSubtypes = pyramusClient.get(
             String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
             CourseEducationSubtype[].class);
+        
+        if (educationSubtypeIdentifier == null && courseEducationSubtypes.length == 1) {
+          educationSubtypeIdentifier = identifierMapper.getEducationSubtypeIdentifier(courseEducationSubtypes[0].getEducationSubtypeId());
+        }
         
         if (courseEducationSubtypes == null) {
           continue;
@@ -385,7 +390,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       }
     }
       
-    return entityFactory.createEntity(course, educationTypeIdentifier, courseEducationTypeMap);
+    return entityFactory.createEntity(course, educationTypeIdentifier, educationSubtypeIdentifier, courseEducationTypeMap);
   }
 
   @Override

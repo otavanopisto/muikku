@@ -156,11 +156,31 @@
               renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
                 this.element.html(text);
                 
+                // #2821: Prevent form submit when pressing enter in a text field 
+                var captionField = $(this.element).find('input[name="caption"]');
+                captionField.on('keypress', function(event) {
+                  if (event.keyCode == 13) {
+                    event.preventDefault();
+                  }
+                });
                 if (this.options.initialCaption) {
-                  $(this.element).find('input[name="caption"]').val(this.options.initialCaption);
+                  $(captionField).val(this.options.initialCaption);
                 }
                 
-                if (this.options.mode == "replyall") {
+                // If the message was sent by 'me', reply defaults for the other recipients
+                var mode = (message.senderId == MUIKKU_LOGGED_USER_ID) ? "replyall" : this.options.mode;
+                
+                if (mode == "replyall") {
+                  var recipients = [];
+                  
+                  // Add sender if it's not the logged user
+                  if (message.senderId != MUIKKU_LOGGED_USER_ID) {
+                    var notMeSenderFullName = isStudent
+                      ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+                      : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+                    recipients.push(this._recipient('USER', message.sender.id, notMeSenderFullName));                       
+                  }
+
                   // Add all the recipients
                   $.each(message.recipients,  $.proxy(function (index, recipient) {
                     var recipientFullName = isStudent
@@ -168,31 +188,43 @@
                       : (recipient.nickName ? recipient.firstName + ' "' + recipient.nickName + '"' : recipient.firstName) + ' ' + recipient.lastName;
                     
                     if ((recipient.userId != message.senderId) && (recipient.userId != MUIKKU_LOGGED_USER_ID)) {
-                      this._addRecipient('USER', recipient.userId, recipientFullName);
+                      recipients.push(this._recipient('USER', recipient.userId, recipientFullName));
                     }
                   }, this));
                   
                   // Add all the usergroups if the user is allowed to message groups
                   if (this.options.groupMessagingPermission == true) {
                     $.each(message.userGroupRecipients,  $.proxy(function (index, recipient) {
-                      this._addRecipient('GROUP', recipient.id, recipient.name);
+                      recipients.push(this._recipient('GROUP', recipient.id, recipient.name));
                     }, this));
                   }
                   
                   // Add all the workspace groups if the user is allowed to message groups
                   if (this.options.groupMessagingPermission == true) {
                     $.each(message.workspaceRecipients,  $.proxy(function (index, recipient) {
-                      this._addRecipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName);
+                      recipients.push(this._recipient('WORKSPACE', recipient.workspaceEntityId, recipient.workspaceName));
                     }, this));
                   }
                   
+                  // If there's 0 recipients the reply is for own message so just add the sender anyways
+                  if (recipients.length == 0) {
+                    var senderFullName = isStudent
+                      ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+                      : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+                    recipients.push(this._recipient('USER', message.sender.id, senderFullName));                       
+                  }
+                  
+                  $.each(recipients, $.proxy(function (ind, recipient) {
+                    this._addRecipientObj(recipient);
+                  }, this));
+                  
                   this.options.replyToGroupMessage = ((message.userGroupRecipients.length | 0) + (message.workspaceRecipients.length | 0)) > 0;
+                } else {
+                  var replySenderFullName = isStudent
+                    ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+                    : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+                  this._addRecipient('USER', message.sender.id, replySenderFullName);                       
                 }
-                
-                var senderFullName = isStudent
-                  ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-                  : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-                this._addRecipient('USER', message.sender.id, senderFullName);                       
                 
                 if (callback) {
                   callback();
@@ -208,8 +240,15 @@
           renderDustTemplate('communicator/communicator_create_message.dust', data, $.proxy(function (text) {
             this.element.html(text);
 
+            // #2821: Prevent form submit when pressing enter in a text field 
+            var captionField = $(this.element).find('input[name="caption"]');
+            captionField.on('keypress', function(event) {
+              if (event.keyCode == 13) {
+                event.preventDefault();
+              }
+            });
             if (this.options.initialCaption) {
-              $(this.element).find('input[name="caption"]').val(this.options.initialCaption);
+              $(captionField).val(this.options.initialCaption);
             }
             
             if (this.options.userRecipients) {
@@ -229,27 +268,33 @@
         }
       }, this));    
     },
-    
-    _addRecipient: function (type, id, label) {
-      var parameters = {
+
+    _recipient: function(type, id, label) {
+      return {
         id: id,
         name: label,
         type: type
       };
-      
-      switch (type) {
+    },
+    
+    _addRecipient: function(type, id, label) {
+      this._addRecipientObj(this._recipient(type, id, label));
+    },
+    
+    _addRecipientObj: function (recipient) {
+      switch (recipient.type) {
         case 'USER':
-          renderDustTemplate('communicator/communicator_messagerecipient.dust', parameters, $.proxy(function (text) {
+          renderDustTemplate('communicator/communicator_messagerecipient.dust', recipient, $.proxy(function (text) {
             this.element.find('.cm-message-recipients').prepend(text);
           }, this));
         break;
         case 'GROUP':
-          renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', parameters, $.proxy(function (text) {
+          renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', recipient, $.proxy(function (text) {
             this.element.find('.cm-message-recipients').prepend(text);
           }, this));
         break;
         case 'WORKSPACE':
-          renderDustTemplate('communicator/communicator_messagerecipientworkspace.dust', parameters, $.proxy(function (text) {
+          renderDustTemplate('communicator/communicator_messagerecipientworkspace.dust', recipient, $.proxy(function (text) {
             this.element.find('.cm-message-recipients').prepend(text);
           }, this));
         break;

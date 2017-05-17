@@ -39,10 +39,16 @@
       }
       
       delete this.options.ckeditor.externalPlugins;
-      
+
       this._editor = CKEDITOR.replace(this.element[0], this.options.ckeditor);
       this._editor.on('contentChange', $.proxy(this._onContentChange, this));
       this._editor.on('instanceReady', $.proxy(this._onInstanceReady, this));
+      
+      // #3120 memo word counter (ui)
+      this._wordCountContainer = $('<div class="word-count-container">')
+        .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
+        .append('<span class="word-count">'); 
+      $(this.element[0]).after(this._wordCountContainer);
     },
 
     setReadOnly: function (readonly) {
@@ -57,15 +63,23 @@
         
       }
     },
+    
+    // #3120 memo word counter (functionality)
+    _countWords: function() {
+      var text = $(this._editor.getData()).text();
+      $(this._wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
+    },
 
     _onInstanceReady: function (event, data) {
       this.setReadOnly(this._readonly);
+      this._countWords();
     },
     
     _onContentChange: function (event, data) {
       $(this.element)
         .val(this._editor.getData())
         .trigger("change");
+      this._countWords();
     },
     
     _destroy: function () {

@@ -10,7 +10,20 @@ public class Workspace {
   public Workspace() {
   }
 
-  public Workspace(Long id, String urlName, WorkspaceAccess access, Boolean archived, Boolean published, String name, String nameExtension, String description, String materialDefaultLicense, Long numVisits, Date lastVisit, Set<String> curriculumIdentifiers) {
+  public Workspace(
+      Long id,
+      String urlName,
+      WorkspaceAccess access,
+      Boolean archived,
+      Boolean published,
+      String name,
+      String nameExtension,
+      String description,
+      String materialDefaultLicense,
+      Long numVisits,
+      Date lastVisit,
+      Set<String> curriculumIdentifiers,
+      String subjectIdentifier) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -24,6 +37,7 @@ public class Workspace {
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
+    this.subjectIdentifier = subjectIdentifier;
   }
 
   public Long getId() {
@@ -121,6 +135,14 @@ public class Workspace {
   public void setCurriculumIdentifiers(Set<String> curriculumIdentifiers) {
     this.curriculumIdentifiers = curriculumIdentifiers;
   }
+  
+  public String getSubjectIdentifier() {
+    return subjectIdentifier;
+  }
+  
+  public void setSubjectIdentifier(String subjectIdentifier) {
+    this.subjectIdentifier = subjectIdentifier;
+  }
 
   private Long id;
   private String urlName;
@@ -134,4 +156,5 @@ public class Workspace {
   private String materialDefaultLicense;
   private Boolean published;
   private Set<String> curriculumIdentifiers;
+  private String subjectIdentifier;
 }

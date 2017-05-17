@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.RoleSchoolDataIdentifierDAO;
@@ -34,6 +37,8 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceType;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -78,6 +83,9 @@ public class WorkspaceController {
 
   @Inject
   private WorkspaceMaterialProducerDAO workspaceMaterialProducerDAO;
+  
+  @Inject
+  private SearchProvider searchProvider;
 
   /* Workspace */
 
@@ -115,6 +123,33 @@ public class WorkspaceController {
 
   public List<Workspace> listWorkspaces(String schoolDataSource) {
     return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
+  }
+  
+  public List<Workspace> listWorkspacesBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+    SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
+    List<Workspace> retval = new ArrayList<>();
+    List<Map<String, Object>> results = sr.getResults();
+    for (Map<String, Object> result : results) {
+      String searchId = (String) result.get("id");
+      if (StringUtils.isNotBlank(searchId)) {
+        String[] id = searchId.split("/", 2);
+        if (id.length == 2) {
+          String dataSource = id[1];
+          String identifier = id[0];
+
+          SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+          
+          Workspace workspace = findWorkspace(workspaceIdentifier);
+          if (workspace != null) {
+            retval.add(workspace);
+          } else {
+            logger.log(Level.WARNING, "Workspace not found for identifier in index: %s", workspaceIdentifier);
+          }
+        }
+      }
+    }
+      
+    return retval;
   }
   
   public Workspace copyWorkspace(SchoolDataIdentifier workspaceIdentifier, String name, String nameExtension, String description) {

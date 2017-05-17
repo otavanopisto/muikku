@@ -3,10 +3,10 @@
     <div class="mf-category-title"><span>{#localize key="plugin.coursepicker.filters.title"/}</span></div>
     <ul class="mf-category-content cp-filters-ul"> 
       {#educationTypes}
-        <li id="{type}-{id}">
-          <a class="mf-category-item-plain cp-education-type-filter" data-id="{identifier}">
+        <li id="{type}-{id}" class="cp-education-type-filter" data-id="{identifier}">
+          <a class="mf-category-item-plain">
             <span>{name}</span>
-          </a></li>    
+          </a>
         </li>    
       {/educationTypes}
     </ul>
