@@ -91,20 +91,21 @@ public class AssessmentRequestController {
         workspaceEntity.getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     
-    // Strip assessment requests that have been handled (TODO could be handled in Pyramus)
-    for (int i = assessmentRequests.size() - 1; i >= 0; i--) {
-      if (assessmentRequests.get(i).getHandled()) {
-        assessmentRequests.remove(i);
-      }
-    }
-
-    // Sort latest assessment request first
     if (!assessmentRequests.isEmpty()) {
-      assessmentRequests.sort(new Comparator<WorkspaceAssessmentRequest>() {
-        public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
-          return o2.getDate().compareTo(o1.getDate());
+      // Strip assessment requests that have been handled (TODO could be handled in Pyramus)
+      for (int i = assessmentRequests.size() - 1; i >= 0; i--) {
+        if (assessmentRequests.get(i).getHandled()) {
+          assessmentRequests.remove(i);
         }
-      });
+      }
+      if (!assessmentRequests.isEmpty()) {
+        // Sort latest assessment request first
+        assessmentRequests.sort(new Comparator<WorkspaceAssessmentRequest>() {
+          public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
+            return o2.getDate().compareTo(o1.getDate());
+          }
+        });
+      }
     }
     
     WorkspaceAssessment latestAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
