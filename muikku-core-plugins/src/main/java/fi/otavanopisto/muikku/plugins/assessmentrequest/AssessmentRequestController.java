@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -69,31 +70,59 @@ public class AssessmentRequestController {
   public WorkspaceAssessmentState getWorkspaceAssessmentState(WorkspaceUserEntity workspaceUserEntity) {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
     
+    // List all asssessments
     List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(
         workspaceEntity.getDataSource().getIdentifier(), 
         workspaceEntity.getIdentifier(),
+        workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());    
+    
+    // Sort latest assessment first
+    if (!workspaceAssessments.isEmpty()) {
+      workspaceAssessments.sort(new Comparator<WorkspaceAssessment>() {
+        public int compare(WorkspaceAssessment o1, WorkspaceAssessment o2) {
+          return o2.getDate().compareTo(o1.getDate());
+        }
+      });
+    }
+
+    // List all assessment requests
+    List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
+        workspaceEntity.getDataSource().getIdentifier(), 
+        workspaceEntity.getIdentifier(),
         workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-
-    if (workspaceAssessments.isEmpty()) {
-      List<WorkspaceAssessmentRequest> assessmentRequests = gradingController.listWorkspaceAssessmentRequests(
-          workspaceEntity.getDataSource().getIdentifier(), 
-          workspaceEntity.getIdentifier(),
-          workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
-      
-      if (assessmentRequests.isEmpty()) {
-        return WorkspaceAssessmentState.UNASSESSED;
-      } else {
-        return WorkspaceAssessmentState.PENDING;
+    
+    // Strip assessment requests that have been handled (TODO could be handled in Pyramus)
+    for (int i = assessmentRequests.size() - 1; i >= 0; i--) {
+      if (assessmentRequests.get(i).getHandled()) {
+        assessmentRequests.remove(i);
       }
-    } else {
-      WorkspaceAssessment assessment = workspaceAssessments.get(0);
-      GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleIdentifier());
-      GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeIdentifier()); 
+    }
 
-      if (grade.isPassingGrade())
-        return WorkspaceAssessmentState.PASS;
-      else
-        return WorkspaceAssessmentState.FAIL;
+    // Sort latest assessment request first
+    if (!assessmentRequests.isEmpty()) {
+      assessmentRequests.sort(new Comparator<WorkspaceAssessmentRequest>() {
+        public int compare(WorkspaceAssessmentRequest o1, WorkspaceAssessmentRequest o2) {
+          return o2.getDate().compareTo(o1.getDate());
+        }
+      });
+    }
+    
+    WorkspaceAssessment latestAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
+    WorkspaceAssessmentRequest latestRequest = assessmentRequests.isEmpty() ? null : assessmentRequests.get(0);
+      
+    if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
+      // Has assessment and no request, or the request is older
+      GradingScale gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
+      GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier()); 
+      return grade.isPassingGrade() ? WorkspaceAssessmentState.PASS : WorkspaceAssessmentState.FAIL;
+    }
+    else if (latestRequest != null && (latestAssessment == null || latestAssessment.getDate().before(latestRequest.getDate()))) {
+      // Has request and no assessment, or the assessment is older
+      return WorkspaceAssessmentState.PENDING;
+    }
+    else {
+      // Has neither assessment nor request
+      return WorkspaceAssessmentState.UNASSESSED;
     }
   }
 
