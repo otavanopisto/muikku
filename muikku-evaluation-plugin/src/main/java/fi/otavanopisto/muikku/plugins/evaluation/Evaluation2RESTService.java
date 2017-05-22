@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -34,6 +35,8 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
@@ -127,6 +130,9 @@ public class Evaluation2RESTService {
   @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
+
+  @Inject
+  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
 
   @DELETE
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationdata")
@@ -1077,7 +1083,7 @@ public class Evaluation2RESTService {
     String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
+    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
         communicatorController.createMessageId(),
         evaluator,
         Arrays.asList(student),
@@ -1094,6 +1100,7 @@ public class Evaluation2RESTService {
             "plugin.workspace.assessment.notificationContent",
             new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment()}),
         Collections.<Tag>emptySet());
+    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
   }
 
 }
