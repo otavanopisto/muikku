@@ -2,14 +2,20 @@ package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -24,11 +30,13 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
@@ -58,6 +66,8 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -116,6 +126,13 @@ public class Evaluation2RESTService {
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+
+  @Inject
+  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
 
   @DELETE
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationdata")
@@ -935,18 +952,55 @@ public class Evaluation2RESTService {
     }
     else {
       
-      // List assessment requests by workspace
+      // List assessment requests by workspace (TODO Uses Elastic but should use workspaceUserEntityController.listActiveWorkspaceStudents or something)
       
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
-      List<String> workspaceStudentIdentifiers = new ArrayList<String>();
-      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-        workspaceStudentIdentifiers.add(workspaceUserEntity.getIdentifier());
+      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+      if (!searchProviderIterator.hasNext()) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("No search provider found").build();
       }
-      List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
-      for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
-        restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+      SearchProvider elasticSearchProvider = searchProviderIterator.next();
+      if (elasticSearchProvider != null) {
+        SearchResult result = elasticSearchProvider.searchUsers(
+            null,                                              // no search string filter
+            new String[0],                                     // no field filter
+            Arrays.asList(EnvironmentRoleArchetype.STUDENT),   // only students
+            (Collection<Long>) null,                           // no group filter
+            Collections.singletonList(workspaceEntityId),      // only students in this workspace
+            (Collection<SchoolDataIdentifier>) null,           // no user filter
+            Boolean.FALSE,                                     // ignore inactive students
+            Boolean.FALSE,                                     // ignore hidden students
+            true,                                              // only students' active study programs
+            0,                                                 // list from start
+            Integer.MAX_VALUE);                                // list all
+
+        List<Map<String, Object>> results = result.getResults();
+        if (results != null && !results.isEmpty()) {
+          List<String> workspaceStudentIdentifiers = new ArrayList<String>();
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+          SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+          for (Map<String, Object> o : results) {
+            
+            // We have students (active in the workspace) but since we need workspace student identifiers instead...
+            
+            String studentId = (String) o.get("id");
+            String[] studentIdParts = studentId.split("/", 2);
+            SchoolDataIdentifier studentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
+            UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+            if (userEntity != null && !userEntity.getArchived()) {
+              WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+              if (workspaceUserEntity != null && !workspaceUserEntity.getArchived()) {
+                workspaceStudentIdentifiers.add(workspaceUserEntity.getIdentifier());
+              }
+            }
+          }
+          
+          // Convert active workspace students into composite assessment requests 
+          
+          List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
+          for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
+            restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
+          }
+        }
       }
     }
     
@@ -1029,7 +1083,7 @@ public class Evaluation2RESTService {
     String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
+    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
         communicatorController.createMessageId(),
         evaluator,
         Arrays.asList(student),
@@ -1046,6 +1100,7 @@ public class Evaluation2RESTService {
             "plugin.workspace.assessment.notificationContent",
             new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment()}),
         Collections.<Tag>emptySet());
+    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
   }
 
 }
