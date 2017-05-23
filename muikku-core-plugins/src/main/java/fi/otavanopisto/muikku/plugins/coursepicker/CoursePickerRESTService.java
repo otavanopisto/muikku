@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -119,6 +120,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private CourseMetaController courseMetaController;
+
+  @Inject
+  private UserIndexer userIndexer;
   
   @Inject
   @Any
@@ -407,7 +411,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     }
     if (workspaceUserEntity != null && Boolean.FALSE.equals(workspaceUserEntity.getActive())) {
       workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
-      // TODO userIndexer.indexUser because active workspaces have changed?
+      userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
     }
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
@@ -16,7 +15,6 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
-import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserInactiveEvent;
 
 public class WorkspaceUserEntityController {
 
@@ -28,17 +26,6 @@ public class WorkspaceUserEntityController {
   
   @Inject
   private WorkspaceUserEntityDAO workspaceUserEntityDAO;
-  
-  public void onSchoolDataUserInactiveEvent(@Observes SchoolDataUserInactiveEvent event) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (userSchoolDataIdentifier != null) {
-      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
-      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-        workspaceUserEntityDAO.updateActive(workspaceUserEntity, Boolean.FALSE);
-      }
-      // TODO userIndexer.indexUser because active workspaces have changed? 
-    }
-  }
 
   public WorkspaceUserEntity createWorkspaceUserEntity(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity, String identifier, WorkspaceRoleEntity workspaceUserRole) {
     return workspaceUserEntityDAO.create(userSchoolDataIdentifier, workspaceEntity, workspaceUserRole, identifier, Boolean.TRUE, Boolean.FALSE);
