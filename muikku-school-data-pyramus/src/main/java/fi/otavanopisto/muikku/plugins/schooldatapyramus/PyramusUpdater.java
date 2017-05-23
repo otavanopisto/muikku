@@ -956,7 +956,7 @@ public class PyramusUpdater {
     UserEntity userEntity = userEntityId != null ? userEntityController.findUserEntityById(userEntityId) : null;
     
     if (userEntity != null) {
-      // User already exists in the system so we check which of the idetifiers have been removed and which just updated
+      // User already exists in the system so we check which of the identifiers have been removed and which just updated
       List<UserSchoolDataIdentifier> existingSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
       for (UserSchoolDataIdentifier existingSchoolDataIdentifier : existingSchoolDataIdentifiers) {
         if (existingSchoolDataIdentifier.getDataSource().getIdentifier().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
@@ -983,7 +983,7 @@ public class PyramusUpdater {
   }
 
   private void fireSchoolDataUserUpdated(Long userEntityId, SchoolDataIdentifier defaultIdentifier, List<SchoolDataIdentifier> removedIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
-      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier environmentRoleIdentifier) {
 
     if (discoveredIdentifiers == null) {
       discoveredIdentifiers = Collections.emptyList();
@@ -998,7 +998,7 @@ public class PyramusUpdater {
     }
 
     schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntityId, 
-        enivormentRoleIdentifier, 
+        environmentRoleIdentifier, 
         discoveredIdentifiers, 
         updatedIdentifiers, 
         removedIdentifiers, 
@@ -1008,7 +1008,7 @@ public class PyramusUpdater {
   }
   
   private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
-      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier environmentRoleIdentifier) {
     
     fireSchoolDataUserUpdated(userEntityId, 
         toIdentifier(defaultIdentifier), 
@@ -1016,7 +1016,7 @@ public class PyramusUpdater {
         toIdentifiers(updatedIdentifiers),
         toIdentifiers(discoveredIdentifiers),
         emails,
-        enivormentRoleIdentifier
+        environmentRoleIdentifier
     );
   }
   

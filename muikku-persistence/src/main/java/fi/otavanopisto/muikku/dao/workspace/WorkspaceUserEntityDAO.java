@@ -24,13 +24,14 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
 
 	private static final long serialVersionUID = -850520598378547048L;
 
-  public WorkspaceUserEntity create(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity, WorkspaceRoleEntity workspaceUserRole, String identifier, Boolean archived) {
+  public WorkspaceUserEntity create(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity, WorkspaceRoleEntity workspaceUserRole, String identifier, Boolean active, Boolean archived) {
     WorkspaceUserEntity workspaceUserEntity = new WorkspaceUserEntity();
     
     workspaceUserEntity.setUserSchoolDataIdentifier(userSchoolDataIdentifier);
     workspaceUserEntity.setWorkspaceEntity(workspaceEntity);
     workspaceUserEntity.setWorkspaceUserRole(workspaceUserRole);
     workspaceUserEntity.setIdentifier(identifier);
+    workspaceUserEntity.setActive(active);
     workspaceUserEntity.setArchived(archived);
     
     return persist(workspaceUserEntity);
@@ -49,6 +50,24 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.identifier), identifier),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived)
+      ) 
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public WorkspaceUserEntity findByWorkspaceEntityAndUserSchoolDataIdentifier(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity)
       ) 
     );
     
@@ -74,22 +93,24 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  public WorkspaceUserEntity findByWorkspaceEntityAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+  public List<WorkspaceUserEntity> listByUserEntityAndActiveAndArchived(UserEntity userEntity, Boolean active, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
     Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    Join<WorkspaceUserEntity, UserSchoolDataIdentifier> userIdentifierJoin = root.join(WorkspaceUserEntity_.userSchoolDataIdentifier);
     
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier),
-        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity)
-      ) 
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.active), active),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
+        criteriaBuilder.equal(userIdentifierJoin.get(UserSchoolDataIdentifier_.userEntity), userEntity)
+      )
     );
     
-    return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public List<WorkspaceUserEntity> listByUserEntityAndArchived(UserEntity userEntity, Boolean archived) {
@@ -111,7 +132,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<WorkspaceUserEntity> listByWorkspaceIncludeArchived(WorkspaceEntity workspaceEntity) {
+  public List<WorkspaceUserEntity> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -126,7 +147,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<WorkspaceUserEntity> listByWorkspaceAndArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
+  public List<WorkspaceUserEntity> listByWorkspaceEntityAndArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -144,7 +165,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<WorkspaceUserEntity> listByWorkspaceAndRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity workspaceUserRole) {
+  public List<WorkspaceUserEntity> listByWorkspaceEntityAndRoleAndArchived(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity workspaceUserRole, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -154,7 +175,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceUserRole), workspaceUserRole)
         )
@@ -163,7 +184,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<WorkspaceUserEntity> listByWorkspaceAndRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype) {
+  public List<WorkspaceUserEntity> listByWorkspaceEntityAndRoleArchetypeAndArchived(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -174,7 +195,28 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
+            criteriaBuilder.equal(join.get(WorkspaceRoleEntity_.archetype), archetype)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceUserEntity> listByWorkspaceEntityAndRoleArchetypeAndActiveAndArchived(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype, Boolean active, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    Join<WorkspaceUserEntity, WorkspaceRoleEntity> join = root.join(WorkspaceUserEntity_.workspaceUserRole);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.active), active),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
             criteriaBuilder.equal(join.get(WorkspaceRoleEntity_.archetype), archetype)
         )
@@ -183,7 +225,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<WorkspaceUserEntity> listByWorkspaceAndRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> workspaceUserRoles, Integer firstResult, Integer maxResults) {
+  public List<WorkspaceUserEntity> listByWorkspaceEntityAndRolesAndArchived(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> workspaceUserRoles, Boolean archived, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -193,7 +235,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
             criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
             root.get(WorkspaceUserEntity_.workspaceUserRole).in(workspaceUserRoles)
         )
@@ -210,6 +252,27 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     
     return query.getResultList();
   }
+  
+  public List<WorkspaceUserEntity> listByWorkspaceEntityAndUserEntityAndActiveAndArchived(WorkspaceEntity workspaceEntity, UserEntity userEntity, Boolean active, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    Join<WorkspaceUserEntity, UserSchoolDataIdentifier> userIdentifierJoin = root.join(WorkspaceUserEntity_.userSchoolDataIdentifier);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.active), active),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
+        criteriaBuilder.equal(userIdentifierJoin.get(UserSchoolDataIdentifier_.userEntity), userEntity)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   public List<WorkspaceUserEntity> listByWorkspaceEntityAndUserEntityAndArchived(WorkspaceEntity workspaceEntity, UserEntity userEntity, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
@@ -225,6 +288,25 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
         criteriaBuilder.equal(userIdentifierJoin.get(UserSchoolDataIdentifier_.userEntity), userEntity)
+      )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceUserEntity> listByUserSchoolDataIdentifierAndActiveAndArchived(UserSchoolDataIdentifier userSchoolDataIdentifier, Boolean active, Boolean archived) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.active), active),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier)
       )
     );
     
@@ -249,22 +331,22 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<WorkspaceUserEntity> listByUserSchoolDataIdentifierIncludeArchived(UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
-    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
-    
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier)
-    );
-    
-    return entityManager.createQuery(criteria).getResultList();
-  }
+//  public List<WorkspaceUserEntity> listByUserSchoolDataIdentifierIncludeArchived(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+//    EntityManager entityManager = getEntityManager(); 
+//    
+//    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+//    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+//    
+//    criteria.select(root);
+//    criteria.where(
+//      criteriaBuilder.equal(root.get(WorkspaceUserEntity_.userSchoolDataIdentifier), userSchoolDataIdentifier)
+//    );
+//    
+//    return entityManager.createQuery(criteria).getResultList();
+//  }
   
-  public Long countByWorkspaceAndRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> workspaceUserRoles) {
+  public Long countByWorkspaceEntityAndRolesAndArchived(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> workspaceUserRoles, Boolean archived) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -274,7 +356,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     criteria.select(criteriaBuilder.count(root));
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), Boolean.FALSE),
+        criteriaBuilder.equal(root.get(WorkspaceUserEntity_.archived), archived),
         criteriaBuilder.equal(root.get(WorkspaceUserEntity_.workspaceEntity), workspaceEntity),
         root.get(WorkspaceUserEntity_.workspaceUserRole).in(workspaceUserRoles)
       )
@@ -298,6 +380,11 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return persist(workspaceUserEntity);
   }
 
+  public WorkspaceUserEntity updateActive(WorkspaceUserEntity workspaceUserEntity, Boolean active) {
+    workspaceUserEntity.setActive(active);
+    return persist(workspaceUserEntity);
+  }
+
   public WorkspaceUserEntity updateArchived(WorkspaceUserEntity workspaceUserEntity, Boolean archived) {
     workspaceUserEntity.setArchived(archived);
     return persist(workspaceUserEntity);
@@ -305,6 +392,21 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
   
   public void delete(WorkspaceUserEntity workspaceUserEntity) {
     super.delete(workspaceUserEntity);
+  }
+
+  public WorkspaceUserEntity findByIdentifier(String identifier) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceUserEntity> criteria = criteriaBuilder.createQuery(WorkspaceUserEntity.class);
+    Root<WorkspaceUserEntity> root = criteria.from(WorkspaceUserEntity.class);
+    
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceUserEntity_.identifier), identifier)
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
   }
 
   public WorkspaceUserEntity findByIdentifierAndArchived(String identifier, Boolean archived) {

@@ -182,7 +182,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     } else {
       if (userEntity != null) {
-        workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+        workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
       }
     }
 
@@ -405,6 +405,10 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
       workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
     }
+    if (workspaceUserEntity != null && Boolean.FALSE.equals(workspaceUserEntity.getActive())) {
+      workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
+      // TODO userIndexer.indexUser because active workspaces have changed?
+    }
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
@@ -417,8 +421,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
 
-    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity,
-        WorkspaceRoleArchetype.TEACHER);
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
     List<UserEntity> teachers = new ArrayList<UserEntity>();
 
     String workspaceName = workspace.getName();
@@ -479,7 +482,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (sessionController.isLoggedIn()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
 
-      return workspaceUserEntity != null;
+      return workspaceUserEntity != null && workspaceUserEntity.getActive();
     } else
       return false;
   }

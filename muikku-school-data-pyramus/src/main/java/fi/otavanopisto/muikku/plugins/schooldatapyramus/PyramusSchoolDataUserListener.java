@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEvent;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserInactiveEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
@@ -37,6 +38,9 @@ public class PyramusSchoolDataUserListener {
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
+  @Inject
+  private Event<SchoolDataUserInactiveEvent> schoolDataUserInactiveEvent;
+
   @Inject
   private Event<SchoolDataUserGroupUserDiscoveredEvent> schoolDataUserGroupUserDiscoveredEvent;
 
@@ -101,6 +105,10 @@ public class PyramusSchoolDataUserListener {
 
           boolean found = false;
           boolean isActive = !student.getArchived() && student.getStudyEndDate() == null;
+          
+          if (!isActive) {
+            schoolDataUserInactiveEvent.fire(new SchoolDataUserInactiveEvent(identifier.getDataSource(), identifier.getIdentifier()));
+          }
           
           // Remove StudyProgrammeGroups
           UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
