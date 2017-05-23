@@ -125,7 +125,8 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
           notificationContent,
-          studentEntity
+          studentEntity,
+          "studytime"
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
       } else {

@@ -121,7 +121,8 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
           notificationContent,
-          studentEntity
+          studentEntity,
+          "assesmentrequest"
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
       }

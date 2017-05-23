@@ -164,7 +164,8 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
                       localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
                       localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
                       notificationContent,
-                      studentEntity
+                      studentEntity,
+                      "requestedassessmentsupplementation"
                     );
                     
                     requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
