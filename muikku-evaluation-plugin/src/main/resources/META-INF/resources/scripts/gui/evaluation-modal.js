@@ -706,7 +706,7 @@
                     $('.notification-queue').notificationQueue('notification', 'error', err);
                   }
                   else {
-                    workspaceUserEntity.archived = true;
+                    workspaceUserEntity.active = false;
                     mApi().workspace.workspaces.students
                       .update(workspaceEntityId, workspaceUserIdentifier, workspaceUserEntity)
                       .callback($.proxy(function (err, html) {

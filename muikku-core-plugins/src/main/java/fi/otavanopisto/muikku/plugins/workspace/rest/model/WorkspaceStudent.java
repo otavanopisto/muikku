@@ -7,7 +7,7 @@ public class WorkspaceStudent {
   public WorkspaceStudent() {
   }
 
-  public WorkspaceStudent(String id, Long studentEntityId, String studentIdentifier, String firstName, String lastName, String studyProgrammeName, Date enrolmentTime, Boolean archived) {
+  public WorkspaceStudent(String id, Long studentEntityId, String studentIdentifier, String firstName, String lastName, String studyProgrammeName, Date enrolmentTime, Boolean active) {
     super();
     this.id = id;
     this.studentEntityId = studentEntityId;
@@ -16,7 +16,7 @@ public class WorkspaceStudent {
     this.lastName = lastName;
     this.studyProgrammeName = studyProgrammeName;
     this.enrolmentTime = enrolmentTime;
-    this.setArchived(archived);
+    this.active = active;
   }
 
   public String getId() {
@@ -74,13 +74,13 @@ public class WorkspaceStudent {
   public void setEnrolmentTime(Date enrolmentTime) {
     this.enrolmentTime = enrolmentTime;
   }
-  
-  public Boolean getArchived() {
-    return archived;
+
+  public Boolean getActive() {
+    return active;
   }
 
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
+  public void setActive(Boolean active) {
+    this.active = active;
   }
 
   // TODO: firstName, lastName and studyProgrammeName do not belong to this resource
@@ -92,6 +92,6 @@ public class WorkspaceStudent {
   private Long studentEntityId;
   private String studentIdentifier;
   private Date enrolmentTime;
-  private Boolean archived;
-
+  private Boolean active;
+ 
 }

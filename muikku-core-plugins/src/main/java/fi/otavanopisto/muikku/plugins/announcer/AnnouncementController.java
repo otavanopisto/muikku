@@ -78,17 +78,17 @@ public class AnnouncementController {
   }
   
   public List<Announcement> listAnnouncements(boolean includeGroups, boolean includeWorkspaces, 
-      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity user, 
+      AnnouncementEnvironmentRestriction environment, AnnouncementTimeFrame timeFrame, UserEntity userEntity, 
       boolean userAsOwner, boolean onlyArchived) {
-    List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserEntity(user) : Collections.emptyList();
-    List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(user) : Collections.emptyList();
+    List<UserGroupEntity> userGroupEntities = includeGroups ? userGroupEntityController.listUserGroupsByUserEntity(userEntity) : Collections.emptyList();
+    List<WorkspaceEntity> workspaceEntities = includeWorkspaces ? workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity) : Collections.emptyList();
     
     List<Announcement> announcements = announcementDAO.listAnnouncements(
         userGroupEntities,
         workspaceEntities,
         environment, 
         timeFrame, 
-        userAsOwner ? user : null,
+        userAsOwner ? userEntity : null,
         onlyArchived);
     
     return announcements;
@@ -151,7 +151,7 @@ public class AnnouncementController {
    * @return
    */
   public List<AnnouncementWorkspace> listAnnouncementWorkspacesSortByUserFirst(Announcement announcement, UserEntity userEntity) {
-    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
+    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
     Set<Long> userWorkspaceIds = userWorkspaces.stream().map(workspace -> workspace.getId()).collect(Collectors.toSet());
     List<AnnouncementWorkspace> announcementWorkspaces = announcementWorkspaceDAO.listByAnnouncementAndArchived(announcement, Boolean.FALSE);
 

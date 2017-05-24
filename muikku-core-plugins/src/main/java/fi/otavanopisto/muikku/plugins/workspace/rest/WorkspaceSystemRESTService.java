@@ -281,7 +281,7 @@ public class WorkspaceSystemRESTService extends PluginRESTService {
             workspaceUserEntityController.unarchiveWorkspaceUserEntity(existingStudent);
           }
           workspaceUserEntityController.updateIdentifier(existingStudent, muikkuWorkspaceStudent.getIdentifier());
-          workspaceUserEntityController.deleteWorkspaceUserEntity(muikkuWorkspaceStudent);
+          workspaceUserEntityController.archiveWorkspaceUserEntity(muikkuWorkspaceStudent);
           muikkuWorkspaceStudent = existingStudent;
         }
         // Set workspace student to point at the same student as in Pyramus

@@ -42,6 +42,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
@@ -119,6 +120,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private CourseMetaController courseMetaController;
+
+  @Inject
+  private UserIndexer userIndexer;
   
   @Inject
   @Any
@@ -182,7 +186,7 @@ public class CoursePickerRESTService extends PluginRESTService {
       }
     } else {
       if (userEntity != null) {
-        workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+        workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
       }
     }
 
@@ -405,6 +409,10 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getArchived())) {
       workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
     }
+    if (workspaceUserEntity != null && Boolean.FALSE.equals(workspaceUserEntity.getActive())) {
+      workspaceUserEntityController.updateActive(workspaceUserEntity, Boolean.TRUE);
+      userIndexer.indexUser(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
+    }
     
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
@@ -417,8 +425,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
 
-    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity,
-        WorkspaceRoleArchetype.TEACHER);
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
     List<UserEntity> teachers = new ArrayList<UserEntity>();
 
     String workspaceName = workspace.getName();
@@ -479,7 +486,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     if (sessionController.isLoggedIn()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
 
-      return workspaceUserEntity != null;
+      return workspaceUserEntity != null && workspaceUserEntity.getActive();
     } else
       return false;
   }

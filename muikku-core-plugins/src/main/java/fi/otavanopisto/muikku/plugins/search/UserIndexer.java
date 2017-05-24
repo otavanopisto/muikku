@@ -91,7 +91,8 @@ public class UserIndexer {
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
 
-          List<WorkspaceEntity> workspaces = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(userIdentifier);
+          // List workspaces in which the student is active (TODO Should we have a separate variable for all workspaces?)
+          List<WorkspaceEntity> workspaces = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(userIdentifier);
           for (WorkspaceEntity workspace : workspaces) {
             workspaceEntityIds.add(workspace.getId());
           }
