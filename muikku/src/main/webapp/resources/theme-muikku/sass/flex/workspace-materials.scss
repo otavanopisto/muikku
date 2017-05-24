@@ -147,17 +147,15 @@ nav.workspace-materials-toc-wrapper {
   height: 100%;
 }
 
-
-
-
 // TOC TITLE
 .workspace-materials-toc-title {
-  text-transform: uppercase;
+  color: #2c2c2c;
+  font-size: 19px;
+  font-weight: 300;
+  height: 20px;
   margin: 0 !important;
   padding: 10px 12px;
-  font-size: 19px;
-  color: #2c2c2c;
-  height: 20px;
+  text-transform: uppercase;
 }
 
 // TOC SCROLLABLE AREA

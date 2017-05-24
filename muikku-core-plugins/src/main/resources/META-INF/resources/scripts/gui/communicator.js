@@ -875,7 +875,8 @@
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.communicator.errormessage.signatures.loading'));          
         }else{          
           renderDustTemplate('communicator/communicator_settings.dust', {signatures : signatures}, $.proxy(function(text) {
-            $(".cm-messages-container").html(text);
+            $(".cm-thread-container").hide();
+            $(".cm-messages-container").html(text).show();
             $('.mf-controls-container').messageTools( 'toolset', 'settings');   
             this._updateHash('settings', null);
           }, this));

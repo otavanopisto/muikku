@@ -12,11 +12,11 @@
             </div>    
             <div id="areaSelect" class="mf-select lg-flex-cell-7 md-flex-cell-7 sm-flex-cell-full lg-flex-cell-last md-flex-cell-last">
               <select id="forumAreaIdSelect" name="forumAreaId">
-               {#areas}
-                 <option value="{id}">{name}</option>
-               {:else}
-                 <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
-               {/areas}
+                {#areas}
+                  <option value="{id}">{name}</option>
+                {:else}
+                  <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
+                {/areas}
               </select>
             </div>    
           </div>
@@ -32,15 +32,14 @@
           {/eq}
           <div class="mf-form-row flex-row">
             <div class="di-message-new-content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-               <textarea required="required" id="textContent" name="message"></textarea>
+              <textarea required="required" id="textContent" name="message"></textarea>
             </div>
-           </div> 
-          </div>
-        </div>
-      
-       <div class="mf-toolbar flex-row">
-         <input type="submit" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' disabled="disabled"/>
-         <input type="submit" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
+          </div> 
+        </div> 
+      </div>      
+      <div class="mf-toolbar flex-row">
+        <input type="submit" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' disabled="disabled"/>
+        <input type="submit" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>
   </div>

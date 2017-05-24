@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,9 +29,10 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.plugins.communicator.events.CommunicatorMessageSent;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
@@ -58,6 +62,7 @@ import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
+import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -116,6 +121,13 @@ public class Evaluation2RESTService {
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+
+  @Inject
+  private Event<CommunicatorMessageSent> communicatorMessageSentEvent;
 
   @DELETE
   @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationdata")
@@ -937,13 +949,15 @@ public class Evaluation2RESTService {
       
       // List assessment requests by workspace
       
+      List<String> workspaceStudentIdentifiers = new ArrayList<String>();
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
-      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
-      List<String> workspaceStudentIdentifiers = new ArrayList<String>();
+
+      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
       for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
         workspaceStudentIdentifiers.add(workspaceUserEntity.getIdentifier());
       }
+      
       List<CompositeAssessmentRequest> assessmentRequests = gradingController.listAssessmentRequestsByWorkspace(workspaceIdentifier, workspaceStudentIdentifiers);
       for (CompositeAssessmentRequest assessmentRequest : assessmentRequests) {
         restAssessmentRequests.add(toRestAssessmentRequest(assessmentRequest));
@@ -1029,7 +1043,7 @@ public class Evaluation2RESTService {
     String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
     Locale locale = userEntityController.getLocale(student);
     CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
+    CommunicatorMessage communicatorMessage = communicatorController.createMessage(
         communicatorController.createMessageId(),
         evaluator,
         Arrays.asList(student),
@@ -1046,6 +1060,7 @@ public class Evaluation2RESTService {
             "plugin.workspace.assessment.notificationContent",
             new Object[] {workspaceUrl, workspace.getName(), grade, workspaceAssessment.getVerbalAssessment()}),
         Collections.<Tag>emptySet());
+    communicatorMessageSentEvent.fire(new CommunicatorMessageSent(communicatorMessage.getId(), student.getId(), baseUrl));
   }
 
 }

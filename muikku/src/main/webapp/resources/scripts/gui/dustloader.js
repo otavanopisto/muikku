@@ -56,7 +56,7 @@ function renderDustTemplate(templateName, json, callback) {
       var args = new Array();
       var i = 0;
       while (true) {
-        if (params["arg" + i]) {
+        if (params["arg" + i] != null) {
           args.push(params["arg" + i]);
         } else {
           break;

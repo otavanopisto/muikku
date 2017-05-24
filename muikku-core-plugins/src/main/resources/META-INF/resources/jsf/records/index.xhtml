@@ -1,39 +1,63 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-main-functionality.xhtml">
-  
+
   <ui:param name="activeTrail" value="records"/>
-  
+
   <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/records.js"/>
     <ui:include src="/jsf/workspace/workspace-material-scripts.xhtml"/>
   </ui:define>
-  
+
   <ui:define name="main-functionality-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/records.css"/>
-  </ui:define>  
+  </ui:define>
 
-  <ui:define name="mf-button-container">
-  </ui:define>  
-  
+
   <ui:define name="mf-controls-container">
   </ui:define>
-    
+
   <ui:define name="mf-content-functions">
   </ui:define>
-  
-  <ui:define name="mf-content-master"> 
+
+  <ui:define name="mf-content-master">
     <div class="records">
       <h2 class="main-functionality-page-title">#{i18n.text['plugin.records.pageTitle']}</h2>
-      <div class="mf-content-area flex-row">
-        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+      <ui:insert name="mf-content-functions">
+        <div class="mf-content-functions flex-row flex-align-items-center">
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">
+            <div class="tr-category-dropdown mf-dropdown">
+              <div class="mf-dropdown-content">
+                <span class="mf-dropdown-text tr-dropdown-selected-text"/>
+                <span class="mf-dropdown-arrow icon-arrow-down"/>
+              </div>
+              <ul style="display: none">
+                <li data-value="records">
+                  <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.records']}</span>
+                </li>
+                <ui:fragment rendered="#{transcriptofRecordsBackingBean.showStudies}">
+                  <li data-value="vops">
+                    <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.studyplan']}</span>
+                  </li>
+                  <li data-value="hops-form">
+                    <span class="mf-dropdown-item">#{i18n.text['plugin.records.category.hops']}</span>
+                  </li>
+                </ui:fragment>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </ui:insert>
+      <div class="mf-content-area">
+        <div>
           <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
           </div>
           <div class="tr-content-main flex-row" data-files="#{transcriptofRecordsBackingBean.files}">

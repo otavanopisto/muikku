@@ -141,6 +141,10 @@ public class PyramusIdentifierMapper {
     return pyramusEducationTypeId == null ? null : new SchoolDataIdentifier(String.valueOf(pyramusEducationTypeId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
   }
 
+  public SchoolDataIdentifier getEducationSubtypeIdentifier(Long pyramusEducationSubtypeId) {
+    return pyramusEducationSubtypeId == null ? null : new SchoolDataIdentifier(String.valueOf(pyramusEducationSubtypeId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+  }
+
   public Long getPyramusEducationTypeId(String educationTypeIdentifier) {
     return NumberUtils.createLong(educationTypeIdentifier);
   }

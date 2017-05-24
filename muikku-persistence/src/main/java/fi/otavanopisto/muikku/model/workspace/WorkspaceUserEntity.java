@@ -72,6 +72,14 @@ public class WorkspaceUserEntity implements ArchivableEntity {
     this.archived = archived;
   }
 
+  public Boolean getActive() {
+    return active;
+  }
+
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -92,5 +100,9 @@ public class WorkspaceUserEntity implements ArchivableEntity {
 
   @NotNull
   @Column(nullable = false)
-  private Boolean archived = Boolean.FALSE;
+  private Boolean active;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean archived;
 }

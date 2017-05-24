@@ -37,7 +37,6 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -301,9 +300,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
     for (Long workspaceId : payload.getRecipientStudentsWorkspaceIds()) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-          workspaceEntity, WorkspaceRoleArchetype.STUDENT);
-      
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
       for (WorkspaceUserEntity wosu : workspaceUsers) {
         recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
       }
@@ -311,8 +308,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
     for (Long workspaceId : payload.getRecipientTeachersWorkspaceIds()) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-          workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
       
       for (WorkspaceUserEntity wosu : workspaceUsers) {
         recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());

@@ -138,7 +138,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
       return null;
     }
 
-    return new PyramusSubject(s.getId().toString(), s.getName());
+    return new PyramusSubject(s.getId().toString(), s.getName(), s.getCode());
   }
 
   private List<Subject> createSubjectEntities(fi.otavanopisto.pyramus.rest.model.Subject[] subjects) {

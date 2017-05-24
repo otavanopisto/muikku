@@ -1,13 +1,15 @@
-{?.}
-  <div class="mf-items-toolbar flex-row an-announcements-toolbar"> 
-     <div class="mf-items-tool an-announcements-tool archive mf-item-tool icon-delete"></div>
-     <div class="clear"></div>
-  </div>
-{/.}
+{?items}
+  {^options.onlyArchived}
+    <div class="mf-items-toolbar flex-row an-announcements-toolbar"> 
+      <div class="mf-items-tool an-announcements-tool archive mf-item-tool icon-delete"></div>
+      <div class="clear"></div>
+    </div>
+  {/options.onlyArchived}
+{/items}
 <div class="an-announcements flex-row">
-  {#.}
+  {#items}
     {>"announcer/announcer_item.dust"/}
   {:else}
     {>"announcer/announcer_empty.dust"/}
-  {/.} 
+  {/items}
 </div>
