@@ -373,14 +373,16 @@ public class ElasticSearchProvider implements SearchProvider {
 
     SearchResponse response = requestBuilder.execute().actionGet();
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
+    SearchHits searchHits = response.getHits();
+    SearchHit[] results = searchHits.getHits();
+    long totalHits = searchHits.getTotalHits();
     for (SearchHit hit : results) {
       Map<String, Object> hitSource = hit.getSource();
       hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
     
-    SearchResult result = new SearchResult(searchResults.size(), 0, 50, searchResults);
+    SearchResult result = new SearchResult(0, 50, searchResults, totalHits);
     return result;
   }
   
