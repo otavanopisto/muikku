@@ -99,8 +99,9 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
     }
     
     SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS);
+    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
-    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
+    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
       offset = 0;
     } else {
       offset += MAX_RESULTS;
