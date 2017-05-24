@@ -149,9 +149,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
     }
 
-    if (!Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
-      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
-    }
+   // Temporary stuff because the teacher has to see students information. PUT BACK ON!
+    
+//    if (!Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
+//      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
+//    }
 
     User student = userController.findUserByIdentifier(studentIdentifier);
 

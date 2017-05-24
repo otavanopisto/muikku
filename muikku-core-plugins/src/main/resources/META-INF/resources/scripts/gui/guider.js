@@ -1178,7 +1178,20 @@
                 emailCallback();
               }
             }, this))
-        }, this))
+        }, this))    
+// Forbidden        
+        .on('$', $.proxy(function(user, vopsCallback) {      
+            mApi().records.vops
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function (vopsErr, vops) {
+              if (vopsErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', vopsErr);
+              } else {
+                user.vops = vops;
+                vopsCallback();
+              }      
+            }, this))
+        }, this))        
         .on('$', $.proxy(function(user, addressesCallback) {
           mApi().user.students.addresses
             .read(this.options.userIdentifier)
@@ -1191,6 +1204,7 @@
               }
             }, this))
         }, this))
+
         .callback($.proxy(function(err, user){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
