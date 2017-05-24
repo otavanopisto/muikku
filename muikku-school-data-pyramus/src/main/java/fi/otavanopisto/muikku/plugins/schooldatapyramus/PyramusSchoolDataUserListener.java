@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.schooldatapyramus;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -79,7 +80,7 @@ public class PyramusSchoolDataUserListener {
         Long pyramusStudyProgrammeId = student.getStudyProgrammeId();
         
         if (pyramusStudyProgrammeId != null) {
-          boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
+          boolean isActive = !student.getArchived() && (student.getStudyEndDate() == null || student.getStudyEndDate().isAfter(OffsetDateTime.now()));
 
           if (isActive) {
             String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
@@ -104,7 +105,7 @@ public class PyramusSchoolDataUserListener {
           String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
 
           boolean found = false;
-          boolean isActive = !student.getArchived() && student.getStudyEndDate() == null;
+          boolean isActive = !student.getArchived() && (student.getStudyEndDate() == null || student.getStudyEndDate().isAfter(OffsetDateTime.now()));
           
           if (!isActive) {
             schoolDataUserInactiveEvent.fire(new SchoolDataUserInactiveEvent(identifier.getDataSource(), identifier.getIdentifier()));

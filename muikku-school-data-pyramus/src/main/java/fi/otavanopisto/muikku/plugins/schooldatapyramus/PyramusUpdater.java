@@ -226,7 +226,7 @@ public class PyramusUpdater {
 
       UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studyProgrammeStudentIdentifier);
       
-      boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
+      boolean isActive = !student.getArchived() && (student.getStudyEndDate() == null || student.getStudyEndDate().isAfter(OffsetDateTime.now()));
       
       if (isActive) {
         if (userGroupUserEntity == null) {
