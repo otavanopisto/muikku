@@ -1178,8 +1178,7 @@
                 emailCallback();
               }
             }, this))
-        }, this))    
-// Forbidden        
+        }, this))       
         .on('$', $.proxy(function(user, vopsCallback) {      
             mApi().records.vops
             .read(this.options.userIdentifier)
