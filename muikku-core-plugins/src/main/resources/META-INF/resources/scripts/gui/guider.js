@@ -1,4 +1,4 @@
-/* global MUIKKU_LOGGED_USER */
+  /* global MUIKKU_LOGGED_USER */
 (function() {
   $.widget("custom.guiderSearch", {
     _create : function() {
@@ -1243,6 +1243,21 @@
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                    
+                    
+                    
+                    $('.gt-user-hops').click( function() {
+                      var state = $('.gt-user-hops').hasClass('open') ? 'open' : 'closed';
+                      if(state == 'open'){
+                        $(this).removeClass('open');
+                        $(this).addClass('closed');
+                      } else {
+                        $(this).removeClass('closed');
+                        $(this).addClass('open');
+                      }
+
+                    }); 
+                    
                     $('.gt-vops-legend-content').click( function() {
                       var state = $('.gt-vops-legend-content').hasClass('open') ? 'open' : 'closed';
                       if(state == 'open'){

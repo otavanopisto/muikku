@@ -94,7 +94,9 @@
     </div>
     <div class="clear"></div>  
   </div>
-  
+  <div class="gt-user-hops mf-widget flex-row">
+     <span>Hops-lomake tähän</span>  
+  </div>
   <div class="gt-user-vops mf-widget flex-row" style="padding:0;">
     <div class="mf-vops gt-vops lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
       <div class="mf-vops-legend-container gt-vops-legend-container gt-vops-legend-container">

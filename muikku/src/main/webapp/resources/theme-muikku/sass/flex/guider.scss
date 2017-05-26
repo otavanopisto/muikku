@@ -147,7 +147,7 @@
 }
 
 .gt-user-view-profile {
-  > div{
+  > div {
     padding: 10px;
   }
   
@@ -167,6 +167,27 @@
       display: block;
     }
   }  
+}
+
+.gt-user-hops {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important;
+  cursor: pointer;
+  transition-duration: 0.5s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+  
+  &.closed {
+    height: 50px; 
+  }
+
+  &.open {
+    min-height: 500px; 
+    height: auto;
+  }    
+  
 }
 
  .gt-data {
@@ -211,6 +232,8 @@
 .gt-user-file-action {
   text-transform: uppercase;
 }
+
+
  
 .gt-course {
 
