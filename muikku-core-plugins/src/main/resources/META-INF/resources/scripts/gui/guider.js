@@ -1188,6 +1188,14 @@
                 $('.notification-queue').notificationQueue('notification', 'error', vopsErr);
               } else {
                 user.vops = vops;
+                var maxitems = 15;
+                var titleItems = [];
+
+                for (var i = 0; i < maxitems; i++) {
+                  titleItems.push(i+1);
+                }
+                user.vops.coursetitlenos = titleItems;
+                
                 vopsCallback();
               }      
             }, this))
@@ -1236,6 +1244,17 @@
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                    $('.gt-vops-legend-content').click( function() {
+                      var state = $('.gt-vops-legend-content').hasClass('open') ? 'open' : 'closed';
+                      if(state == 'open'){
+                        $(this).removeClass('open');
+                        $(this).addClass('closed');
+                      } else {
+                        $(this).removeClass('closed');
+                        $(this).addClass('open');
+                      }
+
+                    });                    
                     callback();
                   }, this));
                 }, this))
