@@ -121,7 +121,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
         continue;
       }
      
-      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(studentIdentifier);
+      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(studentIdentifier);
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
         
         SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());

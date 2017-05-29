@@ -28,7 +28,7 @@ public class WorkspaceUserEntityController {
   private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   public WorkspaceUserEntity createWorkspaceUserEntity(UserSchoolDataIdentifier userSchoolDataIdentifier, WorkspaceEntity workspaceEntity, String identifier, WorkspaceRoleEntity workspaceUserRole) {
-    return workspaceUserEntityDAO.create(userSchoolDataIdentifier, workspaceEntity, workspaceUserRole, identifier, Boolean.FALSE);
+    return workspaceUserEntityDAO.create(userSchoolDataIdentifier, workspaceEntity, workspaceUserRole, identifier, Boolean.TRUE, Boolean.FALSE);
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityById(Long id) {
@@ -36,7 +36,7 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceUserIdentifier(SchoolDataIdentifier workspaceUserIdentifier) {
-    return findWorkspaceUserEntityByWorkspaceUserIdentifierAndArchived(workspaceUserIdentifier, Boolean.FALSE);
+    return workspaceUserEntityDAO.findByIdentifierAndArchived(workspaceUserIdentifier.getIdentifier(), Boolean.FALSE);
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceUserIdentifierAndArchived(SchoolDataIdentifier workspaceUserIdentifier, Boolean archived) {
@@ -44,7 +44,7 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(SchoolDataIdentifier workspaceUserIdentifier) {
-    return workspaceUserEntityDAO.findByIdentifierIncludeArchived(workspaceUserIdentifier.getIdentifier());
+    return workspaceUserEntityDAO.findByIdentifier(workspaceUserIdentifier.getIdentifier());
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
@@ -76,65 +76,67 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierIncludeArchived(workspaceEntity, userSchoolDataIdentifier);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntities(WorkspaceEntity workspaceEntity) {
-    return workspaceUserEntityDAO.listByWorkspaceAndArchived(workspaceEntity, Boolean.FALSE);
+    return workspaceUserEntityDAO.listByWorkspaceEntityAndArchived(workspaceEntity, Boolean.FALSE);
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesIncludeArchived(WorkspaceEntity workspaceEntity) {
-    return workspaceUserEntityDAO.listByWorkspaceIncludeArchived(workspaceEntity);
+    return workspaceUserEntityDAO.listByWorkspaceEntity(workspaceEntity);
+  }
+
+  public List<WorkspaceUserEntity> listWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
+    return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndArchived(workspaceEntity, WorkspaceRoleArchetype.TEACHER, Boolean.FALSE);
+  }
+
+  public List<WorkspaceUserEntity> listActiveWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
+    return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndActiveAndArchived(workspaceEntity, WorkspaceRoleArchetype.TEACHER, Boolean.TRUE, Boolean.FALSE);
+  }
+
+  public List<WorkspaceUserEntity> listActiveWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+    return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndActiveAndArchived(workspaceEntity, WorkspaceRoleArchetype.STUDENT, Boolean.TRUE, Boolean.FALSE);
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity role) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
+    return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleAndArchived(workspaceEntity, role, Boolean.FALSE);
   }
 
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRoleArchetype(workspaceEntity, archetype);
+  public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archetype) {
+    return workspaceUserEntityDAO.listByWorkspaceEntityAndRoleArchetypeAndActiveAndArchived(workspaceEntity, archetype, Boolean.TRUE, Boolean.FALSE);
   }
 
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
-    return listWorkspaceUserEntitiesByRoles(workspaceEntity, roles, null, null);
-  }
-  
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles, Integer firstResult, Integer maxResults) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles, firstResult, maxResults);
-  }
-  
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
         findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     
     if (userSchoolDataIdentifier != null) {
       return workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndArchived(userSchoolDataIdentifier, Boolean.FALSE);
-    } else {
+    }
+    else {
       logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
       return Collections.emptyList();
     }
   }
 
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserIdentifierIncludeArchived(SchoolDataIdentifier userIdentifier) {
+  public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
         findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     
     if (userSchoolDataIdentifier != null) {
-      return workspaceUserEntityDAO.listByUserSchoolDataIdentifierIncludeArchived(userSchoolDataIdentifier);
-    } else {
+      return workspaceUserEntityDAO.listByUserSchoolDataIdentifierAndActiveAndArchived(userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
+    }
+    else {
       logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
       return Collections.emptyList();
     }
   }
   
-  public Long countWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
-    if ((roles == null)||(roles.isEmpty())) {
-      return 0l;
-    }
-    
-    return workspaceUserEntityDAO.countByWorkspaceAndRoles(workspaceEntity, roles);
+  public List<WorkspaceUserEntity> listActiveWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
+    return workspaceUserEntityDAO.listByUserEntityAndActiveAndArchived(userEntity, Boolean.TRUE, Boolean.FALSE);
   }
-  
+
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
     return workspaceUserEntityDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
   }
@@ -159,27 +161,30 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.updateIdentifier(workspaceUserEntity, identifier);
   }
 
+  public WorkspaceUserEntity updateActive(WorkspaceUserEntity workspaceUserEntity, Boolean active) {
+    return workspaceUserEntityDAO.updateActive(workspaceUserEntity, active);
+  }
+
   public WorkspaceUserEntity updateWorkspaceUserRole(WorkspaceUserEntity workspaceUserEntity, WorkspaceRoleEntity workspaceUserRole) {
     return workspaceUserEntityDAO.updateWorkspaceUserRole(workspaceUserEntity, workspaceUserRole);
   }
 
-  public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
-    workspaceUserEntityDAO.delete(workspaceUserEntity);
-  }
-  
   public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
-    return findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(workspaceEntity, userIdentifier, Boolean.FALSE);
-  }
-
-  private WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifierAndArchived(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier, Boolean archived) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     if (userSchoolDataIdentifier == null) {
       return null;
     }
-    
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, archived);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
   }
-  
+
+  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
+    if (userSchoolDataIdentifier == null) {
+      return null;
+    }
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
+  }
+
   public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
     if (userSchoolDataIdentifier == null) {
@@ -187,14 +192,6 @@ public class WorkspaceUserEntityController {
     }
     
     return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
-  }
-
-  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntityIncludeArchived(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
-    if (userSchoolDataIdentifier == null) {
-      return null;
-    }
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierIncludeArchived(workspaceEntity, userSchoolDataIdentifier);
   }
   
   public WorkspaceRoleEntity findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
@@ -204,6 +201,17 @@ public class WorkspaceUserEntityController {
     }
     
     return null;
+  }
+
+  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listActiveWorkspaceUserEntitiesByUserEntity(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
   }
 
   public List<WorkspaceEntity> listWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
@@ -216,27 +224,30 @@ public class WorkspaceUserEntityController {
     
     return result;
   }
-
-  public List<WorkspaceEntity> listWorkspaceEntitiesByUserIdentifierIncludeArchived(SchoolDataIdentifier userIdentifier) {
-    List<WorkspaceEntity> result = new ArrayList<>();
-    
-    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserIdentifierIncludeArchived(userIdentifier);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      result.add(workspaceUserEntity.getWorkspaceEntity());
-    }
-    
-    return result;
-  }
-
+  
   public List<WorkspaceEntity> listWorkspaceEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
     List<WorkspaceEntity> result = new ArrayList<>();
     
     List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserIdentifier(userIdentifier);
+
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       result.add(workspaceUserEntity.getWorkspaceEntity());
     }
     
     return result;
   }
+
+  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserIdentifier(SchoolDataIdentifier userIdentifier) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    List<WorkspaceUserEntity> workspaceUserEntities = listActiveWorkspaceUserEntitiesByUserIdentifier(userIdentifier);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    return result;
+  }
   
+  public void deleteWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    workspaceUserEntityDAO.delete(workspaceUserEntity);
+  }  
+
 }

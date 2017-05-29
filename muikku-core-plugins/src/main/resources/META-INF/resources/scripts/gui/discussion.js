@@ -48,7 +48,9 @@
     },
 
     loadThreadRepliesDetails: function(replies, callback) {
-      var replyCreatedMap = {};
+      this.replyCreatedMap = this.replyCreatedMap || {};
+      var replyCreatedMap = this.replyCreatedMap;
+      
       $.each(replies, function (index, reply) {
         replyCreatedMap[reply.id] = reply;
       });
@@ -81,11 +83,12 @@
             var globalEdit = $('.discussion').discussion('mayEditMessages', reply.forumAreaId);
             var creatorFullName = generateFullName(user);
             var replyParentCreatorFullName = null;
+            let replyParentTime = null;
 
             //I must search for the creator rather than indexing it in an object
             //because the calls are parallell and are tangled, this is to refactor...
             //everything should be done with promises
-            if (reply.parentReplyId){
+            if (reply.parentReplyId && replyCreatedMap[reply.parentReplyId]){
               var replyCreatorId = replyCreatedMap[reply.parentReplyId].creator;
 
               //Array find not supported in IE :(
@@ -94,6 +97,8 @@
                   replyParentCreatorFullName = generateFullName(usr);
                 }
               });
+              
+              replyParentTime = formatDate(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId].created).toDate());
             }
 
             return {
@@ -106,7 +111,7 @@
               userEntityId: user.id,
               nameLetter: creatorFullName.substring(0,1),
               isReply: reply.parentReplyId ? true : false,
-              replyParentTime: reply.parentReplyId ? formatDate(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) + ' ' + formatTime(moment(replyCreatedMap[reply.parentReplyId].created).toDate()) : null,
+              replyParentTime: replyParentTime,
               replyParentCreatorFullName: replyParentCreatorFullName
             };
           }, this)));

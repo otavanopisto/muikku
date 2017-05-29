@@ -15,7 +15,6 @@ import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -148,8 +147,11 @@ public class CommunicatorAssessmentRequestController {
       SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), 
           userSchoolDataIdentifier.getDataSource().getIdentifier());
       
-      List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
-          workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      List<UserEntity> teachers = new ArrayList<UserEntity>();
+      List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+      for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+        teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
+      }
       
       User student = userController.findUserByIdentifier(studentIdentifier);
       if (student == null) {
@@ -227,7 +229,11 @@ public class CommunicatorAssessmentRequestController {
     
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      List<UserEntity> teachers = new ArrayList<UserEntity>();
+      List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+      for (WorkspaceUserEntity workspaceTeacher : workspaceTeachers) {
+        teachers.add(workspaceTeacher.getUserSchoolDataIdentifier().getUserEntity());
+      }
 
       SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(userSchoolDataIdentifier.getIdentifier(), 
           userSchoolDataIdentifier.getDataSource().getIdentifier());

@@ -569,6 +569,7 @@
               wrongAnswerCount++;
             }
             $(field).addClass(correctAnswer ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+            
             // TODO classes are not examples but correct answers?
             if (!correctAnswer && (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers))) {
               var correctAnswers = $(field).muikkuField('getCorrectAnswers');
@@ -592,6 +593,8 @@
                 
                 recolorCheckboxFields(field);
               }
+            } else if (correctAnswersDisplay == 'ON_REQUEST' && !requestAnswers){
+              $(field).muikkuField('hideCorrectAnswers');
             }
           }
         }
@@ -709,6 +712,9 @@
       getCorrectAnswers: function () {
         return [];
       },
+      hideCorrectAnswers: function(){
+        return;
+      },
       hasExamples: function () {
         return false;
       },
@@ -778,6 +784,9 @@
     },
     getCorrectAnswers: function () {
       return this.options.getCorrectAnswers.call(this)||false;
+    },
+    hideCorrectAnswers: function(){
+      return this.options.hideCorrectAnswers.call(this);
     },
     hasDisplayableAnswers: function () {
       return this.options.hasDisplayableAnswers.call(this)||false;
