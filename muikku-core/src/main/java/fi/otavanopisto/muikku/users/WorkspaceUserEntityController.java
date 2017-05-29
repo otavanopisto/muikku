@@ -51,7 +51,7 @@ public class WorkspaceUserEntityController {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.
         findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     if (userSchoolDataIdentifier != null) {
-      return findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
+      return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
     }
     else {
       logger.severe(String.format("Could not find UserSchoolDataIdentifier by %s", userIdentifier));
@@ -71,8 +71,8 @@ public class WorkspaceUserEntityController {
     }
   }
 
-  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifier(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
+  public WorkspaceUserEntity findActiveWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifier(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndActiveAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserSchoolDataIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, UserSchoolDataIdentifier userSchoolDataIdentifier) {
@@ -175,31 +175,22 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
   }
 
-  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserIdentifierIncludeArchived(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+  public WorkspaceUserEntity findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userIdentifier.getDataSource(), userIdentifier.getIdentifier());
     if (userSchoolDataIdentifier == null) {
       return null;
     }
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndActiveAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
   }
 
-  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+  public WorkspaceUserEntity findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = toUserSchoolDataIdentifier(userEntity);
     if (userSchoolDataIdentifier == null) {
       return null;
     }
-    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.FALSE);
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifierAndActiveAndArchived(workspaceEntity, userSchoolDataIdentifier, Boolean.TRUE, Boolean.FALSE);
   }
   
-  public WorkspaceRoleEntity findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
-    WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
-    if (workspaceUserEntity != null) {
-      return workspaceUserEntity.getWorkspaceUserRole();
-    }
-    
-    return null;
-  }
-
   public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
     SchoolDataIdentifier schoolDataIdentifier = toSchoolDataIdentifier(userEntity);
     List<WorkspaceEntity> result = new ArrayList<>();

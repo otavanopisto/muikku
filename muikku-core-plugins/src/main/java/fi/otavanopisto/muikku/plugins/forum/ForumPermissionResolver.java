@@ -74,7 +74,7 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
       
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForum.getWorkspace());
       
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
       if (workspaceUserEntity != null) {
         userRole = workspaceUserEntity.getWorkspaceUserRole();
         if (resourceUserRolePermissionDAO.hasResourcePermissionAccess(

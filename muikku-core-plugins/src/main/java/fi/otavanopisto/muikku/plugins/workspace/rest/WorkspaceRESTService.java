@@ -1096,7 +1096,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         
         // #3111: Workspace staff members should be limited to teachers only. A better implementation would support specified workspace roles
         
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
         if (workspaceUserEntity == null || workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
           continue;
         }
@@ -2255,7 +2255,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             (Collection<SchoolDataIdentifier>) null,
             Boolean.FALSE,
             Boolean.FALSE,
-            false,
+            true,
             0,
             maxResults != null ? maxResults : Integer.MAX_VALUE);
         
