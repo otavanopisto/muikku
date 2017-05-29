@@ -899,7 +899,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           continue;
         }
 
-        if (active && !wue.getActive()) {
+        if (active != null && !active.equals(wue.getActive())) {
           continue;
         }
 
@@ -934,7 +934,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       SchoolDataIdentifier workspaceUserIdentifier = workspaceUser.getIdentifier();
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityMap.get(workspaceUserIdentifier.toId());
       
-      if ((active == null) || (active.equals(workspaceUserEntity.getActive()))) {
+      if (active == null || active.equals(workspaceUserEntity.getActive())) {
         if (requestedAssessment != null) {
           boolean hasAssessmentRequest = workspaceUserEntity != null && !assessmentRequestController.listByWorkspaceUser(workspaceUserEntity).isEmpty();
           if (requestedAssessment != hasAssessmentRequest) {
