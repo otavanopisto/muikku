@@ -80,27 +80,25 @@ public class WorkspaceBackingBean {
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     
-    WorkspaceUserEntity workspaceUserEntity = null;
     WorkspaceEntity workspaceEntity = resolveWorkspaceEntity(workspaceUrlName);
     if (workspaceEntity != null) {
       this.workspaceEntityId = workspaceEntity.getId();
       this.workspaceUrlName = workspaceEntity.getUrlName();
-      if (sessionController.isLoggedIn()) {
-        workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-      }
     }
-    boolean activeWorkspaceUser = workspaceUserEntity != null && Boolean.TRUE.equals(workspaceUserEntity.getActive());
     
     homeVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "home");
     guidesVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "guides");
     materialsVisible = workspaceToolSettingsController.getToolVisible(workspaceEntity, "materials");
-    discussionsVisible = activeWorkspaceUser && sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
-    usersVisible = activeWorkspaceUser && sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
-    journalVisible = activeWorkspaceUser && sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
+    discussionsVisible = sessionController.hasWorkspacePermission(ForumResourcePermissionCollection.FORUM_ACCESSWORKSPACEFORUMS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "discussions");
+    usersVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MEMBERS, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "users");
+    journalVisible = sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_WORKSPACE_JOURNAL, workspaceEntity) && workspaceToolSettingsController.getToolVisible(workspaceEntity, "journal");
     // Assessment state
-    if (activeWorkspaceUser && sessionController.hasWorkspacePermission(MuikkuPermissions.REQUEST_WORKSPACE_ASSESSMENT, workspaceEntity)) {
-      WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-      this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getStateName();
+    if (sessionController.isLoggedIn() && sessionController.hasWorkspacePermission(MuikkuPermissions.REQUEST_WORKSPACE_ASSESSMENT, workspaceEntity)) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      if (workspaceUserEntity != null) {
+        WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+        this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getStateName();
+      }
     }
     else {
       this.assessmentState = null;
