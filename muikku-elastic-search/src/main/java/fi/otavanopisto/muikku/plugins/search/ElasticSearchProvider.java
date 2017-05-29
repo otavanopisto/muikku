@@ -39,6 +39,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.IdsQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoField;
@@ -255,7 +256,9 @@ public class ElasticSearchProvider implements SearchProvider {
           .execute()
           .actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-      SearchHit[] results = response.getHits().getHits();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
         if(hitSource == null){
@@ -268,11 +271,11 @@ public class ElasticSearchProvider implements SearchProvider {
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
   
@@ -370,14 +373,16 @@ public class ElasticSearchProvider implements SearchProvider {
 
     SearchResponse response = requestBuilder.execute().actionGet();
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
+    SearchHits searchHits = response.getHits();
+    SearchHit[] results = searchHits.getHits();
+    long totalHits = searchHits.getTotalHits();
     for (SearchHit hit : results) {
       Map<String, Object> hitSource = hit.getSource();
       hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
     
-    SearchResult result = new SearchResult(searchResults.size(), 0, 50, searchResults);
+    SearchResult result = new SearchResult(0, 50, searchResults, totalHits);
     return result;
   }
   
@@ -397,7 +402,7 @@ public class ElasticSearchProvider implements SearchProvider {
       List<Sort> sorts) {
     
     if (identifiers != null && identifiers.isEmpty()) {
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
     }
     
     BoolQueryBuilder query = boolQuery();
@@ -494,18 +499,20 @@ public class ElasticSearchProvider implements SearchProvider {
       
       SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-      SearchHit[] results = response.getHits().getHits();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
 
@@ -576,17 +583,19 @@ public class ElasticSearchProvider implements SearchProvider {
           .actionGet();
       
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-      SearchHit[] results = response.getHits().getHits();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
-      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
     }
   }
 
@@ -598,17 +607,19 @@ public class ElasticSearchProvider implements SearchProvider {
       SearchResponse response = elasticClient.prepareSearch().setQuery(matchQuery("_all", text)).setFrom(start).setSize(maxResults).execute()
           .actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-      SearchHit[] results = response.getHits().getHits();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
-      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
 
@@ -617,18 +628,20 @@ public class ElasticSearchProvider implements SearchProvider {
     try {
       SearchResponse response = elasticClient.prepareSearch().setQuery(matchAllQuery()).setFrom(start).setSize(maxResults).execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-      SearchHit[] results = response.getHits().getHits();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
       return result;
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
   
@@ -649,19 +662,20 @@ public class ElasticSearchProvider implements SearchProvider {
       
       SearchResponse response = requestBuilder.execute().actionGet();
       List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-      SearchHit[] results = response.getHits().getHits();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
       for (SearchHit hit : results) {
         Map<String, Object> hitSource = hit.getSource();
         hitSource.put("indexType", hit.getType());
         searchResults.add(hitSource);
       }
       
-      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
       return result;
-
     } catch (Exception e) {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
-      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0); 
     }
   }
 
