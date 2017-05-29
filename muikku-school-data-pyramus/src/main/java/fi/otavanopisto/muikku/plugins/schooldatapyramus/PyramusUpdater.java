@@ -606,22 +606,25 @@ public class PyramusUpdater {
       SchoolDataIdentifier workspaceUserIdentifier = new SchoolDataIdentifier(identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
       CourseStudent courseStudent = pyramusClient.get().get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
-      if (courseStudent != null && !courseStudent.getArchived()) {
-        boolean studentActive = isStudentActive(courseStudent.getStudentId());
-        
-        if (workspaceUserEntity == null && studentActive) {
+
+      // #3161: Refactored logic for syncing course students
+      
+      if (workspaceUserEntity != null && (courseStudent == null || courseStudent.getArchived())) {
+        // If course student has been removed in Pyramus, permanently delete it from Muikku (see #3091)
+        fireCourseStudentRemoved(courseStudentId, studentId, courseId);
+      }
+      else {
+        if (workspaceUserEntity == null) {
+          // If course student exists in Pyramus but not in Muikku, create
           fireCourseStudentDiscovered(courseStudent);
-          return true;
-        } else {
-          if (studentActive) {
-            fireCourseStudentUpdated(courseStudent);
-          } else {
-            fireCourseStudentRemoved(courseStudentId, studentId, courseId);
-          }
         }
-      } else {
-        if (workspaceUserEntity != null) {
-          fireCourseStudentRemoved(courseStudentId, studentId, courseId);
+        else {
+          // Both sides exist, so update
+          fireCourseStudentUpdated(courseStudent);
+          // If the student is inactive (studies have ended), archive
+          if (!workspaceUserEntity.getArchived() && !isStudentActive(courseStudent.getStudentId())) {
+            workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
+          }
         }
       }
     }
@@ -643,7 +646,7 @@ public class PyramusUpdater {
       // It's a never ending study programme
       return true;
     }
-    
+
     boolean startedStudies = studyStartDate != null && studyStartDate.isBefore(OffsetDateTime.now());
     boolean finishedStudies = studyEndDate != null && studyEndDate.isBefore(OffsetDateTime.now());
     
@@ -667,14 +670,14 @@ public class PyramusUpdater {
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (courseStudent.getArchived()) {
           if (workspaceUserEntity != null) {
+            // If course student has been removed in Pyramus, permanently delete it from Muikku (see #3091)
             fireCourseStudentRemoved(courseStudent.getId(), courseStudent.getStudentId(), courseStudent.getCourseId());
             count++;
           }
-        } else {
-          if (workspaceUserEntity == null) {
-            fireCourseStudentDiscovered(courseStudent);
-            count++;
-          }
+        }
+        else if (workspaceUserEntity == null) {
+          fireCourseStudentDiscovered(courseStudent);
+          count++;
         }
       }
     }
@@ -683,9 +686,9 @@ public class PyramusUpdater {
     if (nonActiveCourseStudents != null) {
       for (CourseStudent nonActiveCourseStudent : nonActiveCourseStudents) {
         SchoolDataIdentifier workspaceUserIdentifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(nonActiveCourseStudent.getId()));
-        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-          fireCourseStudentRemoved(nonActiveCourseStudent.getId(), nonActiveCourseStudent.getStudentId(), nonActiveCourseStudent.getCourseId());
+          workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
           count++;
         }
       }
