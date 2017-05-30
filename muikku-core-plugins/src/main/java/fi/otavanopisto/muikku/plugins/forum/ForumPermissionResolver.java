@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.plugins.forum;
 
-import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -76,14 +74,9 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
       
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForum.getWorkspace());
       
-      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity);
-      // TODO: This is definitely not the way to do this 
-      
-      if (workspaceUsers.size() > 0) {
-        WorkspaceUserEntity workspaceUser = workspaceUsers.get(0);
-        
-        userRole = workspaceUser.getWorkspaceUserRole();
-        
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+      if (workspaceUserEntity != null) {
+        userRole = workspaceUserEntity.getWorkspaceUserRole();
         if (resourceUserRolePermissionDAO.hasResourcePermissionAccess(
             resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
             hasEveryonePermission(permission, forumArea) ||
