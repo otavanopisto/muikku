@@ -387,20 +387,13 @@ public class CoursePickerRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
-    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(),
-        sessionController.getLoggedUserIdentifier());
+    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
 
     Long workspaceStudentRoleId = getWorkspaceStudentRoleId();
     
     WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityById(workspaceStudentRoleId);
-    if (workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser()) != null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
-    
     
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
     SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
@@ -484,22 +477,22 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   private boolean getIsAlreadyOnWorkspace(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-
-      return workspaceUserEntity != null && workspaceUserEntity.getActive();
-    } else
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      return workspaceUserEntity != null;
+    }
+    else {
       return false;
+    }
   }
   
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn()) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
-
-      return
-          workspaceUserEntity == null &&
-          sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
-    } else
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+      return workspaceUserEntity == null && sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
+    }
+    else {
       return false;
+    }
   }
   
   private Long getWorkspaceStudentRoleId() {

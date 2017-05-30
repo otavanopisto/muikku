@@ -5,14 +5,14 @@ import java.util.Map;
 
 public class SearchResult {
 
-  public SearchResult(int totalHitCount, int firstResult, int lastResult, List<Map<String, Object>> results) {
+  public SearchResult(int firstResult, int lastResult, List<Map<String, Object>> results, long totalHitCount) {
     this.totalHitCount = totalHitCount;
     this.firstResult = firstResult;
     this.lastResult = lastResult;
     this.results = results;
   }
 
-  public int getTotalHitCount() {
+  public long getTotalHitCount() {
     return totalHitCount;
   }
 
@@ -28,7 +28,7 @@ public class SearchResult {
     return lastResult;
   }
 
-  private int totalHitCount;
+  private long totalHitCount;
   private int firstResult;
   private int lastResult;
   private List<Map<String, Object>> results;
