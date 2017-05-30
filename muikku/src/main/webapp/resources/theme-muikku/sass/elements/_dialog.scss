@@ -78,6 +78,13 @@ $dialog-button-close-height: 45px;
       flex-direction: row-reverse;
       position: relative;
       width: 100%;
+      
+      @include breakpoint-down($breakpoint-medium-mobile) {
+        bottom: 0;
+        left: 0;
+        padding: inherit;
+        position: absolute;
+      }
 
       >* {
         margin-left: 10px;

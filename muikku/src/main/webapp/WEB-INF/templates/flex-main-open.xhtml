@@ -71,13 +71,19 @@
               jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}">
                 <span>#{i18n.text['plugin.login.buttonLabel']}</span>
               </a>
-              <a class="frontpage label label-dynamic-word-break label-clickable frontpage-label-forgot-password"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
-              <a class="frontpage button-pill button-pill-inverse frontpage-button-pill-language-selector"> <span>#{languageWidgetBackingBean.language}</span></a>
+              <a class="frontpage label label-dynamic-word-break label-clickable frontpage-label-forgot-password frontpage-interact-forgot-password">
+                <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+              </a>
+              <a class="frontpage button-pill button-pill-inverse frontpage-interact-show-language-picker">
+                <span>#{languageWidgetBackingBean.language}</span>
+              </a>
               <h:form class="dropdown" id="language-picker">
                 <div class="dropdown-container">
                   <ui:repeat value="#{i18n.languages}" var="locale">
                     <div class="dropdown-item">
-                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-small link-inverse"><span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span></a>
+                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-small link-inverse">
+                        <span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span>
+                      </a>
                     </div>
                   </ui:repeat>
                 </div>
@@ -90,7 +96,9 @@
         <div class="menu-container">
           <div class="menu-header">
             <a class="button button-large button-primary" jsf:outcome="/login.jsf?authSource=#{loginWidgetBackingBean.credentialessAuthSources[0]}"><span>#{i18n.text['plugin.login.buttonLabel']}</span></a>
-            <a class="label label-large label-primary label-dynamic-word-break label-clickable frontpage-forgotpassword"><span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span></a>
+            <a class="label label-large label-primary label-dynamic-word-break label-clickable frontpage-label-forgot-password frontpage-interact-forgot-password">
+              <span>#{i18n.text['plugin.forgotpassword.forgotLink']}</span>
+            </a>
           </div>
           <div class="menu-body">
             <ul class="menu-items">

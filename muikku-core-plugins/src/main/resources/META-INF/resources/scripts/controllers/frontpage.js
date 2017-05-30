@@ -68,7 +68,7 @@ loadModules([
   }
 
   var frontpageDialogCreated = false;
-  $(".frontpage-forgotpassword").click(function(){
+  $(".frontpage-interact-forgot-password").click(function(){
     if (!frontpageDialogCreated){
       renderDustTemplate("frontpage/forgotpassword_dialog.dust", {}, function(text){
         var dialog = $(text);

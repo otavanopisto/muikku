@@ -42,6 +42,10 @@
         if (options.removeClass) {
           $element.removeClass(options.removeClass);
         }
+        
+        if (options.clearStyle){
+          $element.attr("style", "");
+        }
       });
     }
   });

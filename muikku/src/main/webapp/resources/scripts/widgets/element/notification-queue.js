@@ -70,6 +70,7 @@ module(function(){
       $(item).cssAnimate({
         "condition": ":visible",
         'addClass': 'hidden',
+        'clearStyle': true,
         'callback': this._destroy.bind(this, item)
       });
     },
@@ -81,7 +82,12 @@ module(function(){
       }
 
       var context = this;
+      
       var $item = $(item);
+      var rawItem = item instanceof jQuery ? item.get(0) : item;
+      if (rawItem.offsetHeight < rawItem.scrollHeight){
+        $item.css("height", rawItem.scrollHeight);
+      }
       $item.find('a.notification-queue-item-close').click(function(e){
         context._hide($item);
       });

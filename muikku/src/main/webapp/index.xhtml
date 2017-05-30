@@ -7,31 +7,24 @@
   <ui:param name="activeTrail" value="index" />
 
   <ui:define name="scripts">
-    <script defer="defer" type="text/javascript"
-      src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
-    <script defer="defer" jsf:name="/scripts/gui/locales.js" />
-    <script defer="defer" type="text/javascript"
-      src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js" />
-    <script defer="defer" type="text/javascript"
-      src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
-    <script defer="defer" type="text/javascript"
-      src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js" />
-    <script defer="defer" jsf:name="/scripts/gui/dustloader.js" />
+    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
+    <script defer="defer" jsf:name="scripts/gui/locales.js" />
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js" />
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js" />
+    <script defer="defer" jsf:name="scripts/gui/dustloader.js" />
 
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="/scripts/controllers/frontpage.js" />
+      <script defer="defer" jsf:name="scripts/controllers/frontpage.js" />
     </ui:fragment>
 
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="/scripts/gui/widget-visits.js" />
-      <script defer="defer" jsf:name="/scripts/gui/widget-courselist.js" />
-      <script defer="defer" jsf:name="/scripts/gui/widget-messages.js" />
-      <script defer="defer"
-        jsf:name="/scripts/gui/widget-announcements.js" />
-      <script defer="defer"
-        jsf:name="/scripts/gui/widget-last-workspace.js" />
-      <script defer="defer"
-        jsf:name="/scripts/gui/check-contact-info.js" />
+      <script defer="defer" jsf:name="scripts/gui/widget-visits.js" />
+      <script defer="defer" jsf:name="scripts/gui/widget-courselist.js" />
+      <script defer="defer" jsf:name="scripts/gui/widget-messages.js" />
+      <script defer="defer" jsf:name="scripts/gui/widget-announcements.js" />
+      <script defer="defer" jsf:name="scripts/gui/widget-last-workspace.js" />
+      <script defer="defer" jsf:name="scripts/gui/check-contact-info.js" />
     </ui:fragment>
 
   </ui:define>
