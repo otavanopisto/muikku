@@ -23,6 +23,7 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
@@ -74,10 +75,11 @@ public class NotificationController {
         "true");
   }
 
-  public void sendNotification(String category, String subject, String content, UserEntity recipient, String notificationType) {
+  public void sendNotification(String category, String subject, String content, UserEntity recipient, SchoolDataIdentifier recipientIdentifier, String notificationType) {
     HashMap<String, Object> map = new HashMap<>();
     map.put("notificationType", notificationType);
     map.put("recipient", recipient.getId());
+    map.put("recipientIdentifier", recipientIdentifier.toId());
     map.put("time", String.valueOf(System.currentTimeMillis()));
 
     UserEntity guidanceCounselor = null;
