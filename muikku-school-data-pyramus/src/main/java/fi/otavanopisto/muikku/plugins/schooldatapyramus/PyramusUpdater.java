@@ -657,6 +657,8 @@ public class PyramusUpdater {
     int count = 0;
     Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
 
+    // Synchronize active students of a course
+    
     CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=true", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
@@ -673,9 +675,14 @@ public class PyramusUpdater {
             fireCourseStudentDiscovered(courseStudent, true);
             count++;
           }
+          else {
+            fireCourseStudentUpdated(courseStudent, true);
+          }
         }
       }
     }
+
+    // Synchronize inactive students of a course
     
     CourseStudent[] nonActiveCourseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=false", CourseStudent[].class);
     if (nonActiveCourseStudents != null) {
@@ -691,6 +698,10 @@ public class PyramusUpdater {
             fireCourseStudentUpdated(nonActiveCourseStudent, false);
             count++;
           }
+        }
+        else {
+          fireCourseStudentDiscovered(nonActiveCourseStudent, false);
+          count++;
         }
       }
     }
