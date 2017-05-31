@@ -486,7 +486,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   }
   
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
-    if (sessionController.isLoggedIn()) {
+    if (sessionController.isLoggedIn() && sessionController.isActiveUser()) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
       return workspaceUserEntity == null && sessionController.hasWorkspacePermission(MuikkuPermissions.WORKSPACE_SIGNUP, workspaceEntity);
     }

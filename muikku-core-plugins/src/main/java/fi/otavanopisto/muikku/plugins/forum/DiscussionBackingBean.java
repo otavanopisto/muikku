@@ -35,7 +35,7 @@ public class DiscussionBackingBean {
 
   @RequestAction
   public String init() {
-    if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM)) {
+    if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM) || !sessionController.isActiveUser()) {
       return NavigationRules.ACCESS_DENIED;
     }
     
