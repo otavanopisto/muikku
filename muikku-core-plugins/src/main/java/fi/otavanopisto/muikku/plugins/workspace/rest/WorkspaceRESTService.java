@@ -756,13 +756,14 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
-      workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+      workspaceEntity = workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
     
-    workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
-    workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
+    workspaceEntity = workspaceEntityController.updateAccess(workspaceEntity, payload.getAccess());
+    workspaceEntity = workspaceEntityController.updateDefaultMaterialLicense(workspaceEntity, payload.getMaterialDefaultLicense());
     
-    // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
+    // Reindex the workspace so that Elasticsearch can react to publish and visibility
+
     workspaceIndexer.indexWorkspace(workspaceEntity);
     
     return Response.ok(createRestModel(
