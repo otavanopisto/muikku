@@ -623,7 +623,7 @@
           .show()
           .animate({
             left: 0 + "px"
-        }, 300, "swing", function() {
+        }, 200, "swing", function() {
           $('.evaluation-workspaces-wrapper').attr('data-visibility', 'visible');
         });
       }
@@ -631,7 +631,7 @@
         $('.evaluation-workspaces-wrapper')
           .animate({
             left: 0 - $('.evaluation-workspaces-wrapper').width() + "px"
-        }, 250, "swing", function() {
+        }, 200, "swing", function() {
           $('.evaluation-workspaces-wrapper').hide();
           $('.evaluation-workspaces-wrapper').attr('data-visibility', 'hidden');
         });
@@ -646,7 +646,7 @@
           .show()
           .animate({
             right: 0 + "px"
-        }, 300, "swing", function() {
+        }, 200, "swing", function() {
           $('.evaluation-filters-wrapper').attr('data-visibility', 'visible');
         });
       }
@@ -654,7 +654,7 @@
         $('.evaluation-filters-wrapper')
           .animate({
             right: 0 - $('.evaluation-filters-wrapper').width() + "px"
-        }, 250, "swing", function() {
+        }, 200, "swing", function() {
           $('.evaluation-filters-wrapper').hide();
           $('.evaluation-filters-wrapper').attr('data-visibility', 'hidden');
         });
