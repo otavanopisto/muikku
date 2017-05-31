@@ -15,16 +15,19 @@
     <script defer="defer" jsf:name="scripts/gui/dustloader.js" />
 
     <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="scripts/controllers/frontpage.js" />
+      <script defer="defer" jsf:name="scripts/controllers/index.frontpage.js" />
     </ui:fragment>
 
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+      <!--
       <script defer="defer" jsf:name="scripts/gui/widget-visits.js" />
       <script defer="defer" jsf:name="scripts/gui/widget-courselist.js" />
       <script defer="defer" jsf:name="scripts/gui/widget-messages.js" />
       <script defer="defer" jsf:name="scripts/gui/widget-announcements.js" />
       <script defer="defer" jsf:name="scripts/gui/widget-last-workspace.js" />
-      <script defer="defer" jsf:name="scripts/gui/check-contact-info.js" />
+      <script defer="defer" jsf:name="scripts/gui/check-contact-info.js" /> -->
+      
+      <script defer="defer" jsf:name="scripts/controllers/index.js" />
     </ui:fragment>
 
   </ui:define>
@@ -36,10 +39,7 @@
     </ui:fragment>
 
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <link rel="stylesheet" type="text/css"
-        href="/css/deprecated/flex/flex-main.css" />
-      <link rel="stylesheet" type="text/css"
-        href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css" />
+      <link rel="stylesheet" type="text/css" href="/css/index.css" />
     </ui:fragment>
 
   </ui:define>
