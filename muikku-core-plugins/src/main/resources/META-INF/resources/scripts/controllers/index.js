@@ -1,0 +1,1 @@
+//This controller is in charge of the logged in view

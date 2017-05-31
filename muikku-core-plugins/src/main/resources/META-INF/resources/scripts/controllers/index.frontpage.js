@@ -1,3 +1,5 @@
+//This controller is in charge of the non-logged view
+
 loadModules([
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/carousel.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dialog.js.jsf",
@@ -38,7 +40,7 @@ loadModules([
   });
 
   $(document).ready(function() {
-    mApi().feed.feeds.read("avoimet_verkostot,eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
+    mApi().feed.feeds.read("eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
       renderDustTemplate('frontpage/feed_item.dust', {entries: blogs}, function(text) {
         $(".frontpage-posts-container").html(text);
       });
