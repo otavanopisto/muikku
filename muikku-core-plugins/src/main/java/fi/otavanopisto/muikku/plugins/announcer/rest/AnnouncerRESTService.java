@@ -204,7 +204,9 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getContent(),
         restModel.getStartDate(),
         restModel.getEndDate(),
-        restModel.getPubliclyVisible());
+        restModel.getPubliclyVisible(),
+        restModel.isArchived()
+    );
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
     for (Long userGroupEntityId : userGroupEntityIds) {

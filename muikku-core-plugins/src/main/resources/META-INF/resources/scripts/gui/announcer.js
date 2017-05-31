@@ -443,7 +443,7 @@
           var announcementId = this.options.announcement.id;
 
           mApi().announcer.announcements
-            .update(announcementId, payload)
+            .update(announcementId, Object.assign(payload, {'archived': false}))
             .callback($.proxy(function (err, result) {
               this._discardDraft();
               
