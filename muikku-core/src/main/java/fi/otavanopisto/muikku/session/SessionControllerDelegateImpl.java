@@ -106,8 +106,13 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
   
   @Override
-  public void login(String dataSource, String identifier) {
-    implementation.login(dataSource, identifier);
+  public void login(String dataSource, String identifier, boolean isActive) {
+    implementation.login(dataSource, identifier, isActive);
+  }
+  
+  @Override
+  public boolean isActiveUser() {
+    return implementation.isActiveUser();
   }
   
   private SessionController implementation;

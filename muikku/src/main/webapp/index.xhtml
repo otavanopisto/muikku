@@ -198,7 +198,7 @@
     </ui:fragment>
     
     <!--  If user is authenticated -->
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn and sessionBackingBean.isActiveUser}">
 	    <ui:fragment rendered="#{sessionBackingBean.isStudent}">
 	      <div class="flex-row">
 		      <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full md-flex-order-1 sm-flex-order-1">
