@@ -422,8 +422,10 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public UserGroup createEntity(StudentGroup studentGroup) {
+    boolean guidanceGroup = studentGroup.getGuidanceGroup() != null ? studentGroup.getGuidanceGroup() : false;
+    
     return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()),
-        studentGroup.getName(), studentGroup.getGuidanceGroup());
+        studentGroup.getName(), guidanceGroup);
   }
 
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {

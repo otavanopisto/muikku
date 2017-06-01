@@ -14,13 +14,13 @@ $(document).ready(function() {
 
     // Turning timestamps (visited, now) from milliseconds to seconds 
 
-    var visitScs = eval(workspace.lastVisit / 1000);
-    var nowScs = eval(td.getTime() / 1000);
+    var visitScs = (new Date(workspace.lastVisit)).getTime() / 1000;
+    var nowScs = td.getTime() / 1000;
 
     // Defining the last day and last week startpoints	 
 
-    var lDaySec = eval(nowScs - dayScs);
-    var lWeekSec = eval(nowScs - weekScs);
+    var lDaySec = nowScs - dayScs;
+    var lWeekSec = nowScs - weekScs;
 
     // Visit day daystamp to date
 

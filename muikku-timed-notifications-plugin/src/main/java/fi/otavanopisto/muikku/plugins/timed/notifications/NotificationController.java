@@ -21,12 +21,13 @@ import fi.otavanopisto.muikku.mail.MailType;
 import fi.otavanopisto.muikku.mail.Mailer;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
-import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.plugins.commonlog.LogProvider;
+import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
@@ -74,10 +75,12 @@ public class NotificationController {
         "true");
   }
 
-  public void sendNotification(String category, String subject, String content, UserEntity recipient) {
+  public void sendNotification(String category, String subject, String content, UserEntity recipient, SchoolDataIdentifier recipientIdentifier, String notificationType) {
     HashMap<String, Object> map = new HashMap<>();
-    map.put("category", category);
+    map.put("notificationType", notificationType);
     map.put("recipient", recipient.getId());
+    map.put("recipientIdentifier", recipientIdentifier.toId());
+    map.put("time", String.valueOf(System.currentTimeMillis()));
 
     UserEntity guidanceCounselor = null;
     List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(recipient);

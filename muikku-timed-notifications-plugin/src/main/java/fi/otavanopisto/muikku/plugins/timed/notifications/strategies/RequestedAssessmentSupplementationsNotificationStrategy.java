@@ -99,8 +99,9 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
     }
     
     SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS);
+    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
-    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
+    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
       offset = 0;
     } else {
       offset += MAX_RESULTS;
@@ -121,7 +122,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
         continue;
       }
      
-      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserIdentifier(studentIdentifier);
+      List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(studentIdentifier);
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
         
         SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
@@ -164,7 +165,9 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
                       localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
                       localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
                       notificationContent,
-                      studentEntity
+                      studentEntity,
+                      studentIdentifier,
+                      "requestedassessmentsupplementation"
                     );
                     
                     requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);

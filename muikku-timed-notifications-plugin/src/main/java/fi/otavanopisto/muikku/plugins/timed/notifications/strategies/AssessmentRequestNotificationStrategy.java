@@ -88,7 +88,7 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     if (groups.isEmpty()) {
       return;
     }
-    
+
     // #2867: Do no notify anyone that has been notified about this before (i.e. triggers only once after studies have started)
     
     List<SchoolDataIdentifier> studentIdentifiersAlreadyNotified = assesmentRequestNotificationController.listNotifiedSchoolDataIdentifiers();
@@ -97,10 +97,11 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
     
     Date since = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     SearchResult searchResult = assesmentRequestNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifiersAlreadyNotified, since);
-    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
+    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
+
+    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
       offset = 0;
-    }
-    else {
+    } else {
       offset += MAX_RESULTS;
     }
     // #2867: Filter the batch to only contain students that have no evaluation activity whatsoever
@@ -121,7 +122,9 @@ public class AssessmentRequestNotificationStrategy extends AbstractTimedNotifica
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.assesmentrequest.subject"),
           notificationContent,
-          studentEntity
+          studentEntity,
+          studentIdentifier,
+          "assesmentrequest"
         );
         assesmentRequestNotificationController.createAssesmentRequestNotification(studentIdentifier);
       }

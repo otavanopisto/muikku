@@ -456,22 +456,6 @@
     cursor: -webkit-zoom-in;
     cursor: -moz-zoom-in;
   }
-  
-  .muikku-word-definition {
-    background: #c4ffd6 none repeat scroll 0 0;
-    border: 2px solid #fff;
-    border-radius: 3px;
-    box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
-    color: #000;
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 1.5em;
-    margin: 10px 0 0;
-    max-width: 250px;
-    padding: 5px 10px;
-    position: absolute;
-    z-index: 20;
-  }
     
   mark[data-muikku-word-definition] {
     background: transparent;
@@ -986,4 +970,20 @@
     display: none;
   }
 
+}
+
+.muikku-word-definition {
+  background: #c4ffd6 none repeat scroll 0 0;
+  border: 2px solid #fff;
+  border-radius: 3px;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.1);
+  color: #000;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.5em;
+  margin: 10px 0 0;
+  max-width: 250px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 20;
 }

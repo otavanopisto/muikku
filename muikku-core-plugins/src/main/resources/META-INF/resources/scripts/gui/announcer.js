@@ -443,7 +443,7 @@
           var announcementId = this.options.announcement.id;
 
           mApi().announcer.announcements
-            .update(announcementId, payload)
+            .update(announcementId, Object.assign(payload, {'archived': false}))
             .callback($.proxy(function (err, result) {
               this._discardDraft();
               
@@ -581,7 +581,12 @@
           if (err) {
             $(".notification-queue").notificationQueue('notification', 'error', err);
           } else {
-            renderDustTemplate('announcer/announcer_items.dust',result,$.proxy(function (text) {
+            var data = {
+                items: result,
+                options: options
+            };
+            
+            renderDustTemplate('announcer/announcer_items.dust', data, $.proxy(function (text) {
               $('.an-announcements-view-container').html(text);
             }, this));
           }

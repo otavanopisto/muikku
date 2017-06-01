@@ -977,7 +977,7 @@
             }
         }
       }
-      var options = { archived: false, orderBy: 'name' };
+      var options = { active: true, orderBy: 'name' };
       if (this._searchString !== null && this._searchString !== "")  {
         options.search = this._searchString;
         options.maxResults = 10;

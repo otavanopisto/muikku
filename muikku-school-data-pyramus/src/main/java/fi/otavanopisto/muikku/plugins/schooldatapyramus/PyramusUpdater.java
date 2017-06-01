@@ -226,7 +226,7 @@ public class PyramusUpdater {
 
       UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studyProgrammeStudentIdentifier);
       
-      boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
+      boolean isActive = !student.getArchived() && (student.getStudyEndDate() == null || student.getStudyEndDate().isAfter(OffsetDateTime.now()));
       
       if (isActive) {
         if (userGroupUserEntity == null) {
@@ -608,18 +608,15 @@ public class PyramusUpdater {
       CourseStudent courseStudent = pyramusClient.get().get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
       if (courseStudent != null && !courseStudent.getArchived()) {
         boolean studentActive = isStudentActive(courseStudent.getStudentId());
-        
-        if (workspaceUserEntity == null && studentActive) {
-          fireCourseStudentDiscovered(courseStudent);
+        if (workspaceUserEntity == null) {
+          fireCourseStudentDiscovered(courseStudent, studentActive);
           return true;
-        } else {
-          if (studentActive) {
-            fireCourseStudentUpdated(courseStudent);
-          } else {
-            fireCourseStudentRemoved(courseStudentId, studentId, courseId);
-          }
         }
-      } else {
+        else {
+          fireCourseStudentUpdated(courseStudent, studentActive);
+        }
+      }
+      else {
         if (workspaceUserEntity != null) {
           fireCourseStudentRemoved(courseStudentId, studentId, courseId);
         }
@@ -660,6 +657,8 @@ public class PyramusUpdater {
     int count = 0;
     Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
 
+    // Synchronize active students of a course
+    
     CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=true", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
@@ -670,14 +669,20 @@ public class PyramusUpdater {
             fireCourseStudentRemoved(courseStudent.getId(), courseStudent.getStudentId(), courseStudent.getCourseId());
             count++;
           }
-        } else {
+        }
+        else {
           if (workspaceUserEntity == null) {
-            fireCourseStudentDiscovered(courseStudent);
+            fireCourseStudentDiscovered(courseStudent, true);
             count++;
+          }
+          else {
+            fireCourseStudentUpdated(courseStudent, true);
           }
         }
       }
     }
+
+    // Synchronize inactive students of a course
     
     CourseStudent[] nonActiveCourseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=false", CourseStudent[].class);
     if (nonActiveCourseStudents != null) {
@@ -685,7 +690,17 @@ public class PyramusUpdater {
         SchoolDataIdentifier workspaceUserIdentifier = toIdentifier(identifierMapper.getWorkspaceStudentIdentifier(nonActiveCourseStudent.getId()));
         WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(workspaceUserIdentifier);
         if (workspaceUserEntity != null) {
-          fireCourseStudentRemoved(nonActiveCourseStudent.getId(), nonActiveCourseStudent.getStudentId(), nonActiveCourseStudent.getCourseId());
+          if (nonActiveCourseStudent.getArchived()) {
+            fireCourseStudentRemoved(nonActiveCourseStudent.getId(), nonActiveCourseStudent.getStudentId(), nonActiveCourseStudent.getCourseId());
+            count++;
+          }
+          else {
+            fireCourseStudentUpdated(nonActiveCourseStudent, false);
+            count++;
+          }
+        }
+        else {
+          fireCourseStudentDiscovered(nonActiveCourseStudent, false);
           count++;
         }
       }
@@ -722,7 +737,7 @@ public class PyramusUpdater {
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, true));
   }
   
   private void fireCourseStaffMemberUpdated(CourseStaffMember courseStaffMember) {
@@ -733,7 +748,7 @@ public class PyramusUpdater {
 
     schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, true));
   }
 
   private void fireCourseStaffMemberRemoved(Long courseStaffMemberId, Long staffMemberId, Long courseId) {
@@ -746,7 +761,7 @@ public class PyramusUpdater {
         userIdentifier));
   }
 
-  private void fireCourseStudentDiscovered(CourseStudent courseStudent) {
+  private void fireCourseStudentDiscovered(CourseStudent courseStudent, boolean isActive) {
     String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
     String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
     String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
@@ -754,10 +769,10 @@ public class PyramusUpdater {
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, isActive));
   }
 
-  private void fireCourseStudentUpdated(CourseStudent courseStudent) {
+  private void fireCourseStudentUpdated(CourseStudent courseStudent, boolean isActive) {
     String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
     String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
     String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
@@ -765,7 +780,7 @@ public class PyramusUpdater {
 
     schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
-        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, isActive));
   }
 
   private void fireCourseStudentRemoved(Long courseStudentId, Long studentId, Long courseId) {
@@ -956,7 +971,7 @@ public class PyramusUpdater {
     UserEntity userEntity = userEntityId != null ? userEntityController.findUserEntityById(userEntityId) : null;
     
     if (userEntity != null) {
-      // User already exists in the system so we check which of the idetifiers have been removed and which just updated
+      // User already exists in the system so we check which of the identifiers have been removed and which just updated
       List<UserSchoolDataIdentifier> existingSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
       for (UserSchoolDataIdentifier existingSchoolDataIdentifier : existingSchoolDataIdentifiers) {
         if (existingSchoolDataIdentifier.getDataSource().getIdentifier().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
@@ -983,7 +998,7 @@ public class PyramusUpdater {
   }
 
   private void fireSchoolDataUserUpdated(Long userEntityId, SchoolDataIdentifier defaultIdentifier, List<SchoolDataIdentifier> removedIdentifiers, List<SchoolDataIdentifier> updatedIdentifiers,
-      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+      List<SchoolDataIdentifier> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier environmentRoleIdentifier) {
 
     if (discoveredIdentifiers == null) {
       discoveredIdentifiers = Collections.emptyList();
@@ -998,7 +1013,7 @@ public class PyramusUpdater {
     }
 
     schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(userEntityId, 
-        enivormentRoleIdentifier, 
+        environmentRoleIdentifier, 
         discoveredIdentifiers, 
         updatedIdentifiers, 
         removedIdentifiers, 
@@ -1008,7 +1023,7 @@ public class PyramusUpdater {
   }
   
   private void fireSchoolDataUserUpdated(Long userEntityId, String defaultIdentifier, List<String> removedIdentifiers, List<String> updatedIdentifiers,
-      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier enivormentRoleIdentifier) {
+      List<String> discoveredIdentifiers, Map<SchoolDataIdentifier, List<String>> emails, SchoolDataIdentifier environmentRoleIdentifier) {
     
     fireSchoolDataUserUpdated(userEntityId, 
         toIdentifier(defaultIdentifier), 
@@ -1016,7 +1031,7 @@ public class PyramusUpdater {
         toIdentifiers(updatedIdentifiers),
         toIdentifiers(discoveredIdentifiers),
         emails,
-        enivormentRoleIdentifier
+        environmentRoleIdentifier
     );
   }
   

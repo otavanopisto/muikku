@@ -90,8 +90,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
     Date lastNotifiedThresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS_LEFT + 1).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = studyTimeLeftNotificationController.listNotifiedSchoolDataIdentifiersAfter(lastNotifiedThresholdDate);
     SearchResult searchResult = studyTimeLeftNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, studyTimeEnds);
+    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
-    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
+    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
       offset = 0;
     } else {
       offset += MAX_RESULTS;
@@ -125,7 +126,9 @@ public class StudyTimeNotificationStrategy extends AbstractTimedNotificationStra
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.studytime.subject"),
           notificationContent,
-          studentEntity
+          studentEntity,
+          studentIdentifier,
+          "studytime"
         );
         studyTimeLeftNotificationController.createStudyTimeNotification(studentIdentifier);
       } else {

@@ -76,7 +76,7 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   
   private boolean hasWorkspaceAccess(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission permission) {
     // Workspace access as an individual
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
     if (workspaceUserEntity != null) {
       if (permissionController.hasPermission(workspaceUserEntity.getWorkspaceUserRole(), permission)) {
         // TODO Override rules for workspace users

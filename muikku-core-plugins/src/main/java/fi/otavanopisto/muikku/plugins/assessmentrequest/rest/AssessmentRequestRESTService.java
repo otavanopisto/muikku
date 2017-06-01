@@ -79,14 +79,14 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.UNAUTHORIZED).build();
     }
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
     try {
       WorkspaceAssessmentRequest assessmentRequest = assessmentRequestController.createWorkspaceAssessmentRequest(workspaceUserEntity, newAssessmentRequest.getRequestText());
       communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
       return Response.ok(restModel(assessmentRequest)).build();
-    } catch (Exception e) {
+    }
+    catch (Exception e) {
       logger.log(Level.SEVERE, "Couldn't create workspace assessment request.", e);
-      
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     } 
   }
@@ -151,7 +151,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Workspace entity not found").build();
     }
     
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());    
     
     if(workspaceUserEntity == null){
       return Response.status(Status.NOT_FOUND).entity("Workspace user entity not found").build();

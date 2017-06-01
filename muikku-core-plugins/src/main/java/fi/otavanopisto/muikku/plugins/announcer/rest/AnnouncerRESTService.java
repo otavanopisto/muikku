@@ -204,7 +204,9 @@ public class AnnouncerRESTService extends PluginRESTService {
         restModel.getContent(),
         restModel.getStartDate(),
         restModel.getEndDate(),
-        restModel.getPubliclyVisible());
+        restModel.getPubliclyVisible(),
+        restModel.isArchived()
+    );
 
     announcementController.clearAnnouncementTargetGroups(newAnnouncement);
     for (Long userGroupEntityId : userGroupEntityIds) {
@@ -320,6 +322,7 @@ public class AnnouncerRESTService extends PluginRESTService {
     restModel.setEndDate(announcement.getEndDate());
     restModel.setId(announcement.getId());
     restModel.setPubliclyVisible(announcement.getPubliclyVisible());
+    restModel.setArchived(announcement.getArchived());
 
     List<Long> userGroupEntityIds = new ArrayList<>();
     for (AnnouncementUserGroup announcementUserGroup : announcementUserGroups) {
