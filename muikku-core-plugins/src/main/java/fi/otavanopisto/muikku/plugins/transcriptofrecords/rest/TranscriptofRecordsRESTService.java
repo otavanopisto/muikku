@@ -163,7 +163,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     
     if (!vopsController.shouldShowStudies(studentEntity)) {
-      return Response.status(Status.NOT_FOUND).entity("No studies matrix available for student").build();
+      VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
+      return Response.ok(result).build();
     }
 
     List<Subject> subjects = courseMetaController.listSubjects();
@@ -239,7 +240,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       }
     }
 
-    VopsRESTModel result = new VopsRESTModel(rows, numCourses, numMandatoryCourses);
+    VopsRESTModel result = new VopsRESTModel(rows, numCourses, numMandatoryCourses, true);
 
     return Response.ok(result).build();
   }

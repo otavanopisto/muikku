@@ -56,11 +56,12 @@ public class VopsRESTModel {
     List<VopsItem> items;
   }
   
-  public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses) {
+  public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses, boolean optedIn) {
     super();
     this.rows = rows;
     this.numCourses = numCourses;
     this.numMandatoryCourses = numMandatoryCourses;
+    this.optedIn = optedIn;
   }
   
   public List<VopsRow> getRows() {
@@ -75,8 +76,12 @@ public class VopsRESTModel {
     return numMandatoryCourses;
   }
   
-  int numMandatoryCourses;
-  int numCourses;
+  public boolean isOptedIn() {
+    return optedIn;
+  }
   
   List<VopsRow> rows;
+  int numMandatoryCourses;
+  int numCourses;
+  boolean optedIn;
 }

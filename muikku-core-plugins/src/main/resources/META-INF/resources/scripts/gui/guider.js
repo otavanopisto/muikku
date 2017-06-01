@@ -1185,7 +1185,7 @@
             .callback($.proxy(function (vopsErr, vops) {
               if (vopsErr) {
                 $('.notification-queue').notificationQueue('notification', 'error', vopsErr);
-              } else {
+              } else if (vops.optedIn) {
                 user.vops = vops;
                 var maxitems = 15;
                 var titleItems = [];
@@ -1196,7 +1196,11 @@
                 user.vops.coursetitlenos = titleItems;
                 
                 vopsCallback();
-              }      
+              } else {
+                user.vops = null;
+
+                vopsCallback();
+              }
             }, this))
         }, this))        
         .on('$', $.proxy(function(user, addressesCallback) {

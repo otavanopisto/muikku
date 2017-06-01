@@ -94,9 +94,12 @@
     </div>
     <div class="clear"></div>  
   </div>
+  {!
   <div class="gt-user-hops mf-widget flex-row">
      <span>Hops-lomake tähän</span>  
   </div>
+  !}
+  {#vops}
   <div class="gt-user-vops mf-widget flex-row" style="padding:0;">
     <div class="mf-vops gt-vops lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
       <div class="mf-vops-legend-container gt-vops-legend-container gt-vops-legend-container">
@@ -149,7 +152,6 @@
           </div>
         </div>
       </div>
-      {#vops}
         <div class="mf-vops-progress-courses-container gt-vops-progress-courses-container">
           <div class="mf-vops-progress-courses gt-vops-progress-courses">
             <span>{#localize key="plugin.records.studyplan.progress.title.courses.all" arg0=numCourses /}</span>
@@ -185,10 +187,10 @@
               {/items}
             </div>
           {/rows}
-        {/vops}
       </div>
     </div>
   </div>  
+  {/vops}
   <div class="gt-user-view-profile-data mf-widget flex-row">
      <div class="gt-user-view-profile-data gt-data-container-1 mf-widget-subarea lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
        <div class="flex-row">
