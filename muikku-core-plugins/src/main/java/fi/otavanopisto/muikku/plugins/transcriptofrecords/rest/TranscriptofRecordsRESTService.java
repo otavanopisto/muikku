@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -30,8 +29,9 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -45,6 +45,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -76,6 +77,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -148,14 +152,19 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (studentIdentifier == null) {
       return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
     }
-
-   // Temporary stuff because the teacher has to see students information. PUT BACK ON!
     
-//    if (!Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
-//      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
-//    }
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES)
+        && !Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
+    }
 
     User student = userController.findUserByIdentifier(studentIdentifier);
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
+    
+    if (!vopsController.shouldShowStudies(studentEntity)) {
+      return Response.status(Status.NOT_FOUND).entity("No studies matrix available for student").build();
+    }
 
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
