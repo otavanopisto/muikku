@@ -7,14 +7,18 @@
 }
 
 //THEMER
-@mixin color-theme-item($colorelement, $effects){
+@mixin color-theme-item($colorelement, $effects, $soft){
   @each $colorpiece in $colorelement {
     @if (length($colorpiece) == 2){
       @if (nth($colorpiece, 1) == background){
         background-color: nth($colorpiece, 2);
         @if ($effects){
           &:hover, &.hover, &:active, &.active {
-            background-color: darken(nth($colorpiece, 2), 20%);
+            @if ($soft){
+              background-color: darken(nth($colorpiece, 2), 10%);
+            } @else {
+              background-color: darken(nth($colorpiece, 2), 20%);
+            }
           }
         }
       } @else if (nth($colorpiece, 1) == text){
@@ -24,13 +28,13 @@
   }
 }
 
-@mixin color-theme($scheme, $effects){
+@mixin color-theme($scheme, $effects, $soft: false){
   @each $colorelement in $scheme {
     @if (nth($colorelement, 1) == default){
-      @include color-theme-item($colorelement, $effects);
+      @include color-theme-item($colorelement, $effects, $soft);
     } @else {
       &.#{nth($colorelement, 1)} {
-        @include color-theme-item($colorelement, $effects);
+        @include color-theme-item($colorelement, $effects, $soft);
       }
     }
   }

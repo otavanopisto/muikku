@@ -26,6 +26,7 @@ $link-font-size-large: 16px;
   text-decoration: none;
   text-transform: uppercase;
   vertical-align: middle;
+  position: relative;
 
   &.link-small {
     font-size: $link-font-size-small;

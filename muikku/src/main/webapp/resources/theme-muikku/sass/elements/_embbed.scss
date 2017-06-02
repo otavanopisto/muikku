@@ -1,0 +1,14 @@
+//
+// Very simple way to embbed any sort of element on a parent
+// Mainly for use with images
+//
+// .embbed[ | .embbed-full ]
+
+.embbed {
+  position: relative;
+  
+  &.embbed-full {
+    width: 100%;
+    height: 100%;
+  }
+}

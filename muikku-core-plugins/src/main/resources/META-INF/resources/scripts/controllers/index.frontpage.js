@@ -9,6 +9,8 @@ loadModules([
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/menu.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/notification-queue.js.jsf"
 ], function(){
+  ENSURE_DEPRECATED_NON_INTERACTION();
+  
   $(".carousel").carouselWidget();
   $(".dropdown").dropdownWidget();
   $(".link").linkWidget();

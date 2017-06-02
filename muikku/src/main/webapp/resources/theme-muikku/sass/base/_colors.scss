@@ -133,6 +133,9 @@ $color-link-inverse-background: invisible;
 // Menu
 $color-menu-default-background: #f5f5f5;
 $color-menu-default-text: #343333;
+$color-menu-default-header-background: rgba(0, 0, 0, 0.1);
+$color-menu-default-header-button-close: #fff;
+$color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0.3);
 
 // dropdown
 $color-dropdown-default-background: #494949;
@@ -200,3 +203,4 @@ $color-notification-queue-item-text: #fff;
 $color-text-banner-shadow: rgba(0, 0, 0, 0.6);
 
 @import "colors/frontpage";
+@import "colors/main-function";

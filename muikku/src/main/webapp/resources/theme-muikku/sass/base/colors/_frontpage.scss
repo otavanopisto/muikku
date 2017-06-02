@@ -7,6 +7,10 @@ $color-frontpage-label-forgot-password: (
   (default, text $color-primary),
 );
 
+$color-frontpage-button-pill-language-theme: (
+  (default, background $color-inverse, text $color-inverse-contrast),
+);
+
 //HERO
 $color-frontpage-text-muikku-description-theme: (
   (default, text $color-default),

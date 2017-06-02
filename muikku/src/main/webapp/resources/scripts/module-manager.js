@@ -109,4 +109,12 @@
     });
     readyCallback = callback;
   }
+  
+  /**
+   * This function is a hax that you should remove once all the screens are for certain in the new
+   * mode, this makes some overrides to make sure the new version and old version work seamlessly
+   */
+  window.ENSURE_DEPRECATED_NON_INTERACTION = function(){
+    $('[data-display-when-viewmode-not="DEPRECATED"]').attr("style","");
+  }
 })();

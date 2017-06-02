@@ -6,3 +6,8 @@
   margin: 0;
   padding: 0;
 }
+
+// Remove this code once all the DEPRECATED elements in the html are removed
+[data-deprecated="DEPRECATED"] {
+  display: none;
+}

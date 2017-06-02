@@ -1,0 +1,28 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+$main-function-link-icon-active-border-size: 5px;
+
+.main-function.link {
+  
+  &.link-icon {
+    color: $color-main-function-link-icon-color;
+    
+    &:hover, &.hover {
+      color: $color-main-function-link-icon-color-hover;
+    }
+    &:active, &.active {
+      &::before {
+        content: " ";
+        height: $main-function-link-icon-active-border-size;
+        background-color: $color-main-function-link-icon-border-top-color-active;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+      }
+      color: $color-main-function-link-icon-color-active;
+    }
+  }
+}

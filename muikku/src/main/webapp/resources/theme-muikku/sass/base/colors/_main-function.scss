@@ -1,0 +1,20 @@
+// NAVBAR
+$color-main-function-navbar-background: #009FE3;
+
+// ICON LINKS
+$color-main-function-link-icon-color: #fff;
+$color-main-function-link-icon-color-hover: #fff;
+$color-main-function-link-icon-color-active: #fff;
+$color-main-function-link-icon-border-top-color-active: rgba(255,255,255,0.6);
+
+// DEFAULT LINKS
+$color-main-function-button-pill-theme: (
+  (default, background $color-default, text $color-default-contrast),
+);
+
+$color-main-function-button-pill-language-theme: (
+  (default, background $color-inverse, text $color-inverse-contrast),
+);
+
+$color-main-function-button-pill-icon-search: $color-main-function-navbar-background;
+$color-main-function-button-pill-icon-user: #1FE00A;

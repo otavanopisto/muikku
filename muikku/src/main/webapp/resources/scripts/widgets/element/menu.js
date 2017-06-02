@@ -6,6 +6,9 @@ module(function(){
         if(e.target !== e.currentTarget) return;
         self.close();
       });
+      self.element.find(".menu-header-button-close, .menu-items").click(function(e){
+        self.close();
+      });
 
       this.touchCordX;
       this.touchMovementX;
@@ -58,11 +61,19 @@ module(function(){
 
       setTimeout(function(){
         $menuCont.css({'left': ''});
-        if (Math.abs(diff) >= width*0.33 || movement <= 5) {
-          if (movement <= 5){
-            $(e.target).trigger("click");
+        $etarget = $(e.target);
+        var targetShouldTriggerCloseIfClicked =
+          $etarget.hasClass("menu-header-button-close") || //You pressed the button to close the menu
+          $etarget.parents(".menu-items").length === 1 || //You pressed one of the items in the list
+          $etarget.hasClass("menu"); //You pressed the overlay
+        
+        var targetIsActuallyBeingClicked = movement <= 5; //The total movement of the finger over a pressed target is just 5 pixels max
+        var menuHasSlidedEnoughForClosing = Math.abs(diff) >= width*0.33; //The difference of movement is a third of the menu width
+        if ((targetIsActuallyBeingClicked && targetShouldTriggerCloseIfClicked) || menuHasSlidedEnoughForClosing) {
+          if (targetIsActuallyBeingClicked){
+            $etarget.trigger("click");
 
-            var href = $(e.target).attr("href");
+            var href = $etarget.attr("href");
             if (href){
               window.location.href = href;
             }

@@ -33,7 +33,8 @@
 }
 
 .frontpage.button-pill {
-  &.frontpage-button-pill-language-selector {
+  &.frontpage-button-pill-language {
+    @include color-theme($color-frontpage-button-pill-language-theme, true);
     margin-right: 14px;
   }
 }

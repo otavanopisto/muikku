@@ -21,6 +21,7 @@
 
 $menu-width-pad: 350px;
 $menu-width-mobile: 250px;
+$menu-header-height: 70px;
 $menu-font: 'Exo 2', Arial, sans-serif;
 
 .menu {
@@ -67,35 +68,48 @@ $menu-font: 'Exo 2', Arial, sans-serif;
     }
 
     @include breakpoint-down($breakpoint-small-mobile) {
-      > div {
+      >.menu-body {
         margin: 11px 0;
       }
     }
 
-    >* {
+    >.menu-body {
       margin: 17px 0;
       text-align: center;
     }
 
-    >*:fist-child {
-      margin-top: 23px;
-    }
-
-    >.menu-header {
-      align-items: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .menu-header {
+      position: relative;
+      height: $menu-header-height;
       width: 100%;
+      background-color: $color-menu-default-header-background;
+      
+      .menu-header-button-close {
+        position: absolute;
+        height: $menu-header-height;
+        width: 45px;
+        right: 0;
+        top: 0;
+        color: $color-menu-default-header-button-close;
+        vertical-align: middle;
+        line-height: $menu-header-height;
+        transition: background-color .3s;
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        padding-right: 5px;
+        cursor: pointer;
+        
+        &:active, &.active {
+          background-color: $color-menu-default-header-button-close-background-active;
+        }
+      }
     }
 
-    >.menu-body {
+    .menu-body {
       position: relative;
       width: 100%;
     }
-
-//    >.menu-footer {
-//    }
 
     .menu-items {
       list-style-type: none;
