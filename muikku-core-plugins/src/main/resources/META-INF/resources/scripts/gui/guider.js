@@ -1208,7 +1208,7 @@
             .read(this.options.userIdentifier)
             .callback($.proxy(function (hopsErr, hops) {
               if (hopsErr) {
-                $('.notification-queue').notificationQueue('notification', 'error', vopsErr);
+                $('.notification-queue').notificationQueue('notification', 'error', hopsErr);
               } else if (hops.optedIn) {
                 user.hops = hops;
                 hopsCallback();
