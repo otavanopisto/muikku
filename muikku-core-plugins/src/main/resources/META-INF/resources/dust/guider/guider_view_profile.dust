@@ -94,17 +94,10 @@
     </div>
     <div class="clear"></div>  
   </div>
-  {#hopsForm}
+  {#hops}
   <div class="gt-user-hops mf-widget flex-row">
 	<form id="hopsForm"
 	  class="hops-form-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full mf-item">
-	  <div class="hops-form-section flex-row">
-		<h3>{#localize key="plugin.records.hops.title" /}</h3>
-		{#localize key="plugin.records.hops.intro" /}
-	  </div>
-	  <div class="hops-form-section flex-row">
-		<h3>{#localize key="plugin.records.hops.goals.title" /}</h3>
-	  </div>
 	  <div class="flex-row hops-form-section flex-align-items-center">
 		<div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
 		  <label>{#localize key="plugin.records.hops.goals.upperSecondary" /}</label>
@@ -115,6 +108,7 @@
 			  <tr>
 				<td>
 				  <input {@eq key=goalSecondarySchoolDegree value="yes"}checked="checked"{/eq}
+				    disabled 
 					type="radio"
 					value="yes" name="goalSecondarySchoolDegree"
 					id="goalSecondarySchoolDegree-yes"/>
@@ -122,14 +116,14 @@
 				</td>
 				<td>
 				  <input {@eq key=goalSecondarySchoolDegree value="no"}checked="checked"{/eq}
-					type="radio"
+				    disabled type="radio"
 					value="no" name="goalSecondarySchoolDegree"
 					id="goalSecondarySchoolDegree-no" />
 				  <label for="goalSecondarySchoolDegree-no">{#localize key="plugin.records.hops.goals.no" /}</label>
 				</td>
 				<td>
 				  <input {@eq key=goalSecondarySchoolDegree value="maybe"}checked="checked"{/eq}
-					type="radio"
+				    disabled type="radio"
 					value="maybe" name="goalSecondarySchoolDegree"
 					id="goalSecondarySchoolDegree-maybe" />
 				  <label for="goalSecondarySchoolDegree-maybe">{#localize key="plugin.records.hops.goals.maybe" /}</label>
@@ -149,20 +143,20 @@
 			  <tr>
 				<td>
 				  <input {@eq key=goalMatriculationExam value="yes"}checked="checked"{/eq}
-					type="radio" value="yes"
+				    disabled type="radio" value="yes"
 					name="goalMatriculationExam"
 					id="goalMatriculationExam-yes" />
 				  <label for="goalMatriculationExam-yes">{#localize key="plugin.records.hops.goals.yes" /}</label>
 				</td>
 				<td>
 				  <input {@eq key=goalMatriculationExam value="no"}checked="checked"{/eq}
-					type="radio" value="no"
+				    disabled type="radio" value="no"
 					name="goalMatriculationExam" id="goalMatriculationExam-no" />
 				  <label for="goalMatriculationExam-no">{#localize key="plugin.records.hops.goals.no" /}</label>
 				</td>
 				<td>
 				  <input {@eq key=goalMatriculationExam value="maybe"}checked="checked"{/eq}
-					type="radio" value="maybe"
+				    disabled type="radio" value="maybe"
 					name="goalMatriculationExam"
 					id="goalMatriculationExam-maybe"/>
 				  <label for="goalMatriculationExam-maybe">{#localize key="plugin.records.hops.goals.maybe" /}</label>
@@ -175,7 +169,7 @@
 	  <div class="flex-row hops-form-section flex-align-items-center">
 		<div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
 		  <label>{#localize key="plugin.records.hops.goals.vocationalYears1" /}
-			<select name="vocationalYears">
+			<select name="vocationalYears" disabled >
 			  <option value="1" {@eq key=vocationalYears value="1"}selected="selected"{/eq}>1</option>
 			  <option value="2" {@eq key=vocationalYears value="2"}selected="selected"{/eq}>2</option>
 			  <option value="2,5" {@eq key=vocationalYears value="2,5"}selected="selected"{/eq}>2,5</option>
@@ -195,14 +189,14 @@
 			  <tr>
 				<td>
 				  <input {@eq key=goalJustMatriculationExam value="yes"}checked="checked"{/eq}
-					type="radio"
+				    disabled type="radio"
 					value="yes" name="goalJustMatriculationExam"
 					id="goalJustMatriculationExam-yes" />
 				  <label for="goalJustMatriculationExam-yes">{#localize key="plugin.records.hops.goals.yes" /}</label>
 				</td>
 				<td>
 				  <input {@eq key=goalJustMatriculationExam value="no"}checked="checked"{/eq}
-					type="radio"
+				    disabled type="radio"
 					value="no" name="goalJustMatriculationExam"
 					id="goalJustMatriculationExam-no" />
 				  <label for="goalJustMatriculationExam-no">{#localize key="plugin.records.hops.goals.no" /}</label>
@@ -215,7 +209,7 @@
 	  <div class="flex-row hops-form-section flex-align-items-center">
 		<div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
 		  <label>{#localize key="plugin.records.hops.goals.justTransferCredits1" /}
-			<select name="transferCreditYears">
+			<select disabled  name="transferCreditYears">
 			  <option value="1" {@eq key=transferCreditYears value="1"}selected="selected"{/eq}>1</option>
 			  <option value="2" {@eq key=transferCreditYears value="2"}selected="selected"{/eq}>2</option>
 			  <option value="3" {@eq key=transferCreditYears value="3"}selected="selected"{/eq}>3</option>
@@ -234,13 +228,13 @@
 			  <tr>
 				<td>
 				  <input {@eq key=justTransferCredits value="yes"}checked="checked"{/eq}
-					type="radio" value="yes"
+				    disabled type="radio" value="yes"
 					name="justTransferCredits" id="justTransferCredits-yes" />
 				  <label for="justTransferCredits-yes">{#localize key="plugin.records.hops.goals.yes" /}</label>
 				</td>
 				<td>
 				  <input {@eq key=justTransferCredits value="no"}checked="checked"{/eq}
-					type="radio" value="no"
+				    disabled type="radio" value="no"
 					name="justTransferCredits" id="justTransferCredits-no" />
 				  <label for="justTransferCredits-no">{#localize key="plugin.records.hops.goals.no" /}</label>
 				</td>
@@ -252,7 +246,7 @@
 	  <div class="flex-row hops-form-section flex-align-items-center">
 		<div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16">
 		  <label>{#localize key="plugin.records.hops.goals.completionYears1" /}
-			<select name="completionYears">
+			<select name="completionYears" disabled >
 			  <option value="1" {@eq key=completionYears value="1"}selected="selected"{/eq}>1</option>
 			  <option value="2" {@eq key=completionYears value="2"}selected="selected"{/eq}>2</option>
 			  <option value="3" {@eq key=completionYears value="3"}selected="selected"{/eq}>3</option>
@@ -266,7 +260,7 @@
 		  <label>{#localize key="plugin.records.hops.languages.mandatory.title" /}</label>
 		</div>
 		<div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-		  <select name="finnish">
+		  <select name="finnish" disabled >
 			<option value="AI" {@eq key=finnish value="AI"}selected="selected"{/eq}>{#localize key="plugin.records.hops.languages.finnish.native" /}</option>
 			<option value="S2" {@eq key=finnish value="S2"}selected="selected"{/eq}>{#localize key="plugin.records.hops.languages.finnish.foreign" /}</option>
 		  </select>
@@ -279,10 +273,10 @@
 		</div>
 		<div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
 		  <br />
-		  <input name="german" type="checkbox" {?german}checked="checked"{/german}/>{#localize key="plugin.records.hops.languages.german" /}<br />
-		  <input name="french" type="checkbox" {?french}checked="checked"{/french}/>{#localize key="plugin.records.hops.languages.french" /}<br />
-		  <input name="italian" type="checkbox" {?italian}checked="checked"{/italian}/>{#localize key="plugin.records.hops.languages.italian" /}<br />
-		  <input name="spanish" type="checkbox" {?spanish}checked="checked"{/spanish}/>{#localize key="plugin.records.hops.languages.spanish" /}<br />
+		  <input disabled  name="german" type="checkbox" {?german}checked="checked"{/german}/>{#localize key="plugin.records.hops.languages.german" /}<br />
+		  <input disabled  name="french" type="checkbox" {?french}checked="checked"{/french}/>{#localize key="plugin.records.hops.languages.french" /}<br />
+		  <input disabled  name="italian" type="checkbox" {?italian}checked="checked"{/italian}/>{#localize key="plugin.records.hops.languages.italian" /}<br />
+		  <input disabled  name="spanish" type="checkbox" {?spanish}checked="checked"{/spanish}/>{#localize key="plugin.records.hops.languages.spanish" /}<br />
 		</div>
 	  </div>
 	  <div class="flex-row hops-form-section flex-align-items-center">
@@ -295,13 +289,13 @@
 			  <tr>
 				<td>
 				  <input {@eq key=mathSyllabus value="MAA"}checked="checked"{/eq}
-					type="radio" value="MAA"
+				    disabled type="radio" value="MAA"
 					name="mathSyllabus" id="mathSyllabus-MAA" />
 				  <label for="mathSyllabus-MAA">{#localize key="plugin.records.hops.mathSyllabus.MAA" /}</label>
 				</td>
 				<td>
 				  <input {@eq key=mathSyllabus value="MAB"}checked="checked"{/eq}
-					type="radio" value="MAB"
+				    disabled type="radio" value="MAB"
 					name="mathSyllabus" id="mathSyllabus-MAB" />
 				  <label for="mathSyllabus-MAB">{#localize key="plugin.records.hops.mathSyllabus.MAB" /}</label>
 				</td>
@@ -315,7 +309,7 @@
 		  <label>{#localize key="plugin.records.hops.science.title" /}</label>
 		</div>
 		<div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-		  <select name="science">
+		  <select name="science" disabled >
 			<option value="BI" {@eq key=science value="BI"}selected="selected"{/eq}>{#localize key="plugin.records.hops.science.BI" /}</option>
 			<option value="FY" {@eq key=science value="FY"}selected="selected"{/eq}>{#localize key="plugin.records.hops.science.FY" /}</option>
 			<option value="KE" {@eq key=science value="KE"}selected="selected"{/eq}>{#localize key="plugin.records.hops.science.KE" /}</option>
@@ -328,7 +322,7 @@
 		  <label>{#localize key="plugin.records.hops.religion.title" /}</label>
 		</div>
 		<div class="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-		  <select name="religion">
+		  <select name="religion" disabled >
 			<option value="UE" {@eq key=religion value="UE"}selected="selected"{/eq}>{#localize key="plugin.records.hops.religion.UE" /}</option>
 			<option value="ET" {@eq key=religion value="ET"}selected="selected"{/eq}>{#localize key="plugin.records.hops.religion.ET" /}</option>
 			<option value="UX" {@eq key=religion value="UX"}selected="selected"{/eq}>{#localize key="plugin.records.hops.religion.UX" /}</option>
@@ -338,16 +332,12 @@
 	  <div class="flex-row hops-form-section flex-align-items-center">
 		<div class="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
 		  <label>{#localize key="plugin.records.hops.additionalInfo.title" /}</label>
-		  <p><textarea name="additionalInfo" rows="5" style="width:100%">{additionalInfo}</textarea></p>
+		  <p><textarea disabled  name="additionalInfo" rows="5" style="width:100%">{additionalInfo}</textarea></p>
 		</div>
-	  </div>
-	  <div class="flex-row hops-form-section flex-align-items-center">
-		<p>{#localize key="plugin.records.hops.footer" /}</p>
-		<input type="submit" value="Tallenna">
 	  </div>
 	</form>
   </div>
-  {/hopsForm}
+  {/hops}
   {#vops}
   <div class="gt-user-vops mf-widget flex-row" style="padding:0;">
     <div class="mf-vops gt-vops lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">

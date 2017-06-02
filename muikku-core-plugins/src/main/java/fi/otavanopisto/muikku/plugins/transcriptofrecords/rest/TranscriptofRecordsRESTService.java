@@ -93,9 +93,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Inject
   private GradingController gradingController;
 
-  @Inject
-  private Logger logger;
-
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
@@ -287,6 +284,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
     
     if (response == null) {
@@ -300,12 +298,27 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/hops/{USERIDENTIFIER}")
   @RESTPermit(handling=Handling.INLINE)
   public Response retrieveForm(@PathParam("USERIDENTIFIER") String userIdentifierString){
+    
+    // TODO security
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
     SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierString);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Malformed identifier").build();
+    }
+
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User not found").build();
+    }
+
+    if (!vopsController.shouldShowStudies(userEntity)) {
+      return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
+    }
+
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
     
     if (response == null) {
