@@ -228,6 +228,10 @@
 	    </div>
 	  </ui:fragment>
 
+    <ui:fragment rendered="#{sessionBackingBean.loggedIn and not sessionBackingBean.isActiveUser}">
+      <div><h:outputText escape="false" value="#{i18n.text['plugin.frontpage.inactiveStudent.message']}" /></div>
+    </ui:fragment>
+
   </ui:define>
   
   
