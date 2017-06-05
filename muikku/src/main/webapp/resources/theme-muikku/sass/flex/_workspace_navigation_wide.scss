@@ -39,7 +39,9 @@
   }
   
   // Evaluation Request Pending
-  &[data-state='pending'] { 
+  &[data-state='pending'],
+  &[data-state='pending_pass'],
+  &[data-state='pending_fail'] { 
     background: #0099ff; 
     transition: background 0.2s ease-in-out;
 
@@ -74,36 +76,6 @@
 
       }
 
-    }
-    
-  }
-  
-  // Evaluation Request Cancelled
-  &[data-state='cancel'] { 
-    background: #f6a930;
-    
-    a:hover {
-      background: #e5961b;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background: #e5961b;
-      }
-      
-    }
-    
-  }
-  
-  // Evaluation Request Cancelled
-  &[data-state='canceled'] { 
-    background: #55bbff;
-    
-    a:hover {
-      background: #509ccf;
-      
-      span[class*='workspace-navi-tt-container-'] {
-        background: #509ccf;
-      }
-      
     }
     
   }

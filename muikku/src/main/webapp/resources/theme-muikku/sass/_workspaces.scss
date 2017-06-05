@@ -179,7 +179,9 @@ body[class^='workspace'] {
       
     }
     
-    &[data-state='pending'] { /* Evaluation Request Pending */
+    &[data-state='pending'],
+    &[data-state='pending_pass'],
+    &[data-state='pending_fail'] { /* Evaluation Request Pending */
       background:#0099ff; 
       transition: background 0.2s ease-in-out;
 
@@ -216,35 +218,7 @@ body[class^='workspace'] {
       }
       
     }
-    
-    &[data-state='cancel'] { /* Evaluation Request Cancelled */
-      background:#f6a930; /* Same as Default at this point */
-      
-      a:hover {
-        background:#e5961b;
-        
-        span[class*='workspace-navi-tt-container-'] {
-          background:#e5961b;
-        }
-        
-      }
-      
-    }
-    
-    &[data-state='canceled'] { /* Evaluation Request Cancelled */
-      background:#55bbff; /* Same as Default at this point */
-      
-      a:hover {
-        background:#509ccf;
-        
-        span[class*='workspace-navi-tt-container-'] {
-          background:#509ccf;
-        }
-        
-      }
-      
-    }
-    
+
     &[data-state='pass'] { /* Evaluation of Workspace - Pass */
       background:#1ec30c;
       
