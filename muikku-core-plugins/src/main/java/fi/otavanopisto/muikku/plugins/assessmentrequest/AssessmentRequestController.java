@@ -119,7 +119,15 @@ public class AssessmentRequestController {
     }
     else if (latestRequest != null && (latestAssessment == null || latestAssessment.getDate().before(latestRequest.getDate()))) {
       // Has request and no assessment, or the assessment is older
-      return WorkspaceAssessmentState.PENDING;
+      if (latestAssessment == null) {
+        return WorkspaceAssessmentState.PENDING;
+      }
+      else if (latestAssessment.getPassing()) {
+        return WorkspaceAssessmentState.PENDING_PASS;
+      }
+      else {
+        return WorkspaceAssessmentState.PENDING_FAIL;
+      }
     }
     else {
       // Has neither assessment nor request

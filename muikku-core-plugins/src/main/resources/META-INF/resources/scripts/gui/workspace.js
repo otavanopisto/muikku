@@ -70,7 +70,10 @@
   });
 
   $(document).on('click', '.workspace-dock-navi-button-evaluation', function (event) {
-    if ($.inArray($(this).attr('data-state'), ['unassessed', 'pending', 'canceled', 'pass', 'fail']) >= 0) {
+    if ($.inArray($(this).attr('data-state'), ['pending', 'pending_pass', 'pending_fail']) >= 0) {
+      confirmEvaluationCancellation();
+    }
+    else {
       confirmEvaluationRequest(); 
     }
   });
@@ -109,14 +112,24 @@
                   }
                   else {
                     var evalButton = $('.workspace-dock-navi-button-evaluation');
+                    var state = evalButton.attr('data-state');
+                    if (state == 'unassessed') {
+                      state = 'pending';
+                    }
+                    else if (state == 'pass') {
+                      state = 'pending_pass';
+                    }
+                    else if (state == 'fail') {
+                      state = 'pending_fail';
+                    }
                     evalButton
-                      .children('.icon-assessment-' + evalButton.attr('data-state'))
-                        .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                        .addClass('icon-assessment-pending')
-                        .attr("title", getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
+                      .attr('data-state', state)
+                      .children('a')
+                        .attr('class', '')
+                        .attr('title', getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"))
+                        .addClass('icon-assessment-pending tooltip')
                         .children('span')
                           .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
-                    evalButton.attr('data-state', 'pending');
                     $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
                   }
                 });
@@ -138,12 +151,6 @@
   }
   
   function confirmEvaluationCancellation() {
-    
-    var evalButton = $('.workspace-dock-navi-button-evaluation');
-    
-    evalButton.attr('data-state', 'cancel');
-    evalButton.children('.icon-assessment-pending').removeClass('icon-assessment-pending').addClass('icon-assessment-cancel');
-
     renderDustTemplate('workspace/workspace-evaluation-cancellation-confirm.dust', { }, $.proxy(function (text) {
       var dialog = $(text);
       $(text).dialog({
@@ -168,22 +175,31 @@
                   mApi().assessmentrequest.workspace.assessmentRequests.del(workspaceEntityId, assessmentRequestId).callback($.proxy(function(err, result) {
                     if (err) {
                       $('.notification-queue').notificationQueue('notification', 'error', err);
-                    } else {
-                      
+                    }
+                    else {
+                      var evalButton = $('.workspace-dock-navi-button-evaluation');
+                      var state = evalButton.attr('data-state');
+                      var tooltip = 'plugin.workspace.evaluation.resendRequestEvaluationButtonTooltip';
+                      if (state == 'pending') {
+                        state = 'unassessed';
+                        tooltip = 'plugin.workspace.evaluation.requestEvaluationButtonTooltip';
+                      }
+                      else if (state == 'pending_pass') {
+                        state = 'pass';
+                      }
+                      else if (state == 'pending_fail') {
+                        state = 'fail';
+                      }
                       evalButton
-                        .children('.icon-assessment-' + evalButton.attr('data-state'))
-                          .removeClass('icon-assessment-' + evalButton.attr('data-state'))
-                          .addClass('icon-assessment-unassessed')
-                          .attr("title", getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"))
+                        .attr('data-state', state)
+                        .children('a')
+                          .attr('class', '')
+                          .attr('title', getLocaleText(tooltip))
+                          .addClass('icon-assessment-' + state + ' tooltip')
                           .children('span')
-                            .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
-                        
-                    
-                      evalButton.attr('data-state', 'unassessed');
-                      
+                            .text(getLocaleText(tooltip));
                       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
                     }
-    
                     $(this).dialog("destroy").remove();
                   }, this));
                 } else {
