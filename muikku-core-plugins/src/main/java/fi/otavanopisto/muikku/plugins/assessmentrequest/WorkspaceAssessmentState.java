@@ -1,11 +1,12 @@
 package fi.otavanopisto.muikku.plugins.assessmentrequest;
 
 public enum WorkspaceAssessmentState {
-  UNASSESSED("unassessed"),
-  PENDING("pending"),
-  CANCELED("canceled"),
-  PASS("pass"),
-  FAIL("fail");
+  UNASSESSED("unassessed"),                // no request, no grade
+  PENDING("pending"),                      // active request, no grade
+  PENDING_PASS("pending_pass"),            // active request, earlier passing grade
+  PENDING_FAIL("pending_fail"),            // active request, earlier failing grade
+  PASS("pass"),                            // no request, passing grade
+  FAIL("fail");                            // no request, failing grade
   
   private WorkspaceAssessmentState(String stateName) {
     this.stateName = stateName;
@@ -13,21 +14,6 @@ public enum WorkspaceAssessmentState {
   
   public String getStateName() {
     return stateName;
-  }
-  
-  public static WorkspaceAssessmentState fromAssessmentRequestState(AssessmentRequestState state) {
-    switch (state) {
-    case PENDING:
-      return PENDING;
-    case CANCELED:
-      return CANCELED;
-    case PASS:
-      return PASS;
-    case FAIL:
-      return FAIL;
-    default:
-      throw new NullPointerException("Assessment request state must not be null");
-    }
   }
   
   private String stateName;

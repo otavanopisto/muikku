@@ -46,10 +46,10 @@ public class TranscriptofRecordsBackingBean {
   private GradingController gradingController;
   
   @Inject
-  private PluginSettingsController pluginSettingsController;
-  
-  @Inject
   private TranscriptOfRecordsFileController transcriptOfRecordsFileController;
+
+  @Inject
+  private TranscriptOfRecordsController transcriptOfRecordsController;
 
   @RequestAction
 	public String init() {
@@ -112,19 +112,9 @@ public class TranscriptofRecordsBackingBean {
   
   public Boolean getShowStudies() {
     UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    if (loggedUserEntity != null) {
-      String studyViewStudents = pluginSettingsController.getPluginSetting("transcriptofrecords", "studyViewStudents");
-      if (studyViewStudents != null) {
-        String[] ids = studyViewStudents.split(",");
-        for (int i = 0; i < ids.length; i++) {
-          if (StringUtils.equals(ids[i], loggedUserEntity.getId().toString())) {
-            return Boolean.TRUE;
-          }
-        }
-      }
-    }
-    return Boolean.FALSE;
+    return transcriptOfRecordsController.shouldShowStudies(loggedUserEntity);
   }
+  
   
   private String grades;
   

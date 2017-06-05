@@ -8,7 +8,7 @@ public class HopsRESTModel {
   public HopsRESTModel(String goalSecondarySchoolDegree, String goalMatriculationExam, String vocationalYears,
       String goalJustMatriculationExam, String justTransferCredits, String transferCreditYears, String completionYears,
       String mathSyllabus, String finnish, boolean swedish, boolean english, boolean german, boolean french,
-      boolean italian, boolean spanish, String science, String religion, String additionalInfo) {
+      boolean italian, boolean spanish, String science, String religion, String additionalInfo, Boolean optedIn) {
     this.goalSecondarySchoolDegree = goalSecondarySchoolDegree;
     this.goalMatriculationExam = goalMatriculationExam;
     this.vocationalYears = vocationalYears;
@@ -27,6 +27,23 @@ public class HopsRESTModel {
     this.science = science;
     this.religion = religion;
     this.additionalInfo = additionalInfo;
+    this.optedIn = optedIn;
+  }
+
+  public HopsRESTModel(String goalSecondarySchoolDegree, String goalMatriculationExam, String vocationalYears,
+      String goalJustMatriculationExam, String justTransferCredits, String transferCreditYears, String completionYears,
+      String mathSyllabus, String finnish, boolean swedish, boolean english, boolean german, boolean french,
+      boolean italian, boolean spanish, String science, String religion, String additionalInfo) {
+    this(goalSecondarySchoolDegree, goalMatriculationExam, vocationalYears,
+        goalJustMatriculationExam, justTransferCredits, transferCreditYears, completionYears,
+        mathSyllabus, finnish, swedish, english, german, french,
+        italian, spanish, science, religion, additionalInfo, true);
+  }
+  
+  public static HopsRESTModel nonOptedInHopsRESTModel() {
+    HopsRESTModel result = new HopsRESTModel();
+    result.optedIn = false;
+    return result;
   }
 
   public String getGoalSecondarySchoolDegree() {
@@ -172,6 +189,14 @@ public class HopsRESTModel {
   public void setAdditionalInfo(String additionalInfo) {
     this.additionalInfo = additionalInfo;
   }
+  
+  public Boolean getOptedIn() {
+    return optedIn;
+  }
+  
+  public void setOptedIn(Boolean optedIn) {
+    this.optedIn = optedIn;
+  }
 
   private String goalSecondarySchoolDegree;
   private String goalMatriculationExam;
@@ -191,4 +216,5 @@ public class HopsRESTModel {
   private String science;
   private String religion;
   private String additionalInfo;
+  private Boolean optedIn;
 }

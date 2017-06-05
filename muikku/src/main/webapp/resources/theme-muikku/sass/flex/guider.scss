@@ -147,7 +147,7 @@
 }
 
 .gt-user-view-profile {
-  > div{
+  > div {
     padding: 10px;
   }
   
@@ -169,8 +169,32 @@
   }  
 }
 
+.gt-user-hops {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important;
+  cursor: pointer;
+  transition-duration: 0.5s;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+  
+  &.closed {
+    height: 50px; 
+  }
+
+  &.open {
+    min-height: 500px; 
+    height: auto;
+  }    
+  
+}
+
  .gt-data {
  
+  .gt-course-header-name {
+    font-size: 18px;
+  }
   .gt-course-details-container {
     background-color: $environment-background-color;
     cursor: pointer;    
@@ -208,18 +232,19 @@
 .gt-user-file-action {
   text-transform: uppercase;
 }
+
+
  
 .gt-course {
-  border-left: 3px solid $item-border-color-active; 
 
+  margin-bottom: 5px;
   &.open {
+     background-color: #eee;  
     .gt-course-details-container {
-      margin: -5px;
+      margin-top: -5px;
       padding: 5px;
       background:$item-border-color-active;
       color: $environment-alt-font-color;
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
       
       .gt-course-header-name {
         color: $environment-alt-font-color;
@@ -240,6 +265,9 @@
 .gt-course .gt-course-activity {
   display: none; 
   font-weight:300;
+  padding: 5px;
+  
+  
 }
 
 .gt-course.open .gt-course-activity {
@@ -256,6 +284,7 @@
 
 .gt-course-activity-row {
   transition: background 0.3s ease-in-out;
+  padding: 5px;
   
   &:hover {
     background: $item-background-active-color;
