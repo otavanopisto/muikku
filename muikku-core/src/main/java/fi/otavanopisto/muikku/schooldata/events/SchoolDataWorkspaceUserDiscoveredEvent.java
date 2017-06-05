@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.schooldata.events;
 public class SchoolDataWorkspaceUserDiscoveredEvent {
 
   public SchoolDataWorkspaceUserDiscoveredEvent(String dataSource, String identifier, String workspaceDataSource, String workspaceIdentifier,
-      String userDataSource, String userIdentifier, String roleDataSource, String roleIdentifier) {
+      String userDataSource, String userIdentifier, String roleDataSource, String roleIdentifier, Boolean isActive) {
     super();
     this.dataSource = dataSource;
     this.identifier = identifier;
@@ -13,6 +13,7 @@ public class SchoolDataWorkspaceUserDiscoveredEvent {
     this.userIdentifier = userIdentifier;
     this.roleDataSource = roleDataSource;
     this.roleIdentifier = roleIdentifier;
+    this.isActive = isActive;
   }
 
   public String getDataSource() {
@@ -54,6 +55,10 @@ public class SchoolDataWorkspaceUserDiscoveredEvent {
   public Long getDiscoveredWorkspaceUserEntityId() {
     return discoveredWorkspaceUserEntityId;
   }
+
+  public Boolean getIsActive() {
+    return isActive;
+  }
   
   private String dataSource;
   private String identifier;
@@ -64,4 +69,5 @@ public class SchoolDataWorkspaceUserDiscoveredEvent {
   private String roleDataSource;
   private String roleIdentifier;
   private Long discoveredWorkspaceUserEntityId;
+  private Boolean isActive;
 }

@@ -90,7 +90,6 @@
          </span>
        </div>
      {/addresses}
-     <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">Hops-lomake</span><span class="mf-item-details-value gt-user-details-value"><a href="#" target="_blank">Lomake</a></span></div>     
     </div>
     <div class="clear"></div>  
   </div>
@@ -410,7 +409,7 @@
             <div class="mf-vops-row gt-vops-row">
               <div class="mf-vops-item-name gt-vops-item-name">{subject}</div>
               {#items}
-                <div title="Kurssi {courseNumber}"
+                <div title="{subject} {courseNumber}"
                      class="mf-vops-item gt-vops-item{~s}
                         {@eq key=state value="ENROLLED"}enrolled{~s}{/eq}
                         {@eq key=state value="FAILED"}failed{~s}{/eq}

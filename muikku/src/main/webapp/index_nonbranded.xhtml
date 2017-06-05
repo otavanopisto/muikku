@@ -96,17 +96,17 @@
         </div>
       </ui:fragment>
       
-      <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <ui:fragment rendered="#{sessionBackingBean.isStudent}">
-        <div class="flex-row">
-          <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full md-flex-order-1 sm-flex-order-1">
-            <div id="last-workspace">
-            
+      <ui:fragment rendered="#{sessionBackingBean.loggedIn and sessionBackingBean.isActiveUser}">
+        <ui:fragment rendered="#{sessionBackingBean.isStudent}">
+          <div class="flex-row">
+            <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full md-flex-order-1 sm-flex-order-1">
+              <div id="last-workspace">
+              
+              </div>
             </div>
           </div>
-        </div>
-      </ui:fragment>
-      <div class="flex-row">
+        </ui:fragment>
+      
         <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
           <div class="box box-max-width">
             <div id="visits"></div> 
@@ -123,7 +123,7 @@
             <div id="announcements"></div>
           </div>
         </div>
-      </div>
+      
     </ui:fragment>
     </div>
 

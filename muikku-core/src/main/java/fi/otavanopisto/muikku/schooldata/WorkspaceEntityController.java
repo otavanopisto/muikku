@@ -128,10 +128,10 @@ public class WorkspaceEntityController {
     workspaceEntityDAO.delete(workspaceEntity);
   }
 
-  public List<WorkspaceEntity> listWorkspaceEntitiesByWorkspaceUser(UserEntity userEntity) {
+  public List<WorkspaceEntity> listActiveWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
     List<WorkspaceEntity> result = new ArrayList<>();
     
-    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceUserEntitiesByUserEntity(userEntity);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
       result.add(workspaceUserEntity.getWorkspaceEntity());
     }

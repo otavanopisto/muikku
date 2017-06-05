@@ -126,7 +126,7 @@ public class EvaluationRESTService extends PluginRESTService {
         .build();
     }
     
-    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
     if (workspaceStudentEntity == null) {
       return Response.status(Status.NOT_FOUND)
         .entity(String.format("Could not find workspace student entity %s from workspace entity %d", studentIdentifier, workspaceEntityId))
@@ -263,7 +263,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
 
-    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
     if (workspaceStudentEntity == null) {
       return Response.status(Status.NOT_FOUND)
         .entity(String.format("Could not find workspace student entity %s from workspace entity %d", studentIdentifier, workspaceEntityId))
@@ -373,7 +373,7 @@ public class EvaluationRESTService extends PluginRESTService {
     
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
     
-    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
+    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, studentIdentifier);
     if (workspaceStudentEntity == null) {
       return Response.status(Status.NOT_FOUND)
         .entity(String.format("Could not find workspace student entity %s from workspace entity %d", studentIdentifier, workspaceEntityId))

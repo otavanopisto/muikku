@@ -37,7 +37,6 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
-import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -165,19 +164,19 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     
     switch (role) {
       case "ENVIRONMENT-STUDENT":
-        localSessionController.login("PYRAMUS", "STUDENT-1");
+        localSessionController.login("PYRAMUS", "STUDENT-1", true);
       break;
       case "ENVIRONMENT-TEACHER":
-        localSessionController.login("PYRAMUS", "STAFF-2");
+        localSessionController.login("PYRAMUS", "STAFF-2", true);
       break;
       case "ENVIRONMENT-MANAGER":
-        localSessionController.login("PYRAMUS", "STAFF-3");
+        localSessionController.login("PYRAMUS", "STAFF-3", true);
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
-        localSessionController.login("PYRAMUS", "STAFF-4");
+        localSessionController.login("PYRAMUS", "STAFF-4", true);
       break;
       case "ENVIRONMENT-TRUSTED_SYSTEM":
-        localSessionController.login("PYRAMUS", "STAFF-5");
+        localSessionController.login("PYRAMUS", "STAFF-5", true);
       break;
       
       case "PSEUDO-EVERYONE":
@@ -301,9 +300,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
     for (Long workspaceId : payload.getRecipientStudentsWorkspaceIds()) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-          workspaceEntity, WorkspaceRoleArchetype.STUDENT);
-      
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
       for (WorkspaceUserEntity wosu : workspaceUsers) {
         recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());
       }
@@ -311,8 +308,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   
     for (Long workspaceId : payload.getRecipientTeachersWorkspaceIds()) {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
-      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(
-          workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
       
       for (WorkspaceUserEntity wosu : workspaceUsers) {
         recipients.add(wosu.getUserSchoolDataIdentifier().getUserEntity());

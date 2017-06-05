@@ -93,7 +93,9 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
           localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
           localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
           notificationContent,
-          studentEntity
+          studentEntity,
+          studentIdentifier,
+          "nopassedcourses"
         );
         noPassedCoursesNotificationController.createNoPassedCoursesNotification(studentIdentifier);
       } else {
@@ -111,8 +113,9 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
     Date thresholdDate = Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant());
     List<SchoolDataIdentifier> studentIdentifierAlreadyNotified = noPassedCoursesNotificationController.listNotifiedSchoolDataIdentifiersAfter(thresholdDate);
     SearchResult searchResult = noPassedCoursesNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS, studentIdentifierAlreadyNotified, thresholdDate);
+    logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
-    if (searchResult.getFirstResult() + MAX_RESULTS >= searchResult.getTotalHitCount()) {
+    if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
       offset = 0;
     } else {
       offset += MAX_RESULTS;
@@ -137,7 +140,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
       
       User student = userController.findUserByIdentifier(studentIdentifier);
       
-      if ((student != null) && (student.getStudyStartDate() != null) && (isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS))) {
+      if ((student != null) && isNotifiedStudent(student.getStudyStartDate(), student.getStudyEndDate(), OffsetDateTime.now(), NOTIFICATION_THRESHOLD_DAYS)) {
         Long passedCourseCount = noPassedCoursesNotificationController.countPassedCoursesByStudentIdentifierSince(studentIdentifier, Date.from(student.getStudyStartDate().toInstant()));
         if (passedCourseCount == null) {
           logger.severe(String.format("Could not read course count for %s", studentId));

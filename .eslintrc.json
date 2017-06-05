@@ -9,6 +9,9 @@
   "globals": {
     "async": false,
     "mApi": false,
+    "moment": false,
+    "formatDate": false,
+    "formatTime": false,
     "renderDustTemplate": false,
     "getLocaleText": false,
     "MUIKKU_LOGGED_USER_ID": false,

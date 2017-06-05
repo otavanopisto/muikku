@@ -32,23 +32,23 @@
     },
     
     _create: function () {
-      this._loadStudentList(false);
+      this._loadStudentList(true);
       this.element.on("click", ".workspace-students-active", $.proxy(this._onWorkspaceStudentsActiveClick, this));
       this.element.on("click", ".workspace-students-inactive", $.proxy(this._onWorkspaceStudentsInactiveClick, this));
       this.element.on("click", ".workspace-users-archive", $.proxy(this._onWorkspaceStudentArchiveClick, this));
       this.element.on("click", ".workspace-users-unarchive", $.proxy(this._onWorkspaceStudentUnarchiveClick, this));
     },
     
-    _loadStudentList: function(archived) {
+    _loadStudentList: function(active) {
       this.element.find('.workspace-students-list').empty();
       this.element.find('.workspace-students-list').addClass('loading');
       
-      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {archived: archived, orderBy: 'name'}).callback($.proxy(function (err, students) {
+      mApi().workspace.workspaces.students.read(this.options.workspaceEntityId, {active: active, orderBy: 'name'}).callback($.proxy(function (err, students) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          if (archived === false) {
+          if (active) {
             renderDustTemplate('workspace/workspace-users-students-active.dust', {students: students}, $.proxy(function (text) {
               this.element.find('.workspace-students-list')
                 .removeClass('loading')
@@ -67,11 +67,11 @@
     },
     
     _onWorkspaceStudentsActiveClick: function (event) {
-      this._loadStudentList(false);
+      this._loadStudentList(true);
     },
 
     _onWorkspaceStudentsInactiveClick: function (event) {
-      this._loadStudentList(true);
+      this._loadStudentList(false);
     },
 
     _onWorkspaceStudentArchiveClick: function (event) {
@@ -154,7 +154,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.archived = true;
+          workspaceUserEntity.active = false;
           mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -175,7 +175,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          workspaceUserEntity.archived = false;
+          workspaceUserEntity.active = true;
           mApi().workspace.workspaces.students.update(workspaceEntityId, workspaceUserEntityId, workspaceUserEntity).callback(function (err, html) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
