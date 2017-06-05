@@ -24,6 +24,7 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     this.authentication = authentication;
     this.activeUserIdentifier = authentication.getActiveUserIdentifier();
     this.activeUserSchoolDataSource = authentication.getActiveUserSchoolDataSource();
+    this.isActive = authentication.isActiveUser();
   }
 
   @Override

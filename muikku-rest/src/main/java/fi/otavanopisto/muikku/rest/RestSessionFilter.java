@@ -64,7 +64,7 @@ public class RestSessionFilter implements javax.ws.rs.container.ContainerRequest
   
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
-    localSessionRestAuthentication.setActiveUser(localSessionController.getLoggedUserSchoolDataSource(), localSessionController.getLoggedUserIdentifier());
+    localSessionRestAuthentication.setActiveUser(localSessionController.getLoggedUserSchoolDataSource(), localSessionController.getLoggedUserIdentifier(), localSessionController.isActiveUser());
     restSessionController.setAuthentication(localSessionRestAuthentication);
     restSessionController.setLocale(request.getLocale());
     sessionControllerDelegate.setImplementation(restSessionController);
