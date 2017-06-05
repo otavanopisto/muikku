@@ -1,4 +1,4 @@
-/* global MUIKKU_LOGGED_USER */
+  /* global MUIKKU_LOGGED_USER */
 (function() {
   $.widget("custom.guiderSearch", {
     _create : function() {
@@ -1178,7 +1178,31 @@
                 emailCallback();
               }
             }, this))
-        }, this))
+        }, this))       
+        .on('$', $.proxy(function(user, vopsCallback) {      
+            mApi().records.vops
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function (vopsErr, vops) {
+              if (vopsErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', vopsErr);
+              } else if (vops.optedIn) {
+                user.vops = vops;
+                var maxitems = 15;
+                var titleItems = [];
+
+                for (var i = 0; i < maxitems; i++) {
+                  titleItems.push(i+1);
+                }
+                user.vops.coursetitlenos = titleItems;
+                
+                vopsCallback();
+              } else {
+                user.vops = null;
+
+                vopsCallback();
+              }
+            }, this))
+        }, this))        
         .on('$', $.proxy(function(user, addressesCallback) {
           mApi().user.students.addresses
             .read(this.options.userIdentifier)
@@ -1191,6 +1215,7 @@
               }
             }, this))
         }, this))
+
         .callback($.proxy(function(err, user){
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
@@ -1222,6 +1247,32 @@
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
+                    
+                    
+                    
+                    $('.gt-user-hops').click( function() {
+                      var state = $('.gt-user-hops').hasClass('open') ? 'open' : 'closed';
+                      if(state == 'open'){
+                        $(this).removeClass('open');
+                        $(this).addClass('closed');
+                      } else {
+                        $(this).removeClass('closed');
+                        $(this).addClass('open');
+                      }
+
+                    }); 
+                    
+                    $('.gt-vops-legend-content').click( function() {
+                      var state = $('.gt-vops-legend-content').hasClass('open') ? 'open' : 'closed';
+                      if(state == 'open'){
+                        $(this).removeClass('open');
+                        $(this).addClass('closed');
+                      } else {
+                        $(this).removeClass('closed');
+                        $(this).addClass('open');
+                      }
+
+                    });                    
                     callback();
                   }, this));
                 }, this))

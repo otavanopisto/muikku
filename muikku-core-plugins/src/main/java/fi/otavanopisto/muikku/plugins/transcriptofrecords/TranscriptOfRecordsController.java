@@ -4,6 +4,10 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -13,6 +17,9 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
 
@@ -109,6 +116,21 @@ public class TranscriptOfRecordsController {
 
   public void saveBoolProperty(User user, String propertyName, boolean value) {
     userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "yes" : "no");
+  }
+
+  public boolean shouldShowStudies(UserEntity userEntity) {
+    if (userEntity != null) {
+      String studyViewStudents = pluginSettingsController.getPluginSetting("transcriptofrecords", "studyViewStudents");
+      if (studyViewStudents != null) {
+        String[] ids = studyViewStudents.split(",");
+        for (int i = 0; i < ids.length; i++) {
+          if (StringUtils.equals(ids[i], userEntity.getId().toString())) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
 
