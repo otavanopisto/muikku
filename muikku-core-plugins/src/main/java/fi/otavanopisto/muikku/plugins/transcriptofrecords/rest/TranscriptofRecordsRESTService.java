@@ -318,7 +318,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
-        && !Objects.equals(sessionController.getLoggedUser(), userEntity)) {
+        && !Objects.equals(sessionController.getLoggedUser(), userIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
 
