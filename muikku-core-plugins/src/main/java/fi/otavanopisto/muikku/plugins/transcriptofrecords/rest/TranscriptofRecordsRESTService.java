@@ -298,8 +298,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/hops/{USERIDENTIFIER}")
   @RESTPermit(handling=Handling.INLINE)
   public Response retrieveForm(@PathParam("USERIDENTIFIER") String userIdentifierString){
-    
-    // TODO security
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
@@ -317,6 +315,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     if (!vopsController.shouldShowStudies(userEntity)) {
       return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
+    }
+
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
+        && !Objects.equals(sessionController.getLoggedUser(), userEntity)) {
+      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
 
     HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
