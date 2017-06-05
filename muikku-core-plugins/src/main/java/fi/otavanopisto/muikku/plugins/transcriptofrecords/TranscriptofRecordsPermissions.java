@@ -27,8 +27,9 @@ public class TranscriptofRecordsPermissions extends AbstractMuikkuPermissionColl
   @DefaultEnvironmentPermissionRoles ( {
     EnvironmentRoleArchetype.STUDY_GUIDER,
     EnvironmentRoleArchetype.TEACHER,
-    EnvironmentRoleArchetype.ADMINISTRATOR,
-    EnvironmentRoleArchetype.MANAGER
+    EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+    EnvironmentRoleArchetype.MANAGER,
+    EnvironmentRoleArchetype.ADMINISTRATOR
   } )
   public static final String TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES = "TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES";
 
