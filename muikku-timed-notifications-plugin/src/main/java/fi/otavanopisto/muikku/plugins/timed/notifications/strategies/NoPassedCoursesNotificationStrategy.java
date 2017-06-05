@@ -94,6 +94,7 @@ public class NoPassedCoursesNotificationStrategy extends AbstractTimedNotificati
           localeController.getText(studentLocale, "plugin.timednotifications.notification.nopassedcourses.subject"),
           notificationContent,
           studentEntity,
+          studentIdentifier,
           "nopassedcourses"
         );
         noPassedCoursesNotificationController.createNoPassedCoursesNotification(studentIdentifier);

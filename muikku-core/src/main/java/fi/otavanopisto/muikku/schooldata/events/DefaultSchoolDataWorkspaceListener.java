@@ -119,6 +119,13 @@ public class DefaultSchoolDataWorkspaceListener {
             }
             workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
           }
+          
+          // For newly discovered workspace students, always set their activity based on their ongoing studies 
+          
+          if (!workspaceUserEntity.getActive().equals(event.getIsActive())) {
+            workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+          }
+
         } else {
           logger.warning("could not add workspace user because userSchoolDataIdentifier #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
         }
@@ -172,6 +179,13 @@ public class DefaultSchoolDataWorkspaceListener {
             }
           }
         }
+
+        // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
+        
+        if (!event.getIsActive() && workspaceUserEntity.getActive()) {
+          workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+        }
+        
       } else {
         logger.warning("could not update workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
       }

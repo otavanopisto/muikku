@@ -68,12 +68,13 @@ public class AnnouncementController {
     return announcementWorkspaceDAO.create(announcement, workspaceEntity.getId(), Boolean.FALSE);
   }
 
-  public Announcement updateAnnouncement(Announcement announcement, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible) {
+  public Announcement updateAnnouncement(Announcement announcement, String caption, String content, Date startDate, Date endDate, boolean publiclyVisible, boolean archived) {
     announcementDAO.updateCaption(announcement, caption);
     announcementDAO.updateContent(announcement, content);
     announcementDAO.updateStartDate(announcement, startDate);
     announcementDAO.updateEndDate(announcement, endDate);
     announcementDAO.updatePubliclyVisible(announcement, publiclyVisible);
+    announcementDAO.updateArchived(announcement, archived);
     return announcement;
   }
   

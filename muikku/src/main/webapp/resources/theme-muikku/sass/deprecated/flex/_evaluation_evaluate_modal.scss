@@ -427,6 +427,21 @@
   z-index: 9;
 }
 
+.exercise-done-indicator {
+  color: $evaluation-passed-color;
+  display: inline-block;
+  font-size: 18px;
+  height: 18px;
+  padding: 5px;
+  position: absolute;
+  right: 10px;
+  text-align: center;
+  top: 20px;
+  vertical-align: top;
+  width: 18px;
+  z-index: 9;
+}
+
 .assignment-wrapper[data-evaluated="true"] {
   
   .assignment-evaluate-button {
@@ -442,7 +457,8 @@
   
 }
 
-.assignment-wrapper.exercise .assignment-evaluate-button {
+.assignment-wrapper.exercise .assignment-evaluate-button,
+.assignment-wrapper.assignment .exercise-done-indicator {
   display: none;
 }
 
