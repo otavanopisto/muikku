@@ -127,8 +127,12 @@
       </ui:fragment>
       
       <ui:fragment rendered="#{sessionBackingBean.loggedIn and not sessionBackingBean.isActiveUser}">
-        <div><h:outputText escape="false" value="#{i18n.text['plugin.frontpage.inactiveStudent.message']}" /></div>
-      </ui:fragment>
+        <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+          <div class="box box-max-width">
+            <div id="inActiveStudentInfo"><h:outputText escape="false" value="#{i18n.text['plugin.frontpage.inactiveStudent.message']}" /></div>
+          </div>
+        </div>
+    </ui:fragment>
     
     </div>
 
