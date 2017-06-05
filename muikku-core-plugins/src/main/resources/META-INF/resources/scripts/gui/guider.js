@@ -1203,6 +1203,21 @@
               }
             }, this))
         }, this))        
+        .on('$', $.proxy(function(user, hopsCallback) {      
+            mApi().records.hops
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function (hopsErr, hops) {
+              if (hopsErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', hopsErr);
+              } else if (hops.optedIn) {
+                user.hops = hops;
+                hopsCallback();
+              } else {
+                user.hops = null;
+                hopsCallback();
+              }
+            }, this))
+        }, this))        
         .on('$', $.proxy(function(user, addressesCallback) {
           mApi().user.students.addresses
             .read(this.options.userIdentifier)
@@ -1247,20 +1262,6 @@
                 .callback($.proxy(function(err, workspaces) {             
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
-                    
-                    
-                    
-                    $('.gt-user-hops').click( function() {
-                      var state = $('.gt-user-hops').hasClass('open') ? 'open' : 'closed';
-                      if(state == 'open'){
-                        $(this).removeClass('open');
-                        $(this).addClass('closed');
-                      } else {
-                        $(this).removeClass('closed');
-                        $(this).addClass('open');
-                      }
-
-                    }); 
                     
                     $('.gt-vops-legend-content').click( function() {
                       var state = $('.gt-vops-legend-content').hasClass('open') ? 'open' : 'closed';

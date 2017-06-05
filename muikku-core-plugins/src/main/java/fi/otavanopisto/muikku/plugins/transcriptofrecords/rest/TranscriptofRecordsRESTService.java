@@ -93,9 +93,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Inject
   private GradingController gradingController;
 
-  @Inject
-  private Logger logger;
-
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
@@ -244,27 +241,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok(result).build();
   }
-
-  @GET
-  @Path("/hops")
-  @RESTPermit(handling=Handling.INLINE)
-  public Response retrieveForm(){
-
-    if (!sessionController.isLoggedIn()) {
-      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
-    }
-
-    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+  
+  private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
     User user = userController.findUserByIdentifier(userIdentifier);
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
     EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
     EnvironmentRoleEntity roleEntity = environmentUser.getRole();
 
     if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
-      return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
+      return null;
     }
 
-    HopsRESTModel response = new HopsRESTModel(
+    return new HopsRESTModel(
         vopsController.loadStringProperty(user, "goalSecondarySchoolDegree"),
         vopsController.loadStringProperty(user, "goalMatriculationExam"),
         vopsController.loadStringProperty(user, "vocationalYears"),
@@ -284,6 +272,61 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         vopsController.loadStringProperty(user, "religion"),
         vopsController.loadStringProperty(user, "additionalInfo")
     );
+  }
+
+  @GET
+  @Path("/hops")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response retrieveForm(){
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    
+    HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
+    
+    if (response == null) {
+      return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
+    }
+    
+    return Response.ok(response).build();
+  }
+
+  @GET
+  @Path("/hops/{USERIDENTIFIER}")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response retrieveForm(@PathParam("USERIDENTIFIER") String userIdentifierString){
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierString);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Malformed identifier").build();
+    }
+
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User not found").build();
+    }
+
+    if (!vopsController.shouldShowStudies(userEntity)) {
+      return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
+    }
+
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
+        && !Objects.equals(sessionController.getLoggedUser(), userIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
+    }
+
+    HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
+    
+    if (response == null) {
+      return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
+    }
 
     return Response.ok(response).build();
   }
