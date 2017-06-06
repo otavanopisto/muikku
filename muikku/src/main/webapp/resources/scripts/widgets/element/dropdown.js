@@ -3,9 +3,12 @@ module(function(){
     _create: function(){
       var self = this;
       self.lastDisplayTime = 0;
+      self.arrow = $('<span class="arrow"></span>');
+      self.arrow.appendTo(self.element);
+      self.arrowWidth = this.arrow.width();
       $(document.body).click(self.close.bind(self));
     },
-    close: function(){
+    close: function(e){
       var self = this;
 
       //avoid immediate closing as this is triggered by the same element that wishes
@@ -28,15 +31,20 @@ module(function(){
       var target = $(element);
       self.lastDisplayTime = (new Date()).getTime();
 
+      self.element.addClass('displayed');
+      
       var position = target.position();
-      var left = position.left - this.element.width() + target.width();
+      var left = position.left - self.element.width() + target.width();
       var top = position.top + target.height() + 5;
-      this.element.css({
+      self.element.css({
         top: top,
         left: left
       });
+        
+      self.arrow.css({
+        right: (target.width() / 2) + (self.arrowWidth/2)
+      });
 
-      self.element.addClass('displayed');
       setTimeout(function(){
         self.element.addClass('visible');
       }, 10);

@@ -1,0 +1,38 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+
+.main-function.dropdown.main-function-dropdown-language-picker {
+  .dropdown-container {
+    background-color: $color-main-function-dropdown-language-picker-background;
+    color: $color-main-function-dropdown-language-picker-text;
+    box-shadow: 0 10px 20px $color-main-function-dropdown-language-picker-shadow;
+  }
+  .arrow {
+    border-bottom-color: $color-main-function-dropdown-language-picker-background;
+  }
+}
+
+.main-function.dropdown.main-function-dropdown-profile-menu {
+  .dropdown-container {
+    background-color: $color-main-function-dropdown-profile-menu-background;
+    color: $color-main-function-dropdown-profile-menu-text;
+    box-shadow: 0 10px 20px $color-main-function-dropdown-profile-menu-shadow;
+    padding: 5px;
+    
+    .dropdown-item:first-child {
+      border-bottom: solid 1px darken($color-main-function-dropdown-profile-menu-background, 8);
+    }
+    
+    .dropdown-item {
+      border-bottom: solid 1px darken($color-main-function-dropdown-profile-menu-background, 3);
+      height: 42px;
+    }
+    
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+  }
+  .arrow {
+    border-bottom-color: $color-main-function-dropdown-profile-menu-background;
+  }
+}

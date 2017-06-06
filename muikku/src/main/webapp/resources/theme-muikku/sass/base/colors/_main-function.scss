@@ -2,12 +2,30 @@
 $color-main-function-navbar-background: #009FE3;
 
 // ICON LINKS
-$color-main-function-link-icon-color: #fff;
-$color-main-function-link-icon-color-hover: #fff;
-$color-main-function-link-icon-color-active: #fff;
+$color-main-function-link-icon-color: $color-default;
+$color-main-function-link-icon-color-hover: $color-default;
+$color-main-function-link-icon-color-active: $color-default;
 $color-main-function-link-icon-border-top-color-active: rgba(255,255,255,0.6);
 
 // DEFAULT LINKS
+$color-main-function-link-language-picker-background: $color-link-inverse-background;
+$color-main-function-link-language-picker-text: $color-link-inverse-text;
+$color-main-function-link-language-picker-hover-background: $color-link-hover-background;
+
+$color-main-function-link-profile-menu-background: $color-link-default-background;
+$color-main-function-link-profile-menu-text: $color-link-default-text;
+$color-main-function-link-profile-menu-hover-background: $color-link-hover-background;
+
+// DROPDOWN
+$color-main-function-dropdown-language-picker-background: #494949;
+$color-main-function-dropdown-language-picker-text: #fff;
+$color-main-function-dropdown-language-picker-shadow: rgba(0, 0, 0, 0.3);
+
+$color-main-function-dropdown-profile-menu-background: $color-default;
+$color-main-function-dropdown-profile-menu-text: $color-default-contrast;
+$color-main-function-dropdown-profile-menu-shadow: rgba(0, 0, 0, 0.3);
+
+// BUTTONS
 $color-main-function-button-pill-theme: (
   (default, background $color-default, text $color-default-contrast),
 );

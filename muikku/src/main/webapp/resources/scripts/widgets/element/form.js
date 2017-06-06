@@ -4,11 +4,11 @@ module(function(){
       "onSubmit": null
     },
     _create: function(){
-      $(this.element).submit(this._onFormSubmit.bind(this));
+      this.element.submit(this._onFormSubmit.bind(this));
     },
     _onFormSubmit: function(e){
       e.preventDefault();
-      var form = $(this.element);
+      var form = this.element;
 
       if (!this.options.onSubmit){
         return false;

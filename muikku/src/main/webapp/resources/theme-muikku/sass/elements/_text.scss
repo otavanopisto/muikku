@@ -22,7 +22,6 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   @include color-theme($color-text-theme, false);
   display: block;
   font-family: $text-font-family;
-  font-size: 14px;
   font-weight: 400;
   position: relative;
   text-align: left;

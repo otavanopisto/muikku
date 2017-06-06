@@ -1,0 +1,13 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+
+.frontpage.dropdown.frontpage-dropdown-language-picker {
+  .dropdown-container {
+    background-color: $color-frontpage-dropdown-language-picker-background;
+    color: $color-frontpage-dropdown-language-picker-text;
+    box-shadow: 0 10px 20px $color-frontpage-dropdown-language-picker-shadow;
+  }
+  .arrow {
+    border-bottom-color: $color-frontpage-dropdown-language-picker-background;
+  }
+}

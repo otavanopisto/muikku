@@ -1,4 +1,4 @@
-//NAVBAR
+// NAVBAR
 $color-frontpage-button-login: (
   (default, background $color-primary, text $color-primary-contrast),
 );
@@ -11,7 +11,7 @@ $color-frontpage-button-pill-language-theme: (
   (default, background $color-inverse, text $color-inverse-contrast),
 );
 
-//HERO
+// HERO
 $color-frontpage-text-muikku-description-theme: (
   (default, text $color-default),
 );
@@ -50,7 +50,7 @@ $color-frontpage-button-courses-readmore-theme: (
   (default, text #fff, background $color-frontpage-card-courses-title),
 );
 
-//Otavan opisto card
+// Otavan opisto card
 $color-frontpage-text-otavan-opisto-info-title-theme: (
   (default, text $color-inverse),
 );
@@ -67,7 +67,7 @@ $color-frontpage-button-newsletter-theme: (
   (default, text $color-warn-contrast, background $color-warn),
 );
 
-//FOOTER
+// FOOTER
 $color-frontpage-text-contact-us-theme: (
   (default, text $color-default),
 );
@@ -75,3 +75,13 @@ $color-frontpage-text-contact-us-theme: (
 $color-frontpage-text-contact-us-information-theme: (
   (default, text $color-default),
 );
+
+// DROPDOWN
+$color-frontpage-dropdown-language-picker-background: #494949;
+$color-frontpage-dropdown-language-picker-text: #fff;
+$color-frontpage-dropdown-language-picker-shadow: rgba(0, 0, 0, 0.3);
+
+// LINK
+$color-frontpage-link-language-picker-background: $color-link-inverse-background;
+$color-frontpage-link-language-picker-text: $color-link-inverse-text;
+$color-frontpage-link-language-picker-hover-background: $color-link-hover-background;

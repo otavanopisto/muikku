@@ -25,4 +25,41 @@ $main-function-link-icon-active-border-size: 5px;
       color: $color-main-function-link-icon-color-active;
     }
   }
+  
+  &.main-function-link-language-picker {
+    font-size: 14px;
+    background-color: $color-main-function-link-language-picker-background;
+    color: $color-main-function-link-language-picker-text;
+
+    &:hover,
+    &.hover {
+      background-color: opacify($color-main-function-link-language-picker-hover-background, 0.6);
+      color: $color-main-function-link-language-picker-text;
+    }
+
+    &:active,
+    &.active {
+      background-color: opacify($color-main-function-link-language-picker-hover-background, 0.6);
+      color: $color-main-function-link-language-picker-text;
+    }
+  }
+  
+  &.main-function-link-profile-menu {
+    font-size: 14px;
+    background-color: $color-main-function-link-profile-menu-background;
+    color: $color-main-function-link-profile-menu-text;
+    justify-content: flex-start;
+
+    &:hover,
+    &.hover {
+      background-color: $color-main-function-link-profile-menu-hover-background;
+      color: $color-main-function-link-profile-menu-text;
+    }
+
+    &:active,
+    &.active {
+      background-color: $color-main-function-link-profile-menu-hover-background;
+      color: $color-main-function-link-profile-menu-text;
+    }
+  }
 }

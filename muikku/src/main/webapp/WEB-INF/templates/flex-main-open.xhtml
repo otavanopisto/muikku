@@ -77,11 +77,12 @@
               <a class="frontpage button-pill frontpage-button-pill-language frontpage-interact-show-language-picker">
                 <span>#{languageWidgetBackingBean.language}</span>
               </a>
-              <h:form class="dropdown" id="language-picker">
+              <h:form class="frontpage dropdown frontpage-dropdown-language-picker" id="language-picker">
                 <div class="dropdown-container">
                   <ui:repeat value="#{i18n.languages}" var="locale">
                     <div class="dropdown-item">
-                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" class="link link-full link-small link-inverse">
+                      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}"
+                        class="frontpage link link-full frontpage-link-language-picker">
                         <span>#{i18n.text['plugin.navigation.language.' .concat(locale)]}</span>
                       </a>
                     </div>
