@@ -690,6 +690,9 @@
           $(this.element).removeAttr('disabled');
         } 
       },
+      getFieldElements: function() {
+        return [$(this.element)];
+      },
       readonly: false,
       saveTimeout: 300,
       saveFailedTimeout: 5000,
@@ -769,6 +772,9 @@
         this.options.setReadonly.call(this, readonly);
       }
     },
+    getFieldElements: function() {
+      return this.options.getFieldElements.call(this);
+    },
     _checkStatusMessage: function () {
       var saveStateLabel = this.element.prev('.muikku-field-save-state-label');
       if (saveStateLabel.length <= 0) {
@@ -785,9 +791,9 @@
       if (!this.readonly()) {
         this._checkStatusMessage();
         
-        $(this.element)
-          .removeClass('muikku-field-unsaved')
-          .addClass('muikku-field-saving');
+        $.each(this.getFieldElements(), function(index, element) {
+          $(element).removeClass('muikku-field-unsaved').addClass('muikku-field-saving');
+        });
         
         var page = $(this.element).closest('.material-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
@@ -820,9 +826,9 @@
       $(document).connectionLostNotifier("notifyConnectionLost");
     },
     _propagateChange: function () {
-      $(this.element)
-        .removeClass('muikku-field-saved muikku-field-saving')
-        .addClass('muikku-field-unsaved'); 
+      $.each(this.getFieldElements(), function(index, element) {
+        $(element).removeClass('muikku-field-saved muikku-field-saving').addClass('muikku-field-unsaved');
+      });
       
       if (this._saveTimeoutId) {
         clearTimeout(this._saveTimeoutId);
@@ -864,9 +870,9 @@
       if ((message.embedId == this.embedId()) && (message.materialId == this.materialId()) && (message.fieldName == this.fieldName())) {
 
         if (message.originTicket == $(document).muikkuWebSocket("ticket")) {
-          $(this.element)
-            .removeClass('muikku-field-unsaved muikku-field-saving')
-            .addClass('muikku-field-saved');
+          $.each(this.getFieldElements(), function(index, element) {
+            $(element).removeClass('muikku-field-unsaved muikku-field-saving').addClass('muikku-field-saved');
+          });
           
           $(this.element)
             .prev('.muikku-field-save-state-label')
@@ -879,9 +885,9 @@
             });
 
         } else {
-          $(this.element)
-            .removeClass('muikku-field-unsaved muikku-field-saving')
-            .addClass('muikku-field-saved');
+          $.each(this.getFieldElements(), function(index, element) {
+            $(element).removeClass('muikku-field-unsaved muikku-field-saving').addClass('muikku-field-saved');
+          });
           
           $(this.element)
           .prev('.muikku-field-save-state-label')

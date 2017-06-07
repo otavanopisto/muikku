@@ -1132,6 +1132,9 @@
                   .find('input[type="radio"]').removeAttr('disabled');
               }
             },
+            getFieldElements: function() {
+              return $(this.element).find('input');
+            },
             answer: function(val) {
               if (val) {
                 $(this.element).find('input').prop('checked', false);
@@ -1284,6 +1287,9 @@
               .removeAttr('data-disabled') 
               .find('input[type="checkbox"]').removeAttr('disabled');
           }
+        },
+        getFieldElements: function() {
+          return $(this.element).find('input');
         },
         answer: function(val) {
           if (val) {
