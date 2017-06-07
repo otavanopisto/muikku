@@ -1070,12 +1070,7 @@
                     }
                   }
                   if (this.options.meta.explanation) {
-                    var explanationWrapper = $('<span>').addClass('explanation-wrapper');
-                    var explanationIcon = $('<span>').addClass('explanation-icon');
-                    var explanationContent = $('<span>').addClass('explanation-content').text(this.options.meta.explanation);
-                    exampleDetails.append(explanationWrapper);
-                    explanationWrapper.append(explanationIcon);
-                    explanationWrapper.append(explanationContent);
+                    exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
                   }
                   $(this.element).after(exampleDetails);
                 }
@@ -1220,12 +1215,7 @@
                   }
                 }
                 if (this.options.meta.explanation) {
-                  var explanationWrapper = $('<span>').addClass('explanation-wrapper');
-                  var explanationIcon = $('<span>').addClass('explanation-icon');
-                  var explanationContent = $('<span>').addClass('explanation-content').text(this.options.meta.explanation);
-                  exampleDetails.append(explanationWrapper);
-                  explanationWrapper.append(explanationIcon);
-                  explanationWrapper.append(explanationContent);
+                  exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
                 }
                 $(this.element).after(exampleDetails);
               }
@@ -1400,12 +1390,7 @@
               }
             }
             if (this.options.meta.explanation) {
-              var explanationWrapper = $('<span>').addClass('explanation-wrapper');
-              var explanationIcon = $('<span>').addClass('explanation-icon');
-              var explanationContent = $('<span>').addClass('explanation-content').text(this.options.meta.explanation);
-              exampleDetails.append(explanationWrapper);
-              explanationWrapper.append(explanationIcon);
-              explanationWrapper.append(explanationContent);
+              exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
             }
             $(this.element).after(exampleDetails);
           }
