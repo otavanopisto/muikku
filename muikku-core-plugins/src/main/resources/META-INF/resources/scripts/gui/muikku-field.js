@@ -789,7 +789,7 @@
           .removeClass('muikku-field-unsaved')
           .addClass('muikku-field-saving');
         
-        var page = $(this.element).closest('.workspace-materials-view-page');
+        var page = $(this.element).closest('.material-page');
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
         var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
 

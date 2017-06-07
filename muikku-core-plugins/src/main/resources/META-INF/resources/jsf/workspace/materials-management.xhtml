@@ -125,7 +125,7 @@
             data-material-title="#{node.title}"
             data-path="#{node.path}"
             data-view-restrict="#{node.viewRestrict}"
-            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
+            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
   
           <div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <span class="workspace-materials-management-line-separator"></span><a  class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
@@ -144,7 +144,7 @@
                 data-material-title="#{articleNode.title}"
                 data-path="#{articleNode.path}"
                 data-view-restrict="#{articleNode.viewRestrict}"
-                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
+                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
             </ui:fragment>
   
             <ui:fragment rendered="#{articleNode.type ne 'folder'}">
@@ -161,7 +161,7 @@
                 data-assignment-type="#{articleNode.assignmentType}"
                 data-correct-answers="#{articleNode.correctAnswers eq null ? 'ALWAYS' : articleNode.correctAnswers}"
                 data-view-restrict="#{articleNode.viewRestrict}"
-                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
+                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
             </ui:fragment>
   
             <div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
@@ -186,7 +186,7 @@
             data-assignment-type="#{node.assignmentType}"
             data-correct-answers="#{articleNode.correctAnswers eq null ? 'ALWAYS' : articleNode.correctAnswers}"
             data-view-restrict="#{articleNode.viewRestrict}"
-            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
+            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
           <div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
           </div>

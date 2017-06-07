@@ -1,4 +1,4 @@
-.workspace-materials-view-page { // This is article containing single material page
+.material-page { // This is article containing single material page
   padding: 10px 20px;
   margin: 30px auto;
   position: relative;
@@ -964,7 +964,7 @@
 
 }
 
-.workspace-materials-view-page[data-view-restricted="true"] {
+.material-page[data-view-restricted="true"] {
 
   .muikku-save-page-wrapper,
   .article-details {
