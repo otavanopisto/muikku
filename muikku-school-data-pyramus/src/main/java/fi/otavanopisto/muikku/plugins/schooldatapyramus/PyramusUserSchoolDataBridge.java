@@ -425,7 +425,24 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public List<UserProperty> listUserPropertiesByUser(String userIdentifier) {
-    throw new SchoolDataBridgeInternalException("Not implemented");
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
+      Map<String, String> variables = student.getVariables();
+      
+      List<UserProperty> userProperties = new ArrayList<>();
+      
+      for (String key : variables.keySet()) {
+        String value = variables.get(key);
+        if (value != null) {
+          userProperties.add(new PyramusUserProperty(userIdentifier, key, value));
+        }
+      }
+      
+      return userProperties;
+    }
+    
+    throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
   @Override
