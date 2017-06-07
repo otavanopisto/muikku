@@ -11,17 +11,29 @@
       this._icon = $('<span>').addClass('explanation-button icon-explanation');
       this._content = $('<span>').addClass('explanation-content').text(this.options.text).hide();
       this.element.append(this._icon);
-      this.element.append(this._content);
-      this._icon.on('touch', $.proxy(function() {
+      this._content.appendTo(document.body);
+      this._icon.on('touch', $.proxy(function(event) {
         if (this._content.is(':visible')) {
           this._content.hide();
         }
         else {
-          this._content.show();
+          var iconPos = $(event.target).offset();
+          this._content
+            .css({
+              'left': Math.max(0, Math.min(iconPos.left, $(window).width() - this._content.outerWidth())) + 'px',
+              'top': (iconPos.top - this._content.outerHeight()) + 'px'
+            })
+            .show();
         }
       }, this));
-      this._icon.on('mouseenter', $.proxy(function() {
-        this._content.show();
+      this._icon.on('mouseenter', $.proxy(function(event) {
+        var iconPos = $(event.target).offset();
+        this._content
+          .css({
+            'left': Math.max(0, Math.min(iconPos.left, $(window).width() - this._content.outerWidth())) + 'px',
+            'top': (iconPos.top - this._content.outerHeight()) + 'px'
+          })
+          .show();
       }, this));
       this._icon.on('mouseleave', $.proxy(function() {
         this._content.hide();
@@ -29,6 +41,7 @@
     },
     
     _destroy: function () {
+      this._content.remove();
       this._icon.off();
     }
   });
