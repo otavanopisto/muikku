@@ -1,45 +1,6 @@
 (function() {
   'use strict';
   
-  
-  function recolorCheckboxFields(elem) {
-    $(elem).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
-    
-    if ($(elem).next(".muikku-field-examples").length === 0) {
-      return;
-    }
-    
-    var labels = $(elem).find("label[for]");
-    var answers = [];
-    for (var i=0; i<labels.length; i++) {
-      var label = labels[i];
-
-      var id = $(label).attr('for');
-      var answer = $(label).html();
-      answers.push({id: id, answer: answer});
-    } 
-    
-    var correctAnswers = [];
-    $(elem).next(".muikku-field-examples").find(".muikku-field-example").each(function() {
-      correctAnswers.push($(this).html());
-    });
-    
-    for (var i=0; i < answers.length; i++) {
-      var answer = answers[i];
-      var inputElem = document.getElementById(answer.id);
-      if (inputElem.type === "checkbox") {
-        if ((inputElem.checked && correctAnswers.indexOf(answer.answer) >= 0) ||
-            (!inputElem.checked && correctAnswers.indexOf(answer.answer) === -1)) {
-          $(inputElem).addClass("muikku-field-correct-answer-override");
-        }
-      } else if (inputElem.type === "radio") {
-        if (correctAnswers.indexOf(answer.answer) >= 0) {
-          $(inputElem).addClass("muikku-field-correct-answer-override");
-        }
-      }
-    }
-  }
-
   $(document).on('workspace:field-answer-error', function (event, data) {
     try {
       var message = $.parseJSON(data);
@@ -554,7 +515,6 @@
       this.element.find('.muikku-field-semi-correct-answer').removeClass('muikku-field-semi-correct-answer');
 
       $(fields).each(function (index, field) {
-        $(field).find(".muikku-field-correct-answer-override").removeClass("muikku-field-correct-answer-override");
         if ($(field).muikkuField('canCheckAnswer')) {
           if ($(field).muikkuField('checksOwnAnswer')) {
             var answerCounts = $(field).muikkuField('checkAnswer', (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers)));
@@ -590,10 +550,9 @@
                   );
                 });
                 $(field).after(exampleDetails);
-                
-                recolorCheckboxFields(field);
               }
-            } else if (correctAnswersDisplay == 'ON_REQUEST' && !requestAnswers){
+            }
+            else if (correctAnswersDisplay == 'ON_REQUEST' && !requestAnswers){
               $(field).muikkuField('hideCorrectAnswers');
             }
           }
