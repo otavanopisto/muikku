@@ -322,51 +322,36 @@
     }
   
   }
-
-  // CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
-  .muikku-select-field,
-  .muikku-checkbox-field {
   
+  // CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
+  input[type="checkbox"],
+  input[type="radio"] {
+
     &.muikku-field-unsaved {
-    
-      input[type="checkbox"],
-      input[type="radio"] {
-        box-shadow: 0 0 0 2px #e4e630;
+      box-shadow: 0 0 0 2px #e4e630;
         
-        &:hover {
-          box-shadow: 0 0 0 2px #e4e630;
-        }
-      
+      &:hover {
+        box-shadow: 0 0 0 2px #e4e630;
       }
       
     }
     
     &.muikku-field-saving {
-    
-      input[type="checkbox"],
-      input[type="radio"] {
-        animation: saving-checkbox-radio 4s ease infinite;
-        box-shadow: 0 0 0 2px #e4e630;
-      }
-      
+      animation: saving-checkbox-radio 4s ease infinite;
+      box-shadow: 0 0 0 2px #e4e630;
     }
   
     &.muikku-field-saved {
+      box-shadow: 0 0 0 2px #9cf3c7;
     
-      input[type="checkbox"],
-      input[type="radio"] {
+      &:hover {
         box-shadow: 0 0 0 2px #9cf3c7;
-      
-        &:hover {
-          box-shadow: 0 0 0 2px #9cf3c7;
-        }
-        
       }
       
     }
   
   }
-
+    
   // GENERIC PAGE ELEMENTS
   blockquote {
     font-family: 'Open Sans', Arial, sans-serif;
@@ -806,7 +791,37 @@
       display: inline-block;
       line-height: 1.5;
     }
+
+  }
+  
+  .explanation-wrapper {
+    position: relative;
+  
+    .explanation-button {
+      background: #009fe3;
+      border: 2px solid #fff;
+      border-radius: 100%;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px;
+      
+    }
     
+    .explanation-content {
+      background: #ebf7ff;
+      border: 1px solid #fff;
+      border-radius: 5px;
+      bottom: 25px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      color: #000;
+      left: 50%; 
+      line-height: 1.5em;
+      padding: 8px;
+      margin: 0 0 0 -140px;
+      position: absolute;
+      width: 280px;
+    }
+  
   }
 
   .muikku-page-assignment-type {

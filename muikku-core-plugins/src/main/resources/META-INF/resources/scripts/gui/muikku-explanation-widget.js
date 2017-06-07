@@ -8,7 +8,7 @@
     },
     
     _create : function() {
-      this._icon = $('<span>').addClass('explanation-icon').text('X');
+      this._icon = $('<span>').addClass('explanation-button icon-explanation');
       this._content = $('<span>').addClass('explanation-content').text(this.options.text).hide();
       this.element.append(this._icon);
       this.element.append(this._content);
