@@ -1053,7 +1053,7 @@
                     }
                   }
                 }
-                if (this.options.meta.explanation || (result.wrongAnswers > 0 && showCorrectAnswers)) {
+                if (showCorrectAnswers && this.hasDisplayableAnswers()) {
                   var exampleDetails = $('<span>').addClass('muikku-field-examples');
                   if (result.wrongAnswers > 0 && showCorrectAnswers) {
                     exampleDetails.append($('<span>')
@@ -1201,7 +1201,7 @@
                   }
                 }
               }
-              if (this.options.meta.explanation || (result.wrongAnswers > 0 && showCorrectAnswers)) {
+              if (showCorrectAnswers && this.hasDisplayableAnswers()) {
                 var exampleDetails = $('<span>').addClass('muikku-field-examples');
                 if (result.wrongAnswers > 0 && showCorrectAnswers) {
                   exampleDetails.append($('<span>')
@@ -1379,7 +1379,7 @@
               }
             }, this));
           }
-          if (this.options.meta.explanation || (result.wrongAnswers > 0 && showCorrectAnswers)) {
+          if (showCorrectAnswers && this.hasDisplayableAnswers()) {
             var exampleDetails = $('<span>').addClass('muikku-field-examples');
             if (result.wrongAnswers > 0 && showCorrectAnswers) {
               exampleDetails.append($('<span>')
