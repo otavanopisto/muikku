@@ -48,9 +48,9 @@
       readOnlyFields: MUIKKU_LOGGED_USER ? false: true,
       workspaceEntityId: $('.workspaceEntityId').val(),
       baseUrl: $('.materialsBaseUrl').val()
-    }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
+    }).muikkuMaterialLoader('loadMaterials', $('.material-page'));
 
-    $('.workspace-materials-view-page').waypoint(function(direction) {
+    $('.material-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
         var workspaceMaterialId = $(this).data('workspace-material-id');
         $('a.active').removeClass('active');
@@ -64,14 +64,14 @@
       offset: 50
     });
     
-    $('.workspace-materials-view-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
+    $('.material-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type exercise')
           .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
-    $('.workspace-materials-view-page[data-assignment-type="EVALUATED"]').each(function (index, page) {
+    $('.material-page[data-assignment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))

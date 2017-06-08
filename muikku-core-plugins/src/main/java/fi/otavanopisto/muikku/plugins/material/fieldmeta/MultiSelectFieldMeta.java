@@ -10,10 +10,11 @@ public class MultiSelectFieldMeta extends FieldMeta {
 
   }
 
-  public MultiSelectFieldMeta(String name, String listType, List<MultiSelectFieldOptionMeta> options) {
+  public MultiSelectFieldMeta(String name, String listType, List<MultiSelectFieldOptionMeta> options, String explanation) {
     super(name);
     this.listType = listType;
-    this.setOptions(options);
+    this.options = options;
+    this.explanation = explanation;
   }
 
   public List<MultiSelectFieldOptionMeta> getOptions() {
@@ -38,6 +39,15 @@ public class MultiSelectFieldMeta extends FieldMeta {
     this.listType = listType;
   }
 
+  public String getExplanation() {
+    return explanation;
+  }
+
+  public void setExplanation(String explanation) {
+    this.explanation = explanation;
+  }
+
   private List<MultiSelectFieldOptionMeta> options;
   private String listType; // checkbox-vertical | checkbox-horizontal
+  private String explanation;
 }

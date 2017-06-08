@@ -6,23 +6,15 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class SelectFieldMeta extends FieldMeta {
   
-  // TODO Assess the need for size
-  
   public SelectFieldMeta() {
     
   }
 
-//  public SelectFieldMeta(String name, String listType, Integer size, List<SelectFieldOptionMeta> selectFieldOptionMetas) {
-//    super(name);
-//    this.setOptions(selectFieldOptionMetas);
-//    this.setListType(listType);
-//    this.setSize(size);
-//  }
-
-  public SelectFieldMeta(String name, String listType, List<SelectFieldOptionMeta> selectFieldOptionMetas) {
+  public SelectFieldMeta(String name, String listType, List<SelectFieldOptionMeta> selectFieldOptionMetas, String explanation) {
     super(name);
-    this.setOptions(selectFieldOptionMetas);
-    this.setListType(listType);
+    this.selectFieldOptionMetas = selectFieldOptionMetas;
+    this.listType = listType;
+    this.explanation = explanation;
   }
   
   public List<SelectFieldOptionMeta> getOptions() {
@@ -46,16 +38,17 @@ public class SelectFieldMeta extends FieldMeta {
   public void setListType(String listType) {
     this.listType = listType;
   }
-
-//  public Integer getSize() {
-//    return size;
-//  }
-//  
-//  public void setSize(Integer size) {
-//    this.size = size;
-//  }
   
+  public String getExplanation() {
+    return explanation;
+  }
+
+  public void setExplanation(String explanation) {
+    this.explanation = explanation;
+  }
+
   private List<SelectFieldOptionMeta> selectFieldOptionMetas;
   private String listType; // dropdown | list | radio-horizontal | radio-vertical
-//  private Integer size;
+  private String explanation;
+
 }
