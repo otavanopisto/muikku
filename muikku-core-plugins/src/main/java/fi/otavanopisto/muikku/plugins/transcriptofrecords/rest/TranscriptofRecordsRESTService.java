@@ -36,7 +36,6 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsWorkspace;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -90,9 +89,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-
-  @Inject
-  private GradingController gradingController;
 
   @GET
   @Path("/files/{ID}/content")
