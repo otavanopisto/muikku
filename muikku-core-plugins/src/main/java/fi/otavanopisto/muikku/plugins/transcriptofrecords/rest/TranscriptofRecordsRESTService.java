@@ -3,8 +3,8 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -32,15 +32,15 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUserProperties;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsWorkspace;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
@@ -89,9 +89,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-
-  @Inject
-  private GradingController gradingController;
 
   @GET
   @Path("/files/{ID}/content")
@@ -168,29 +165,31 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
     int numCourses = 0;
     int numMandatoryCourses = 0;
+    Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
     
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsItem> items = new ArrayList<>();
         for (int i=1; i<MAX_COURSE_NUMBER; i++) {
-          List<Workspace> workspaces =
-              workspaceController.listWorkspacesBySubjectIdentifierAndCourseNumber(
+          List<VopsWorkspace> workspaces =
+              vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
                   subject.getSchoolDataSource(),
                   subject.getIdentifier(),
                   i);
+          
           List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
           if (!workspaces.isEmpty()) {
             SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
-            for (Workspace workspace : workspaces) {
+            for (VopsWorkspace workspace : workspaces) {
               WorkspaceEntity workspaceEntity =
-                  workspaceController.findWorkspaceEntity(workspace);
+                  workspaceController.findWorkspaceEntityById(workspace.getWorkspaceIdentifier());
               WorkspaceUserEntity workspaceUser =
                   workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
                       workspaceEntity,
                       studentIdentifier);
-              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
-              WorkspaceAssessment workspaceAssesment = gradingController.findLatestWorkspaceAssessment(workspaceIdentifier, studentIdentifier);
+              WorkspaceAssessment workspaceAssesment = studentAssessments.get(workspace.getWorkspaceIdentifier());
+              
               if (workspaceAssesment != null) {
                 workspaceAssessments.add(workspaceAssesment);
               }
@@ -199,12 +198,14 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 workspaceUserExists = true;
               }
             }
-            for (Workspace workspace : workspaces) {
+            
+            for (VopsWorkspace workspace : workspaces) {
               educationSubtypeIdentifier = workspace.getEducationSubtypeIdentifier();
               if (educationSubtypeIdentifier != null) {
                 break;
               }
             }
+            
             Mandatority mandatority = educationTypeMapping.getMandatority(educationSubtypeIdentifier);
             CourseCompletionState state = CourseCompletionState.NOT_ENROLLED;
             if (workspaceUserExists) {
@@ -252,25 +253,27 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return null;
     }
 
+    TranscriptofRecordsUserProperties userProperties = vopsController.loadUserProperties(user);
+    
     return new HopsRESTModel(
-        vopsController.loadStringProperty(user, "goalSecondarySchoolDegree"),
-        vopsController.loadStringProperty(user, "goalMatriculationExam"),
-        vopsController.loadStringProperty(user, "vocationalYears"),
-        vopsController.loadStringProperty(user, "goalJustMatriculationExam"),
-        vopsController.loadStringProperty(user, "justTransferCredits"),
-        vopsController.loadStringProperty(user, "transferCreditYears"),
-        vopsController.loadStringProperty(user, "completionYears"),
-        vopsController.loadStringProperty(user, "mathSyllabus"),
-        vopsController.loadStringProperty(user, "finnish"),
-        vopsController.loadBoolProperty(user, "swedish"),
-        vopsController.loadBoolProperty(user, "english"),
-        vopsController.loadBoolProperty(user, "german"),
-        vopsController.loadBoolProperty(user, "french"),
-        vopsController.loadBoolProperty(user, "italian"),
-        vopsController.loadBoolProperty(user, "spanish"),
-        vopsController.loadStringProperty(user, "science"),
-        vopsController.loadStringProperty(user, "religion"),
-        vopsController.loadStringProperty(user, "additionalInfo")
+        userProperties.asString("goalSecondarySchoolDegree"),
+        userProperties.asString("goalMatriculationExam"),
+        userProperties.asString("vocationalYears"),
+        userProperties.asString("goalJustMatriculationExam"),
+        userProperties.asString("justTransferCredits"),
+        userProperties.asString("transferCreditYears"),
+        userProperties.asString("completionYears"),
+        userProperties.asString("mathSyllabus"),
+        userProperties.asString("finnish"),
+        userProperties.asBoolean("swedish"),
+        userProperties.asBoolean("english"),
+        userProperties.asBoolean("german"),
+        userProperties.asBoolean("french"),
+        userProperties.asBoolean("italian"),
+        userProperties.asBoolean("spanish"),
+        userProperties.asString("science"),
+        userProperties.asString("religion"),
+        userProperties.asString("additionalInfo")
     );
   }
 
