@@ -62,4 +62,56 @@ $main-function-link-icon-active-border-size: 5px;
       color: $color-main-function-link-profile-menu-text;
     }
   }
+  
+  &.main-function-link-menu {
+    font-size: 14px;
+    justify-content: flex-start;
+    padding: 0 15px 0 15px;
+    
+    .icon {
+      background-color: $color-main-function-link-menu-icon-background;
+      color: $color-main-function-link-menu-icon-color;
+      width: 35px;
+      height: 35px;
+      border-radius: 100%;
+      font-size: 20px;
+      line-height: 35px;
+      vertical-align: middle;
+      text-align: center;
+    }
+    
+    &.main-function-link-menu-profile {
+      .icon {
+        margin-right: 0;
+        background: $color-main-function-link-menu-profile-icon-background;
+        color: $color-main-function-link-menu-profile-icon-color;
+      }
+      .embbed-profile-image {
+        width: 35px;
+        height: 35px;
+        border-radius: 100%;
+        margin-right: 10px;
+      }
+    }
+    
+    &.main-function-link-menu-instructions {
+      .icon {
+        background: $color-main-function-link-menu-instructions-icon-background;
+        color: $color-main-function-link-menu-instructions-icon-color;
+      }
+    }
+    
+    &.main-function-link-menu-helpdesk {
+      .icon {
+        background: $color-main-function-link-menu-heldesk-icon-background;
+        color: $color-main-function-link-menu-helpdesk-icon-color;
+      }
+    }
+    &.main-function-link-menu-logout {
+      .icon {
+        background: $color-main-function-link-menu-logout-icon-background;
+        color: $color-main-function-link-menu-logout-icon-color;
+      }
+    }
+  }
 }

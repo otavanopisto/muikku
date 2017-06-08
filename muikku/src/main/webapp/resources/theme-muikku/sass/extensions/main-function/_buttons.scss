@@ -16,16 +16,23 @@ $main-function-button-pill-size: 48px;
   line-height: $main-function-button-pill-size;
   font-size: 22px;
   
-  .icon.icon-search {
-    color: $color-main-function-button-pill-icon-search;
-  }
-  
-  .icon.icon-user {
-    color: $color-main-function-button-pill-icon-user;
-  }
-  
   &.main-function-button-pill-language {
     @include color-theme($color-main-function-button-pill-language-theme, true);
+  }
+  
+  &.main-function-button-pill-profile {
+    .icon {
+      color: $color-main-function-button-pill-icon-user;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+  }
+  
+  &.main-function-button-pill-search {
+    .icon {
+      color: $color-main-function-button-pill-icon-search;
+    }
   }
 }
 

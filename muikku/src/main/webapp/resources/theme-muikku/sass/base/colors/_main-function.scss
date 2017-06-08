@@ -36,3 +36,16 @@ $color-main-function-button-pill-language-theme: (
 
 $color-main-function-button-pill-icon-search: $color-main-function-navbar-background;
 $color-main-function-button-pill-icon-user: #1FE00A;
+
+// MENU
+$color-main-function-menu-header-background: $color-main-function-navbar-background;
+$color-main-function-link-menu-icon-background: $color-main-function-navbar-background;
+$color-main-function-link-menu-icon-color: #fff;
+$color-main-function-link-menu-profile-icon-background: $color-main-function-button-pill-icon-user;
+$color-main-function-link-menu-profile-icon-color: $color-main-function-link-menu-icon-color;
+$color-main-function-link-menu-instructions-icon-background: #E3005B;
+$color-main-function-link-menu-instructions-icon-color: #fff;
+$color-main-function-link-menu-heldesk-icon-background: $color-main-function-link-menu-instructions-icon-background;
+$color-main-function-link-menu-helpdesk-icon-color: $color-main-function-link-menu-instructions-icon-color;
+$color-main-function-link-menu-logout-icon-background: #4c4c4c;
+$color-main-function-link-menu-logout-icon-color: #fff;

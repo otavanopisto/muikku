@@ -34,6 +34,10 @@
     text-transform: none;
   }
   
+  .icon {
+    display: inline-block;
+  }
+  
   &:not(.link-icon) .icon {
     margin-right: 10px;
   }

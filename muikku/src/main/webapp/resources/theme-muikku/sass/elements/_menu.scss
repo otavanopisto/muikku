@@ -120,9 +120,17 @@ $menu-font: 'Exo 2', Arial, sans-serif;
       .menu-item {
         display: block;
         height: 70px;
+        
+        &.menu-item-space {
+          height: 45px;
+        }
 
         @include breakpoint-down($breakpoint-small-mobile) {
           height: 45px;
+          
+          &.menu-item-space {
+            height: 20px;
+          }
         }
       }
     }
