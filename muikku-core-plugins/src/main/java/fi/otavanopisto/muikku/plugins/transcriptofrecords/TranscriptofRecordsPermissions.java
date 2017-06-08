@@ -22,6 +22,26 @@ public class TranscriptofRecordsPermissions extends AbstractMuikkuPermissionColl
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
   public static final String TRANSCRIPT_OF_RECORDS_FILE_UPLOAD = "TRANSCRIPT_OF_RECORDS_FILE_UPLOAD";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( {
+    EnvironmentRoleArchetype.STUDY_GUIDER,
+    EnvironmentRoleArchetype.TEACHER,
+    EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+    EnvironmentRoleArchetype.MANAGER,
+    EnvironmentRoleArchetype.ADMINISTRATOR
+  } )
+  public static final String TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES = "TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( {
+    EnvironmentRoleArchetype.STUDY_GUIDER,
+    EnvironmentRoleArchetype.TEACHER,
+    EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER,
+    EnvironmentRoleArchetype.MANAGER,
+    EnvironmentRoleArchetype.ADMINISTRATOR
+  } )
+  public static final String TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM = "TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM";
 
   @Override
   public List<String> listPermissions() {

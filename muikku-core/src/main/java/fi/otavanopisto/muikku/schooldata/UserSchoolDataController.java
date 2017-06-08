@@ -206,6 +206,17 @@ public class UserSchoolDataController {
   
   /* User properties */
 
+  public List<UserProperty> listUserProperties(User user) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        return schoolDataBridge.listUserPropertiesByUser(user.getIdentifier());
+      }
+    }
+    return null;
+  }
+  
   public UserProperty getUserProperty(User user, String key) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     if (schoolDataSource != null) {

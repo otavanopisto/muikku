@@ -395,7 +395,7 @@ nav.workspace-waterials-management-nav {
 }
   
 // NEW 'DOCUMENT OR SECTION' SELECTION
-.workspace-materials-view-page.material-management-view.workspace-materials-management-new {
+.material-page.material-management-view.workspace-materials-management-new {
   padding: 20px 30px;
   margin: 30px auto;
   box-shadow: 0 0 0 5px rgba(137,212,142,0.95);
@@ -748,7 +748,7 @@ nav.workspace-waterials-management-nav {
 
 
 // DOCUMENT
-.workspace-materials-view-page.material-management-view {
+.material-page.material-management-view {
   position: relative;
   max-width: 695px;
   width: auto;
@@ -811,7 +811,7 @@ nav.workspace-waterials-management-nav {
 }
 
 // DOCUMENT EDIT MODE
-.workspace-materials-view-page.material-management-view.page-edit-mode {
+.material-page.material-management-view.page-edit-mode {
   box-shadow: 0 0 0 10px rgba(148,183,208,0.95);
   position: relative;
   padding: 50px 0 0;
@@ -917,9 +917,9 @@ nav.workspace-waterials-management-nav {
 }
 
 // DOCUMENT'S ATTACHMENT/LICENSE/PRODUCERS EDIT MODE
-.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-attachments,
-.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-license,
-.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-producers {
+.material-page.material-management-view.workspace-materials-management-editing-attachments,
+.material-page.material-management-view.workspace-materials-management-editing-license,
+.material-page.material-management-view.workspace-materials-management-editing-producers {
 
   .workspace-material-html-editor-title-wrapper,
   .cke,
@@ -957,7 +957,7 @@ nav.workspace-waterials-management-nav {
 }
 
 // DOCUMENT ATTACHMENT EDIT MODE CONTROLLER
-.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-attachments {
+.material-page.material-management-view.workspace-materials-management-editing-attachments {
   
   .workspace-materials-management-view-page-controls {
   
@@ -970,7 +970,7 @@ nav.workspace-waterials-management-nav {
 }
 
 // DOCUMENT LICENSE EDIT MODE CONTROLLER
-.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-license {
+.material-page.material-management-view.workspace-materials-management-editing-license {
   
   .workspace-materials-management-view-page-controls {
   
@@ -983,7 +983,7 @@ nav.workspace-waterials-management-nav {
 }
 
 // DOCUMENT PRODUCERS EDIT MODE CONTROLLER
-.workspace-materials-view-page.material-management-view.workspace-materials-management-editing-producers {
+.material-page.material-management-view.workspace-materials-management-editing-producers {
 
   .workspace-materials-management-view-page-controls {
   
@@ -1066,7 +1066,7 @@ nav.workspace-waterials-management-nav {
 }
 
 // SECTION
-.workspace-materials-view-page.material-management-view.folder { 
+.material-page.material-management-view.folder { 
   position: relative;
   font-weight: 300;
   max-width: 695px;
@@ -1103,7 +1103,7 @@ nav.workspace-waterials-management-nav {
 }
   
 // SECTION EDIT MODE
-.workspace-materials-view-page.material-management-view.folder.page-edit-mode {
+.material-page.material-management-view.folder.page-edit-mode {
   padding: 50px 0 10px;
   box-sizing: border-box;
 

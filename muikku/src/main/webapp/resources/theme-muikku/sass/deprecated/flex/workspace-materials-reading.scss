@@ -464,7 +464,7 @@ nav.workspace-waterials-reading-nav {
 }
 
 // DOCUMENT
-.workspace-materials-view-page.material-reading-view {
+.material-page.material-reading-view {
   background: #fff;
   box-shadow: $document-shadow;
   margin: 30px auto;
@@ -482,27 +482,27 @@ nav.workspace-waterials-reading-nav {
     }
     
   }
-
-}
-
-// SECTION
-.workspace-materials-view-page.material-reading-view.folder {
-  background: #fff;
-  box-shadow: $document-shadow;
-  color: #38393a;
-  line-height: 1.3em;
-  max-width: 700px;
-  padding: 30px 20px;
-  position: relative;
-  text-transform: none;
-  width: auto;
-  word-wrap: break-word;
   
-  .page-content {
-    font-size: 27px;
+  // SECTION
+  &.folder {
+    background: #fff;
+    box-shadow: $document-shadow;
+    color: #38393a;
     line-height: 1.3em;
+    max-width: 700px;
+    padding: 30px 20px;
+    position: relative;
+    text-transform: none;
+    width: auto;
+    word-wrap: break-word;
+    
+    .page-content {
+      font-size: 27px;
+      line-height: 1.3em;
+    }
+    
   }
-  
+
 }
 
 @media screen and (max-width: 479px) {

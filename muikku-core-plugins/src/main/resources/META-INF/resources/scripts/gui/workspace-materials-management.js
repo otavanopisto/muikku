@@ -24,7 +24,7 @@
       .workspaceMaterialUpload({maxFileSize: maxFileSize})
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
-          .addClass('workspace-materials-view-page material-management-view lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
+          .addClass('material-page material-management-view lg-flex-cell-full md-flex-cell-full sm-flex-cell-full')
           .attr({
             'id': 'page-' + data.workspaceMaterialId,
             'data-material-title': data.title,
@@ -107,7 +107,7 @@
       var workspaceMaterialId = $(node).attr('data-workspace-material-id');
       var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
       var pageElement = $('#page-' + workspaceMaterialId);
-      var pageSection = $(pageElement).closest(".workspace-materials-view-page");
+      var pageSection = $(pageElement).closest(".material-page");
       var materialPath = $('.materialsBaseUrl').val() + '/' + path;
       
       mApi().materials.material.workspaceMaterials
@@ -370,11 +370,11 @@
   }
   
   function getPagePublishedRevision(workspaceMaterialId) {
-    return parseInt($('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="published-revision"]').val()||'0');
+    return parseInt($('.material-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="published-revision"]').val()||'0');
   }
   
   function setPagePublishedRevision(workspaceMaterialId, revision) {
-    var page = $('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"]');
+    var page = $('.material-page[data-workspace-material-id="' + workspaceMaterialId + '"]');
     page.find('input[name="published-revision"]').val(revision);
     
     if (getPageCurrentRevision(workspaceMaterialId) != getPagePublishedRevision(workspaceMaterialId)) {
@@ -387,11 +387,11 @@
   }
   
   function getPageCurrentRevision(workspaceMaterialId) {
-    return parseInt($('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="current-revision"]').val()||'0');
+    return parseInt($('.material-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="current-revision"]').val()||'0');
   }
   
   function setPageCurrentRevision(workspaceMaterialId, revision) {
-    var page = $('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"]');
+    var page = $('.material-page[data-workspace-material-id="' + workspaceMaterialId + '"]');
     page.find('input[name="current-revision"]').val(revision);
 
     if (getPageCurrentRevision(workspaceMaterialId) != getPagePublishedRevision(workspaceMaterialId)) {
@@ -1081,7 +1081,7 @@
     var _node = node;
     var _hidden = hidden;
     var workspaceId = $('.workspaceEntityId').val();
-    var nextSibling = node.nextAll('.workspace-materials-view-page').first();
+    var nextSibling = node.nextAll('.material-page').first();
     var nextSiblingId = nextSibling.length > 0 ? nextSibling.attr('data-workspace-material-id') : null;
     var workspaceMaterialId = node.attr('data-workspace-material-id');
     var materialType = node.attr('data-material-type');
@@ -1336,9 +1336,9 @@
         "html": "dust"
       }
     })
-    .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
+    .muikkuMaterialLoader('loadMaterials', $('.material-page'));
 
-    $('.workspace-materials-view-page').waypoint(function(direction) {
+    $('.material-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
         var workspaceMaterialId = $(this).data('workspace-material-id');
         $('li.active').removeClass('active');
@@ -1449,7 +1449,7 @@
   
   $(document).on('click', '.edit-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     if (page.hasClass('item-hidden')) {
       page.removeClass('item-hidden');
       page.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
@@ -1459,7 +1459,7 @@
 
   $(document).on('click', '.hide-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     var hidden = page.hasClass('item-hidden');
     toggleVisibility(page, !hidden);
   });
@@ -1542,7 +1542,7 @@
   }
   
   $(document).on('click', '.correct-answers', function (event, data) {
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     var correctAnswers = $(page).attr('data-correct-answers');
     var workspaceId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(page).attr('data-workspace-material-id');
@@ -1587,7 +1587,7 @@
   });
   
   $(document).on('click', '.change-assignment', function (event, data) {
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     var assignmentType = $(page).attr('data-assignment-type');
     var workspaceId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(page).attr('data-workspace-material-id');
@@ -1650,8 +1650,8 @@
 	  
     var parentId = undefined;
     var nextSiblingId = undefined;
-    var previousMaterial = $(this).parent().prevAll('.workspace-materials-view-page').first();
-    var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
+    var previousMaterial = $(this).parent().prevAll('.material-page').first();
+    var nextMaterial = $(this).parent().nextAll('.material-page').first();
     
     renderDustTemplate('workspace/materials-management-new.dust', {clipboardItem: localStorage.getItem('muikku-clipboard-material')}, $.proxy(function (text) {
       var newPage = $(text);
@@ -1774,8 +1774,8 @@
         var sourceWorkspaceMaterialId = clipboardData[1];
         var targetNodeId = null;
         var targetNextSiblingId = null;
-        var previousMaterial = $(this).closest('section').prevAll('.workspace-materials-view-page').first();
-        var nextMaterial = $(this).closest('section').nextAll('.workspace-materials-view-page').first();
+        var previousMaterial = $(this).closest('section').prevAll('.material-page').first();
+        var nextMaterial = $(this).closest('section').nextAll('.material-page').first();
         if (!$(nextMaterial).length) {
           if (!$(previousMaterial).length) {
             targetNodeId = $('.workspaceRootFolderId').val();  
@@ -1924,7 +1924,7 @@
   });
   
   $(document).on('htmlMaterialRevisionChanged', function (event, data) {
-    $('.workspace-materials-view-page[data-material-id="' + data.materialId + '"]').each(function (index, page) {
+    $('.material-page[data-material-id="' + data.materialId + '"]').each(function (index, page) {
       var workspaceMaterialId = $(page).attr('data-workspace-material-id');
       setPageCurrentRevision(workspaceMaterialId, data.revisionNumber);
     });
@@ -2048,7 +2048,7 @@
   }
   
   $(document).on('click', '.publish-page', function (event, data) {
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     var workspaceMaterialId = $(page).attr('data-workspace-material-id');
     var materialId = $(page).attr('data-material-id');
     var title = $(page).find('.workspace-material-html-editor-title').val();
@@ -2104,7 +2104,7 @@
   }
   
   $(document).on('click', '.revert-page', function (event, data) {
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     var workspaceMaterialId = $(page).attr('data-workspace-material-id');
     var materialId = $(page).attr('data-material-id');
     var currentRevision = getPageCurrentRevision(workspaceMaterialId);

@@ -152,6 +152,17 @@ public class GradingController {
     
     return gradingSchoolDataController.listWorkspaceAssessments(studentIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
   }
+
+  /**
+   * Lists all assessments for student. Note that they may contain assessments pointed to 
+   * the same workspace.
+   * 
+   * @param studentIdentifier
+   * @return
+   */
+  public List<WorkspaceAssessment> listAssessmentsByStudent(SchoolDataIdentifier studentIdentifier) {
+    return gradingSchoolDataController.listAssessmentsByStudent(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier());
+  }  
   
   public WorkspaceAssessment findLatestWorkspaceAssessment(SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier) {
     List<WorkspaceAssessment> workspaceAssessments = listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);

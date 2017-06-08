@@ -13,5 +13,6 @@ CKEDITOR.plugins.setLang('muikku-selection', 'fi', {
   propertiesDialogOptions: 'Valinnat',
   propertiesDialogAddOptionLink: 'Lisää uusi valinta',
   propertiesDialogCorrectTooltip: 'Oikea vastaus',
-  propertiesDialogDeleteOptionLink: 'Poista valinta'
+  propertiesDialogDeleteOptionLink: 'Poista valinta',
+  propertiesDialogExplanation: 'Selitys'
 });

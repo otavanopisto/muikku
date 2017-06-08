@@ -260,6 +260,14 @@
                   }
                 }
               }
+            },
+            {
+              id: 'explanation',
+              type: 'textarea',
+              label: editor.lang['muikku-selection'].propertiesDialogExplanation,
+              setup: function(json) {
+                this.setValue(json.explanation);
+              }
             }
           ]
         }
@@ -272,12 +280,16 @@
         
         var fieldType = this.getContentElement('tab-basic', 'fieldType').getValue();
         var isMultiselectField = fieldType == 'checkbox-horizontal' || fieldType == 'checkbox-vertical';
+        var explanation = this.getContentElement('tab-basic', 'explanation').getValue();
 
         // JSON representation
         
         var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
         if (!contentJson.name) {
           contentJson.name = editor.createRandomMuikkuFieldName();
+        }
+        if (explanation) {
+          contentJson.explanation = explanation;
         }
         contentJson.listType = fieldType;
         contentJson.options = [];

@@ -3,9 +3,8 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -30,21 +29,23 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUserProperties;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsWorkspace;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
-import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -78,6 +79,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private UserController userController;
 
   @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
@@ -85,12 +89,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-
-  @Inject
-  private GradingController gradingController;
-
-  @Inject
-  private Logger logger;
 
   @GET
   @Path("/files/{ID}/content")
@@ -148,40 +146,50 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (studentIdentifier == null) {
       return Response.status(Status.NOT_FOUND).entity("Student identifier not found").build();
     }
-
-    if (!Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
+    
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_STUDIES)
+        && !Objects.equals(sessionController.getLoggedUser(), studentIdentifier)) {
       return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
     }
 
     User student = userController.findUserByIdentifier(studentIdentifier);
+    
+    UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
+    
+    if (!vopsController.shouldShowStudies(studentEntity)) {
+      VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
+      return Response.ok(result).build();
+    }
 
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
     int numCourses = 0;
     int numMandatoryCourses = 0;
+    Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
     
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsItem> items = new ArrayList<>();
         for (int i=1; i<MAX_COURSE_NUMBER; i++) {
-          List<Workspace> workspaces =
-              workspaceController.listWorkspacesBySubjectIdentifierAndCourseNumber(
+          List<VopsWorkspace> workspaces =
+              vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
                   subject.getSchoolDataSource(),
                   subject.getIdentifier(),
                   i);
+          
           List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
           if (!workspaces.isEmpty()) {
             SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
-            for (Workspace workspace : workspaces) {
+            for (VopsWorkspace workspace : workspaces) {
               WorkspaceEntity workspaceEntity =
-                  workspaceController.findWorkspaceEntity(workspace);
+                  workspaceController.findWorkspaceEntityById(workspace.getWorkspaceIdentifier());
               WorkspaceUserEntity workspaceUser =
                   workspaceUserEntityController.findWorkspaceUserByWorkspaceEntityAndUserIdentifier(
                       workspaceEntity,
                       studentIdentifier);
-              SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspace.getIdentifier(), workspace.getSchoolDataSource());
-              WorkspaceAssessment workspaceAssesment = gradingController.findLatestWorkspaceAssessment(workspaceIdentifier, studentIdentifier);
+              WorkspaceAssessment workspaceAssesment = studentAssessments.get(workspace.getWorkspaceIdentifier());
+              
               if (workspaceAssesment != null) {
                 workspaceAssessments.add(workspaceAssesment);
               }
@@ -190,12 +198,14 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 workspaceUserExists = true;
               }
             }
-            for (Workspace workspace : workspaces) {
+            
+            for (VopsWorkspace workspace : workspaces) {
               educationSubtypeIdentifier = workspace.getEducationSubtypeIdentifier();
               if (educationSubtypeIdentifier != null) {
                 break;
               }
             }
+            
             Mandatority mandatority = educationTypeMapping.getMandatority(educationSubtypeIdentifier);
             CourseCompletionState state = CourseCompletionState.NOT_ENROLLED;
             if (workspaceUserExists) {
@@ -228,9 +238,43 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       }
     }
 
-    VopsRESTModel result = new VopsRESTModel(rows, numCourses, numMandatoryCourses);
+    VopsRESTModel result = new VopsRESTModel(rows, numCourses, numMandatoryCourses, true);
 
     return Response.ok(result).build();
+  }
+  
+  private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
+    User user = userController.findUserByIdentifier(userIdentifier);
+    UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    EnvironmentRoleEntity roleEntity = environmentUser.getRole();
+
+    if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
+      return null;
+    }
+
+    TranscriptofRecordsUserProperties userProperties = vopsController.loadUserProperties(user);
+    
+    return new HopsRESTModel(
+        userProperties.asString("goalSecondarySchoolDegree"),
+        userProperties.asString("goalMatriculationExam"),
+        userProperties.asString("vocationalYears"),
+        userProperties.asString("goalJustMatriculationExam"),
+        userProperties.asString("justTransferCredits"),
+        userProperties.asString("transferCreditYears"),
+        userProperties.asString("completionYears"),
+        userProperties.asString("mathSyllabus"),
+        userProperties.asString("finnish"),
+        userProperties.asBoolean("swedish"),
+        userProperties.asBoolean("english"),
+        userProperties.asBoolean("german"),
+        userProperties.asBoolean("french"),
+        userProperties.asBoolean("italian"),
+        userProperties.asBoolean("spanish"),
+        userProperties.asString("science"),
+        userProperties.asString("religion"),
+        userProperties.asString("additionalInfo")
+    );
   }
 
   @GET
@@ -243,35 +287,49 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
-    User user = userController.findUserByIdentifier(userIdentifier);
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
-    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    EnvironmentRoleEntity roleEntity = environmentUser.getRole();
+    
+    HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
+    
+    if (response == null) {
+      return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
+    }
+    
+    return Response.ok(response).build();
+  }
 
-    if (!EnvironmentRoleArchetype.STUDENT.equals(roleEntity.getArchetype())) {
-      return Response.status(Status.FORBIDDEN).entity("Must be a student").build();
+  @GET
+  @Path("/hops/{USERIDENTIFIER}")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response retrieveForm(@PathParam("USERIDENTIFIER") String userIdentifierString){
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
-    HopsRESTModel response = new HopsRESTModel(
-        vopsController.loadStringProperty(user, "goalSecondarySchoolDegree"),
-        vopsController.loadStringProperty(user, "goalMatriculationExam"),
-        vopsController.loadStringProperty(user, "vocationalYears"),
-        vopsController.loadStringProperty(user, "goalJustMatriculationExam"),
-        vopsController.loadStringProperty(user, "justTransferCredits"),
-        vopsController.loadStringProperty(user, "transferCreditYears"),
-        vopsController.loadStringProperty(user, "completionYears"),
-        vopsController.loadStringProperty(user, "mathSyllabus"),
-        vopsController.loadStringProperty(user, "finnish"),
-        vopsController.loadBoolProperty(user, "swedish"),
-        vopsController.loadBoolProperty(user, "english"),
-        vopsController.loadBoolProperty(user, "german"),
-        vopsController.loadBoolProperty(user, "french"),
-        vopsController.loadBoolProperty(user, "italian"),
-        vopsController.loadBoolProperty(user, "spanish"),
-        vopsController.loadStringProperty(user, "science"),
-        vopsController.loadStringProperty(user, "religion"),
-        vopsController.loadStringProperty(user, "additionalInfo")
-    );
+    SchoolDataIdentifier userIdentifier = SchoolDataIdentifier.fromId(userIdentifierString);
+    if (userIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Malformed identifier").build();
+    }
+
+    UserEntity userEntity = userEntityController.findUserEntityByUserIdentifier(userIdentifier);
+    if (userEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("User not found").build();
+    }
+
+    if (!vopsController.shouldShowStudies(userEntity)) {
+      return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
+    }
+
+    if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW_ANY_STUDENT_HOPS_FORM)
+        && !Objects.equals(sessionController.getLoggedUser(), userIdentifier)) {
+      return Response.status(Status.FORBIDDEN).entity("Can only look at own information").build();
+    }
+
+    HopsRESTModel response = createHopsRESTModelForStudent(userIdentifier);
+    
+    if (response == null) {
+      return Response.status(Status.NOT_FOUND).entity("No HOPS form for non-students").build();
+    }
 
     return Response.ok(response).build();
   }

@@ -1,18 +1,45 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
+import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
+import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
 public class TranscriptOfRecordsController {
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private GradingController gradingController;
+
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+
+  @Inject
+  private SearchProvider searchProvider;
   
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
 
@@ -25,13 +52,15 @@ public class TranscriptOfRecordsController {
       return false;
     }
 
-    String mathSyllabus = loadStringProperty(student, "mathSyllabus");
-    String finnish = loadStringProperty(student, "finnish");
-    boolean german = loadBoolProperty(student, "german");
-    boolean french = loadBoolProperty(student, "french");
-    boolean italian = loadBoolProperty(student, "italian");
-    boolean spanish = loadBoolProperty(student, "spanish");
-    String religion = loadStringProperty(student, "religion");
+    TranscriptofRecordsUserProperties userProperties = loadUserProperties(student);
+    
+    String mathSyllabus = userProperties.asString("mathSyllabus");
+    String finnish = userProperties.asString("finnish");
+    boolean german = userProperties.asBoolean("german");
+    boolean french = userProperties.asBoolean("french");
+    boolean italian = userProperties.asBoolean("italian");
+    boolean spanish = userProperties.asBoolean("spanish");
+    String religion = userProperties.asString("religion");
 
     String code = subject.getCode();
 
@@ -82,25 +111,6 @@ public class TranscriptOfRecordsController {
     return true;
   }
 
-  public String loadStringProperty(User user, String propertyName) {
-    UserProperty property = userSchoolDataController.getUserProperty(user, "hops." + propertyName);
-    if (property != null) {
-      return property.getValue();
-    } else {
-      return null;
-    }
-  }
-
-  public boolean loadBoolProperty(User user, String propertyName) {
-    UserProperty property = userSchoolDataController.getUserProperty(user, "hops." + propertyName);
-    if (property != null) {
-      return "yes".equals(property.getValue());
-    } else {
-      return false;
-    }
-  }
-
-
   public void saveStringProperty(User user, String propertyName, String value) {
     if (value != null && !"".equals(value)) {
       userSchoolDataController.setUserProperty(user, "hops." + propertyName, value);
@@ -111,5 +121,70 @@ public class TranscriptOfRecordsController {
     userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "yes" : "no");
   }
 
+  public boolean shouldShowStudies(UserEntity userEntity) {
+    if (userEntity != null) {
+      String studyViewStudents = pluginSettingsController.getPluginSetting("transcriptofrecords", "studyViewStudents");
+      if (studyViewStudents != null) {
+        String[] ids = studyViewStudents.split(",");
+        for (int i = 0; i < ids.length; i++) {
+          if (StringUtils.equals(ids[i], userEntity.getId().toString())) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 
+  public TranscriptofRecordsUserProperties loadUserProperties(User user) {
+    return new TranscriptofRecordsUserProperties(userSchoolDataController.listUserProperties(user));
+  }
+
+  public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
+    SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
+    List<VopsWorkspace> retval = new ArrayList<>();
+    List<Map<String, Object>> results = sr.getResults();
+    for (Map<String, Object> result : results) {
+      String searchId = (String) result.get("id");
+      if (StringUtils.isNotBlank(searchId)) {
+        String[] id = searchId.split("/", 2);
+        if (id.length == 2) {
+          String dataSource = id[1];
+          String identifier = id[0];
+          String educationTypeId = (String) result.get("educationSubtypeIdentifier");
+          
+          SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+          SchoolDataIdentifier educationSubtypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+          
+          retval.add(new VopsWorkspace(workspaceIdentifier, educationSubtypeIdentifier));
+        }
+      }
+    }
+      
+    return retval;
+  }
+
+  public Map<SchoolDataIdentifier, WorkspaceAssessment> listStudentAssessments(SchoolDataIdentifier studentIdentifier) {
+    List<WorkspaceAssessment> assessmentsByStudent = gradingController.listAssessmentsByStudent(studentIdentifier);
+    
+    Map<SchoolDataIdentifier, WorkspaceAssessment> result = new HashMap<>();
+    for (WorkspaceAssessment assessment : assessmentsByStudent) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceUserIdentifier(assessment.getWorkspaceUserIdentifier());
+      
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+     
+      if (!result.containsKey(workspaceIdentifier)) {
+        result.put(workspaceIdentifier, assessment);
+      } else {
+        WorkspaceAssessment storedAssessment = result.get(workspaceIdentifier);
+        
+        if (assessment.getDate().after(storedAssessment.getDate()))
+          result.put(workspaceIdentifier, assessment);
+      }
+    }
+    
+    return result;
+  }
+  
 }

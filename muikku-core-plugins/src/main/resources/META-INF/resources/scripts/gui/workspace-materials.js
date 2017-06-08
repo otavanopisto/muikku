@@ -76,23 +76,23 @@
       readOnlyFields: MUIKKU_LOGGED_USER ? false: true,
       workspaceEntityId: $('.workspaceEntityId').val(),
       baseUrl: $('.materialsBaseUrl').val()
-    }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
+    }).muikkuMaterialLoader('loadMaterials', $('.material-page'));
 
-    $('.workspace-materials-view-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
+    $('.material-page[data-assignment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type exercise')
           .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
-    $('.workspace-materials-view-page[data-assignment-type="EVALUATED"]').each(function (index, page) {
+    $('.material-page[data-assignment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type assignment')
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
 
-    $('.workspace-materials-view-page').waypoint(function(direction) {
+    $('.material-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
         var workspaceMaterialId = $(this).data('workspace-material-id');
         $('#materialsScrollableTOC').find('a.active').removeClass('active');
@@ -146,7 +146,7 @@
 
   $(document).on('change', '.muikku-field', function (event, data) {
     $(this).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
-    var page = $(this).closest('.workspace-materials-view-page');
+    var page = $(this).closest('.material-page');
     var saveButton = $(page).find('.muikku-save-page');
     if (saveButton.length) {
       saveButton
