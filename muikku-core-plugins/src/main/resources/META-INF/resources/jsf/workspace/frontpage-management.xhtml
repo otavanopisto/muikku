@@ -60,7 +60,7 @@
             data-material-type="#{node.type}"
             data-path="#{node.path}"
             data-material-title="#{node.title}"
-            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
+            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
     
           <ui:repeat var="articleNode" value="#{node.children}">
             <ui:fragment rendered="#{articleNode.type eq 'folder'}">
@@ -72,7 +72,7 @@
                 data-path="#{articleNode.path}"
                 data-material-title="#{articleNode.title}"
                 data-assignment-type="#{articleNode.assignmentType}"
-                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
+                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
             </ui:fragment>
     
             <ui:fragment rendered="#{articleNode.type ne 'folder'}">
@@ -87,7 +87,7 @@
                 data-material-current-revision="#{articleNode.currentRevision}"
                 data-material-published-revision="#{articleNode.publishedRevision}"
                 data-assignment-type="#{articleNode.assignmentType}"
-                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
+                class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
             </ui:fragment>
           </ui:repeat>
         </ui:fragment>
@@ -104,7 +104,7 @@
             data-material-current-revision="#{node.currentRevision}"
             data-material-published-revision="#{node.publishedRevision}"
             data-assignment-type="#{node.assignmentType}"
-            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
+            class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
         </ui:fragment>
       </ui:repeat>
 

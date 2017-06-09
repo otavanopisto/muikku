@@ -1,4 +1,4 @@
-<div class="assignment-wrapper {materialType}" {?evaluationDate}data-evaluated="true" {?grade}data-graded="true"{/grade}{/evaluationDate}>
+<div class="assignment-wrapper material-page {materialType}" {?evaluationDate}data-evaluated="true" {?grade}data-graded="true"{/grade}{/evaluationDate}>
   <div class="assignment-title-wrapper">
     <div class="assignment-title">{title}</div>
     <div class="assignment-done">

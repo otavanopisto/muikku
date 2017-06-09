@@ -90,6 +90,8 @@ public interface GradingSchoolDataBridge {
    */
   public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier);
   
+  public List<WorkspaceAssessment> listAssessmentsByStudent(String studentIdentifier);
+  
   /**
    * Updates a workspace assessment
    * 

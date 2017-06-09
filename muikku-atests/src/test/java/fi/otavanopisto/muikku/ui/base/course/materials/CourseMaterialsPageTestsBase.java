@@ -499,9 +499,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        assertClassNotPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
         waitAndClick(".muikku-select-field input[value=\"1\"]");
-        waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitClassPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
         assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true);
@@ -544,9 +544,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
-          assertClassNotPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+          assertClassNotPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(".muikku-select-field input[value=\"1\"]");
-          waitClassPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()), "muikku-field-saved");
+          waitClassPresent(String.format("#page-%d .muikku-select-field input", htmlMaterial.getId()), "muikku-field-saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
           waitForPresent(String.format("#page-%d .muikku-select-field", htmlMaterial.getId()));
           assertChecked(String.format("#page-%d .muikku-select-field input[value=\"1\"]", htmlMaterial.getId()), true); 
@@ -587,9 +587,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-        assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+        assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
         waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
-        waitClassPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+        waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
         waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
         assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
@@ -634,9 +634,9 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
-          assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+          assertClassNotPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
           waitAndClick(".muikku-checkbox-field input[value=\"1\"]");
-          waitClassPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()), "muikku-field-saved");
+          waitClassPresent(String.format("#page-%d .muikku-checkbox-field input", htmlMaterial.getId()), "muikku-field-saved");
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
           waitForPresent(String.format("#page-%d .muikku-checkbox-field", htmlMaterial.getId()));
           assertChecked(String.format("#page-%d .muikku-checkbox-field input[value=\"1\"]", htmlMaterial.getId()), true);
