@@ -1,6 +1,6 @@
 
       $(document).ready(function() {
-        $(document).on("Chat:message", function (event, chatMessage) {
+        $(document).muikkuWebSocket("addEventListener", "Chat:message", function (chatMessage) {
           var msg = $('<div></div>');
           msg.append(new Date().toLocaleTimeString() + ": ");
           msg.append(chatMessage.text);

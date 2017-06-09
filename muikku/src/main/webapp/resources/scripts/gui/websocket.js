@@ -17,6 +17,7 @@
       this._pingHandle = null;
       this._pinging = false;
       this._pingTime = 0;
+      this._listeners = {};
       
       this._getTicket($.proxy(function (ticket) {
         if (this._ticket) {
@@ -58,6 +59,27 @@
     
     ticket: function () {
       return this._ticket;
+    },
+    
+    addEventListener: function(event, listener){
+      this._listeners[event] = this._listeners[event] || [];
+      this._listeners[event].push(listener);
+    },
+    
+    removeEventListener: function(event, listener){
+      if (!this._listeners[event]){
+        return;
+      }
+      var index = this._listeners[event].indexOf(listener);
+      if (index > -1){
+        this._listeners[event].splice(index, 1);
+      }
+    },
+    
+    trigger: function(event, data){
+      this._listeners.forEach(function(listener){
+        listener(data);
+      });
     },
     
     _getTicket: function (callback) {
@@ -113,7 +135,7 @@
             this._webSocket.onopen = $.proxy(this._onWebSocketOpen, this);
           break;
           case this._webSocket.OPEN:
-            this.element.trigger("webSocketConnected"); 
+            this.trigger("webSocketConnected"); 
           break;
           default:
             $('.notification-queue').notificationQueue('notification', 'error', "WebSocket connection failed");
@@ -187,7 +209,7 @@
     },
 
     _onWebSocketOpen: function (event, data) {
-      this.element.trigger("webSocketConnected"); 
+      this.trigger("webSocketConnected"); 
     },
     
     _onWebSocketError: function () {
@@ -195,7 +217,7 @@
     },
     
     _onWebSocketClose: function () {
-      this.element.trigger("webSocketDisconnected"); 
+      this.trigger("webSocketDisconnected"); 
       this._reconnect();
     },
     
@@ -220,7 +242,7 @@
         this._pinging = false;
         this._pingTime = 0;
       } else {
-        this.element.trigger(eventType, message.data);
+        this.trigger(eventType, message.data);
       }
     },
     

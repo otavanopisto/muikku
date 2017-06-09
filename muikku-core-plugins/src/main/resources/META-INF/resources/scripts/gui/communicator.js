@@ -388,7 +388,7 @@
       this.element.on('change', 'input[name="messageSelect"]', $.proxy(this._onThreadSelectionChange, this));
       this.element.on('click', '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
       this.element.on('click', '.cm-message-header-container', $.proxy(this._onMessageHeaderClick, this));
-      $(document).on("Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
+      $(document).muikkuWebSocket("addEventListener", "Communicator:newmessagereceived", $.proxy(this._onNewMessageReceived, this));
       $(document).on('click', $.proxy(this._onDocumentClicked, this));
     },
     
@@ -937,7 +937,7 @@
     deleteThreads: function (threads) {
       this._removeThreads(threads, $.proxy(function () {
         this.reloadFolder();
-        $(document).trigger("Communicator:threaddeleted");
+        $(document).muikkuWebSocket("trigger", "Communicator:threaddeleted");
       }, this));
     },
     
@@ -951,7 +951,7 @@
     restoreThreads: function (threads) {
       this._restoreThreads(threads, $.proxy(function () {
         this.reloadFolder();
-        $(document).trigger("Communicator:threadrestored");
+        $(document).muikkuWebSocket("trigger", "Communicator:threadrestored");
       }, this));
     },
 
@@ -967,7 +967,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           mApi().communicator.cacheClear();
-          $(document).trigger("Communicator:messageread");
+          $(document).muikkuWebSocket("trigger", "Communicator:messageread");
           if (successCallback) {
             successCallback();
           }
@@ -987,7 +987,7 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           mApi().communicator.cacheClear();
-          $(document).trigger("Communicator:messageread");
+          $(document).muikkuWebSocket("trigger", "Communicator:messageread");
           if (successCallback) {
             successCallback();
           }
@@ -1605,7 +1605,7 @@
             var folderController = communicator.folderController(folderId);
             folderController.markAsRead(threadId, function () {
               mApi().communicator.cacheClear();
-              $(document).trigger("Communicator:messageread");
+              $(document).muikkuWebSocket("trigger", "Communicator:messageread");
             });    
           }, this));
         }         

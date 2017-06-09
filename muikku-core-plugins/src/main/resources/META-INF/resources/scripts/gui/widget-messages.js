@@ -44,7 +44,7 @@ $(document).ready(function(){
       });
     }
     
-    $(document).on("Communicator:newmessagereceived", function (event, data) {
+    $(document).muikkuWebSocket("addEventListener", "Communicator:newmessagereceived", function (data) {
       _refreshMessagesWidgetMessagesList();
     });
       
