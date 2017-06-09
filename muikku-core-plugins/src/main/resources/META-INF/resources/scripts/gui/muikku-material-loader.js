@@ -501,25 +501,30 @@
           }
         },
         canCheckAnswer: function() {
-          return false;
+          return true;
+        },
+        checksOwnAnswer: function() {
+          return true;
+        },
+        checkAnswer: function(showCorrectAnswers) {
+          if (this.hasDisplayableAnswers()) {
+            $(this.element).parent().find('.muikku-field-examples').remove();
+            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(this.element).attr('name'));
+            exampleDetails.append( 
+              $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+            );
+            exampleDetails.append($('<span>').addClass('muikku-field-example').text(this.options.meta.example));
+            var wordCountContainer = $(this.element).parent().find('.word-count-container');
+            if (wordCountContainer.length) {
+              $(wordCountContainer).after(exampleDetails);
+            }
+            else {
+              $(this.element).after(exampleDetails);
+            }
+          }
         },
         hasDisplayableAnswers: function() {
-          return this.hasExamples();
-        },
-        hasExamples: function () {
-          var meta = this.options.meta;
-          return meta.example && meta.example != '';
-        },
-        getCorrectAnswers: function() {
-          return [];
-        },
-        getExamples: function () {
-          var meta = this.options.meta;
-          if (meta.example) {
-            return [meta.example];
-          } else {
-            return [];
-          }
+          return this.options.meta.example;
         }
       });
       if (data.fieldlessMode) {
