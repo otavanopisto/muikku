@@ -935,6 +935,11 @@ public class WorkspaceRESTService extends PluginRESTService {
       SchoolDataIdentifier workspaceUserIdentifier = workspaceUser.getIdentifier();
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityMap.get(workspaceUserIdentifier.toId());
       
+      if (workspaceUserEntity == null) {
+        logger.log(Level.WARNING, String.format("Workspace student %s does not exist in Muikku", workspaceUserIdentifier.toId()));
+        continue;
+      }
+      
       if (active == null || active.equals(workspaceUserEntity.getActive())) {
         if (requestedAssessment != null) {
           boolean hasAssessmentRequest = workspaceUserEntity != null && !assessmentRequestController.listByWorkspaceUser(workspaceUserEntity).isEmpty();
