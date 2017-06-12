@@ -456,7 +456,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     clear:both;
   }
   
-  .workspace-materials-view-page {
+  .material-page {
   
     .correct-answers-count-container {
       display:block;
@@ -890,7 +890,7 @@ p.content-view-restricted-message {
   background:#f9f9f9;
 }
 
-.workspace-materials-view-page[data-view-restricted="true"] {
+.material-page[data-view-restricted="true"] {
 
   .muikku-save-page-wrapper,
   .article-details {
@@ -904,7 +904,7 @@ p.content-view-restricted-message {
 body.workspace-materials #contentWorkspaceMaterials {
   
   /* Save answers button's font-size under basic view */
-  .workspace-materials-view-page {
+  .material-page {
   
     button.muikku-assignment-button {
       font-size:14px;
@@ -936,7 +936,7 @@ body.workspace-materials #contentWorkspaceMaterials {
 body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   
   /* Save answers button's font-size under reading view view */
-  .workspace-materials-view-page {
+  .material-page {
   
     button.muikku-assignment-button {
       font-size:16px;

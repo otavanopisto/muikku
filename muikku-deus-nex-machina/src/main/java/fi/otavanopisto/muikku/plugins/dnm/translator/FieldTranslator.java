@@ -83,7 +83,7 @@ public class FieldTranslator {
     else if ("radio_horz".equals(listType)) {
       newListType = "radio-horizontal";
     }
-    return new SelectFieldMeta(name, newListType, translatedOptions);
+    return new SelectFieldMeta(name, newListType, translatedOptions, null);
   }
 
   public MultiSelectFieldMeta translateChecklistField(String paramName, List<MultiSelectFieldOptionMeta> options) {
@@ -91,7 +91,7 @@ public class FieldTranslator {
     for (MultiSelectFieldOptionMeta option : options) {
       translatedOptions.add(new MultiSelectFieldOptionMeta(option.getName(), option.getText(), option.getCorrect()));
     }
-    return new MultiSelectFieldMeta(paramName, "checkbox-vertical", translatedOptions);
+    return new MultiSelectFieldMeta(paramName, "checkbox-vertical", translatedOptions, null);
   }
   
   public ConnectFieldMeta translateConnectField(String name, List<ConnectFieldOption> options) {

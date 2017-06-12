@@ -98,7 +98,7 @@
         workspaceEntityId: workspaceEntityId,
         baseUrl: $('.materialsBaseUrl').val()
       })
-      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
+      .muikkuMaterialLoader('loadMaterials', $('.material-page'));
     
     mApi().workspace.workspaces.materialProducers
       .read(workspaceEntityId).callback(function (err, materialProducers) {

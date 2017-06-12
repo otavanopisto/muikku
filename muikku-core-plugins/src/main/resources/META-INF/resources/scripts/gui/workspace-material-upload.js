@@ -58,7 +58,7 @@
         var workspaceEntityId = $('.workspaceEntityId').val();
         var parentFolder = $(this.element).prevAll('.folder').first();
         var parentId = parentFolder ? $(parentFolder).data('workspace-material-id') : $('.workspaceRootFolderId').val();
-        var nextMaterial = $(this.element).next('.workspace-materials-view-page');
+        var nextMaterial = $(this.element).next('.material-page');
         var nextSiblingId = $(nextMaterial) && !$(nextMaterial).hasClass('folder') ? $(nextMaterial).data('workspace-material-id') : undefined;
         
         mApi({async: false}).workspace.workspaces.materials.create(workspaceEntityId, {

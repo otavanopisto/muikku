@@ -501,25 +501,30 @@
           }
         },
         canCheckAnswer: function() {
-          return false;
+          return true;
+        },
+        checksOwnAnswer: function() {
+          return true;
+        },
+        checkAnswer: function(showCorrectAnswers) {
+          if (this.hasDisplayableAnswers()) {
+            $(this.element).parent().find('.muikku-field-examples').remove();
+            var exampleDetails = $('<span>').addClass('muikku-field-examples').attr('data-for-field', $(this.element).attr('name'));
+            exampleDetails.append( 
+              $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+            );
+            exampleDetails.append($('<span>').addClass('muikku-field-example').text(this.options.meta.example));
+            var wordCountContainer = $(this.element).parent().find('.word-count-container');
+            if (wordCountContainer.length) {
+              $(wordCountContainer).after(exampleDetails);
+            }
+            else {
+              $(this.element).after(exampleDetails);
+            }
+          }
         },
         hasDisplayableAnswers: function() {
-          return this.hasExamples();
-        },
-        hasExamples: function () {
-          var meta = this.options.meta;
-          return meta.example && meta.example != '';
-        },
-        getCorrectAnswers: function() {
-          return [];
-        },
-        getExamples: function () {
-          var meta = this.options.meta;
-          if (meta.example) {
-            return [meta.example];
-          } else {
-            return [];
-          }
+          return this.options.meta.example;
         }
       });
       if (data.fieldlessMode) {
@@ -1005,9 +1010,9 @@
               meta: meta,
               readonly: data.readOnlyFields||false,
               hasDisplayableAnswers: function() {
-                return this.canCheckAnswer(); 
-              },
-              canCheckAnswer: function() {
+                if (this.options.meta.explanation) {
+                  return true;
+                }
                 for (var i = 0, l = meta.options.length; i < l; i++) {
                   if (meta.options[i].correct == true) {
                     return true;
@@ -1015,21 +1020,64 @@
                 }
                 return false;
               },
-              isCorrectAnswer: function() {
-                var answer = this.answer();
-                for (var i = 0, l = meta.options.length; i < l; i++) {
-                  if (meta.options[i].correct == true && meta.options[i].name == answer) {
-                    return true;
-                  }
-                }
-                return false; 
+              canCheckAnswer: function() {
+                return this.hasDisplayableAnswers();
               },
-              getCorrectAnswers: function() {
-                var result = [];
+              checksOwnAnswer: function() {
+                return true;
+              },
+              checkAnswer: function(showCorrectAnswers) {
+                $(this.element).find('.muikku-field-examples').remove();
+                $(this.element).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+                var result = {
+                  'correctAnswers': 0,
+                  'wrongAnswers': 0
+                }
+                // Selected by user
+                var selectedValues = [this.answer()];
+                // Choices that would be correct
+                var correctValues = [];
                 for (var i = 0, l = meta.options.length; i < l; i++) {
                   if (meta.options[i].correct == true) {
-                    result.push(meta.options[i].text);
+                    correctValues.push(meta.options[i].name);
                   }
+                }
+                // If there are correct answers, calculate and recolor
+                if (correctValues.length > 0) {
+                  var answer = this.answer();
+                  if (correctValues.indexOf(answer) >= 0) {
+                    result.correctAnswers++;
+                    if (showCorrectAnswers) {
+                      $(this.element).addClass('muikku-field-correct-answer');
+                    }
+                  }
+                  else {
+                    result.wrongAnswers++;
+                    if (showCorrectAnswers) {
+                      $(this.element).addClass('muikku-field-incorrect-answer');
+                    }
+                  }
+                }
+                if (showCorrectAnswers && this.hasDisplayableAnswers()) {
+                  var exampleDetails = $('<span>').addClass('muikku-field-examples');
+                  if (result.wrongAnswers > 0 && showCorrectAnswers) {
+                    exampleDetails.append($('<span>')
+                      .addClass('muikku-field-examples-title')
+                      .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+                    );
+                    for (var i = 0, l = meta.options.length; i < l; i++) {
+                      if (meta.options[i].correct == true) {
+                        exampleDetails.append($('<span>')
+                          .addClass('muikku-field-example')
+                          .html(meta.options[i].text.replace(/\n/g, '<br/>'))    
+                        );
+                      }
+                    }
+                  }
+                  if (this.options.meta.explanation) {
+                    exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
+                  }
+                  $(this.element).after(exampleDetails);
                 }
                 return result;
               }
@@ -1089,6 +1137,9 @@
                   .find('input[type="radio"]').removeAttr('disabled');
               }
             },
+            getFieldElements: function() {
+              return $(this.element).find('input');
+            },
             answer: function(val) {
               if (val) {
                 $(this.element).find('input').prop('checked', false);
@@ -1098,9 +1149,9 @@
               }
             },
             hasDisplayableAnswers: function() {
-              return this.canCheckAnswer(); 
-            },
-            canCheckAnswer: function() {
+              if (this.options.meta.explanation) {
+                return true;
+              }
               for (var i = 0, l = meta.options.length; i < l; i++) {
                 if (meta.options[i].correct == true) {
                   return true;
@@ -1108,21 +1159,73 @@
               }
               return false;
             },
-            isCorrectAnswer: function() {
-              var answer = this.answer();
-              for (var i = 0, l = meta.options.length; i < l; i++) {
-                if (meta.options[i].correct == true && meta.options[i].name == answer) {
-                  return true;
-                }
-              }
-              return false; 
+            canCheckAnswer: function() {
+              return this.hasDisplayableAnswers();
             },
-            getCorrectAnswers: function() {
-              var result = [];
+            checksOwnAnswer: function() {
+              return true;
+            },
+            checkAnswer: function(showCorrectAnswers) {
+              $(this.element).find('.muikku-field-examples').remove();
+              $(this.element).find('input').each(function(index, element) {
+                $(element).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+              });
+              var result = {
+                'correctAnswers': 0,
+                'wrongAnswers': 0
+              }
+              // Radio button selected by user
+              var selectedValues = [];
+              $(this.element).find('input:checked').each(function() {
+                selectedValues.push($(this).val());
+              });
+              // Radio buttons that would be correct
+              var correctValues = [];
               for (var i = 0, l = meta.options.length; i < l; i++) {
                 if (meta.options[i].correct == true) {
-                  result.push(meta.options[i].text);
+                  correctValues.push(meta.options[i].name);
                 }
+              }
+              // If there are correct answers, calculate and recolor
+              if (correctValues.length > 0) {
+                var answer = this.answer();
+                if (correctValues.indexOf(answer) >= 0) {
+                  result.correctAnswers++;
+                  if (showCorrectAnswers) {
+                    $(this.element).find('input').each(function(index, element) {
+                      $(element).addClass('muikku-field-correct-answer');
+                    });
+                  }
+                }
+                else {
+                  result.wrongAnswers++;
+                  if (showCorrectAnswers) {
+                    $(this.element).find('input').each(function(index, element) {
+                      $(element).addClass('muikku-field-incorrect-answer');
+                    });
+                  }
+                }
+              }
+              if (showCorrectAnswers && this.hasDisplayableAnswers()) {
+                var exampleDetails = $('<span>').addClass('muikku-field-examples');
+                if (result.wrongAnswers > 0 && showCorrectAnswers) {
+                  exampleDetails.append($('<span>')
+                    .addClass('muikku-field-examples-title')
+                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+                  );
+                  for (var i = 0, l = meta.options.length; i < l; i++) {
+                    if (meta.options[i].correct == true) {
+                      exampleDetails.append($('<span>')
+                        .addClass('muikku-field-example')
+                        .html(meta.options[i].text.replace(/\n/g, '<br/>'))    
+                      );
+                    }
+                  }
+                }
+                if (this.options.meta.explanation) {
+                  exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
+                }
+                $(this.element).after(exampleDetails);
               }
               return result;
             }
@@ -1190,6 +1293,9 @@
               .find('input[type="checkbox"]').removeAttr('disabled');
           }
         },
+        getFieldElements: function() {
+          return $(this.element).find('input');
+        },
         answer: function(val) {
           if (val) {
             $(this.element).find('input').prop('checked', false);
@@ -1207,9 +1313,9 @@
           }
         },
         hasDisplayableAnswers: function() {
-          return this.canCheckAnswer(); 
-        },
-        canCheckAnswer: function() {
+          if (this.options.meta.explanation) {
+            return true;
+          }
           for (var i = 0, l = meta.options.length; i < l; i++) {
             if (meta.options[i].correct == true) {
               return true;
@@ -1217,32 +1323,87 @@
           }
           return false;
         },
-        isCorrectAnswer: function() {
+        canCheckAnswer: function() {
+          return this.hasDisplayableAnswers();
+        },
+        checksOwnAnswer: function() {
+          return true;
+        },
+        checkAnswer: function(showCorrectAnswers) {
+          $(this.element).find('.muikku-field-examples').remove();
+          $(this.element).find('input').each(function(index, element) {
+            $(element).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+          });
+          var result = {
+            'correctAnswers': 0,
+            'wrongAnswers': 0
+          }
+          // Checkboxes selected by user
           var selectedValues = [];
           $(this.element).find('input:checked').each(function() {
             selectedValues.push($(this).val());
           });
+          // Checkboxes marked as correct
           var correctValues = [];
           for (var i = 0, l = meta.options.length; i < l; i++) {
             if (meta.options[i].correct == true) {
               correctValues.push(meta.options[i].name);
             }
           }
-          if (selectedValues.length != correctValues.length) {
-            return false;
+          // If there are correct answers, calculate and recolor
+          if (correctValues.length > 0) {
+            $(this.element).find('input').each($.proxy(function(index, element) {
+              var value = $(element).val();
+              if (correctValues.indexOf(value) >= 0) {
+                if (selectedValues.indexOf(value) >= 0) {
+                  if (showCorrectAnswers) {
+                    $(element).addClass('muikku-field-correct-answer');
+                  }
+                  result.correctAnswers++;
+                }
+                else {
+                  if (showCorrectAnswers) {
+                    $(element).addClass('muikku-field-incorrect-answer');
+                  }
+                  result.wrongAnswers++;
+                }
+              }
+              else {
+                if (selectedValues.indexOf(value) >= 0) {
+                  if (showCorrectAnswers) {
+                    $(element).addClass('muikku-field-incorrect-answer');
+                  }
+                  result.wrongAnswers++;
+                }
+                else {
+                  if (showCorrectAnswers) {
+                    $(element).addClass('muikku-field-correct-answer');
+                  }
+                  result.correctAnswers++;
+                }
+              }
+            }, this));
           }
-          for (var i = 0; i < selectedValues.length; i++) {
-            if (correctValues.indexOf(selectedValues[i]) == -1)
-              return false;
-          }
-          return true;
-        },
-        getCorrectAnswers: function() {
-          var result = [];
-          for (var i = 0, l = meta.options.length; i < l; i++) {
-            if (meta.options[i].correct == true) {
-              result.push(meta.options[i].text);
+          if (showCorrectAnswers && this.hasDisplayableAnswers()) {
+            var exampleDetails = $('<span>').addClass('muikku-field-examples');
+            if (result.wrongAnswers > 0 && showCorrectAnswers) {
+              exampleDetails.append($('<span>')
+                .addClass('muikku-field-examples-title')
+                .text(getLocaleText('plugin.workspace.assigment.checkAnswers.correctSummary.title'))
+              );
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true) {
+                  exampleDetails.append($('<span>')
+                    .addClass('muikku-field-example')
+                    .html(meta.options[i].text.replace(/\n/g, '<br/>'))    
+                  );
+                }
+              }
             }
+            if (this.options.meta.explanation) {
+              exampleDetails.append($('<span>').addClass('explanation-wrapper').explanation({text: this.options.meta.explanation}));
+            }
+            $(this.element).after(exampleDetails);
           }
           return result;
         }

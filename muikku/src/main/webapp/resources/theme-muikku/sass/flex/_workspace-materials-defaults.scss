@@ -1,4 +1,4 @@
-.workspace-materials-view-page { // This is article containing single material page
+.material-page { // This is article containing single material page
   padding: 10px 20px;
   margin: 30px auto;
   position: relative;
@@ -322,51 +322,36 @@
     }
   
   }
-
-  // CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
-  .muikku-select-field,
-  .muikku-checkbox-field {
   
+  // CHECKBOX & RADIO BUTTON UNSAVED, SAVED, SAVING
+  input[type="checkbox"],
+  input[type="radio"] {
+
     &.muikku-field-unsaved {
-    
-      input[type="checkbox"],
-      input[type="radio"] {
-        box-shadow: 0 0 0 2px #e4e630;
+      box-shadow: 0 0 0 2px #e4e630;
         
-        &:hover {
-          box-shadow: 0 0 0 2px #e4e630;
-        }
-      
+      &:hover {
+        box-shadow: 0 0 0 2px #e4e630;
       }
       
     }
     
     &.muikku-field-saving {
-    
-      input[type="checkbox"],
-      input[type="radio"] {
-        animation: saving-checkbox-radio 4s ease infinite;
-        box-shadow: 0 0 0 2px #e4e630;
-      }
-      
+      animation: saving-checkbox-radio 4s ease infinite;
+      box-shadow: 0 0 0 2px #e4e630;
     }
   
     &.muikku-field-saved {
+      box-shadow: 0 0 0 2px #9cf3c7;
     
-      input[type="checkbox"],
-      input[type="radio"] {
+      &:hover {
         box-shadow: 0 0 0 2px #9cf3c7;
-      
-        &:hover {
-          box-shadow: 0 0 0 2px #9cf3c7;
-        }
-        
       }
       
     }
   
   }
-
+    
   // GENERIC PAGE ELEMENTS
   blockquote {
     font-family: 'Open Sans', Arial, sans-serif;
@@ -806,7 +791,22 @@
       display: inline-block;
       line-height: 1.5;
     }
-    
+
+  }
+  
+  .explanation-wrapper {
+    position: relative;
+  
+    .explanation-button {
+      background: #009fe3;
+      border: 2px solid #fff;
+      border-radius: 100%;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px;
+      
+    }
+          
   }
 
   .muikku-page-assignment-type {
@@ -964,7 +964,7 @@
 
 }
 
-.workspace-materials-view-page[data-view-restricted="true"] {
+.material-page[data-view-restricted="true"] {
 
   .muikku-save-page-wrapper,
   .article-details {
@@ -987,4 +987,19 @@
   padding: 5px 10px;
   position: absolute;
   z-index: 20;
+}
+
+.explanation-content {
+  background: #ebf7ff;
+  border: 1px solid #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  color: #000;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.5em;
+  max-width: 280px;
+  padding: 2px 4px;
+  position: absolute;
+  z-index: 99;
 }
