@@ -2,9 +2,12 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -19,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -95,6 +99,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @Inject
   private GradingController gradingController;
+  
+  @Inject
+  private Logger logger;
 
   @GET
   @Path("/files/{ID}/content")
@@ -240,10 +247,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 if (gradeIdentifier == null) {
                   break;
                 }
-                GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
-                GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
-                if (!"".equals(gradingScaleItem.getName())) {
-                  grade = gradingScaleItem.getName().substring(0, 1);
+                GradingScaleItem gradingScaleItem = findGradingScaleItemCached(gradingScaleIdentifier, gradeIdentifier);
+                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
+                  // 2 characters is enough to cover cases like "10" and "Suoritettu/Saanut opetusta" unambiguously
+                  // and still looking good in the matrix
+                  grade = gradingScaleItem.getName().substring(0, 2);
                 }
                 
                 break;
@@ -266,6 +274,27 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return Response.ok(result).build();
   }
   
+  
+  private GradingScaleItem findGradingScaleItemCached(SchoolDataIdentifier gradingScaleIdentifier, SchoolDataIdentifier gradingScaleItemIdentifier) {
+    GradingScaleItemCoordinates key = new GradingScaleItemCoordinates(gradingScaleIdentifier, gradingScaleItemIdentifier);
+    if (!gradingScaleCache.containsKey(key)) {
+      GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+      if (gradingScale == null) {
+        logger.log(Level.SEVERE, "Grading scale not found for identifier: %s", gradingScaleIdentifier);
+        return null;
+      }
+      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradingScaleIdentifier);
+      if (gradingScaleItem == null) {
+        logger.log(Level.SEVERE, "Grading scale item not found for identifier: %s", gradingScaleItemIdentifier);
+        return null;
+      }
+      
+      gradingScaleCache.put(key, gradingScaleItem);
+      
+    }
+    return gradingScaleCache.get(key);
+  }
+
   private HopsRESTModel createHopsRESTModelForStudent(SchoolDataIdentifier userIdentifier) {
     User user = userController.findUserByIdentifier(userIdentifier);
     UserEntity userEntity = userEntityController.findUserEntityByUser(user);
@@ -397,4 +426,35 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     return Response.ok().entity(model).build();
   }
+  
+  private static class GradingScaleItemCoordinates {
+    public GradingScaleItemCoordinates(
+        SchoolDataIdentifier gradingScaleIdentifier,
+        SchoolDataIdentifier gradingScaleItemIdentifier
+    ) {
+      this.gradingScaleIdentifier = gradingScaleIdentifier;
+      this.gradingScaleItemIdentifier = gradingScaleItemIdentifier;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof GradingScaleItemCoordinates) {
+        GradingScaleItemCoordinates coords = (GradingScaleItemCoordinates) obj;
+        return coords.gradingScaleIdentifier.equals(this.gradingScaleIdentifier) &&
+               coords.gradingScaleItemIdentifier.equals(this.gradingScaleItemIdentifier);
+      } else {
+        return false;
+      }
+    }
+    
+    @Override
+    public int hashCode() {
+      return gradingScaleIdentifier.hashCode() * 37 + gradingScaleItemIdentifier.hashCode();
+    }
+    
+    private final SchoolDataIdentifier gradingScaleIdentifier;
+    private final SchoolDataIdentifier gradingScaleItemIdentifier;
+  }
+  
+  private Map<GradingScaleItemCoordinates, GradingScaleItem> gradingScaleCache = new HashMap<>();
 }
