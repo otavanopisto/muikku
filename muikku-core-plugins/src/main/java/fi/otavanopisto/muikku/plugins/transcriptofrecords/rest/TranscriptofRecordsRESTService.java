@@ -283,14 +283,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         logger.log(Level.SEVERE, "Grading scale not found for identifier: %s", gradingScaleIdentifier);
         return null;
       }
-      GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradingScaleIdentifier);
-      if (gradingScaleItem == null) {
-        logger.log(Level.SEVERE, "Grading scale item not found for identifier: %s", gradingScaleItemIdentifier);
-        return null;
+      for (GradingScaleItem gradingScaleItem : gradingController.listGradingScaleItems(gradingScale)) {
+        gradingScaleCache.put(key, gradingScaleItem);
       }
-      
-      gradingScaleCache.put(key, gradingScaleItem);
-      
     }
     return gradingScaleCache.get(key);
   }
