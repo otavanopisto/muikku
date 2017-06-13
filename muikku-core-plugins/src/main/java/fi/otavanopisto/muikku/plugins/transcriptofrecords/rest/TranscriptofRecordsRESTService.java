@@ -284,7 +284,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
         return null;
       }
       for (GradingScaleItem gradingScaleItem : gradingController.listGradingScaleItems(gradingScale)) {
-        gradingScaleCache.put(key, gradingScaleItem);
+        GradingScaleItemCoordinates newItemKey = new GradingScaleItemCoordinates(
+            gradingScaleIdentifier,
+            new SchoolDataIdentifier(gradingScaleItem.getSchoolDataSource(), gradingScaleItem.getGradingScaleIdentifier()));
+        gradingScaleCache.put(newItemKey, gradingScaleItem);
       }
     }
     return gradingScaleCache.get(key);
