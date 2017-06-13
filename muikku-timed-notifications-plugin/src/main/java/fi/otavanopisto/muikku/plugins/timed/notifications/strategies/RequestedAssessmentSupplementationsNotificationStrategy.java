@@ -117,7 +117,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
       String studentId = (String) result.get("id");
       
       if (StringUtils.isBlank(studentId)) {
-        logger.severe("Could not process user found from search index because it had a null id or userEntityId");
+        logger.severe("Could not process user found from search index because it had a null id");
         continue;
       }
       
