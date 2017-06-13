@@ -36,9 +36,12 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUse
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsWorkspace;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
+import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
+import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
@@ -89,6 +92,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private GradingController gradingController;
 
   @GET
   @Path("/files/{ID}/content")
@@ -208,6 +214,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             
             Mandatority mandatority = educationTypeMapping.getMandatority(educationSubtypeIdentifier);
             CourseCompletionState state = CourseCompletionState.NOT_ENROLLED;
+            String grade = null;
             if (workspaceUserExists) {
               state = CourseCompletionState.ENROLLED;
             }
@@ -224,6 +231,21 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 if (mandatority == Mandatority.MANDATORY) {
                   numMandatoryCourses++;
                 }
+
+                SchoolDataIdentifier gradingScaleIdentifier = workspaceAssessment.getGradingScaleIdentifier();
+                if (gradingScaleIdentifier == null) {
+                  break;
+                }
+                SchoolDataIdentifier gradeIdentifier = workspaceAssessment.getGradeIdentifier();
+                if (gradeIdentifier == null) {
+                  break;
+                }
+                GradingScale gradingScale = gradingController.findGradingScale(gradingScaleIdentifier);
+                GradingScaleItem gradingScaleItem = gradingController.findGradingScaleItem(gradingScale, gradeIdentifier);
+                if (!"".equals(gradingScaleItem.getName())) {
+                  grade = gradingScaleItem.getName().substring(0, 1);
+                }
+                
                 break;
               }
             }
@@ -231,7 +253,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 i,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
-                mandatority));
+                mandatority,
+                grade));
           }
         }
         rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
