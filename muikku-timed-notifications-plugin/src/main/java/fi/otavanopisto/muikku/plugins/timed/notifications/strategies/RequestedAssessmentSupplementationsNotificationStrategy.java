@@ -26,13 +26,13 @@ import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.jade.JadeLocaleHelper;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.evaluation.dao.SupplementationRequestDAO;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.timed.notifications.NotificationController;
 import fi.otavanopisto.muikku.plugins.timed.notifications.RequestedAssessmentSupplementationsNotificationController;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
-import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
-import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
@@ -74,6 +74,9 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
   
   @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private SupplementationRequestDAO supplementationRequestDAO;
   
   @Inject
   private RequestedAssessmentSupplementationsNotificationController requestedAssessmentSupplementationsNotificationController;
@@ -98,12 +101,15 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
       return;
     }
     
+    // Iterate through active students who belong to pre-configured groups (read: study programs)
+    
     SearchResult searchResult = requestedAssessmentSupplementationsNotificationController.searchActiveStudentIds(groups, FIRST_RESULT + offset, MAX_RESULTS);
     logger.log(Level.INFO, String.format("%s processing %d/%d", getClass().getSimpleName(), offset, searchResult.getTotalHitCount()));
     
     if ((offset + MAX_RESULTS) > searchResult.getTotalHitCount()) {
       offset = 0;
-    } else {
+    }
+    else {
       offset += MAX_RESULTS;
     }
     
@@ -111,7 +117,7 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
       String studentId = (String) result.get("id");
       
       if (StringUtils.isBlank(studentId)) {
-        logger.severe("Could not process user found from search index because it had a null id");
+        logger.severe("Could not process user found from search index because it had a null id or userEntityId");
         continue;
       }
       
@@ -121,68 +127,90 @@ public class RequestedAssessmentSupplementationsNotificationStrategy extends Abs
         logger.severe(String.format("Could not process user found from search index with id %s", studentId));
         continue;
       }
-     
+
+      UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
+      if (studentEntity == null) {
+        logger.severe(String.format("UserEntity with identifier %s not found", studentIdentifier));
+        continue;
+      }
+
+      // Iterate through the workspaces in which the student is currently active
+      
       List<WorkspaceEntity> workspaceEntities = workspaceUserEntityController.listActiveWorkspaceEntitiesByUserIdentifier(studentIdentifier);
       for (WorkspaceEntity workspaceEntity : workspaceEntities) {
         
         SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
         
-        if (requestedAssessmentSupplementationsNotificationController.countByStudentIdentifierAndWorkspaceIdentifier(studentIdentifier, workspaceIdentifier) == 0) {
+        // For each workspace, make sure the student hasn't been notified about it yet (i.e. don't send duplicate notifications)
         
-          List<WorkspaceAssessment> workspaceAssessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
+        if (requestedAssessmentSupplementationsNotificationController.countByStudentIdentifierAndWorkspaceIdentifier(studentIdentifier, workspaceIdentifier) == 0) {
+
+          // Skip if workspace doesn't have a supplementation request
           
-          if (workspaceAssessments != null && !workspaceAssessments.isEmpty()) {
-            WorkspaceAssessment assessment = workspaceAssessments.get(0); //TODO: loop and find latest
-            Date assessmentDate = assessment.getDate();
-            if (assessmentDate != null && assessmentDate.before(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant()))) {
-              GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleIdentifier());
-              GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeIdentifier());
-              
-              if (!grade.isPassingGrade()) {  
-                WorkspaceAssessmentRequest latestAssesmentRequest = null;
-                List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
-                for (WorkspaceAssessmentRequest assessmentRequest : studentAssesmentRequests) {
-                  Date assessmentRequestDate = assessmentRequest.getDate();
-                  if (assessmentRequestDate != null) {
-                    if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentRequestDate)) {
-                      latestAssesmentRequest = assessmentRequest;
-                    }
-                  }
-                }
-                
-                if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentDate)) {
-                  UserEntity studentEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
-                  Workspace workspace = workspaceController.findWorkspace(workspaceIdentifier);
-                  
-                  if (studentEntity != null && workspace != null) {
-                    Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
-                    Map<String, Object> templateModel = new HashMap<>();
-                    templateModel.put("workspaceName", workspace.getName());
-                    templateModel.put("locale", studentLocale);
-                    templateModel.put("localeHelper", jadeLocaleHelper);
-                    String notificationContent = renderNotificationTemplate("requested-assessment-supplementation-notification", templateModel);
-                    notificationController.sendNotification(
-                      localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
-                      localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
-                      notificationContent,
-                      studentEntity,
-                      studentIdentifier,
-                      "requestedassessmentsupplementation"
-                    );
-                    
-                    requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
-                  } else {
-                    logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
-                  }
-                }
+          SupplementationRequest supplementationRequest = supplementationRequestDAO.findByStudentAndWorkspace(studentEntity.getId(), workspaceEntity.getId());
+          if (supplementationRequest == null) {
+            continue;
+          }
+          
+          // Skip if workspace assessment is newer than supplementation request 
+          
+          WorkspaceAssessment workspaceAssessment = gradingController.findLatestWorkspaceAssessment(workspaceIdentifier, studentIdentifier);
+          if (workspaceAssessment != null && workspaceAssessment.getDate().getTime() >= supplementationRequest.getRequestDate().getTime()) { 
+            continue;
+          }
+          
+          // Skip if assessment request is newer than supplementation request
+          // TODO: At some point, refactor to simply fetch latest request by student + workspace
+
+          WorkspaceAssessmentRequest latestAssesmentRequest = null;
+          List<WorkspaceAssessmentRequest> studentAssesmentRequests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), studentIdentifier.getIdentifier());
+          for (WorkspaceAssessmentRequest assessmentRequest : studentAssesmentRequests) {
+            Date assessmentRequestDate = assessmentRequest.getDate();
+            if (assessmentRequestDate != null) {
+              if (latestAssesmentRequest == null || latestAssesmentRequest.getDate().before(assessmentRequestDate)) {
+                latestAssesmentRequest = assessmentRequest;
               }
             }
           }
+          if (latestAssesmentRequest != null && latestAssesmentRequest.getDate().getTime() >= supplementationRequest.getRequestDate().getTime()) {
+            continue;
+          }
+          
+          // Skip if supplementation request is not yet NOTIFICATION_THRESHOLD_DAYS old 
+          
+          if (!supplementationRequest.getRequestDate().before(Date.from(OffsetDateTime.now().minusDays(NOTIFICATION_THRESHOLD_DAYS).toInstant()))) {
+            continue;
+          }
+          
+          // If we haven't skipped so far, student needs to be notified
+
+          Workspace workspace = workspaceController.findWorkspace(workspaceIdentifier);
+          if (workspace != null) {
+            String workspaceName = StringUtils.isBlank(workspace.getNameExtension()) ? workspace.getName() : String.format("%s (%s)", workspace.getName(), workspace.getNameExtension()); 
+            Locale studentLocale = localeController.resolveLocale(LocaleUtils.toLocale(studentEntity.getLocale()));
+            Map<String, Object> templateModel = new HashMap<>();
+            templateModel.put("workspaceName", workspaceName);
+            templateModel.put("locale", studentLocale);
+            templateModel.put("localeHelper", jadeLocaleHelper);
+            String notificationContent = renderNotificationTemplate("requested-assessment-supplementation-notification", templateModel);
+            notificationController.sendNotification(
+              localeController.getText(studentLocale, "plugin.timednotifications.notification.category"),
+              localeController.getText(studentLocale, "plugin.timednotifications.notification.requestedassessmentsupplementation.subject"),
+              notificationContent,
+              studentEntity,
+              studentIdentifier,
+              "requestedassessmentsupplementation"
+            );
+            
+            // Store notification to avoid duplicates in the future
+            
+            requestedAssessmentSupplementationsNotificationController.createRequestedAssessmentSupplementationNotification(studentIdentifier, workspaceIdentifier);
+          } else {
+            logger.log(Level.SEVERE, String.format("Cannot send notification to student with identifier %s because UserEntity or workspace was not found", studentIdentifier.toId()));
+          }
         }
       }
-      
     }
-    
   }
   
   private Collection<Long> getGroups(){
