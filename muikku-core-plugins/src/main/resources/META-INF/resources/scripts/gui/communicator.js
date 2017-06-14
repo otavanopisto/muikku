@@ -93,7 +93,7 @@
           if (message.sender) {
             message.senderFullName = isStudent
               ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
             message.senderHasPicture = message.sender.hasImage;
           }
           message.caption = $('<div>').html(message.caption).text();
@@ -153,7 +153,7 @@
           if (message.sender) {
             message.senderFullName = isStudent
               ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
             message.senderHasPicture = message.sender.hasImage;
           }
           message.caption = $('<div>').html(message.caption).text();
@@ -214,7 +214,7 @@
           if (message.sender) {
             message.senderFullName = isStudent
               ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
             message.senderHasPicture = message.sender.hasImage;
           }
           message.caption = $('<div>').html(message.caption).text();
