@@ -1,29 +1,25 @@
 //This controller is in charge of the non-logged view
 
 loadModules([
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/base.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/websocket.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/generic-environment.js.jsf",
+  
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/carousel.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dialog.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dropdown.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/form.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/link.js.jsf",
-  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/menu.js.jsf",
-  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/notification-queue.js.jsf"
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/menu.js.jsf"
 ], function(){
-  ENSURE_DEPRECATED_NON_INTERACTION();
+  $(document).muikkuWebSocket();
+  $(document.body).baseControllerWidget();
+  $("#generic-environment").genericEvironmentControllerWidget();
   
   $(".carousel").carouselWidget();
   $(".dropdown").dropdownWidget();
   $(".link").linkWidget();
   $(".menu").menuWidget();
-  $(".notification-queue").notificationQueue();
-
-  $(".frontpage-interact-show-language-picker").click(function(e){
-    $("#language-picker").dropdownWidget('open', e.currentTarget);
-  });
-
-  $(".frontpage-interact-show-menu").click(function(e){
-    $("#main-menu").menuWidget('open');
-  });
 
   $(document).ready(function() {
     mApi().feed.feeds.read("oonews", {numItems: 5}).callback(function (err, news) {

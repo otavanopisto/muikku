@@ -1,13 +1,18 @@
 @import "../base/mixins";
+@import "../base/colors";
 
-* {
+*, *::before, *::after {
   @include prefix(drag, webkit ms o moz, none);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-// Remove this code once all the DEPRECATED elements in the html are removed
-[data-deprecated="DEPRECATED"] {
-  display: none;
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background-color: $color-default-body;
 }

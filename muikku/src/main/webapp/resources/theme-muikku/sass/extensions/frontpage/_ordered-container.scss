@@ -31,7 +31,7 @@ $frontpage-orderd-container-separation: 10;
       flex-direction: column;
       width: 100%;
     }
-    @include breakpoint-up($breakpoint-medium-screen){
+    @include breakpoint-up($breakpoint-landscape-pad){
       >.ordered-container-item.frontpage-ordered-container-item-otavan-opisto-social-media {
         flex-direction: row;
       }

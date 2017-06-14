@@ -2,333 +2,40 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="#{sessionBackingBean.loggedIn ? '/WEB-INF/templates/flex-main-env.xhtml' : '/WEB-INF/templates/flex-main-open.xhtml'}">
+  template="/WEB-INF/templates/main_function_environment.xhtml">
 
   <ui:param name="activeTrail" value="index" />
+  <ui:param name="controller" value="scripts/controllers/index.js" />
+  <ui:param name="stylesheet" value="css/index.css" />
 
-  <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
-    <script defer="defer" jsf:name="scripts/gui/locales.js" />
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js" />
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js" />
-    <script defer="defer" jsf:name="scripts/gui/dustloader.js" />
-
-    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <script defer="defer" jsf:name="scripts/controllers/index.frontpage.js" />
-    </ui:fragment>
-
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <!--
-      <script defer="defer" jsf:name="scripts/gui/widget-visits.js" />
-      <script defer="defer" jsf:name="scripts/gui/widget-courselist.js" />
-      <script defer="defer" jsf:name="scripts/gui/widget-messages.js" />
-      <script defer="defer" jsf:name="scripts/gui/widget-announcements.js" />
-      <script defer="defer" jsf:name="scripts/gui/widget-last-workspace.js" />
-      <script defer="defer" jsf:name="scripts/gui/check-contact-info.js" /> -->
-      
-      <script defer="defer" jsf:name="scripts/controllers/index.js" />
-    </ui:fragment>
-
-  </ui:define>
-
-  <ui:define name="styles">
-
-    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-      <link rel="stylesheet" type="text/css" href="/css/frontpage.css" />
-    </ui:fragment>
-
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <link rel="stylesheet" type="text/css" href="/css/index.css" />
-    </ui:fragment>
-
-  </ui:define>
-
-  <ui:define name="grid-content">
-
-    <!--  If user is not authenticated -->
-    <ui:fragment rendered="#{!sessionBackingBean.loggedIn}">
-
-      <!-- Studying -->
-      <section id="studying" class="frontpage container frontpage-container-section">
-        <h2 class="frontpage text frontpage-text-title">#{i18n.text['plugin.sectionTitle.studying']}</h2>
-        <div class="frontpage ordered-container ordered-container-row ordered-container-responsive frontpage-ordered-container-studying">
+  <ui:define name="content">
+    <div class="screen-container screen-container-full-height">
+      <div class="screen-container-wrapper">
+        <div class="main-function ordered-container ordered-container-row ordered-container-responsive main-function-ordered-container-for-panels">
           <div class="ordered-container-item">
-            <div class="frontpage card frontpage-card-studying">
-              <img class="card-image" src="/gfx/kuva_nettilukio.png" alt=""
-                title="" />
-              <div class="card-content">
-                <div class="card-title">#{i18n.text['plugin.studying.nettilukio.title']}</div>
-                <div class="card-text">#{i18n.text['plugin.studying.nettilukio.description']}</div>
+            <div class="main-function ordered-container main-function-ordered-container-for-panels-column">
+              <div class="ordered-container-item main-function panel">
               </div>
-              <div class="card-footer">
-                <a href="http://www.nettilukio.fi/nettilukio_esittely"
-                  class="frontpage button frontpage-button-studying-readmore">
-                  #{i18n.text['plugin.studying.readMore.link']} </a>
+              <div class="ordered-container-item main-function panel">
               </div>
             </div>
+          </div>
+          <div class="ordered-container-item main-function panel">
+            
           </div>
           <div class="ordered-container-item">
-            <div class="frontpage card frontpage-card-school">
-              <img class="card-image" src="/gfx/kuva_nettiperuskoulu.png"
-                alt="" title="" />
-              <div class="card-content">
-                <div class="card-title">#{i18n.text['plugin.studying.nettiperuskoulu.title']}</div>
-                <div class="card-text">#{i18n.text['plugin.studying.nettiperuskoulu.description']}</div>
+            <div class="main-function ordered-container main-function-ordered-container-for-panels-column">
+              <div class="ordered-container-item main-function panel">
+                
               </div>
-              <div class="card-footer">
-                <a href="http://www.nettilukio.fi/esittely_nettipk"
-                  class="frontpage button frontpage-button-school-readmore">
-                  #{i18n.text['plugin.studying.readMore.link']} </a>
+              <div class="ordered-container-item main-function panel">
+                
               </div>
             </div>
           </div>
-          <div class="ordered-container-item">
-            <div class="frontpage card frontpage-card-courses">
-              <img class="card-image" src="/gfx/kuva_aineopiskelu.png"
-                alt="" title="" />
-              <div class="card-content">
-                <div class="card-title">#{i18n.text['plugin.studying.aineopiskelu.title']}</div>
-                <div class="card-text">#{i18n.text['plugin.studying.aineopiskelu.description']}</div>
-              </div>
-              <div class="card-footer">
-                <a href="http://www.nettilukio.fi/esittely_nettipk"
-                  class="frontpage button frontpage-button-courses-readmore">
-                  #{i18n.text['plugin.studying.readMore.link']} </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Carousel -->
-      <section id="videos" class="frontpage container frontpage-container-section">
-        <div class="carousel">
-          <div class="carousel-item">
-            <div class="carousel-video">
-              <iframe width="1280" height="720"
-                src="https://www.youtube.com/embed/OD5Oj50vyh0?rel=0&amp;showinfo=0"
-                style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
-            </div>
-          </div>
-          <div class="carousel-item" style="display:none">
-            <div class="carousel-video">
-              <iframe width="1280" height="720"
-                src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0"
-                style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
-            </div>
-          </div>
-          <div class="carousel-item" style="display:none">
-            <div class="carousel-video">
-              <iframe width="1280" height="720"
-                src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0"
-                style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
-            </div>
-          </div>
-          <div class="carousel-item" style="display:none">
-            <div class="carousel-video">
-              <iframe width="1280" height="720"
-                src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0"
-                style="border: 0;" allowfullscreen="allowfullscreen"></iframe>
-            </div>
-          </div>
-        </div>
-        <div class="carousel-controls"></div>
-      </section>
-
-      <!-- Other details -->
-      <section id="news" class="frontpage container frontpage-container-section">
-
-        <h2 class="frontpage text frontpage-text-title">#{i18n.text['plugin.sectionTitle.news']}</h2>
-
-        <div class="frontpage ordered-container frontpage-ordered-container-news">
-
-          <!-- Events and news -->
-          <div class="ordered-container-item">
-            <div class="frontpage ordered-container ordered-container-row ordered-container-responsive frontpage-ordered-container-news-subcontainer">
-
-              <!-- Events -->
-              <div class="ordered-container-item">
-                <div class="card">
-                  <div class="card-content">
-                    <h2 class="card-title">
-                      #{i18n.text['plugin.frontpageBoxTitle.events']}</h2>
-                    <div class="frontpage-events-container"></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- News -->
-              <div class="ordered-container-item">
-                <div class="card">
-                  <div class="card-content">
-                    <h2 class="card-title">
-                      #{i18n.text['plugin.frontpageBoxTitle.news']}</h2>
-                    <div class="frontpage-news-container"></div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Otavan opisto and blog -->
-          <div class="ordered-container-item">
-            <div class="frontpage ordered-container ordered-container-row ordered-container-responsive frontpage-ordered-container-news-subcontainer">
-
-              <!-- Otavan opisto -->
-              <div class="ordered-container-item frontpage-card-container">
-                <div class="card">
-                  <div class="carousel">
-                    <div class="carousel-item">
-                      <img class="card-image" src="/gfx/kuva1.jpg" alt=""
-                        title="" />
-                      <div class="card-content">
-                        <div class="card-text">
-                          #{i18n.text['plugin.images.description.image1']}</div>
-                      </div>
-                    </div>
-
-                    <div class="carousel-item" style="display:none">
-                      <img class="card-image" src="/gfx/kuva2.jpg" alt=""
-                        title="" />
-                      <div class="card-content">
-                        <div class="card-text">
-                          #{i18n.text['plugin.images.description.image2']}</div>
-                      </div>
-                    </div>
-
-                    <div class="carousel-item" style="display:none">
-                      <img class="card-image" src="/gfx/kuva3.jpg" alt=""
-                        title="" />
-                      <div class="card-content">
-                        <div class="card-text">
-                          #{i18n.text['plugin.images.description.image3']}</div>
-                      </div>
-                    </div>
-
-                    <div class="carousel-item" style="display:none">
-                      <img class="card-image" src="/gfx/kuva4.jpg" alt=""
-                        title="" />
-                      <div class="card-content">
-                        <div class="card-text">
-                          #{i18n.text['plugin.images.description.image4']}</div>
-                      </div>
-                    </div>
-
-                    <div class="carousel-item" style="display:none">
-                      <img class="card-image" src="/gfx/kuva5.jpg" alt=""
-                        title="" />
-                      <div class="card-content">
-                        <div class="card-text">
-                          #{i18n.text['plugin.images.description.image5']}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-controls"></div>
-                </div>
-              </div>
-
-              <!-- Blog -->
-              <div class="ordered-container-item frontpage-card-container">
-                <div class="card">
-                  <div class="card-content">
-                    <h2 class="card-title">
-                      #{i18n.text['plugin.frontpageBoxTitle.blogs']}</h2>
-                    <div class="frontpage-blogs-container"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Otavan Opisto info -->
-      <section id="organization" class="frontpage container frontpage-container-section frontpage-card-container">
-
-        <!-- Otavan opisto card -->
-        <div class="frontpage card frontpage-card-otavan-opisto">
-
-          <!-- Otavan opisto info -->
-          <div class="frontpage ordered-container frontpage-ordered-container-otavan-opisto-info">
-            <div class="ordered-container-item frontpage-ordered-container-item-otavan-opisto-social-media">
-
-              <!-- Social media -->
-              <div class="frontpage container frontpage-container-otavan-opisto-social-media">
-                <h2 class="frontpage text text-uppercase frontpage-text-otavan-opisto-info-title">
-                  #{i18n.text['plugin.organization.some.title']}
-                </h2>
-                <a class="frontpage button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
-                <a class="frontpage button-social icon icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
-                <a class="frontpage button-social icon icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
-                <a class="frontpage button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
-                <a class="frontpage button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
-              </div>
-
-              <!-- Description -->
-              <div class="frontpage container frontpage-container-otavan-opisto-description">
-                <div class="frontpage text text-multiparagraph frontpage-text-otavan-opisto-info-description">
-                  <h:outputText value="#{i18n.text['plugin.organization.description']}" escape="false" />
-                </div>
-                <a href="http://www.otavanopisto.fi" target="top" class="frontpage button frontpage-button-website">
-                  www.otavanopisto.fi
-                </a>
-                <br/>
-                <a href="http://www.otavanopisto.fi/uutiskirje" target="top" class="frontpage button frontpage-button-newsletter">
-                  #{i18n.text['plugin.organization.newsletter.link']}
-                </a>
-              </div>
-            </div>
-
-            <!-- Otavan opisto logo -->
-            <div class="ordered-container-item frontpage-ordered-container-item-otavan-opisto-logo">
-              <img src="/gfx/of-organization-logo.jpg" alt="logo" title="logo" />
-            </div>
-          </div>
-
-        </div>
-      </section>
-    </ui:fragment>
-
-    <!--  If user is authenticated -->
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn and sessionBackingBean.isActiveUser}">
-	    <ui:fragment rendered="#{sessionBackingBean.isStudent}">
-	      <div class="flex-row">
-		      <div class="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-full md-flex-order-1 sm-flex-order-1">
-		        <div id="last-workspace">
-
-		        </div>
-		      </div>
-	      </div>
-	    </ui:fragment>
-	    <div class="flex-row">
-		    <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full lg-flex-cell-first md-flex-order-3 sm-flex-order-3">
-		      <div class="box box-max-width">
-		        <div id="visits"></div>
-		        <div id="workspaces"></div>
-		      </div>
-		    </div>
-		    <div class="lg-flex-cell12-4 md-flex-cell-8 sm-flex-cell-full  md-flex-order-4 sm-flex-order-4">
-		      <div class="box box-max-width">
-		        <div id="messages"></div>
-		      </div>
-		    </div>
-		    <div class="lg-flex-cell12-4 md-flex-cell-16 sm-flex-cell-full lg-flex-cell-last md-flex-order-2 sm-flex-order-2">
-		      <div class="box box-max-width">
-		        <div id="announcements"></div>
-		      </div>
-		    </div>
-	    </div>
-	  </ui:fragment>
-
-    <ui:fragment rendered="#{sessionBackingBean.loggedIn and not sessionBackingBean.isActiveUser}">
-      <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-        <div class="box box-max-width">
-          <h:outputText escape="false" value="#{i18n.text['plugin.frontpage.inactiveStudent.message']}" />
         </div>
       </div>
-    </ui:fragment>
+    </div>
   </ui:define>
 
 

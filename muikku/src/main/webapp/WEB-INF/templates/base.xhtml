@@ -5,6 +5,9 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets">
 
+<!-- Base takes no parameters -->
+<!-- Base takes four defines, styles, scripts, body and title, where title is not required -->
+
 <f:view locale="#{sessionBackingBean.locale}">
 
 <head>
@@ -13,9 +16,7 @@
   </ui:insert>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
-  <meta content="width=device-width, initial-scale=1.0, minimun-scale=1, maximum-scale=1"
-  name="viewport" />
-  <ui:insert name="meta"></ui:insert>
+  <meta content="width=device-width, initial-scale=1.0, minimun-scale=1, maximum-scale=1" name="viewport" />
   <script type="text/javascript">
     var CONTEXTPATH = "#{request.contextPath}";
     var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
@@ -57,18 +58,11 @@
     jsf:rendered="#{sessionBackingBean.testsRunning}" />
 
   <!-- Moment -->
-  <script defer="defer" type="text/javascript"
-    src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js" />
+  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js" />
 
   <!-- Interactions -->
-  <script defer="defer" type="text/javascript"
-    jsf:name="/scripts/cssanimate.js" />
-  <script defer="defer" type="text/javascript"
-    jsf:name="/scripts/module-manager.js" />
-
-  <!-- Notification Queue -->
-  <script defer="defer" type="text/javascript"
-    jsf:name="/scripts/widgets/element/notification-queue.js" />
+  <script defer="defer" type="text/javascript" jsf:name="/scripts/cssanimate.js" />
+  <script defer="defer" type="text/javascript" jsf:name="/scripts/module-manager.js" />
 
   <!-- Api resources -->
   <script defer="defer" type="text/javascript" src="#{request.contextPath}/rest/meta/resources?format=js"></script>
@@ -93,17 +87,61 @@
 
   <!-- Language -->
   <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/language.js" />
+  
+  <!-- JavaScript locales -->
+  <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}" />
+  
+  <!-- locales -->
+  <script defer="defer" jsf:name="scripts/gui/locales.js" />
+  
+  <!-- Dust -->
+  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js" />
+  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
+  <script defer="defer" jsf:name="scripts/gui/dustloader.js" />
 
-  <ui:insert name="scripts-main"></ui:insert>
+  <!-- Here goes what a page needs, usually their controllers -->
   <ui:insert name="scripts"></ui:insert>
+  
+  <!-- This controls and sets up all what this page has -->
+  <script defer="defer" jsf:name="scripts/controllers/general/base.js" />
 
-  <!-- Flex Grid -->
+  <!-- Flex Grid, DEPRECATED -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css" />
+  
+  <!-- Muikku icons -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.3/style.css" />
   <ui:insert name="styles"></ui:insert>
 </head>
 
 <body>
+  <div class="notification-queue">
+    <div class="notification-queue-items">
+      <ui:repeat var="message" value="#{facesContext.messageList}">
+        <ui:fragment rendered="#{message.severity.ordinal eq 0}">
+          <div data-severity="info" class="notification-queue-item notification-queue-item-info">
+            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
+          </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{message.severity.ordinal eq 1}">
+          <div data-severity="warn" class="notification-queue-item notification-queue-item-warn">
+            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
+          </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{message.severity.ordinal eq 2}">
+          <div data-severity="error" class="notification-queue-item notification-queue-item-error">
+            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
+          </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{message.severity.ordinal eq 3}">
+          <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal">
+            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
+          </div>
+        </ui:fragment>
+      </ui:repeat>
+      <h:messages globalOnly="false" style="display: none" />
+    </div>
+  </div>
+    
   <ui:insert name="body"></ui:insert>
 
   <!-- Google Analytics -->

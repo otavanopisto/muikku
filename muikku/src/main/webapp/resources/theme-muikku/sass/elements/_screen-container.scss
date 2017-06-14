@@ -13,9 +13,19 @@
   display: flex;
   justify-content: center;
   width: 100%;
+  overflow: visible;
 
   .screen-container-wrapper {
     max-width: $breakpoint-max-usable-screen;
     width: 100%;
+    overflow: visible;
+  }
+  
+  &.screen-container-full-height {
+    height: 100%;
+    
+    >.screen-container-wrapper {
+      height: 100%;
+    }
   }
 }

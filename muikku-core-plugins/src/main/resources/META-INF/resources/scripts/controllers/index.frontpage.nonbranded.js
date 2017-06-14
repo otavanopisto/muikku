@@ -6,6 +6,4 @@ loadModules([
   $(document).muikkuWebSocket();
   $(document.body).baseControllerWidget();
   $("#generic-environment").genericEvironmentControllerWidget();
-  
-  
 });

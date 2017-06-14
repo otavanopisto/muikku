@@ -1,4 +1,4 @@
-(function() {
+module([], function() {
   'use strict';
   
   $.widget("custom.muikkuWebSocket", {
@@ -77,7 +77,10 @@
     },
     
     trigger: function(event, data){
-      this._listeners.forEach(function(listener){
+      if (!this._listeners[event]){
+        return;
+      }
+      this._listeners[event].forEach(function(listener){
         listener(data);
       });
     },
@@ -257,9 +260,5 @@
       }
     }
   });
-
-  $(document).ready(function () {
-    $(document).muikkuWebSocket();
-  });
   
-}).call(this);
+});

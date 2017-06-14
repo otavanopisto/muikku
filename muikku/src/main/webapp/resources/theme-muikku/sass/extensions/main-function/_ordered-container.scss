@@ -1,0 +1,28 @@
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+.main-function.ordered-container {
+  &.main-function-ordered-container-for-panels {
+    padding-top: 80px;
+    height: 100%;
+    padding-bottom: 70px;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      
+      >.ordered-container-item {
+        overflow: visible;
+        padding: 0 20px 0 20px;
+      }
+    }
+  }
+  
+  &.main-function-ordered-container-for-panels-column {
+    height: 100%;
+    width: 100%;
+    overflow: visible;
+    
+    >.ordered-container-item {
+      flex: 1 0 auto;
+    }
+  }
+}
