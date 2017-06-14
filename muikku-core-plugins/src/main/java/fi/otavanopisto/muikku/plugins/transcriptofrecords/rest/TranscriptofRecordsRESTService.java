@@ -21,11 +21,14 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.security.Permission;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -42,10 +45,13 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
+import fi.otavanopisto.muikku.users.UserGroupController;
+import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -68,6 +74,15 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserGroupController userGroupController;
+
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private PermissionController permissionController;
 
   @Inject
   private CourseMetaController courseMetaController;
@@ -190,6 +205,23 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                       studentIdentifier);
               WorkspaceAssessment workspaceAssesment = studentAssessments.get(workspace.getWorkspaceIdentifier());
               
+              List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
+              
+              boolean canSignUp = false;
+              
+              Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
+              for (UserGroupEntity userGroupEntity : userGroupEntities) {
+                if (permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission)) {
+                  canSignUp = true;
+                  break;
+                }
+              }
+              
+              if (!canSignUp) {
+                continue;
+              }
+              
+              
               if (workspaceAssesment != null) {
                 workspaceAssessments.add(workspaceAssesment);
               }
@@ -234,7 +266,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 mandatority));
           }
         }
-        rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
+        if (!items.isEmpty()) {
+          rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
+        }
       }
     }
 
