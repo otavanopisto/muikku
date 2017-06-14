@@ -5,20 +5,16 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
-import fi.otavanopisto.muikku.dao.PluginDAO;
+import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
 
-public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialEvaluation> {
+public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMaterialEvaluation> {
 
-  @PersistenceContext (unitName = "muikku-evaluation-plugin")
-  private EntityManager entityManager;
-  
   private static final long serialVersionUID = 3327224161244826382L;
   
   public WorkspaceMaterialEvaluation create(Long studentEntityId, Long workspaceMaterialId, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, Long assessorEntityId, Date evaluated, String verbalAssessment) {
@@ -147,11 +143,5 @@ public class WorkspaceMaterialEvaluationDAO extends PluginDAO<WorkspaceMaterialE
   public void delete(WorkspaceMaterialEvaluation e) {
     super.delete(e);
   }
-  
-  @Override
-  protected EntityManager getEntityManager() {
-    return entityManager;
-  }
-
  
 }
