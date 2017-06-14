@@ -44,26 +44,26 @@
                     <ui:fragment rendered="#{!empty(profileBackingBean.emails)}">
                       <label>#{i18n.text['plugin.profile.emailsLabel']}</label>
                       <ui:repeat var="email" value="#{profileBackingBean.emails}">
-                        <div class="profile-user-email">#{email}</div>
+                        <div class="profile-user-data">#{email}</div>
                       </ui:repeat>
                     </ui:fragment>
                     <ui:fragment rendered="#{!empty(profileBackingBean.addresses)}">
                       <label>#{i18n.text['plugin.profile.addressesLabel']}</label>
                       <ui:repeat var="address" value="#{profileBackingBean.addresses}">
-                        <div class="profile-user-address">#{address}</div>
+                        <div class="profile-user-data">#{address}</div>
                       </ui:repeat>
                     </ui:fragment>
 
                     <ui:fragment rendered="#{!empty(profileBackingBean.phoneNumbers)}">
                       <label>#{i18n.text['plugin.profile.phoneNumbers']}</label>
                       <ui:repeat var="phoneNumber" value="#{profileBackingBean.phoneNumbers}">
-                        <div class="profile-user-phone-number">#{phoneNumber}</div>
+                        <div class="profile-user-data">#{phoneNumber}</div>
                       </ui:repeat>
                     </ui:fragment>
 
                     <ui:fragment rendered="#{!empty(profileBackingBean.studyStartDate)}">
                       <label>#{i18n.text['plugin.profile.studyStartDateLabel']}</label>
-                      <div class="profile-user-phone-number">
+                      <div class="profile-user-data">
                         <h:outputText value="#{profileBackingBean.studyStartDate}">
                           <f:convertDateTime type="date" dateStyle="short" />
                         </h:outputText>                      
@@ -72,7 +72,7 @@
                     
                     <ui:fragment rendered="#{!empty(profileBackingBean.studyTimeEnd)}">
                       <label>#{i18n.text['plugin.profile.studyTimeEndLabel']}</label>
-                      <div class="profile-user-phone-number">
+                      <div class="profile-user-data">
                         <h:outputText value="#{profileBackingBean.studyTimeEnd}">
                           <f:convertDateTime type="date" dateStyle="short" />
                         </h:outputText>                      
