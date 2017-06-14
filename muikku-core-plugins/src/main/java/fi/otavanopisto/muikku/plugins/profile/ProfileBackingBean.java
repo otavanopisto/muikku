@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.profile;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -35,7 +38,7 @@ public class ProfileBackingBean {
   
   @Inject
   private UserEmailEntityController userEmailEntityController;
-  
+
   @RequestAction
   @LoggedIn
   public String init() {
@@ -45,6 +48,28 @@ public class ProfileBackingBean {
     List<UserPhoneNumber> userPhoneNumbers = userController.listUserPhoneNumbers(user);
     
     displayName = user.getNickName() == null ? user.getDisplayName() : String.format("%s %s (%s)", user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
+    
+    studyStartDate = user.getStudyStartDate();
+    studyTimeEnd = user.getStudyTimeEnd();
+    
+    if (studyTimeEnd != null) {
+      OffsetDateTime now = OffsetDateTime.now();
+      
+      if (now.isBefore(studyTimeEnd)) {
+        studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
+        now = now.plusYears(studyTimeLeftYears);
+        
+        studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+        now = now.plusMonths(studyTimeLeftMonths);
+        
+        studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+        now = now.plusDays(studyTimeLeftDays);
+      }
+    } else {
+      studyTimeLeftYears = 0;
+      studyTimeLeftMonths = 0;
+      studyTimeLeftDays = 0;
+    }
     
     addresses = new ArrayList<>();
     for (UserAddress userAddress : userAddresses) {
@@ -78,8 +103,33 @@ public class ProfileBackingBean {
     return phoneNumbers;
   }
   
+  public Date getStudyStartDate() {
+    return studyStartDate != null ? Date.from(studyStartDate.toInstant()) : null;
+  }
+
+  public Date getStudyTimeEnd() {
+    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()) : null;
+  }
+
+  public long getStudyTimeYearsLeft() {
+    return studyTimeLeftYears;
+  }
+
+  public long getStudyTimeMonthsLeft() {
+    return studyTimeLeftMonths;
+  }
+  
+  public long getStudyTimeDaysLeft() {
+    return studyTimeLeftDays;
+  }
+  
   private String displayName;
   private List<String> emails;
   private List<String> addresses;
   private List<String> phoneNumbers;
+  private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyTimeEnd;
+  private long studyTimeLeftYears;
+  private long studyTimeLeftMonths;
+  private long studyTimeLeftDays;
 }

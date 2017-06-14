@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +28,9 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfReco
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -50,6 +55,9 @@ public class TranscriptofRecordsBackingBean {
   @Inject
   private TranscriptOfRecordsController transcriptOfRecordsController;
 
+  @Inject
+  private UserController userController;
+  
   @RequestAction
 	public String init() {
     if (!sessionController.hasEnvironmentPermission(TranscriptofRecordsPermissions.TRANSCRIPT_OF_RECORDS_VIEW)) {
@@ -83,6 +91,29 @@ public class TranscriptofRecordsBackingBean {
     }
     
     UserEntity loggedEntity = sessionController.getLoggedUserEntity();
+    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
+    
+    studyStartDate = user.getStudyStartDate();
+    studyTimeEnd = user.getStudyTimeEnd();
+    
+    if (studyTimeEnd != null) {
+      OffsetDateTime now = OffsetDateTime.now();
+      
+      if (now.isBefore(studyTimeEnd)) {
+        studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
+        now = now.plusYears(studyTimeLeftYears);
+        
+        studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+        now = now.plusMonths(studyTimeLeftMonths);
+        
+        studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+        now = now.plusDays(studyTimeLeftDays);
+      }
+    } else {
+      studyTimeLeftYears = 0;
+      studyTimeLeftMonths = 0;
+      studyTimeLeftDays = 0;
+    }
     
     List<TranscriptOfRecordsFile> transcriptOfRecordsFiles;
     if (loggedEntity != null) {
@@ -114,10 +145,33 @@ public class TranscriptofRecordsBackingBean {
     return transcriptOfRecordsController.shouldShowStudies(loggedUserEntity);
   }
   
+  public Date getStudyStartDate() {
+    return studyStartDate != null ? Date.from(studyStartDate.toInstant()) : null;
+  }
+
+  public Date getStudyTimeEnd() {
+    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()) : null;
+  }
+
+  public long getStudyTimeYearsLeft() {
+    return studyTimeLeftYears;
+  }
+
+  public long getStudyTimeMonthsLeft() {
+    return studyTimeLeftMonths;
+  }
+  
+  public long getStudyTimeDaysLeft() {
+    return studyTimeLeftDays;
+  }
   
   private String grades;
-  
   private String files;
+  private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyTimeEnd;
+  private long studyTimeLeftYears;
+  private long studyTimeLeftMonths;
+  private long studyTimeLeftDays;
 	
   public static class Grade {
     

@@ -61,6 +61,32 @@
                       </ui:repeat>
                     </ui:fragment>
 
+                    <ui:fragment rendered="#{!empty(profileBackingBean.studyStartDate)}">
+                      <label>#{i18n.text['plugin.profile.studyStartDateLabel']}</label>
+                      <div class="profile-user-phone-number">
+                        <h:outputText value="#{profileBackingBean.studyStartDate}">
+                          <f:convertDateTime type="date" dateStyle="short" />
+                        </h:outputText>                      
+                      </div>
+                    </ui:fragment>
+                    
+                    <ui:fragment rendered="#{!empty(profileBackingBean.studyTimeEnd)}">
+                      <label>#{i18n.text['plugin.profile.studyTimeEndLabel']}</label>
+                      <div class="profile-user-phone-number">
+                        <h:outputText value="#{profileBackingBean.studyTimeEnd}">
+                          <f:convertDateTime type="date" dateStyle="short" />
+                        </h:outputText>                      
+                        
+                        <ui:fragment rendered="#{(profileBackingBean.studyTimeYearsLeft+profileBackingBean.studyTimeMonthsLeft+profileBackingBean.studyTimeDaysLeft) gt 0}">
+                          (
+                          <ui:fragment rendered="#{profileBackingBean.studyTimeYearsLeft gt 0}">#{profileBackingBean.studyTimeYearsLeft} #{i18n.text['plugin.profile.studyTimeEndShort.y']} </ui:fragment>
+                          <ui:fragment rendered="#{profileBackingBean.studyTimeMonthsLeft gt 0}">#{profileBackingBean.studyTimeMonthsLeft} #{i18n.text['plugin.profile.studyTimeEndShort.m']} </ui:fragment>
+                          <ui:fragment rendered="#{profileBackingBean.studyTimeDaysLeft gt 0}">#{profileBackingBean.studyTimeDaysLeft} #{i18n.text['plugin.profile.studyTimeEndShort.d']} </ui:fragment>
+                          )
+                        </ui:fragment>
+                      </div>
+                    </ui:fragment>
+
                     <div class="profile-change-password-container">
                       <div class="profile-change-password">#{i18n.text['plugin.profile.changePassword.buttonLabel']}</div>
                     </div>

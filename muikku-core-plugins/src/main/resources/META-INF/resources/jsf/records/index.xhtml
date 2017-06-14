@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-main-functionality.xhtml">
@@ -58,6 +59,32 @@
       </ui:insert>
       <div class="mf-content-area">
         <div>
+          <ui:fragment rendered="#{!empty(transcriptofRecordsBackingBean.studyStartDate)}">
+            <label>#{i18n.text['plugin.records.studyStartDateLabel']}</label>
+            <div class="profile-user-phone-number">
+              <h:outputText value="#{transcriptofRecordsBackingBean.studyStartDate}">
+                <f:convertDateTime type="date" dateStyle="short" />
+              </h:outputText>                      
+            </div>
+          </ui:fragment>
+          
+          <ui:fragment rendered="#{!empty(transcriptofRecordsBackingBean.studyTimeEnd)}">
+            <label>#{i18n.text['plugin.records.studyTimeEndLabel']}</label>
+            <div class="profile-user-phone-number">
+              <h:outputText value="#{transcriptofRecordsBackingBean.studyTimeEnd}">
+                <f:convertDateTime type="date" dateStyle="short" />
+              </h:outputText>                      
+              
+              <ui:fragment rendered="#{(transcriptofRecordsBackingBean.studyTimeYearsLeft+transcriptofRecordsBackingBean.studyTimeMonthsLeft+transcriptofRecordsBackingBean.studyTimeDaysLeft) gt 0}">
+                (
+                <ui:fragment rendered="#{transcriptofRecordsBackingBean.studyTimeYearsLeft gt 0}">#{transcriptofRecordsBackingBean.studyTimeYearsLeft} #{i18n.text['plugin.records.studyTimeEndShort.y']} </ui:fragment>
+                <ui:fragment rendered="#{transcriptofRecordsBackingBean.studyTimeMonthsLeft gt 0}">#{transcriptofRecordsBackingBean.studyTimeMonthsLeft} #{i18n.text['plugin.records.studyTimeEndShort.m']} </ui:fragment>
+                <ui:fragment rendered="#{transcriptofRecordsBackingBean.studyTimeDaysLeft gt 0}">#{transcriptofRecordsBackingBean.studyTimeDaysLeft} #{i18n.text['plugin.records.studyTimeEndShort.d']} </ui:fragment>
+                )
+              </ui:fragment>
+            </div>
+          </ui:fragment>
+        
           <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
           </div>
           <div class="tr-content-main flex-row" data-files="#{transcriptofRecordsBackingBean.files}">
