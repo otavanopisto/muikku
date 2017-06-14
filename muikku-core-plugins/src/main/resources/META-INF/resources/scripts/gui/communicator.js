@@ -90,10 +90,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -148,10 +150,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -207,10 +211,12 @@
         .read(this._labelId, threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -264,10 +270,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -332,10 +340,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();

@@ -679,9 +679,12 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    return Response.ok(
-      restModels.getSenderBasicInfo(communicatorMessage)
-    ).build();
+    UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(communicatorMessage);
+    
+    if (senderBasicInfo != null)
+      return Response.ok(senderBasicInfo).build();
+    else
+      return Response.status(Status.NOT_FOUND).build();
   }
 
   @GET
