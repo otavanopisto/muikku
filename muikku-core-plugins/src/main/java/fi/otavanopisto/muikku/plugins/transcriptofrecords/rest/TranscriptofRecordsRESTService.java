@@ -213,6 +213,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               for (UserGroupEntity userGroupEntity : userGroupEntities) {
                 if (permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission)) {
                   canSignUp = true;
+                  break;
                 }
               }
               
