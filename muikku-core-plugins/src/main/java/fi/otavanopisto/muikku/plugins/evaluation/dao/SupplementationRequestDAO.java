@@ -3,21 +3,17 @@ package fi.otavanopisto.muikku.plugins.evaluation.dao;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.dao.PluginDAO;
+import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest_;
 
-public class SupplementationRequestDAO extends PluginDAO<SupplementationRequest> {
+public class SupplementationRequestDAO extends CorePluginsDAO<SupplementationRequest> {
 
   private static final long serialVersionUID = -7069799142177500546L;
-  
-  @PersistenceContext (unitName = "muikku-evaluation-plugin")
-  private EntityManager entityManager;
   
   public SupplementationRequest createSupplementationRequest(
       Long userEntityId,
@@ -132,11 +128,6 @@ public class SupplementationRequestDAO extends PluginDAO<SupplementationRequest>
   public void archive(SupplementationRequest supplementationRequest) {
     supplementationRequest.setArchived(Boolean.TRUE);
     getEntityManager().persist(supplementationRequest);
-  }
-  
-  @Override
-  protected EntityManager getEntityManager() {
-    return entityManager;
   }
 
 }
