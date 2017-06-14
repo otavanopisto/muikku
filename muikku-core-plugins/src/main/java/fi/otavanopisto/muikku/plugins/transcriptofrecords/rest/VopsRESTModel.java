@@ -4,12 +4,19 @@ import java.util.List;
 
 public class VopsRESTModel {
   public static class VopsItem {
-    public VopsItem(int courseNumber, CourseCompletionState state, String educationSubtype, Mandatority mandatority) {
+    public VopsItem(
+        int courseNumber,
+        CourseCompletionState state,
+        String educationSubtype,
+        Mandatority mandatority,
+        String grade
+    ) {
       super();
       this.courseNumber = courseNumber;
       this.state = state;
       this.educationSubtype = educationSubtype;
       this.mandatority = mandatority;
+      this.grade = grade;
     }
     
     public int getCourseNumber() {
@@ -30,11 +37,18 @@ public class VopsRESTModel {
     public void setMandatority(Mandatority mandatority) {
       this.mandatority = mandatority;
     }
+    public String getGrade() {
+      return grade;
+    }
+    public void setGrade(String grade) {
+      this.grade = grade;
+    }
 
     private int courseNumber;
     private CourseCompletionState state;
     private String educationSubtype;
     private Mandatority mandatority;
+    private String grade;
   }
   
   public static class VopsRow {
