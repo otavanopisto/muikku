@@ -6,13 +6,12 @@
   margin-top: 20px;
   
   &::before {
-    z-index: -1;
     @include breakpoint-down($breakpoint-portrait-pad){
       border-left: none;
       border-right: none;
     }
     @include breakpoint-up($breakpoint-landscape-pad){
-      top: 48px;
+      top: 42px;
     }
   }
 }

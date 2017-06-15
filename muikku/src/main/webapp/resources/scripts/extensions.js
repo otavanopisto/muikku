@@ -49,4 +49,9 @@
       });
     }
   });
+  
+  $.getWidgetContainerFor = function(name, klass){
+    klass = klass ? "." + klass : "";
+    return $('[data-controller-widget="' + name + '"]' + klass);
+  }
 })(jQuery);

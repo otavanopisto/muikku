@@ -1,33 +1,37 @@
 // Generic
-$color-warn: #ef6000;
-$color-warn-contrast: #fff;
-
-$color-info: #549fca;
-$color-info-contrast: #fff;
-
-$color-fatal: #bf3000;
-$color-fatal-contrast: #fff;
-
-$color-error: #ff6600;
-$color-error-contrast: #fff;
-
-$color-success: #49af4e;
-$color-success-contrast: #fff;
-
-$color-loading: #343333;
-$color-loading-contrast: #fff;
-
-$color-primary: #009fe3;
-$color-primary-contrast: #fff;
-
-$color-secondary: #00af00;
-$color-secondary-contrast: #fff;
-
-$color-inverse: #343333;
-$color-inverse-contrast: #fff;
-
 $color-default: #fff;
 $color-default-contrast: #343333;
+
+$color-inverse: $color-default-contrast;
+$color-inverse-contrast: $color-default;
+
+$color-warn: #ef6000;
+$color-warn-contrast: $color-default;
+
+$color-info: #549fca;
+$color-info-contrast: $color-default;
+
+$color-fatal: #bf3000;
+$color-fatal-contrast: $color-default;
+
+$color-error: #ff6600;
+$color-error-contrast: $color-default;
+
+$color-success: #49af4e;
+$color-success-contrast: $color-default;
+
+$color-loading: $color-inverse;
+$color-loading-contrast: $color-default;
+
+$color-primary: #009fe3;
+$color-primary-contrast: $color-default;
+
+$color-secondary: #00af00;
+$color-secondary-contrast: $color-default;
+
+// General
+$color-default-body: #f5f5f5;
+$color-overlay-background: rgba(0, 0, 0, 0.65);
 
 // Notification queue item theme
 $color-notification-queue-item-theme: (
@@ -115,15 +119,15 @@ $color-separator-theme: (
 
 // Navbar
 $color-navbar-default-background: #f5f5f5;
-$color-navbar-default-text: #343333;
+$color-navbar-default-text: $color-inverse;
 $color-navbar-default-shadow: rgba(0, 0, 0, 0.2);
 
 // Links
-$color-link-default-text: #343333;
-$color-link-highlight-text: #00af00;
-$color-link-hover-text: #009fe3;
-$color-link-active-text: #009fe3;
-$color-link-inverse-text: #fff;
+$color-link-default-text: $color-inverse;
+$color-link-highlight-text: $color-secondary;
+$color-link-hover-text: $color-primary;
+$color-link-active-text: $color-primary;
+$color-link-inverse-text: $color-default;
 $color-link-default-background: rgba(0, 0, 0, 0);
 $color-link-highlight-background: rgba(0, 0, 0, 0);
 $color-link-hover-background: rgba(0, 0, 0, 0.05);
@@ -132,64 +136,58 @@ $color-link-inverse-background: invisible;
 
 // Menu
 $color-menu-default-background: #f5f5f5;
-$color-menu-default-text: #343333;
+$color-menu-default-text: $color-inverse;
 $color-menu-default-header-background: rgba(0, 0, 0, 0.1);
-$color-menu-default-header-button-close: #fff;
+$color-menu-default-header-button-close: $color-default;
 $color-menu-default-header-button-close-background-active: rgba(255, 255, 255, 0.3);
 
 // dropdown
 $color-dropdown-default-background: #494949;
-$color-dropdown-default-text: #fff;
+$color-dropdown-default-text: $color-default;
 $color-dropdown-default-shadow: rgba(0, 0, 0, 0.3);
 
 // bubble
-$color-bubble-default-title: #009fe3;
-$color-bubble-default-content: #343333;
+$color-bubble-default-title: $color-primary;
+$color-bubble-default-content: $color-inverse;
 $color-bubble-default-border: #02a0e3;
-$color-bubble-default-highlight-border: #ef6000;
-$color-bubble-default-background: #fff;
+$color-bubble-default-highlight-border: $color-warn;
+$color-bubble-default-background: $color-default;
 $color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
 
 // footer
 $color-footer-default-background: #454545;
-$color-footer-default-text: #fff;
+$color-footer-default-text: $color-default;
 
 // card
-$color-card-default-background: #fff;
+$color-card-default-background: $color-default;
 $color-card-default-border: #e2e3e3;
-$color-card-default-text: #343333;
+$color-card-default-text: $color-inverse;
 
 // dialog
-$color-dialog-default-background: #fff;
+$color-dialog-default-background: $color-default;
 $color-dialog-default-border: #e2e3e3;
-$color-dialog-default-text: #343333;
-$color-dialog-default-title-text: #343333;
-
-// Overlay
-$color-overlay-background: rgba(0, 0, 0, 0.65);
-
-// General
-$color-default-body: #f5f5f5;
+$color-dialog-default-text: $color-inverse;
+$color-dialog-default-title-text: $color-inverse;
 
 // Background
 $color-background-container-default-background: #f5f5f5;
-$color-background-container-default-text: #343333;
+$color-background-container-default-text: $color-inverse;
 
 // social button
 $color-button-social-default-background: #454545;
-$color-button-social-default-text: #fff;
-$color-button-social-highlight-background: #009fe3;
-$color-button-social-highlight-text: #fff;
+$color-button-social-default-text: $color-default;
+$color-button-social-highlight-background: $color-primary;
+$color-button-social-highlight-text: $color-default;
 
 // feed
-$color-feed-default-text: #343333;
+$color-feed-default-text: $color-inverse;
 $color-feed-default-date: #8c8c8c;
 $color-feed-item-description-active: $color-primary;
 
 // carousel
 $color-carousel-default-dot-background: #afafaf;
-$color-carousel-default-dot-border: #fff;
-$color-carousel-default-dot-active-background: #ef6000;
+$color-carousel-default-dot-border: $color-default;
+$color-carousel-default-dot-active-background: $color-warn;
 
 // hero
 $color-hero-default-background: #0089c6;
@@ -200,7 +198,7 @@ $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 // notification queue
 $color-notification-queue-item-container-background: #666;
 $color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
-$color-notification-queue-item-text: #fff;
+$color-notification-queue-item-text: $color-default;
 
 //panel
 $color-panel-background: $color-default;

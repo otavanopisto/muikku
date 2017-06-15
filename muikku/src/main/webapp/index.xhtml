@@ -14,22 +14,48 @@
         <div class="main-function ordered-container ordered-container-row ordered-container-responsive main-function-ordered-container-for-panels">
           <div class="ordered-container-item">
             <div class="main-function ordered-container main-function-ordered-container-for-panels-column">
+              <ui:fragment rendered="#{sessionBackingBean.isStudent}">
+                <div class="ordered-container-item main-function panel">
+                  <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-continue-studies">
+                    <span class="icon icon-revert"></span>
+                    <span>#{i18n.text['plugin.frontPage.lastWorkspace.continueStudiesLink']}</span>
+                  </div>
+                  <div data-controller-widget="panel-continue-studies"></div>
+                </div>
+              </ui:fragment>
               <div class="ordered-container-item main-function panel">
-              </div>
-              <div class="ordered-container-item main-function panel">
+                <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-workspaces">
+                  <span class="icon icon-books"></span>
+                  <span>#{i18n.text['plugin.frontPage.workspaces.title']}</span>
+                </div>
+                <div data-controller-widget="panel-workspaces"></div>
               </div>
             </div>
           </div>
           <div class="ordered-container-item main-function panel">
-            
+            <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-last-messages">
+              <span class="icon icon-envelope"></span>
+              <span>#{i18n.text['plugin.frontPage.communicator.lastMessages']}</span>
+            </div>
+            <div data-controller-widget="panel-last-messages"></div>
           </div>
           <div class="ordered-container-item">
             <div class="main-function ordered-container main-function-ordered-container-for-panels-column">
               <div class="ordered-container-item main-function panel">
+                <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-important">
+                  <span class="icon icon-star"></span>
+                  <span>#{i18n.text['plugin.frontPage.important']}</span>
+                </div>
+                <div data-controller-widget="panel-important">
                 
+                </div>
               </div>
               <div class="ordered-container-item main-function panel">
-                
+                <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-announcements">
+                  <span class="icon icon-announcer"></span>
+                  <span>#{i18n.text['plugin.frontPage.announcements']}</span>
+                </div>
+                <div data-controller-widget="panel-announcements"></div>
               </div>
             </div>
           </div>

@@ -24,5 +24,13 @@
     >.ordered-container-item {
       flex: 1 0 auto;
     }
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      
+      >.ordered-container-item {
+        overflow: visible;
+        padding: 0 20px 0 20px;
+      }
+    }
   }
 }

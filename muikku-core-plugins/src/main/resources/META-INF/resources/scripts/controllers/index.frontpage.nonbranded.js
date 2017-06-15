@@ -5,5 +5,5 @@ loadModules([
 ], function(){
   $(document).muikkuWebSocket();
   $(document.body).baseControllerWidget();
-  $("#generic-environment").genericEvironmentControllerWidget();
+  $.getWidgetContainerFor("generic-environment").genericEvironmentControllerWidget();
 });

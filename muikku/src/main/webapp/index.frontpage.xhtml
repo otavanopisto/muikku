@@ -14,7 +14,7 @@
 
   <ui:define name="body">
   
-    <div id="generic-environment">
+    <div data-controller-widget="generic-environment">
       <nav class="frontpage navbar">
         <div class="navbar-wrapper">
           <div class="navbar-logo"></div>
@@ -241,9 +241,8 @@
                 <div class="ordered-container-item">
                   <div class="card">
                     <div class="card-content">
-                      <h2 class="card-title">
-                        #{i18n.text['plugin.frontpageBoxTitle.events']}</h2>
-                      <div class="frontpage-events-container"></div>
+                      <h2 class="card-title">#{i18n.text['plugin.frontpageBoxTitle.events']}</h2>
+                      <div data-controller-widget="feed" class="frontpage-events-container"></div>
                     </div>
                   </div>
                 </div>
@@ -252,9 +251,8 @@
                 <div class="ordered-container-item">
                   <div class="card">
                     <div class="card-content">
-                      <h2 class="card-title">
-                        #{i18n.text['plugin.frontpageBoxTitle.news']}</h2>
-                      <div class="frontpage-news-container"></div>
+                      <h2 class="card-title">#{i18n.text['plugin.frontpageBoxTitle.news']}</h2>
+                      <div data-controller-widget="feed" class="frontpage-news-container"></div>
                     </div>
                   </div>
                 </div>
@@ -271,11 +269,9 @@
                   <div class="card">
                     <div class="carousel">
                       <div class="carousel-item">
-                        <img class="card-image" src="/gfx/kuva1.jpg" alt=""
-                          title="" />
+                        <img class="card-image" src="/gfx/kuva1.jpg" alt="" title="" />
                         <div class="card-content">
-                          <div class="card-text">
-                            #{i18n.text['plugin.images.description.image1']}</div>
+                          <div class="card-text">#{i18n.text['plugin.images.description.image1']}</div>
                         </div>
                       </div>
   
@@ -283,17 +279,14 @@
                         <img class="card-image" src="/gfx/kuva2.jpg" alt=""
                           title="" />
                         <div class="card-content">
-                          <div class="card-text">
-                            #{i18n.text['plugin.images.description.image2']}</div>
+                          <div class="card-text">#{i18n.text['plugin.images.description.image2']}</div>
                         </div>
                       </div>
   
                       <div class="carousel-item" style="display:none">
-                        <img class="card-image" src="/gfx/kuva3.jpg" alt=""
-                          title="" />
+                        <img class="card-image" src="/gfx/kuva3.jpg" alt="" title="" />
                         <div class="card-content">
-                          <div class="card-text">
-                            #{i18n.text['plugin.images.description.image3']}</div>
+                          <div class="card-text">#{i18n.text['plugin.images.description.image3']}</div>
                         </div>
                       </div>
   
@@ -301,8 +294,7 @@
                         <img class="card-image" src="/gfx/kuva4.jpg" alt=""
                           title="" />
                         <div class="card-content">
-                          <div class="card-text">
-                            #{i18n.text['plugin.images.description.image4']}</div>
+                          <div class="card-text">#{i18n.text['plugin.images.description.image4']}</div>
                         </div>
                       </div>
   
@@ -323,9 +315,8 @@
                 <div class="ordered-container-item frontpage-card-container">
                   <div class="card">
                     <div class="card-content">
-                      <h2 class="card-title">
-                        #{i18n.text['plugin.frontpageBoxTitle.blogs']}</h2>
-                      <div class="frontpage-blogs-container"></div>
+                      <h2 class="card-title">#{i18n.text['plugin.frontpageBoxTitle.blogs']}</h2>
+                      <div data-controller-widget="feed" class="frontpage-blogs-container"></div>
                     </div>
                   </div>
                 </div>

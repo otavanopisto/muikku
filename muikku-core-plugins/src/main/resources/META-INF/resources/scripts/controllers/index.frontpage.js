@@ -4,6 +4,7 @@ loadModules([
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/base.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/websocket.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/generic-environment.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/feed.js.jsf",
   
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/carousel.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dialog.js.jsf",
@@ -14,35 +15,30 @@ loadModules([
 ], function(){
   $(document).muikkuWebSocket();
   $(document.body).baseControllerWidget();
-  $("#generic-environment").genericEvironmentControllerWidget();
+  
+  $.getWidgetContainerFor("generic-environment").genericEvironmentControllerWidget();
   
   $(".carousel").carouselWidget();
   $(".dropdown").dropdownWidget();
   $(".link").linkWidget();
   $(".menu").menuWidget();
-
-  $(document).ready(function() {
-    mApi().feed.feeds.read("oonews", {numItems: 5}).callback(function (err, news) {
-      renderDustTemplate('frontpage/feed_item.dust', {entries: news}, function(text) {
-        $(".frontpage-news-container").html(text);
-      });
-    });
+  
+  $.getWidgetContainerFor("feed", "frontpage-news-container").feedControllerWidget({
+    feedItemTemplate: 'index-frontpage/feed-item.dust',
+    queryOptions: {numItems: 5},
+    feedReadTarget: "oonews"
   });
-
-  $(document).ready(function() {
-    mApi().feed.feeds.read("ooevents", {numItems: 4, order: "ASCENDING"}).callback(function (err, events) {
-      renderDustTemplate('frontpage/feed_item.dust', {entries: events}, function(text) {
-        $(".frontpage-events-container").html(text);
-      });
-    });
+  
+  $.getWidgetContainerFor("feed", "frontpage-events-container").feedControllerWidget({
+    feedItemTemplate: 'index-frontpage/feed-item.dust',
+    queryOptions: {numItems: 4, order: "ASCENDING"},
+    feedReadTarget: "ooevents"
   });
-
-  $(document).ready(function() {
-    mApi().feed.feeds.read("eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia", {numItems: 6}).callback(function (err, blogs) {
-      renderDustTemplate('frontpage/feed_item.dust', {entries: blogs}, function(text) {
-        $(".frontpage-posts-container").html(text);
-      });
-    });
+  
+  $.getWidgetContainerFor("feed", "frontpage-blogs-container").feedControllerWidget({
+    feedItemTemplate: 'index-frontpage/feed-item.dust',
+    queryOptions: {numItems: 6},
+    feedReadTarget: "eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia"
   });
 
   function resetPassword(email){
@@ -70,7 +66,7 @@ loadModules([
   var frontpageDialogCreated = false;
   $(".frontpage-interact-forgot-password").click(function(){
     if (!frontpageDialogCreated){
-      renderDustTemplate("frontpage/forgotpassword_dialog.dust", {}, function(text){
+      renderDustTemplate("index-frontpage/forgotpassword-dialog.dust", {}, function(text){
         var dialog = $(text);
         dialog.appendTo(document.body);
         dialog.dialogWidget();

@@ -1,3 +1,63 @@
 .main-function.text {
-  
+  &.main-function-text-for-panels-title {
+    font-size: 24px;
+    color: $color-main-function-text-for-panels-title;
+    padding-bottom: 10px;
+    font-weight: 300;
+    text-transform: uppercase;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-bottom: 24px;
+    }
+    
+    span {
+      vertical-align: middle;
+    }
+    
+    .icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 100%;
+      font-size: 20px;
+      line-height: 35px;
+      vertical-align: middle;
+      text-align: center;
+      display: inline-block;
+    }
+    
+    &.main-function-text-for-panels-title-continue-studies {
+      .icon {
+        background-color: $color-main-function-text-for-panels-title-continue-studies-icon-background;
+        color: $color-main-function-text-for-panels-title-continue-studies-icon-color;
+      }
+    }
+    
+    &.main-function-text-for-panels-title-workspaces {
+      .icon {
+        background-color: $color-main-function-text-for-panels-title-workspaces-icon-background;
+        color: $color-main-function-text-for-panels-title-workspaces-icon-color;
+      }
+    }
+    
+    &.main-function-text-for-panels-title-last-messages {
+      .icon {
+        background-color: $color-main-function-text-for-panels-title-last-messages-icon-background;
+        color: $color-main-function-text-for-panels-title-last-messages-icon-color;
+      }
+    }
+    
+    &.main-function-text-for-panels-title-important {
+      .icon {
+        background-color: $color-main-function-text-for-panels-title-important-icon-background;
+        color: $color-main-function-text-for-panels-title-important-icon-color;
+      }
+    }
+    
+    &.main-function-text-for-panels-title-announcements {
+      .icon {
+        background-color: $color-main-function-text-for-panels-title-announcements-icon-background;
+        color: $color-main-function-text-for-panels-title-announcements-icon-color;
+      }
+    }
+  }
 }
