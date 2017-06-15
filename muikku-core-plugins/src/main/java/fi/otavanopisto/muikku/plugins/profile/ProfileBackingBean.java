@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -14,6 +15,7 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -39,6 +41,9 @@ public class ProfileBackingBean {
   @Inject
   private UserEmailEntityController userEmailEntityController;
 
+  @Inject
+  private LocaleController localeController;
+
   @RequestAction
   @LoggedIn
   public String init() {
@@ -51,24 +56,35 @@ public class ProfileBackingBean {
     
     studyStartDate = user.getStudyStartDate();
     studyTimeEnd = user.getStudyTimeEnd();
-    
+    studyTimeLeftStr = "";
+
     if (studyTimeEnd != null) {
       OffsetDateTime now = OffsetDateTime.now();
+      Locale locale = sessionController.getLocale();
       
       if (now.isBefore(studyTimeEnd)) {
-        studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
+        long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
         now = now.plusYears(studyTimeLeftYears);
+        if (studyTimeLeftYears > 0) {
+          studyTimeLeftStr += studyTimeLeftYears + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.y");
+        }
         
-        studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+        long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
         now = now.plusMonths(studyTimeLeftMonths);
+        if (studyTimeLeftMonths > 0) {
+          if (studyTimeLeftStr.length() > 0)
+            studyTimeLeftStr += " ";
+          studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
+        }
         
-        studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+        long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
         now = now.plusDays(studyTimeLeftDays);
+        if (studyTimeLeftDays > 0) {
+          if (studyTimeLeftStr.length() > 0)
+            studyTimeLeftStr += " ";
+          studyTimeLeftStr += studyTimeLeftDays + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
+        }
       }
-    } else {
-      studyTimeLeftYears = 0;
-      studyTimeLeftMonths = 0;
-      studyTimeLeftDays = 0;
     }
     
     addresses = new ArrayList<>();
@@ -111,25 +127,15 @@ public class ProfileBackingBean {
     return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()) : null;
   }
 
-  public long getStudyTimeYearsLeft() {
-    return studyTimeLeftYears;
+  public String getStudyTimeLeftStr() {
+    return studyTimeLeftStr;
   }
 
-  public long getStudyTimeMonthsLeft() {
-    return studyTimeLeftMonths;
-  }
-  
-  public long getStudyTimeDaysLeft() {
-    return studyTimeLeftDays;
-  }
-  
   private String displayName;
   private List<String> emails;
   private List<String> addresses;
   private List<String> phoneNumbers;
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyTimeEnd;
-  private long studyTimeLeftYears;
-  private long studyTimeLeftMonths;
-  private long studyTimeLeftDays;
+  private String studyTimeLeftStr;
 }

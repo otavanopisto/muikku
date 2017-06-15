@@ -77,12 +77,8 @@
                           <f:convertDateTime type="date" dateStyle="short" />
                         </h:outputText>                      
                         
-                        <ui:fragment rendered="#{(profileBackingBean.studyTimeYearsLeft+profileBackingBean.studyTimeMonthsLeft+profileBackingBean.studyTimeDaysLeft) gt 0}">
-                          (
-                          <ui:fragment rendered="#{profileBackingBean.studyTimeYearsLeft gt 0}">#{profileBackingBean.studyTimeYearsLeft} #{i18n.text['plugin.profile.studyTimeEndShort.y']} </ui:fragment>
-                          <ui:fragment rendered="#{profileBackingBean.studyTimeMonthsLeft gt 0}">#{profileBackingBean.studyTimeMonthsLeft} #{i18n.text['plugin.profile.studyTimeEndShort.m']} </ui:fragment>
-                          <ui:fragment rendered="#{profileBackingBean.studyTimeDaysLeft gt 0}">#{profileBackingBean.studyTimeDaysLeft} #{i18n.text['plugin.profile.studyTimeEndShort.d']} </ui:fragment>
-                          )
+                        <ui:fragment rendered="#{!empty(profileBackingBean.studyTimeLeftStr)}">
+                          <h:outputText value=" (#{profileBackingBean.studyTimeLeftStr})"/>
                         </ui:fragment>
                       </div>
                     </ui:fragment>
