@@ -69,6 +69,10 @@ public class NoPassedCoursesNotificationController {
     return noPassedCoursesNotificationDAO.create(studentIdentifier.toId(), new Date());
   }
   
+  public NoPassedCoursesNotification findLatestByUserIdentifier(SchoolDataIdentifier identifier) {
+    return noPassedCoursesNotificationDAO.findLatestByUserIdentifier(identifier);
+  }
+  
   public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date) {
     List<SchoolDataIdentifier> results = new ArrayList<>();
     List<NoPassedCoursesNotification> noPassedCoursesNotifications = noPassedCoursesNotificationDAO.listByDateAfter(date);
