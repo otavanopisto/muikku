@@ -1589,15 +1589,19 @@
     
     _onNavigateNewerThreadClick: function (event) {
       if (!$(event.target).closest(".mf-tool-container").hasClass("disabled")) {
-        if (this._newerThreadId)
-          this.loadThread(this._folderId, this._newerThreadId)
+        if (this._newerThreadId) {
+          var communicator = $(".communicator").communicator("instance");
+          communicator.loadThread(this._folderId, this._newerThreadId);
+        }
       }
     },
     
     _onNavigateOlderThreadClick: function (event) {
       if (!$(event.target).closest(".mf-tool-container").hasClass("disabled")) {
-        if (this._olderThreadId)
-          this.loadThread(this._folderId, this._olderThreadId)
+        if (this._olderThreadId) {
+          var communicator = $(".communicator").communicator("instance");
+          communicator.loadThread(this._folderId, this._olderThreadId);
+        }
       }
     },
     
