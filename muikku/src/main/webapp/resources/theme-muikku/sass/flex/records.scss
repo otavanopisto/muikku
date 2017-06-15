@@ -32,6 +32,24 @@
   }
 }
 
+.tr-study-information {
+  background-color: $environment-background-color;
+  margin: 0 0 20px;
+  padding: 5px 15px;
+}
+
+.tr-studydate-item {
+  padding: 4px 0;
+}
+
+.tr-studydate-item-label {
+  font-size: 14px;
+}
+
+.tr-studydate-item-data {
+  padding: 5px 5px 5px 0; 
+}
+
 .tr-vops {
   width: 100%;
 }
