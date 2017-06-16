@@ -24,6 +24,10 @@ public class GuiderPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY = "GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY";
 
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDY_GUIDER  } )
+  public static final String GUIDER_LIST_NOTIFICATIONS = "GUIDER_LIST_NOTIFICATIONS";
+
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
   public static final String GUIDER_DELETE_TORFILE = "GUIDER_DELETE_TORFILE";
 

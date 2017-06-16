@@ -1230,6 +1230,18 @@
               }
             }, this))
         }, this))
+        .on('$', $.proxy(function(user, notificationsCallback) {
+          mApi().guider.users.latestNotifications
+            .read(this.options.userIdentifier)
+            .callback($.proxy(function(notificationsErr, notifications) {
+              if (notificationsErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', notificationsErr);
+              } else {
+                user.notifications = notifications;
+                notificationsCallback();
+              }
+            }, this))
+        }, this))
 
         .callback($.proxy(function(err, user){
           if (err) {
