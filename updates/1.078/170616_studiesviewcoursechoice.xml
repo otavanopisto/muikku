@@ -3,10 +3,10 @@
   <sql>
     CREATE TABLE StudiesViewCourseChoice (
       id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-      subjectSchoolDataIdentifier VARCHAR(256) NOT NULL,
+      subjectSchoolDataIdentifier VARCHAR(128) NOT NULL,
       courseNumber INTEGER NOT NULL,
-      studentSchoolDataIdentifier VARCHAR(256) NOT NULL,
-      UNIQUE KEY `unique_subjectSchoolDataIdentifier_courseNumber_studentSchoolDataIdentifier`
+      studentSchoolDataIdentifier VARCHAR(128) NOT NULL,
+      UNIQUE KEY `unique_subject_courseNumber_student`
         (`subjectSchoolDataIdentifier`,
          `courseNumber`,
          `studentSchoolDataIdentifier`)
