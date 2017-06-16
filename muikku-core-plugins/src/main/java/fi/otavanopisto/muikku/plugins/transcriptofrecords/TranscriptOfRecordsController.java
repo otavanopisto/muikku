@@ -152,11 +152,13 @@ public class TranscriptOfRecordsController {
           String dataSource = id[1];
           String identifier = id[0];
           String educationTypeId = (String) result.get("educationSubtypeIdentifier");
+          String name = (String) result.get("name");
+          String description = (String) result.get("description");
           
           SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
           SchoolDataIdentifier educationSubtypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
           
-          retval.add(new VopsWorkspace(workspaceIdentifier, educationSubtypeIdentifier));
+          retval.add(new VopsWorkspace(workspaceIdentifier, educationSubtypeIdentifier, name, description));
         }
       }
     }
