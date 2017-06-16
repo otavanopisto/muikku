@@ -105,8 +105,6 @@
 
     _loadVops : function () {
 
-
-
       this.element.addClass('loading');
       this._clear();
 
