@@ -12,6 +12,8 @@ module(function(){
 
       this.touchCordX;
       this.touchMovementX;
+      this.touchCordY;
+      this.touchMovementY;
       this.touchTarget;
 
       this.element.bind('touchstart',this._touchstart.bind(this));
@@ -27,6 +29,8 @@ module(function(){
       self.element.addClass("dragging");
       self.touchCordX = e.originalEvent.changedTouches[0].pageX;
       self.touchMovementX = 0;
+      self.touchCordY = e.originalEvent.changedTouches[0].pageY;
+      self.initialScrollY = self.element.find(".menu-body").scrollTop();
       self.touchTarget = $touchTarget;
 
       e.preventDefault();
@@ -34,17 +38,25 @@ module(function(){
 
     _touchmove: function(e){
       var self = this;
-      var startingPoint = self.touchCordX;
       $menuCont = self.element.children('.menu-container');
-      var diff = e.originalEvent.changedTouches[0].pageX - startingPoint;
+      var diffX = e.originalEvent.changedTouches[0].pageX - self.touchCordX;
 
-      var absoluteDifference = Math.abs(diff - parseInt($menuCont.css('left')));
-      self.touchMovementX = self.touchMovementX + absoluteDifference;;
+      var absoluteDifferenceX = Math.abs(diffX - parseInt($menuCont.css('left')));
+      self.touchMovementX = self.touchMovementX + absoluteDifferenceX;
 
-      if (diff > 0) {
-        diff = 0;
+      if (diffX > 0) {
+        diffX = 0;
       }
-      $menuCont.css({'left': diff});
+      $menuCont.css({'left': diffX});
+      
+      var $menuBody = self.touchTarget.parents(".menu-body");
+      if ($menuBody.length === 1){
+        var diffY = e.originalEvent.changedTouches[0].pageY - self.touchCordY;
+        if (Math.abs(diffY) >= 3){
+          self.lockX = true;
+        }
+        $menuBody.scrollTop(self.initialScrollY-diffY);
+      }
 
       e.preventDefault();
     },
@@ -89,6 +101,7 @@ module(function(){
         self.element.addClass('visible');
       }, 10);
       $(document.body).css({'overflow': 'hidden'});
+      self.element.find(".menu-body").scrollTop(0);
     },
     close: function(){
       var self = this;

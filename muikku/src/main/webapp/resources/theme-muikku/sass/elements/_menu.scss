@@ -69,12 +69,12 @@ $menu-font: 'Exo 2', Arial, sans-serif;
 
     @include breakpoint-down($breakpoint-small-mobile) {
       >.menu-body {
-        margin: 11px 0;
+        padding: 11px 0;
       }
     }
 
     >.menu-body {
-      margin: 17px 0;
+      padding: 17px 0;
       text-align: center;
     }
 
@@ -109,6 +109,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
     .menu-body {
       position: relative;
       width: 100%;
+      overflow-y: auto;
     }
 
     .menu-items {

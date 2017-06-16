@@ -60,4 +60,10 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   &.text-full {
     width: 100%;
   }
+  
+  &.text-one-liner {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }

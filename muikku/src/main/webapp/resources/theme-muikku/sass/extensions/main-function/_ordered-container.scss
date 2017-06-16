@@ -3,15 +3,15 @@
 
 .main-function.ordered-container {
   &.main-function-ordered-container-for-panels {
-    padding-top: 80px;
     height: 100%;
-    padding-bottom: 70px;
+    padding: 80px 0 70px 0;
     
     @include breakpoint-up($breakpoint-landscape-pad){
+      padding: 80px 10px 70px 10px;
       
       >.ordered-container-item {
         overflow: visible;
-        padding: 0 20px 0 20px;
+        padding: 0 10px 0 10px;
       }
     }
   }
@@ -29,7 +29,7 @@
       
       >.ordered-container-item {
         overflow: visible;
-        padding: 0 20px 0 20px;
+        padding: 0;
       }
     }
   }

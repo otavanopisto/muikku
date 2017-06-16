@@ -200,9 +200,13 @@ $color-notification-queue-item-container-background: #666;
 $color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
 $color-notification-queue-item-text: $color-default;
 
-//panel
+// panel
 $color-panel-background: $color-default;
 $color-panel-border: #ccc;
+
+// item list
+$color-item-list-item-background-active: rgba(0, 0, 0, 0.3);
+$color-item-list-item-background-hover: rgba(0, 0, 0, 0.1);
 
 @import "colors/frontpage";
 @import "colors/main-function";

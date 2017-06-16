@@ -1,0 +1,20 @@
+{?workspaces}
+  <div class="main-function item-list main-function-item-list-workspaces">
+    {#workspaces}
+      <a class="item-list-item" href="/workspace/{urlName}">
+        <span class="icon icon-books"></span>
+        <span class="item-list-text-body text">
+          {name} {?nameExtension}({nameExtension}){/nameExtension}
+        </span>
+      </li>
+    {/workspaces}
+  </div>
+{:else}
+  <div class="text">
+    {#localize key="plugin.frontPage.workspaces.noWorkspaces.part1"/}
+    <a href="/coursepicker">
+      {#localize key="plugin.frontPage.workspaces.noWorkspaces.coursepicker"/}
+    </a>
+    {#localize key="plugin.frontPage.workspaces.noWorkspaces.part2"/}
+  </div>
+{/workspaces}

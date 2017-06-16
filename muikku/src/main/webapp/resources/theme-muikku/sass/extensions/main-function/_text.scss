@@ -14,6 +14,18 @@
       vertical-align: middle;
     }
     
+    span:not(.icon) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 45px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      height: 35px;
+      line-height: 35px;
+    }
+    
     .icon {
       width: 35px;
       height: 35px;

@@ -22,6 +22,7 @@
   text-transform: uppercase;
   vertical-align: middle;
   position: relative;
+  white-space: nowrap;
 
   &.link-icon {
     @include prefix(font-smoothing, webkit moz o ms, antialiased);
