@@ -513,7 +513,7 @@
             exampleDetails.append( 
               $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
             );
-            exampleDetails.append($('<span>').addClass('muikku-field-example').text(this.options.meta.example));
+            exampleDetails.append($('<span>').addClass('muikku-field-example').html(this.options.meta.example.replace(/(?:\r\n|\r|\n)/g, '<br/>')));
             var wordCountContainer = $(this.element).parent().find('.word-count-container');
             if (wordCountContainer.length) {
               $(wordCountContainer).after(exampleDetails);
