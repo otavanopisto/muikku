@@ -29,11 +29,13 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.StudiesViewCourseChoiceController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsPermissions;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptofRecordsUserProperties;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.VopsWorkspace;
+import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCourseChoice;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -89,6 +91,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  StudiesViewCourseChoiceController studiesViewCourseChoiceController;
 
   @GET
   @Path("/files/{ID}/content")
@@ -227,11 +232,16 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 break;
               }
             }
+            StudiesViewCourseChoice courseChoice = studiesViewCourseChoiceController.find(
+                new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()).toId(),
+                i,
+                studentIdentifierString);
             items.add(new VopsRESTModel.VopsItem(
                 i,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
-                mandatority));
+                mandatority,
+                courseChoice != null));
           }
         }
         rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
