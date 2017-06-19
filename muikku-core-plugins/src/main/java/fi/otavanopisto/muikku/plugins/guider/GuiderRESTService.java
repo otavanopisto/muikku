@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -21,6 +24,12 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
+import fi.otavanopisto.muikku.plugins.timed.notifications.AssesmentRequestNotificationController;
+import fi.otavanopisto.muikku.plugins.timed.notifications.NoPassedCoursesNotificationController;
+import fi.otavanopisto.muikku.plugins.timed.notifications.StudyTimeLeftNotificationController;
+import fi.otavanopisto.muikku.plugins.timed.notifications.model.AssesmentRequestNotification;
+import fi.otavanopisto.muikku.plugins.timed.notifications.model.NoPassedCoursesNotification;
+import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFileController;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -61,6 +70,15 @@ public class GuiderRESTService extends PluginRESTService {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private NoPassedCoursesNotificationController noPassedCoursesNotificationController;
+
+  @Inject
+  private StudyTimeLeftNotificationController studyTimeLeftNotificationController;
+
+  @Inject
+  private AssesmentRequestNotificationController assessmentRequestNotificationController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/activity")
@@ -119,6 +137,33 @@ public class GuiderRESTService extends PluginRESTService {
     return Response.ok(toRestModel(activity, assessmentState)).build();
   }
   
+  @GET
+  @Path("/users/{IDENTIFIER}/latestNotifications")
+  @RESTPermit(GuiderPermissions.GUIDER_LIST_NOTIFICATIONS)
+  public Response listUserNotifications(@PathParam("IDENTIFIER") String identifierString) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
+    UserEntity ue = userEntityController.findUserEntityByUserIdentifier(identifier);
+    if (ue == null) {
+      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
+    }
+    
+    Map<String, Date> map = new HashMap<>();
+    
+    StudyTimeNotification notification = studyTimeLeftNotificationController.findLatestByUserIdentifier(identifier);
+    if (notification != null)
+      map.put("studytime", notification.getSent());
+
+    NoPassedCoursesNotification noPassNotification = noPassedCoursesNotificationController.findLatestByUserIdentifier(identifier);
+    if (noPassNotification != null)
+      map.put("nopassedcourses", noPassNotification.getSent());
+    
+    AssesmentRequestNotification assessmentRequestNotification = assessmentRequestNotificationController.findLatestByUserIdentifier(identifier);
+    if (assessmentRequestNotification != null)
+      map.put("assesmentrequest", assessmentRequestNotification.getSent());
+
+    return Response.ok().entity(map).build();
+  }
+
   @GET
   @Path("/users/{IDENTIFIER}/files")
   @RESTPermit(GuiderPermissions.GUIDER_LIST_TORFILES)

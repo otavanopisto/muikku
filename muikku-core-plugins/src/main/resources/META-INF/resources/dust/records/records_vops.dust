@@ -79,6 +79,7 @@
                   {@eq key=mandatority value="SCHOOL_LEVEL_OPTIONAL"}optional-school{/eq}{~s}
                   {@eq key=mandatority value="NATIONAL_LEVEL_OPTIONAL"}optional-national{/eq}"
                data-no="{courseNumber}">
+            {grade}
             <div class="mf-vops-item-menu tr-vops-item-menu"></div>
           </div>
         {/items}

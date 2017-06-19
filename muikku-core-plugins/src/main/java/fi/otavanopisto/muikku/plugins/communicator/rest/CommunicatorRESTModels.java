@@ -24,6 +24,7 @@ import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserGroup;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.users.UserController;
@@ -70,10 +71,13 @@ public class CommunicatorRESTModels {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
-      fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      User user = userController.findUserByUserEntityDefaults(userEntity);
       Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
       
-      fi.otavanopisto.muikku.rest.model.UserBasicInfo result = new fi.otavanopisto.muikku.rest.model.UserBasicInfo(
+      if (user == null)
+        return null;
+      
+      UserBasicInfo result = new UserBasicInfo(
           userEntity.getId(), 
           user.getFirstName(), 
           user.getLastName(), 
@@ -88,7 +92,7 @@ public class CommunicatorRESTModels {
       schoolDataBridgeSessionController.endSystemSession();
     }
   }
-  
+
   public List<CommunicatorUserLabelRESTModel> restUserLabel(List<CommunicatorUserLabel> userLabels) {
     List<CommunicatorUserLabelRESTModel> result = new ArrayList<CommunicatorUserLabelRESTModel>();
     for (CommunicatorUserLabel userLabel : userLabels)
@@ -122,8 +126,11 @@ public class CommunicatorRESTModels {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       List<CommunicatorMessageRecipientRESTModel> result = new ArrayList<CommunicatorMessageRecipientRESTModel>();
-      for (CommunicatorMessageRecipient recipient : recipients)
-        result.add(restRecipient(recipient));
+      for (CommunicatorMessageRecipient recipient : recipients) {
+        CommunicatorMessageRecipientRESTModel restRecipientModel = restRecipient(recipient);
+        if (restRecipientModel != null)
+          result.add(restRecipientModel);
+      }
       return result;
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
@@ -134,8 +141,11 @@ public class CommunicatorRESTModels {
     schoolDataBridgeSessionController.startSystemSession();
     try {
       UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-      fi.otavanopisto.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      User user = userController.findUserByUserEntityDefaults(userEntity);
 
+      if (user == null)
+        return null;
+      
       return new CommunicatorMessageRecipientRESTModel(
           recipient.getId(),
           recipient.getCommunicatorMessage().getId(), 

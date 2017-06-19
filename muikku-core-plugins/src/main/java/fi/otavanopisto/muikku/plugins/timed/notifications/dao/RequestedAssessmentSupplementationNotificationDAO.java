@@ -5,10 +5,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.RequestedAssessmentSupplementationNotification;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.RequestedAssessmentSupplementationNotification_;
 
-public class RequestedAssessmentSupplementationNotificationDAO extends TimedNotificationsDAO<RequestedAssessmentSupplementationNotification> {
+public class RequestedAssessmentSupplementationNotificationDAO extends CorePluginsDAO<RequestedAssessmentSupplementationNotification> {
 
   private static final long serialVersionUID = 4519683507666678144L;
 
