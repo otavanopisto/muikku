@@ -80,7 +80,10 @@
                   {@eq key=mandatority value="NATIONAL_LEVEL_OPTIONAL"}optional-national{/eq}"
                data-no="{courseNumber}">
             {grade}
-            <div class="mf-vops-item-menu tr-vops-item-menu"></div>
+            <div class="mf-vops-item-menu tr-vops-item-menu">
+              <div style="font-weight: bold;">{name|s}</div>
+              <div>{description|shorten50|s}</div>
+            </div>
           </div>
         {/items}
       </div>

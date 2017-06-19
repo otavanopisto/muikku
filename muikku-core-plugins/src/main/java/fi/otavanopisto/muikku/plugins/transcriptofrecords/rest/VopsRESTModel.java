@@ -10,7 +10,9 @@ public class VopsRESTModel {
         String educationSubtype,
         Mandatority mandatority,
         String grade,
-        boolean chosen
+        boolean chosen,
+        String name,
+        String description
     ) {
       super();
       this.courseNumber = courseNumber;
@@ -19,6 +21,8 @@ public class VopsRESTModel {
       this.mandatority = mandatority;
       this.chosen = chosen;
       this.grade = grade;
+      this.name = name;
+      this.description = description;
     }
     
     public int getCourseNumber() {
@@ -51,6 +55,18 @@ public class VopsRESTModel {
     public void setChosen(boolean chosen) {
       this.chosen = chosen;
     }
+    public String getName() {
+      return name;
+    }
+    public void setName(String name) {
+      this.name = name;
+    }
+    public String getDescription() {
+      return description;
+    }
+    public void setDescription(String description) {
+      this.description = description;
+    }
 
     private int courseNumber;
     private CourseCompletionState state;
@@ -58,6 +74,8 @@ public class VopsRESTModel {
     private Mandatority mandatority;
     private boolean chosen;
     private String grade;
+    private String name;
+    private String description;
   }
   
   public static class VopsRow {

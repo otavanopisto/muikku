@@ -24,6 +24,11 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -59,7 +64,6 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -83,9 +87,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceController workspaceController;
-  
-  @Inject
-  private UserGroupController userGroupController;
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
@@ -122,6 +123,16 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   
   @Inject
   private Logger logger;
+  
+  private String clean(String html) {
+    if (html == null) {
+      return null;
+    }
+    Document doc = Jsoup.parseBodyFragment(html);
+    doc = new Cleaner(Whitelist.none()).clean(doc);
+    doc.outputSettings().escapeMode(EscapeMode.xhtml);
+    return doc.body().html();
+  }
 
   @GET
   @Path("/files/{ID}/content")
@@ -214,6 +225,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
           if (!workspaces.isEmpty()) {
             SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
+            String name = "";
+            String description = "";
+
             for (VopsWorkspace workspace : workspaces) {
               WorkspaceEntity workspaceEntity =
                   workspaceController.findWorkspaceEntityById(workspace.getWorkspaceIdentifier());
@@ -246,6 +260,20 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
               if (workspaceUser != null) {
                 workspaceUserExists = true;
+              }
+            }
+            
+            for (VopsWorkspace workspace : workspaces) {
+              name = workspace.getName();
+              if (name != null) {
+                break;
+              }
+            }
+            
+            for (VopsWorkspace workspace : workspaces) {
+              description = workspace.getDescription();
+              if (description != null) {
+                break;
               }
             }
             
@@ -304,7 +332,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
                 mandatority,
                 grade,
-                courseChoice != null));
+                courseChoice != null,
+                clean(name),
+                clean(description)));
           }
         }
         if (!items.isEmpty()) {

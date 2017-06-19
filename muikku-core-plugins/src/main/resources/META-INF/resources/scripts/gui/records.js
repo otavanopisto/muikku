@@ -137,8 +137,19 @@
                 $(this).removeClass('closed');
                 $(this).addClass('open');
               }
-
             });
+
+            $('.tr-vops-content').on('click', '.tr-vops-item', $.proxy(function(event) {
+              var menu = $(event.target).find('.tr-vops-item-menu');
+              var menus = $('.tr-vops-content').find('.tr-vops-item-menu');
+              var menuVisible = $(event.target).find('.tr-vops-item-menu:visible').length > 0 ? true : false;
+              if (menuVisible) {
+                menu.hide();
+              } else {
+                menus.hide();
+                menu.show();
+              }
+            }, this));
           }, this));
         }
       }, this));
