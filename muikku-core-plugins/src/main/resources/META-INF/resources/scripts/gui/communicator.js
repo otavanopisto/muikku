@@ -90,10 +90,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -148,10 +150,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -207,10 +211,12 @@
         .read(this._labelId, threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -264,10 +270,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -332,10 +340,12 @@
         .read(threadId)
         .on("$.messages", $.proxy(function (message, messageCallback) {
           message.isOwner = MUIKKU_LOGGED_USER_ID === message.senderId;
-          message.senderFullName = isStudent
-            ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
-            : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName
-          message.senderHasPicture = message.sender.hasImage;
+          if (message.sender) {
+            message.senderFullName = isStudent
+              ? (message.sender.nickName ? message.sender.nickName : message.sender.firstName) + ' ' + message.sender.lastName
+              : (message.sender.nickName ? message.sender.firstName + ' "' + message.sender.nickName + '"' : message.sender.firstName) + ' ' + message.sender.lastName;
+            message.senderHasPicture = message.sender.hasImage;
+          }
           message.caption = $('<div>').html(message.caption).text();
           
           messageCallback();
@@ -569,7 +579,7 @@
         .attr('data-thread-id');
       
       this.element.closest('.communicator') 
-        .communicator('loadThread', threadId);
+        .communicator('loadThread', this._folderId, threadId);
     },
 
     _onThreadSelectionChange: function (event) {
@@ -795,14 +805,26 @@
 
   $.widget("custom.communicator", {
     options: {
-      defaultFolderId: 'inbox'
+      defaultFolderId: 'inbox',
+      currentLocation: ''
     },
     _create : function() {
-      
-    $('.mf-view-settings-function-container').on('click', '.cm-settings-icon', $.proxy(this._onSettingsClick, this));    
+      $('.mf-view-settings-function-container').on('click', '.cm-settings-icon', $.proxy(this._onSettingsClick, this));    
 
+      this.currentLocation = window.location.hash;
       
-   
+      $(window).on("hashchange", $.proxy(function () {
+        if (this.currentLocation != window.location.hash) {
+          var location = this.parseHash();
+
+          if (location.threadId) {
+            this.loadThread(location.folderId, location.threadId);  
+          } else {
+            this.loadFolder(location.folderId);       
+          }
+        }
+      }, this));
+      
       this.loadLabels($.proxy(
         function (err, labels) {
           this._folderControllers = {
@@ -825,22 +847,11 @@
               this._sortLabels();
             }, this));
           }
+
+          var location = this.parseHash();
           
-          var folderId;
-          var threadId;
-           
-          if (window.location.hash.length > 1) {
-            var hashParts = window.location.hash.substring(1).split('/');
-            if (hashParts.length > 0) {
-              folderId = hashParts[0];
-            }
-
-            if (hashParts.length > 1) {
-              threadId = hashParts[1];
-            }
-          }
-
-          folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
+          var folderId = location.folderId;
+          var threadId = location.threadId;
           
           this.element.on('click', '.mf-label-edit', $.proxy(this._onLabelEditClick, this));    
                  
@@ -861,7 +872,7 @@
           this.element.on('click', '.cm-folder', $.proxy(this._onCommunicatorFolderClick, this));
           
           if (threadId) {
-            this.loadThread(threadId);  
+            this.loadThread(folderId, threadId);  
           } else {
             this.loadFolder(folderId);       
           }
@@ -884,13 +895,34 @@
       }, this)); 
     },
 
-    loadFolder: function (id) {
+    parseHash : function () {
+      var folderId;
+      var threadId;
+       
+      if (window.location.hash.length > 1) {
+        var hashParts = window.location.hash.substring(1).split('/');
+        if (hashParts.length > 0) {
+          folderId = hashParts[0];
+        }
+
+        if (hashParts.length > 1) {
+          threadId = hashParts[1];
+        }
+      }
+
+      folderId = this._folderControllers[folderId] ? folderId : this.options.defaultFolderId;
       
-      if(id == 'settings'){
+      return {
+        folderId: folderId,
+        threadId: threadId
+      };
+    },
+    
+    loadFolder: function (id) {
+      if (id == 'settings'){
         this._onSettingsClick();
         this._updateHash(id, null);        
-      }else{
-      
+      } else {
         this._updateHash(id, null);
         this._updateSelected(id);
         
@@ -908,9 +940,7 @@
       this.loadFolder(folderId);
     },
     
-    loadThread: function (threadId) {
-      var folderId = this.element.find('.cm-messages-container')
-        .communicatorMessages('folderId');
+    loadThread: function (folderId, threadId) {
       var folderController = this.element.closest('.communicator')
         .communicator('folderController', folderId);
       
@@ -1330,15 +1360,18 @@
 
     
     _updateHash: function (folderId, threadId) {
+      var newHash = '';
+    
       if (folderId) {
         if (threadId) {
-          window.location.hash = '#' + folderId + '/' + threadId;
+          newHash = '#' + folderId + '/' + threadId;
         } else {
-          window.location.hash = '#' + folderId;
+          newHash = '#' + folderId;
         }
-      } else {
-        window.location.hash = '';
       }
+      
+      this.currentLocation = newHash;
+      window.location.hash = newHash;
     },
     
     _updateSelected: function (id) {
@@ -1556,15 +1589,19 @@
     
     _onNavigateNewerThreadClick: function (event) {
       if (!$(event.target).closest(".mf-tool-container").hasClass("disabled")) {
-        if (this._newerThreadId)
-          this.loadThread(this._folderId, this._newerThreadId)
+        if (this._newerThreadId) {
+          var communicator = $(".communicator").communicator("instance");
+          communicator.loadThread(this._folderId, this._newerThreadId);
+        }
       }
     },
     
     _onNavigateOlderThreadClick: function (event) {
       if (!$(event.target).closest(".mf-tool-container").hasClass("disabled")) {
-        if (this._olderThreadId)
-          this.loadThread(this._folderId, this._olderThreadId)
+        if (this._olderThreadId) {
+          var communicator = $(".communicator").communicator("instance");
+          communicator.loadThread(this._folderId, this._olderThreadId);
+        }
       }
     },
     

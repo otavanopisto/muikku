@@ -44,6 +44,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
+import fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
@@ -123,6 +124,9 @@ public class CoursePickerRESTService extends PluginRESTService {
 
   @Inject
   private UserIndexer userIndexer;
+  
+  @Inject
+  private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
   
   @Inject
   @Any
@@ -410,6 +414,7 @@ public class CoursePickerRESTService extends PluginRESTService {
     fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.findWorkspaceUserByWorkspaceAndUser(workspaceIdentifier, userIdentifier);
     if (workspaceUser == null) {
       workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
+      waitForWorkspaceUserEntity(workspaceEntity, userIdentifier);
     }
     else {
       workspaceController.updateWorkspaceStudentActivity(workspaceUser, true);
@@ -521,6 +526,22 @@ public class CoursePickerRESTService extends PluginRESTService {
         educationTypeName,
         canSignup, 
         isCourseMember);
+  }
+  
+  private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
+    Long workspaceUserEntityId = null;
+    long timeoutTime = System.currentTimeMillis() + 10000;    
+    while (workspaceUserEntityId == null) {
+      workspaceUserEntityId = workspaceUserEntityIdFinder.findWorkspaceUserEntityId(workspaceEntity, userIdentifier);
+      if (workspaceUserEntityId != null || System.currentTimeMillis() > timeoutTime) {
+        break;
+      }
+      try {
+        Thread.sleep(100);
+      }
+      catch (InterruptedException e) {
+      }
+    }
   }
   
 }

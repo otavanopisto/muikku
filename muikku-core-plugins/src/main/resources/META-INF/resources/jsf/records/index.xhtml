@@ -1,5 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="/WEB-INF/templates/flex-main-functionality.xhtml">
@@ -57,12 +58,39 @@
         </div>
       </ui:insert>
       <div class="mf-content-area">
-        <div>
-          <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
+        <div class="tr-study-information">
+          <div class="tr-studydate-item">
+            <ui:fragment rendered="#{!empty(transcriptofRecordsBackingBean.studyStartDate)}">
+              <label class="tr-studydate-item-label">#{i18n.text['plugin.records.studyStartDateLabel']}</label>
+              <span class="tr-studydate-item-data">
+                <h:outputText value="#{transcriptofRecordsBackingBean.studyStartDate}">
+                  <f:convertDateTime type="date" dateStyle="short" />
+                </h:outputText>                      
+              </span>
+            </ui:fragment>
           </div>
-          <div class="tr-content-main flex-row" data-files="#{transcriptofRecordsBackingBean.files}">
+          
+          <div class="tr-studydate-item">
+            <ui:fragment rendered="#{!empty(transcriptofRecordsBackingBean.studyTimeEnd)}">
+              <label class="tr-studydate-item-label">#{i18n.text['plugin.records.studyTimeEndLabel']}</label>
+              <span class="tr-studydate-item-data">
+                <h:outputText value="#{transcriptofRecordsBackingBean.studyTimeEnd}">
+                  <f:convertDateTime type="date" dateStyle="short" />
+                </h:outputText> 
+                                   
+                <ui:fragment rendered="#{!empty(transcriptofRecordsBackingBean.studyTimeLeftStr)}">
+                  <h:outputText value=" (#{transcriptofRecordsBackingBean.studyTimeLeftStr})"/>
+                </ui:fragment>
+              </span>
+            </ui:fragment>
           </div>
         </div>
+        
+        <div class="tr-content-main flex-row" data-grades="#{transcriptofRecordsBackingBean.grades}">
+        </div>
+        <div class="tr-content-main flex-row" data-files="#{transcriptofRecordsBackingBean.files}">
+        </div>
+        
       </div>
     </div>
   </ui:define>
