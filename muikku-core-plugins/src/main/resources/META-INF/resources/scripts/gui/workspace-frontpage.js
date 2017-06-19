@@ -45,10 +45,10 @@
       }, this));
     },
     _getServer: function () {
-      var url = window.location.href
+      var url = window.location.href;
       var arr = url.split("/");
 
-      return arr[0] + "//" + arr[2]
+      return arr[0] + "//" + arr[2];
     },
     _sendMessage: function (event) {
       var teacherId = $(event.target).closest(".workspace-teacher").attr("data-id");
