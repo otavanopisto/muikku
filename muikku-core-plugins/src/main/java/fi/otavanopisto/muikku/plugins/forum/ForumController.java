@@ -76,7 +76,9 @@ public class ForumController {
   
   private String clean(String html) {
     Document doc = Jsoup.parse(html);
-    doc = new Cleaner(Whitelist.relaxed().addAttributes("a", "target")).clean(doc);
+    doc = new Cleaner(Whitelist.relaxed()
+        .addAttributes("a", "target")
+        .addAttributes("span", "style")).clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();
