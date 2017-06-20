@@ -13,11 +13,13 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
@@ -338,7 +340,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
           }
         }
         if (!items.isEmpty()) {
-          rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
+          rows.add(new VopsRESTModel.VopsRow(
+              subject.getCode(),
+              new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()).toId(),
+              items));
         }
       }
     }
@@ -456,6 +461,48 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     }
 
     return Response.ok(response).build();
+  }
+
+  @PUT
+  @Path("/plannedCourses/")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response planCourse(
+      @QueryParam("subjectIdentifier") String subjectIdentifier,
+      @QueryParam("courseNumber") int courseNumber,
+      @QueryParam("studentIdentifier") String studentIdentifier
+  ) {
+    // TODO check for permission
+    StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
+        subjectIdentifier,
+        courseNumber,
+        studentIdentifier);
+    if (choice == null) {
+      studiesViewCourseChoiceController.create(
+          subjectIdentifier,
+          courseNumber,
+          studentIdentifier);
+    }
+    return Response.ok().build();
+  }
+
+  @DELETE
+  @Path("/plannedCourses/")
+  @RESTPermit(handling=Handling.INLINE)
+  public Response unplanCourse(
+      @QueryParam("subjectIdentifier") String subjectIdentifier,
+      @QueryParam("courseNumber") int courseNumber,
+      @QueryParam("studentIdentifier") String studentIdentifier
+  ) {
+    StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
+        subjectIdentifier,
+        courseNumber,
+        studentIdentifier);
+    if (choice != null) {
+      studiesViewCourseChoiceController.delete(choice);
+      return Response.ok().build();
+    } else {
+      return Response.status(Status.NOT_FOUND).build();
+    }
   }
 
   @PUT

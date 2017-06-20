@@ -150,6 +150,12 @@
                 menu.show();
               }
             }, this));
+            
+            this.element.find('[data-choose-button]').click(function(event) {
+              var courseNumber = Number($(this).attr('data-course-number'));
+              var subjectIdentifier = $(this).attr('data-subject-identifier');
+              console.log("course number: " + courseNumber + " subject identifier: " + subjectIdentifier);
+            });
           }, this));
         }
       }, this));

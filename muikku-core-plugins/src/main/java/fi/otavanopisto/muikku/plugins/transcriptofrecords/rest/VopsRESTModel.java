@@ -79,8 +79,9 @@ public class VopsRESTModel {
   }
   
   public static class VopsRow {
-    public VopsRow(String subject, List<VopsItem> items) {
+    public VopsRow(String subject, String subjectIdentifier, List<VopsItem> items) {
       super();
+      this.subjectIdentifier = subjectIdentifier;
       this.subject = subject;
       this.items = items;
     }
@@ -92,8 +93,13 @@ public class VopsRESTModel {
     public String getSubject() {
       return subject;
     }
+    
+    public String getSubjectIdentifier() {
+      return subjectIdentifier;
+    }
 
     String subject;
+    String subjectIdentifier;
     List<VopsItem> items;
   }
   

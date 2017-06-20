@@ -83,6 +83,11 @@
             <div class="mf-vops-item-menu tr-vops-item-menu">
               <div style="font-weight: bold;">{name|s}</div>
               <div>{description|shorten50|s}</div>
+              {?planned}
+                  <button data-course-number="{courseNumber}" data-subject-identifier="{subjectIdentifier}" data-unplan-button>{#localize key="plugin.records.studyplan.course.unplan" /}</button>
+              {:else}
+                  <button data-course-number="{courseNumber}" data-subject-identifier="{subjectIdentifier}" data-plan-button>{#localize key="plugin.records.studyplan.course.plan" /}</button>
+              {/planned}
             </div>
           </div>
         {/items}
