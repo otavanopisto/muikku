@@ -9,7 +9,10 @@
     
     _create : function() {
       this._icon = $('<span>').addClass('explanation-button icon-explanation');
-      this._content = $('<span>').addClass('explanation-content').text(this.options.text).hide();
+      this._content = $('<span>').addClass('explanation-content');
+      if (this.options.text) {
+        this._content.html(this.options.text.replace(/\u00A0/g, ' ').replace(/(?:\r\n|\r|\n)/g, '<br/>')).hide();
+      }
       this.element.append(this._icon);
       this._content.appendTo(document.body);
       this._icon.on('touch', $.proxy(function(event) {

@@ -90,6 +90,19 @@
          </span>
        </div>
      {/addresses}
+     
+      {?notifications.studytime}
+        <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.notif.studytime"/}</span><span class="mf-item-details-value gt-user-details-value">{notifications.studytime|formatDate}</span></div>
+      {/notifications.studytime}
+     
+      {?notifications.nopassedcourses}
+        <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.notif.nopassedcourses"/}</span><span class="mf-item-details-value gt-user-details-value">{notifications.nopassedcourses|formatDate}</span></div>
+      {/notifications.nopassedcourses}
+
+      {?notifications.assessmentrequest}
+        <div class="gt-user-details-item"><span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.notif.assessmentrequest"/}</span><span class="mf-item-details-value gt-user-details-value">{notifications.assessmentrequest|formatDate}</span></div>
+      {/notifications.assessmentrequest}
+      
     </div>
     <div class="clear"></div>  
   </div>

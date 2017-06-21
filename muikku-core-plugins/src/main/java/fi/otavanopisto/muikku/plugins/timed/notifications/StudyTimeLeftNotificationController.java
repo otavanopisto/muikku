@@ -47,6 +47,10 @@ public class StudyTimeLeftNotificationController {
   public StudyTimeNotification createStudyTimeNotification(SchoolDataIdentifier studentIdentifier){
     return studyTimeNotificationDAO.create(studentIdentifier.toId(), new Date());
   }
+
+  public StudyTimeNotification findLatestByUserIdentifier(SchoolDataIdentifier identifier) {
+    return studyTimeNotificationDAO.findLatestByUserIdentifier(identifier);
+  }
   
   private SearchProvider getProvider(String name) {
     for (SearchProvider searchProvider : searchProviders) {
@@ -56,5 +60,5 @@ public class StudyTimeLeftNotificationController {
     }
     return null;
   }
-  
+
 }

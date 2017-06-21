@@ -320,7 +320,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       for (GradingScaleItem gradingScaleItem : gradingController.listGradingScaleItems(gradingScale)) {
         GradingScaleItemCoordinates newItemKey = new GradingScaleItemCoordinates(
             gradingScaleIdentifier,
-            new SchoolDataIdentifier(gradingScaleItem.getGradingScaleIdentifier(), gradingScaleItem.getSchoolDataSource()));
+            new SchoolDataIdentifier(gradingScaleItem.getIdentifier(), gradingScaleItem.getSchoolDataSource()));
         gradingScaleCache.put(newItemKey, gradingScaleItem);
       }
     }

@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.evaluation;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -111,11 +110,6 @@ public class EvaluationController {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
     
-    // #1669: Notification on non-passing grade on an assignment
-    if (state == WorkspaceMaterialReplyState.FAILED) {
-      notifyOfFailedAssignment(assessor, student, workspaceMaterial, grade, verbalAssessment);
-    }
-    
     return evaluation;
   }
   
@@ -194,11 +188,6 @@ public class EvaluationController {
     } else {
       workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, state);
     }
-
-    // #1669: Notification on non-passing grade on an assignment
-    if (state == WorkspaceMaterialReplyState.FAILED) {
-      notifyOfFailedAssignment(assessor, student, workspaceMaterial, grade, verbalAssessment);
-    }
     
     return workspaceMaterialEvaluation;
   }
@@ -267,10 +256,9 @@ public class EvaluationController {
     Long workspaceMaterialId = supplementationRequest.getWorkspaceMaterialId();
     String requestText = supplementationRequest.getRequestText();
 
-    // If the supplementation request is for an assignment, also mark student's reply as INCOMPLETE
+    // If the supplementation request is for an assignment, mark student's reply as INCOMPLETE
     
     if (studentEntityId != null && workspaceMaterialId != null) {
-      UserEntity teacher = userEntityController.findUserEntityById(teacherEntityId);
       UserEntity student = userEntityController.findUserEntityById(studentEntityId);
       WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
       if (student != null && workspaceMaterial != null) {
@@ -282,10 +270,6 @@ public class EvaluationController {
           workspaceMaterialReplyController.updateWorkspaceMaterialReply(reply, WorkspaceMaterialReplyState.INCOMPLETE);
         }
       }
-      
-      // Send notification of an incomplete assignment
-      
-      notifyOfIncompleteAssignment(teacher, student, workspaceMaterial, requestText);
     }
     else if (studentEntityId != null && workspaceEntityId != null) {
 
@@ -296,76 +280,6 @@ public class EvaluationController {
       WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
       notifyOfIncompleteWorkspace(teacher, student, workspaceEntity, requestText);
     }
-  }
-
-  private void notifyOfFailedAssignment(UserEntity assessor, UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScaleItem grade, String verbalAssessment) {
-    Locale locale = student.getLocale() == null ? new Locale("fi") : new Locale(student.getLocale());
-    
-    // Workspace
-    Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
-    String workspaceName = workspace.getName();
-    if (!StringUtils.isBlank(workspace.getNameExtension())) {
-      workspaceName = String.format("%s (%s)", workspaceName, workspace.getNameExtension());
-    }
-    
-    // Notification
-    String assignmentName = workspaceMaterial.getTitle();
-    String gradeName = grade.getName();
-    String notificationCaption = localeController.getText(locale, "plugin.evaluation.assignmentFailed.notificationCaption");
-    String notificationText = localeController.getText(locale, "plugin.evaluation.assignmentFailed.notificationText");
-    notificationCaption = MessageFormat.format(notificationCaption, gradeName);
-    notificationText = MessageFormat.format(notificationText, assignmentName, workspaceUrl, workspaceName, gradeName, verbalAssessment == null ? "" : verbalAssessment);
-    
-    // Communicator message
-    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
-        communicatorController.createMessageId(),
-        assessor,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
-        category,
-        notificationCaption,
-        notificationText,
-        Collections.<Tag>emptySet());
-  }
-
-  private void notifyOfIncompleteAssignment(UserEntity assessor, UserEntity student, WorkspaceMaterial workspaceMaterial, String verbalAssessment) {
-    Locale locale = student.getLocale() == null ? new Locale("fi") : new Locale(student.getLocale());
-    
-    // Workspace
-    Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    String workspaceUrl = String.format("%s/workspace/%s/materials", baseUrl, workspaceEntity.getUrlName());
-    String workspaceName = workspace.getName();
-    if (!StringUtils.isBlank(workspace.getNameExtension())) {
-      workspaceName = String.format("%s (%s)", workspaceName, workspace.getNameExtension());
-    }
-    
-    // Notification
-    String assignmentName = workspaceMaterial.getTitle();
-    String notificationCaption = localeController.getText(locale, "plugin.evaluation.assignmentIncomplete.notificationCaption");
-    String notificationText = localeController.getText(locale, "plugin.evaluation.assignmentIncomplete.notificationText");
-    notificationText = MessageFormat.format(notificationText, assignmentName, workspaceUrl, workspaceName, verbalAssessment == null ? "" : verbalAssessment);
-    
-    // Communicator message
-    CommunicatorMessageCategory category = communicatorController.persistCategory("assessments");
-    communicatorController.createMessage(
-        communicatorController.createMessageId(),
-        assessor,
-        Arrays.asList(student),
-        null,
-        null,
-        null,
-        category,
-        notificationCaption,
-        notificationText,
-        Collections.<Tag>emptySet());
   }
 
   private void notifyOfIncompleteWorkspace(UserEntity teacher, UserEntity student, WorkspaceEntity workspaceEntity, String verbalAssessment) {

@@ -38,6 +38,10 @@ public class AssesmentRequestNotificationController {
     return assessmentRequestNotificationDAO.create(studentIdentifier.toId(), new Date());
   }
   
+  public AssesmentRequestNotification findLatestByUserIdentifier(SchoolDataIdentifier identifier) {
+    return assessmentRequestNotificationDAO.findLatestByUserIdentifier(identifier);
+  }
+  
   public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiers(){
     List<SchoolDataIdentifier> results = new ArrayList<>();
     List<AssesmentRequestNotification> assessmentRequestNotifications = assessmentRequestNotificationDAO.listAll();
