@@ -151,7 +151,7 @@
               }
             }, this));
             
-            this.on('click', '[data-plan-button]', function (event) {
+            this.element.find('[data-plan-button]').click(function (event) {
               var courseNumber = Number($(this).attr('data-course-number'));
               var subjectIdentifier = $(this).attr('data-subject-identifier');
               mApi().records.plannedCourses.create({
