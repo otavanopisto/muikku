@@ -288,9 +288,7 @@
         if (!contentJson.name) {
           contentJson.name = editor.createRandomMuikkuFieldName();
         }
-        if (explanation) {
-          contentJson.explanation = explanation;
-        }
+        contentJson.explanation = explanation;
         contentJson.listType = fieldType;
         contentJson.options = [];
         var optionsElement = this.getContentElement('tab-basic', 'options');
