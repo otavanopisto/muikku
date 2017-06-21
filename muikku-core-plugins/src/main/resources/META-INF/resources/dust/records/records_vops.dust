@@ -80,7 +80,7 @@
                   {@eq key=mandatority value="NATIONAL_LEVEL_OPTIONAL"}optional-national{/eq}"
                data-no="{courseNumber}">
             {grade}
-            <div class="mf-vops-item-menu tr-vops-item-menu {planned}tr-vops-item-menu-planned{:else}tr-vops-item-menu-unplanned{/planned}">
+            <div class="mf-vops-item-menu tr-vops-item-menu {?planned}tr-vops-item-menu-planned{:else}tr-vops-item-menu-unplanned{/planned}">
               <div style="font-weight: bold;">{name|s}</div>
               <div>{description|shorten50|s}</div>
 			  <button data-course-number="{courseNumber}" data-subject-identifier="{subjectIdentifier}" data-unplan-button>{#localize key="plugin.records.studyplan.course.unplan" /}</button>
