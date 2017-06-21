@@ -11,19 +11,19 @@
             </object>
           </div>  
           <div class="di-message-details lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-16">
-            <span class="di-message-creator" title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
-            <span class="mf-category-{forumAreaId}-font" title="{#localize key="plugin.discussion.titleText.area"/}">{areaName}</span>
+            <span class="di-message-creator" title='{#localize key="plugin.discussion.titleText.creator"/}'>{creatorFullName}</span>
+            <span class="mf-category-{forumAreaId}-font" title='{#localize key="plugin.discussion.titleText.area"/}'>{areaName}</span>
           </div> 
         </div>
       </div>        
     </div>
     <div class="flex-row flex-align-items-center">
       <div class="di-message-title lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-        <span class="" title="{#localize key="plugin.discussion.titleText.date"/}">{title}</span>{?sticky}<span class="di-message-state pinned icon-pin"></span>{/sticky}{?locked}<span class="di-message-state locked icon-lock"></span>{/locked}
+        <span class="" title='{#localize key="plugin.discussion.titleText.date"/}'>{title}</span>{?sticky}<span class="di-message-state pinned icon-pin"></span>{/sticky}{?locked}<span class="di-message-state locked icon-lock"></span>{/locked}
       </div>    
     </div>
     <div class="flex-row">
-      <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>
+      <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title='{#localize key="plugin.discussion.titleText.content"/}'>{message|s}</div>
       {?isEdited}
        <div class="mf-item-content-info  di-message-content-info lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{#localize key="plugin.discussion.content.isEdited" arg0=prettyDateModified/}</div>
       {/isEdited}                                
