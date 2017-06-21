@@ -157,7 +157,7 @@
               mApi().records.plannedCourses.create({
                 subjectIdentifier: subjectIdentifier,
                 courseNumber: courseNumber,
-                studentIdentifer: MUIKKU_LOGGED_STUDENT
+                studentIdentifer: MUIKKU_LOGGED_USER
               }).callback((function() {
                 $(this).parent().addClass('tr-vops-item-menu-planned');
                 $(this).parent().removeClass('tr-vops-item-menu-unplanned');
@@ -170,7 +170,7 @@
               mApi().records.plannedCourses.del({
                 subjectIdentifier: subjectIdentifier,
                 courseNumber: courseNumber,
-                studentIdentifer: MUIKKU_LOGGED_STUDENT
+                studentIdentifer: MUIKKU_LOGGED_USER
               }).callback((function() {
                 $(this).parent().removeClass('tr-vops-item-menu-planned');
                 $(this).parent().addClass('tr-vops-item-menu-unplanned');
