@@ -2,7 +2,7 @@
   <div class="mf-items-toolbar flex-row"> 
      <div class="mf-items-tool icon-goback" data-from-view="{threads.fromView}"></div>
      {#mayRemoveThread}
-       <div class="mf-items-tool di-remove-thread-link mf-item-tool icon-delete" title="{#localize key="plugin.discussion.removeThread"/}"></div>
+       <div class="mf-items-tool di-remove-thread-link mf-item-tool icon-delete" title='{#localize key="plugin.discussion.removeThread"/}'></div>
      {/mayRemoveThread}
   </div>
   {#.}
