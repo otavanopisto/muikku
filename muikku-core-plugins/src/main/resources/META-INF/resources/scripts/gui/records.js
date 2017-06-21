@@ -151,10 +151,30 @@
               }
             }, this));
             
-            this.element.find('[data-choose-button]').click(function(event) {
+            this.on('click', '[data-plan-button]', function (event) {
               var courseNumber = Number($(this).attr('data-course-number'));
               var subjectIdentifier = $(this).attr('data-subject-identifier');
-              console.log("course number: " + courseNumber + " subject identifier: " + subjectIdentifier);
+              mApi().records.plannedCourses.create({
+                subjectIdentifier: subjectIdentifier,
+                courseNumber: courseNumber,
+                studentIdentifer: MUIKKU_LOGGED_STUDENT
+              }).callback((function() {
+                $(this).parent().addClass('tr-vops-item-menu-planned');
+                $(this).parent().removeClass('tr-vops-item-menu-unplanned');
+              }).bind(this));
+            });
+
+            this.element.find('[data-unplan-button]').click(function(event) {
+              var courseNumber = Number($(this).attr('data-course-number'));
+              var subjectIdentifier = $(this).attr('data-subject-identifier');
+              mApi().records.plannedCourses.del({
+                subjectIdentifier: subjectIdentifier,
+                courseNumber: courseNumber,
+                studentIdentifer: MUIKKU_LOGGED_STUDENT
+              }).callback((function() {
+                $(this).parent().removeClass('tr-vops-item-menu-planned');
+                $(this).parent().addClass('tr-vops-item-menu-unplanned');
+              }).bind(this));
             });
           }, this));
         }

@@ -467,22 +467,20 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/plannedCourses/")
   @RESTPermit(handling=Handling.INLINE)
   public Response planCourse(
-      @QueryParam("subjectIdentifier") String subjectIdentifier,
-      @QueryParam("courseNumber") int courseNumber,
-      @QueryParam("studentIdentifier") String studentIdentifier
+      VopsPlannedCourseRESTModel model
   ) {
     // TODO check for permission
     StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
-        subjectIdentifier,
-        courseNumber,
-        studentIdentifier);
+        model.getSubjectIdentifier(),
+        model.getCourseNumber(),
+        model.getStudentIdentifier());
     if (choice == null) {
       studiesViewCourseChoiceController.create(
-          subjectIdentifier,
-          courseNumber,
-          studentIdentifier);
+          model.getSubjectIdentifier(),
+          model.getCourseNumber(),
+          model.getStudentIdentifier());
     }
-    return Response.ok().build();
+    return Response.ok(model).build();
   }
 
   @DELETE
