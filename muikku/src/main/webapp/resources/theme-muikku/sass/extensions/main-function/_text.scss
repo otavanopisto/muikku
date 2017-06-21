@@ -7,7 +7,7 @@
     text-transform: uppercase;
     
     @include breakpoint-up($breakpoint-landscape-pad){
-      padding-bottom: 24px;
+      padding-bottom: 6px;
     }
     
     span {
