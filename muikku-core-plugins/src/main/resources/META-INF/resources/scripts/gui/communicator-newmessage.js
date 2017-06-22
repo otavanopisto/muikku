@@ -8,6 +8,7 @@
       replyMessageId: undefined,
       userRecipients: undefined,
       initialCaption: undefined,
+      initialMessage: undefined,
       ckeditor: {
         uploadUrl: '/communicatorAttachmentUploadServlet',
         toolbar: [
@@ -138,6 +139,9 @@
                 if (this.options.initialCaption) {
                   $(captionField).val(this.options.initialCaption);
                 }
+                if (this.options.initialMessage) {
+                  $(this.element).find('textarea[name="content"]').val(this.options.initialMessage);
+                }
                 
                 // If the message was sent by 'me', reply defaults for the other recipients
                 var mode = (message.senderId == MUIKKU_LOGGED_USER_ID) ? "replyall" : this.options.mode;
@@ -223,6 +227,9 @@
             });
             if (this.options.initialCaption) {
               $(captionField).val(this.options.initialCaption);
+            }
+            if (this.options.initialMessage) {
+              $(this.element).find('textarea[name="content"]').val(this.options.initialMessage);
             }
             
             if (this.options.userRecipients) {

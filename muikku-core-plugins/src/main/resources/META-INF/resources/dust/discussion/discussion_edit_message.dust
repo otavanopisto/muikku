@@ -8,7 +8,7 @@
             <div class="mf-form-row flex-row flex-align-items-center">
               <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full lg-flex-cell-first md-flex-cell-first">
                 <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
-                  <input required="required" type="text" value="{title}" placeholder="{#localize key="plugin.discussion.createmessage.title"/}" class="mf-textfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" name="title" maxlength="255"></input>
+                  <input required="required" type="text" value="{title}" placeholder='{#localize key="plugin.discussion.createmessage.title"/}' class="mf-textfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" name="title" maxlength="255"></input>
                 </div>
               </div>    
             </div>
@@ -17,7 +17,8 @@
                 <div class="mf-form-element lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                   <div class="mf-form-element-subcontainer">
                     <span class="mf-form-element-subcontainer-item">{#localize key="plugin.discussion.createmessage.pinned"/} <input type="checkbox" name="sticky" {@eq key=sticky value="true" type="boolean"}checked="checked"{/eq} /></span>
-                    <span class="mf-form-element-subcontainer-item">{#localize key="plugin.discussion.createmessage.locked"/} <input type="checkbox" name="locked" {@eq key=locked value="true" type="boolean"}checked="checked"{/eq} /></span>                </div>            
+                    <span class="mf-form-element-subcontainer-item">{#localize key="plugin.discussion.createmessage.locked"/} <input type="checkbox" name="locked" {@eq key=locked value="true" type="boolean"}checked="checked"{/eq} /></span>
+                  </div>            
                 </div>            
               </div>
             {/eq}      

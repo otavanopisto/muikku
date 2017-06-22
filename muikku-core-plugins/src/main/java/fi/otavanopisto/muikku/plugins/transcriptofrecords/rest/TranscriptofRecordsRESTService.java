@@ -57,7 +57,6 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
-import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -82,9 +81,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Inject
   private WorkspaceController workspaceController;
   
-  @Inject
-  private UserGroupController userGroupController;
-
   @Inject
   private UserGroupEntityController userGroupEntityController;
 
@@ -320,7 +316,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       for (GradingScaleItem gradingScaleItem : gradingController.listGradingScaleItems(gradingScale)) {
         GradingScaleItemCoordinates newItemKey = new GradingScaleItemCoordinates(
             gradingScaleIdentifier,
-            new SchoolDataIdentifier(gradingScaleItem.getGradingScaleIdentifier(), gradingScaleItem.getSchoolDataSource()));
+            new SchoolDataIdentifier(gradingScaleItem.getIdentifier(), gradingScaleItem.getSchoolDataSource()));
         gradingScaleCache.put(newItemKey, gradingScaleItem);
       }
     }

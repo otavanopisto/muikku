@@ -7,7 +7,7 @@
           <div class="mf-form-row flex-row">
             <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
               <div class="mf-textfield-subcontainer flex-row flex-align-items-center">
-                <input required="required" class="mf-texfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" placeholder="{#localize key="plugin.discussion.createarea.name"/}" type="text" value="" name="name" maxlength="105"></input>
+                <input required="required" class="mf-texfield-subject lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" placeholder='{#localize key="plugin.discussion.createarea.name"/}' type="text" value="" name="name" maxlength="105"></input>
               </div>
             </div>     
           </div>

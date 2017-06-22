@@ -144,6 +144,7 @@
       this.element.addClass('discussion');
 
       this._areaId = null;
+      this._currentLocation = window.location.hash;
 
       this.element.on("change", "select[name='areas']", $.proxy(this._onAreaSelectChange, this));
       this.element.on("click", ".di-new-area-button", $.proxy(this._onNewAreaClick, this));
@@ -151,6 +152,23 @@
       this.element.on("click", ".di-edit-area-button", $.proxy(this._onEditMessageClick, this));
       this.element.on("click", ".di-delete-area-button", $.proxy(this._onDeleteMessageClick, this));
 
+      $(window).on("hashchange", $.proxy(function () {
+        if (this._currentLocation != window.location.hash) {
+          var location = this._parseHash();
+          this._allAreas = location.allAreas;
+
+          if (location.areaId && location.threadId) {
+            this.loadThread(location.areaId, location.threadId);
+          } else {
+            if (!location.areaId || this._allAreas) {
+              this.loadAllAreas();
+            } else {
+              this.loadArea(location.areaId);
+            }
+          }
+        }
+      }, this));
+      
       this.element.find('.di-threads')
         .show()
         .discussionThreads({
@@ -164,29 +182,10 @@
         });
 
       this._load($.proxy(function () {
-        var areaId = null;
-        var threadId = null;
-        this._allAreas = false;
-
-        if (window.location.hash.length > 1) {
-          var hashParts = window.location.hash.substring(1).split('/');
-          if (hashParts.length > 0) {
-            areaId = hashParts[0];
-          }
-
-          if (hashParts.length > 1) {
-            threadId = hashParts[1];
-          }
-
-          if (areaId) {
-            if (areaId.charAt(0) == 'a') {
-              areaId = areaId.substring(1);
-              this._allAreas = true;
-            }
-          }
-        } else {
-          this._allAreas = true;
-        }
+        var hash = this._parseHash();
+        var areaId = hash.areaId;
+        var threadId = hash.threadId;
+        this._allAreas = hash.allAreas;
 
         if (areaId && threadId) {
           this.loadThread(areaId, threadId);
@@ -200,6 +199,38 @@
       }, this));
     },
 
+    _parseHash: function () {
+      if (window.location.hash.length > 1) {
+        var hashParts = window.location.hash.substring(1).split('/');
+        var hash = {
+          allAreas: false,
+          areaId: undefined,
+          threadId: undefined
+        };
+        
+        if (hashParts.length > 0) {
+          hash.areaId = hashParts[0];
+        }
+
+        if (hashParts.length > 1) {
+          hash.threadId = hashParts[1];
+        }
+
+        if (hash.areaId) {
+          if (hash.areaId.charAt(0) == 'a') {
+            hash.areaId = hash.areaId.substring(1);
+            hash.allAreas = true;
+          }
+        }
+        
+        return hash;
+      } else {
+        return {
+          allAreas: true
+        };
+      }
+    },
+    
     loadAllAreas: function () {
       this._threadId = null;
       this._areaId = null;
@@ -355,27 +386,28 @@
     },
 
     _updateHash: function () {
+      var newHash = "";
+      
       if (this._allAreas) {
         if (this._areaId && this._threadId) {
-          window.location.hash = "#a" + this._areaId + "/" + this._threadId;
+          newHash = "#a" + this._areaId + "/" + this._threadId;
         } else {
           if (this._areaId) {
-            window.location.hash = "#a" + this._areaId;
-          } else {
-            window.location.hash = "";
+            newHash = "#a" + this._areaId;
           }
         }
       } else {
         if (this._areaId) {
           if (this._threadId) {
-            window.location.hash = "#" + this._areaId + "/" + this._threadId;
+            newHash = "#" + this._areaId + "/" + this._threadId;
           } else {
-            window.location.hash = "#" + this._areaId;
+            newHash = "#" + this._areaId;
           }
-        } else {
-          window.location.hash = "";
         }
       }
+      
+      window.location.hash = newHash;
+      this._currentLocation = newHash;      
     },
 
     _load: function (callback) {
