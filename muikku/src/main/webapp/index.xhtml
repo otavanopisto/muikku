@@ -15,10 +15,10 @@
           <div class="ordered-container-item">
             <div class="main-function ordered-container main-function-ordered-container-for-panels-column">
               <ui:fragment rendered="#{sessionBackingBean.isStudent}">
-                <div class="ordered-container-item main-function panel">
+                <div class="ordered-container-item main-function panel" style="display:none">
                   <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-continue-studies">
                     <span class="icon icon-revert"></span>
-                    <span class="text text-one-liner">#{i18n.text['plugin.frontPage.lastWorkspace.continueStudiesLink']}</span>
+                    <span>#{i18n.text['plugin.frontPage.lastWorkspace.continueStudiesLink']}</span>
                   </div>
                   <div data-controller-widget="panel-continue-studies"></div>
                 </div>

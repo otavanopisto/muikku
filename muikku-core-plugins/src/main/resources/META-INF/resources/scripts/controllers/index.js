@@ -13,7 +13,13 @@ loadModules([
   $(document.body).baseControllerWidget();
   $.getWidgetContainerFor("generic-environment").genericEvironmentControllerWidget();
   $.getWidgetContainerFor("panel-announcements").panelAnnouncementsControllerWidget();
-  $.getWidgetContainerFor("panel-continue-studies").panelContinueStudiesControllerWidget();
+  $.getWidgetContainerFor("panel-continue-studies").panelContinueStudiesControllerWidget({
+    onResolved: function(self, lastWorkspace){
+      if (lastWorkspace){
+        self.element.parent().show();
+      }
+    }
+  });
   $.getWidgetContainerFor("panel-important").panelImportantControllerWidget();
   $.getWidgetContainerFor("panel-last-messages").panelMessagesControllerWidget();
   $.getWidgetContainerFor("panel-workspaces").panelWorkspacesControllerWidget();

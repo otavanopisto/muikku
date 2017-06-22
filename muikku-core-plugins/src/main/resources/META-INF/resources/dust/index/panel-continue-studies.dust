@@ -1,1 +1,9 @@
-studies
+<h2 class="main-function text main-function-text-panel-continue-studies-workspace-name">
+  {lastWorkspace.workspaceName}
+</h2>
+{! PLEASE_TRANSLATE !}
+<span class="main-function text main-function-text-panel-continue-studies">
+  Olit vimeksi sivulla
+  {~s}<b><i>{lastWorkspace.materialName}</i></b>{~s}
+  <a href="{lastWorkspace.url}">Jatka opintoja</a>
+</span>

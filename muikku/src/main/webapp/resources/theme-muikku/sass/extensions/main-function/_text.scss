@@ -85,11 +85,25 @@ $main-function-text-icon-size: 35;
     }
   }
   
-  &.main-function-text-no-workspaces {
+  &.main-function-text-panel-no-workspaces {
     padding: 0 #{$main-function-text-mobile-padding-horizontal}px 0 #{$main-function-text-mobile-padding-horizontal}px;
     
     @include breakpoint-up($breakpoint-landscape-pad){
       padding-top: #{$main-function-text-mobile-padding-horizontal}px;
     }
+  }
+  
+  &.main-function-text-panel-continue-studies-workspace-name {
+    font-size: 32px;
+    font-weight: 300;
+    padding: 0 #{$main-function-text-mobile-padding-horizontal}px 0 #{$main-function-text-mobile-padding-horizontal}px;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-top: #{$main-function-text-mobile-padding-horizontal/2}px;
+    }
+  }
+  
+  &.main-function-text-panel-continue-studies {
+    padding: 4px #{$main-function-text-mobile-padding-horizontal}px 0 #{$main-function-text-mobile-padding-horizontal}px;
   }
 }
