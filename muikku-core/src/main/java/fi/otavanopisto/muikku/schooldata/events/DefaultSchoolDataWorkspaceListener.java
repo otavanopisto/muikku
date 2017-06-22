@@ -147,6 +147,9 @@ public class DefaultSchoolDataWorkspaceListener {
         if (workspaceUserEntity != null) {
           String currentUserIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier();
           if (!StringUtils.equals(currentUserIdentifier, event.getUserIdentifier())) {
+            
+            // WorkspaceUserEntity found, but it points to a new study program
+            
             UserSchoolDataIdentifier newUserIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
                 event.getUserDataSource(), event.getUserIdentifier());
             if (newUserIdentifier == null) {
@@ -165,10 +168,18 @@ public class DefaultSchoolDataWorkspaceListener {
                   }
                 }
                 workspaceUserEntityController.updateIdentifier(existingUser, workspaceUserEntity.getIdentifier());
+                // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
+                if (event.getIsActive() && !existingUser.getActive()) {
+                  workspaceUserEntityController.updateActive(existingUser, event.getIsActive());
+                }
                 workspaceUserEntityController.archiveWorkspaceUserEntity(workspaceUserEntity);
               }
               else {
                 workspaceUserEntityController.updateUserSchoolDataIdentifier(workspaceUserEntity, newUserIdentifier);
+                // #3308: If the new study program is active, reactivate the corresponding workspace student in Muikku 
+                if (event.getIsActive() && !workspaceUserEntity.getActive()) {
+                  workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+                }
               }
             }
           }
@@ -178,18 +189,20 @@ public class DefaultSchoolDataWorkspaceListener {
               workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceRoleEntity);
             }
           }
-        }
 
-        // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
+          // If a student has ended their studies but they are still active in the workspace, change them inactive (but not vice versa)
+          
+          if (!event.getIsActive() && workspaceUserEntity.getActive()) {
+            workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
+          }
         
-        if (!event.getIsActive() && workspaceUserEntity.getActive()) {
-          workspaceUserEntityController.updateActive(workspaceUserEntity, event.getIsActive());
         }
-        
-      } else {
+      }
+      else {
         logger.warning("could not update workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
       }
-    } else {
+    }
+    else {
       logger.warning("could not update workspace user because user entity #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
     }
   }
