@@ -1,13 +1,20 @@
+$main-function-text-mobile-padding-horizontal: 10;
+$main-function-text-icon-size: 35;
+
 .main-function.text {
   &.main-function-text-for-panels-title {
     font-size: 24px;
     color: $color-main-function-text-for-panels-title;
-    padding-bottom: 10px;
+    padding-bottom: #{$main-function-text-mobile-padding-horizontal}px;
     font-weight: 300;
     text-transform: uppercase;
     
     @include breakpoint-up($breakpoint-landscape-pad){
       padding-bottom: 6px;
+    }
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      padding: 0 #{$main-function-text-mobile-padding-horizontal}px 10px #{$main-function-text-mobile-padding-horizontal}px;
     }
     
     span {
@@ -18,20 +25,25 @@
       position: absolute;
       top: 0;
       right: 0;
-      left: 45px;
+      left: #{$main-function-text-icon-size + $main-function-text-mobile-padding-horizontal}px;
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-      height: 35px;
-      line-height: 35px;
+      height: #{$main-function-text-icon-size}px;
+      line-height: #{$main-function-text-icon-size}px;
+      
+      @include breakpoint-down($breakpoint-portrait-pad){
+        left: #{$main-function-text-icon-size + ($main-function-text-mobile-padding-horizontal*2)}px;
+        right: #{$main-function-text-mobile-padding-horizontal}px;
+      }
     }
     
     .icon {
-      width: 35px;
-      height: 35px;
+      width: #{$main-function-text-icon-size}px;
+      height: #{$main-function-text-icon-size}px;
       border-radius: 100%;
       font-size: 20px;
-      line-height: 35px;
+      line-height: #{$main-function-text-icon-size}px;
       vertical-align: middle;
       text-align: center;
       display: inline-block;
@@ -70,6 +82,14 @@
         background-color: $color-main-function-text-for-panels-title-announcements-icon-background;
         color: $color-main-function-text-for-panels-title-announcements-icon-color;
       }
+    }
+  }
+  
+  &.main-function-text-no-workspaces {
+    padding: 0 #{$main-function-text-mobile-padding-horizontal}px 0 #{$main-function-text-mobile-padding-horizontal}px;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-top: #{$main-function-text-mobile-padding-horizontal}px;
     }
   }
 }

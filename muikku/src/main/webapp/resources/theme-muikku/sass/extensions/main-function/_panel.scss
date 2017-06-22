@@ -4,6 +4,7 @@
 
 .main-function.panel {
   margin-top: 20px;
+  padding: 20px 0 20px 0;
   
   &::before {
     @include breakpoint-down($breakpoint-portrait-pad){

@@ -25,7 +25,8 @@ $label-large-height: 33px;
 $label-large-font-size: 17px;
 
 .label {
-  @include color-theme($color-label-theme, false);
+  @include prefix(transition, moz o ms webkit, color 0.3s);
+  color: $color-label-default;
   display: inline-block;
   font-family: $label-font-family;
   font-size: $label-medium-font-size;
@@ -35,6 +36,42 @@ $label-large-font-size: 17px;
   position: relative;
   text-align: left;
   vertical-align: center;
+  
+  &.label-primary {
+    color: $color-label-primary;
+  }
+  
+  &.label-warn {
+    color: $color-label-warn;
+  }
+  
+  &.label-info {
+    color: $color-label-info;
+  }
+  
+  &.label-fatal {
+    color: $color-label-fatal;
+  }
+  
+  &.label-error {
+    color: $color-label-error;
+  }
+  
+  &.label-success {
+    color: $color-label-success;
+  }
+  
+  &.label-loading {
+    color: $color-label-loading;
+  }
+  
+  &.label-secondary {
+    color: $color-label-secondary;
+  }
+  
+  &.label-inverse {
+    color: $color-label-inverse;
+  }
 
   &.label-large {
     font-size: $label-large-font-size;

@@ -19,12 +19,16 @@
 $text-font-family: "Exo 2", Arial, sans-serif;
 
 .text {
-  @include color-theme($color-text-theme, false);
+  color: $color-text-default;
   display: block;
   font-family: $text-font-family;
   font-weight: 400;
   position: relative;
   text-align: left;
+  
+  a {
+    color: $color-text-link;
+  }
 
   b {
     font-weight: 600;

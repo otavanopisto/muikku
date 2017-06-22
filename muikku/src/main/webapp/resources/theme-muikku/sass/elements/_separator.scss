@@ -8,7 +8,7 @@
 @import "../base/mixins";
 
 .separator {
-  @include color-theme($color-separator-theme, false);
+  background-color: $color-separator-background;
   display: block;
   height: 50px;
   width: 100%;

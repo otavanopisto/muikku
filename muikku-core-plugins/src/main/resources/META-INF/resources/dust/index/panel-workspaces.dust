@@ -10,11 +10,11 @@
     {/workspaces}
   </div>
 {:else}
-  <div class="text">
-    {#localize key="plugin.frontPage.workspaces.noWorkspaces.part1"/}
+  <div class="main-function text main-function-text-no-workspaces">
+    {#localize key="plugin.frontPage.workspaces.noWorkspaces.part1"/}{~s}
     <a href="/coursepicker">
       {#localize key="plugin.frontPage.workspaces.noWorkspaces.coursepicker"/}
     </a>
-    {#localize key="plugin.frontPage.workspaces.noWorkspaces.part2"/}
+    {~s}{#localize key="plugin.frontPage.workspaces.noWorkspaces.part2"/}
   </div>
 {/workspaces}

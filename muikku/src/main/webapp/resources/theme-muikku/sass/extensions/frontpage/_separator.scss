@@ -1,0 +1,6 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+
+.frontpage.separator {
+  background-color: $color-frontpage-separator-background;
+}

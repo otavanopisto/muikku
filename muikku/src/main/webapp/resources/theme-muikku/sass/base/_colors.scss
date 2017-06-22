@@ -33,89 +33,93 @@ $color-secondary-contrast: $color-default;
 $color-default-body: #f5f5f5;
 $color-overlay-background: rgba(0, 0, 0, 0.65);
 
-// Notification queue item theme
-$color-notification-queue-item-theme: (
-  (default, background $color-default, text $color-default-contrast),
-  (notification-queue-item-primary, background $color-primary, text $color-primary-contrast),
-  (notification-queue-item-warn, background $color-warn, text $color-warn-contrast),
-  (notification-queue-item-info, background $color-info, text $color-info-contrast),
-  (notification-queue-item-fatal, background $color-fatal, text $color-fatal-contrast),
-  (notification-queue-item-error, background $color-error, text $color-error-contrast),
-  (notification-queue-item-success, background $color-success, text $color-success-contrast),
-  (notification-queue-item-loading, background $color-loading, text $color-loading-contrast),
-  (notification-queue-item-secondary, background $color-secondary, text $color-secondary-contrast),
-  (notification-queue-item-inverse, background $color-inverse, text $color-inverse-contrast)
-);
+// Notification queue
+$color-notification-queue-item-container-background: #666;
+$color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
 
-// Button theme
-$color-button-theme: (
-  (default, background $color-default, text $color-default-contrast),
-  (button-primary, background $color-primary, text $color-primary-contrast),
-  (button-warn, background $color-warn, text $color-warn-contrast),
-  (button-info, background $color-info, text $color-info-contrast),
-  (button-fatal, background $color-fatal, text $color-fatal-contrast),
-  (button-error, background $color-error, text $color-error-contrast),
-  (button-success, background $color-success, text $color-success-contrast),
-  (button-loading, background $color-loading, text $color-loading-contrast),
-  (button-secondary, background $color-secondary, text $color-secondary-contrast),
-  (button-inverse, background $color-inverse, text $color-inverse-contrast)
-);
+$color-notification-queue-item-default-background: $color-default;
+$color-notification-queue-item-default-text: $color-default-contrast;
+
+$color-notification-queue-item-primary-background: $color-primary;
+$color-notification-queue-item-primary-text: $color-primary-contrast;
+
+$color-notification-queue-item-warn-background: $color-warn;
+$color-notification-queue-item-warn-text: $color-warn-contrast;
+
+$color-notification-queue-item-info-background: $color-info;
+$color-notification-queue-item-info-text: $color-info-contrast;
+
+$color-notification-queue-item-fatal-background: $color-fatal;
+$color-notification-queue-item-fatal-text: $color-fatal-contrast;
+
+$color-notification-queue-item-error-background: $color-error;
+$color-notification-queue-item-error-text: $color-error-contrast;
+
+$color-notification-queue-item-success-background: $color-success;
+$color-notification-queue-item-success-text: $color-success-contrast;
+
+$color-notification-queue-item-loading-background: $color-loading;
+$color-notification-queue-item-loading-text: $color-loading-contrast;
+
+$color-notification-queue-item-secondary-background: $color-secondary;
+$color-notification-queue-item-secondary-text: $color-secondary-contrast;
+
+$color-notification-queue-item-inverse-background: $color-inverse;
+$color-notification-queue-item-inverse-text: $color-inverse-contrast;
+
+// Button
+$color-button-default-background: $color-default;
+$color-button-default-text: $color-default-contrast;
+
+$color-button-primary-background: $color-primary;
+$color-button-primary-text: $color-primary-contrast;
+
+$color-button-warn-background: $color-warn;
+$color-button-warn-text: $color-warn-contrast;
+
+$color-button-info-background: $color-info;
+$color-button-info-text: $color-info-contrast;
+
+$color-button-fatal-background: $color-fatal;
+$color-button-fatal-text: $color-fatal-contrast;
+
+$color-button-error-background: $color-error;
+$color-button-error-text: $color-error-contrast;
+
+$color-button-success-background: $color-success;
+$color-button-success-text: $color-success-contrast;
+
+$color-button-loading-background: $color-loading;
+$color-button-loading-text: $color-loading-contrast;
+
+$color-button-secondary-background: $color-secondary;
+$color-button-secondary-text: $color-secondary-contrast;
+
+$color-button-inverse-background: $color-inverse;
+$color-button-inverse-text: $color-inverse-contrast;
 
 // Button pill theme
-$color-button-pill-theme: (
-  (default, background $color-default, text $color-default-contrast),
-  (button-pill-primary, background $color-primary, text $color-primary-contrast),
-  (button-pill-warn, background $color-warn, text $color-warn-contrast),
-  (button-pill-info, background $color-info, text $color-info-contrast),
-  (button-pill-fatal, background $color-fatal, text $color-fatal-contrast),
-  (button-pill-error, background $color-error, text $color-error-contrast),
-  (button-pill-success, background $color-success, text $color-success-contrast),
-  (button-pill-loading, background $color-loading, text $color-loading-contrast),
-  (button-pill-secondary, background $color-secondary, text $color-secondary-contrast),
-  (button-pill-inverse, background $color-inverse, text $color-inverse-contrast)
-);
+$color-button-pill-background: $color-default;
+$color-button-pill-text: $color-default-contrast;
 
 // Label theme
-$color-label-theme: (
-  (default, text $color-inverse),
-  (label-primary, text $color-primary),
-  (label-warn, text $color-warn),
-  (label-info, text $color-info),
-  (label-fatal, text $color-fatal),
-  (label-error, text $color-error),
-  (label-success, text $color-success),
-  (label-loading, text $color-loading),
-  (label-secondary, text $color-secondary),
-  (label-inverse, text $color-default)
-);
+$color-label-default: $color-inverse;
+$color-label-primary: $color-primary;
+$color-label-warn: $color-warn;
+$color-label-info: $color-info;
+$color-label-fatal: $color-fatal;
+$color-label-error: $color-error;
+$color-label-success: $color-success;
+$color-label-loading: $color-loading;
+$color-label-secondary: $color-secondary;
+$color-label-inverse: $color-default;
 
 //Text
-$color-text-theme: (
-  (default, text $color-inverse),
-  (text-primary, text $color-primary),
-  (text-warn, text $color-warn),
-  (text-info, text $color-info),
-  (text-fatal, text $color-fatal),
-  (text-error, text $color-error),
-  (text-success, text $color-success),
-  (text-loading, text $color-loading),
-  (text-secondary, text $color-secondary),
-  (text-inverse, text $color-default)
-);
+$color-text-default: $color-inverse;
+$color-text-link: $color-primary;
 
 //Separator
-$color-separator-theme: (
-  (default, background $color-default),
-  (separator-primary, background $color-primary),
-  (separator-warn, text $color-warn),
-  (separator-info, background $color-info),
-  (separator-fatal, background $color-fatal),
-  (separator-error, background $color-error),
-  (separator-success, background $color-success),
-  (separator-loading, background $color-loading),
-  (separator-secondary, background $color-secondary),
-  (separator-inverse, background $color-inverse)
-);
+$color-separator-background: $color-inverse;
 
 // Navbar
 $color-navbar-default-background: #f5f5f5;
@@ -194,11 +198,6 @@ $color-hero-default-background: #0089c6;
 
 // logo
 $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
-
-// notification queue
-$color-notification-queue-item-container-background: #666;
-$color-notification-queue-item-container-shadow: rgba(0, 0, 0, 0.3);
-$color-notification-queue-item-text: $color-default;
 
 // panel
 $color-panel-background: $color-default;

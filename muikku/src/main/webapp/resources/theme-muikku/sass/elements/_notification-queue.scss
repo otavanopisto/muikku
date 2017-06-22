@@ -42,8 +42,8 @@
 
     .notification-queue-item {
       @include prefix(transition, webkit ms o moz, height 0.3s);
-      @include color-theme($color-notification-queue-item-theme, false);
-      color: $color-notification-queue-item-text;
+      background-color: $color-notification-queue-item-default-background;
+      color: $color-notification-queue-item-default-text;
       display: block;
       font-size: 16px;
       font-weight: 400;
@@ -58,6 +58,51 @@
       width: 100%;
       word-wrap: break-word;
       z-index: 2;
+      
+      &.notification-queue-item-primary {
+        background-color: $color-notification-queue-item-primary-background;
+        color: $color-notification-queue-item-primary-text;
+      }
+      
+      &.notification-queue-item-warn {
+        background-color: $color-notification-queue-item-warn-background;
+        color: $color-notification-queue-item-warn-text;
+      }
+      
+      &.notification-queue-item-info {
+        background-color: $color-notification-queue-item-info-background;
+        color: $color-notification-queue-item-info-text;
+      }
+      
+      &.notification-queue-item-fatal {
+        background-color: $color-notification-queue-item-fatal-background;
+        color: $color-notification-queue-item-fatal-text;
+      }
+      
+      &.notification-queue-item-error {
+        background-color: $color-notification-queue-item-error-background;
+        color: $color-notification-queue-item-error-text;
+      }
+      
+      &.notification-queue-item-success {
+        background-color: $color-notification-queue-item-success-background;
+        color: $color-notification-queue-item-success-text;
+      }
+      
+      &.notification-queue-item-loading {
+        background-color: $color-notification-queue-item-loading-background;
+        color: $color-notification-queue-item-loading-text;
+      }
+      
+      &.notification-queue-item-secondary {
+        background-color: $color-notification-queue-item-secondary-background;
+        color: $color-notification-queue-item-secondary-text;
+      }
+      
+      &.notification-queue-item-inverse {
+        background-color: $color-notification-queue-item-inverse-background;
+        color: $color-notification-queue-item-inverse-text;
+      }
 
       &.hidden {
         height: 0;

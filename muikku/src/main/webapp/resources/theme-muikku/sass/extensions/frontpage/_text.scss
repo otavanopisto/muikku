@@ -1,6 +1,6 @@
 .frontpage.text {
   &.frontpage-text-muikku-description {
-    @include color-theme($color-frontpage-text-muikku-description-theme, false);
+    color: $color-frontpage-text-muikku-description;
     line-height: 1.3;
     margin-top: 15px;
     width: 320px;
@@ -13,7 +13,7 @@
     }
   }
   &.frontpage-text-muikku-author {
-    @include color-theme($color-frontpage-text-muikku-author-theme, false);
+    color: $color-frontpage-text-muikku-author;
     font-size: 25px;
     font-weight: 200;
     line-height: 0.95;
@@ -25,7 +25,7 @@
     }
   }
   &.frontpage-text-muikku {
-    @include color-theme($color-frontpage-text-muikku-theme, false);
+    color: $color-frontpage-text-muikku;
     font-size: 48px;
     font-weight: 900;
     line-height: 0.9;
@@ -38,7 +38,7 @@
     }
   }
   &.frontpage-text-verkko {
-    @include color-theme($color-frontpage-text-verkko-theme, false);
+    color: $color-frontpage-text-verkko;
     font-size: 48px;
     letter-spacing: 5px;
     text-indent: 10px;
@@ -55,7 +55,7 @@
     }
   }
   &.frontpage-text-title {
-    @include color-theme($color-frontpage-text-title-theme, false);
+    color: $color-frontpage-text-title;
     font-size: 38px;
     text-align: left;
     font-weight: 300;
@@ -66,7 +66,7 @@
     }
   }
   &.frontpage-text-otavan-opisto-info-title {
-    @include color-theme($color-frontpage-text-otavan-opisto-info-title-theme, false);
+    color: $color-frontpage-text-otavan-opisto-info-title;
     font-size: 16px;
     font-weight: 600;
     margin: 0 0 10px;
@@ -76,7 +76,7 @@
     }
   }
   &.frontpage-text-otavan-opisto-info-description {
-    @include color-theme($color-frontpage-text-otavan-opisto-description-theme, false);
+    color: $color-frontpage-text-otavan-opisto-description;
     font-size: 17px;
     font-weight: 400;
     line-height: 1.3;
@@ -86,7 +86,7 @@
     }
   }
   &.frontpage-text-contact-us {
-    @include color-theme($color-frontpage-text-contact-us-theme, false);
+    color: $color-frontpage-text-contact-us;
     font-size: 40px;
     font-weight: 300;
     margin-bottom: 30px;
@@ -98,7 +98,7 @@
     }
   }
   &.frontpage-text-contact-us-information {
-    @include color-theme($color-frontpage-text-contact-us-information-theme, false);
+    color: $color-frontpage-text-contact-us-information;
     margin-top: 15px;
     margin-bottom: 15px;
 

@@ -9,7 +9,6 @@
 $main-function-button-pill-size: 48px;
 
 .main-function.button-pill {
-  @include color-theme($color-main-function-button-pill-theme, true, true);
   margin-right: 14px;
   height: $main-function-button-pill-size;
   width: $main-function-button-pill-size;
@@ -17,7 +16,16 @@ $main-function-button-pill-size: 48px;
   font-size: 22px;
   
   &.main-function-button-pill-language {
-    @include color-theme($color-main-function-button-pill-language-theme, true);
+    background-color: $color-main-function-button-pill-language-background;
+    color: $color-main-function-button-pill-language-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-main-function-button-pill-language-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-main-function-button-pill-language-background, 20%);
+    }
   }
   
   &.main-function-button-pill-profile {

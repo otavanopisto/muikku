@@ -26,13 +26,8 @@ $color-main-function-dropdown-profile-menu-text: $color-default-contrast;
 $color-main-function-dropdown-profile-menu-shadow: rgba(0, 0, 0, 0.3);
 
 // BUTTONS
-$color-main-function-button-pill-theme: (
-  (default, background $color-default, text $color-default-contrast),
-);
-
-$color-main-function-button-pill-language-theme: (
-  (default, background $color-inverse, text $color-inverse-contrast),
-);
+$color-main-function-button-pill-language-background: $color-inverse;
+$color-main-function-button-pill-language-text: $color-inverse-contrast;
 
 $color-main-function-button-pill-icon-search: $color-main-function-navbar-background;
 $color-main-function-button-pill-icon-user: #1FE00A;

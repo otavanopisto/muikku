@@ -25,10 +25,12 @@ $button-default-height: 27px;
 $button-default-font-size: 15px;
 
 .button {
-  @include color-theme($color-button-theme, true);
   @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+  background-color: $color-button-default-background;
   border-radius: 2px;
   cursor: pointer;
+  color: $color-button-default-text;
   display: inline-block;
   font-family: $button-font-family;
   font-size: $button-default-font-size;
@@ -43,6 +45,136 @@ $button-default-font-size: 15px;
   text-transform: uppercase;
   vertical-align: middle;
   white-space: nowrap;
+  
+  &.button-primary {
+    background-color: $color-button-primary-background;
+    color: $color-button-primary-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-primary-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-primary-background, 20%);
+    }
+  }
+  
+  &.button-primary {
+    background-color: $color-button-primary-background;
+    color: $color-button-primary-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-primary-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-primary-background, 20%);
+    }
+  }
+  
+  &.button-warn {
+    background-color: $color-button-warn-background;
+    color: $color-button-warn-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-warn-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-warn-background, 20%);
+    }
+  }
+  
+  &.button-info {
+    background-color: $color-button-info-background;
+    color: $color-button-info-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-info-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-info-background, 20%);
+    }
+  }
+  
+  &.button-fatal {
+    background-color: $color-button-fatal-background;
+    color: $color-button-fatal-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-fatal-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-fatal-background, 20%);
+    }
+  }
+  
+  &.button-error {
+    background-color: $color-button-error-background;
+    color: $color-button-error-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-error-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-error-background, 20%);
+    }
+  }
+  
+  &.button-success {
+    background-color: $color-button-success-background;
+    color: $color-button-success-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-success-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-success-background, 20%);
+    }
+  }
+  
+  &.button-loading {
+    background-color: $color-button-loading-background;
+    color: $color-button-loading-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-loading-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-loading-background, 20%);
+    }
+  }
+  
+  &.button-secondary {
+    background-color: $color-button-secondary-background;
+    color: $color-button-secondary-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-secondary-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-secondary-background, 20%);
+    }
+  }
+  
+  &.button-inverse {
+    background-color: $color-button-inverse-background;
+    color: $color-button-inverse-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-inverse-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-inverse-background, 20%);
+    }
+  }
 
   &.button-dynamic-height {
     height: auto;
@@ -92,9 +224,11 @@ $button-pill-size: 34px;
 $button-pill-font-size: 16px;
 
 .button-pill {
-  @include color-theme($color-button-pill-theme, true);
   @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+  background-color: $color-button-pill-background;
   border-radius: $button-pill-size;
+  color: $color-button-pill-text;
   cursor: pointer;
   display: inline-block;
   font-family: $button-pill-font-family;
@@ -108,6 +242,14 @@ $button-pill-font-size: 16px;
   text-transform: uppercase;
   vertical-align: middle;
   width: $button-pill-size;
+  
+  &:hover, &.hover {
+    background-color: darken($color-button-pill-background, 10%);
+  }
+  
+  &:active, &.active {
+    background-color: darken($color-button-pill-background, 20%);
+  }
 }
 
 $button-social-size: 40px;

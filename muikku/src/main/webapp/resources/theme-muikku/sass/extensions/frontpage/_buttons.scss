@@ -4,38 +4,102 @@
 
 .frontpage.button {
   &.frontpage-button-login {
-    @include color-theme($color-frontpage-button-login, true);
+    background-color: $color-frontpage-button-login-background;
+    color: $color-frontpage-button-login-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-login-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-login-background, 20%);
+    }
+    
     @include breakpoint-up($breakpoint-medium-mobile){
       margin-right: 14px;
     }
   }
 
   &.frontpage-button-studying-readmore {
-    @include color-theme($color-frontpage-button-studying-readmore-theme, true);
+    background-color: $color-frontpage-button-studying-readmore-background;
+    color: $color-frontpage-button-studying-readmore-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-studying-readmore-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-studying-readmore-background, 20%);
+    }
   }
 
   &.frontpage-button-school-readmore {
-    @include color-theme($color-frontpage-button-school-readmore-theme, true);
+    background-color: $color-frontpage-button-school-readmore-background;
+    color: $color-frontpage-button-school-readmore-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-school-readmore-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-school-readmore-background, 20%);
+    }
   }
 
   &.frontpage-button-courses-readmore {
-    @include color-theme($color-frontpage-button-courses-readmore-theme, true);
+    background-color: $color-frontpage-button-courses-readmore-background;
+    color: $color-frontpage-button-courses-readmore-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-courses-readmore-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-courses-readmore-background, 20%);
+    }
   }
 
   &.frontpage-button-website {
-    @include color-theme($color-frontpage-button-website-theme, true);
+    background-color: $color-frontpage-button-website-background;
+    color: $color-frontpage-button-website-text;
     margin-bottom: 10px;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-website-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-website-background, 20%);
+    }
   }
 
   &.frontpage-button-newsletter {
-    @include color-theme($color-frontpage-button-newsletter-theme, true);
+    background-color: $color-frontpage-button-newsletter-background;
+    color: $color-frontpage-button-newsletter-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-newsletter-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-newsletter-background, 20%);
+    }
   }
 }
 
 .frontpage.button-pill {
   &.frontpage-button-pill-language {
-    @include color-theme($color-frontpage-button-pill-language-theme, true);
+    background-color: $color-frontpage-button-pill-language-background;
+    color: $color-frontpage-button-pill-language-text;
     margin-right: 14px;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-pill-language-background, 5%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-pill-language-background, 10%);
+    }
   }
 }
 

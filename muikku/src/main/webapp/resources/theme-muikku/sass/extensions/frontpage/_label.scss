@@ -3,7 +3,7 @@
 
 .frontpage.label {
   &.frontpage-label-forgot-password {
-    @include color-theme($color-frontpage-label-forgot-password, false);
+    color: $color-frontpage-label-forgot-password;
     @include breakpoint-up($breakpoint-medium-mobile){
       margin-right: 15px;
     }
