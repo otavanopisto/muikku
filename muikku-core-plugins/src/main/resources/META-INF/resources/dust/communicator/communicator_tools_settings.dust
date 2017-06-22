@@ -1,7 +1,7 @@
 <div class="flex-row flex-align-items-center">
   <div class="lg-flex-cell-8 md-flex-cell-8 sm-flex-cell-16">
     <div class="mf-tool-container navigation cm-go-back-container">
-      <div title="{#localize key="plugin.communicator.tool.title.goback"/}" class="mf-tool cm-go-back icon-goback"></div>
+      <div title='{#localize key="plugin.communicator.tool.title.goback"/}' class="mf-tool cm-go-back icon-goback"></div>
     </div>
   </div>
 </div> 

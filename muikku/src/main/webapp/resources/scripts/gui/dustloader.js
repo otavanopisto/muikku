@@ -65,7 +65,11 @@ function renderDustTemplate(templateName, json, callback) {
         i++;
       }
       
-      var result = chunk.write(getLocaleText(params.key, args));
+      var text = getLocaleText(params.key, args);
+      if (text)
+        text = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      
+      var result = chunk.write(text);
       return result;
     },
     isLoggedIn: function(chunk, context, bodies, params) {
