@@ -20,7 +20,7 @@
                 <div class="mf-form-row flex-row">
                   <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">                
                     <div class="mf-form-element-subcontainer">
-                      <input required="required" class="mf-textfield-subject" type="text" name="caption" placeholder="{#localize key="plugin.announcer.editannouncement.title.label"/}" maxlength="255"></input>
+                      <input required="required" class="mf-textfield-subject" type="text" name="caption" placeholder='{#localize key="plugin.announcer.editannouncement.title.label"/}' maxlength="255"></input>
                     </div>
                   </div>  
                 </div>                     
@@ -29,7 +29,7 @@
             <div class="mf-form-row flex-row">
               <div class="mf-textfield lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
                 <div class="mf-form-element-subcontainer ">
-                 <div class="an-announcement-recipients" id="msgTargetGroupsContainer"><input id="targetGroupContent" placeholder="{#localize key="plugin.announcer.createannouncement.target.label"/}" type="text"></input></div>
+                 <div class="an-announcement-recipients" id="msgTargetGroupsContainer"><input id="targetGroupContent" placeholder='{#localize key="plugin.announcer.createannouncement.target.label"/}' type="text"></input></div>
                 </div>                   
               </div>                     
             </div>          

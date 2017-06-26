@@ -9,8 +9,8 @@
           </object>
         </div>
         <div class="di-message-details di-message-details-reply lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-full">
-          <span class="di-reply-title-creator" title="{#localize key="plugin.discussion.titleText.creator"/}">{creatorFullName}</span>
-          <span class="di-reply-title-date" title="{#localize key="plugin.discussion.titleText.date"/}">{prettyDate}</span>
+          <span class="di-reply-title-creator" title='{#localize key="plugin.discussion.titleText.creator"/}'>{creatorFullName}</span>
+          <span class="di-reply-title-date" title='{#localize key="plugin.discussion.titleText.date"/}'>{prettyDate}</span>
           {?isReply}
              <span class="di-reply-to-decor icon-arrow-right"></span>
              <span class="di-reply-to-title">{replyParentCreatorFullName}</span>
@@ -30,7 +30,7 @@
     </div>
   {:else}
     <div class="flex-row">
-      <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>
+      <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title='{#localize key="plugin.discussion.titleText.content"/}'>{message|s}</div>
       <div class="mf-item-content-info  di-message-content-info lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
         {?isEdited}
           <span>{#localize key="plugin.discussion.content.isEdited" arg0=prettyDateModified/}</span>
