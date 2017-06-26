@@ -106,4 +106,10 @@ $main-function-text-icon-size: 35;
   &.main-function-text-panel-continue-studies {
     padding: 4px #{$main-function-text-mobile-padding-horizontal}px 0 #{$main-function-text-mobile-padding-horizontal}px;
   }
+  
+  &.main-function-text-last-message-date {
+    color: $color-main-function-text-last-message-date;
+    font-style: italic;
+    padding-bottom: 7px;
+  }
 }

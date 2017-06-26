@@ -45,15 +45,18 @@
           </div>
           <div class="ordered-container-item">
             <div class="main-function ordered-container main-function-ordered-container-for-panels-column">
-              <div class="ordered-container-item main-function panel">
-                <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-important">
-                  <span class="icon icon-star"></span>
-                  <span>#{i18n.text['plugin.frontPage.important']}</span>
+              <ui:remove>
+                <!-- Discuss with Nina about implementation of these -->
+                <div class="ordered-container-item main-function panel">
+                  <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-important">
+                    <span class="icon icon-star"></span>
+                    <span>#{i18n.text['plugin.frontPage.important']}</span>
+                  </div>
+                  <div data-controller-widget="panel-important">
+                    <!-- The dust template, nor the css classes inside are implemented -->
+                  </div>
                 </div>
-                <div data-controller-widget="panel-important">
-                
-                </div>
-              </div>
+              </ui:remove>
               <div class="ordered-container-item main-function panel">
                 <div class="main-function text main-function-text-for-panels-title main-function-text-for-panels-title-announcements">
                   <span class="icon icon-announcer"></span>

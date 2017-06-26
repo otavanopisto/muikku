@@ -3,8 +3,12 @@
     {#messages}
       <a class="item-list-item {?unreadMessagesInThread}item-list-item-unread{/unreadMessagesInThread}" href="/communicator#inbox/{communicatorMessageId}">
         <span class="icon icon-envelope{?unreadMessagesInThread}-alt{/unreadMessagesInThread}"></span>
-        <span class="text item-list-text-body">{caption}</span>
-        <span class="text item-list-text-footer">{@moment type="format" date="{created}" format="L"/}</span>
+        <span class="text item-list-text-body">
+          {caption}
+          <span class="main-function text main-function-text-last-message-date">
+            {@moment type="format" date="{created}" format="L"/}
+          </span>
+        </span>
       </a>
     {/messages}
   </div>

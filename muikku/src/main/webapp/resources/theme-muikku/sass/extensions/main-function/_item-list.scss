@@ -1,7 +1,26 @@
 .main-function.item-list {
   &.main-function-item-list-workspaces {
     .icon {
-      color: $color-main-function-item-list-item-icon;
+      color: $color-main-function-item-list-item-workspaces-icon;
+    }
+  }
+  &.main-function-item-list-last-messages {
+    .item-list-item {
+      &:after {
+        content:''; 
+        left: 6px;
+        right: 6px;
+        height: 1px;
+        position: absolute; 
+        bottom: 0;
+        border-bottom: solid 1px $color-main-function-item-list-item-last-messages-border;
+      }
+    }
+    .icon {
+      color: $color-main-function-item-list-item-last-messages-icon;
+    }
+    .item-list-item-unread .icon {
+      color: $color-main-function-item-list-item-last-messages-unread-icon;
     }
   }
 }
