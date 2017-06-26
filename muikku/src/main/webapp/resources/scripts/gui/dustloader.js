@@ -34,6 +34,18 @@ dust.onLoad = function(name, callback) {
   };
 };
 
+//DEPRECATED
+dust.filters.formatDate = function(value) {
+  console && console.warn && console.warn("formatDate is deprecated");
+  return formatDate(moment(value).toDate());
+};
+
+//DEPRECATED
+dust.filters.formatTime = function(value) {
+  console && console.warn && console.warn("formatTime is deprecated");
+  return formatTime(moment(value).toDate());
+};
+
 dust.filters.formatPercent = function(value) {
   return parseFloat(value).toFixed(2);
 };
