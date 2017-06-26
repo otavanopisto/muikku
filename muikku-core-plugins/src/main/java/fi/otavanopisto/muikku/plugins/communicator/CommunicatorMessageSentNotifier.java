@@ -9,8 +9,6 @@ import java.util.logging.Logger;
 
 import javax.ejb.AccessTimeout;
 import javax.ejb.Asynchronous;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;

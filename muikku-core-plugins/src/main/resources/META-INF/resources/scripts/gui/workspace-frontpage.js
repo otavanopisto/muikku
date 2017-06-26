@@ -4,7 +4,8 @@
 
   $.widget("custom.workspaceTeachers", {
     options: {
-      workspaceEntityId: undefined
+      workspaceEntityId: undefined,
+      workspaceUrlName: undefined
     },
     _create : function() {
       this.element.on('click', '.workspace-teacher-info.message', $.proxy(this._sendMessage, this));
@@ -43,28 +44,39 @@
         }
       }, this));
     },
+    _getServer: function () {
+      var url = window.location.href;
+      var arr = url.split("/");
+
+      return arr[0] + "//" + arr[2];
+    },
     _sendMessage: function (event) {
       var teacherId = $(event.target).closest(".workspace-teacher").attr("data-id");
 
       mApi().user.users.basicinfo.read(teacherId, {}).callback($.proxy(function (err, staffMember) {
         
-        var messageCaption = [$('h1.workspace-title').text()];
+        var workspaceTitle = [$('h1.workspace-title').text()];
         var captionExtra = $('div.workspace-additional-info-wrapper').text(); 
         if (captionExtra) {
-          messageCaption.push('(' + captionExtra + ')');
+          workspaceTitle.push('(' + captionExtra + ')');
         }
         captionExtra = $('span.workspace-duration').text();
         if (captionExtra) {
-          messageCaption.push(captionExtra);
+          workspaceTitle.push(captionExtra);
         }
-        messageCaption = getLocaleText("plugin.workspace.index.newMessageCaption", messageCaption.join(' '));
+        workspaceTitle = workspaceTitle.join(' ');
+        
+        var messageCaption = getLocaleText("plugin.workspace.index.newMessageCaption", workspaceTitle);
+        var workspaceUrl = this._getServer() + CONTEXTPATH + "/workspace/" + this.options.workspaceUrlName;
+        var messageContent = "<p/><p>" + getLocaleText("plugin.workspace.index.newMessageContent") + " <a href='" + workspaceUrl + "'>" + workspaceTitle + "</a></p>";
         
         if (!err && staffMember) {
           var options = {
             groupMessagingPermission: false,
             isStudent: true,
             userRecipients: [staffMember],
-            initialCaption: messageCaption
+            initialCaption: messageCaption,
+            initialMessage: messageContent
           };
           
           var dialog = $('<div>')
@@ -147,6 +159,11 @@
           }, $.proxy(function (text) {
             $('.workspace-frontpage-footer').prepend($.parseHTML(text));
           }, this));
+          
+          $('.workspace-teachers-container').workspaceTeachers({
+            workspaceEntityId: workspaceEntityId,
+            workspaceUrlName: workspace.urlName
+          });
         }
       }, this));
     
@@ -177,10 +194,6 @@
           }
         }, this));
     }
-    
-    $('.workspace-teachers-container').workspaceTeachers({
-      workspaceEntityId: workspaceEntityId
-    });
   });
 
 }).call(this);

@@ -95,6 +95,7 @@ public class CommunicatorController {
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")
               .addAttributes("i", "class")
+              .addAttributes("span", "style")
     ).clean(doc);
     doc.outputSettings().escapeMode(EscapeMode.xhtml);
     return doc.body().html();

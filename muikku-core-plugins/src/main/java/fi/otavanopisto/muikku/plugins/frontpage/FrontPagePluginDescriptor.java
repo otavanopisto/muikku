@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.LocaleUtils;
-import org.ocpsoft.rewrite.annotation.Join;
 
 import fi.otavanopisto.muikku.i18n.LocaleBundle;
 import fi.otavanopisto.muikku.i18n.LocaleLocation;
