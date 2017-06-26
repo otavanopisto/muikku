@@ -34,20 +34,38 @@ dust.onLoad = function(name, callback) {
   };
 };
 
-dust.filters.formatDate = function(value) {
-  return formatDate(moment(value).toDate());
-};
-
-dust.filters.formatTime = function(value) {
-  return formatTime(moment(value).toDate());
-};
-
 dust.filters.formatPercent = function(value) {
   return parseFloat(value).toFixed(2);
 };
 
 dust.helpers.contextPath = function(chunk, context, bodies) {
   return chunk.write(CONTEXTPATH);
+};
+
+dust.helpers.moment = function (chunk, context, bodies, params) {
+  var type = context.resolve(params.type, chunk, context) || 'format';
+  var date = context.resolve(params.date, chunk, context) || new Date();
+  var format = context.resolve(params.format, chunk, context) || 'MMM Do YYYY';
+  var input = context.resolve(params.input, chunk, context) || 1;
+  var value = context.resolve(params.value, chunk, context) || 'days';
+  var locale = getLocale();
+
+  moment.locale(locale);
+
+  switch (type) {
+    case 'format':
+      return chunk.write(moment(new Date(date)).format(format));
+      break;
+    case 'fromNow':
+      return chunk.write(moment(new Date(date)).fromNow());
+      break;
+    case 'subtract':
+      return chunk.write(moment(new Date(date)).subtract(input, value).calendar());
+      break;
+    case 'add':
+      return chunk.write(moment(new Date(date)).add(input, value).calendar());
+      break;
+  }
 };
 
 function renderDustTemplate(templateName, json, callback) {
