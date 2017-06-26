@@ -157,10 +157,18 @@
               mApi().records.plannedCourses.create({
                 subjectIdentifier: subjectIdentifier,
                 courseNumber: courseNumber,
-                studentIdentifer: MUIKKU_LOGGED_USER
-              }).callback((function() {
-                $(this).parent().addClass('tr-vops-item-menu-planned');
-                $(this).parent().removeClass('tr-vops-item-menu-unplanned');
+                studentIdentifier: MUIKKU_LOGGED_USER
+              }).callback((function(err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue(
+                      'notification',
+                      'error',
+                      err);
+                } else {
+                  $(this).parents('.tr-vops-item-menu').addClass('tr-vops-item-menu-planned');
+                  $(this).parents('.tr-vops-item-menu').removeClass('tr-vops-item-menu-unplanned');
+                  $(this).parents('.tr-vops-item').addClass('planned');
+                }
               }).bind(this));
             });
 
@@ -170,10 +178,18 @@
               mApi().records.plannedCourses.del({
                 subjectIdentifier: subjectIdentifier,
                 courseNumber: courseNumber,
-                studentIdentifer: MUIKKU_LOGGED_USER
+                studentIdentifier: MUIKKU_LOGGED_USER
               }).callback((function() {
-                $(this).parent().removeClass('tr-vops-item-menu-planned');
-                $(this).parent().addClass('tr-vops-item-menu-unplanned');
+                if (err) {
+                  $('.notification-queue').notificationQueue(
+                      'notification',
+                      'error',
+                      err);
+                } else {
+                  $(this).parents('.tr-vops-item-menu').removeClass('tr-vops-item-menu-planned');
+                  $(this).parents('.tr-vops-item-menu').addClass('tr-vops-item-menu-unplanned');
+                  $(this).parents('.tr-vops-item').removeClass('planned');
+                }
               }).bind(this));
             });
           }, this));

@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -328,6 +329,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()).toId(),
                 i,
                 studentIdentifierString);
+            if (state == CourseCompletionState.NOT_ENROLLED
+                && courseChoice != null) {
+              state = CourseCompletionState.PLANNED;
+            }
             items.add(new VopsRESTModel.VopsItem(
                 i,
                 state,
@@ -463,7 +468,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     return Response.ok(response).build();
   }
 
-  @PUT
+  @POST
   @Path("/plannedCourses/")
   @RESTPermit(handling=Handling.INLINE)
   public Response planCourse(

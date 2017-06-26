@@ -10,7 +10,7 @@ public class VopsRESTModel {
         String educationSubtype,
         Mandatority mandatority,
         String grade,
-        boolean chosen,
+        boolean planned,
         String name,
         String description
     ) {
@@ -19,7 +19,7 @@ public class VopsRESTModel {
       this.state = state;
       this.educationSubtype = educationSubtype;
       this.mandatority = mandatority;
-      this.chosen = chosen;
+      this.planned = planned;
       this.grade = grade;
       this.name = name;
       this.description = description;
@@ -49,11 +49,11 @@ public class VopsRESTModel {
     public void setGrade(String grade) {
       this.grade = grade;
     }
-    public boolean isChosen() {
-      return chosen;
+    public boolean isPlanned() {
+      return planned;
     }
-    public void setChosen(boolean chosen) {
-      this.chosen = chosen;
+    public void setPlanned(boolean chosen) {
+      this.planned = chosen;
     }
     public String getName() {
       return name;
@@ -72,7 +72,7 @@ public class VopsRESTModel {
     private CourseCompletionState state;
     private String educationSubtype;
     private Mandatority mandatority;
-    private boolean chosen;
+    private boolean planned;
     private String grade;
     private String name;
     private String description;
