@@ -7,10 +7,10 @@
       <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
     {/eq}
     {@eq value="pdf" type="string"}  
-      <div class="lazyPdf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
+      <div class="lazyPdf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text='{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}'></div>
     {/eq}
     {@eq value="flash" type="string"}  
-      <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
+      <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text='{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}'></div>
     {/eq}
     {@eq value="unknown" type="string"}
       <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>

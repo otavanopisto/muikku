@@ -23,11 +23,11 @@
       </div>
       <div class="evaluation-card-button-row">
         <div class="evaluation-card-button-block">
-          <div class="evaluation-important-button icon-star" title="{#localize key="plugin.evaluation.card.button.markImportantButtonLabel"/}"></div>
-          <div class="evaluation-unimportant-button icon-star-empty" title="{#localize key="plugin.evaluation.card.button.markNonImportantButtonLabel"/}"></div>
+          <div class="evaluation-important-button icon-star" title='{#localize key="plugin.evaluation.card.button.markImportantButtonLabel"/}'></div>
+          <div class="evaluation-unimportant-button icon-star-empty" title='{#localize key="plugin.evaluation.card.button.markNonImportantButtonLabel"/}'></div>
         </div>
-        <div class="evaluation-card-button archive-button icon-archive" title="{#localize key="plugin.evaluation.card.button.archiveButtonLabel"/}"></div>
-        <div class="evaluation-card-button evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}"></div>
+        <div class="evaluation-card-button archive-button icon-archive" title='{#localize key="plugin.evaluation.card.button.archiveButtonLabel"/}'></div>
+        <div class="evaluation-card-button evaluate-button icon-evaluate" title='{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}'></div>
       </div>
     </div>
   </div>
@@ -61,10 +61,10 @@
       </div>
       <div class="evaluation-card-button-row">
         <div class="evaluation-card-button-block">
-          <div class="evaluation-important-button icon-star" title="{#localize key="plugin.evaluation.card.button.markImportantButtonLabel"/}"></div>
-          <div class="evaluation-unimportant-button icon-star-empty" title="{#localize key="plugin.evaluation.card.button.markNonImportantButtonLabel"/}"></div>
+          <div class="evaluation-important-button icon-star" title='{#localize key="plugin.evaluation.card.button.markImportantButtonLabel"/}'></div>
+          <div class="evaluation-unimportant-button icon-star-empty" title='{#localize key="plugin.evaluation.card.button.markNonImportantButtonLabel"/}'></div>
         </div>
-        <div class="evaluation-card-button evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}"></div>
+        <div class="evaluation-card-button evaluate-button icon-evaluate" title='{#localize key="plugin.evaluation.card.button.evaluateButtonLabel"/}'></div>
       </div>
     </div>
   </div>

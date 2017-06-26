@@ -1,4 +1,4 @@
-<div class="workspace-material-management-confirm-dialog" title="{#localize key="plugin.guider.flags.confirmFlagDelete.title"/}" data-button-delete-text="{#localize key="plugin.guider.flags.confirmFlagDelete.confirmButton"/}" data-button-cancel-text="{#localize key="plugin.guider.flags.confirmFlagDelete.cancelButton"/}">
+<div class="workspace-material-management-confirm-dialog" title='{#localize key="plugin.guider.flags.confirmFlagDelete.title"/}' data-button-delete-text='{#localize key="plugin.guider.flags.confirmFlagDelete.confirmButton"/}' data-button-cancel-text='{#localize key="plugin.guider.flags.confirmFlagDelete.cancelButton"/}'>
   {@eq key=isOwner value="true"}
     {#localize key="plugin.guider.flags.confirmFlagDelete.deletionText"/}
   {:else}

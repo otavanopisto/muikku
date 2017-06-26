@@ -19,8 +19,8 @@
     </div>
   </div>
   {?submitDate}
-    <div class="assignment-evaluate-button icon-evaluate" title="{#localize key="plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"/}"></div>
-    <div class="exercise-done-indicator icon-checkmark" title="{#localize key="plugin.evaluation.evaluationModal.exerciseDoneIndicatorTitle"/}"></div>
+    <div class="assignment-evaluate-button icon-evaluate" title='{#localize key="plugin.evaluation.evaluationModal.evaluateAssignmentButtonTitle"/}'></div>
+    <div class="exercise-done-indicator icon-checkmark" title='{#localize key="plugin.evaluation.evaluationModal.exerciseDoneIndicatorTitle"/}'></div>
   {/submitDate}
   <div class="assignment-literal-evaluation-wrapper" style="display:none;">
     <div class="assignment-literal-evaluation-label">{#localize key="plugin.evaluation.evaluationModal.assignmentLiteralEvaluationLabel"/}</div>
