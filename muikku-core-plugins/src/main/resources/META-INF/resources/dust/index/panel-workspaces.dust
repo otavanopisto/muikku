@@ -1,12 +1,12 @@
 {?workspaces}
-  <div class="main-function item-list main-function-item-list-workspaces">
+  <div class="main-function item-list main-function-item-list-panel-workspaces">
     {#workspaces}
       <a class="item-list-item" href="/workspace/{urlName}">
         <span class="icon icon-books"></span>
         <span class="item-list-text-body text">
           {name} {?nameExtension}({nameExtension}){/nameExtension}
         </span>
-      </li>
+      </a>
     {/workspaces}
   </div>
 {:else}

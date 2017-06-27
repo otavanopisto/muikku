@@ -1,9 +1,9 @@
 {?messages}
-  <div class="main-function item-list main-function-item-list-last-messages">
+  <div class="main-function item-list main-function-item-list-panel-last-messages">
     {#messages}
       <a class="item-list-item {?unreadMessagesInThread}item-list-item-unread{/unreadMessagesInThread}" href="/communicator#inbox/{communicatorMessageId}">
         <span class="icon icon-envelope{?unreadMessagesInThread}-alt{/unreadMessagesInThread}"></span>
-        <span class="text item-list-text-body">
+        <span class="text item-list-text-body item-list-text-body-multiline">
           {caption}
           <span class="main-function text main-function-text-last-message-date">
             {@moment type="format" date="{created}" format="L"/}
@@ -13,5 +13,5 @@
     {/messages}
   </div>
 {:else}
-  <div class="main-function text main-function-text-no-last-messages">{#localize key="plugin.frontPage.messages.noMessages"/}</div>
+  <div class="main-function text main-function-text-panel-no-last-messages">{#localize key="plugin.frontPage.messages.noMessages"/}</div>
 {/messages}

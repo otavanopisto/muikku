@@ -85,7 +85,7 @@ $main-function-text-icon-size: 35;
     }
   }
   
-  &.main-function-text-panel-no-workspaces {
+  &.main-function-text-panel-no-workspaces, &.main-function-text-panel-no-last-messages, &.main-function-text-panel-no-announcements {
     padding: 0 #{$main-function-text-mobile-padding-horizontal}px 0 #{$main-function-text-mobile-padding-horizontal}px;
     
     @include breakpoint-up($breakpoint-landscape-pad){
@@ -108,13 +108,13 @@ $main-function-text-icon-size: 35;
   }
   
   &.main-function-text-last-message-date {
-    color: $color-main-function-text-last-message-date;
+    color: $color-main-function-text-panel-last-messages-date;
     font-style: italic;
     padding-bottom: 7px;
   }
   
   &.main-function-text-announcements-date {
-    color: $color-main-function-text-announcements-date;
+    color: $color-main-function-text-panel-announcements-date;
     font-style: italic;
     padding-bottom: 7px;
   }

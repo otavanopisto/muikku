@@ -1,10 +1,10 @@
 .main-function.item-list {
-  &.main-function-item-list-workspaces {
+  &.main-function-item-list-panel-workspaces {
     .icon {
-      color: $color-main-function-item-list-item-workspaces-icon;
+      color: $color-main-function-item-list-item-panel-workspaces-icon;
     }
   }
-  &.main-function-item-list-last-messages {
+  &.main-function-item-list-panel-last-messages {
     .item-list-item {
       &:after {
         content:''; 
@@ -13,17 +13,17 @@
         height: 1px;
         position: absolute; 
         bottom: 0;
-        border-bottom: solid 1px $color-main-function-item-list-item-last-messages-border;
+        border-bottom: solid 1px $color-main-function-item-list-item-panel-last-messages-border;
       }
     }
     .icon {
-      color: $color-main-function-item-list-item-last-messages-icon;
+      color: $color-main-function-item-list-item-panel-last-messages-icon;
     }
     .item-list-item-unread .icon {
-      color: $color-main-function-item-list-item-last-messages-unread-icon;
+      color: $color-main-function-item-list-item-panel-last-messages-unread-icon;
     }
   }
-  &.main-function-item-list-announcements {
+  &.main-function-item-list-panel-announcements {
     .item-list-item {
       &:after {
         content:''; 
@@ -32,14 +32,14 @@
         height: 1px;
         position: absolute; 
         bottom: 0;
-        border-bottom: solid 1px $color-main-function-item-list-item-announcements-border;
+        border-bottom: solid 1px $color-main-function-item-list-item-panel-announcements-border;
       }
     }
     .icon {
-      color: $color-main-function-item-list-item-announcements-icon;
+      color: $color-main-function-item-list-item-panel-announcements-icon;
     }
-    .item-list-has-workspaces .icon {
-      color: $color-main-function-item-list-item-announcements-has-workspaces-icon;
+    .item-list-item-has-workspaces .icon {
+      color: $color-main-function-item-list-item-panel-announcements-has-workspaces-icon;
     }
   }
 }
