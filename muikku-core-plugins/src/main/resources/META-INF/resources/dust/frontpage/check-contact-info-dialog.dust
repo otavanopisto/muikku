@@ -1,7 +1,7 @@
 <div class="check-contact-info-dialog"
-     title="{#localize key="plugin.frontPage.checkContactInfo.dialog.title"/}"
-     data-button-ok-text="{#localize key="plugin.frontPage.checkContactInfo.dialog.button.okLabel"/}"
-     data-button-confirm-text="{#localize key="plugin.frontPage.checkContactInfo.dialog.button.confirmLabel"/}">
+     title='{#localize key="plugin.frontPage.checkContactInfo.dialog.title"/}'
+     data-button-ok-text='{#localize key="plugin.frontPage.checkContactInfo.dialog.button.okLabel"/}'
+     data-button-confirm-text='{#localize key="plugin.frontPage.checkContactInfo.dialog.button.confirmLabel"/}'>
   {#localize key="plugin.frontPage.checkContactInfo.dialog.description"/}
   <dl>
   <dt>{#localize key="plugin.frontPage.checkContactInfo.dialog.street"/}</dt>

@@ -1,7 +1,7 @@
 {?curriculums}
   <div class="mf-categories">
     <div class="mf-category-title"><span>{#localize key="plugin.coursepicker.filters.curriculum"/}</span></div>
-    <ul class="mf-category-content cp-filters-ul"> 
+    <ul class="mf-category-content cp-filters-ul">
       {#curriculums}
         <li id="{type}-{id}" class="cp-curriculum-filter{@eq key=defaultCurriculum value=identifier} selected{/eq}" data-id="{identifier}">
           <a class="mf-category-item-plain">

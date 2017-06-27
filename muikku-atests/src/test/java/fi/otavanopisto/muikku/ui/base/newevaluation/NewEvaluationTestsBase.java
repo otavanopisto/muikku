@@ -256,7 +256,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStudent(courseId, courseStudent2)
         .build();
    
-      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       try{
         mockBuilder
@@ -446,7 +446,7 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         .addCourseStudent(courseId, courseStudent3)
         .build();
    
-      WorkspaceFolder workspaceFolder1 = createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
+      createWorkspaceFolder(workspace.getId(), null, Boolean.FALSE, 1, "Test Course material folder", "DEFAULT");
       
       try{
         mockBuilder
