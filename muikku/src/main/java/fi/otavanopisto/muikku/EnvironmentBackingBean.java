@@ -15,6 +15,8 @@ import fi.otavanopisto.muikku.controller.SystemSettingsController;
 @Stateful
 public class EnvironmentBackingBean {
   
+  private static final String ANALYTICS_GOOGLEANALYTICS_KEY_SETTING = "analytics.googleAnalytics.trackingID";
+  
   @Inject
   private SystemSettingsController systemSettingsController;
 
@@ -22,6 +24,8 @@ public class EnvironmentBackingBean {
   public void init() {
     helpWorkspaceUrlName = systemSettingsController.getHelpWorkspaceUrlName();
     hasWorkspaceUrlName = StringUtils.isNotBlank(helpWorkspaceUrlName);
+    
+    googleAnalyticsTrackingId = systemSettingsController.getSetting(ANALYTICS_GOOGLEANALYTICS_KEY_SETTING);
   }
   
   public String getHelpWorkspaceUrlName() {
@@ -32,6 +36,15 @@ public class EnvironmentBackingBean {
     return hasWorkspaceUrlName;
   }
   
+  public String getGoogleAnalyticsTrackingId() {
+    return googleAnalyticsTrackingId;
+  }
+  
+  public boolean getHasGoogleAnalyticsTrackingId() {
+    return StringUtils.isNotBlank(googleAnalyticsTrackingId);
+  }
+
   private String helpWorkspaceUrlName;
   private boolean hasWorkspaceUrlName;
+  private String googleAnalyticsTrackingId;
 }
