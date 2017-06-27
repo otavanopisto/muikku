@@ -112,4 +112,10 @@ $main-function-text-icon-size: 35;
     font-style: italic;
     padding-bottom: 7px;
   }
+  
+  &.main-function-text-announcements-date {
+    color: $color-main-function-text-announcements-date;
+    font-style: italic;
+    padding-bottom: 7px;
+  }
 }

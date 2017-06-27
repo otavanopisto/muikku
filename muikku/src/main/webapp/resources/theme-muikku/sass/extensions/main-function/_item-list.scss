@@ -23,4 +23,23 @@
       color: $color-main-function-item-list-item-last-messages-unread-icon;
     }
   }
+  &.main-function-item-list-announcements {
+    .item-list-item {
+      &:after {
+        content:''; 
+        left: 6px;
+        right: 6px;
+        height: 1px;
+        position: absolute; 
+        bottom: 0;
+        border-bottom: solid 1px $color-main-function-item-list-item-announcements-border;
+      }
+    }
+    .icon {
+      color: $color-main-function-item-list-item-announcements-icon;
+    }
+    .item-list-has-workspaces .icon {
+      color: $color-main-function-item-list-item-announcements-has-workspaces-icon;
+    }
+  }
 }

@@ -13,5 +13,5 @@
     {/messages}
   </div>
 {:else}
-  <div class="empty">{#localize key="plugin.frontPage.messages.noMessages"/}</div>
+  <div class="main-function text main-function-text-no-last-messages">{#localize key="plugin.frontPage.messages.noMessages"/}</div>
 {/messages}
