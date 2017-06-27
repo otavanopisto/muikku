@@ -278,6 +278,8 @@
         text-transform: none;
         
         span {
+          display: block;
+          max-width: 345px;
           font-size: 12px;
           font-style: italic;
           font-weight: 300;
@@ -305,6 +307,7 @@
         span {
           display: block;
           min-height: 15px; 
+          max-width: 345px;
           font-size: 14px;
           line-height: 14px;
           margin-top: 4px;
