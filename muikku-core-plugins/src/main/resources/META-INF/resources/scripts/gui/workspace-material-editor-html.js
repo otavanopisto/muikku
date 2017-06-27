@@ -166,7 +166,7 @@
           contentsCss : CONTEXTPATH +  '/css/flex/custom-ckeditor-contentcss_management.css',
           format_tags : 'p;h3;h4',
           baseHref: this.options.materialPath + '/', 
-          mathJaxLib: '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_HTMLorMML',
+          mathJaxLib: '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML',
           toolbar: [
             { name: 'document', items : [ 'Source' ] },
             { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
