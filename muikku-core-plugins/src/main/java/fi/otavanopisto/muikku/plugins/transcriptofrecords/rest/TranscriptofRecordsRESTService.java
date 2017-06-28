@@ -474,7 +474,12 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   public Response planCourse(
       VopsPlannedCourseRESTModel model
   ) {
-    // TODO check for permission
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    boolean hasPermission = Objects.equals(loggedUserIdentifier.toId(), model.getStudentIdentifier());
+    if (!hasPermission) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to access this").build();
+    }
+    
     StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
         model.getSubjectIdentifier(),
         model.getCourseNumber(),
@@ -492,14 +497,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Path("/plannedCourses/")
   @RESTPermit(handling=Handling.INLINE)
   public Response unplanCourse(
-      @QueryParam("subjectIdentifier") String subjectIdentifier,
-      @QueryParam("courseNumber") int courseNumber,
-      @QueryParam("studentIdentifier") String studentIdentifier
+      VopsPlannedCourseRESTModel model
   ) {
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    boolean hasPermission = Objects.equals(loggedUserIdentifier.toId(), model.getStudentIdentifier());
+    if (!hasPermission) {
+      return Response.status(Status.FORBIDDEN).entity("You don't have the permission to access this").build();
+    }
+
     StudiesViewCourseChoice choice = studiesViewCourseChoiceController.find(
-        subjectIdentifier,
-        courseNumber,
-        studentIdentifier);
+        model.getSubjectIdentifier(),
+        model.getCourseNumber(),
+        model.getStudentIdentifier());
     if (choice != null) {
       studiesViewCourseChoiceController.delete(choice);
       return Response.ok().build();

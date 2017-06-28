@@ -11,7 +11,7 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.StudiesViewCours
 
 public class StudiesViewCourseChoiceDAO extends CorePluginsDAO<StudiesViewCourseChoice> {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 9186709136813L;
   
   public StudiesViewCourseChoice create(
       String subjectSchoolDataIdentifier,
