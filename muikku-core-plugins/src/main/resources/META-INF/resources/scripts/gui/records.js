@@ -1,4 +1,16 @@
 (function() {
+  
+  function deselect() {
+    if (window.getSelection) {
+      if (window.getSelection().empty) {  // Chrome
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges) {  // Firefox
+        window.getSelection().removeAllRanges();
+      }
+    } else if (document.selection) {  // IE?
+      document.selection.empty();
+    }
+  }
 
   $.widget("custom.records", {
     options: {
@@ -105,8 +117,6 @@
 
     _loadVops : function () {
 
-
-
       this.element.addClass('loading');
       this._clear();
 
@@ -139,7 +149,61 @@
                 $(this).removeClass('closed');
                 $(this).addClass('open');
               }
+            });
 
+            $('.tr-vops-content').on('click', '.tr-vops-item', $.proxy(function(event) {
+              deselect();
+              var menu = $(event.target).find('.tr-vops-item-menu');
+              var menus = $('.tr-vops-content').find('.tr-vops-item-menu');
+              var menuVisible = $(event.target).find('.tr-vops-item-menu:visible').length > 0 ? true : false;
+              if (menuVisible) {
+                menu.hide();
+              } else {
+                menus.hide();
+                menu.show();
+              }
+            }, this));
+            
+            this.element.find('[data-plan-button]').click(function (event) {
+              var courseNumber = Number($(this).attr('data-course-number'));
+              var subjectIdentifier = $(this).attr('data-subject-identifier');
+              mApi().records.plannedCourses.create({
+                subjectIdentifier: subjectIdentifier,
+                courseNumber: courseNumber,
+                studentIdentifier: MUIKKU_LOGGED_USER
+              }).callback((function(err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue(
+                      'notification',
+                      'error',
+                      err);
+                } else {
+                  $(this).parents('.tr-vops-item-menu').addClass('tr-vops-item-menu-planned');
+                  $(this).parents('.tr-vops-item-menu').removeClass('tr-vops-item-menu-unplanned');
+                  $(this).parents('.tr-vops-item').addClass('planned');
+                }
+              }).bind(this));
+            });
+
+            this.element.find('[data-unplan-button]').click(function(event) {
+              var courseNumber = Number($(this).attr('data-course-number'));
+              var subjectIdentifier = $(this).attr('data-subject-identifier');
+              mApi().records.plannedCourses.del({
+                subjectIdentifier: subjectIdentifier,
+                courseNumber: courseNumber,
+                studentIdentifier: MUIKKU_LOGGED_USER
+              }).callback((function() {
+                if (err) {
+                  $('.notification-queue').notificationQueue(
+                      'notification',
+                      'error',
+                      err);
+                } else {
+                  $(this).parents('.tr-vops-item-menu').removeClass('tr-vops-item-menu-planned');
+                  $(this).parents('.tr-vops-item-menu').addClass('tr-vops-item-menu-unplanned');
+                  $(this).parents('.tr-vops-item').removeClass('planned');
+                }
+              }).bind(this));
             });
           }, this));
         }
