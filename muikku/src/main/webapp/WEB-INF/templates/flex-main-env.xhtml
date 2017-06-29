@@ -140,7 +140,7 @@
             <div class="icon-navicon">
               <div class="navmore-container">
                 <!-- DISCUSSION -->
-                <ui:fragment rendered="{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM') and sessionBackingBean.isActiveUser}">
+                <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM') and sessionBackingBean.isActiveUser}">
                   <div class="dock-static-navi-button-discussion lg-flex-hide md-flex-hide">
                     <a jsf:outcome="/jsf/discussion/index.jsf" class="icon-bubble"><span>#{i18n.text['plugin.forum.forum']}</span></a>
                   </div>
