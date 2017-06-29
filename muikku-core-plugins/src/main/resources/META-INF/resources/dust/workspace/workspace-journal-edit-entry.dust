@@ -7,7 +7,7 @@
             <div class="mf-fieldRow">
               <div class="mf-textfield">
                 <div class="mf-textfield-subcontainer">
-                  <input placeholder="{#localize key="plugin.workspace.journal.entry.title.label"/}" maxlength="255" class="mf-textfield-subject" type="text" value="" name="title"></input>
+                  <input placeholder='{#localize key="plugin.workspace.journal.entry.title.label"/}' maxlength="255" class="mf-textfield-subject" type="text" value="" name="title"></input>
                 </div>
               </div>    
             </div>

@@ -13,9 +13,9 @@
           </div>
         </div>               
         <div class="gt-course-activity-short lg-flex-cell-8 md-flex-cell-8 sm-flex-hide">
-          <span title="{#localize key="plugin.guider.headerEvaluatedTitle" arg0=activity.evaluablesDonePercent/}">{activity.evaluablesDonePercent} %</span>
+          <span title='{#localize key="plugin.guider.headerEvaluatedTitle" arg0=activity.evaluablesDonePercent/}'>{activity.evaluablesDonePercent} %</span>
           <span> / </span>
-          <span title="{#localize key="plugin.guider.headerExercisesTitle" arg0=activity.exercisesDonePercent/}">{activity.exercisesDonePercent} %</span>
+          <span title='{#localize key="plugin.guider.headerExercisesTitle" arg0=activity.exercisesDonePercent/}'>{activity.exercisesDonePercent} %</span>
         </div>       
       </div>
       <div class="gt-course-activity flex-row">

@@ -267,20 +267,23 @@
       }  
           
       .di-message-meta-content {
-        line-height: 1em;
+        color: $environment-font-color;
+        font-weight: 300;
         height: 10px;
+        line-height: 1em;
         overflow: hidden;
         padding-top: 5px;
         padding-bottom: 5px;
-        width: 100%;
-        color: $environment-font-color;
-        font-weight: 300;
         text-transform: none;
+        width: 100%;
+
         
         span {
+          display: block;
           font-size: 12px;
           font-style: italic;
           font-weight: 300;
+          max-width: 345px;
           
           p {
             margin: 0;
@@ -304,10 +307,10 @@
       
         span {
           display: block;
-          min-height: 15px; 
           font-size: 14px;
           line-height: 14px;
           margin-top: 4px;
+          min-height: 15px; 
         }
           
         .di-message-area-name-text {

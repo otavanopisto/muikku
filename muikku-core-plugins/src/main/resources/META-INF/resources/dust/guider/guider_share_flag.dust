@@ -1,4 +1,4 @@
-<div class="guider-share-flag-dialog" title="{#localize key="plugin.guider.flags.shareFlagDialog.title" arg0=flag.name/}" data-button-save="{#localize key="plugin.guider.flags.shareFlagDialog.save"/}" data-button-cancel="{#localize key="plugin.guider.flags.shareFlagDialog.cancel"/}">
+<div class="guider-share-flag-dialog" title='{#localize key="plugin.guider.flags.shareFlagDialog.title" arg0=flag.name/}' data-button-save='{#localize key="plugin.guider.flags.shareFlagDialog.save"/}' data-button-cancel='{#localize key="plugin.guider.flags.shareFlagDialog.cancel"/}'>
   
   <div>
     <label for="guider-share-flag-dialog-users">{#localize key="plugin.guider.flags.shareFlagDialog.users"/}</label>

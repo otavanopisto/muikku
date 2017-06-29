@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.ui.base.announcer;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Date;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;

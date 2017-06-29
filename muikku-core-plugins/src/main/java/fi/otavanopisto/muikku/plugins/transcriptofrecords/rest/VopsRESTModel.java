@@ -9,14 +9,20 @@ public class VopsRESTModel {
         CourseCompletionState state,
         String educationSubtype,
         Mandatority mandatority,
-        String grade
+        String grade,
+        boolean planned,
+        String name,
+        String description
     ) {
       super();
       this.courseNumber = courseNumber;
       this.state = state;
       this.educationSubtype = educationSubtype;
       this.mandatority = mandatority;
+      this.planned = planned;
       this.grade = grade;
+      this.name = name;
+      this.description = description;
     }
     
     public int getCourseNumber() {
@@ -43,17 +49,39 @@ public class VopsRESTModel {
     public void setGrade(String grade) {
       this.grade = grade;
     }
+    public boolean isPlanned() {
+      return planned;
+    }
+    public void setPlanned(boolean chosen) {
+      this.planned = chosen;
+    }
+    public String getName() {
+      return name;
+    }
+    public void setName(String name) {
+      this.name = name;
+    }
+    public String getDescription() {
+      return description;
+    }
+    public void setDescription(String description) {
+      this.description = description;
+    }
 
     private int courseNumber;
     private CourseCompletionState state;
     private String educationSubtype;
     private Mandatority mandatority;
+    private boolean planned;
     private String grade;
+    private String name;
+    private String description;
   }
   
   public static class VopsRow {
-    public VopsRow(String subject, List<VopsItem> items) {
+    public VopsRow(String subject, String subjectIdentifier, List<VopsItem> items) {
       super();
+      this.subjectIdentifier = subjectIdentifier;
       this.subject = subject;
       this.items = items;
     }
@@ -65,8 +93,13 @@ public class VopsRESTModel {
     public String getSubject() {
       return subject;
     }
+    
+    public String getSubjectIdentifier() {
+      return subjectIdentifier;
+    }
 
     String subject;
+    String subjectIdentifier;
     List<VopsItem> items;
   }
   
