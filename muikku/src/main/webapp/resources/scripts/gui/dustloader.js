@@ -46,6 +46,14 @@ dust.filters.formatPercent = function(value) {
   return parseFloat(value).toFixed(2);
 };
 
+dust.filters.shorten50 = function (value) {
+  if (value.length < 50) {
+    return value;
+  } else {
+    return value.slice(0, 47) + "...";
+  }
+}
+
 dust.helpers.contextPath = function(chunk, context, bodies) {
   return chunk.write(CONTEXTPATH);
 };

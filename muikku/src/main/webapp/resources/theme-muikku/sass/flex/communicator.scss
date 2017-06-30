@@ -319,17 +319,14 @@ $target-group-color;
     vertical-align: top;
   } 
    
-  .cm-message-content {
-   
-    .cm-message-content-text {
-   
-      p {
-        margin: 1em 0;
-      }
-   
-    }  
+  .cm-message-content-text {  
+    max-width: 684px;
+    word-wrap: break-word;
     
-  }
+    p {
+      margin: 1em 0;
+    }   
+  }  
   
   .cm-message-content-tools {
     padding: 10px 0;  
