@@ -193,7 +193,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
-        List<VopsRESTModel.VopsItem> items = new ArrayList<>();
+        List<? super VopsRESTModel.VopsEntry> entries = new ArrayList<>();
         for (int i=1; i<MAX_COURSE_NUMBER; i++) {
           List<VopsWorkspace> workspaces =
               vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
@@ -285,16 +285,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 break;
               }
             }
-            items.add(new VopsRESTModel.VopsItem(
+            entries.add(new VopsRESTModel.VopsItem(
                 i,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
                 mandatority,
                 grade));
+          } else {
+            entries.add(new VopsRESTModel.VopsPlaceholder());
           }
         }
-        if (!items.isEmpty()) {
-          rows.add(new VopsRESTModel.VopsRow(subject.getCode(), items));
+        if (!entries.isEmpty()) {
+          rows.add(new VopsRESTModel.VopsRow(subject.getCode(), entries));
         }
       }
     }
