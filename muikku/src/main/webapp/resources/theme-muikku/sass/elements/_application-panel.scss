@@ -1,0 +1,62 @@
+$application-panel-navigation-height: 70px;
+
+.application-panel {
+  position: relative;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  .application-panel-container {
+    max-width: $breakpoint-max-usable-screen;
+    width: 100%;
+    overflow: visible;
+    position: relative;
+    display: flex;
+    
+    .application-panel-navigation {
+      width: 100%;
+      height: $application-panel-navigation-height;
+      display: flex;
+      
+      .application-panel-left-container,
+      .application-panel-right-container,
+      .application-panel-left-container-dynamic,
+      .application-panel-right-container-dynamic {
+        height: $application-panel-navigation-height;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .application-panel-left-container,
+      .application-panel-right-container {
+        width: 50%;
+      }
+      
+      .application-panel-right-container {
+        float: right;
+      }
+      
+      .application-panel-left-container-dynamic {
+        flex: 0 0 auto;
+      }
+      
+      .application-panel-right-container-dynamic {
+        flex: 1 1 100%;
+      }
+    }
+    
+    .application-panel-box, .application-panel-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+    
+    .application-panel-box {
+      color: $color-application-panel-box-background;
+      border: solid 1px $color-application-panel-box-border;  
+    }
+  }
+}
