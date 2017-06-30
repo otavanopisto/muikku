@@ -20,7 +20,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
@@ -60,6 +59,7 @@ import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -207,6 +207,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
     }
+    
+    List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(studentIdentifier);
 
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
@@ -217,15 +219,53 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsItem> items = new ArrayList<>();
-        for (int i=1; i<MAX_COURSE_NUMBER; i++) {
+        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+          boolean hasTransferCredit = false;
+
+          for (TransferCredit transferCredit : transferCredits) {
+            boolean subjectsMatch = Objects.equals(
+                transferCredit.getSubjectIdentifier(),
+                new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()));
+            boolean courseNumbersMatch = Objects.equals(
+                transferCredit.getCourseNumber(),
+                courseNumber);
+            if (subjectsMatch && courseNumbersMatch) {
+              String grade = "";
+              GradingScaleItem gradingScaleItem = null;
+              if (transferCredit.getGradeIdentifier() != null
+                  && transferCredit.getGradingScaleIdentifier() != null) {
+                gradingScaleItem = findGradingScaleItemCached(
+                    transferCredit.getGradingScaleIdentifier(),
+                    transferCredit.getGradeIdentifier()
+                );
+                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
+                  grade = gradingScaleItem.getName().substring(0, 2);
+                }
+              }
+              items.add(new VopsRESTModel.VopsItem(
+                  courseNumber,
+                  CourseCompletionState.ASSESSED,
+                  (String)null,
+                  Mandatority.MANDATORY, // unknown mandatority, fall back
+                  grade,
+                  false,
+                  "",
+                  ""
+              ));
+              hasTransferCredit = true;
+              break;
+            }
+          }
+
           List<VopsWorkspace> workspaces =
               vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
                   subject.getSchoolDataSource(),
                   subject.getIdentifier(),
-                  i);
+                  courseNumber);
           
           List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
-          if (!workspaces.isEmpty()) {
+
+          if (!hasTransferCredit && !workspaces.isEmpty()) {
             SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
             String name = "";
@@ -325,16 +365,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 break;
               }
             }
+            
             StudiesViewCourseChoice courseChoice = studiesViewCourseChoiceController.find(
                 new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()).toId(),
-                i,
+                courseNumber,
                 studentIdentifierString);
             if (state == CourseCompletionState.NOT_ENROLLED
                 && courseChoice != null) {
               state = CourseCompletionState.PLANNED;
             }
+            
             items.add(new VopsRESTModel.VopsItem(
-                i,
+                courseNumber,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
                 mandatority,
