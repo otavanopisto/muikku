@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.ui.base.evaluation;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -340,8 +341,8 @@ public class EvaluationTestsBase extends AbstractUITest {
           CourseAssessment cAss = new fi.otavanopisto.pyramus.rest.model.CourseAssessment(null, courseStudent.getId(), 1l, 1l, admin.getId(), null, "<p>Test evaluation.</p>\n", Boolean.TRUE);
           verify(postRequestedFor(urlEqualTo(String.format("/1/students/students/%d/courses/%d/assessments/", student.getId(), courseId)))
             .withHeader("Content-Type", equalTo("application/json"))
-            .withRequestBody(equalToJson(objectMapper.writeValueAsString(cAss), wiremock.org.skyscreamer.jsonassert.JSONCompareMode.LENIENT)));
-
+            .withRequestBody(equalToJson(objectMapper.writeValueAsString(cAss), true, true )));
+          
           PyramusMocks.mockAssessedStudent1Workspace1(courseStudent, assessorId);
           
           waitForPresentAndVisible(".evaluation-assignment-wrapper");

@@ -36,10 +36,10 @@ public class CourseTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
-      WireMock.reset();
       assertTrue(elementExists);
     }finally{
       deleteWorkspace(workspace.getId());  
+      WireMock.reset();
     }
   }
 
@@ -51,10 +51,11 @@ public class CourseTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-home-workspace")).size() > 0;
-      WireMock.reset();
+
       assertTrue(elementExists);
     }finally{
       deleteWorkspace(workspace.getId());  
+      WireMock.reset();
     }
   }
  
@@ -66,9 +67,10 @@ public class CourseTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForElementToBePresent(By.cssSelector("#workspaceNavigationWrapper"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-guides")).size() > 0;
-      WireMock.reset();
+
       assertTrue(elementExists);
     }finally{
+      WireMock.reset();
       deleteWorkspace(workspace.getId());  
     }
   }
@@ -81,9 +83,10 @@ public class CourseTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-materials")).size() > 0;
-      WireMock.reset();
+
       assertTrue(elementExists);
     }finally{
+      WireMock.reset();
       deleteWorkspace(workspace.getId());  
     }
   }
@@ -96,9 +99,10 @@ public class CourseTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-bubble")).size() > 0;
-      WireMock.reset();
+      
       assertTrue(elementExists);
     }finally{
+      WireMock.reset();
       deleteWorkspace(workspace.getId());  
     }
   }
@@ -111,9 +115,10 @@ public class CourseTestsBase extends AbstractUITest {
       navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
       waitForElementToBePresent(By.className("workspace-title"));
       boolean elementExists = getWebDriver().findElements(By.cssSelector("a.icon-members")).size() > 0;
-      WireMock.reset();
+      
       assertTrue(elementExists);
     }finally{
+      WireMock.reset();
       deleteWorkspace(workspace.getId());  
     }
   }
@@ -129,6 +134,7 @@ public class CourseTestsBase extends AbstractUITest {
       WireMock.reset();
       assertTrue(elementExists);
     }finally{
+      WireMock.reset();
       deleteWorkspace(workspace.getId());  
     }
   }
@@ -147,6 +153,7 @@ public class CourseTestsBase extends AbstractUITest {
       assertNotVisible(".workspace-unpublish-button");
       assertVisible(".workspace-publish-button");      
     }finally{
+      WireMock.reset();
       deleteWorkspace(workspace.getId());  
     }
   }
@@ -201,7 +208,7 @@ public class CourseTestsBase extends AbstractUITest {
         deleteWorkspace(workspace.getId());        
       }
     }finally{
-      WireMock.reset();
+      mockBuilder.wiremockReset();
     }
   }
   

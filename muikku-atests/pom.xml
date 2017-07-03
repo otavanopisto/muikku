@@ -19,7 +19,7 @@
     <selenium-java.version>2.52.0</selenium-java.version>
     <!-- PhantomJS driver -->
     <phantomjsdriver.version>1.3.0</phantomjsdriver.version>
-    <wiremock.version>1.53</wiremock.version>
+    <wiremock.version>2.6.0</wiremock.version>
   </properties>
 
   <dependencies>
@@ -125,7 +125,7 @@
       <version>${wiremock.version}</version>
       <scope>test</scope>
       <!-- Include everything below here if you have dependency conflicts -->
-      <classifier>standalone</classifier>
+      <!-- <classifier>standalone</classifier> -->
       <exclusions>
         <exclusion>
           <groupId>org.mortbay.jetty</groupId>

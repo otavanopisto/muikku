@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.stubbing.ListStubMappingsResult;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import fi.otavanopisto.muikku.TestUtilities;
@@ -320,11 +320,10 @@ public class PyramusMock {
               .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(cs))
-                .withStatus(200)));           
+                .withStatus(200))); 
             pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(cs.getId(), 
               cs.getCourseId(), cs.getStaffMemberId())));          
           }
-        
           stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -600,7 +599,7 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(contactTypes))
             .withStatus(200)));
         return this;
-      }      
+      }
       
       public Builder mockStaffMembers() throws JsonProcessingException {
         Map<String, String> variables = null;
@@ -947,12 +946,23 @@ public class PyramusMock {
       public Builder dumpMocks() {
         System.out.print("dumpMocks");
         
-        ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
+        com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
         List<StubMapping> mappings = listAllStubMappings.getMappings();
         for (StubMapping mapping : mappings) {
           System.out.print(mapping.toString());
         }
           
+        return this;
+      }
+      
+      public Builder showMatchedServeEvents() {
+        System.out.print("Show all matched events");
+        List<ServeEvent> allServeEvents = WireMock.getAllServeEvents(); 
+        for (ServeEvent serveEvent : allServeEvents) {
+          if (serveEvent.getWasMatched()) {
+            System.out.print(serveEvent.getStubMapping().toString()); 
+          }
+        }
         return this;
       }
       
