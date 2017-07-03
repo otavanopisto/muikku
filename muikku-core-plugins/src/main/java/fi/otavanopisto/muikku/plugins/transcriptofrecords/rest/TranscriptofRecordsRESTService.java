@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -209,7 +210,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       return Response.ok(result).build();
     }
     
-    List<TransferCredit> transferCredits = gradingController.listStudentTransferCredits(studentIdentifier);
+    List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
@@ -235,7 +236,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               GradingScaleItem gradingScaleItem = null;
               Mandatority mandatority = Mandatority.MANDATORY;
               if (transferCredit.getOptionality() == Optionality.OPTIONAL) {
-                mandatority = Mandatority.NATIONAL_LEVEL_OPTIONAL; // better than nothing
+                mandatority = Mandatority.UNSPECIFIED_OPTIONAL;
               }
 
               if (transferCredit.getGradeIdentifier() != null
