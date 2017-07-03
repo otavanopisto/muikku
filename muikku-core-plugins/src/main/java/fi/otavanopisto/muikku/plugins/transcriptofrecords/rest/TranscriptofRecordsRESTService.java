@@ -216,7 +216,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     for (Subject subject : subjects) {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
-        List<? super VopsRESTModel.VopsEntry> entries = new ArrayList<>();
+        List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
         for (int i=1; i<MAX_COURSE_NUMBER; i++) {
           List<VopsWorkspace> workspaces =
               vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(

@@ -90,7 +90,7 @@ public class VopsRESTModel {
   }
   
   public static class VopsRow {
-    public VopsRow(String subject, String subjectIdentifier, List<? super VopsEntry> items) {
+    public VopsRow(String subject, String subjectIdentifier, List<VopsEntry> items) {
       super();
       this.subjectIdentifier = subjectIdentifier;
       this.subject = subject;
@@ -110,7 +110,7 @@ public class VopsRESTModel {
     }
 
     String subject;
-    List<? super VopsEntry> items;
+    List<VopsEntry> items;
     String subjectIdentifier;
   }
   
