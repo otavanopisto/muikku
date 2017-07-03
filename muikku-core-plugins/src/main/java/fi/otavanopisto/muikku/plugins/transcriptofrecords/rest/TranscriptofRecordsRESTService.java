@@ -58,6 +58,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.Optionality;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -232,6 +233,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             if (subjectsMatch && courseNumbersMatch) {
               String grade = "";
               GradingScaleItem gradingScaleItem = null;
+              Mandatority mandatority = Mandatority.MANDATORY;
+              if (transferCredit.getOptionality() == Optionality.OPTIONAL) {
+                mandatority = Mandatority.NATIONAL_LEVEL_OPTIONAL; // better than nothing
+              }
+
               if (transferCredit.getGradeIdentifier() != null
                   && transferCredit.getGradingScaleIdentifier() != null) {
                 gradingScaleItem = findGradingScaleItemCached(
@@ -246,10 +252,10 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   courseNumber,
                   CourseCompletionState.ASSESSED,
                   (String)null,
-                  Mandatority.MANDATORY, // unknown mandatority, fall back
+                  mandatority,
                   grade,
                   false,
-                  "",
+                  transferCredit.getCourseName(),
                   ""
               ));
               hasTransferCredit = true;
