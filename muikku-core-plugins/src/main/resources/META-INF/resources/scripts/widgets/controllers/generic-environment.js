@@ -18,6 +18,40 @@ module([
       self.element.find(".generic-environment-interact-show-menu").click(function(e){
         self.element.find("#generic-environment-menu").menuWidget("open");
       });
+      
+      if (MUIKKU_LOGGEDIN && self.element.find("#generic-environment-communicator-message-counter").length){
+        self.initMessageCounter();
+      }
+    },
+    initMessageCounter(){
+      self = this;
+      $(document).muikkuWebSocket("addEventListener", "Communicator:newmessagereceived", function () {
+        self.reloadMessageCount();
+      });
+      
+      $(document).muikkuWebSocket("addEventListener", "Communicator:messageread", function () {
+        self.reloadMessageCount();
+      });
+      
+      $(document).muikkuWebSocket("addEventListener", "Communicator:threaddeleted", function () {
+        self.reloadMessageCount();
+      });
+      
+      self.reloadMessageCount();
+    },
+    reloadMessageCount(){
+      mApi()
+      .communicator
+      .receiveditemscount
+      .cacheClear()
+      .read()
+      .callback(function (err, result) {
+        if (result > 0) {
+          $('#generic-environment-communicator-message-counter').text(result < 100 ? result : "99+");
+        } else {
+          $('#generic-environment-communicator-message-counter').text('');
+        }
+      });
     }
   });
   

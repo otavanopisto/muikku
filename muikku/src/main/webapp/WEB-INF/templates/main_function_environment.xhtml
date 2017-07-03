@@ -54,7 +54,10 @@
                   <a jsf:outcome="/jsf/communicator/index.jsf"
                     class="main-function link link-icon link-full #{activeTrail eq 'communicator' ? 'active' : ''}"
                     title="#{i18n.text['plugin.communicator.communicator']}">
-                     <span class="icon icon-envelope"/>
+                     <span class="icon icon-envelope">
+                       <span class="main-function indicator main-function-indicator-communicator"
+                        id="generic-environment-communicator-message-counter"></span>
+                     </span>
                   </a>
                 </li>
                 

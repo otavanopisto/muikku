@@ -8,6 +8,12 @@
 @import "elements/dropdown";
 @import "elements/menu";
 @import "elements/ordered-container";
+@import "elements/container";
+@import "elements/panel";
+@import "elements/screen-container";
+@import "elements/text";
+@import "elements/item-list";
+@import "elements/indicator";
 
 @import "extensions/main-function/navbar";
 @import "extensions/main-function/link";
@@ -15,3 +21,7 @@
 @import "extensions/main-function/dropdown";
 @import "extensions/main-function/menu";
 @import "extensions/main-function/ordered-container";
+@import "extensions/main-function/panel";
+@import "extensions/main-function/text";
+@import "extensions/main-function/item-list";
+@import "extensions/main-function/indicator";

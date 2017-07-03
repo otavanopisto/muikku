@@ -13,7 +13,6 @@ module([
       .announcements
       .read({ hideWorkspaceAnnouncements: "false" })
       .callback(function(err, announcements) {
-        console.log(announcements);
         if( err ){
           $('.notification-queue').notificationQueue('notification', 'error', err.message);
           self.options.onError && self.options.onError(self, err);

@@ -207,5 +207,9 @@ $color-panel-border: #ccc;
 $color-item-list-item-background-active: rgba(0, 0, 0, 0.3);
 $color-item-list-item-background-hover: rgba(0, 0, 0, 0.1);
 
+// indicator
+$color-indicator-background: $color-fatal;
+$color-indicator-text: $color-fatal-contrast;
+
 @import "colors/frontpage";
 @import "colors/main-function";
