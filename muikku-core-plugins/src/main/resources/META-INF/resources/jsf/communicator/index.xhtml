@@ -2,11 +2,17 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/flex-main-functionality.xhtml">
+  template="/WEB-INF/templates/main_function_environment.xhtml">
   
   <ui:param name="activeTrail" value="communicator"/>
+  <ui:param name="controller" value="scripts/controllers/communicator.js" />
+  <ui:param name="stylesheet" value="css/communicator.css" />
   
-  <ui:define name="scripts">
+  <ui:define name="content">
+  
+  </ui:define>
+  
+  <!-- <ui:define name="scripts">
     <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
@@ -90,6 +96,6 @@
         </div>
       </ui:insert>
     </div>
-  </ui:define>
+  </ui:define> -->
   
 </ui:composition>

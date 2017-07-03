@@ -1,5 +1,5 @@
 {?workspaces}
-  <div class="main-function item-list main-function-item-list-panel-workspaces">
+  <div class="index item-list index-item-list-panel-workspaces">
     {#workspaces}
       <a class="item-list-item" href="/workspace/{urlName}">
         <span class="icon icon-books"></span>
@@ -10,7 +10,7 @@
     {/workspaces}
   </div>
 {:else}
-  <div class="main-function text main-function-text-panel-no-workspaces">
+  <div class="index text index-text-panel-no-workspaces">
     {#localize key="plugin.frontPage.workspaces.noWorkspaces.part1"/}{~s}
     <a href="/coursepicker">
       {#localize key="plugin.frontPage.workspaces.noWorkspaces.coursepicker"/}

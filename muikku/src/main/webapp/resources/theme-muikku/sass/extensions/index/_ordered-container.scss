@@ -1,8 +1,8 @@
 @import "../../base/mixins";
 @import "../../base/breakpoints";
 
-.main-function.ordered-container {
-  &.main-function-ordered-container-for-panels {
+.index.ordered-container {
+  &.index-ordered-container-for-panels {
     height: 100%;
     padding: 80px 0 70px 0;
     
@@ -16,7 +16,7 @@
     }
   }
   
-  &.main-function-ordered-container-for-panels-column {
+  &.index-ordered-container-for-panels-column {
     height: 100%;
     width: 100%;
     overflow: visible;

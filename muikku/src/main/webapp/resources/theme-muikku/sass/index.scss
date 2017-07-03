@@ -20,8 +20,9 @@
 @import "extensions/main-function/buttons";
 @import "extensions/main-function/dropdown";
 @import "extensions/main-function/menu";
-@import "extensions/main-function/ordered-container";
-@import "extensions/main-function/panel";
-@import "extensions/main-function/text";
-@import "extensions/main-function/item-list";
 @import "extensions/main-function/indicator";
+
+@import "extensions/index/panel";
+@import "extensions/index/text";
+@import "extensions/index/item-list";
+@import "extensions/index/ordered-container";

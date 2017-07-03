@@ -1,0 +1,121 @@
+$index-text-mobile-padding-horizontal: 10;
+$index-text-icon-size: 35;
+
+.index.text {
+  &.index-text-for-panels-title {
+    font-size: 24px;
+    color: $color-index-text-for-panels-title;
+    padding-bottom: #{$index-text-mobile-padding-horizontal}px;
+    font-weight: 300;
+    text-transform: uppercase;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-bottom: 6px;
+    }
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      padding: 0 #{$index-text-mobile-padding-horizontal}px 10px #{$index-text-mobile-padding-horizontal}px;
+    }
+    
+    span {
+      vertical-align: middle;
+    }
+    
+    span:not(.icon) {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: #{$index-text-icon-size + $index-text-mobile-padding-horizontal}px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      height: #{$index-text-icon-size}px;
+      line-height: #{$index-text-icon-size}px;
+      
+      @include breakpoint-down($breakpoint-portrait-pad){
+        left: #{$index-text-icon-size + ($index-text-mobile-padding-horizontal*2)}px;
+        right: #{$index-text-mobile-padding-horizontal}px;
+      }
+    }
+    
+    .icon {
+      width: #{$index-text-icon-size}px;
+      height: #{$index-text-icon-size}px;
+      border-radius: 100%;
+      font-size: 20px;
+      line-height: #{$index-text-icon-size}px;
+      vertical-align: middle;
+      text-align: center;
+      display: inline-block;
+    }
+    
+    &.index-text-for-panels-title-continue-studies {
+      .icon {
+        background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
+        color: $color-index-text-for-panels-title-continue-studies-icon-color;
+      }
+    }
+    
+    &.index-text-for-panels-title-workspaces {
+      .icon {
+        background-color: $color-index-text-for-panels-title-workspaces-icon-background;
+        color: $color-index-text-for-panels-title-workspaces-icon-color;
+      }
+    }
+    
+    &.index-text-for-panels-title-last-messages {
+      .icon {
+        background-color: $color-index-text-for-panels-title-last-messages-icon-background;
+        color: $color-index-text-for-panels-title-last-messages-icon-color;
+      }
+    }
+    
+    &.index-text-for-panels-title-important {
+      .icon {
+        background-color: $color-index-text-for-panels-title-important-icon-background;
+        color: $color-index-text-for-panels-title-important-icon-color;
+      }
+    }
+    
+    &.index-text-for-panels-title-announcements {
+      .icon {
+        background-color: $color-index-text-for-panels-title-announcements-icon-background;
+        color: $color-index-text-for-panels-title-announcements-icon-color;
+      }
+    }
+  }
+  
+  &.index-text-panel-no-workspaces, &.index-text-panel-no-last-messages, &.index-text-panel-no-announcements {
+    padding: 0 #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-top: #{$index-text-mobile-padding-horizontal}px;
+    }
+  }
+  
+  &.index-text-panel-continue-studies-workspace-name {
+    font-size: 32px;
+    font-weight: 300;
+    padding: 0 #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-top: #{$index-text-mobile-padding-horizontal/2}px;
+    }
+  }
+  
+  &.index-text-panel-continue-studies {
+    padding: 4px #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
+  }
+  
+  &.index-text-last-message-date {
+    color: $color-index-text-panel-last-messages-date;
+    font-style: italic;
+    padding-bottom: 7px;
+  }
+  
+  &.index-text-announcements-date {
+    color: $color-index-text-panel-announcements-date;
+    font-style: italic;
+    padding-bottom: 7px;
+  }
+}
