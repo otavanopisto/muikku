@@ -7,9 +7,35 @@
   <ui:param name="activeTrail" value="communicator"/>
   <ui:param name="controller" value="scripts/controllers/communicator.js" />
   <ui:param name="stylesheet" value="css/communicator.css" />
+  <ui:param name="title" value="#{i18n.text['plugin.communicator.pageTitle']}" />
   
   <ui:define name="content">
-  
+    <div class="communicator application-panel">
+      <div class="application-panel-container">
+        <div class="application-panel-navigation">
+          <div class="application-panel-left-container-dynamic">
+            <h2 class="communicator text text-panel-application-title communicator-text-title">
+              #{i18n.text['plugin.communicator.pageTitle']}
+            </h2>
+          </div>
+          <div class="application-panel-right-container-dynamic">
+            <a class="communicator button-pill communicator-button-pill-settings communicator-interact-show-settings-dropdown">
+              <!-- FIXME this is not the right icon, there are no cogs in the file -->
+              <span class="embbed embbed-full icon icon-forgotpassword"></span>
+            </a>
+          </div>
+        </div>
+        <div class="application-panel-box">
+          <div class="application-panel-navigation">
+            <div class="application-panel-left-container-dynamic">
+              <a class="communicator button communicator-button-new-message">#{i18n.text['plugin.communicator.newMessage']}</a>
+            </div>
+            <div class="application-panel-right-container-dynamic">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </ui:define>
   
   <!-- <ui:define name="scripts">

@@ -1,4 +1,6 @@
-$application-panel-navigation-height: 70px;
+$application-panel-navigation-height: 45px;
+
+$application-panel-internal-navigation-padding: 10px;
 
 .application-panel {
   position: relative;
@@ -7,18 +9,23 @@ $application-panel-navigation-height: 70px;
   justify-content: center;
   width: 100%;
   height: 100%;
+  padding-top: 100px;
+  padding-bottom: 70px;
 
   .application-panel-container {
     max-width: $breakpoint-max-usable-screen;
     width: 100%;
+    height: 100%;
     overflow: visible;
     position: relative;
+    flex-direction: column;
     display: flex;
     
     .application-panel-navigation {
       width: 100%;
       height: $application-panel-navigation-height;
       display: flex;
+      position: relative;
       
       .application-panel-left-container,
       .application-panel-right-container,
@@ -32,18 +39,27 @@ $application-panel-navigation-height: 70px;
       
       .application-panel-left-container,
       .application-panel-right-container {
+        position: relative;
         width: 50%;
       }
       
-      .application-panel-right-container {
+      .application-panel-right-container > *, .application-panel-right-container-dynamic > * {
         float: right;
       }
       
+      @include breakpoint-down($breakpoint-portrait-pad){
+        .application-panel-left-container > *, .application-panel-left-container-dynamic > * {
+          display: none;
+        }
+      }
+      
       .application-panel-left-container-dynamic {
+        position: relative;
         flex: 0 0 auto;
       }
       
       .application-panel-right-container-dynamic {
+        position: relative;
         flex: 1 1 100%;
       }
     }
@@ -55,8 +71,27 @@ $application-panel-navigation-height: 70px;
     }
     
     .application-panel-box {
-      color: $color-application-panel-box-background;
-      border: solid 1px $color-application-panel-box-border;  
+      background-color: $color-application-panel-box-background;
+      border: solid 1px $color-application-panel-box-border;
+      
+      @media screen and (max-width: $breakpoint-max-usable-screen){
+        border-left: 0;
+        border-right: 0;
+      }
+      
+      .application-panel-navigation > * {
+        padding: $application-panel-internal-navigation-padding;
+        
+        &:after {
+          content:''; 
+          left: $application-panel-internal-navigation-padding;
+          right: $application-panel-internal-navigation-padding;
+          height: 1px;
+          position: absolute; 
+          bottom: 0;
+          border-bottom: solid 1px $color-application-panel-box-border;
+        }
+      }
     }
   }
 }

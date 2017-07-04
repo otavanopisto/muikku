@@ -70,4 +70,14 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+  
+  &.text-panel-application-title {
+    font-size: 24px;
+    font-weight: 300;
+    text-transform: uppercase;
+    
+    @media (max-width: $breakpoint-max-usable-screen){
+      padding-left: 10px;
+    }
+  }
 }

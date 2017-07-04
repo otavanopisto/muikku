@@ -211,6 +211,11 @@ $color-item-list-item-background-hover: rgba(0, 0, 0, 0.1);
 $color-indicator-background: $color-fatal;
 $color-indicator-text: $color-fatal-contrast;
 
+// application panel
+$color-application-panel-box-background: $color-default;
+$color-application-panel-box-border: #ccc;
+
 @import "colors/frontpage";
 @import "colors/main-function";
 @import "colors/index";
+@import "colors/communicator";

@@ -11,9 +11,7 @@
 <f:view locale="#{sessionBackingBean.locale}">
 
 <head>
-  <ui:insert name="title">
-    <title>#{i18n.text['plugin.site.title']}</title>
-  </ui:insert>
+  <title>#{empty title ? i18n.text['plugin.site.title'] : title}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <meta content="width=device-width, initial-scale=1.0, minimun-scale=1, maximum-scale=1" name="viewport" />

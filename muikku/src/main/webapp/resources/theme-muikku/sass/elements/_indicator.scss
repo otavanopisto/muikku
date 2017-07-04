@@ -13,6 +13,8 @@ $indicator-font-size: 12;
   color: $color-indicator-text;
   background-color: $color-indicator-background;
   font-size: #{$indicator-font-size}px;
+  height: auto;
+  line-height: #{$indicator-font-size}px;
   max-width: 30px;
   overflow: hidden;
   text-overflow: ellipsis;

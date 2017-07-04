@@ -1,0 +1,34 @@
+@import "../../base/colors";
+@import "../../base/breakpoints";
+@import "../../base/mixins";
+
+.communicator.button-pill {
+  &.communicator-button-pill-settings {
+    background-color: $color-communicator-button-pill-settings-background;
+    color: $color-communicator-button-pill-settings-text;
+    
+    &:hover, &.hover {
+      background-color: $color-communicator-button-pill-settings-background-hover;
+    }
+    
+    &:active, &.active {
+      background-color: $color-communicator-button-pill-settings-background-active;
+    }
+  }
+}
+
+.communicator.button {
+  &.communicator-button-new-message {
+    width: 150px;
+    color: $color-communicator-button-new-message-text;
+    background-color: $color-communicator-button-new-message-background;
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-new-message-background, 10%);
+    }
+  
+    &:active, &.active {
+      background-color: darken($color-communicator-button-new-message-background, 20%);
+    }
+  }
+}

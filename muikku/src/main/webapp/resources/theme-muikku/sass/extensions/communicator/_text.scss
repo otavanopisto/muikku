@@ -1,0 +1,9 @@
+@import "../../base/colors";
+@import "../../base/breakpoints";
+@import "../../base/mixins";
+
+.communicator.text {
+  &.communicator-text-title {
+    color: $color-communicator-text-title;
+  }
+}

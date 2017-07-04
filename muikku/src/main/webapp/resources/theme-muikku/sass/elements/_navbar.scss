@@ -84,6 +84,24 @@ $navbar-font: 'Exo 2', Arial, sans-serif;
       vertical-align: top;
       float: left;
     }
+    
+    .navbar-mobile-title {
+      height: $navbar-height;
+      line-height: 68px;
+      width: 50%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      position: absolute;
+      top: 0;
+      left: 60px;
+      font-size: 28px;
+      font-weight: 300;
+      color: $color-navbar-default-text;
+      
+      @include breakpoint-up($breakpoint-landscape-pad){
+        display: none;
+      }
+    }
 
     .navbar-default-options {
       flex: 0 0 auto;

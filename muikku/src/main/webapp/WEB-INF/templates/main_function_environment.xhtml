@@ -54,10 +54,8 @@
                   <a jsf:outcome="/jsf/communicator/index.jsf"
                     class="main-function link link-icon link-full #{activeTrail eq 'communicator' ? 'active' : ''}"
                     title="#{i18n.text['plugin.communicator.communicator']}">
-                     <span class="icon icon-envelope">
-                       <span class="main-function indicator main-function-indicator-communicator"
-                        id="generic-environment-communicator-message-counter"></span>
-                     </span>
+                     <span class="icon icon-envelope"/>
+                     <span class="main-function indicator main-function-indicator-communicator generic-environment-communicator-message-counter"/>
                   </a>
                 </li>
                 
@@ -116,9 +114,10 @@
                   </a>
                 </li>
               </ui:fragment>
-              
             </ul>
+            <div class="navbar-mobile-title">#{title}</div>
           </div>
+          
           <div class="navbar-default-options">
             <div class="navbar-default-options-container">
               <a class="main-function button-pill main-function-button-pill-search generic-environment-interact-search" style="display:none;">
@@ -212,6 +211,7 @@
                   <a jsf:outcome="/jsf/communicator/index.jsf"
                     class="main-function link link-full main-function-link-menu #{activeTrail eq 'communicator' ? 'active' : ''}">
                      <span class="icon icon-envelope"/>
+                     <span class="main-function indicator main-function-menu-indicator-communicator generic-environment-communicator-message-counter"/>
                      #{i18n.text['plugin.communicator.communicator']}
                   </a>
                 </li>

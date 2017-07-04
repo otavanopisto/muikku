@@ -19,7 +19,7 @@ module([
         self.element.find("#generic-environment-menu").menuWidget("open");
       });
       
-      if (MUIKKU_LOGGEDIN && self.element.find("#generic-environment-communicator-message-counter").length){
+      if (MUIKKU_LOGGEDIN && self.element.find(".generic-environment-communicator-message-counter").length){
         self.initMessageCounter();
       }
     },
@@ -47,9 +47,9 @@ module([
       .read()
       .callback(function (err, result) {
         if (result > 0) {
-          $('#generic-environment-communicator-message-counter').text(result < 100 ? result : "99+");
+          $('.generic-environment-communicator-message-counter').text(result < 100 ? result : "99+");
         } else {
-          $('#generic-environment-communicator-message-counter').text('');
+          $('.generic-environment-communicator-message-counter').text('');
         }
       });
     }

@@ -14,6 +14,7 @@
 @import "elements/text";
 @import "elements/item-list";
 @import "elements/indicator";
+@import "elements/application-panel";
 
 @import "extensions/main-function/navbar";
 @import "extensions/main-function/link";
@@ -21,3 +22,6 @@
 @import "extensions/main-function/dropdown";
 @import "extensions/main-function/menu";
 @import "extensions/main-function/indicator";
+
+@import "extensions/communicator/text";
+@import "extensions/communicator/buttons";
