@@ -133,8 +133,7 @@ public class DiscussionTestsBase extends AbstractUITest {
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
-      try {
-        DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
+      DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
             "<p>Testing testing daa daa</p>", false, false);
         try {
           navigate("/discussion", true);
@@ -145,9 +144,6 @@ public class DiscussionTestsBase extends AbstractUITest {
           assertNotPresent(".di-threads .di-message");
         } catch (Exception e) {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
-        } finally {
-          deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
-        }
       } finally {
         deleteDiscussion(discussionGroup.getId(), discussion.getId());
       }
@@ -156,7 +152,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       WireMock.reset();
     }
   }
-
+  
   @Test
   @TestEnvironments (
       browsers = {
