@@ -78,7 +78,8 @@ env:
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=discussions
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=guider
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=tor
-    
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=flags
+      
 # PhantomJS
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=communicator
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course
@@ -95,6 +96,7 @@ env:
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=user
 #  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=discussions
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=guider
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=flags
 after_success:
 - . travis-after-success.sh
 after_failure:
