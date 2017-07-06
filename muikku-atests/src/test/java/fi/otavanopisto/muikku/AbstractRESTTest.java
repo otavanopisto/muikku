@@ -53,4 +53,9 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
           }
         }));
   }
+  
+  @Before
+  public void resetMocks() throws Exception {
+    PyramusMocksRest.resetWireMock();
+  }
 }
