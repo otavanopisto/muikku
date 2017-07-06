@@ -1,0 +1,10 @@
+<div class="communicator item-list communicator-item-list-navigation">
+  {#items}
+    <a class="item-list-item" href="{link}">
+      <span class="icon icon-{icon}" {?color}style="color:{color}"{/color}></span>
+      <span class="item-list-text-body text">
+        {text}
+      </span>
+    </a>
+  {/items}
+</div>

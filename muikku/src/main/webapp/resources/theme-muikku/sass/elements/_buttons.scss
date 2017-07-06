@@ -226,11 +226,13 @@ $button-pill-font-size: 16px;
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
+  align-items: center;
+  justify-content: center;
   background-color: $color-button-pill-background;
   border-radius: $button-pill-size;
   color: $color-button-pill-text;
   cursor: pointer;
-  display: inline-block;
+  display: inline-flex;
   font-family: $button-pill-font-family;
   font-size: $button-pill-font-size;
   height: $button-pill-size;

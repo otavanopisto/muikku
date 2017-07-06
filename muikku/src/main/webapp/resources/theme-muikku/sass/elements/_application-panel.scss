@@ -11,6 +11,11 @@ $application-panel-internal-navigation-padding: 10px;
   height: 100%;
   padding-top: 100px;
   padding-bottom: 70px;
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    padding-top: 70px;
+    padding-bottom: 0;
+  }
 
   .application-panel-container {
     max-width: $breakpoint-max-usable-screen;
@@ -48,7 +53,8 @@ $application-panel-internal-navigation-padding: 10px;
       }
       
       @include breakpoint-down($breakpoint-portrait-pad){
-        .application-panel-left-container > *, .application-panel-left-container-dynamic > * {
+        display: none;
+        .application-panel-left-container, .application-panel-left-container-dynamic {
           display: none;
         }
       }
@@ -79,17 +85,28 @@ $application-panel-internal-navigation-padding: 10px;
         border-right: 0;
       }
       
-      .application-panel-navigation > * {
-        padding: $application-panel-internal-navigation-padding;
-        
-        &:after {
-          content:''; 
-          left: $application-panel-internal-navigation-padding;
-          right: $application-panel-internal-navigation-padding;
-          height: 1px;
-          position: absolute; 
-          bottom: 0;
-          border-bottom: solid 1px $color-application-panel-box-border;
+      .application-panel-navigation {
+        display: flex;
+      
+        & > * {
+          padding: $application-panel-internal-navigation-padding;
+          
+          @include breakpoint-down($breakpoint-portrait-pad){
+            background-color: $color-default-body;
+            border-bottom: solid 1px $color-application-panel-box-border;
+          }
+          
+          @include breakpoint-up($breakpoint-landscape-pad){
+            &:after {
+              content:''; 
+              left: $application-panel-internal-navigation-padding;
+              right: $application-panel-internal-navigation-padding;
+              height: 1px;
+              position: absolute; 
+              bottom: 0;
+              border-bottom: solid 1px $color-application-panel-box-border;
+            }
+          }
         }
       }
     }

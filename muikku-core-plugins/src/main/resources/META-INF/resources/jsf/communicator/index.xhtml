@@ -1,4 +1,4 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
@@ -19,18 +19,62 @@
             </h2>
           </div>
           <div class="application-panel-right-container-dynamic">
-            <a class="communicator button-pill communicator-button-pill-settings communicator-interact-show-settings-dropdown">
-              <!-- FIXME this is not the right icon, there are no cogs in the file -->
-              <span class="embbed embbed-full icon icon-forgotpassword"></span>
+            <a class="communicator button-pill communicator-button-pill-settings communicator-interact-show-settings">
+              <span class="icon icon-settings"></span>
             </a>
           </div>
         </div>
         <div class="application-panel-box">
           <div class="application-panel-navigation">
             <div class="application-panel-left-container-dynamic">
-              <a class="communicator button communicator-button-new-message">#{i18n.text['plugin.communicator.newMessage']}</a>
+              <a class="communicator button communicator-button-new-message">
+                #{i18n.text['plugin.communicator.newMessage']}
+              </a>
             </div>
             <div class="application-panel-right-container-dynamic">
+              <div class="communicator-navigation" id="communicator-navigation-list" style="display:none">
+                <a class="communicator button button-pill communicator-button-pill-delete communicator-interact-delete">
+                  <!-- FIXME this is not the right icon, there are no trash bin in the file -->
+                  <span class="icon icon-forgotpassword"></span>
+                </a>
+                <a class="communicator button button-pill communicator-button-pill-label communicator-interact-label">
+                  <span class="icon icon-tag"></span>
+                </a>
+                <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-interact-toggle-read">
+                  <span class="icon icon-envelope-alt"></span>
+                </a>
+              </div>
+              <div class="communicator-navigation" id="communicator-navigation-reading">
+                <a class="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back">
+                  <span class="icon icon-goback"></span>
+                </a>
+                
+                <a class="communicator button button-pill communicator-button-pill-delete communicator-interact-delete">
+                  <!-- FIXME this is not the right icon, there are no trash bin in the file -->
+                  <span class="icon icon-forgotpassword"></span>
+                </a>
+                <a class="communicator button button-pill communicator-button-pill-label communicator-interact-label">
+                  <span class="icon icon-tag"></span>
+                </a>
+                <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-interact-toggle-read">
+                  <span class="icon icon-envelope-alt"></span>
+                </a>
+                
+                <a class="communicator button button-pill communicator-button-pill-next-page communicator-interact-toggle-next-page">
+                  <span class="icon icon-arrow-right"></span>
+                </a>
+                <a class="communicator button button-pill communicator-button-pill-prev-page communicator-interact-toggle-prev-page">
+                  <span class="icon icon-arrow-left"></span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="application-panel-body">
+            <div class="application-panel-body-left-container-dynamic" data-controller-widget="communicator-navigation">
+              
+            </div>
+            <div class="application-panel-body-right-container-dynamic">
+            
             </div>
           </div>
         </div>

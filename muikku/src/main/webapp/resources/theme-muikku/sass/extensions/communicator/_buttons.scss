@@ -15,11 +15,133 @@
       background-color: $color-communicator-button-pill-settings-background-active;
     }
   }
+
+  &.communicator-button-pill-delete {
+    background-color: $color-communicator-button-pill-delete-background;
+    color: $color-communicator-button-pill-delete-text;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      margin-right: 5px;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      margin-left: 5px;
+      float: right;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-delete-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-delete-background, 20%);
+    }
+  }
+  
+  &.communicator-button-pill-label {
+    background-color: $color-communicator-button-pill-label-background;
+    color: $color-communicator-button-pill-label-text;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      margin-right: 5px;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      margin-left: 5px;
+      float: right;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-label-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-label-background, 20%);
+    }
+  }
+  
+  &.communicator-button-pill-toggle-read {
+    background-color: $color-communicator-button-pill-toggle-read-background;
+    color: $color-communicator-button-pill-toggle-read-text;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      margin-right: 5px;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      margin-left: 5px;
+      float: right;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-toggle-read-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-toggle-read-background, 20%);
+    }
+  }
+  
+  &.communicator-button-pill-go-back {
+    background-color: $color-communicator-button-pill-go-back-background;
+    color: $color-communicator-button-pill-go-back-text;
+    margin-right: 15px;
+    border-radius: 5px;
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-go-back-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-go-back-background, 20%);
+    }
+  }
+  
+  &.communicator-button-pill-prev-page {
+    background-color: $color-communicator-button-pill-prev-page-background;
+    color: $color-communicator-button-pill-prev-page-text;
+    margin-left: 5px;
+    float: right;
+    border-radius: 5px;
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-prev-page-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-prev-page-background, 20%);
+    }
+  }
+  
+  &.communicator-button-pill-next-page {
+    background-color: $color-communicator-button-pill-next-page-background;
+    color: $color-communicator-button-pill-next-page-text;
+    margin-left: 5px;
+    border-radius: 5px;
+    float: right;
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-next-page-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-next-page-background, 20%);
+    }
+  }
 }
 
 .communicator.button {
   &.communicator-button-new-message {
-    width: 150px;
+    width: 200px;
+    @include breakpoint-down($breakpoint-landscape-pad){
+      width: 150px;
+    }
+    
     color: $color-communicator-button-new-message-text;
     background-color: $color-communicator-button-new-message-background;
     

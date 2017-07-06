@@ -7,3 +7,15 @@ $color-communicator-button-pill-settings-background-active: rgba(0, 0, 0, 0.2);
 
 $color-communicator-button-new-message-background: $color-primary;
 $color-communicator-button-new-message-text: $color-primary-contrast;
+$color-communicator-button-pill-delete-background: $color-primary;
+$color-communicator-button-pill-delete-text: $color-primary-contrast;
+$color-communicator-button-pill-label-background: $color-secondary;
+$color-communicator-button-pill-label-text: $color-secondary-contrast;
+$color-communicator-button-pill-toggle-read-background: $color-secondary;
+$color-communicator-button-pill-toggle-read-text: $color-secondary-contrast;
+$color-communicator-button-pill-go-back-background: lighten($color-primary, 20%);
+$color-communicator-button-pill-go-back-text: $color-secondary-contrast;
+$color-communicator-button-pill-prev-page-background: lighten($color-primary, 20%);
+$color-communicator-button-pill-prev-page-text: $color-secondary-contrast;
+$color-communicator-button-pill-next-page-background: lighten($color-primary, 20%);
+$color-communicator-button-pill-next-page-text: $color-secondary-contrast;
