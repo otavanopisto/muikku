@@ -17,9 +17,9 @@ if [[ $run_tests == "true" ]]; then
   if [[ $browser == "phantomjs" && $test_suite == "phantom" ]]; then
     if [[ ! -f /home/travis/build/otavanopisto/muikku/muikku-atests/.phantomjs/bin/phantomjs ]]; then
       rm -fR muikku-atests/.phantomjs
-      wget -O phantomjs-1.9.8-linux-x86_64.tar.bz2 https://www.dropbox.com/s/u4roar334nu8n4c/phantomjs-1.9.8-linux-x86_64.tar.bz2?dl=1 & wait
-      tar -jxf phantomjs-1.9.8-linux-x86_64.tar.bz2 & wait
-      mv phantomjs-1.9.8-linux-x86_64 muikku-atests/.phantomjs
+      wget -O phantomjs-2.1.1-linux-x86_64.tar.bz2 https://www.dropbox.com/s/he6v0rs6envfllq/phantomjs-2.1.1-linux-x86_64.tar.bz2?dl=1 & wait
+      tar -jxf phantomjs-2.1.1-linux-x86_64.tar.bz2 & wait
+      mv phantomjs-2.1.1-linux-x86_64 muikku-atests/.phantomjs
     fi;
   fi;
 fi;
