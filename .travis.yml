@@ -97,6 +97,7 @@ env:
 #  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=discussions
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=guider
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=flags
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=tor
 after_success:
 - . travis-after-success.sh
 after_failure:
