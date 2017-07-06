@@ -5,6 +5,7 @@ import static com.jayway.restassured.RestAssured.certificate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 
@@ -54,7 +55,7 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
         }));
   }
   
-  @Before
+  @After
   public void resetMocks() throws Exception {
     PyramusMocksRest.resetWireMock();
   }
