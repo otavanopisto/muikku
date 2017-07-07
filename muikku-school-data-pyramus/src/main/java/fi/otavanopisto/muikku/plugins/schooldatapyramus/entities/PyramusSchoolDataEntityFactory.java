@@ -25,6 +25,7 @@ import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CourseLengthUnit;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
+import fi.otavanopisto.muikku.schooldata.entity.Optionality;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -43,6 +44,7 @@ import fi.otavanopisto.pyramus.rest.model.ContactType;
 import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
+import fi.otavanopisto.pyramus.rest.model.CourseOptionality;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMember;
 import fi.otavanopisto.pyramus.rest.model.CourseStaffMemberRole;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
@@ -559,7 +561,6 @@ public class PyramusSchoolDataEntityFactory {
     SchoolDataIdentifier subjectIdentifier = transferCredit.getSubjectId() != null ? toIdentifier(identifierMapper.getSubjectIdentifier(transferCredit.getSubjectId())) : null;
     SchoolDataIdentifier schoolIdentifier = transferCredit.getSchoolId() != null ? identifierMapper.getSchoolIdentifier(transferCredit.getSchoolId()) : null;
     SchoolDataIdentifier curriculumIdentifier = transferCredit.getCurriculumId() != null ? identifierMapper.getCurriculumIdentifier(transferCredit.getCurriculumId()) : null;
-    
     return new PyramusTransferCredit(identifier, 
         studentIdentifier, 
         transferCredit.getDate(), 
@@ -573,7 +574,8 @@ public class PyramusSchoolDataEntityFactory {
         lengthUnitIdentifier, 
         schoolIdentifier, 
         subjectIdentifier,
-        curriculumIdentifier);
+        curriculumIdentifier,
+        transferCredit.getOptionality() == CourseOptionality.OPTIONAL ? Optionality.OPTIONAL : Optionality.MANDATORY);
   }
 
   private String pyramusHost;

@@ -3,9 +3,11 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -58,7 +60,9 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
+import fi.otavanopisto.muikku.schooldata.entity.Optionality;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
+import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -206,6 +210,8 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
     }
+    
+    List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
     List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
@@ -215,17 +221,61 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     for (Subject subject : subjects) {
       boolean subjectHasCourses = false;
+      Set<Integer> transferCreditCourseNumbers = new HashSet<>();
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
-        for (int i=1; i<MAX_COURSE_NUMBER; i++) {
+        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+          boolean hasTransferCredit = false;
+
+          for (TransferCredit transferCredit : transferCredits) {
+            boolean subjectsMatch = Objects.equals(
+                transferCredit.getSubjectIdentifier(),
+                new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()));
+            boolean courseNumbersMatch = Objects.equals(
+                transferCredit.getCourseNumber(),
+                courseNumber);
+            if (subjectsMatch && courseNumbersMatch) {
+              String grade = "";
+              GradingScaleItem gradingScaleItem = null;
+              Mandatority mandatority = Mandatority.MANDATORY;
+              if (transferCredit.getOptionality() == Optionality.OPTIONAL) {
+                mandatority = Mandatority.UNSPECIFIED_OPTIONAL;
+              }
+
+              if (transferCredit.getGradeIdentifier() != null
+                  && transferCredit.getGradingScaleIdentifier() != null) {
+                gradingScaleItem = findGradingScaleItemCached(
+                    transferCredit.getGradingScaleIdentifier(),
+                    transferCredit.getGradeIdentifier()
+                );
+                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
+                  grade = gradingScaleItem.getName().substring(0, 2);
+                }
+              }
+              entries.add(new VopsRESTModel.VopsItem(
+                  courseNumber,
+                  CourseCompletionState.ASSESSED,
+                  (String)null,
+                  mandatority,
+                  grade,
+                  false,
+                  transferCredit.getCourseName(),
+                  ""
+              ));
+              hasTransferCredit = true;
+              break;
+            }
+          }
+
           List<VopsWorkspace> workspaces =
               vopsController.listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(
                   subject.getSchoolDataSource(),
                   subject.getIdentifier(),
-                  i);
+                  courseNumber);
           
           List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
-          if (!workspaces.isEmpty()) {
+
+          if (!hasTransferCredit && !workspaces.isEmpty()) {
             SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
             String name = "";
@@ -325,16 +375,18 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 break;
               }
             }
+            
             StudiesViewCourseChoice courseChoice = studiesViewCourseChoiceController.find(
                 new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()).toId(),
-                i,
+                courseNumber,
                 studentIdentifierString);
             if (state == CourseCompletionState.NOT_ENROLLED
                 && courseChoice != null) {
               state = CourseCompletionState.PLANNED;
             }
+            
             entries.add(new VopsRESTModel.VopsItem(
-                i,
+                courseNumber,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
                 mandatority,
@@ -344,7 +396,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 clean(description)
             ));
             subjectHasCourses = true;
-          } else {
+          } else if (!hasTransferCredit) {
             entries.add(new VopsRESTModel.VopsPlaceholder());
           }
         }
