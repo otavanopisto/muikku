@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
@@ -946,7 +947,7 @@ public class PyramusMock {
       public Builder dumpMocks() {
         System.out.print("dumpMocks");
         
-        com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
+        ListStubMappingsResult listAllStubMappings = WireMock.listAllStubMappings();
         List<StubMapping> mappings = listAllStubMappings.getMappings();
         for (StubMapping mapping : mappings) {
           System.out.print(mapping.toString());

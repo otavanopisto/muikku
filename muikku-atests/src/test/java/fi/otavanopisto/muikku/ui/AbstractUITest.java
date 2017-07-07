@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -196,7 +197,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String resolution = System.getProperty("it.sauce.browser.resolution");
     if(resolution != null) {
       if (!resolution.isEmpty()) {
-        String[] widthHeight = org.apache.commons.lang3.StringUtils.split(resolution, "x");
+        String[] widthHeight = StringUtils.split(resolution, "x");
         Map<String, Long> dimensions = new HashMap<String, Long>();
         dimensions.put("width", Long.parseLong(widthHeight[0]));
         dimensions.put("height", Long.parseLong(widthHeight[1]));  
@@ -293,7 +294,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     capabilities.setCapability("timeZone", "Universal");
     capabilities.setCapability("seleniumVersion", seleniumVersion);
     
-    if (!org.apache.commons.lang3.StringUtils.isBlank(browserResolution)) {
+    if (!StringUtils.isBlank(browserResolution)) {
       capabilities.setCapability("screenResolution", browserResolution);
     }
     
@@ -612,12 +613,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
 
 
   protected void assertTextIgnoreCase(String selector, String text) {
-    String actual = org.apache.commons.lang3.StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
-    assertEquals(org.apache.commons.lang3.StringUtils.lowerCase(text), actual);
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertEquals(StringUtils.lowerCase(text), actual);
   }
 
   protected void assertNotTextIgnoreCase(String selector, String text) {
-    String actual = org.apache.commons.lang3.StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertNotEquals(text, actual);
   }
   
@@ -670,7 +671,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     WebDriver driver = getWebDriver();
     new WebDriverWait(driver, 60).until(new ExpectedCondition<Boolean>() {
       public Boolean apply(WebDriver driver) {
-        String actual = org.apache.commons.lang3.StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+        String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
         if (!actual.equalsIgnoreCase(original)) {
           return true;
         }
@@ -691,7 +692,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
         List<WebElement> elements = getWebDriver().findElements(By.cssSelector(selector));
         if (!elements.isEmpty()) {
           WebElement element = elements.get(0);
-          String[] classes = org.apache.commons.lang3.StringUtils.split(element.getAttribute("class"), " ");
+          String[] classes = StringUtils.split(element.getAttribute("class"), " ");
           return ArrayUtils.contains(classes, className);
         }
         return false;
@@ -760,14 +761,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void assertClassNotPresent(String selector, String className) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
-    String[] classes = org.apache.commons.lang3.StringUtils.split(element.getAttribute("class"), " ");
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertFalse(String.format("Class %s present in %s", className, selector), ArrayUtils.contains(classes, className));
   }
 
   protected void assertClassPresent(String selector, String className) {
     waitForPresent(selector + "." + className);
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
-    String[] classes = org.apache.commons.lang3.StringUtils.split(element.getAttribute("class"), " ");
+    String[] classes = StringUtils.split(element.getAttribute("class"), " ");
     assertTrue(String.format("Class %s is not present in %s", className, selector), ArrayUtils.contains(classes, className));
   }
   
@@ -1228,7 +1229,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void dragAndDrop(String source, String target){
-    if (org.apache.commons.lang3.StringUtils.equals(getBrowser(), "microsoftedge") || org.apache.commons.lang3.StringUtils.equals(getBrowser(), "internet explorer") || org.apache.commons.lang3.StringUtils.equals(getBrowser(), "safari")) {
+    if (StringUtils.equals(getBrowser(), "microsoftedge") || StringUtils.equals(getBrowser(), "internet explorer") || StringUtils.equals(getBrowser(), "safari")) {
       ((JavascriptExecutor) getWebDriver())
         .executeScript(String.format("try { $('%s').simulate('drag-n-drop', { dragTarget: $('%s') }); } catch (e) { console.log(e); } ", source, target ));
     } else {     
@@ -1266,7 +1267,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void addTextToCKEditor(String text) {
     waitForPresent(".cke_wysiwyg_frame");
-    if (org.apache.commons.lang3.StringUtils.equals(getBrowser(), "phantomjs") ) {
+    if (StringUtils.equals(getBrowser(), "phantomjs") ) {
       waitForCKReady("textContent");
       ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
     } else {
