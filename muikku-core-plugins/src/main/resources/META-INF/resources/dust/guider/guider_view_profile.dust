@@ -431,6 +431,7 @@
                         {@eq key=state value="ASSESSED"}passed{~s}{/eq}
                         {@eq key=mandatority value="MANDATORY"}mandatory{/eq}{~s}
                         {@eq key=mandatority value="SCHOOL_LEVEL_OPTIONAL"}optional-school{/eq}{~s}
+                        {@eq key=mandatority value="UNSPECIFIED_OPTIONAL"}optional-school{/eq}{~s}
                         {@eq key=mandatority value="NATIONAL_LEVEL_OPTIONAL"}optional-national{/eq}"
                      data-no="{courseNumber}">
                   {grade}

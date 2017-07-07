@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 
 public abstract class AbstractTransferCredit implements TransferCredit {
-
   public AbstractTransferCredit() {
   }
   
@@ -12,7 +11,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
       SchoolDataIdentifier gradeIdentifier, SchoolDataIdentifier gradingScaleIdentifier, String verbalAssessment, 
       SchoolDataIdentifier assessorIdentifier, String courseName, Integer courseNumber, Double length, 
       SchoolDataIdentifier lengthUnitIdentifier, SchoolDataIdentifier schoolIdentifier, SchoolDataIdentifier subjectIdentifier,
-      SchoolDataIdentifier curriculumIdentifier) {
+      SchoolDataIdentifier curriculumIdentifier, Optionality optionality) {
     super();
     this.identifier = identifier;
     this.studentIdentifier = studentIdentifier;
@@ -28,6 +27,7 @@ public abstract class AbstractTransferCredit implements TransferCredit {
     this.schoolIdentifier = schoolIdentifier;
     this.subjectIdentifier = subjectIdentifier;
     this.curriculumIdentifier = curriculumIdentifier;
+    this.optionality = optionality;
   }
 
   @Override
@@ -155,6 +155,11 @@ public abstract class AbstractTransferCredit implements TransferCredit {
   public void setCurriculumIdentifier(SchoolDataIdentifier curriculumIdentifier) {
     this.curriculumIdentifier = curriculumIdentifier;
   }
+  
+  @Override
+  public Optionality getOptionality() {
+    return optionality;
+  }
 
   private SchoolDataIdentifier identifier;
   private SchoolDataIdentifier studentIdentifier;
@@ -171,5 +176,5 @@ public abstract class AbstractTransferCredit implements TransferCredit {
   private SchoolDataIdentifier subjectIdentifier;
   private SchoolDataIdentifier curriculumIdentifier;
 
-  // TODO: Optionality?
+  private Optionality optionality;
 }
