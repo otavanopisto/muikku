@@ -2,7 +2,7 @@
 export run_tests=true
 export start_sc_tunnel=true
 export release=false
-export test_suite=false
+export test_suite=full
 export deploy_snapshot=false
 export deploy_release=false
 
