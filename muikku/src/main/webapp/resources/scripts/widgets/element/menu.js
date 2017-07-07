@@ -24,7 +24,7 @@ module(function(){
     _touchstart: function(e){
       var self = this;
       var $touchTarget = $(e.target);
-      $touchTarget.addClass("active").parent('.link, .button').addClass("active");
+      $touchTarget.addClass("active").parentsUntil('.menu-body').addClass("active");
 
       self.element.addClass("dragging");
       self.touchCordX = e.originalEvent.changedTouches[0].pageX;
@@ -69,7 +69,7 @@ module(function(){
       var diff = parseInt($menuCont.css("left"));
       var movement = self.touchMovementX;
 
-      self.touchTarget.removeClass("active").parent('.link, .button').removeClass("active");
+      self.touchTarget.removeClass("active").parentsUntil('.menu-body').removeClass("active");
 
       setTimeout(function(){
         $menuCont.css({'left': ''});
@@ -77,6 +77,7 @@ module(function(){
         var targetShouldTriggerCloseIfClicked =
           $etarget.hasClass("menu-header-button-close") || //You pressed the button to close the menu
           $etarget.parents(".menu-items").length === 1 || //You pressed one of the items in the list
+          $etarget.parents(".menu-extras").length === 1 || //You pressed one of the extras in the list
           $etarget.hasClass("menu"); //You pressed the overlay
         
         var targetIsActuallyBeingClicked = movement <= 5; //The total movement of the finger over a pressed target is just 5 pixels max

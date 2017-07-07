@@ -6,6 +6,7 @@
   &.communicator-button-pill-settings {
     background-color: $color-communicator-button-pill-settings-background;
     color: $color-communicator-button-pill-settings-text;
+    vertical-align: top;
     
     &:hover, &.hover {
       background-color: $color-communicator-button-pill-settings-background-hover;
@@ -19,6 +20,7 @@
   &.communicator-button-pill-delete {
     background-color: $color-communicator-button-pill-delete-background;
     color: $color-communicator-button-pill-delete-text;
+    vertical-align: top;
     
     @include breakpoint-up($breakpoint-landscape-pad){
       margin-right: 5px;
@@ -40,6 +42,7 @@
   &.communicator-button-pill-label {
     background-color: $color-communicator-button-pill-label-background;
     color: $color-communicator-button-pill-label-text;
+    vertical-align: top;
     
     @include breakpoint-up($breakpoint-landscape-pad){
       margin-right: 5px;
@@ -61,6 +64,7 @@
   &.communicator-button-pill-toggle-read {
     background-color: $color-communicator-button-pill-toggle-read-background;
     color: $color-communicator-button-pill-toggle-read-text;
+    vertical-align: top;
     
     @include breakpoint-up($breakpoint-landscape-pad){
       margin-right: 5px;
@@ -84,6 +88,7 @@
     color: $color-communicator-button-pill-go-back-text;
     margin-right: 15px;
     border-radius: 5px;
+    vertical-align: top;
     
     &:hover, &.hover {
       background-color: darken($color-communicator-button-pill-go-back-background, 10%);
@@ -100,6 +105,7 @@
     margin-left: 5px;
     float: right;
     border-radius: 5px;
+    vertical-align: top;
     
     @include breakpoint-down($breakpoint-portrait-pad){
       display: none;
@@ -120,6 +126,7 @@
     margin-left: 5px;
     border-radius: 5px;
     float: right;
+    vertical-align: top;
     
     @include breakpoint-down($breakpoint-portrait-pad){
       display: none;

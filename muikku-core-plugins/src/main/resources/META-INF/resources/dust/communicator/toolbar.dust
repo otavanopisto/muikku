@@ -1,0 +1,43 @@
+{?inMessage}
+  <div class="communicator-navigation">
+    <a class="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back">
+      <span class="icon icon-goback"></span>
+    </a>
+                
+    <a class="communicator text communicator-text-current-folder">{folder}</a>
+                
+    <a class="communicator button button-pill communicator-button-pill-delete communicator-interact-delete">
+      <!-- FIXME this is not the right icon, there are no trash bin in the file -->
+      <span class="icon icon-forgotpassword"></span>
+    </a>
+    <a class="communicator button button-pill communicator-button-pill-label communicator-interact-label">
+       <span class="icon icon-tag"></span>
+    </a>
+    <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-interact-toggle-read">
+       <span class="icon icon-envelope-alt"></span>
+    </a>
+                
+    <a class="communicator button button-pill communicator-button-pill-next-page communicator-interact-toggle-next-page">
+      <span class="icon icon-arrow-right"></span>
+    </a>
+    <a class="communicator button button-pill communicator-button-pill-prev-page communicator-interact-toggle-prev-page">
+      <span class="icon icon-arrow-left"></span>
+    </a>
+  </div>
+{:else}
+  <div class="communicator-navigation">
+    <a class="communicator text communicator-text-current-folder">{folder}</a>
+                
+    <a class="communicator button button-pill communicator-button-pill-delete communicator-interact-delete">
+      <!-- FIXME this is not the right icon, there are no trash bin in the file -->
+      <span class="icon icon-forgotpassword"></span>
+    </a>
+    
+    <a class="communicator button button-pill communicator-button-pill-label communicator-interact-label">
+      <span class="icon icon-tag"></span>
+    </a>
+    <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-interact-toggle-read">
+      <span class="icon icon-envelope-alt"></span>
+    </a>
+  </div>
+{/inMessage}

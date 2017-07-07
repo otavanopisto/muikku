@@ -1,0 +1,19 @@
+@import "../../base/colors";
+@import "../../base/breakpoints";
+@import "../../base/mixins";
+
+.communicator.item-list {
+  &.communicator-item-list-navigation {
+    width: 220px;
+    @include breakpoint-down($breakpoint-landscape-pad){
+      width: 170px;
+    }
+    
+    padding: 10px;
+  }
+  
+  .menu &.communicator-item-list-navigation {
+    width: 100%;
+    padding: 0 0 10px 0;
+  }
+}

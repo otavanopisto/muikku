@@ -24,7 +24,7 @@ module([
       }
     },
     initMessageCounter(){
-      self = this;
+      var self = this;
       $(document).muikkuWebSocket("addEventListener", "Communicator:newmessagereceived", function () {
         self.reloadMessageCount();
       });

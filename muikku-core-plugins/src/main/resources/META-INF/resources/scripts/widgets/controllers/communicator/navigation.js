@@ -2,41 +2,61 @@ module([
 ], function(){
   $.widget("custom.communicatorNavigationControllerWidget", {
     options: {
-      onResolved: null,
-      onError: null,
+      onLocationChange: null,
       defaultItems: [
         {
-          link: "#inbox",
-          icon: "folder",
+          location: "inbox",
+          icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.inbox", [])
         },
         {
-          link: "#unread",
-          icon: "unread",
+          location: "unread",
+          icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.unread", [])
         },
         {
-          link: "#sent",
-          icon: "sent",
+          location: "sent",
+          icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.sent", [])
         },
         {
-          link: "#trash",
-          icon: "trash",
+          location: "trash",
+          icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.trash", [])
         }
       ]
     },
     _create: function(){
       this.items = this.options.defaultItems;
+      if (!window.location.hash){
+        window.location.hash = this.items[0].location
+        this.options.onLocationChange(this.items[0]);
+      } else {
+        var hash = window.location.hash.replace("#","");
+        this.options.onLocationChange(this.items.find(function(item){
+          return item.location === hash;
+        }));
+      }
+      
       this._render();
+      this._getTagsFromSever();
+      
+      var self = this;
+      $(window).bind("hashchange", function(){
+        var hash = window.location.hash.replace("#","");
+        self.options.onLocationChange(self.items.find(function(item){
+          return item.location === hash;
+        }));
+        self._render();
+      });
     },
     _getTagsFromSever: function(){
       
     },
     _render(){
+      var hash = window.location.hash.replace("#","");
       var self = this;
-      renderDustTemplate('communicator/navigation.dust', {items: self.items}, function(text) {
+      renderDustTemplate('communicator/navigation.dust', {items: self.items, currentLocation: hash}, function(text) {
         self.element.html(text);
       });
     }

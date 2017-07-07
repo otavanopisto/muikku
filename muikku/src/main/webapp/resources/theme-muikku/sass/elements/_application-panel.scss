@@ -32,53 +32,27 @@ $application-panel-internal-navigation-padding: 10px;
       display: flex;
       position: relative;
       
-      .application-panel-left-container,
-      .application-panel-right-container,
-      .application-panel-left-container-dynamic,
-      .application-panel-right-container-dynamic {
-        height: $application-panel-navigation-height;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      
-      .application-panel-left-container,
-      .application-panel-right-container {
-        position: relative;
-        width: 50%;
-      }
-      
-      .application-panel-right-container > *, .application-panel-right-container-dynamic > * {
-        float: right;
-      }
-      
       @include breakpoint-down($breakpoint-portrait-pad){
         display: none;
-        .application-panel-left-container, .application-panel-left-container-dynamic {
-          display: none;
-        }
-      }
-      
-      .application-panel-left-container-dynamic {
-        position: relative;
-        flex: 0 0 auto;
-      }
-      
-      .application-panel-right-container-dynamic {
-        position: relative;
-        flex: 1 1 100%;
       }
     }
     
-    .application-panel-box, .application-panel-body {
+    .application-panel-box {
       display: flex;
       flex-direction: column;
       flex: 1 1 auto;
     }
     
+    .application-panel-body {
+      display: flex;
+      flex: 1 1 auto;
+      align-items: stretch;
+    }
+    
     .application-panel-box {
       background-color: $color-application-panel-box-background;
       border: solid 1px $color-application-panel-box-border;
+      display: flex;
       
       @media screen and (max-width: $breakpoint-max-usable-screen){
         border-left: 0;
@@ -110,5 +84,33 @@ $application-panel-internal-navigation-padding: 10px;
         }
       }
     }
+    
+    .application-panel-left-container,
+    .application-panel-right-container {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+      
+    .application-panel-right-container > * {
+      float: right;
+    }
+      
+    @include breakpoint-down($breakpoint-portrait-pad){
+      .application-panel-left-container {
+        display: none;
+      }
+    }
+      
+    .application-panel-left-container {
+      position: relative;
+      flex: 0 0 auto;
+    }
+      
+    .application-panel-right-container {
+      position: relative;
+      flex: 1 1 auto;
+    }
+    
   }
 }

@@ -13,12 +13,12 @@
     <div class="communicator application-panel">
       <div class="application-panel-container">
         <div class="application-panel-navigation">
-          <div class="application-panel-left-container-dynamic">
+          <div class="application-panel-left-container">
             <h2 class="communicator text text-panel-application-title communicator-text-title">
               #{i18n.text['plugin.communicator.pageTitle']}
             </h2>
           </div>
-          <div class="application-panel-right-container-dynamic">
+          <div class="application-panel-right-container">
             <a class="communicator button-pill communicator-button-pill-settings communicator-interact-show-settings">
               <span class="icon icon-settings"></span>
             </a>
@@ -26,60 +26,24 @@
         </div>
         <div class="application-panel-box">
           <div class="application-panel-navigation">
-            <div class="application-panel-left-container-dynamic">
+            <div class="application-panel-left-container">
               <a class="communicator button communicator-button-new-message">
                 #{i18n.text['plugin.communicator.newMessage']}
               </a>
             </div>
-            <div class="application-panel-right-container-dynamic">
-              <div class="communicator-navigation" id="communicator-navigation-list" style="display:none">
-                <a class="communicator button button-pill communicator-button-pill-delete communicator-interact-delete">
-                  <!-- FIXME this is not the right icon, there are no trash bin in the file -->
-                  <span class="icon icon-forgotpassword"></span>
-                </a>
-                <a class="communicator button button-pill communicator-button-pill-label communicator-interact-label">
-                  <span class="icon icon-tag"></span>
-                </a>
-                <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-interact-toggle-read">
-                  <span class="icon icon-envelope-alt"></span>
-                </a>
-              </div>
-              <div class="communicator-navigation" id="communicator-navigation-reading">
-                <a class="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back">
-                  <span class="icon icon-goback"></span>
-                </a>
-                
-                <a class="communicator button button-pill communicator-button-pill-delete communicator-interact-delete">
-                  <!-- FIXME this is not the right icon, there are no trash bin in the file -->
-                  <span class="icon icon-forgotpassword"></span>
-                </a>
-                <a class="communicator button button-pill communicator-button-pill-label communicator-interact-label">
-                  <span class="icon icon-tag"></span>
-                </a>
-                <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-interact-toggle-read">
-                  <span class="icon icon-envelope-alt"></span>
-                </a>
-                
-                <a class="communicator button button-pill communicator-button-pill-next-page communicator-interact-toggle-next-page">
-                  <span class="icon icon-arrow-right"></span>
-                </a>
-                <a class="communicator button button-pill communicator-button-pill-prev-page communicator-interact-toggle-prev-page">
-                  <span class="icon icon-arrow-left"></span>
-                </a>
-              </div>
-            </div>
+            <div class="application-panel-right-container" data-controller-widget="communicator-toolbar"></div>
           </div>
           <div class="application-panel-body">
-            <div class="application-panel-body-left-container-dynamic" data-controller-widget="communicator-navigation">
-              
-            </div>
-            <div class="application-panel-body-right-container-dynamic">
-            
-            </div>
+            <div class="application-panel-left-container" data-controller-widget="communicator-navigation"></div>
+            <div class="application-panel-right-container"></div>
           </div>
         </div>
       </div>
     </div>
+  </ui:define>
+  
+  <ui:define name="menu-extras">
+    <div data-controller-widget="communicator-navigation"></div>
   </ui:define>
   
   <!-- <ui:define name="scripts">

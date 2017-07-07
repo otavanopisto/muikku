@@ -192,6 +192,8 @@
             <div class="menu-header-button-close icon icon-arrow-left"></div>
           </div>
           <div class="menu-body">
+            <!-- CAUTION do not format this, it breaks the style because of extra spaces -->
+            <div class="menu-extras"><ui:insert name="menu-extras"></ui:insert></div>
             <ul class="menu-items">
               <li class="menu-item">
                 <a jsf:outcome="/index.jsf" class="main-function link link-full main-function-link-menu #{activeTrail eq 'index' ? 'active' : ''}">
