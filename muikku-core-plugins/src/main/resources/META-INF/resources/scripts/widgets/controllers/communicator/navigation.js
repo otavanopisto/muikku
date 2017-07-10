@@ -1,5 +1,18 @@
 module([
 ], function(){
+  
+  function colorIntToHex(color) {
+    var b = (color & 255).toString(16);
+    var g = ((color >> 8) & 255).toString(16);
+    var r = ((color >> 16) & 255).toString(16);
+
+    var rStr = r.length == 1 ? "0" + r : r;
+    var gStr = g.length == 1 ? "0" + g : g;
+    var bStr = b.length == 1 ? "0" + b : b;
+    
+    return "#" + rStr + gStr + bStr;
+  }
+  
   $.widget("custom.communicatorNavigationControllerWidget", {
     options: {
       onLocationChange: null,
@@ -51,7 +64,21 @@ module([
       });
     },
     _getTagsFromSever: function(){
-      
+      var self = this;
+      mApi().communicator.userLabels.read().callback(function (err, results) {
+        if (err){
+          return;
+        }
+        self.items = self.items.concat(results.map(function(label){
+          return {
+            location: ("label-" + label.id),
+            icon: "tag",
+            text: label.name,
+            color: colorIntToHex(label.color)
+          }
+        }));
+        self._render();
+      });
     },
     _render(){
       var hash = window.location.hash.replace("#","");
