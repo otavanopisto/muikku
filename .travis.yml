@@ -30,8 +30,7 @@ before_script:
 script:
 - . travis-script.sh
 after_script:
-#- if [[ $start_sc_tunnel = "true" ]]; then killall sc; fi;
-- if [ $start_sc_tunnel = true ]; then c=0; while kill -9 `cat /tmp/sc.pid`; do sleep 0.5; c=$((c+1)); if [ $c -gt 60 ]; then kill -9 `cat /tmp/sc.pid`; fi; done; fi;
+- if [ $start_sc_tunnel = true ]; then kill -9 `cat /tmp/sc.pid`; fi;
 env:
   global:
   - secure: "aOQe+UgT52sFJnbyeYfdAcgDu910G6G1UKVV2YIOVrjtR0PvYxwztrMOZjnECBtcxAZqLCA57Ao17yuPj0LXP258jeJbufofeSYe7ZBAi5OUQCvp4UsSFMQKsglxgM6xXrpw9jhr9PJXjYpmv5oPtTynjNCQClYCMIFgPiQyXp0="
