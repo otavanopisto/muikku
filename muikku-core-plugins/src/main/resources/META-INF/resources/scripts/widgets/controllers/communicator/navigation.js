@@ -13,49 +13,61 @@ module([
     return "#" + rStr + gStr + bStr;
   }
   
+  var initialLoadHasBeenCalled = false;
+  
   $.widget("custom.communicatorNavigationControllerWidget", {
     options: {
       onLocationChange: null,
       defaultItems: [
         {
           location: "inbox",
+          type: "folder",
+          id: "inbox",
           icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.inbox", [])
         },
         {
           location: "unread",
+          type: "folder",
+          id: "unread",
           icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.unread", [])
         },
         {
           location: "sent",
+          type: "folder",
+          id: "sent",
           icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.sent", [])
         },
         {
           location: "trash",
+          type: "folder",
+          id: "trash",
           icon: "new-section",
           text: getLocaleText("plugin.communicator.category.title.trash", [])
         }
       ]
     },
+    
     _create: function(){
       this.items = this.options.defaultItems;
       if (!window.location.hash){
         window.location.hash = this.items[0].location
         this.options.onLocationChange(this.items[0]);
-      } else {
+      } else if (!initialLoadHasBeenCalled) {
         var hash = window.location.hash.replace("#","");
         this.options.onLocationChange(this.items.find(function(item){
           return item.location === hash;
         }));
       }
+      initialLoadHasBeenCalled = true;
       
       this._render();
       this._getTagsFromSever();
       
       var self = this;
-      $(window).bind("hashchange", function(){
+      $(window).off("hashchange").bind("hashchange", function(){
         var hash = window.location.hash.replace("#","");
         self.options.onLocationChange(self.items.find(function(item){
           return item.location === hash;
@@ -72,6 +84,8 @@ module([
         self.items = self.items.concat(results.map(function(label){
           return {
             location: ("label-" + label.id),
+            type: "label",
+            id: label.id,
             icon: "tag",
             text: label.name,
             color: colorIntToHex(label.color)

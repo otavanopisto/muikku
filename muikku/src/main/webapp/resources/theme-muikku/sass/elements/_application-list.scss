@@ -1,0 +1,31 @@
+.application-list {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  
+  .application-list-item {
+    width: 100%;
+    position: relative;
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    user-select: none;
+    
+    .application-list-item-header, .application-list-item-body, .application-list-item-footer {
+      width: 100%;
+      position: relative;
+    }
+    
+    &:hover, &.hover {
+      background-color: $color-application-list-item-background-hover;
+    }
+    
+    &:active, &.active {
+      background-color: $color-application-list-item-background-active;
+    }
+    
+    &.selected {
+      background-color: $color-application-list-item-background-selected;
+    }
+  }
+}

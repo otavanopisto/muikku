@@ -19,3 +19,8 @@ $color-communicator-button-pill-prev-page-background: lighten($color-primary, 20
 $color-communicator-button-pill-prev-page-text: $color-secondary-contrast;
 $color-communicator-button-pill-next-page-background: lighten($color-primary, 20%);
 $color-communicator-button-pill-next-page-text: $color-secondary-contrast;
+
+$color-communicator-application-list-item-unread-border: #E30086;
+$color-communicator-application-list-item-checkbox-border: #aaa;
+$color-communicator-application-list-item-checkbox-checked-mark: $color-success;
+$color-communicator-application-list-item-checkbox-checked-background: rgba(255, 255, 255, 0.8);
