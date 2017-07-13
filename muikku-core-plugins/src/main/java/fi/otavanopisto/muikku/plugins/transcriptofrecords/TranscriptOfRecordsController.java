@@ -1,11 +1,15 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -41,7 +45,39 @@ public class TranscriptOfRecordsController {
   @Inject
   private SearchProvider searchProvider;
   
+  @Inject
+  private Logger log;
+  
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
+  
+  @PostConstruct
+  public void init() {
+    String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
+    if (commaSeparatedSubjectsOrder == null) {
+      log.log(Level.WARNING, "No subjects order defined for studies vies");
+      return;
+    }
+
+    String[] subjects = commaSeparatedSubjectsOrder.split(",");
+    int i = 0;
+    for (String subject : Arrays.asList(subjects)) {
+      subjectOrderLookup.put(subject, i);
+      ++i;
+    }
+  }
+  
+  public int getSubjectOrderNumber(Subject subject) {
+    String subjectCode = subject.getCode();
+    if (subjectCode == null) {
+      return Integer.MAX_VALUE;
+    }
+
+    if (subjectOrderLookup.containsKey(subject.getCode())) {
+      return subjectOrderLookup.get(subject.getCode());
+    }
+    
+    return Integer.MAX_VALUE;
+  }
 
   public boolean subjectAppliesToStudent(User student, Subject subject) {
     if (subject.getCode() == null) {
@@ -189,4 +225,5 @@ public class TranscriptOfRecordsController {
     return result;
   }
   
+  Map<String, Integer> subjectOrderLookup = new HashMap<>();
 }

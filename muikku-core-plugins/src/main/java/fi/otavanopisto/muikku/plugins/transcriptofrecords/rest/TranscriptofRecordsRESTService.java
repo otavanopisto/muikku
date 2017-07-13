@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -217,6 +216,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     int numCourses = 0;
     int numMandatoryCourses = 0;
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
+    
+    subjects.sort((subject1, subject2) ->
+      Integer.compare(vopsController.getSubjectOrderNumber(subject1), vopsController.getSubjectOrderNumber(subject2)));
     
     for (Subject subject : subjects) {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
