@@ -27,7 +27,7 @@
         <div class="application-panel-box">
           <div class="application-panel-navigation">
             <div class="application-panel-left-container">
-              <a class="communicator button communicator-button-new-message">
+              <a class="communicator button communicator-button-new-message communicator-interact-new-message">
                 #{i18n.text['plugin.communicator.newMessage']}
               </a>
             </div>
@@ -35,11 +35,14 @@
           </div>
           <div class="application-panel-body">
             <div class="application-panel-left-container" data-controller-widget="communicator-navigation"></div>
-            <div class="application-panel-right-container" data-controller-widget="communicator-body"></div>
+            <div class="application-panel-right-container loader-empty" data-controller-widget="communicator-body"></div>
           </div>
         </div>
       </div>
     </div>
+    <a class="communicator button-pill button-pill-floating communicator-button-pill-new-message communicator-interact-new-message">
+      <span class="icon icon-edit"></span>
+    </a>
   </ui:define>
   
   <ui:define name="menu-extras">

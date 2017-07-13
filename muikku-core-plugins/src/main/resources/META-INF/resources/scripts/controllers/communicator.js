@@ -12,7 +12,14 @@ loadModules([
   $.getWidgetContainerFor("generic-environment").genericEvironmentControllerWidget();
   
   var toolbar = $.getWidgetContainerFor("communicator-toolbar").communicatorToolbarControllerWidget();
-  var body = $.getWidgetContainerFor("communicator-body").communicatorBodyControllerWidget();
+  var body = $.getWidgetContainerFor("communicator-body").communicatorBodyControllerWidget({
+    onSelect: function(message){
+      console.log("selected", message);
+    },
+    onSelectManyChange: function(messages){
+      console.log("selected many", messages);
+    }
+  });
   
   $.getWidgetContainerFor("communicator-navigation").communicatorNavigationControllerWidget({
     onLocationChange: function(newLocation){

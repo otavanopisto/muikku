@@ -1,3 +1,7 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
 .communicator.application-list {
   padding: 0 5px;
   
@@ -14,28 +18,39 @@
       border-left: solid 4px $color-communicator-application-list-item-unread-border;
     }
     
-    input {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      border: solid 1px $color-communicator-application-list-item-checkbox-border;
-      border-radius: 3px;
-    }
+    .application-list-item-header {
+      >* {
+        vertical-align: top;
+      }
     
-    input:checked {
-      background-color: $color-communicator-application-list-item-checkbox-checked-background;
-    }
-    
-    input:checked::after {
-      content: "\e639";
-      font-family: muikku;
-      position: absolute;
-      top: 1px;
-      left: 1px;
-      font-size: 18px;
-      color: $color-communicator-application-list-item-checkbox-checked-mark;
+      input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: solid 1px $color-communicator-application-list-item-checkbox-border;
+        border-radius: 3px;
+        margin-right: 8px;
+        
+        @include breakpoint-down($breakpoint-portrait-pad){
+          display: none;
+        }
+      }
+      
+      input:checked {
+        background-color: $color-communicator-application-list-item-checkbox-checked-background;
+      }
+      
+      input:checked::after {
+        content: "\e639";
+        font-family: muikku;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        font-size: 18px;
+        color: $color-communicator-application-list-item-checkbox-checked-mark;
+      }
     }
   }
 }

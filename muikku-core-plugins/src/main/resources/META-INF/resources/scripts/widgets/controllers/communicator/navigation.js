@@ -55,13 +55,17 @@ module([
       if (!window.location.hash){
         window.location.hash = this.items[0].location
         this.options.onLocationChange(this.items[0]);
+        initialLoadHasBeenCalled = true;
       } else if (!initialLoadHasBeenCalled) {
         var hash = window.location.hash.replace("#","");
-        this.options.onLocationChange(this.items.find(function(item){
+        var item = this.items.find(function(item){
           return item.location === hash;
-        }));
+        });
+        if (item){
+          this.options.onLocationChange(item);
+          initialLoadHasBeenCalled = true;
+        }
       }
-      initialLoadHasBeenCalled = true;
       
       this._render();
       this._getTagsFromSever();
@@ -91,6 +95,14 @@ module([
             color: colorIntToHex(label.color)
           }
         }));
+        if (!initialLoadHasBeenCalled){
+          var hash = window.location.hash.replace("#","");
+          var item = self.items.find(function(item){
+            return item.location === hash;
+          });
+          self.options.onLocationChange(item);
+        }
+        initialLoadHasBeenCalled = true;
         self._render();
       });
     },

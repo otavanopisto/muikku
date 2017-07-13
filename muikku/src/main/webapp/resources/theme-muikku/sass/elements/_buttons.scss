@@ -45,6 +45,8 @@ $button-default-font-size: 15px;
   text-transform: uppercase;
   vertical-align: middle;
   white-space: nowrap;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   
   &.button-primary {
     background-color: $color-button-primary-background;
@@ -223,27 +225,31 @@ $button-pill-font-family: "Exo 2", Arial, sans-serif;
 $button-pill-size: 34px;
 $button-pill-font-size: 16px;
 
+$button-pill-floating-size: 70px;
+$button-pill-floating-font-size: 25px;
+
+
 .button-pill {
   @include prefix(user-select, moz o ms webkit, none);
   @include prefix(transition, moz o ms webkit, background-color 0.3s);
   align-items: center;
   justify-content: center;
   background-color: $color-button-pill-background;
-  border-radius: $button-pill-size;
+  border-radius: 100%;
   color: $color-button-pill-text;
   cursor: pointer;
   display: inline-flex;
   font-family: $button-pill-font-family;
   font-size: $button-pill-font-size;
   height: $button-pill-size;
-  line-height: $button-pill-size;
   overflow: hidden;
   position: relative;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  vertical-align: middle;
   width: $button-pill-size;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   
   &:hover, &.hover {
     background-color: darken($color-button-pill-background, 10%);
@@ -251,6 +257,21 @@ $button-pill-font-size: 16px;
   
   &:active, &.active {
     background-color: darken($color-button-pill-background, 20%);
+  }
+  
+  &.button-pill-floating {
+    font-size: $button-pill-floating-font-size;
+    height: $button-pill-floating-size;
+    width: $button-pill-floating-size;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.25);
+    transition: box-shadow 0.3s;
+    
+    &:active {
+      box-shadow: 0 0 0 rgba(0,0,0,.25);
+    }
   }
 }
 

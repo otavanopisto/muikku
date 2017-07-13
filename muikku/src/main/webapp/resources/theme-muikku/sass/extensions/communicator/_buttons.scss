@@ -140,6 +140,21 @@
       background-color: darken($color-communicator-button-pill-next-page-background, 20%);
     }
   }
+  
+  &.communicator-button-pill-new-message {
+    background-color: $color-communicator-button-pill-new-message-background;
+    color: $color-communicator-button-pill-new-message-text;
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-new-message-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-new-message-background, 20%);
+    }
+    @include breakpoint-up($breakpoint-landscape-pad){
+      display: none;
+    }
+  }
 }
 
 .communicator.button {

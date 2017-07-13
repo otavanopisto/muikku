@@ -19,4 +19,11 @@
       display: inline-block;
     }
   }
+  &.communicator-text-username {
+    display: inline-block;
+  }
+  &.communicator-text-date {
+    display: inline-block;
+    float: right;
+  }
 }
