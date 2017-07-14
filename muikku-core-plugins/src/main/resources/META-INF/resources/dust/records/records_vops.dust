@@ -68,6 +68,9 @@
       <div class="mf-vops-row tr-vops-row">
         <div class="mf-vops-item-name tr-vops-item-name">{subject}</div>
         {#items}
+          {?placeholder}
+          <div class="mf-vops-placeholder"></div>
+          {:else}
           <div title="{subject} {courseNumber}"
                class="mf-vops-item tr-vops-item{~s}
                   {@eq key=state value="ENROLLED"}enrolled{~s}{/eq}
@@ -94,6 +97,7 @@
               {/any}
             {/select}
           </div>
+          {/placeholder}
         {/items}
       </div>
     {/rows}

@@ -3,7 +3,15 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.util.List;
 
 public class VopsRESTModel {
-  public static class VopsItem {
+  public static interface VopsEntry {
+    
+  }
+  public static class VopsPlaceholder implements VopsEntry {
+    public boolean isPlaceholder() {
+      return true;
+    }
+  }
+  public static class VopsItem implements VopsEntry {
     public VopsItem(
         int courseNumber,
         CourseCompletionState state,
@@ -49,6 +57,9 @@ public class VopsRESTModel {
     public void setGrade(String grade) {
       this.grade = grade;
     }
+    public boolean isPlaceholder() {
+      return false;
+    }
     public boolean isPlanned() {
       return planned;
     }
@@ -79,14 +90,14 @@ public class VopsRESTModel {
   }
   
   public static class VopsRow {
-    public VopsRow(String subject, String subjectIdentifier, List<VopsItem> items) {
+    public VopsRow(String subject, String subjectIdentifier, List<VopsEntry> items) {
       super();
       this.subjectIdentifier = subjectIdentifier;
       this.subject = subject;
       this.items = items;
     }
     
-    public List<VopsItem> getItems() {
+    public List<? super VopsEntry> getItems() {
       return items;
     }
     
@@ -99,8 +110,8 @@ public class VopsRESTModel {
     }
 
     String subject;
+    List<VopsEntry> items;
     String subjectIdentifier;
-    List<VopsItem> items;
   }
   
   public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses, boolean optedIn) {
