@@ -1289,7 +1289,12 @@ public class UserRESTService extends AbstractRESTService {
 
     SearchProvider elasticSearchProvider = getProvider("elastic-search");
     if (elasticSearchProvider != null) {
-      String[] fields = new String[] { "firstName", "lastName", "userEntityId", "email" };
+      String[] fields;
+      if (StringUtils.isNumeric(searchString)) {
+        fields = new String[] { "firstName", "lastName", "userEntityId", "email" };
+      } else {
+        fields = new String[] { "firstName", "lastName", "email" };
+      }
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
