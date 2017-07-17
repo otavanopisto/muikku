@@ -95,8 +95,13 @@
     margin: 5px 0 5px 5px;
   }
   
+  &:nth-child(n+3) {
+    margin-top: 15px; 
+  }
+  
   .muikku-category-title {
     font-weight: 400;
+    height: 36px;    
     line-height: 1;
     padding: 2px 0 4px;
   }
