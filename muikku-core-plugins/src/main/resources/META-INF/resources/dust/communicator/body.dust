@@ -20,7 +20,7 @@
           {/messageCountInthread}
           <span class="communicator text communicator-text-date">{@moment type="format" date="{threadLatestMessageDate}" format="L"/}</span>
         </div>
-        <div class="application-list-item-body"><span class="text communicator-text-body">{caption}</span></div>
+        <div class="application-list-item-body"><span class="communicator text communicator-text-body">{caption}</span></div>
       </div>
     {/messages}
   </div>

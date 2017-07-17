@@ -24,6 +24,14 @@
   }
   &.communicator-text-date {
     display: inline-block;
+    opacity: 0.75;
+    font-style: italic;
     float: right;
+  }
+  &.communicator-text-body {
+    display: inline-block;
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-left: 30px;
+    }
   }
 }

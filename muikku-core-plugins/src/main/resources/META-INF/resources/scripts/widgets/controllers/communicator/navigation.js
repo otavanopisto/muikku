@@ -49,12 +49,19 @@ module([
         }
       ]
     },
+    getCurrentLocation: function(){
+      return this.currentLocation;
+    },
+    _setCurrentLocation: function(location){
+      this.currentLocation = location;
+      this.options.onLocationChange(location);
+    },
     
     _create: function(){
       this.items = this.options.defaultItems;
       if (!window.location.hash){
         window.location.hash = this.items[0].location
-        this.options.onLocationChange(this.items[0]);
+        this._setCurrentLocation(this.items[0]);
         initialLoadHasBeenCalled = true;
       } else if (!initialLoadHasBeenCalled) {
         var hash = window.location.hash.replace("#","");
@@ -62,7 +69,7 @@ module([
           return item.location === hash;
         });
         if (item){
-          this.options.onLocationChange(item);
+          this._setCurrentLocation(item);
           initialLoadHasBeenCalled = true;
         }
       }
@@ -73,7 +80,7 @@ module([
       var self = this;
       $(window).off("hashchange").bind("hashchange", function(){
         var hash = window.location.hash.replace("#","");
-        self.options.onLocationChange(self.items.find(function(item){
+        self._setCurrentLocation(self.items.find(function(item){
           return item.location === hash;
         }));
         self._render();
@@ -100,7 +107,7 @@ module([
           var item = self.items.find(function(item){
             return item.location === hash;
           });
-          self.options.onLocationChange(item);
+          self._setCurrentLocation(item);
         }
         initialLoadHasBeenCalled = true;
         self._render();

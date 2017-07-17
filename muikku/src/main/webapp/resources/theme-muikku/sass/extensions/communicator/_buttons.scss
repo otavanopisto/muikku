@@ -15,6 +15,11 @@
     &:active, &.active {
       background-color: $color-communicator-button-pill-settings-background-active;
     }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
   }
 
   &.communicator-button-pill-delete {
@@ -36,6 +41,11 @@
     
     &:active, &.active {
       background-color: darken($color-communicator-button-pill-delete-background, 20%);
+    }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
     }
   }
   
@@ -59,6 +69,11 @@
     &:active, &.active {
       background-color: darken($color-communicator-button-pill-label-background, 20%);
     }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
   }
   
   &.communicator-button-pill-toggle-read {
@@ -81,6 +96,11 @@
     &:active, &.active {
       background-color: darken($color-communicator-button-pill-toggle-read-background, 20%);
     }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
   }
   
   &.communicator-button-pill-go-back {
@@ -96,6 +116,11 @@
     
     &:active, &.active {
       background-color: darken($color-communicator-button-pill-go-back-background, 20%);
+    }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
     }
   }
   
@@ -118,6 +143,11 @@
     &:active, &.active {
       background-color: darken($color-communicator-button-pill-prev-page-background, 20%);
     }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
   }
   
   &.communicator-button-pill-next-page {
@@ -138,6 +168,11 @@
     
     &:active, &.active {
       background-color: darken($color-communicator-button-pill-next-page-background, 20%);
+    }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
     }
   }
   

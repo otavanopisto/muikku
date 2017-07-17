@@ -273,6 +273,12 @@ $button-pill-floating-font-size: 25px;
       box-shadow: 0 0 0 rgba(0,0,0,.25);
     }
   }
+  
+  &.disabled, &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+    cursor: default;
+  }
 }
 
 $button-social-size: 40px;
