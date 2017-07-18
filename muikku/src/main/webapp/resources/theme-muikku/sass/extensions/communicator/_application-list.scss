@@ -7,6 +7,7 @@
   
   .application-list-item {
     padding-left: 15px;
+    
     &.communicator-application-list-item-unread::after {
       position: absolute;
       left: 5px;

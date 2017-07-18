@@ -1,4 +1,5 @@
 module([
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/toolbar/labels-dropdown.js.jsf",
 ], function(){
   $.widget("custom.communicatorToolbarControllerWidget", {
     options: {
@@ -9,11 +10,17 @@ module([
       this.folder = "";
       this.inMessage = false;
       this.active = false;
+      this.currentMessageHasUnreadMessages = false;
       this._render();
     },
     _render: function(){
       var self = this;
-      renderDustTemplate('communicator/toolbar.dust', {inMessage: this.inMessage, folder: this.folder, active: this.active}, function(text) {
+      renderDustTemplate('communicator/toolbar.dust', {
+        inMessage: this.inMessage,
+        folder: this.folder,
+        active: this.active,
+        currentMessageHasUnreadMessages: this.currentMessageHasUnreadMessages
+      }, function(text) {
         self.element.html(text);
         self._setupEvents();
       });
@@ -21,15 +28,27 @@ module([
     _setupEvents: function(){
       var self = this;
       self.element.find(".communicator-toolbar-interact-delete").click(function(){
-        self.options.onDeleteClick();
+        if (self.active){
+          self.options.onDeleteClick();
+        }
       });
       self.element.find(".communicator-toolbar-interact-toggle-read").click(function(){
-        self.options.onToggleMarkAsReadClick();
+        if (self.active){
+          self.options.onToggleMarkAsReadClick();
+        }
+      });
+      var dropdown = self.element.getWidgetContainerFor("communicator-labels-dropdown");
+      dropdown.communicatorLabelsDropdownControllerWidget();
+      self.element.find(".communicator-toolbar-interact-label").click(function(e){
+        if (self.active){
+          dropdown.communicatorLabelsDropdownControllerWidget("open", e.currentTarget);
+        }
       });
     },
     updateFolder: function(folder){
       this.folder = folder || "";
       this.active = false;
+      this.currentMessageHasUnreadMessages = false;
       this._render();
     },
     updateInMessage: function(status){
@@ -42,6 +61,10 @@ module([
     },
     deactivate: function(){
       this.active = false;
+      this._render();
+    },
+    setCurrentMessageHasUnreadMessages: function(status){
+      this.currentMessageHasUnreadMessages = status;
       this._render();
     }
   });

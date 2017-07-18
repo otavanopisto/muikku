@@ -1,0 +1,8 @@
+<div class="communicator dropdown communicator-dropdown-labels" id="communicator-labels-dropdown">
+  <div class="dropdown-container">
+    <div class="mf-tool-textfield-container cm-label-textfield-container"><input id="communicatorNewlabelField" class="filter" type="text" name="communicatorNewlabelField" placeholder='{#localize key="plugin.communicator.label.create.textfield.placeholder"/}' /></div>
+          <div class="mf-tool-action-container cm-label-action-container"><a id="newLabelSubmit" href="#">{#localize key="plugin.communicator.label.create"/}</a></div>
+          <ul class="mf-tool-label-container">
+          </ul>
+  </div>
+</div>

@@ -21,6 +21,10 @@
   }
   &.communicator-text-username {
     display: inline-block;
+    
+    .communicator-application-list-item-unread & {
+      font-weight: 600;
+    }
   }
   &.communicator-text-date {
     display: inline-block;
@@ -30,6 +34,7 @@
   }
   &.communicator-text-body {
     display: inline-block;
+    font-weight: 300;
     @include breakpoint-up($breakpoint-landscape-pad){
       padding-left: 30px;
     }

@@ -64,10 +64,8 @@ loadModules([
       var calls = messages.map(function(element){
         return function(callback){
           if (unreadMessages){
-            console.log("mark as read");
             mApi().communicator[mapiLocation].markasread.create(element.communicatorMessageId).callback(callback);
           } else {
-            console.log("mark as unread");
             mApi().communicator[mapiLocation].markasunread.create(element.communicatorMessageId).callback(callback);
           }
         };
@@ -86,11 +84,13 @@ loadModules([
       console.log("selected", message);
     },
     onSelectManyChange: function(messages){
+      var unreadMessages = messages.length ? messages[0].unreadMessagesInThread : false;
       if (messages.length){
         toolbar.communicatorToolbarControllerWidget('activate');
       } else {
         toolbar.communicatorToolbarControllerWidget('deactivate');
       }
+      toolbar.communicatorToolbarControllerWidget('setCurrentMessageHasUnreadMessages', unreadMessages);
     }
   });
   navigation = $.getWidgetContainerFor("communicator-navigation").communicatorNavigationControllerWidget({

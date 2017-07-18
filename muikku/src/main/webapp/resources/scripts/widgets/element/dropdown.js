@@ -2,6 +2,7 @@ module(function(){
   $.widget("custom.dropdownWidget", {
     _create: function(){
       var self = this;
+      self.element.appendTo(document.body);
       self.lastDisplayTime = 0;
       self.arrow = $('<span class="arrow"></span>');
       self.arrow.appendTo(self.element);
@@ -14,7 +15,10 @@ module(function(){
       //avoid immediate closing as this is triggered by the same element that wishes
       //to display it
       var diffTime = (new Date()).getTime() - self.lastDisplayTime;
-      if (diffTime < 300){
+      if (diffTime < 300 || (
+          $(e.target).is("select, input, [data-keep-dropdown]") &&
+          $(e.target).parents(self.element).size()
+      )){
         return;
       }
 
@@ -33,16 +37,16 @@ module(function(){
 
       self.element.addClass('displayed');
       
-      var position = target.position();
-      var left = position.left - self.element.width() + target.width();
-      var top = position.top + target.height() + 5;
+      var position = target.offset();
+      var left = position.left - self.element.outerWidth() + target.outerWidth();
+      var top = position.top + target.outerHeight() + 5;
       self.element.css({
         top: top,
         left: left
       });
         
       self.arrow.css({
-        right: (target.width() / 2) + (self.arrowWidth/2)
+        right: (target.outerWidth() / 2) + (self.arrowWidth/2)
       });
 
       setTimeout(function(){

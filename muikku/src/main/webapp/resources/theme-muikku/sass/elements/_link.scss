@@ -23,6 +23,7 @@
   vertical-align: middle;
   position: relative;
   white-space: nowrap;
+  font-family: "Exo 2", Arial, sans-serif;
 
   &.link-icon {
     @include prefix(font-smoothing, webkit moz o ms, antialiased);

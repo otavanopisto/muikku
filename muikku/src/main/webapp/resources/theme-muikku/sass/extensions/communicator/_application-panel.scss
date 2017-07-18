@@ -6,5 +6,9 @@
     right: 10px;
     bottom: 0;
     user-select: none;
+    
+    [data-controller-widget] {
+      display: inline-block;
+    }
   }
 }

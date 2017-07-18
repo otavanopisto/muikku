@@ -54,4 +54,9 @@
     klass = klass ? "." + klass : "";
     return $('[data-controller-widget="' + name + '"]' + klass);
   }
+  
+  $.fn.getWidgetContainerFor = function(name, klass){
+    klass = klass ? "." + klass : "";
+    return this.find('[data-controller-widget="' + name + '"]' + klass);
+  }
 })(jQuery);
