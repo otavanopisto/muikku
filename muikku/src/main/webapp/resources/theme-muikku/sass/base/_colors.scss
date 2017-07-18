@@ -222,8 +222,14 @@ $color-application-list-item-background-hover: #eee;
 $color-application-list-item-background-active: #ddd;
 $color-application-list-item-background-selected: #29B0C4;
 
+// loader
 $color-loader-empty-ring: #f3f3f3;
 $color-loader-empty-rotating-piece: #3498db;
+
+// form fields
+$color-form-field-border: #dcdcdc;
+$color-form-field-border-focus: #707070;
+$color-form-field-glow: $color-primary;
 
 @import "colors/frontpage";
 @import "colors/main-function";

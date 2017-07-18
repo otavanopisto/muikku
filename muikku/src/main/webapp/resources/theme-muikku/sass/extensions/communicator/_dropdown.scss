@@ -1,0 +1,7 @@
+.communicator.dropdown {
+  &.communicator-dropdown-labels .dropdown-container {
+    padding: 5px;
+    background-color: $color-communicator-dropdown-labels-background;
+    border: solid 1px $color-communicator-dropdown-labels-border;
+  }
+}
