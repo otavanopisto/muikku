@@ -38,16 +38,31 @@ module(function(){
       self.element.addClass('displayed');
       
       var position = target.offset();
-      var left = position.left - self.element.outerWidth() + target.outerWidth();
+      var windowWidth = $(window).width();
+      var renderReverse = windowWidth - position.left > position.left;
+      var left;
+      if (renderReverse){
+        left = position.left;
+      } else {
+        left = position.left - self.element.outerWidth() + target.outerWidth();
+      }
       var top = position.top + target.outerHeight() + 5;
       self.element.css({
         top: top,
         left: left
       });
-        
-      self.arrow.css({
-        right: (target.outerWidth() / 2) + (self.arrowWidth/2)
-      });
+      
+      if (renderReverse){
+        self.arrow.css({
+          left: (target.outerWidth() / 2) + (self.arrowWidth/2),
+          right: undefined
+        });
+      } else {
+        self.arrow.css({
+          right: (target.outerWidth() / 2) + (self.arrowWidth/2),
+          left: undefined
+        });
+      }
 
       setTimeout(function(){
         self.element.addClass('visible');
