@@ -1754,6 +1754,7 @@
          this.element.closest('.communicator') 
          .communicator('markUnreadThreads', threads, $.proxy(function () {
              element.attr("data-make-state", "read");
+             element.attr("title", getLocaleText("plugin.communicator.tool.title.read"));
              element.removeClass("icon-message-unread");
              element.addClass("icon-message-read");
          
@@ -1763,6 +1764,7 @@
          this.element.closest('.communicator') 
          .communicator('markReadThreads', threads, $.proxy(function () {
            element.attr("data-make-state", "unread");    
+           element.attr("title", getLocaleText("plugin.communicator.tool.title.unread"));
            element.removeClass("icon-message-read");
            element.addClass("icon-message-unread");
          }, this));             
