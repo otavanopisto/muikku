@@ -77,6 +77,9 @@ loadModules([
         body.communicatorBodyControllerWidget('reload');
         toolbar.communicatorToolbarControllerWidget('deactivate');
       });
+    },
+    onLabelsUpdated(){
+      navigation.communicatorNavigationControllerWidget('reloadLabels');
     }
   });
   body = $.getWidgetContainerFor("communicator-body").communicatorBodyControllerWidget({

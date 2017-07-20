@@ -75,7 +75,7 @@ module([
       }
       
       this._render();
-      this._getTagsFromSever();
+      this._getLabelsFromServer();
       
       var self = this;
       $(window).off("hashchange").bind("hashchange", function(){
@@ -86,13 +86,14 @@ module([
         self._render();
       });
     },
-    _getTagsFromSever: function(){
+    _getLabelsFromServer: function(){
       var self = this;
       mApi().communicator.userLabels.read().callback(function (err, results) {
         if (err){
+          //TODO make a message
           return;
         }
-        self.items = self.items.concat(results.map(function(label){
+        self.items = self.options.defaultItems.concat(results.map(function(label){
           return {
             location: ("label-" + label.id),
             type: "label",
@@ -119,6 +120,9 @@ module([
       renderDustTemplate('communicator/navigation.dust', {items: self.items, currentLocation: hash}, function(text) {
         self.element.html(text);
       });
+    },
+    reloadLabels(){
+      this._getLabelsFromServer();
     }
   });
 });

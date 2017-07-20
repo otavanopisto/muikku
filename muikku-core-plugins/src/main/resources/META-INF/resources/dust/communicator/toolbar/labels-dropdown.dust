@@ -2,7 +2,18 @@
   <div class="dropdown-container">
     <input class="form-field" id="communicator-labels-dropdown-input" type="text" placeholder='{#localize key="plugin.communicator.label.create.textfield.placeholder"/}' />
     <div class="dropdown-item">
-      <span class="communicator link link-full communicator-link-new">{#localize key="plugin.communicator.label.create"/}</span>
+      <span class="communicator link link-full communicator-link-new communicator-toolbar-labels-dropdown-interact-create-label">{#localize key="plugin.communicator.label.create"/}</span>
     </div>
+    
+    {#labels currentLocation=currentLocation}
+      <div class="dropdown-item">
+        <a class="communicator link link-full communicator-link-label {?isActive}active{/isActive}">
+          <span class="icon icon-tag" {?color}style="color:{color}"{/color}></span>
+          <span class="text">
+            {text}
+          </span>
+        </a>
+      </div>
+    {/labels}
   </div>
 </div>

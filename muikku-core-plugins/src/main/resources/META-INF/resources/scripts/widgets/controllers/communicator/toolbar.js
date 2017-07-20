@@ -4,7 +4,8 @@ module([
   $.widget("custom.communicatorToolbarControllerWidget", {
     options: {
       onDeleteClick: null,
-      onToggleMarkAsReadClick: null
+      onToggleMarkAsReadClick: null,
+      onLabelsUpdated: null
     },
     _create: function(){
       this.folder = "";
@@ -38,7 +39,9 @@ module([
         }
       });
       var dropdown = self.element.getWidgetContainerFor("communicator-labels-dropdown");
-      dropdown.communicatorLabelsDropdownControllerWidget();
+      dropdown.communicatorLabelsDropdownControllerWidget({
+        onLabelsUpdated: this.options.onLabelsUpdated
+      });
       self.element.find(".communicator-toolbar-interact-label").click(function(e){
         if (self.active){
           dropdown.communicatorLabelsDropdownControllerWidget("open", e.currentTarget);

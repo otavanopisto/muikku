@@ -2,7 +2,7 @@ module(function(){
   $.widget("custom.dropdownWidget", {
     _create: function(){
       var self = this;
-      self.element.appendTo(document.body);
+      self.parent = self.element.parent();
       self.lastDisplayTime = 0;
       self.arrow = $('<span class="arrow"></span>');
       self.arrow.appendTo(self.element);
@@ -27,6 +27,11 @@ module(function(){
         removeClass: 'visible',
         callback: function(){
           self.element.removeClass('displayed');
+          if (self.parent){
+            self.element.appendTo(self.parent);
+          } else {
+            self.element.remove();
+          }
         }
       });
     },
@@ -34,6 +39,7 @@ module(function(){
       var self = this;
       var target = $(element);
       self.lastDisplayTime = (new Date()).getTime();
+      self.element.appendTo(document.body);
 
       self.element.addClass('displayed');
       
