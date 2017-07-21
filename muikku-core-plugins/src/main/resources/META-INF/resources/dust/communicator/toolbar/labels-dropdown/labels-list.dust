@@ -1,0 +1,12 @@
+{#labels currentLocation=currentLocation}
+  <div class="dropdown-item">
+    <a data-index="{$idx}"
+      class="communicator link link-full communicator-link-label communicator-toolbar-labels-dropdown-interact-toggle-label {?isActive}active{/isActive}"
+      data-keep-dropdown>
+      <span class="icon icon-tag" {?color}style="color:{color}"{/color}></span>
+      <span class="text">
+        {text}
+      </span>
+    </a>
+  </div>
+{/labels}

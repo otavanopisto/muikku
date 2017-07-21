@@ -29,6 +29,7 @@ $application-panel-internal-navigation-padding: 10px;
     .application-panel-navigation {
       width: 100%;
       height: $application-panel-navigation-height;
+      min-height: $application-panel-navigation-height;
       display: flex;
       position: relative;
       
@@ -47,6 +48,10 @@ $application-panel-internal-navigation-padding: 10px;
       display: flex;
       flex: 1 1 auto;
       align-items: stretch;
+      
+      .application-panel-left-container, .application-panel-right-container {
+        overflow-y: auto;
+      }
     }
     
     .application-panel-box {

@@ -13,7 +13,7 @@
     <a class="communicator button button-pill communicator-button-pill-label communicator-toolbar-interact-label">
        <span class="icon icon-tag"></span>
     </a>
-    <div data-controller-widget="communicator-labels-dropdown"></div>
+    <div data-controller-widget="communicator-toolbar-labels-dropdown"></div>
     <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-toolbar-interact-toggle-read">
        <span class="icon {?currentMessageHasUnreadMessages}icon-message-read{:else}icon-message-unread{/currentMessageHasUnreadMessages}"></span>
     </a>
@@ -37,7 +37,7 @@
     <a class="communicator button button-pill communicator-button-pill-label communicator-toolbar-interact-label {?active}{:else}disabled{/active}">
       <span class="icon icon-tag"></span>
     </a>
-    <div data-controller-widget="communicator-labels-dropdown"></div>
+    <div data-controller-widget="communicator-toolbar-labels-dropdown"></div>
     <a class="communicator button button-pill communicator-button-pill-toggle-read communicator-toolbar-interact-toggle-read {?active}{:else}disabled{/active}">
       <span class="icon {?currentMessageHasUnreadMessages}icon-message-read{:else}icon-message-unread{/currentMessageHasUnreadMessages}"></span>
     </a>

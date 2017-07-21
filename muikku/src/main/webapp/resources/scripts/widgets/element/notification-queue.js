@@ -48,8 +48,7 @@ module(function(){
 
     //Backwards compatibility hack
     notification: function (severity, message) {
-      this.oldVersion = true;
-      return this.notify(severity, message, true);
+      return this.notify(severity, message);
     },
 
     remove : function(item) {
@@ -57,16 +56,6 @@ module(function(){
     },
 
     _hide : function(item) {
-
-      //Backwards compatibility hack
-      if (this.oldVersion){
-        this.element.hide("blind", {
-          'duration': 1000,
-          'easing': 'easeOutBounce'
-        });
-        return;
-      }
-
       $(item).cssAnimate({
         "condition": ":visible",
         'addClass': 'hidden',

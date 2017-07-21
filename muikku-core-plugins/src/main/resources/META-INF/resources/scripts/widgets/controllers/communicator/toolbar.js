@@ -38,13 +38,13 @@ module([
           self.options.onToggleMarkAsReadClick();
         }
       });
-      var dropdown = self.element.getWidgetContainerFor("communicator-labels-dropdown");
-      dropdown.communicatorLabelsDropdownControllerWidget({
+      var dropdown = self.element.getWidgetContainerFor("communicator-toolbar-labels-dropdown");
+      dropdown.communicatorToolbarLabelsDropdownControllerWidget({
         onLabelsUpdated: this.options.onLabelsUpdated
       });
       self.element.find(".communicator-toolbar-interact-label").click(function(e){
         if (self.active){
-          dropdown.communicatorLabelsDropdownControllerWidget("open", e.currentTarget);
+          dropdown.communicatorToolbarLabelsDropdownControllerWidget("open", e.currentTarget);
         }
       });
     },

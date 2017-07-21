@@ -1,35 +1,20 @@
 module([
-  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dropdown.js.jsf"
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/element/dropdown.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/toolbar/labels-dropdown/labels-list.js.jsf"
 ], function(){
   
-  function colorIntToHex(color) {
-    var b = (color & 255).toString(16);
-    var g = ((color >> 8) & 255).toString(16);
-    var r = ((color >> 16) & 255).toString(16);
-
-    var rStr = r.length == 1 ? "0" + r : r;
-    var gStr = g.length == 1 ? "0" + g : g;
-    var bStr = b.length == 1 ? "0" + b : b;
-    
-    return "#" + rStr + gStr + bStr;
-  }
-  
-  $.widget("custom.communicatorLabelsDropdownControllerWidget", {
+  $.widget("custom.communicatorToolbarLabelsDropdownControllerWidget", {
     options: {
       onLabelsUpdated: null
     },
     _create: function(){
       this.dropdown = null;
-      this.labels = [];
-      
+      this.labels = null;
       this._render();
-      this._populateLabels();
     },
     _render: function(){
       var self = this;
-      renderDustTemplate('communicator/toolbar/labels-dropdown.dust', {
-        labels: self.labels
-      }, function(text) {
+      renderDustTemplate('communicator/toolbar/labels-dropdown.dust', {}, function(text) {
         self.element.html(text);
         self._setupEvents();
       });
@@ -47,32 +32,16 @@ module([
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           self.options.onLabelsUpdated();
-          self._populateLabels();
+          self.labels && self.labels.communicatorToolbarLabelsDropdownLabelsListControllerWidget('update');
         }
-      });
-    },
-    _populateLabels: function(){
-      var self = this;
-      mApi().communicator.userLabels.read().callback(function (err, results) {
-        if (err){
-          return;
-        }
-        
-        self.labels = results.map(function(label){
-          return {
-            icon: "tag",
-            text: label.name,
-            color: colorIntToHex(label.color),
-            isActive: false
-          }
-        });
-        
-        self._render();
       });
     },
     _setupEvents: function(){
       this.element.find(".communicator-toolbar-labels-dropdown-interact-create-label").click(this._createLabel.bind(this));
-      this.dropdown = this.element.find(".dropdown").dropdownWidget();
+      if (!this.dropdown){
+        this.dropdown = this.element.find(".dropdown").dropdownWidget();
+      }
+      this.labels = this.element.getWidgetContainerFor("communicator-toolbar-labels-dropdown-labels-list").communicatorToolbarLabelsDropdownLabelsListControllerWidget();
     },
     open(target){
       if (this.dropdown){

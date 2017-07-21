@@ -4,18 +4,17 @@
     background-color: $color-communicator-dropdown-labels-background;
     border: solid 1px $color-communicator-dropdown-labels-border;
     
-    .dropdown-item:nth-child(3) {
-      margin-top: 12px;
-      overflow: visible;
+    .embbed {
+      padding-top: 12px;
       
       &:after {
         content: " ";
         position: absolute;
-        bottom: 100%;
+        top: 0;
         height: 6.5px;
         left: 0;
         right: 0;
-        border-top: solid 1px #ccc;
+        border-bottom: solid 1px #ccc;
       }
     }
   }

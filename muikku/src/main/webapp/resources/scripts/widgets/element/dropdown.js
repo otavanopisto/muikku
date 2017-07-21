@@ -16,7 +16,7 @@ module(function(){
       //to display it
       var diffTime = (new Date()).getTime() - self.lastDisplayTime;
       if (diffTime < 300 || (
-          $(e.target).is("select, input, [data-keep-dropdown]") &&
+          ($(e.target).is("select, input, [data-keep-dropdown]") || $(e.target).parents("select, input, [data-keep-dropdown]").size()) &&
           $(e.target).parents(self.element).size()
       )){
         return;
