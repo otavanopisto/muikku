@@ -53,7 +53,7 @@ public class TranscriptOfRecordsController {
   @PostConstruct
   public void init() {
     String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
-    if (commaSeparatedSubjectsOrder == null) {
+    if (StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
       log.log(Level.WARNING, "No subjects order defined for studies vies");
       return;
     }
