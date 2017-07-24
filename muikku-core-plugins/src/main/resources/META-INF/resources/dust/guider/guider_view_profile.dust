@@ -422,6 +422,9 @@
             <div class="mf-vops-row gt-vops-row">
               <div class="mf-vops-item-name gt-vops-item-name">{subject}</div>
               {#items}
+                {?placeholder}
+                <div class="mf-vops-placeholder"></div>
+                {:else}
                 <div title="{subject} {courseNumber}"
                      class="mf-vops-item gt-vops-item{~s}
                         {@eq key=state value="ENROLLED"}enrolled{~s}{/eq}
@@ -437,6 +440,7 @@
                   {grade}
                   <div class="mf-vops-item-menu gt-vops-item-menu"></div>
                 </div>
+                {/placeholder}
               {/items}
             </div>
           {/rows}

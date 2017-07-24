@@ -221,8 +221,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       Integer.compare(vopsController.getSubjectOrderNumber(subject1), vopsController.getSubjectOrderNumber(subject2)));
     
     for (Subject subject : subjects) {
+      boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
-        List<VopsRESTModel.VopsItem> items = new ArrayList<>();
+        List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
         for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
           boolean hasTransferCredit = false;
 
@@ -251,7 +252,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   grade = gradingScaleItem.getName().substring(0, 2);
                 }
               }
-              items.add(new VopsRESTModel.VopsItem(
+              entries.add(new VopsRESTModel.VopsItem(
                   courseNumber,
                   CourseCompletionState.ASSESSED,
                   (String)null,
@@ -384,22 +385,26 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               state = CourseCompletionState.PLANNED;
             }
             
-            items.add(new VopsRESTModel.VopsItem(
+            entries.add(new VopsRESTModel.VopsItem(
                 courseNumber,
                 state,
                 educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
                 mandatority,
                 grade,
-                courseChoice != null,
+                workspaceUserExists,
                 clean(name),
-                clean(description)));
+                clean(description)
+            ));
+            subjectHasCourses = true;
+          } else if (!hasTransferCredit) {
+            entries.add(new VopsRESTModel.VopsPlaceholder());
           }
         }
-        if (!items.isEmpty()) {
+        if (subjectHasCourses) {
           rows.add(new VopsRESTModel.VopsRow(
               subject.getCode(),
               new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()).toId(),
-              items));
+              entries));
         }
       }
     }

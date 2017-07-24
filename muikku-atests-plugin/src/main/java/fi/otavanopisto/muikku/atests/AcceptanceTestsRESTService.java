@@ -670,12 +670,7 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Path("/students/{ID}/flags/{FLAGID}")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response createStudentFlag(@PathParam("ID") Long studentId, @PathParam("FLAGID") Long flagId) {
-    String identifier = userEntityController.findUserEntityById(studentId).getDefaultIdentifier();
-    SchoolDataIdentifier studentIdentifier = SchoolDataIdentifier.fromString(identifier + "/PYRAMUS");
-    if (studentIdentifier == null) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Invalid studentIdentifier").build();
-    }
-         
+    SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier("STUDENT-" + studentId, "PYRAMUS");
     Flag flag = flagController.findFlagById(flagId);
     if (flag == null) {
       return Response.status(Status.NOT_FOUND).entity(String.format("Flag #%d not found", flagId)).build();
