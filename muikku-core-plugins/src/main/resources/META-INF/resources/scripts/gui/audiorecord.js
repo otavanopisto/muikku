@@ -667,7 +667,11 @@
     },
     
     _startRecording: function () {
-     this._captureUserMedia({audio: true}, $.proxy(this._onCaptureAudioStart, this), $.proxy(this._onCaptureAudioError, this));
+     this._captureUserMedia({
+       audio: {
+         sampleRate: this.options.sampleRate
+       }
+     }, $.proxy(this._onCaptureAudioStart, this), $.proxy(this._onCaptureAudioError, this));
     },
     
     _stopRecording: function () {
@@ -738,7 +742,7 @@
       });
       
       this._recordRTC.startRecording();
-      
+
       this.element.find('.start-record').hide();
       this.element.find('.stop-record').show();
     },
