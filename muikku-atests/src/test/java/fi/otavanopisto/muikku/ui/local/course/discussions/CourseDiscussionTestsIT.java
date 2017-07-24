@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.ui.local.course.discussion;
+package fi.otavanopisto.muikku.ui.local.course.discussions;
 
 import org.junit.Before;
 
