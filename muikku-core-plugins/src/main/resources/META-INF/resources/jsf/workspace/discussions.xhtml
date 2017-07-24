@@ -19,6 +19,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
     <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>       
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/discussion.js"/>    
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace.js"/>    
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-discussions.js"/>    
   </ui:define>
   
@@ -31,7 +32,7 @@
  
   <ui:define name="grid-content">
     <input type="hidden" name="userEntityId" value="#{sessionBackingBean.loggedUserId}"/>
-    <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
+    <input type="hidden" class="workspaceEntityId" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
     <input type="hidden" name="areaPermissions" value="#{workspaceDiscussionsBackingBean.areaPermissions}"/>
     <input type="hidden" name="lockStickyPermission" value="#{workspaceDiscussionsBackingBean.lockStickyPermission}"/>
     <input type="hidden" name="showFullNamePermission" value="#{workspaceDiscussionsBackingBean.showFullNamePermission}"/>

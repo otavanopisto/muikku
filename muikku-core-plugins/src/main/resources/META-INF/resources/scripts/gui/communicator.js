@@ -1564,7 +1564,7 @@
       controls.on('click', '.cm-restore-message', $.proxy(this._onRestoreClick, this));
       controls.on('click', '.mf-label-message-link', $.proxy(this._onAddLabelToMessageClick, this));    
       controls.on('click', '.cm-add-label-message-menu', $.proxy(this._onAddLabelMenuClick, this));     
-      controls.on('click', '.cm-mark-unread-message', $.proxy(this._onMarkUnreadClick, this));
+      controls.on('click', '.cm-mark-unread-message', $.proxy(this._onChangeReadStateClick, this));
       controls.on('click', '.cm-go-previous', $.proxy(this._onNavigateNewerThreadClick, this));
       controls.on('click', '.cm-go-next', $.proxy(this._onNavigateOlderThreadClick, this));
       this.element.on('click', '.cm-message-reply-link', $.proxy(this._onReplyClick, this));    
@@ -1733,19 +1733,45 @@
           }, this));
         }
      },    
-    
-    _onMarkUnreadClick: function (event) {
-      var threads = [
-          {
-            folderId: this._folderId,
-            id: this._threadId
-          }
-      ];
-      this.element.closest('.communicator') 
-        .communicator('markUnreadThreads', threads);
-    },
-    
-    _onReplyClick: function (event) {
+     
+
+     
+     _onChangeReadStateClick: function (event) {
+
+       var element = $(".cm-mark-unread-container").find(".mf-tool");
+       var state = element.attr("data-make-state");       
+       
+
+       
+       var threads = [
+         {
+           folderId: this._folderId,
+           id: this._threadId
+         }
+       ];
+       
+       if(state === "unread") {       
+         this.element.closest('.communicator') 
+         .communicator('markUnreadThreads', threads, $.proxy(function () {
+             element.attr("data-make-state", "read");
+             element.attr("title", getLocaleText("plugin.communicator.tool.title.read"));
+             element.removeClass("icon-message-unread");
+             element.addClass("icon-message-read");
+         
+         }, this));             
+           
+       } else {             
+         this.element.closest('.communicator') 
+         .communicator('markReadThreads', threads, $.proxy(function () {
+           element.attr("data-make-state", "unread");    
+           element.attr("title", getLocaleText("plugin.communicator.tool.title.unread"));
+           element.removeClass("icon-message-read");
+           element.addClass("icon-message-unread");
+         }, this));             
+       }
+     },
+
+     _onReplyClick: function (event) {
       var messageId = $(event.target)
         .closest('.cm-message')
         .attr('data-id');

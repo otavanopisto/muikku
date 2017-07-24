@@ -10,7 +10,7 @@
         </div>
         <div class="di-message-details di-message-details-reply lg-flex-cell-15 md-flex-cell-15 sm-flex-cell-full">
           <span class="di-reply-title-creator" title='{#localize key="plugin.discussion.titleText.creator"/}'>{creatorFullName}</span>
-          <span class="di-reply-title-date" title='{#localize key="plugin.discussion.titleText.date"/}'>{prettyDate}</span>
+          <span class="di-reply-title-date" title='{#localize key="plugin.discussion.titleText.date"/}'>{date|formatDate} {date|formatTime}</span>
           {?isReply}
              <span class="di-reply-to-decor icon-arrow-right"></span>
              <span class="di-reply-to-title">{replyParentCreatorFullName}</span>
