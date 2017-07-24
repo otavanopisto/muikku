@@ -25,7 +25,7 @@
     <div class="flex-row">
       <div class="mf-item-content-text di-message-content-text lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" title='{#localize key="plugin.discussion.titleText.content"/}'>{message|s}</div>
       {?isEdited}
-       <div class="mf-item-content-info  di-message-content-info lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{#localize key="plugin.discussion.content.isEdited" arg0=prettyDateModified/}</div>
+       <div class="mf-item-content-info  di-message-content-info lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">{#localize key="plugin.discussion.content.isEdited" arg0=prettyDateModified /}</div>
       {/isEdited}                                
     </div>
     <div class="flex-row">
