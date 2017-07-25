@@ -5,7 +5,9 @@ module([
   
   $.widget("custom.communicatorToolbarLabelsDropdownControllerWidget", {
     options: {
-      onLabelsUpdated: null
+      onLabelsUpdated: null,
+      onLabelAdded: null,
+      onLabelRemoved: null
     },
     _create: function(){
       this.dropdown = null;
@@ -37,16 +39,27 @@ module([
       });
     },
     _setupEvents: function(){
-      this.element.find(".communicator-toolbar-labels-dropdown-interact-create-label").click(this._createLabel.bind(this));
+      var self = this;
+      this.element.find(".communicator-toolbar-labels-dropdown-interact-create-label").click(function(e){
+        e.stopPropagation();
+        self._createLabel();
+      });
       if (!this.dropdown){
         this.dropdown = this.element.find(".dropdown").dropdownWidget();
       }
-      this.labels = this.element.getWidgetContainerFor("communicator-toolbar-labels-dropdown-labels-list").communicatorToolbarLabelsDropdownLabelsListControllerWidget();
+      this.labels = this.element.getWidgetContainerFor("communicator-toolbar-labels-dropdown-labels-list")
+        .communicatorToolbarLabelsDropdownLabelsListControllerWidget({
+          onLabelAdded: this.options.onLabelAdded,
+          onLabelRemoved: this.options.onLabelRemoved
+        });
     },
     open(target){
       if (this.dropdown){
         this.dropdown.dropdownWidget("open", target);
       }
+    },
+    setCurrentActiveLabels(activeLabels){
+      this.labels.communicatorToolbarLabelsDropdownLabelsListControllerWidget('setCurrentActiveLabels', activeLabels);
     }
   });
 });

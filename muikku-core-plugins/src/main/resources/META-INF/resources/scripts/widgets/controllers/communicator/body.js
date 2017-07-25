@@ -17,7 +17,7 @@ module([
       
       this.selectTimeout = null;
       this.firstWasSelected = false;
-      this.selectedElements = [];
+      this.selectedElements = {};
     },
     _clean: function(){
       this.folderId = null;

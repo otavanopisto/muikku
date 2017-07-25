@@ -28,9 +28,10 @@
     display: block;
     min-width: 100px;
     opacity: 1;
-    overflow: hidden;
+    overflow: auto;
     position: relative;
     text-align: center;
+    max-height: 350px;
 
     .dropdown-item {
       display: block;

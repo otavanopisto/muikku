@@ -78,8 +78,14 @@ loadModules([
         toolbar.communicatorToolbarControllerWidget('deactivate');
       });
     },
-    onLabelsUpdated(){
+    onLabelsUpdated: function(){
       navigation.communicatorNavigationControllerWidget('reloadLabels');
+    },
+    onLabelAdded: function(label){
+      console.log("added", label);
+    },
+    onLabelRemoved: function(label){
+      console.log("removed", label);
     }
   });
   body = $.getWidgetContainerFor("communicator-body").communicatorBodyControllerWidget({
@@ -94,6 +100,7 @@ loadModules([
         toolbar.communicatorToolbarControllerWidget('deactivate');
       }
       toolbar.communicatorToolbarControllerWidget('setCurrentMessageHasUnreadMessages', unreadMessages);
+      toolbar.communicatorToolbarControllerWidget('setCurrentActiveLabels', messages.length ? messages[0].labels : []);
     }
   });
   navigation = $.getWidgetContainerFor("communicator-navigation").communicatorNavigationControllerWidget({

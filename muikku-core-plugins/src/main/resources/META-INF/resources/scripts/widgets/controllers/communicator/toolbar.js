@@ -5,12 +5,15 @@ module([
     options: {
       onDeleteClick: null,
       onToggleMarkAsReadClick: null,
-      onLabelsUpdated: null
+      onLabelsUpdated: null,
+      onLabelAdded: null,
+      onLabelRemoved: null
     },
     _create: function(){
       this.folder = "";
       this.inMessage = false;
       this.active = false;
+      this.dropdown = null;
       this.currentMessageHasUnreadMessages = false;
       this._render();
     },
@@ -38,13 +41,15 @@ module([
           self.options.onToggleMarkAsReadClick();
         }
       });
-      var dropdown = self.element.getWidgetContainerFor("communicator-toolbar-labels-dropdown");
-      dropdown.communicatorToolbarLabelsDropdownControllerWidget({
-        onLabelsUpdated: this.options.onLabelsUpdated
+      self.dropdown = self.element.getWidgetContainerFor("communicator-toolbar-labels-dropdown");
+      self.dropdown.communicatorToolbarLabelsDropdownControllerWidget({
+        onLabelsUpdated: this.options.onLabelsUpdated,
+        onLabelAdded: this.options.onLabelAdded,
+        onLabelRemoved: this.options.onLabelRemoved
       });
       self.element.find(".communicator-toolbar-interact-label").click(function(e){
         if (self.active){
-          dropdown.communicatorToolbarLabelsDropdownControllerWidget("open", e.currentTarget);
+          self.dropdown.communicatorToolbarLabelsDropdownControllerWidget("open", e.currentTarget);
         }
       });
     },
@@ -69,6 +74,9 @@ module([
     setCurrentMessageHasUnreadMessages: function(status){
       this.currentMessageHasUnreadMessages = status;
       this._render();
+    },
+    setCurrentActiveLabels: function(activeLabels){
+      this.dropdown.communicatorToolbarLabelsDropdownControllerWidget("setCurrentActiveLabels", activeLabels);
     }
   });
 });

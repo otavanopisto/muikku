@@ -15,7 +15,8 @@ module([
   
   $.widget("custom.communicatorToolbarLabelsDropdownLabelsListControllerWidget", {
     options: {
-      onSelectedLabelsChanged: null
+      onLabelAdded: null,
+      onLabelRemoved: null
     },
     update: function(){
       this._populateLabels();
@@ -27,7 +28,8 @@ module([
     _render: function(){
       var self = this;
       renderDustTemplate('communicator/toolbar/labels-dropdown/labels-list.dust', {
-        labels: self.labels
+        labels: self.labels,
+        activeLabels: self.activeLabels
       }, function(text) {
         self.element.html(text);
         self._setupEvents();
@@ -53,6 +55,22 @@ module([
       });
     },
     _setupEvents: function(){
+      var self = this;
+      $(".link").click(function(e){
+        e.stopPropagation();
+        self._toggleLabel(e.currentTarget);
+      });
+    },
+    _toggleLabel: function(element){
+      var newState = $(element).toggleClass("active").hasClass("active");
+      var toggledLabel = this.labels[element.dataset.index];
+      if (!newState){
+        this.options.onLabelRemoved(toggledLabel);
+      } else {
+        this.options.onLabelAdded(toggledLabel);
+      }
+    },
+    setCurrentActiveLabels: function(activeLabels){
       
     }
   });
