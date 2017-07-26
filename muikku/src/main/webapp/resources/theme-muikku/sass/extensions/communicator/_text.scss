@@ -39,4 +39,18 @@
       padding-left: 30px;
     }
   }
+  &.communicator-text-tag {
+    display: inline-block;
+    font-weight: 300;
+    
+    .icon {
+      padding-left: 32px;
+      
+      &::before {
+        position: absolute;
+        left: 12px;
+        bottom: -1px;
+      }
+    }
+  }
 }

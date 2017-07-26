@@ -82,10 +82,44 @@ loadModules([
       navigation.communicatorNavigationControllerWidget('reloadLabels');
     },
     onLabelAdded: function(label){
-      console.log("added", label);
+      var self = this;
+      var messages = body.communicatorBodyControllerWidget('getSelectedMessages');
+      
+      var calls = messages.map(function(element){
+        return function(callback){
+          mApi().communicator.messages.labels.create(element.communicatorMessageId, { labelId: label.id }).callback(function (err, label) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
+            }
+            callback();
+          });
+        };
+      });
+      
+      async.series(calls, function(){
+        mApi().communicator.cacheClear();
+        body.communicatorBodyControllerWidget('addLabelToSelected', label);
+      });
     },
     onLabelRemoved: function(label){
-      console.log("removed", label);
+      var self = this;
+      var messages = body.communicatorBodyControllerWidget('getSelectedMessages');
+      
+      var calls = messages.map(function(element){
+        return function(callback){
+          mApi().communicator.messages.labels.del(element.communicatorMessageId, label.id).callback(function (err, label) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.communicator.label.create.error.add"));
+            }
+            callback();
+          });
+        };
+      });
+      
+      async.series(calls, function(){
+        mApi().communicator.cacheClear();
+        body.communicatorBodyControllerWidget('removeLabelToSelected', label);
+      });
     }
   });
   body = $.getWidgetContainerFor("communicator-body").communicatorBodyControllerWidget({

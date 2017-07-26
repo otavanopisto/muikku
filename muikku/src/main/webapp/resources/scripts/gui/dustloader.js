@@ -88,6 +88,26 @@ dust.helpers.moment = function (chunk, context, bodies, params) {
   }
 };
 
+dust.helpers.color = function(chunk, context, bodies, params) {
+  var color = context.resolve(params.color, chunk, context);
+  if (!color){
+    if (console && console.warn){
+      console.warn("missing color in dust template");
+    }
+    return chunk.write("red");
+  }
+  
+  var b = (color & 255).toString(16);
+  var g = ((color >> 8) & 255).toString(16);
+  var r = ((color >> 16) & 255).toString(16);
+
+  var rStr = r.length == 1 ? "0" + r : r;
+  var gStr = g.length == 1 ? "0" + g : g;
+  var bStr = b.length == 1 ? "0" + b : b;
+  
+  return chunk.write("#" + rStr + gStr + bStr);
+}
+
 function renderDustTemplate(templateName, json, callback) {
   var base = dust.makeBase({
     localize: function(chunk, context, bodies, params) {

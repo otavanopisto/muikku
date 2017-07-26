@@ -9,12 +9,12 @@
               {?firstName}{firstName}{~s}{/firstName}{?lastName}{lastName}{/lastName}
             </span>
           {/sender}
-          {#tags}
+          {#labels}
             <span class="communicator text communicator-text-tag">
-              <span class="icon icon-tag" style="color:red"></span>
-              random tag
+              <span class="icon icon-tag" style="color:{@color color="{labelColor}"/}"></span>
+              {labelName}
             </span>
-          {/tags}
+          {/labels}
           {?messageCountInthread}
             <span class="communicator text communicator-text-counter">{messageCountInthread}</span>
           {/messageCountInthread}

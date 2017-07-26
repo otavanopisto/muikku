@@ -2,5 +2,9 @@
   &.communicator-link-label {
     justify-content: flex-start;
     text-transform: none;
+    
+    &.active {
+      background-color: $communicator-link-label-active-background;
+    }
   }
 }

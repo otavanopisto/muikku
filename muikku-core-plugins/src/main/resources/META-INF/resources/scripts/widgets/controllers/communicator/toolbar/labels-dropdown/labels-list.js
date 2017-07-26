@@ -28,8 +28,7 @@ module([
     _render: function(){
       var self = this;
       renderDustTemplate('communicator/toolbar/labels-dropdown/labels-list.dust', {
-        labels: self.labels,
-        activeLabels: self.activeLabels
+        labels: self.labels
       }, function(text) {
         self.element.html(text);
         self._setupEvents();
@@ -42,14 +41,7 @@ module([
           return;
         }
         
-        self.labels = results.map(function(label){
-          return {
-            icon: "tag",
-            text: label.name,
-            color: colorIntToHex(label.color),
-            isActive: false
-          }
-        });
+        self.labels = results;
         
         self._render();
       });
@@ -71,7 +63,12 @@ module([
       }
     },
     setCurrentActiveLabels: function(activeLabels){
-      
+      var self = this;
+      self.element.find('.communicator-link-label').removeClass("active");
+      activeLabels.forEach(function(label){
+        let id = label.labelId;
+        self.element.find('.communicator-link-label[data-id="' + id + '"]').addClass("active");
+      });
     }
   });
 });

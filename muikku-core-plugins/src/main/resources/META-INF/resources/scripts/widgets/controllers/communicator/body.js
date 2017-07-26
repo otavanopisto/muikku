@@ -28,6 +28,7 @@ module([
     },
     _render: function(){
       var self = this;
+      console.log(this.messages);
       renderDustTemplate('communicator/body.dust', {messages: this.messages}, function(text) {
         self.element.html(text);
         self._setupEvents();
@@ -125,7 +126,19 @@ module([
           break;
       }
     },
-    loadLabel(id){
+    addLabelToSelected: function(label){
+      this.selectedElements.forEach(function(element){
+        element.labels.push({
+          labelId: label.id,
+          labelName: label.name,
+          labelColor: label.color
+        });
+      });
+    },
+    removeLabelToSelected: function(label){
+      console.log("please remove", label);
+    },
+    loadLabel: function(id){
       this._clean();
       this.labelId = id;
       var params = {
@@ -135,7 +148,7 @@ module([
       }
       mApi().communicator.items.read(params).callback(this._processMessages.bind(this));
     },
-    getSelectedMessages(){
+    getSelectedMessages: function(){
       var self = this;
       var arrayForm = [];
       Object.keys(self.selectedElements).forEach(function(key) { arrayForm[key] = self.selectedElements[key]; });
@@ -143,7 +156,7 @@ module([
         return !!value;
       });
     },
-    reload(){
+    reload: function(){
       if (this.folderId){
         this.loadFolder(this.folderId);
       } else if (this.labelId) {
