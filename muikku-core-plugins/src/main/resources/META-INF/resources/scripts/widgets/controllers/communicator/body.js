@@ -1,4 +1,5 @@
 module([
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/body/message.js.jsf"
 ], function(){
   $.widget("custom.communicatorBodyControllerWidget", {
     options: {
@@ -7,7 +8,6 @@ module([
       onSelectManyChange: null
     },
     _create: function(){
-      this._clean();
       this._render();
       
       this.folderId = null;
@@ -34,63 +34,34 @@ module([
         self._setupEvents();
       });
     },
-    _toggleMessageSelection(target, index, isAlreadyChecked){
-      var $applicationListItems = this.element.find(".application-list-item");
-      $applicationListItems.addClass("application-list-item-select-mode");
-      
-      $(target).toggleClass("selected");
-      
-      var newState;
-      if (!isAlreadyChecked){
-        newState = !$(target).find("input").prop("checked");
-        $(target).find("input").prop('checked', newState);
-      } else {
-        newState = $(target).find("input").prop("checked");
-      }
-      
-      var element = this.messages[target.dataset.index];
-      if (!newState){
-        delete this.selectedElements[index];
-      } else {
-        this.selectedElements[index] = element;
-      }
-      
-      if (!Object.keys(this.selectedElements).length){
-        $applicationListItems.removeClass("application-list-item-select-mode");
-      }
-      
-      this.options.onSelectManyChange(this.getSelectedMessages());
-    },
     _setupEvents: function(){
-      var self = this;
-      self.element.find(".application-list-item").bind("contextmenu", function(e){
-        e.preventDefault();
-      });
-      self.element.find("input").bind("click", function(e){
-        var $item = $(e.target).parents(".application-list-item");
-        e.stopPropagation();
-        self._toggleMessageSelection($item[0], parseInt($item[0].dataset.index), true);
-      });
+      if (!this.messages){
+        return;
+      }
       
-      var $applicationListItems = this.element.find(".application-list-item");
-      $applicationListItems.click(function(e){
-        if (!self.selectedElements.length){
-          self.options.onSelect(self.messages[e.currentTarget.dataset.index]);
-        } else if (!self.firstWasSelected){
-          self._toggleMessageSelection(e.currentTarget, parseInt(e.currentTarget.dataset.index));
-        }
-        self.firstWasSelected = false;
-      });
-      $applicationListItems.bind("touchstart", function(e){
-        if (!self.selectedElements.length){
-          self.selectTimeout = setTimeout(function(){
-            self.firstWasSelected = true;
-            self._toggleMessageSelection(e.currentTarget, parseInt(e.currentTarget.dataset.index));
-          }, 300);
-        }
-      });
-      $applicationListItems.bind("touchend", function(e){
-        clearTimeout(self.selectTimeout);
+      var self = this;
+      $applicationList = this.element.find(".application-list");
+      this.messages.forEach(function(message, index){
+        return $("<div></div>").communicatorBodyMessageControllerWidget({
+          message: message,
+          onMessageSelected: function(wasTouchEvent){
+            self.element.children().children().communicatorBodyMessageControllerWidget('setInTouchSelectionMode', wasTouchEvent);
+            self.selectedElements[index] = message;
+            self.options.onSelectManyChange(self.getSelectedMessages());
+          },
+          onMessageDeselected: function(){
+            delete self.selectedElements[index];
+            if (!Object.keys(self.selectedElements).length){
+              self.element.children().children().communicatorBodyMessageControllerWidget('setInTouchSelectionMode', false);
+            }
+            self.options.onSelectManyChange(self.getSelectedMessages());
+          },
+          onMessageOpen: function(){
+            if (!Object.keys(self.selectedElements).length){
+              console.log("open", message);
+            }
+          }
+        }).appendTo($applicationList);
       });
     },
     _processMessages: function(err, messages){
@@ -127,16 +98,37 @@ module([
       }
     },
     addLabelToSelected: function(label){
-      this.selectedElements.forEach(function(element){
-        element.labels.push({
-          labelId: label.id,
-          labelName: label.name,
-          labelColor: label.color
-        });
+      var label = {
+        labelId: label.id,
+        labelName: label.name,
+        labelColor: label.color
+      };
+      var self = this;
+      Object.keys(self.selectedElements).forEach(function(index){
+        var element = self.selectedElements[index];
+        element.labels.push(label);
       });
+      
+      $(".application-list").children().communicatorBodyMessageControllerWidget('addLabelIfSelected', label);
     },
     removeLabelToSelected: function(label){
-      console.log("please remove", label);
+      var label = {
+        labelId: label.id,
+        labelName: label.name,
+        labelColor: label.color
+      };
+      var self = this;
+      Object.keys(self.selectedElements).forEach(function(index){
+        var element = self.selectedElements[index];
+        var index = element.labels.findIndex(function(glabel){
+          return glabel.labelId === label.labelId;
+        });
+        if (index !== null){
+          element.labels.splice(index, 1);
+        }
+      });
+      
+      $(".application-list").children().communicatorBodyMessageControllerWidget('removeLabelIfSelected', label);
     },
     loadLabel: function(id){
       this._clean();

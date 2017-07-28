@@ -127,6 +127,7 @@ loadModules([
       console.log("selected", message);
     },
     onSelectManyChange: function(messages){
+      console.log(messages);
       var unreadMessages = messages.length ? messages[0].unreadMessagesInThread : false;
       if (messages.length){
         toolbar.communicatorToolbarControllerWidget('activate');
