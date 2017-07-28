@@ -28,7 +28,6 @@ module([
     },
     _render: function(){
       var self = this;
-      console.log(this.messages);
       renderDustTemplate('communicator/body.dust', {messages: this.messages}, function(text) {
         self.element.html(text);
         self._setupEvents();
