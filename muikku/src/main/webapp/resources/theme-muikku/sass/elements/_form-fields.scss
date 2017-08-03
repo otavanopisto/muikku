@@ -1,4 +1,4 @@
-input.form-field {
+input.form-field, .form-field input, textarea.form-field, .form-field textarea {
   width: 100%;
   height: 34px;
   padding: 3px 10px;
@@ -8,9 +8,14 @@ input.form-field {
   -webkit-appearance: none;
   outline: none;
   border: solid 1px $color-form-field-border;
+  resize: none;
   
   &:focus {
     border: solid 1px $color-form-field-border-focus;
     box-shadow: 0 0 5px 1px $color-form-field-glow;
   }
+}
+
+.form-field:not(input):not(textarea) {
+  width: 100%;
 }

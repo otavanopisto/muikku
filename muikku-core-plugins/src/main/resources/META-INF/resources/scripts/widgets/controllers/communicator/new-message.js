@@ -1,4 +1,5 @@
 module([
+  "//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"
 ], function(){
   
   $.widget("custom.communicatorNewMessageControllerWidget", {
@@ -40,11 +41,67 @@ module([
         var pluginUrl = extraPlugins[pluginName];
         CKEDITOR.plugins.addExternal(pluginName, pluginUrl);
       });
+      
+      this.hasBeenPopulated = false;
+      this.ready = false;
+      this.openWhenReady = false;
+      
+      var self = this;
+      self.signature = null;
+      mApi().communicator.signatures.read().callback(function (err, signatures) {
+        if (signatures.length > 0){
+          self.signature = signatures[0].signature;
+        }
+        self.ready = true;
+        if (self.openWhenReady){
+          self.open();
+        }
+      });
     },
-    show: function(){
-    
+    _setup: function(){
+      var self = this;
+      self.element.click(function(e){
+        if (e.target !== e.currentTarget.children[0] && !$(e.target).hasClass("jumbo-dialog-close")){
+          e.stopPropagation();
+          return false;
+        }
+        self.close();
+      });
     },
-    hide: function(){
-    
+    open: function(){
+      var self = this;
+      
+      if (!this.ready){
+        self.openWhenReady = true;
+        return;
+      }
+      
+      if (!self.hasBeenPopulated){
+        renderDustTemplate('communicator/new-message.dust', {signature: self.signature}, function(text) {
+          self.element.html(text);
+          self.hasBeenPopulated = true;
+          self.element.children().addClass('displayed');
+          setTimeout(function(){
+            self.element.children().addClass('visible');
+          }, 30);
+          self._setup();
+        });
+      } else {
+        self.element.children().addClass('displayed');
+        setTimeout(function(){
+          self.element.children().addClass('visible');
+        }, 10);
+      }
+    },
+    close: function(){
+      var self = this;
+      self.element.children().cssAnimate({
+        condition: ":visible",
+        removeClass: 'visible',
+        callback: function(){
+          self.element.children().removeClass('displayed');
+        }
+      });
     }
+  });
 });

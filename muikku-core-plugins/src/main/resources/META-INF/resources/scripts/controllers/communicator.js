@@ -5,7 +5,8 @@ loadModules([
   
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/navigation.js.jsf",
   CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/toolbar.js.jsf",
-  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/body.js.jsf"
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/body.js.jsf",
+  CONTEXTPATH + "/javax.faces.resource/scripts/widgets/controllers/communicator/new-message.js.jsf"
 ], function(){
   $(document).muikkuWebSocket();
   $(document.body).baseControllerWidget();
@@ -37,6 +38,12 @@ loadModules([
   var body;
   var toolbar;
   var navigation;
+  var newMessage;
+  
+  newMessage = $.getWidgetContainerFor("communicator-new-message").communicatorNewMessageControllerWidget();
+  $('.communicator-interact-new-message').click(function(){
+    newMessage.communicatorNewMessageControllerWidget('open');
+  });
   
   toolbar = $.getWidgetContainerFor("communicator-toolbar").communicatorToolbarControllerWidget({
     onDeleteClick: function(){

@@ -1,0 +1,22 @@
+.communicator.jumbo-dialog {
+  
+  &.visible {
+    .jumbo-dialog-wrapper {
+      bottom: 0;
+    }
+  }
+  
+  .jumbo-dialog-wrapper {
+    height: 520px;
+    bottom: -520px;
+    background-color: $color-communicator-jumbo-dialog-background-color;
+    
+    @include breakpoint-down($breakpoint-landscape-pad) {
+      height: auto;
+    }
+    
+    .jumbo-dialog-header {
+      background-color: $color-communicator-jumbo-dialog-header-background-color;
+    }
+  }
+}
