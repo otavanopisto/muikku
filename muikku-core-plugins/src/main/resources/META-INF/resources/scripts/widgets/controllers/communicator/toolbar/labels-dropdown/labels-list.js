@@ -19,22 +19,27 @@ module([
       onLabelRemoved: null
     },
     update: function(){
-      this._populateLabels();
+      var self = this;
+      this._populateLabels(function(){
+        self.setCurrentActiveLabels(self.activeLabels);
+      });
     },
     _create: function(){
       this.labels = [];
       this._populateLabels();
+      this.activeLabels = [];
     },
-    _render: function(){
+    _render: function(callback){
       var self = this;
       renderDustTemplate('communicator/toolbar/labels-dropdown/labels-list.dust', {
         labels: self.labels
       }, function(text) {
         self.element.html(text);
         self._setupEvents();
+        callback && callback();
       });
     },
-    _populateLabels: function(){
+    _populateLabels: function(callback){
       var self = this;
       mApi().communicator.userLabels.read().callback(function (err, results) {
         if (err){
@@ -43,12 +48,12 @@ module([
         
         self.labels = results;
         
-        self._render();
+        self._render(callback);
       });
     },
     _setupEvents: function(){
       var self = this;
-      $(".link").click(function(e){
+      this.element.find(".link").click(function(e){
         e.stopPropagation();
         self._toggleLabel(e.currentTarget);
       });
@@ -64,6 +69,7 @@ module([
     },
     setCurrentActiveLabels: function(activeLabels){
       var self = this;
+      self.activeLabels = activeLabels;
       self.element.find('.communicator-link-label').removeClass("active");
       activeLabels.forEach(function(label){
         let id = label.labelId;
