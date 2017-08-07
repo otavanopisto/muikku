@@ -1,15 +1,13 @@
 package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -43,42 +41,11 @@ public class TranscriptOfRecordsController {
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
-  private SearchProvider searchProvider;
-  
-  @Inject
-  private Logger log;
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   private static final Pattern UPPER_SECONDARY_SCHOOL_SUBJECT_PATTERN = Pattern.compile("^[A-ZÅÄÖ0-9]+$");
   
-  @PostConstruct
-  public void init() {
-    String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
-    if (StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
-      log.log(Level.WARNING, "No subjects order defined for studies vies");
-      return;
-    }
-
-    String[] subjects = commaSeparatedSubjectsOrder.split(",");
-    int i = 0;
-    for (String subject : Arrays.asList(subjects)) {
-      subjectOrderLookup.put(subject, i);
-      ++i;
-    }
-  }
-  
-  public int getSubjectOrderNumber(Subject subject) {
-    String subjectCode = subject.getCode();
-    if (subjectCode == null) {
-      return Integer.MAX_VALUE;
-    }
-
-    if (subjectOrderLookup.containsKey(subject.getCode())) {
-      return subjectOrderLookup.get(subject.getCode());
-    }
-    
-    return Integer.MAX_VALUE;
-  }
-
   public boolean subjectAppliesToStudent(User student, Subject subject) {
     if (subject.getCode() == null) {
       return false;
@@ -177,28 +144,30 @@ public class TranscriptOfRecordsController {
   }
 
   public List<VopsWorkspace> listWorkspaceIdentifiersBySubjectIdentifierAndCourseNumber(String schoolDataSource, String subjectIdentifier, int courseNumber) {
-    SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
     List<VopsWorkspace> retval = new ArrayList<>();
-    List<Map<String, Object>> results = sr.getResults();
-    for (Map<String, Object> result : results) {
-      String searchId = (String) result.get("id");
-      if (StringUtils.isNotBlank(searchId)) {
-        String[] id = searchId.split("/", 2);
-        if (id.length == 2) {
-          String dataSource = id[1];
-          String identifier = id[0];
-          String educationTypeId = (String) result.get("educationSubtypeIdentifier");
-          String name = (String) result.get("name");
-          String description = (String) result.get("description");
-          
-          SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
-          SchoolDataIdentifier educationSubtypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
-          
-          retval.add(new VopsWorkspace(workspaceIdentifier, educationSubtypeIdentifier, name, description));
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider != null) {
+      SearchResult sr = searchProvider.searchWorkspaces(schoolDataSource, subjectIdentifier, courseNumber);
+      List<Map<String, Object>> results = sr.getResults();
+      for (Map<String, Object> result : results) {
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+            String educationTypeId = (String) result.get("educationSubtypeIdentifier");
+            String name = (String) result.get("name");
+            String description = (String) result.get("description");
+            
+            SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
+            SchoolDataIdentifier educationSubtypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+            
+            retval.add(new VopsWorkspace(workspaceIdentifier, educationSubtypeIdentifier, name, description));
+          }
         }
       }
     }
-      
     return retval;
   }
 
@@ -224,6 +193,14 @@ public class TranscriptOfRecordsController {
     
     return result;
   }
+
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
+  }
   
-  Map<String, Integer> subjectOrderLookup = new HashMap<>();
 }
