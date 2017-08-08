@@ -3,20 +3,34 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 import java.util.List;
 
 public class VopsRESTModel {
-  public static class VopsItem {
+  public static interface VopsEntry {
+    
+  }
+  public static class VopsPlaceholder implements VopsEntry {
+    public boolean isPlaceholder() {
+      return true;
+    }
+  }
+  public static class VopsItem implements VopsEntry {
     public VopsItem(
         int courseNumber,
         CourseCompletionState state,
         String educationSubtype,
         Mandatority mandatority,
-        String grade
+        String grade,
+        boolean planned,
+        String name,
+        String description
     ) {
       super();
       this.courseNumber = courseNumber;
       this.state = state;
       this.educationSubtype = educationSubtype;
       this.mandatority = mandatority;
+      this.planned = planned;
       this.grade = grade;
+      this.name = name;
+      this.description = description;
     }
     
     public int getCourseNumber() {
@@ -43,31 +57,61 @@ public class VopsRESTModel {
     public void setGrade(String grade) {
       this.grade = grade;
     }
+    public boolean isPlaceholder() {
+      return false;
+    }
+    public boolean isPlanned() {
+      return planned;
+    }
+    public void setPlanned(boolean chosen) {
+      this.planned = chosen;
+    }
+    public String getName() {
+      return name;
+    }
+    public void setName(String name) {
+      this.name = name;
+    }
+    public String getDescription() {
+      return description;
+    }
+    public void setDescription(String description) {
+      this.description = description;
+    }
 
     private int courseNumber;
     private CourseCompletionState state;
     private String educationSubtype;
     private Mandatority mandatority;
+    private boolean planned;
     private String grade;
+    private String name;
+    private String description;
   }
   
   public static class VopsRow {
-    public VopsRow(String subject, List<VopsItem> items) {
+    public VopsRow(String subject, String subjectIdentifier, List<VopsEntry> items) {
       super();
+      this.subjectIdentifier = subjectIdentifier;
       this.subject = subject;
       this.items = items;
     }
     
-    public List<VopsItem> getItems() {
+    public List<? super VopsEntry> getItems() {
       return items;
     }
     
     public String getSubject() {
       return subject;
     }
+    
+    public String getSubjectIdentifier() {
+      return subjectIdentifier;
+    }
 
     String subject;
-    List<VopsItem> items;
+    List<VopsEntry> items;
+    String subjectIdentifier;
   }
   
   public VopsRESTModel(List<VopsRow> rows, int numCourses, int numMandatoryCourses, boolean optedIn) {

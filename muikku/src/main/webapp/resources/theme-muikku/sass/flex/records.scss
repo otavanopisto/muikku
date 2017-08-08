@@ -162,15 +162,30 @@
   border-radius: 3px;
   box-shadow: $environment-menu-shadow;
   display: none;
-  height: 100px;
+  height: auto;
   left: -4px;
   padding: 10px;
   position: absolute;
   top: 36px;
   width: 100px;
   z-index: 13;
+  
+  .tr-vops-item-menu-button-unplan, .tr-vops-item-menu-button-plan {
+    margin: 0;
+  }
+  
+  &.tr-vops-item-menu-unplanned {
+    .tr-vops-item-menu-button-unplan {
+      display: none;
+    }
+  }
+  
+  &:not(.tr-vops-item-menu-unplanned) {
+    .tr-vops-item-menu-button-plan {
+      display: none;
+    }
+  }
 
-  &::after,
   &::before {
     border: solid transparent;
     bottom: 100%;
@@ -180,25 +195,16 @@
     pointer-events: none;
     position: absolute;
     width: 0;
-  }
-
-  &::after {
-    border-bottom-color: $environment-arrow-border-color;
-    border-color: $environment-border-color;
-    border-left: solid transparent;
-    border-right: solid transparent;
-    border-top: solid transparent;
-    border-width: 7px;
-    margin-left: 1px;
-  }
-
-  &::before {
     border-bottom-color: $environment-border-color;
     border-color: $environment-arrow-border-color;
     border-left: solid transparent;
     border-right: solid transparent;
     border-top: solid transparent;
     border-width: 8px;
+  }
+
+  &::after {
+    display: none;
   }
 }
 

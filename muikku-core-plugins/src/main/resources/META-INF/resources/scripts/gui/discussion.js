@@ -30,13 +30,12 @@
             creatorFullName = user.firstName + ' ' + user.lastName;
           }
 
-          // TODO: remove prettyDates...
           callback(null, $.extend({}, thread, {
             areaName: area.name,
             creatorFullName: creatorFullName,
-            prettyDate: formatDate(d) + ' ' + formatTime(d),
-            prettyDateUpdated: formatDate(ud) + ' ' + formatTime(ud),
-            prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),
+            date: d,
+            dateUpdated: ud,
+            prettyDateModified: formatDate(ud) + ' ' + formatTime(ud),            
             userRandomNo: (user.id % 6) + 1,
             userEntityId: user.id,
             nameLetter: creatorFullName.substring(0,1),
@@ -105,7 +104,7 @@
               creatorFullName: creatorFullName,
               isEdited: reply.lastModified == reply.created ? false : true,
               canEdit: globalEdit || (reply.creator === MUIKKU_LOGGED_USER_ID ? true : false),
-              prettyDate: formatDate(d) + ' ' + formatTime(d),
+              date: d,
               prettyDateModified: formatDate(ld) + ' ' + formatTime(ld),
               userRandomNo: (user.id % 6) + 1,
               userEntityId: user.id,

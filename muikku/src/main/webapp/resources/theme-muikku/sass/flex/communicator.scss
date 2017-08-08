@@ -225,6 +225,9 @@ $target-group-color;
     
     .cm-message-header {
       box-sizing: border-box;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 15px 0;
       word-break: break-all;
       word-wrap: break-word;
       
@@ -319,17 +322,14 @@ $target-group-color;
     vertical-align: top;
   } 
    
-  .cm-message-content {
-   
-    .cm-message-content-text {
-   
-      p {
-        margin: 1em 0;
-      }
-   
-    }  
+  .cm-message-content-text {  
+    max-width: 684px;
+    word-wrap: break-word;
     
-  }
+    p {
+      margin: 1em 0;
+    }   
+  }  
   
   .cm-message-content-tools {
     padding: 10px 0;  

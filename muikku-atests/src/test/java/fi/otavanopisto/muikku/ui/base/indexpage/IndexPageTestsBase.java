@@ -37,15 +37,25 @@ public class IndexPageTestsBase extends AbstractUITest {
     MockStudent student = new MockStudent(2l, 2l, "Second", "User", "teststudent@example.com", 1l, TestUtilities.toDate(1990, 1, 1), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     Builder mockBuilder = mocker();
     mockBuilder.addStudent(student).mockLogin(student).build();
-    login();
-    assertVisible("#loggedUser");
+    try{
+      login();
+      assertVisible("#loggedUser");      
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+
   }
   
   @Test
   public void adminLoginTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
-    mocker().addStaffMember(admin).mockLogin(admin).build();
-    login();
-    assertVisible("#loggedUser");
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    try{
+      login();
+      assertVisible("#loggedUser");      
+    }finally {
+      mockBuilder.wiremockReset();
+    }
   }
 }

@@ -13,7 +13,7 @@
       </ui:insert>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta http-equiv="x-ua-compatible" content="ie=edge" />
-      <meta content="width=device-width, initial-scale=1.0, minimun-scale=1" name="viewport" />
+      <meta content="width=device-width, initial-scale=1.0, maximum-scale=1" name="viewport" />
       <ui:insert name="meta"></ui:insert>
       <script type="text/javascript">
           var CONTEXTPATH = "#{request.contextPath}";
@@ -94,12 +94,14 @@
       <ui:insert name="body"></ui:insert>
       
       <!-- Google Analytics -->
-      <script>
-        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-        ga('create', 'UA-7407719-33', 'auto');
-        ga('send', 'pageview');
-      </script>
-      <script async="async" src='https://www.google-analytics.com/analytics.js'></script>
+      <ui:fragment rendered="#{environmentBackingBean.hasGoogleAnalyticsTrackingId}">
+        <script>
+          window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+          ga('create', '#{environmentBackingBean.googleAnalyticsTrackingId}', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <script async="async" src='https://www.google-analytics.com/analytics.js'></script>
+      </ui:fragment>
       <!-- End Google Analytics -->
 			
     </body>

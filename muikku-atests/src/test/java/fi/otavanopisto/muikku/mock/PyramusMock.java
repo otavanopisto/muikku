@@ -1,16 +1,12 @@
 package fi.otavanopisto.muikku.mock;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,8 +23,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.github.tomakehurst.wiremock.admin.model.ListStubMappingsResult;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.stubbing.ListStubMappingsResult;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 
 import fi.otavanopisto.muikku.TestUtilities;
@@ -320,11 +317,10 @@ public class PyramusMock {
               .willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
                 .withBody(pmock.objectMapper.writeValueAsString(cs))
-                .withStatus(200)));           
+                .withStatus(200))); 
             pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseStaffMemberCreatePayload(cs.getId(), 
               cs.getCourseId(), cs.getStaffMemberId())));          
           }
-        
           stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d/staffMembers", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -600,7 +596,7 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(contactTypes))
             .withStatus(200)));
         return this;
-      }      
+      }
       
       public Builder mockStaffMembers() throws JsonProcessingException {
         Map<String, String> variables = null;
@@ -953,6 +949,17 @@ public class PyramusMock {
           System.out.print(mapping.toString());
         }
           
+        return this;
+      }
+      
+      public Builder showMatchedServeEvents() {
+        System.out.print("Show all matched events");
+        List<ServeEvent> allServeEvents = WireMock.getAllServeEvents(); 
+        for (ServeEvent serveEvent : allServeEvents) {
+          if (serveEvent.getWasMatched()) {
+            System.out.print(serveEvent.getStubMapping().toString()); 
+          }
+        }
         return this;
       }
       

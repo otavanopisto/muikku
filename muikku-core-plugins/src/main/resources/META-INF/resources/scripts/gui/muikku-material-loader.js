@@ -458,7 +458,8 @@
       if (data.fieldlessMode) {
         var value = data.value;
         if (value && !data.meta.richedit) {
-          value = value.replace(/(?:\r\n|\r|\n)/g, '<br/>');
+          // #3212: for plain text memo, recycle value via div text to escape potential html but add html linebreaks
+          value = $('<div>').text(value).html().replace(/(?:\r\n|\r|\n)/g, '<br/>');
         }
         if (value) {
           value = value.replace(/`/g, "'"); // To not mess up MathJax

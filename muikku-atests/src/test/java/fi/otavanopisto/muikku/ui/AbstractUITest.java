@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -80,7 +81,6 @@ import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
-import wiremock.org.apache.commons.lang.StringUtils;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -197,7 +197,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String resolution = System.getProperty("it.sauce.browser.resolution");
     if(resolution != null) {
       if (!resolution.isEmpty()) {
-        String[] widthHeight = org.apache.commons.lang3.StringUtils.split(resolution, "x");
+        String[] widthHeight = StringUtils.split(resolution, "x");
         Map<String, Long> dimensions = new HashMap<String, Long>();
         dimensions.put("width", Long.parseLong(widthHeight[0]));
         dimensions.put("height", Long.parseLong(widthHeight[1]));  
@@ -1272,10 +1272,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       ((JavascriptExecutor) getWebDriver()).executeScript("CKEDITOR.instances.textContent.setData('"+ text +"');");
     } else {
       waitAndClick(".cke_contents");
-      getWebDriver().switchTo().activeElement().sendKeys(text);
+      getWebDriver().switchTo().frame(findElementByCssSelector(".cke_wysiwyg_frame"));
+      sendKeys(".cke_contents_ltr", text);
+      getWebDriver().switchTo().defaultContent();
     }
   }
-  
+    
   protected void setTextAreaText(String selector, String value) {
     JavascriptExecutor js = (JavascriptExecutor) getWebDriver();
     String jsString = String.format("$('%s').html('%s');", selector, value );

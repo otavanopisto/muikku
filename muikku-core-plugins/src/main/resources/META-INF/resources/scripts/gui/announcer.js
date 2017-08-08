@@ -550,6 +550,7 @@
     },    
     
     _loadAnnouncements: function () {
+      this._load();
       var options = {};
       options.onlyEditable = true;
       options.hideEnvironmentAnnouncements = !this.options.permissions.environment;
@@ -578,6 +579,9 @@
       mApi().announcer.announcements
         .read(options)
         .callback($.proxy(function(err, result) {
+          
+          this.element.removeClass("loading");
+          
           if (err) {
             $(".notification-queue").notificationQueue('notification', 'error', err);
           } else {
@@ -615,8 +619,8 @@
     },  
     
     _load: function(){
-      this.element.empty();      
-      $(this.element).append('<div class="mf-loading"><div class"circle1"></div><div class"circle2"></div><div class"circle3"></div></div>');      
+      this.element.empty();
+      $(this.element).addClass("loading");
     },    
     
     _reload: function(){
