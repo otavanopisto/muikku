@@ -265,7 +265,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 
                 String gradeName = gradingScaleItem.getName();
                 if (!StringUtils.isBlank(gradeName)) {
-                  if (gradeName.length() > 1)
+                  if (gradeName.length() > 2)
                     grade = gradeName.substring(0, 2);
                   else
                     grade = gradeName;
@@ -390,7 +390,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   // 2 characters is enough to cover cases like "10" and "Suoritettu/Saanut opetusta" unambiguously
                   // and still looking good in the matrix
                   
-                  if (gradeName.length() > 1)
+                  if (gradeName.length() > 2)
                     grade = gradeName.substring(0, 2);
                   else
                     grade = gradeName;
