@@ -17,7 +17,7 @@
           window.location.hash = 'p-' + workspaceMaterialId;
           scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
           $('html,body').scrollTop(scrollTop);
-          $.waypoints('refresh');
+          Waypoint.refreshAll();
           $(window).data('scrolling', false);
         }
       });
@@ -32,6 +32,7 @@
   
   $(window).load(function() {
     if ($(window).data('initial-page')) {
+      var test = $(window).data('initial-page');
       scrollToPage($(window).data('initial-page'), true);
     }
   });
@@ -92,17 +93,19 @@
       );
     });
 
-    $('.material-page').waypoint(function(direction) {
-      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
-        var workspaceMaterialId = $(this).data('workspace-material-id');
-        $('#materialsScrollableTOC').find('a.active').removeClass('active');
-        $('#materialsScrollableTOC').find('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = 'p-' + workspaceMaterialId;
-        $(window).data('scrolling', true);
-        $.waypoints('refresh');
-        $(window).data('scrolling', false);
-      }
-    }, {
+    var materialPageWaypoints = $('.material-page').waypoint({
+      handler : function(direction) {
+        if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
+          var workspaceMaterialId = $(this.element).data('workspace-material-id');
+          $('#materialsScrollableTOC').find('a.active').removeClass('active');
+          $('#materialsScrollableTOC').find('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+          window.location.hash = 'p-' + workspaceMaterialId;
+          $(window).data('scrolling', true);
+          Waypoint.refreshAll();
+          //        $.waypoints('refresh');
+          $(window).data('scrolling', false);
+        }
+      }, 
       offset: 150
     });
     
