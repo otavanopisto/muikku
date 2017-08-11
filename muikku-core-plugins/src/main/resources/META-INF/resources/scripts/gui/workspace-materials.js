@@ -93,7 +93,7 @@
       );
     });
 
-    var materialPageWaypoints = $('.material-page')
+    $('.material-page')
     .waypoint({
       handler : function(direction) {
         if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {

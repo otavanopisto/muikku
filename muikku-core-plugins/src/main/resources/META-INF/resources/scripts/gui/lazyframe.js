@@ -6,8 +6,7 @@
     _create : function() {
       $(this.element).removeClass('lazyFrame');
       
-      var lazyWaypointDown = $(this.element)
-      
+      $(this.element)      
       .waypoint({
         handler : function(direction) {
             if (direction == 'down') {
@@ -32,7 +31,7 @@
           offset :  '100%'         
       });
       
-      var lazyWaypointUp = $(this.element)      
+      $(this.element)      
       .waypoint({           
           handler: function(direction) {
           if (direction == 'up') {

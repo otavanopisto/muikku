@@ -9,7 +9,7 @@
       $(this.element).removeClass('lazySwf');
       $(this.element).addClass('lazy-swf');
       
-      var lazyWaypoint = $(this.element)      
+      $(this.element)      
       .waypoint({
         handler : function(direction) {
           var url = $(this.element).attr('data-url');
@@ -48,7 +48,7 @@
           }
           this.destroy();
       }, 
-        offset: '90%',
+        offset: '90%'
       });
     },
     

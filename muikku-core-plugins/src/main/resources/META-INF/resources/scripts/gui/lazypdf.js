@@ -8,7 +8,7 @@
       $(this.element).addClass('lazy-pdf');
       
       
-      var lazyWaypointDown = $(this.element)      
+      $(this.element)      
 
       .waypoint({
         handler : $.proxy(function(direction) {
@@ -19,7 +19,7 @@
         offset: '100%'
       });
       
-      var lazyWaypointUp = $(this.element)      
+      $(this.element)      
       .waypoint({
         handler : $.proxy(function(direction) {
           if (direction == 'up') {
