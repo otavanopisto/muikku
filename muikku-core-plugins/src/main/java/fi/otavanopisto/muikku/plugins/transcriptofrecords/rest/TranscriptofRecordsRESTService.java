@@ -262,8 +262,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                     transferCredit.getGradingScaleIdentifier(),
                     transferCredit.getGradeIdentifier()
                 );
-                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
-                  grade = gradingScaleItem.getName().substring(0, 2);
+                
+                String gradeName = gradingScaleItem.getName();
+                if (!StringUtils.isBlank(gradeName)) {
+                  if (gradeName.length() > 2)
+                    grade = gradeName.substring(0, 2);
+                  else
+                    grade = gradeName;
                 }
               }
               entries.add(new VopsRESTModel.VopsItem(
@@ -380,10 +385,15 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   break;
                 }
                 GradingScaleItem gradingScaleItem = findGradingScaleItemCached(gradingScaleIdentifier, gradeIdentifier);
-                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
+                String gradeName = gradingScaleItem.getName();
+                if (!StringUtils.isBlank(gradeName)) {
                   // 2 characters is enough to cover cases like "10" and "Suoritettu/Saanut opetusta" unambiguously
                   // and still looking good in the matrix
-                  grade = gradingScaleItem.getName().substring(0, 2);
+                  
+                  if (gradeName.length() > 2)
+                    grade = gradeName.substring(0, 2);
+                  else
+                    grade = gradeName;
                 }
                 
                 break;
