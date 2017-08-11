@@ -93,7 +93,8 @@
       );
     });
 
-    var materialPageWaypoints = $('.material-page').waypoint({
+    var materialPageWaypoints = $('.material-page')
+    .waypoint({
       handler : function(direction) {
         if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
           var workspaceMaterialId = $(this.element).data('workspace-material-id');
@@ -102,7 +103,6 @@
           window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', true);
           Waypoint.refreshAll();
-          //        $.waypoints('refresh');
           $(window).data('scrolling', false);
         }
       }, 

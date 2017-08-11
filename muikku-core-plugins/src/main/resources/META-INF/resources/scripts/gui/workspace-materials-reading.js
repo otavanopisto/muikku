@@ -50,17 +50,20 @@
       baseUrl: $('.materialsBaseUrl').val()
     }).muikkuMaterialLoader('loadMaterials', $('.material-page'));
 
-    $('.material-page').waypoint(function(direction) {
-      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
-        var workspaceMaterialId = $(this).data('workspace-material-id');
-        $('a.active').removeClass('active');
-        $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = 'p-' + workspaceMaterialId;
-        $(window).data('scrolling', true);
-        $.waypoints('refresh');
-        $(window).data('scrolling', false);
-      }
-    }, {
+    
+    var materialReadingWaypoints = $('.material-page')
+    .waypoint({
+      handler : function(direction) {
+        if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
+          var workspaceMaterialId = $(this).data('workspace-material-id');
+          $('a.active').removeClass('active');
+          $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+          window.location.hash = 'p-' + workspaceMaterialId;
+          $(window).data('scrolling', true);
+          $.waypoints('refresh');
+          $(window).data('scrolling', false);
+        }
+      }, 
       offset: 50
     });
     
