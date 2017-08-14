@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.github.tomakehurst.wiremock.client.WireMock;
 
 import fi.otavanopisto.muikku.AbstractPyramusMocks;
 import fi.otavanopisto.pyramus.rest.model.ContactType;
@@ -709,6 +710,10 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   private static void addPayload(List<String> payloads, String payload) {
     if (payloads != null)
       payloads.add(payload);
+  }
+
+  public static void resetWireMock() {
+    WireMock.reset();
   }
   
 }

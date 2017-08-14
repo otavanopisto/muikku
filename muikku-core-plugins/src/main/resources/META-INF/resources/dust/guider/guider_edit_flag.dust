@@ -11,8 +11,8 @@
   </div>
 
   <div>
-    <label id="guider-edit-flag-dialog-description">{#localize key="plugin.guider.flags.editFlagDialog.description"/}</label>
-    <textarea name="description" id="guider-edit-flag-dialog-description">{flag.description}</textarea>
+    <label>{#localize key="plugin.guider.flags.editFlagDialog.description"/}</label>
+    <textarea name="description">{flag.description}</textarea>
   </div>
   
 </div>

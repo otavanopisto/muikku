@@ -1,4 +1,4 @@
-package fi.otavanopisto.muikku.ui.sauce.course.discussion;
+package fi.otavanopisto.muikku.ui.sauce.discussions;
 
 import java.net.MalformedURLException;
 
@@ -8,9 +8,9 @@ import org.junit.Rule;
 import com.saucelabs.common.SauceOnDemandAuthentication;
 import com.saucelabs.junit.SauceOnDemandTestWatcher;
 
-import fi.otavanopisto.muikku.ui.base.course.discussions.CourseDiscussionTestsBase;
+import fi.otavanopisto.muikku.ui.base.discussions.DiscussionTestsBase;
 
-public class CourseDiscussionTestsIT extends CourseDiscussionTestsBase {
+public class DiscussionTestsIT extends DiscussionTestsBase {
   
   public SauceOnDemandAuthentication authentication = new SauceOnDemandAuthentication(getSauceUsername(), getSauceAccessKey());
 

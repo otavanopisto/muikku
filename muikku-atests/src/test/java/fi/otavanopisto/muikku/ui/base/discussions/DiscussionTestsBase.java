@@ -1,7 +1,10 @@
-package fi.otavanopisto.muikku.ui.base.discussion;
+package fi.otavanopisto.muikku.ui.base.discussions;
 
 import org.junit.Test;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
+import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
@@ -10,7 +13,16 @@ import fi.otavanopisto.muikku.ui.AbstractUITest;
 public class DiscussionTestsBase extends AbstractUITest {
   
   @Test
-  public void courseDiscussionSendMessageTest() throws Exception {
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
+  public void discussionSendMessageTest() throws Exception {
     loginAdmin();
     
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
@@ -30,12 +42,22 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
+      WireMock.reset();
     }
 
   }
   
   @Test
-  public void courseDiscussionAdminCreateAreaTest() throws Exception {
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
+  public void discussionAdminCreateAreaTest() throws Exception {
     loginAdmin();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
@@ -52,12 +74,22 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
+      WireMock.reset();
     }
 
   }
   
   @Test
-  public void courseDiscussionReplyTest() throws Exception {
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
+  public void discussionReplyTest() throws Exception {
     loginAdmin();
 
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
@@ -82,17 +114,26 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
+      WireMock.reset();
     }
   }
   
   @Test
-  public void courseDiscussionDeleteThreadTest() throws Exception {
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
+  public void discussionDeleteThreadTest() throws Exception {
     loginAdmin();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
-      try {
-        DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
+      DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
             "<p>Testing testing daa daa</p>", false, false);
         try {
           navigate("/discussion", true);
@@ -103,20 +144,26 @@ public class DiscussionTestsBase extends AbstractUITest {
           assertNotPresent(".di-threads .di-message");
         } catch (Exception e) {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
-        } finally {
-          deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
-        }
       } finally {
         deleteDiscussion(discussionGroup.getId(), discussion.getId());
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
+      WireMock.reset();
     }
-
   }
-
+  
   @Test
-  public void courseDiscussionReplyReplyTest() throws Exception {
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
+  public void discussionReplyReplyTest() throws Exception {
     loginAdmin();
 
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
@@ -147,6 +194,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
+      WireMock.reset();
     }
   }
   

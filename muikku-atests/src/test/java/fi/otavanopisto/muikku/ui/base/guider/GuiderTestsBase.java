@@ -38,6 +38,7 @@ public class GuiderTestsBase extends AbstractUITest {
     } finally {
       deleteWorkspace(workspace.getId());
       deleteWorkspace(workspace2.getId());
+      mockBuilder.wiremockReset();
     }
 
   }
@@ -67,6 +68,7 @@ public class GuiderTestsBase extends AbstractUITest {
     } finally {
       deleteWorkspace(workspace2.getId());
       deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -111,6 +113,7 @@ public class GuiderTestsBase extends AbstractUITest {
       assertText(".mf-item .mf-files .mf-file-name a", "img_100x100_3x8bit_RGB_circles_center_0016.png");
     } finally {
       deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
     }
   }
 }

@@ -1,8 +1,8 @@
-package fi.otavanopisto.muikku.ui.local.discussion;
+package fi.otavanopisto.muikku.ui.local.discussions;
 
 import org.junit.Before;
 
-import fi.otavanopisto.muikku.ui.base.discussion.DiscussionTestsBase;
+import fi.otavanopisto.muikku.ui.base.discussions.DiscussionTestsBase;
 
 public class DiscussionTestsIT extends DiscussionTestsBase {
   

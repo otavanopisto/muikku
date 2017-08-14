@@ -50,6 +50,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -186,6 +187,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
    
@@ -232,6 +234,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
 
@@ -258,6 +261,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -284,6 +288,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -327,6 +332,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -420,6 +426,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -512,6 +519,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -600,6 +608,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -708,6 +717,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
 
@@ -762,6 +772,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -856,6 +867,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
 
@@ -906,6 +918,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
 
@@ -1174,6 +1187,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -1221,6 +1235,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -1268,6 +1283,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
   
@@ -1316,6 +1332,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
       
     } finally {
       deleteWorkspace(workspace.getId());
+      WireMock.reset();
     }
   }
 

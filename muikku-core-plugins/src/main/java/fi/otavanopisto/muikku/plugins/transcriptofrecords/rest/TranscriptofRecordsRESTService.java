@@ -2,12 +2,12 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -82,7 +82,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 @RestCatchSchoolDataExceptions
 public class TranscriptofRecordsRESTService extends PluginRESTService {
 
-  private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = -6752333351301485518L;
   private static final int MAX_COURSE_NUMBER = 15;
 
   @Inject
@@ -122,7 +122,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   private PluginSettingsController pluginSettingsController;
   
   @Inject
-  StudiesViewCourseChoiceController studiesViewCourseChoiceController;
+  private StudiesViewCourseChoiceController studiesViewCourseChoiceController;
 
   @Inject
   private GradingController gradingController;
@@ -219,6 +219,21 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     int numMandatoryCourses = 0;
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
     
+    final List<String> subjectList = new ArrayList<String>();
+    String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
+    if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
+      subjectList.addAll(Arrays.asList(commaSeparatedSubjectsOrder.split(",")));
+    }
+    subjects.sort(new Comparator<Subject>() {
+      public int compare(Subject o1, Subject o2) {
+        int i1 = subjectList.indexOf(o1.getCode());
+        int i2 = subjectList.indexOf(o2.getCode());
+        i1 = i1 == -1 ? Integer.MAX_VALUE : i1;
+        i2 = i2 == -1 ? Integer.MAX_VALUE : i2;
+        return i1 < i2 ? -1 : i1 == i2 ? 0 : 1;
+      }
+    });
+    
     for (Subject subject : subjects) {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
@@ -247,8 +262,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                     transferCredit.getGradingScaleIdentifier(),
                     transferCredit.getGradeIdentifier()
                 );
-                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
-                  grade = gradingScaleItem.getName().substring(0, 2);
+                
+                String gradeName = gradingScaleItem.getName();
+                if (!StringUtils.isBlank(gradeName)) {
+                  if (gradeName.length() > 2)
+                    grade = gradeName.substring(0, 2);
+                  else
+                    grade = gradeName;
                 }
               }
               entries.add(new VopsRESTModel.VopsItem(
@@ -365,10 +385,15 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   break;
                 }
                 GradingScaleItem gradingScaleItem = findGradingScaleItemCached(gradingScaleIdentifier, gradeIdentifier);
-                if (!StringUtils.isBlank(gradingScaleItem.getName())) {
+                String gradeName = gradingScaleItem.getName();
+                if (!StringUtils.isBlank(gradeName)) {
                   // 2 characters is enough to cover cases like "10" and "Suoritettu/Saanut opetusta" unambiguously
                   // and still looking good in the matrix
-                  grade = gradingScaleItem.getName().substring(0, 2);
+                  
+                  if (gradeName.length() > 2)
+                    grade = gradeName.substring(0, 2);
+                  else
+                    grade = gradeName;
                 }
                 
                 break;
