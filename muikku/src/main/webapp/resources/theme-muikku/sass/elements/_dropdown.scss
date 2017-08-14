@@ -13,7 +13,7 @@
 
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
-  display: none;
+  display: block;
   opacity: 0;
   position: absolute;
   left: 0;
@@ -52,10 +52,6 @@
     pointer-events: none;
     position: absolute;
     width: 0;
-  }
-
-  &.displayed {
-    display: block;
   }
 
   &.visible {

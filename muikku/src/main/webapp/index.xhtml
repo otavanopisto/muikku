@@ -2,11 +2,15 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/main_function_environment.xhtml">
-
-  <ui:param name="activeTrail" value="index" />
-  <ui:param name="controller" value="scripts/controllers/index.js" />
-  <ui:param name="stylesheet" value="css/index.css" />
+  template="/WEB-INF/templates/base.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" jsf:name="scripts/new/dist/index.js" />
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/index.css" />
+  </ui:define>
 
   <ui:define name="content">
     <div class="screen-container screen-container-full-height">

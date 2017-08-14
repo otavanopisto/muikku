@@ -85,13 +85,4 @@
   &.active {
     background-color: $color-link-active-background;
     color: $color-link-active-text;
-  }
-
-  &.link-uppercase {
-    text-transform: uppercase;
-  }
-
-  &.link-lowercase {
-    text-transform: lowercase;
-  }
 }

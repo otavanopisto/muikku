@@ -10,7 +10,7 @@ $dialog-button-close-height: 45px;
   align-items: center;
   background-color: $color-overlay-background;
   bottom: 0;
-  display: none;
+  display: flex;
   justify-content: center;
   left: 0;
   opacity: 0;
@@ -99,10 +99,6 @@ $dialog-button-close-height: 45px;
     }
   }
 
-  &.displayed {
-    display: flex;
-  }
-
   &.visible {
     opacity: 1;
   }
@@ -110,7 +106,7 @@ $dialog-button-close-height: 45px;
 
 .jumbo-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
-  display: none;
+  display: block;
   bottom: 0;
   top: 0;
   left: 0;
@@ -119,10 +115,6 @@ $dialog-button-close-height: 45px;
   background-color: $color-overlay-background;
   position: fixed;
   z-index: 9;
-  
-  &.displayed {
-    display: block;
-  }
   
   &.visible {
     opacity: 1;

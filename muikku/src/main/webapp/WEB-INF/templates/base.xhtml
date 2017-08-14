@@ -33,7 +33,6 @@
 
   <!-- jQuery UI -->
   <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/jquery-ui.min.js" />
-
   <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jqueryui/1.11.2/i18n/datepicker-fi.js" />
 
   <script defer="defer" type="text/javascript">
@@ -48,9 +47,7 @@
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery-simulate-ext/1.3.0/jquery.simulate.drag-n-drop.js"></script>
   </ui:fragment>
 
-  <script defer="defer" type="text/javascript"
-    jsf:name="/scripts/debug.js"
-    jsf:rendered="#{sessionBackingBean.testsRunning}" />
+  <script defer="defer" type="text/javascript" jsf:name="/scripts/debug.js" jsf:rendered="#{sessionBackingBean.testsRunning}" />
 
   <!-- Moment -->
   <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/moment/2.10.6/moment-with-locales.min.js" />
@@ -89,55 +86,37 @@
   <!-- locales -->
   <script defer="defer" jsf:name="scripts/gui/locales.js" />
   
-  <!-- Dust -->
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js" />
-  <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js" />
-  <script defer="defer" jsf:name="scripts/gui/dustloader.js" />
-
-  <!-- Here goes what a page needs, usually their controllers -->
-  <ui:insert name="scripts"></ui:insert>
-  
-  <!-- This controls and sets up all what this page has -->
-  <script defer="defer" jsf:name="scripts/controllers/general/base.js" />
-
   <!-- Flex Grid, DEPRECATED -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css" />
   
   <!-- Muikku icons -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.3/style.css" />
   <ui:insert name="styles"></ui:insert>
+  
+  <!-- TODO save in our own cdn -->
+  <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react.js"></script>
+  <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react/15.6.1/react-dom.js"></script>
+  <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react-transition-group/2.2.0/react-transition-group.min.js"></script>
+  <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/react-redux/5.0.5/react-redux.min.js"></script>
+  <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+  
+  <!-- Here goes what a page needs, usually their controllers -->
+  <ui:insert name="scripts"></ui:insert>
 </head>
 
 <body>
-  <div class="notification-queue">
-    <div class="notification-queue-items">
-      <ui:repeat var="message" value="#{facesContext.messageList}">
-        <ui:fragment rendered="#{message.severity.ordinal eq 0}">
-          <div data-severity="info" class="notification-queue-item notification-queue-item-info">
-            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
-          </div>
-        </ui:fragment>
-        <ui:fragment rendered="#{message.severity.ordinal eq 1}">
-          <div data-severity="warn" class="notification-queue-item notification-queue-item-warn">
-            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
-          </div>
-        </ui:fragment>
-        <ui:fragment rendered="#{message.severity.ordinal eq 2}">
-          <div data-severity="error" class="notification-queue-item notification-queue-item-error">
-            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
-          </div>
-        </ui:fragment>
-        <ui:fragment rendered="#{message.severity.ordinal eq 3}">
-          <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal">
-            <span>#{message.summary}</span><a href="javascript:void(null)"></a>
-          </div>
-        </ui:fragment>
-      </ui:repeat>
-      <h:messages globalOnly="false" style="display: none" />
-    </div>
-  </div>
-    
-  <ui:insert name="body"></ui:insert>
+  <div id="app"></div>
+  
+  <!-- TODO: please lets find a way to do this with a rest endpoint -->
+  <h:form id="language-picker" style="display:none">
+    <ui:repeat value="#{i18n.languages}" var="locale">
+      <a jsf:action="#{languageWidgetBackingBean.setLanguage(locale)}" data-locale="#{locale}">
+        #{i18n.text['plugin.navigation.language.' .concat(locale)]}
+      </a>
+    </ui:repeat>
+  </h:form>
+  <a id="locale" style="display:none">#{languageWidgetBackingBean.language}</a>
+  <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"></a>
 
   <!-- Google Analytics -->
   <script>
