@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table WorkspaceEntityFile (
+      id bigint not null auto_increment, 
+      workspaceEntity_id bigint, 
+      contentType varchar(255) not null, 
+      fileIdentifier varchar(255) not null, 
+      diskName varchar(255) not null, 
+      lastModified datetime not null, 
+      primary key (id)
+    );
+  </sql>
+  
+  <sql>
+    alter table WorkspaceEntityFile 
+      add constraint FK_WORKSPACEFILE_REF_WORKSPACEENTITY 
+      foreign key (workspaceEntity_id) references WorkspaceEntity (id);
+  </sql>
+  
+</update>

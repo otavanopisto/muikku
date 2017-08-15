@@ -1,5 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.rest;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,13 +35,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.DatatypeConverter;
+import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
+import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -50,12 +58,14 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -65,6 +75,7 @@ import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldController
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -78,6 +89,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceCompositeReply;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceDetails;
+import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFeeInfo;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialCompositeReply;
@@ -190,6 +202,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private CopiedWorkspaceEntityIdFinder copiedWorkspaceEntityIdFinder;
 
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
+  
   @Inject
   private FlagController flagController;
 
@@ -1761,6 +1776,16 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return result;
   }
+
+  private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel createRestModel(WorkspaceEntityFile file) {
+    WorkspaceEntityFileRESTModel restfile = new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceEntityFileRESTModel();
+    restfile.setContentType(file.getContentType());
+    restfile.setId(file.getId());
+    restfile.setFileIdentifier(file.getFileIdentifier());
+    restfile.setTempFileId(null);
+    restfile.setWorkspaceEntityId(file.getWorkspaceEntity());
+    return restfile;
+  }
   
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialProducer createRestModel(WorkspaceMaterialProducer materialProducer) {
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceMaterialProducer(materialProducer.getId(), materialProducer.getWorkspaceEntity().getId(), materialProducer.getName());
@@ -2417,4 +2442,94 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/workspacefile/")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceEntityFile(@PathParam("WORKSPACEID") Long workspaceId, WorkspaceEntityFileRESTModel entity) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    if (workspaceEntity == null)
+      return Response.status(Status.BAD_REQUEST).build();
+    
+    if (StringUtils.isBlank(entity.getContentType())) {
+      return Response.status(Status.BAD_REQUEST).entity("contentType is missing").build();
+    }
+    if (StringUtils.isBlank(entity.getFileIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("identifier is missing").build();
+    }
+    
+    byte[] content = null;
+    if (StringUtils.isNotBlank(entity.getTempFileId())) {
+      try {
+        content = TempFileUtils.getTempFileData(entity.getTempFileId());
+      } catch (IOException e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      }
+    }
+    else if (StringUtils.isNotBlank(entity.getBase64Data())) {
+      String base64File = entity.getBase64Data().split(",")[1];
+      content = DatatypeConverter.parseBase64Binary(base64File);
+    }
+    
+    if (content == null) {
+      return Response.status(Status.BAD_REQUEST).entity("no content was found").build();
+    }
+    
+    try {
+      WorkspaceEntityFile workspaceEntityFile = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, entity.getFileIdentifier());
+      ByteArrayInputStream contentStream = new ByteArrayInputStream(content);
+      
+      if (workspaceEntityFile == null) {
+        String diskName = fileController.createFile("workspace", contentStream);
+        workspaceEntityFile = workspaceEntityFileController.createWorkspaceEntityFile(
+            workspaceEntity, entity.getFileIdentifier(), diskName, entity.getContentType(), new Date());
+      } else {
+        fileController.updateFile("workspace", workspaceEntityFile.getDiskName(), contentStream);
+        workspaceEntityFile = workspaceEntityFileController.updateWorkspaceEntityFile(
+            workspaceEntityFile, entity.getContentType(), new Date());
+      }
+      
+      return Response.ok(createRestModel(workspaceEntityFile)).build();
+    } catch (IOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+  }
+  
+  @Inject
+  private FileController fileController;
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/workspacefile/{FILEIDENTIFIER}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getFileContent(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("FILEIDENTIFIER") String fileIdentifier, @Context Request request) {
+    // Check if the file exists
+
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    if (workspaceEntity == null)
+      return Response.status(Status.BAD_REQUEST).build();
+    
+    WorkspaceEntityFile imageFile = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, fileIdentifier);
+    if (imageFile == null)
+      return Response.status(Status.NOT_FOUND).build();
+    
+    StreamingOutput output = s -> fileController.outputFileToStream("workspace", imageFile.getDiskName(), s);
+    
+    String contentType = imageFile.getContentType();
+
+    String tagIdentifier = String.format("%d-%s-%d", imageFile.getWorkspaceEntity(), imageFile.getDiskName(), imageFile.getLastModified().getTime());
+    EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(tagIdentifier)));
+    ResponseBuilder builder = request.evaluatePreconditions(tag);
+    if (builder != null) {
+      return builder.build();
+    }
+    
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
+    return Response.ok()
+        .cacheControl(cacheControl)
+        .tag(tag)
+        .type(contentType)
+        .entity(output)
+        .build();
+  }
+  
 }
