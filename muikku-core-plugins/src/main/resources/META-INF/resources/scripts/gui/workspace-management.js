@@ -38,8 +38,8 @@
                 $(text).dialog({
                   modal: true, 
                   resizable: false,
-                  width: 1020,
-                  height: 520,
+                  width: 985,
+                  height: 440,
                   dialogClass: "workspace-frontpage-image-dialog",
                   close: function() {
                     $(this).dialog().remove();
@@ -58,8 +58,8 @@
                         type: 'square'
                       },
                       boundary: {
-                        width: 992,
-                        height: 310
+                        width: 950,
+                        height: 240
                       }
                     });
                   },
