@@ -6,8 +6,7 @@
     _create : function() {
       $(this.element).removeClass('lazyFrame');
       
-      $(this.element)      
-      .waypoint({
+      $(this.element).waypoint({
         handler : function(direction) {
             if (direction == 'down') {
               var url = $(this.element).attr('data-url');
@@ -31,8 +30,7 @@
           offset :  '100%'         
       });
       
-      $(this.element)      
-      .waypoint({           
+      $(this.element).waypoint({           
           handler: function(direction) {
           if (direction == 'up') {
             var url = $(this.element).attr('data-url');

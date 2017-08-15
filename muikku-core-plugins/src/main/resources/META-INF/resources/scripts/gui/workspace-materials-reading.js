@@ -18,7 +18,7 @@
           window.location.hash = 'p-' + workspaceMaterialId;
           scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
           $('html,body').scrollTop(scrollTop);
-          Waypoints.refreshAll();
+          Waypoint.refreshAll();
           $(window).data('scrolling', false);
         }
       });
@@ -51,8 +51,7 @@
     }).muikkuMaterialLoader('loadMaterials', $('.material-page'));
 
     
-    $('.material-page')
-    .waypoint({
+    $('.material-page').waypoint({
       handler : function(direction) {
         if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
           var workspaceMaterialId = $(this).data('workspace-material-id');
@@ -60,7 +59,7 @@
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', true);
-          Waypoints.refreshAll();
+          Waypoint.refreshAll();
           $(window).data('scrolling', false);
         }
       }, 

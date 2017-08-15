@@ -9,8 +9,7 @@
       $(this.element).removeClass('lazySwf');
       $(this.element).addClass('lazy-swf');
       
-      $(this.element)      
-      .waypoint({
+      $(this.element).waypoint({
         handler : function(direction) {
           var url = $(this.element).attr('data-url');
           if (url) {

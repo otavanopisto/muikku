@@ -1339,8 +1339,7 @@
     .muikkuMaterialLoader('loadMaterials', $('.material-page'));
 
     
-    $('.material-page')   
-    .waypoint({
+    $('.material-page').waypoint({
       handler : function(direction) {
         if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
           var workspaceMaterialId = $(this).data('workspace-material-id');
