@@ -39,15 +39,28 @@
         </div>
       </section>
       
-      <section class="flex-row workspace-management-image" style="display: none">
+      <section class="flex-row workspace-management-image">
         <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
           <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
           <div class="workspace-management-container">
-            <div class="workspace-management-image-actions">
-              <div class="icon-edit workspace-management-image-edit"></div>
-              <div class="icon-delete workspace-management-image-delete"></div>
+            <ui:fragment rendered="#{workspaceIndexBackingBean.frontPageImageUrl ne null}">
+              <div class="workspace-management-image-actions">
+	              <div class="icon-edit workspace-management-image-edit"></div>
+	              <div class="icon-delete workspace-management-image-delete"></div>
+	            </div>
+              <img src="#{workspaceIndexBackingBean.frontPageImageUrl}" />
+            </ui:fragment>
+            <ui:fragment rendered="#{workspaceIndexBackingBean.frontPageImageUrl eq null}">
+              <div class="workspace-management-image-actions">
+                <div class="icon-edit workspace-management-image-edit"></div>
+              </div>
+              <img src="/gfx/workspace-default-header.jpg" />
+            </ui:fragment>
+            <div class="workspace-frontpage-image-uploader" style="display:none;">
+              <form class="workspace-frontpage-image-form">
+                <input class="workspace-frontpage-image-input" name="file" type="file" accept="image/*"/>
+              </form>
             </div>
-            <img src="/gfx/workspace-default-header.jpg" />
           </div>
         </div>
       </section>

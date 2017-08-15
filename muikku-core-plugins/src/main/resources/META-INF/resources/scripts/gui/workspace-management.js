@@ -1,6 +1,114 @@
 (function() {
   'use strict';
   
+  $.widget("custom.workspaceFrontpageImage", {
+    _create : function() {
+      $('.workspace-frontpage-image-input').on('change', $.proxy(this._onFileInputChange, this));
+    },
+    _onFileInputChange : function (event) {
+      var file = event.target.files[0];
+      var formData = new FormData($('.workspace-frontpage-image-form')[0]);
+      
+      // Upload source image
+      
+      $.ajax({
+        url: CONTEXTPATH + '/tempFileUploadServlet',
+        type: 'POST',
+        data: formData,
+        success: $.proxy(function(xhr) {
+          mApi().workspace.workspaces.workspacefile
+            .create(42, {
+              contentType: xhr.fileContentType,
+              tempFileId: xhr.fileId,
+              fileIdentifier: 'workspace-frontpage-image-original'
+            })
+            .callback($.proxy(function(err, result) {
+
+              // Create cropping dialog
+              
+              renderDustTemplate('workspace/workspace-frontpage-image.dust', {}, $.proxy(function (text) {
+                var dialog = $(text);
+                
+                // Show cropping dialog
+                
+                $(text).dialog({
+                  modal: true, 
+                  resizable: false,
+                  width: 320,
+                  height: 460,
+                  dialogClass: "workspace-frontpage-image-dialog",
+                  close: function() {
+                    $(this).dialog().remove();
+                    $('.workspace-frontpage-image-input').val('');
+                  },
+                  open: function() {
+
+                    // Initialize Croppie
+                    
+                    var rnd = Math.floor(Math.random() * 1000) + 1
+                    $(this).find('.workspace-frontpage-image-container').croppie({
+                      url: '/rest/workspace/workspaces/42/workspacefile/front-image-original?h=' + rnd,
+                      viewport: {
+                        width: 128,
+                        height: 128,
+                        type: 'square'
+                      },
+                      boundary: {
+                        width: 256,
+                        height: 256
+                      }
+                    });
+                  },
+                  buttons: [{
+                    'text': dialog.data('button-ok-text'),
+                    'class': 'send-button',
+                    'click': function(event) {
+                      
+                      // Create thumbnails
+
+                      var saveImage = $.proxy(function(size) {
+                        $(this).find('.workspace-frontpage-image-container').croppie('result', {
+                          type: 'base64',
+                          size: {width: size},
+                          format: 'jpeg',
+                          quality: 0.8,
+                          circle: false
+                        }).then(function(data) {
+                          mApi().workspace.workspaces.workspacefile
+                            .create(42, {
+                              fileIdentifier: 'workspace-frontpage-image-' + size,
+                              contentType: 'image/jpeg',
+                              base64Data: data
+                            });
+                        });
+                      }, this);
+                      
+                      var sizes = [96, 256];
+                      for (var i = 0;  i < sizes.length; i++) {
+                        saveImage(sizes[i]);
+                      }
+                      $(this).dialog('close');
+                      window.location.reload(true);
+                    }
+                  }, {
+                    'text': dialog.data('button-cancel-text'),
+                    'class': 'cancel-button',
+                    'click': function(event) {
+                      $(this).dialog('close');
+                    }
+                  }]
+                });
+              }, this));
+              
+            }, this));
+        }, this),
+        cache: false,
+        contentType: false,
+        processData: false
+      })
+    }
+  });
+  
   $.widget("custom.workspaceManagement", {
     options: {
       workspaceEntityId: null,
@@ -326,6 +434,12 @@
       $(evaluationLink).attr('href', href + '?workspaceEntityId=' + workspaceEntityId);
       $(evaluationLink).attr('target', '_blank');
     }
+    
+    $('.workspace-frontpage-image-uploader').workspaceFrontpageImage();
+    $('.workspace-management-image-edit').on('click', $.proxy(function() {
+      $('.workspace-frontpage-image-input').click();
+    }, this));
+    
   });
   
   
