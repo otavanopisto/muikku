@@ -20,6 +20,14 @@
     var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
     var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
     var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
+
+    var MUIKKU_PERMISSIONS = {
+      FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM')},
+      GUIDER_VIEW: #{sessionBackingBean.hasEnvironmentPermission('GUIDER_VIEW')},
+      TRANSCRIPT_OF_RECORDS_VIEW: #{sessionBackingBean.hasEnvironmentPermission('TRANSCRIPT_OF_RECORDS_VIEW')},
+      EVALUATION_VIEW_INDEX: #{sessionBackingBean.hasEnvironmentPermission('EVALUATION_VIEW_INDEX')},
+      ANNOUNCER_TOOL: #{sessionBackingBean.hasEnvironmentPermission('ANNOUNCER_TOOL')}
+    }
   </script>
 
   <ui:fragment rendered="#{sessionBackingBean.bugsnagEnabled}">
@@ -114,6 +122,9 @@
         #{i18n.text['plugin.navigation.language.' .concat(locale)]}
       </a>
     </ui:repeat>
+  </h:form>
+  <h:form style="display:none">
+    <a jsf:action="#{logoutWidgetBackingBean.logout}" id="logout"></a>
   </h:form>
   <a id="locale" style="display:none">#{languageWidgetBackingBean.language}</a>
   <a id="login" style="display:none" jsf:outcome="/login.jsf?authSource=loginWidgetBackingBean.credentialessAuthSources[0]"></a>

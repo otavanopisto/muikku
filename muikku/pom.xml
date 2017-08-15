@@ -320,20 +320,6 @@
     </profile>
 
     <profile>
-<<<<<<< HEAD
-=======
-      <id>calendar-plugin</id>
-      <dependencies>
-        <dependency>
-          <groupId>fi.otavanopisto.muikku</groupId>
-          <artifactId>calendar-plugin</artifactId>
-          <version>1.1.81-SNAPSHOT</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
->>>>>>> 502419cf03f52a4603ad332bb54aa6fd2fef27f1
       <id>evaluation-plugin</id>
       <dependencies>
         <dependency>

@@ -6,12 +6,14 @@ export default class Dropdown extends React.Component {
     classNameExtension: PropTypes.string.isRequired,
     classNameSuffix: PropTypes.string.isRequired,
     children: PropTypes.element.isRequired,
-    items: PropTypes.arrayOf(PropTypes.element).isRequired
+    items: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.element, PropTypes.func])).isRequired
   }
   constructor(props){
     super(props);
     this.onOpen = this.onOpen.bind(this);
     this.beforeClose = this.beforeClose.bind(this);
+    this.close = this.close.bind(this);
+    
     this.state = {
       top: null,
       left: null,
@@ -53,6 +55,9 @@ export default class Dropdown extends React.Component {
     });
     setTimeout(removeFromDOM, 300);
   }
+  close(){
+    this.refs.portal.closePortal();
+  }
   render(){
     return <Portal ref="portal" openByClickOn={React.cloneElement(this.props.children, { ref: "activator" })}
       closeOnEsc closeOnOutsideClick closeOnScroll onOpen={this.onOpen} beforeClose={this.beforeClose}>
@@ -65,8 +70,9 @@ export default class Dropdown extends React.Component {
         <span className="arrow" ref="arrow" style={{left: this.state.arrowLeft, right: this.state.arrowRight}}></span>
         <div className="dropdown-container">
           {this.props.items.map((item, index)=>{
+            let element = typeof item === "function" ? item(this.close) : item;
             return (<div className="dropdown-item" key={index}>
-              {item}
+              {element}
             </div>);
           })}
         </div>

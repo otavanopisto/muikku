@@ -100,6 +100,9 @@ export default class Menu extends React.Component {
                 <div className="menu-body">
                   <ul className="menu-items">
                     {this.props.items.map((item, index)=>{
+                      if (!item){
+                        return null;
+                      }
                       return <li className="menu-item" key={index}>{item}</li>
                     })}
                   </ul>

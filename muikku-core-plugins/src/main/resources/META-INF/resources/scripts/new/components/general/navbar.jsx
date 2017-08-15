@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import LanguagePicker from './navbar/language-picker.jsx';
+import ProfileItem from './navbar/profile-item.jsx';
 import Menu from './navbar/menu.jsx';
 
 export default class Navbar extends React.Component {
@@ -40,20 +41,24 @@ export default class Navbar extends React.Component {
                   <div className="navbar-items">
                     <ul className="navbar-items-container">
                       <li className={`navbar-item ${this.props.classNameExtension}-navbar-item-menu-button`}>
-                        <a className="link link-icon link-full" onClick={this.openMenu}>
+                        <a className={`${this.props.classNameExtension} link link-icon link-full`} onClick={this.openMenu}>
                           <span className="icon icon-navicon"></span>
                         </a>
                       </li>
                       {this.props.navbarItems.map((item, index)=>{
+                        if (!item){
+                          return null;
+                        }
                         return (<li key={index} className={`navbar-item ${this.props.classNameExtension}-navbar-item-${item.classNameSuffix}`}>
                           {item.item}
                         </li>);
-                      })}
+                      }).filter(item=>!!item)}
                     </ul>
                   </div>
                   <div className="navbar-default-options">
                     <div className="navbar-default-options-container">
                       {this.props.defaultOptions}
+                      <ProfileItem classNameExtension={this.props.classNameExtension}/>
                       <LanguagePicker classNameExtension={this.props.classNameExtension} />
                     </div>
                   </div>
