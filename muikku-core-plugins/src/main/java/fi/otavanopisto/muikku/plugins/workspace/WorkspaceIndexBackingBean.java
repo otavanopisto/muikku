@@ -141,9 +141,10 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     }
 
     WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped");
-    frontPageImageUrl = customFrontImage != null ? 
+    hasCustomFrontPageImage = customFrontImage != null;
+    customFrontPageImageUrl = hasCustomFrontPageImage ? 
         String.format("/rest/workspace/workspaces/%d/workspacefile/workspace-frontpage-image-cropped", workspaceEntity.getId()) : 
-        "/gfx/workspace-default-header.jpg";
+        null;
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     announcementsBaseUrl = String.format("/workspace/%s/announcements", workspaceUrlName);
@@ -276,12 +277,12 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     this.announcementsBaseUrl = announcementsBaseUrl;
   }
 
-  public String getFrontPageImageUrl() {
-    return frontPageImageUrl;
+  public String getCustomFrontPageImageUrl() {
+    return customFrontPageImageUrl;
   }
 
-  public void setFrontPageImageUrl(String frontPageImageUrl) {
-    this.frontPageImageUrl = frontPageImageUrl;
+  public boolean getHasCustomFrontPageImage() {
+    return hasCustomFrontPageImage;
   }
 
   private Long workspaceId;
@@ -305,5 +306,6 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private List<ContentNode> contentNodes;
   private String materialsBaseUrl;
   private String announcementsBaseUrl;
-  private String frontPageImageUrl;
+  private String customFrontPageImageUrl;
+  private boolean hasCustomFrontPageImage;
 }

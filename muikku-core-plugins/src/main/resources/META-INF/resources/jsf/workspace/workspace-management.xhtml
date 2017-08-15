@@ -52,14 +52,14 @@
         <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
           <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
           <div class="workspace-management-container">
-            <ui:fragment rendered="#{workspaceIndexBackingBean.frontPageImageUrl ne null}">
+            <ui:fragment rendered="#{workspaceIndexBackingBean.hasCustomFrontPageImage}">
               <div class="workspace-management-image-actions">
 	              <div class="icon-edit workspace-management-image-edit"></div>
 	              <div class="icon-delete workspace-management-image-delete"></div>
 	            </div>
-              <img src="#{workspaceIndexBackingBean.frontPageImageUrl}" />
+              <img src="#{workspaceIndexBackingBean.customFrontPageImageUrl}" />
             </ui:fragment>
-            <ui:fragment rendered="#{workspaceIndexBackingBean.frontPageImageUrl eq null}">
+            <ui:fragment rendered="#{!workspaceIndexBackingBean.hasCustomFrontPageImage}">
               <div class="workspace-management-image-actions">
                 <div class="icon-edit workspace-management-image-edit"></div>
               </div>
