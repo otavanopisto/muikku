@@ -2,12 +2,16 @@
   'use strict';
   
   $.widget("custom.workspaceFrontpageImage", {
+    options: {
+      workspaceEntityId: null
+    },
     _create : function() {
       $('.workspace-frontpage-image-input').on('change', $.proxy(this._onFileInputChange, this));
     },
     _onFileInputChange : function (event) {
       var file = event.target.files[0];
       var formData = new FormData($('.workspace-frontpage-image-form')[0]);
+      var workspaceId = this.options.workspaceEntityId;
       
       // Upload source image
       
@@ -17,7 +21,7 @@
         data: formData,
         success: $.proxy(function(xhr) {
           mApi().workspace.workspaces.workspacefile
-            .create(42, {
+            .create(workspaceId, {
               contentType: xhr.fileContentType,
               tempFileId: xhr.fileId,
               fileIdentifier: 'workspace-frontpage-image-original'
@@ -75,7 +79,7 @@
                           circle: false
                         }).then(function(data) {
                           mApi().workspace.workspaces.workspacefile
-                            .create(42, {
+                            .create(workspaceId, {
                               fileIdentifier: 'workspace-frontpage-image-' + size,
                               contentType: 'image/jpeg',
                               base64Data: data
@@ -435,7 +439,9 @@
       $(evaluationLink).attr('target', '_blank');
     }
     
-    $('.workspace-frontpage-image-uploader').workspaceFrontpageImage();
+    $('.workspace-frontpage-image-uploader').workspaceFrontpageImage({
+      workspaceEntityId: workspaceEntityId
+    });
     $('.workspace-management-image-edit').on('click', $.proxy(function() {
       $('.workspace-frontpage-image-input').click();
     }, this));
