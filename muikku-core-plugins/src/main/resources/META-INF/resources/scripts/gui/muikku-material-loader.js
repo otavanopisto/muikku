@@ -134,7 +134,7 @@
               readOnlyFields: this.options.readOnlyFields,
               fieldlessMode: this.options.fieldlessMode
             });
-            $.waypoints('refresh');
+            Waypoint.refreshAll();
           }, this));
         }
         else {
@@ -172,7 +172,7 @@
         case 'folder':
           renderDustTemplate(this.options.dustTemplate, {id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), viewRestricted: viewRestricted, data: { title: $(page).attr('data-material-title') } }, $.proxy(function (text) {
             $(this).html(text);
-            $.waypoints('refresh');
+            Waypoint.refreshAll();
           }, page));
         break;
         default:
@@ -213,13 +213,16 @@
                 // PDF and SWF lazy loading 
                 $(this).find('.lazyPdf').lazyPdf();
                 $(this).find('.lazySwf').lazySwf();
-                $.waypoints('refresh');
+                Waypoint.refreshAll();
               }, page));
             }, this));
           }
         break;
       }
     },
+
+    
+    
     
     loadMaterials: function(pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
