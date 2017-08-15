@@ -70,29 +70,22 @@
                       
                       // Create thumbnails
 
-                      var saveImage = $.proxy(function(size) {
-                        $(this).find('.workspace-frontpage-image-container').croppie('result', {
-                          type: 'base64',
-                          size: {width: size},
-                          format: 'jpeg',
-                          quality: 0.8,
-                          circle: false
-                        }).then(function(data) {
-                          mApi().workspace.workspaces.workspacefile
-                            .create(workspaceId, {
-                              fileIdentifier: 'workspace-frontpage-image-' + size,
-                              contentType: 'image/jpeg',
-                              base64Data: data
-                            });
-                        });
-                      }, this);
-                      
-                      var sizes = [96, 256];
-                      for (var i = 0;  i < sizes.length; i++) {
-                        saveImage(sizes[i]);
-                      }
-                      $(this).dialog('close');
-                      window.location.reload(true);
+                      $(this).find('.workspace-frontpage-image-container').croppie('result', {
+                        type: 'base64',
+//                        size: {width: size},
+                        format: 'jpeg',
+                        quality: 0.8,
+                        circle: false
+                      }).then(function(data) {
+                        mApi().workspace.workspaces.workspacefile
+                          .create(workspaceId, {
+                            fileIdentifier: 'workspace-frontpage-image-cropped',
+                            contentType: 'image/jpeg',
+                            base64Data: data
+                          });
+                        $(this).dialog('close');
+                        window.location.reload(true);
+                      });
                     }
                   }, {
                     'text': dialog.data('button-cancel-text'),

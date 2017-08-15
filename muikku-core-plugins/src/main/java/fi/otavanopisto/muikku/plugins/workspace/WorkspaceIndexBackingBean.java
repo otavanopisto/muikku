@@ -140,9 +140,9 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
       schoolDataBridgeSessionController.endSystemSession();
     }
 
-    WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "front-image-original");
+    WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped");
     frontPageImageUrl = customFrontImage != null ? 
-        String.format("/rest/workspace/workspaces/%d/workspacefile/front-image-original", workspaceEntity.getId()) : 
+        String.format("/rest/workspace/workspaces/%d/workspacefile/workspace-frontpage-image-cropped", workspaceEntity.getId()) : 
         "/gfx/workspace-default-header.jpg";
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
