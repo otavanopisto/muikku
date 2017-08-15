@@ -38,8 +38,8 @@
                 $(text).dialog({
                   modal: true, 
                   resizable: false,
-                  width: 320,
-                  height: 460,
+                  width: 1020,
+                  height: 520,
                   dialogClass: "workspace-frontpage-image-dialog",
                   close: function() {
                     $(this).dialog().remove();
@@ -51,15 +51,15 @@
                     
                     var rnd = Math.floor(Math.random() * 1000) + 1
                     $(this).find('.workspace-frontpage-image-container').croppie({
-                      url: '/rest/workspace/workspaces/42/workspacefile/front-image-original?h=' + rnd,
+                      url: '/rest/workspace/workspaces/' + workspaceId + '/workspacefile/workspace-frontpage-image-original?h=' + rnd,
                       viewport: {
-                        width: 128,
-                        height: 128,
+                        width: 950,
+                        height: 240,
                         type: 'square'
                       },
                       boundary: {
-                        width: 256,
-                        height: 256
+                        width: 992,
+                        height: 310
                       }
                     });
                   },
