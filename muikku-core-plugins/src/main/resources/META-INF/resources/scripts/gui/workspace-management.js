@@ -82,9 +82,11 @@
                             fileIdentifier: 'workspace-frontpage-image-cropped',
                             contentType: 'image/jpeg',
                             base64Data: data
+                          })
+                          .callback(function () {
+                            $(this).dialog('close');
+                            window.location.reload(true);
                           });
-                        $(this).dialog('close');
-                        window.location.reload(true);
                       });
                     }
                   }, {
