@@ -438,6 +438,39 @@
     $('.workspace-management-image-edit').on('click', $.proxy(function() {
       $('.workspace-frontpage-image-input').click();
     }, this));
+    $('.workspace-management-image-delete').on('click', $.proxy(function() {
+      var removeCroppedCall = $.proxy(function (callback) {
+        mApi().workspace.workspaces.workspacefile
+          .del(workspaceEntityId, 'workspace-frontpage-image-cropped')
+          .callback($.proxy(function(err, result) {
+            if (err)
+              callback(err);
+            else
+              callback(undefined);
+          })
+        );
+      });
+
+      var removeOriginalCall = $.proxy(function (callback) {
+        mApi().workspace.workspaces.workspacefile
+          .del(workspaceEntityId, 'workspace-frontpage-image-original')
+          .callback($.proxy(function(err, result) {
+            if (err)
+              callback(err);
+            else
+              callback(undefined);
+          })
+        );
+      });
+      
+      var removeCalls = [removeCroppedCall, removeOriginalCall];
+      async.parallel(removeCalls, function(err) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else
+          window.location.reload(true);
+      });
+    }, this));
     
   });
   
