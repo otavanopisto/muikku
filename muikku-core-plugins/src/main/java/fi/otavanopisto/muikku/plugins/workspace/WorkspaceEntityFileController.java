@@ -25,4 +25,8 @@ public class WorkspaceEntityFileController {
       String contentType, Date lastModified) {
     return workspaceEntityFileDAO.update(workspaceEntityFile, contentType, lastModified);
   }
+
+  public void deleteWorkspaceEntityFile(WorkspaceEntityFile workspaceEntityFile) {
+    workspaceEntityFileDAO.delete(workspaceEntityFile);
+  }
 }

@@ -208,6 +208,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private FlagController flagController;
 
+  @Inject
+  private FileController fileController;
+  
   @GET
   @Path("/workspaceTypes")
   @RESTPermit (requireLoggedIn = false, handling = Handling.UNSECURED)
@@ -2445,7 +2448,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEID}/workspacefile/")
   @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
-  public Response createWorkspaceEntityFile(@PathParam("WORKSPACEID") Long workspaceId, WorkspaceEntityFileRESTModel entity) {
+  public Response createWorkspaceFile(@PathParam("WORKSPACEID") Long workspaceId, WorkspaceEntityFileRESTModel entity) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
     if (workspaceEntity == null)
       return Response.status(Status.BAD_REQUEST).build();
@@ -2494,13 +2497,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
   }
   
-  @Inject
-  private FileController fileController;
-  
   @GET
   @Path("/workspaces/{WORKSPACEID}/workspacefile/{FILEIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE)
-  public Response getFileContent(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("FILEIDENTIFIER") String fileIdentifier, @Context Request request) {
+  public Response getWorkspaceFileContent(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("FILEIDENTIFIER") String fileIdentifier, @Context Request request) {
     // Check if the file exists
 
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
@@ -2529,6 +2529,28 @@ public class WorkspaceRESTService extends PluginRESTService {
         .tag(tag)
         .type(contentType)
         .entity(output)
+        .build();
+  }
+  
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/workspacefile/{FILEIDENTIFIER}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response deleteWorkspaceFileContent(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("FILEIDENTIFIER") String fileIdentifier, @Context Request request) {
+    // Check if the file exists
+
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    if (workspaceEntity == null)
+      return Response.status(Status.BAD_REQUEST).build();
+    
+    WorkspaceEntityFile workspaceEntityFile = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, fileIdentifier);
+    if (workspaceEntityFile == null)
+      return Response.status(Status.NOT_FOUND).build();
+
+    fileController.deleteFile("workspace", workspaceEntityFile.getDiskName());
+    workspaceEntityFileController.deleteWorkspaceEntityFile(workspaceEntityFile);
+    
+    return Response
+        .noContent()
         .build();
   }
   
