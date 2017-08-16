@@ -2453,6 +2453,10 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null)
       return Response.status(Status.BAD_REQUEST).build();
     
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     if (StringUtils.isBlank(entity.getContentType())) {
       return Response.status(Status.BAD_REQUEST).entity("contentType is missing").build();
     }
@@ -2501,8 +2505,6 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEID}/workspacefile/{FILEIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE)
   public Response getWorkspaceFileContent(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("FILEIDENTIFIER") String fileIdentifier, @Context Request request) {
-    // Check if the file exists
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
     if (workspaceEntity == null)
       return Response.status(Status.BAD_REQUEST).build();
@@ -2536,11 +2538,13 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEID}/workspacefile/{FILEIDENTIFIER}")
   @RESTPermit (handling = Handling.INLINE)
   public Response deleteWorkspaceFileContent(@PathParam("WORKSPACEID") Long workspaceId, @PathParam("FILEIDENTIFIER") String fileIdentifier, @Context Request request) {
-    // Check if the file exists
-
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
     if (workspaceEntity == null)
       return Response.status(Status.BAD_REQUEST).build();
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     WorkspaceEntityFile workspaceEntityFile = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, fileIdentifier);
     if (workspaceEntityFile == null)
