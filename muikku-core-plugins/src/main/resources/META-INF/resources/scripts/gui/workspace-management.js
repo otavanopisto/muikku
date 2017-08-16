@@ -375,19 +375,50 @@
     },
     
     _onWorkspaceFrontPageImageDeleteClick(event) {
+      var workspaceEntityId = this.options.workspaceEntityId;
       renderDustTemplate('workspace/workspace-frontpage-image-delete-confirm.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
           resizable: false,
-          width: 360,
+          width: 500,
           dialogClass: "workspace-frontpage-image-delete-confirm-dialog",
           buttons: [{
             'text': dialog.data('button-delete-text'),
             'class': 'delete-button',
             'click': function(event) {
               $(this).dialog().remove();
+              var removeCroppedCall = $.proxy(function (callback) {
+                mApi().workspace.workspaces.workspacefile
+                  .del(workspaceEntityId, 'workspace-frontpage-image-cropped')
+                  .callback($.proxy(function(err, result) {
+                    if (err)
+                      callback(err);
+                    else
+                      callback(undefined);
+                  })
+                );
+              });
 
+              var removeOriginalCall = $.proxy(function (callback) {
+                mApi().workspace.workspaces.workspacefile
+                  .del(workspaceEntityId, 'workspace-frontpage-image-original')
+                  .callback($.proxy(function(err, result) {
+                    if (err)
+                      callback(err);
+                    else
+                      callback(undefined);
+                  })
+                );
+              });
+              
+              var removeCalls = [removeCroppedCall, removeOriginalCall];
+              async.parallel(removeCalls, function(err) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else
+                  window.location.reload(true);
+              });
             }
           }, {
             'text': dialog.data('button-cancel-text'),
@@ -465,39 +496,6 @@
     });
     $('.workspace-management-image-edit').on('click', $.proxy(function() {
       $('.workspace-frontpage-image-input').click();
-    }, this));
-    $('.workspace-management-image-delete').on('click', $.proxy(function() {
-      var removeCroppedCall = $.proxy(function (callback) {
-        mApi().workspace.workspaces.workspacefile
-          .del(workspaceEntityId, 'workspace-frontpage-image-cropped')
-          .callback($.proxy(function(err, result) {
-            if (err)
-              callback(err);
-            else
-              callback(undefined);
-          })
-        );
-      });
-
-      var removeOriginalCall = $.proxy(function (callback) {
-        mApi().workspace.workspaces.workspacefile
-          .del(workspaceEntityId, 'workspace-frontpage-image-original')
-          .callback($.proxy(function(err, result) {
-            if (err)
-              callback(err);
-            else
-              callback(undefined);
-          })
-        );
-      });
-      
-      var removeCalls = [removeCroppedCall, removeOriginalCall];
-      async.parallel(removeCalls, function(err) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else
-          window.location.reload(true);
-      });
     }, this));
     
   });
