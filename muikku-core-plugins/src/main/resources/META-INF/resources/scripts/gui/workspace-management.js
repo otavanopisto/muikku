@@ -131,6 +131,8 @@
       
       this.element.on("click", ".copy-workspace-link", $.proxy(this._onCopyCourseClick, this));
       
+      this.element.on("click", ".workspace-management-image-delete", $.proxy(this._onWorkspaceFrontPageImageDeleteClick, this));
+      
       var loader = $('<div>')
         .addClass('loading')
         .appendTo(this.element);
@@ -372,6 +374,32 @@
       event.preventDefault();
     },
     
+    _onWorkspaceFrontPageImageDeleteClick(event) {
+      renderDustTemplate('workspace/workspace-frontpage-image-delete-confirm.dust', { }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          resizable: false,
+          width: 360,
+          dialogClass: "workspace-frontpage-image-delete-confirm-dialog",
+          buttons: [{
+            'text': dialog.data('button-delete-text'),
+            'class': 'delete-button',
+            'click': function(event) {
+              $(this).dialog().remove();
+
+            }
+          }, {
+            'text': dialog.data('button-cancel-text'),
+            'class': 'cancel-button',
+            'click': function(event) {
+              $(this).dialog().remove();
+            }
+          }]
+        });
+      }, this));
+    },
+    
     _onSaveClick: function (event) {      
       event.preventDefault();
       
@@ -440,6 +468,5 @@
     }, this));
     
   });
-  
-  
+
 }).call(this);
