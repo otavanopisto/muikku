@@ -68,11 +68,11 @@
                     'class': 'send-button',
                     'click': function(event) {
                       
-                      // Create thumbnails
+                      // Create image
 
                       $(this).find('.workspace-frontpage-image-container').croppie('result', {
                         type: 'base64',
-//                        size: {width: size},
+                        size: {width: 950, height: 240},
                         format: 'jpeg',
                         quality: 0.8,
                         circle: false
