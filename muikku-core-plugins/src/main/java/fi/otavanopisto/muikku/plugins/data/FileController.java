@@ -41,9 +41,9 @@ public class FileController {
    * @throws IOException if I/O exception occurs while creating the file.
    */
   public String createFile(String module, InputStream content) throws IOException {
-    String fileUuid = UUID.randomUUID().toString();
+    String fileName = UUID.randomUUID().toString();
     
-    return updateFile(module, fileUuid, content);
+    return updateFile(module, fileName, content);
   }
   
   /**
@@ -53,17 +53,17 @@ public class FileController {
    * Returns the file name.
    * 
    * @param module module/directory to save the file under
-   * @param uuid file name
+   * @param fileName file name
    * @param content file content
    * @return name of the created file
    * @throws IOException if I/O exception occurs while creating the file.
    */
-  public String updateFile(String module, String uuid, InputStream content) throws IOException {
-    File file = Paths.get(getFilePath(module), uuid).toFile();
+  public String updateFile(String module, String fileName, InputStream content) throws IOException {
+    File file = Paths.get(getFilePath(module), fileName).toFile();
     try {
       FileUtils.copyInputStreamToFile(content, file);
       
-      return uuid;
+      return fileName;
     } catch (IOException ex) {
       file.delete();
       throw ex;
@@ -74,15 +74,15 @@ public class FileController {
    * Writes file contents to stream.
    * 
    * @param module module where the file is stored
-   * @param uuid file name
+   * @param fileName file name
    * @param stream output stream
    */
-  public void outputFileToStream(String module, String uuid, OutputStream stream) {
-    if (!UUID_PATTERN.matcher(uuid).matches()) {
+  public void outputFileToStream(String module, String fileName, OutputStream stream) {
+    if (!UUID_PATTERN.matcher(fileName).matches()) {
       throw new RuntimeException("File name is not a valid UUID");
     }
     
-    File file = Paths.get(getFilePath(module), uuid).toFile();
+    File file = Paths.get(getFilePath(module), fileName).toFile();
     try {
       FileUtils.copyFile(file, stream);
     } catch (IOException e) {
@@ -91,6 +91,22 @@ public class FileController {
     }
   }
 
+  /**
+   * Deletes file from disk.
+   * 
+   * @param module module to delete from
+   * @param fileName file name for the file to delete
+   */
+  public void deleteFile(String module, String fileName) {
+    File file = Paths.get(getFilePath(module), fileName).toFile();
+    try {
+      file.delete();
+    } catch (Exception e) {
+      // Wrap with unchecked exception to adhere to StreamingOutput interface
+      throw new RuntimeException(e);
+    }
+  }
+  
   private String getFilePath(String module) {
     String basePath = settingsController.getSetting("fileStoragePath");
     if (StringUtils.isBlank(basePath)) {
