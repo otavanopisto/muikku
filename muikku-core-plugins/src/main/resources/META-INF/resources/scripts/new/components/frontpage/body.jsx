@@ -361,7 +361,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(FrontpageBody);

@@ -6,7 +6,8 @@ export default class Menu extends React.Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    items: PropTypes.arrayOf(PropTypes.element).isRequired
+    items: PropTypes.arrayOf(PropTypes.element).isRequired,
+    classNameExtension: PropTypes.string.isRequired
   }
   constructor(props){
     super(props);
@@ -91,7 +92,7 @@ export default class Menu extends React.Component {
     }, 300);
   }
   render(){
-    return (<div className={`menu ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
+    return (<div className={`${this.props.classNameExtension} menu ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
               onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu">
              <div className="menu-container" ref="menuContainer" style={{left: this.state.drag}}>
                 <div className="menu-header">

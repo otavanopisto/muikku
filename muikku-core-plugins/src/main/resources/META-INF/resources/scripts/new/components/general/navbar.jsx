@@ -65,7 +65,7 @@ export default class Navbar extends React.Component {
                   </div>
                 </div>
               </nav>
-              <Menu open={this.state.isMenuOpen} onClose={this.closeMenu} items={this.props.menuItems}/>
+              <Menu open={this.state.isMenuOpen} onClose={this.closeMenu} items={this.props.menuItems} classNameExtension={this.props.classNameExtension}/>
             </div>
             );
   }
