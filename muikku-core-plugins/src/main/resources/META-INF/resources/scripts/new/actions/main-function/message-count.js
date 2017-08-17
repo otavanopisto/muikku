@@ -1,3 +1,5 @@
+import actions from '../base/notifications';
+
 export default {
   updateMessageCount(){
     return (dispatch, getState)=>{
@@ -7,10 +9,14 @@ export default {
         .cacheClear()
         .read()
         .callback(function (err, result) {
-          dispatch({
-            type: "UPDATE_MESSAGE_COUNT",
-            payload: result
-          });
+          if( err ){
+            dispatch(actions.displayNotification(err.message, 'error'));
+          } else {
+            dispatch({
+              type: "UPDATE_MESSAGE_COUNT",
+              payload: result
+            });
+          }
         });
     }
   }

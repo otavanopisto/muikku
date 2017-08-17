@@ -1,7 +1,7 @@
 import {logger} from 'redux-logger';
 import thunk from 'redux-thunk';
 import React from 'react';
-import {Provider} from 'react-redux';
+import {Provider, connect} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
 import {render} from 'react-dom';
 

@@ -14,4 +14,6 @@ runApp(reducer, App, (store)=>{
   store.dispatch(actions.messageCount.updateMessageCount());
   store.dispatch(actions.announcements.updateAnnouncements());
   store.dispatch(actions.lastWorkspace.updateLastWorkspace());
+  store.dispatch(actions.workspaces.updateWorkspaces());
+  store.dispatch(actions.lastMessages.updateLastMessages(6));
 });

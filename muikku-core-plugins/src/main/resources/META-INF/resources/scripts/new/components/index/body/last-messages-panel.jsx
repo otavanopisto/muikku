@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import Link from '../../general/link.jsx';
 
 class LastMessagesPanel extends React.Component {
   render(){
@@ -8,14 +9,32 @@ class LastMessagesPanel extends React.Component {
         <span className="icon icon-envelope"></span>
         <span>{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
-      <div data-controller-widget="panel-last-messages"></div>
+      {this.props.lastMessages ? (
+        <div className="index item-list index-item-list-panel-last-messages">
+          {this.props.lastMessages.map((message)=>{
+            return (<Link key={message.id} className={`item-list-item ${message.unreadMessagesInThread ? "item-list-item-unread" : ""}`}
+                    href={`/communicator#inbox/${message.communicatorMessageId}`}>
+              <span className={`icon icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
+              <span className="text item-list-text-body item-list-text-body-multiline">
+                {message.caption}
+                <span className="index text index-text-last-message-date">
+                  {this.props.i18n.time.format(message.created)}
+                </span>
+              </span>
+            </Link>);
+          })}
+        </div>
+      ) : (
+        <div className="index text index-text-panel-no-last-messages">{this.props.i18n.text.get("plugin.frontPage.messages.noMessages")}</div>
+      )}
     </div>);
   }
 }
 
 function mapStateToProps(state){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    lastMessages: state.lastMessages
   }
 };
 
