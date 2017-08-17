@@ -9,6 +9,8 @@
 //                  </div>
 //                </div>
 
+import React from 'react';
+
 //TODO not implemented
 //on the top the previous piece of code
 export default class ImportantPanel extends React.Component {

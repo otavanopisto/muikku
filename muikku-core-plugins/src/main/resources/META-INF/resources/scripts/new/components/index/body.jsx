@@ -7,6 +7,8 @@ import ImportantPanel from './body/important-panel.jsx';
 import LastMessagesPanel from './body/last-messages-panel.jsx';
 import WorkspacesPanel from './body/workspaces-panel.jsx';
 
+import React from 'react';
+
 export default class IndexBody extends React.Component {
   render(){
     return (<div className="embed embed-full">

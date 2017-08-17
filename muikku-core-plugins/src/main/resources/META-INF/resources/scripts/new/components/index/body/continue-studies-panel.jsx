@@ -2,10 +2,14 @@
 //You see those language strings...
 
 import Link from '../../general/link.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
 
 class ContinueStudiesPanel extends React.Component {
   render(){
     if (!this.props.status.loggedIn){
+      return null;
+    } else if (!this.props.lastWorkspace){
       return null;
     }
     return (<div className="ordered-container-item index panel">
@@ -13,15 +17,13 @@ class ContinueStudiesPanel extends React.Component {
         <span className="icon icon-revert"></span>
         <span>{this.props.i18n.text.get('plugin.frontPage.lastWorkspace.continueStudiesLink')}</span>
       </div>
-      {this.props.lastWorkspace ? (
-        <h2 className="index text index-text-panel-continue-studies-workspace-name">
-          {this.props.lastWorkspace.workspaceName}
-        </h2>
-       ) : null}
-      {this.props.lastWorkspace ? (<span className="index text index-text-panel-continue-studies">
-         Olit vimeksi sivulla{" "}<b><i>{this.props.lastWorkspace.materialName}</i></b>{" "}
-         <Link href={this.props.lastWorkspace.url}>Jatka opintoja</Link>
-       </span>) : null}
+      <h2 className="index text index-text-panel-continue-studies-workspace-name">
+        {this.props.lastWorkspace.workspaceName}
+      </h2>
+      <span className="index text index-text-panel-continue-studies">
+        Olit vimeksi sivulla{" "}<b><i>{this.props.lastWorkspace.materialName}</i></b>{" "}
+        <Link href={this.props.lastWorkspace.url}>Jatka opintoja</Link>
+      </span>
     </div>);
   }
 }
@@ -38,7 +40,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ContinueStudiesPanel);

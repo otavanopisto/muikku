@@ -1,5 +1,7 @@
 import FrontpageNavbar from './navbar.jsx';
 import FrontpageFeed from './feed.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
 
 class FrontpageBody extends React.Component {
   componentDidMount(){

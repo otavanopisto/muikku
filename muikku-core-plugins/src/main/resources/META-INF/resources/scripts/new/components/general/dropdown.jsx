@@ -1,5 +1,6 @@
 import Portal from './portal.jsx';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 export default class Dropdown extends React.Component {
   static propTypes = {

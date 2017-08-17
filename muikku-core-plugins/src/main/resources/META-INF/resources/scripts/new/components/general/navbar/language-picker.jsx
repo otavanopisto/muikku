@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import actions from '../../../actions/base/locales';
 import Dropdown from '../dropdown.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 class LanguagePicker extends React.Component {
   static propTypes = {
@@ -26,10 +29,10 @@ function mapStateToProps(state){
 };
 
 const mapDispatchToProps = (dispatch)=>{
-  return Redux.bindActionCreators(actions, dispatch);
+  return bindActionCreators(actions, dispatch);
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LanguagePicker);

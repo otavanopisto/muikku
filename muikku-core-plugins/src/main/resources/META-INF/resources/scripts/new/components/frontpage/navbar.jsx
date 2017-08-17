@@ -2,6 +2,8 @@ import Navbar from '../general/navbar.jsx';
 import Link from '../general/link.jsx';
 import LoginButton from '../base/login-button.jsx';
 import ForgotPasswordDialog from '../base/forgot-password-dialog.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
 
 class FrontpageNavbar extends React.Component {
   constructor(props){
@@ -54,7 +56,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(FrontpageNavbar);

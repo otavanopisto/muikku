@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react';
 
 export default class ScreenContainer extends React.Component {
   static propTypes = {

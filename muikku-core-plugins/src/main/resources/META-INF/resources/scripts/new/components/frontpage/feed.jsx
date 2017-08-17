@@ -1,5 +1,6 @@
 import Feed from '../general/feed.jsx';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 export default class FrontpageFeed extends React.Component {
   static propTypes = {

@@ -1,4 +1,6 @@
 import Link from '../../general/link.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
 
 class AnnouncementsPanel extends React.Component {
   render(){
@@ -41,7 +43,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncementsPanel);

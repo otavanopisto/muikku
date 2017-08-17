@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import Portal from './portal.jsx';
+import React from 'react';
 
 export default class Dialog extends React.Component {
   static propTypes = {

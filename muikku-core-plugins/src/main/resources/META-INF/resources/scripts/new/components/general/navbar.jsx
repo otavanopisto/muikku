@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import LanguagePicker from './navbar/language-picker.jsx';
 import ProfileItem from './navbar/profile-item.jsx';
 import Menu from './navbar/menu.jsx';
+import React from 'react';
 
 export default class Navbar extends React.Component {
   constructor(props){

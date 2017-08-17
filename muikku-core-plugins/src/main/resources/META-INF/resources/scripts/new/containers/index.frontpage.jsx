@@ -1,5 +1,6 @@
 import Notifications from '../components/base/notifications.jsx';
 import Body from '../components/frontpage/body.jsx';
+import React from 'react';
 
 export default class IndexFrontpage extends React.Component {
   render(){

@@ -1,11 +1,14 @@
-import {logger} from './debug/redux-logger';
-import thunk from 'redux-thunk'
+import {logger} from 'redux-logger';
+import thunk from 'redux-thunk';
+import React from 'react';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddleware} from 'redux';
+import {render} from 'react-dom';
 
 export default function runApp(reducer, App, callback){
-  let store = Redux.createStore(reducer, Redux.applyMiddleware(logger, thunk));
-  let Provider = ReactRedux.Provider;
+  let store = createStore(reducer, applyMiddleware(logger, thunk));
 
-  ReactDOM.render(<Provider store={store}>
+  render(<Provider store={store}>
     <App/>
   </Provider>, document.querySelector("#app"));
   
@@ -28,17 +31,17 @@ export default function runApp(reducer, App, callback){
     }
   }
   
-  const oConnect = ReactRedux.connect;
-  ReactRedux.connect = function(mapStateToProps, mapDispatchToProps){
-    return oConnect((state)=>{
-      let value = mapStateToProps(state);
-      Object.keys(value).forEach((key)=>{
-        if (typeof value[key] === "undefined"){
-          throw new Error("Missing state value for key " + key + " you most likely forgot to combine the reducers within the root reducer file");
-        }
-      });
-    }, mapDispatchToProps);
-  }
+//  const oConnect = ReactRedux.connect;
+//  ReactRedux.connect = function(mapStateToProps, mapDispatchToProps){
+//    return oConnect((state)=>{
+//      let value = mapStateToProps(state);
+//      Object.keys(value).forEach((key)=>{
+//        if (typeof value[key] === "undefined"){
+//          throw new Error("Missing state value for key " + key + " you most likely forgot to combine the reducers within the root reducer file");
+//        }
+//      });
+//    }, mapDispatchToProps);
+//  }
   
   callback && callback(newStore);
 }

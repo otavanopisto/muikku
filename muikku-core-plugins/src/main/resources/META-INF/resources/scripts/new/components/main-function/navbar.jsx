@@ -2,6 +2,9 @@ import Navbar from '../general/navbar.jsx';
 import Link from '../general/link.jsx';
 import PropTypes from 'prop-types';
 
+import React from 'react';
+import {connect} from 'react-redux';
+
 class MainFunctionNavbar extends React.Component {
   static propTypes = {
     activeTrail: PropTypes.string.isRequired
@@ -103,7 +106,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(MainFunctionNavbar);

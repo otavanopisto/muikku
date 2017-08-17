@@ -1,3 +1,6 @@
+import React from 'react';
+import {connect} from 'react-redux';
+
 class LastMessagesPanel extends React.Component {
   render(){
     return (<div className="ordered-container-item index panel">
@@ -20,7 +23,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LastMessagesPanel);

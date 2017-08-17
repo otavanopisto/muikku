@@ -1,4 +1,7 @@
 import actions from '../../actions/base/notifications';
+import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 class Notifications extends React.Component {
   render(){
@@ -26,10 +29,10 @@ function mapStateToProps(state){
 };
 
 const mapDispatchToProps = (dispatch)=>{
-  return Redux.bindActionCreators(actions, dispatch);
+  return bindActionCreators(actions, dispatch);
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Notifications);

@@ -1,5 +1,7 @@
 import Dialog from '../general/dialog.jsx';
 import PropTypes from 'prop-types';
+import React from 'react';
+import {connect} from 'react-redux';
 
 class ForgotPasswordDialog extends React.Component {
   static propTypes = {
@@ -46,7 +48,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ForgotPasswordDialog);

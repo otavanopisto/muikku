@@ -4,6 +4,8 @@
 
 import PropTypes from 'prop-types';
 import Link from '../general/link.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
 
 class LoginButton extends React.Component {
   static propTypes = {
@@ -35,7 +37,7 @@ const mapDispatchToProps = (dispatch)=>{
   return {};
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LoginButton);

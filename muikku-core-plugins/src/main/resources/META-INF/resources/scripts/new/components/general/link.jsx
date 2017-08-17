@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import React from 'react';
 
 function scrollToSection(anchor) {
   let topOffset = 90;

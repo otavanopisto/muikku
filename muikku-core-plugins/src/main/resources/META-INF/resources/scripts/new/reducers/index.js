@@ -6,8 +6,9 @@ import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 import announcements from './main-function/announcements';
 import lastWorkspace from './main-function/last-workspace';
+import {combineReducers} from 'redux';
 
-export default Redux.combineReducers({
+export default combineReducers({
   notifications,
   i18n,
   locales,

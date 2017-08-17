@@ -1,11 +1,13 @@
-import thunk from 'redux-thunk'
+import thunk from 'redux-thunk';
+import React from 'react';
+import {Provider} from 'react-redux';
+import {createStore, applyMiddlewares} from 'redux';
+import {render} from 'react-dom';
 
 export default function runApp(reducer, App, callback){
-  let store = Redux.createStore(reducer, Redux.applyMiddleware(thunk));
+  let store = createStore(reducer, applyMiddleware(thunk));
 
-  let Provider = ReactRedux.Provider;
-
-  ReactDOM.render(<Provider store={store}>
+  render(<Provider store={store}>
     <App/>
   </Provider>, document.querySelector("#app"));
   

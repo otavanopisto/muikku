@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import Dropdown from '../dropdown.jsx';
 import Link from '../link.jsx';
+import React from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 import actions from '../../../actions/base/status';
 
@@ -59,10 +62,10 @@ function mapStateToProps(state){
 };
 
 const mapDispatchToProps = (dispatch)=>{
-  return Redux.bindActionCreators(actions, dispatch);
+  return bindActionCreators(actions, dispatch);
 };
 
-export default ReactRedux.connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ProfileItem);

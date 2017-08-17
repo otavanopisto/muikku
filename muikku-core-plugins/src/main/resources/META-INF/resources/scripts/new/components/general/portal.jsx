@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import React from 'react';
+import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
 
 const KEYCODES = {
   ESCAPE: 27
@@ -69,7 +71,7 @@ export default class Portal extends React.Component {
   closePortal(isUnmounted = false) {
     const resetPortalState = () => {
       if (this.node) {
-        ReactDOM.unmountComponentAtNode(this.node);
+        unmountComponentAtNode(this.node);
         document.body.removeChild(this.node);
       }
       this.portal = null;
@@ -95,7 +97,7 @@ export default class Portal extends React.Component {
       return;
     }
 
-    const root = ReactDOM.findDOMNode(this.portal);
+    const root = findDOMNode(this.portal);
     if (root.contains(e.target) || (e.button && e.button !== 0)) {
       return;
     }
@@ -124,7 +126,7 @@ export default class Portal extends React.Component {
       });
     }
 
-    this.portal = ReactDOM.unstable_renderSubtreeIntoContainer(
+    this.portal = unstable_renderSubtreeIntoContainer(
       this,
       children,
       this.node,

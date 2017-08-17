@@ -1,5 +1,6 @@
 import Link from '../link.jsx';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 export default class Menu extends React.Component {
   static propTypes = {
