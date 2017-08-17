@@ -1,140 +1,16 @@
-  <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/main_function_environment.xhtml">
+  template="/WEB-INF/templates/base.xhtml">
   
-  <ui:param name="activeTrail" value="communicator"/>
-  <ui:param name="controller" value="scripts/controllers/communicator.js" />
-  <ui:param name="stylesheet" value="css/communicator.css" />
-  <ui:param name="title" value="#{i18n.text['plugin.communicator.pageTitle']}" />
-  
-  <ui:define name="content">
-    <div class="communicator application-panel">
-      <div class="application-panel-container">
-        <div class="application-panel-navigation">
-          <div class="application-panel-left-container">
-            <h2 class="communicator text text-panel-application-title communicator-text-title">
-              #{i18n.text['plugin.communicator.pageTitle']}
-            </h2>
-          </div>
-          <div class="application-panel-right-container">
-            <a class="communicator button-pill communicator-button-pill-settings communicator-interact-show-settings">
-              <span class="icon icon-settings"></span>
-            </a>
-          </div>
-        </div>
-        <div class="application-panel-box">
-          <div class="application-panel-navigation">
-            <div class="application-panel-left-container">
-              <a class="communicator button communicator-button-new-message communicator-interact-new-message">
-                #{i18n.text['plugin.communicator.newMessage']}
-              </a>
-            </div>
-            <div class="application-panel-right-container" data-controller-widget="communicator-toolbar"></div>
-          </div>
-          <div class="application-panel-body">
-            <div class="application-panel-left-container" data-controller-widget="communicator-navigation"></div>
-            <div class="application-panel-right-container loader-empty" data-controller-widget="communicator-body"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <a class="communicator button-pill button-pill-floating communicator-button-pill-new-message communicator-interact-new-message">
-      <span class="icon icon-edit"></span>
-    </a>
-    
-    <div data-controller-widget="communicator-new-message"></div>
+  <ui:define name="scripts">
+    <script defer="defer" jsf:name="scripts/new/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/new/dist/communicator.js" />
   </ui:define>
   
-  <ui:define name="menu-extras">
-    <div data-controller-widget="communicator-navigation"></div>
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/communicator.css" />
   </ui:define>
-  
-  <!-- <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
-    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webshim/1.15.10/minified/polyfiller.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.klass/0.1a/jquery.klass-0.1a.js"/>
-    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/> 
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/communicator.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/communicator-newmessage.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/js/min/perfect-scrollbar.jquery.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/modernizr/3.3.1-inputtypes/modernizr.min.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jscolor/2.0.4/jscolor.min.js"></script>    
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/color-polyfill.js"/>
 
-  </ui:define>
-  
-  <ui:define name="main-functionality-styles">
-    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/communicator.css"/>
-    <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/jquery.perfect-scrollbar/0.6.10/css/perfect-scrollbar.min.css"/>
-  </ui:define>  
-  
-  <ui:define name="mf-content-master"> 
-    <div class="communicator" data-group-messaging-permission="#{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')}" data-student="#{sessionBackingBean.getIsStudent()}">
-      <div class="mf-view-header flex-row flex-align-items-center">
-        <div class="mf-view-title-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8">
-          <h2 class="mf-view-title">#{i18n.text['plugin.communicator.pageTitle']}</h2>
-        </div>
-        <div class="mf-view-settings-function-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 flex-right">
-         <div class="mf-tool-container settings cm-settings-function-container">
-           <div title="#{i18n.text['plugin.communicator.settings']}" class="mf-tool cm-settings-icon icon-settings">           
-           </div>
-         </div>        
-        </div>
-      </div>
-      <ui:insert name="mf-content-functions">
-        <div class="mf-content-functions flex-row flex-align-items-center">
-          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">
-            
-            <div class="mf-primary-function">
-              <div class="cm-new-message-button mf-primary-function-content">
-                <span class="mf-primary-function-text">#{i18n.text['plugin.communicator.newMessage']}</span>
-              </div>
-            </div>  
-
-          </div>
-          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2">
-
-          </div>
-        </div>
-      </ui:insert>
-      <ui:insert name="mf-content-area">
-        <div class="mf-content-area flex-row">
-          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
-          <div class="cm-content-main flex-row">
-            <div class="lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-full sm-flex-order-1 mf-categories cm-categories">
-              <ul>
-                <li class="cm-folder cm-box icon-new-section" data-folder-type="inbox" data-folder-id="inbox">
-                  <a href="#inbox">#{i18n.text['plugin.communicator.category.title.inbox']}</a>
-                </li>
-                <li class="cm-folder cm-box icon-new-section" data-folder-type="unread" data-folder-id="unread">
-                  <a href="#unread">#{i18n.text['plugin.communicator.category.title.unread']}</a>
-                </li>
-                <li class="cm-folder cm-box icon-new-section" data-folder-type="sent" data-folder-id="sent">
-                  <a href="#sent">#{i18n.text['plugin.communicator.category.title.sent']}</a>
-                </li>
-                <li class="cm-folder cm-box icon-new-section" data-folder-type="trash" data-folder-id="trash">
-                  <a href="#trash">#{i18n.text['plugin.communicator.category.title.trash']}</a>
-                </li>
-              </ul>
-            </div>
-            <div class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full sm-flex-order-2 cm-messages-container"></div>
-            <div class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-full sm-flex-order-2 cm-thread-container" style="display: none;"></div>
-          </div>
-          </div>
-        </div>
-      </ui:insert>
-    </div>
-  </ui:define> -->
-  
 </ui:composition>

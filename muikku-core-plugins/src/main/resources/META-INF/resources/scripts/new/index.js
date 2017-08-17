@@ -7,9 +7,9 @@ import actions from './actions/main-function';
 
 runApp(reducer, App, (store)=>{
   let websocket = new Websocket(store, {
-    "Communicator:newmessagereceived": [actions.updateMessageCount],
-    "Communicator:messageread": [actions.updateMessageCount],
-    "Communicator:threaddeleted": [actions.updateMessageCount]
+    "Communicator:newmessagereceived": [actions.updateMessageCount, actions.lastMessages.updateLastMessages.bind(null, 6)],
+    "Communicator:messageread": [actions.updateMessageCount, actions.lastMessages.updateLastMessages.bind(null, 6)],
+    "Communicator:threaddeleted": [actions.updateMessageCount, actions.lastMessages.updateLastMessages.bind(null, 6)]
   });
   store.dispatch(actions.messageCount.updateMessageCount());
   store.dispatch(actions.announcements.updateAnnouncements());
