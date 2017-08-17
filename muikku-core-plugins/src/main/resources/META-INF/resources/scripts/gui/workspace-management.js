@@ -436,7 +436,7 @@
     _onSaveClick: function (event) {      
       event.preventDefault();
       
-      var form = $(event.target).closest('form')[0];
+      var form = $("#workspaceManagementForm");
       
       if (form) {
         $(form).find('.validate-form-button')[0].click();
