@@ -1,11 +1,10 @@
 .main-function.indicator {
-  &.main-function-indicator-communicator {
-    top: 15px;
-    right: 14px;
-  }
-  &.main-function-menu-indicator-communicator {
-    top: 50%;
-    margin-top: -7px;
-    right: 14px;
-  }
+  top: 15px;
+  right: 14px;
+}
+
+.menu .main-function.indicator {
+  top: 50%;
+  margin-top: -7px;
+  right: 14px;
 }

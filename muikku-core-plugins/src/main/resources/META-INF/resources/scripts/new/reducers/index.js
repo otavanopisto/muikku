@@ -1,11 +1,18 @@
 import notifications from './base/notifications';
 import locales from './base/locales';
 import status from './base/status';
-import i18n from './general/i18n';
+import i18n from './base/i18n';
+import websocket from './util/websocket';
+import messageCount from './main-function/message-count';
+import announcements from './main-function/announcements';
+import lastWorkspace from './main-function/last-workspace';
 
 export default Redux.combineReducers({
   notifications,
   i18n,
   locales,
-  status
+  status,
+  websocket,
+  announcements,
+  lastWorkspace
 });

@@ -27,7 +27,8 @@ class MainFunctionNavbar extends React.Component {
       text: 'plugin.communicator.communicator',
       href: "/communicator",
       icon: "envelope",
-      condition: this.props.status.loggedIn
+      condition: this.props.status.loggedIn,
+      badge: this.props.status.messageCount
     }, {
       classNameSuffix: "discussion",
       trail: "discussion",
@@ -74,6 +75,7 @@ class MainFunctionNavbar extends React.Component {
         item: (<Link href={item.href} className={`main-function link link-icon link-full ${this.props.activeTrail === item.trail ? 'active' : ''}`}
           title={this.props.i18n.text.get(item.text)}>
           <span className={`icon icon-${item.icon}`}/>
+          {item.badge ? <span className="main-function indicator">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
       }
     })} defaultOptions={[]} menuItems={itemData.map((item)=>{
@@ -82,6 +84,7 @@ class MainFunctionNavbar extends React.Component {
       }
       return <Link href={item.href} className={`main-function link link-full main-function-link-menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
         <span className={`icon icon-${item.icon}`}/>
+        {item.badge ? <span className="main-function indicator">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         {this.props.i18n.text.get(item.text)}
       </Link>
     })}/>
@@ -91,7 +94,8 @@ class MainFunctionNavbar extends React.Component {
 function mapStateToProps(state){
   return {
     i18n: state.i18n,
-    status: state.status
+    status: state.status,
+    messageCount: state.messageCount
   }
 };
 

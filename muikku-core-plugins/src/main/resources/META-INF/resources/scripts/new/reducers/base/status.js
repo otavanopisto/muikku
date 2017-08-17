@@ -8,7 +8,8 @@
 export default function status(state={
   loggedIn: !!MUIKKU_LOGGED_USER_ID,
   userId: MUIKKU_LOGGED_USER_ID,
-  permissions: MUIKKU_PERMISSIONS
+  permissions: MUIKKU_PERMISSIONS,
+  contextPath: CONTEXTPATH
 }, action){
   if (action.type === "LOGOUT"){
     $('#logout').click();
