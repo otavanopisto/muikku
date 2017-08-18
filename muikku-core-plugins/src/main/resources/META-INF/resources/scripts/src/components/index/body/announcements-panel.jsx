@@ -13,7 +13,7 @@ class AnnouncementsPanel extends React.Component {
         <div className="index item-list index-item-list-panel-announcements">
           {this.props.announcements.map((announcement)=>{
             return <Link key={announcement.id} className={`item-list-item ${announcement.workspaces ? "item-list-item-has-workspaces" : ""}`}
-              href={`${this.props.status.contextPath}link`}>
+              href={`/announcements?announcementId=${announcement.id}`}>
               <span className="icon icon-announcer"></span>
               <span className="text item-list-text-body item-list-text-body-multiline">
                 {announcement.caption}
