@@ -7,6 +7,6 @@
     {/workspaces}
   </ul>
 {:else}
-  <div class="empty">{#localize key="plugin.frontPage.workspaces.noWorkspaces" arg0="/coursepicker"/}</a></div>
+  <div class="empty">{#localize key="plugin.frontPage.workspaces.preNoWorkspaces"/} <a href="/coursepicker">{#localize key="plugin.frontPage.workspaces.noWorkspacesLink"/}</a> {#localize key="plugin.frontPage.workspaces.postNoWorkspaces"/}</div>
 {/workspaces}
   
