@@ -244,18 +244,6 @@ $target-group-color;
         position: relative;
         width: calc(100% - 25px);
 
-        .cm-message-sender-name {
-          box-sizing: border-box;
-          color: #000;
-          height: 1.5em;
-          margin: 0 0 0 5px;
-          max-width: calc(100% - 135px);
-          overflow: hidden;
-          text-overflow: ellipsis;
-          vertical-align: bottom;
-          white-space: nowrap;
-        }
-
         .cm-message-caption {
           font-weight: 300;
           margin: 0 0 0 5px;
@@ -303,10 +291,24 @@ $target-group-color;
 
 
   }
-
+  .cm-message-sender-name {
+    box-sizing: border-box;
+    color: $item-header-old-font-color;
+    height: 1.5em;
+    margin: 0 0 0 5px;
+    max-width: calc(100% - 135px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }  
+  
   &.unread {
     border-left: 1px solid $item-border-color-active;
-    font-weight: 600;
+    
+    .cm-message-sender-name {
+      color: $item-header-new-font-color;
+    }      
   }
 
   .cm-message-view {
