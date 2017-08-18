@@ -11,7 +11,6 @@ export default function locales(state={
   current: $("#locale").text()
 }, action){
   if (action.type === 'SET_LOCALE'){
-    //TODO For some reason this doesn't want to work, this reducer needs urgent fix
     $('#language-picker a[data-locale="' + action.payload + '"]').click();
     return Object.assign({}, state, {current: action.payload});
   }
