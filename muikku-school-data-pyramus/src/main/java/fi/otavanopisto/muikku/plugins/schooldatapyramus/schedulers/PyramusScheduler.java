@@ -29,8 +29,8 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginD
 @ApplicationScoped
 public class PyramusScheduler {
 
-  private static final int INITIAL_TIMEOUT = 1000 * 180; // 180 sec
-  private static final int TIMEOUT = 1000 * 30; // 30 sec
+  private static final int INITIAL_TIMEOUT = 1000 * 600; // 10 minutes
+  private static final int TIMEOUT = 1000 * 15; // 15 sec
   private static final int ERROR_TIMEOUT = 1000 * 60; // 60 sec
 
   @Any
@@ -45,6 +45,7 @@ public class PyramusScheduler {
 
   @PostConstruct
   public void init() {
+    logger.info("initial PyramusScheduler timeout");
     if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE || "true".equals(System.getProperty("tests.running"))) {
       return;
     }
