@@ -5,12 +5,10 @@
   template="flex-main.xhtml">
   
   <ui:define name="header">
-  
-    <!-- DEPRECATED all this code until told is deprecated -->
     <header class="flex-row flex-align-items-center sm-flex-hide " id="header">
       <div class="lg-flex-cell-6 lg-flex-cell-first md-flex-cell-6 sm-flex-cell-full" id="headerLogoTextContainer"></div>
       <div class="lg-flex-cell-10 lg-flex-cell-last md-flex-cell-10 sm-flex-cell-full">
-        <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
+        <ui:fragment rendered="#{sessionBackingBean.loggedIn}">§
           <div class="logged-user" id="loggedUser">
             <div class="lu-badge-container">
               <a jsf:outcome="/jsf/profile/profile.jsf">
@@ -73,7 +71,7 @@
   
   <ui:define name="navigation">
     <!-- MUIKKU MAIN NAVIGATION -->
-    <nav id="staticNavigationWrapper" data-deprecated="DEPRECATED">
+    <nav id="staticNavigationWrapper">
       <div class="static-navigation-bg"></div>
       <div id="staticNavigation">
         <!-- DESKTOP/TABLET NAVIGATION -->
@@ -175,7 +173,6 @@
         </ui:fragment>
       </div>
     </nav>
-  
   </ui:define>
   
 </ui:composition>
