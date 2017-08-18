@@ -2231,7 +2231,6 @@ public class WorkspaceRESTService extends PluginRESTService {
       @QueryParam("workspaceStudentId") String workspaceStudentId,
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("25") Integer maxResults) {
-    // Workspace
     
     List<WorkspaceJournalEntry> entries = new ArrayList<>();
     List<WorkspaceJournalEntryRESTModel> result = new ArrayList<>();
@@ -2243,54 +2242,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean canListAllEntries = sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity);
     if (workspaceStudentId == null && userEntityId == null && canListAllEntries) {
-      Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
-      if (!searchProviderIterator.hasNext()) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("No search provider found").build();
+      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listActiveWorkspaceStudents(workspaceEntity);
+      Set<UserEntity> userEntities = new HashSet<>();
+      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+        userEntities.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
       }
-      SearchProvider elasticSearchProvider = searchProviderIterator.next();
-
-      Set<UserEntity> workspaceUserEntities = new HashSet<>();
-      
-      if (elasticSearchProvider != null) {
-        SearchResult studentSearchResult = elasticSearchProvider.searchUsers(
-            null,
-            new String[0],
-            Arrays.asList(EnvironmentRoleArchetype.STUDENT),
-            (Collection<Long>)null,
-            Collections.singletonList(workspaceEntityId),
-            (Collection<SchoolDataIdentifier>) null,
-            Boolean.FALSE,
-            Boolean.FALSE,
-            true,
-            0,
-            maxResults != null ? maxResults : Integer.MAX_VALUE);
-        
-        List<Map<String, Object>> results = studentSearchResult.getResults();
-
-        if (results != null && !results.isEmpty()) {
-          for (Map<String, Object> o : results) {
-            String foundStudentId = (String) o.get("id");
-            if (StringUtils.isBlank(foundStudentId)) {
-              logger.severe("Could not process user found from search index because it had a null id");
-              continue;
-            }
-            
-            String[] studentIdParts = foundStudentId.split("/", 2);
-            SchoolDataIdentifier foundStudentIdentifier = studentIdParts.length == 2 ? new SchoolDataIdentifier(studentIdParts[0], studentIdParts[1]) : null;
-            if (foundStudentIdentifier == null) {
-              logger.severe(String.format("Could not process user found from search index with id %s", foundStudentId));
-              continue;
-            }
-            
-            WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, foundStudentIdentifier);
-            if (workspaceUserEntity != null) {
-              workspaceUserEntities.add(workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity());
-            }
-          }
-        }
-      }
-      
-      entries = workspaceJournalController.listEntriesForStudents(workspaceEntity, workspaceUserEntities, firstResult, maxResults);
+      entries = workspaceJournalController.listEntriesForStudents(workspaceEntity, userEntities, firstResult, maxResults);
     }
     else {
       if (userEntityId != null) {
@@ -2317,10 +2274,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         if (workspaceUserEntity == null) {
           return Response.status(Status.NOT_FOUND).build();
         }
-        UserSchoolDataIdentifier userSchoolDataIdentifier = workspaceUserEntity.getUserSchoolDataIdentifier(); 
-        UserEntity userEntityFromWorkspaceUser = userEntityController.findUserEntityByDataSourceAndIdentifier(
-            userSchoolDataIdentifier.getDataSource(),
-            userSchoolDataIdentifier.getIdentifier());
+        UserEntity userEntityFromWorkspaceUser = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
         if (userEntityFromWorkspaceUser == null) {
           return Response.status(Status.NOT_FOUND).build();
         }
@@ -2338,18 +2292,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     for (WorkspaceJournalEntry entry : entries) {
       UserEntity entryUserEntity = userEntityController.findUserEntityById(entry.getUserEntityId());
-      User user = userController.findUserByUserEntityDefaults(entryUserEntity);
-      
-      result.add(new WorkspaceJournalEntryRESTModel(
-          entry.getId(),
-          entry.getWorkspaceEntityId(),
-          entry.getUserEntityId(),
-          user.getFirstName(),
-          user.getLastName(),
-          entry.getHtml(),
-          entry.getTitle(),
-          entry.getCreated()
-      ));
+      if (entryUserEntity != null) {
+        User user = userController.findUserByUserEntityDefaults(entryUserEntity);
+        if (user != null) {
+          result.add(new WorkspaceJournalEntryRESTModel(
+              entry.getId(),
+              entry.getWorkspaceEntityId(),
+              entry.getUserEntityId(),
+              user.getFirstName(),
+              user.getLastName(),
+              entry.getHtml(),
+              entry.getTitle(),
+              entry.getCreated()
+          ));
+        }
+      }
     }
 
     return Response.ok(result).build();
