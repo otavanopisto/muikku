@@ -1,4 +1,4 @@
-import MainFunctionNavbar from '../main-function/navbar.jsx';
+import MainFunctionNavbar from '../base/main-function/navbar.jsx';
 import ScreenContainer from '../general/screen-container.jsx';
 
 import AnnouncementsPanel from './body/announcements-panel.jsx';
@@ -11,7 +11,7 @@ import React from 'react';
 
 export default class IndexBody extends React.Component {
   render(){
-    return (<div className="embed embed-full">
+    return (<div className="embbed embbed-full">
       <MainFunctionNavbar activeTrail="index"/>
       <ScreenContainer>
         <div className="index ordered-container ordered-container-row ordered-container-responsive index-ordered-container-for-panels">

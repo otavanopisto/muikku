@@ -47,7 +47,7 @@ class FrontpageBody extends React.Component {
     });
   }
   render(){
-    return (<div className="embed embed-full">
+    return (<div className="embbed embbed-full">
 <FrontpageNavbar />
             
 <header className="frontpage hero">

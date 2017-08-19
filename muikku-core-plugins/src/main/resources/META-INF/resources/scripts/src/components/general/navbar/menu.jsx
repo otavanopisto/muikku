@@ -2,7 +2,11 @@ import Link from '../link.jsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default class Menu extends React.Component {
+import actions from '../../actions/base/status';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
+class Menu extends React.Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -107,10 +111,55 @@ export default class Menu extends React.Component {
                       }
                       return <li className="menu-item" key={index}>{item}</li>
                     })}
+                    {this.props.status.loggedIn ? <li className="menu-item menu-item-space"></li> : null}
+                    {this.props.status.loggedIn ? <li className="menu-item">
+                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-profile" href="/profile">
+                        <object className="embbed embbed-profile-image"
+                          data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
+                          type="image/jpeg">
+                          <span className="icon icon-user"></span>
+                        </object>
+                        {this.props.i18n.text.get('plugin.profile.profile')}
+                      </Link>
+                    </li> : null}
+                    {this.props.status.loggedIn ? <li className="menu-item">
+                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-instructions">
+                        <span className="icon icon-forgotpassword"/>
+                        {this.props.i18n.text.get('plugin.footer.instructions')}
+                      </Link>
+                    </li> : null}
+                    {this.props.status.loggedIn ? <li className="menu-item">
+                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-helpdesk">
+                        <span className="icon icon-helpdesk"></span>
+                        {this.props.i18n.text.get('plugin.home.helpdesk')}
+                      </Link>
+                    </li> : null}
+                    {this.props.status.loggedIn ? <li className="menu-item">
+                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-logout" onClick={this.props.logout}>
+                        <span className="icon icon-signout"></span>
+                        {this.props.i18n.text.get('plugin.logout.logout')}
+                      </Link>
+                    </li> : null}
                   </ul>
                 </div>
               </div>
             </div>);
   }
 }
+
+function mapStateToProps(state){
+  return {
+    i18n: state.i18n,
+    status: state.status
+  }
+};
+
+const mapDispatchToProps = (dispatch)=>{
+  return bindActionCreators(actions, dispatch);
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Menu);
   
