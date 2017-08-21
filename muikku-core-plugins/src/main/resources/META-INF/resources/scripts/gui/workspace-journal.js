@@ -55,6 +55,7 @@
     },
     _loadStudents: function(workspaceId) {
       mApi().workspace.workspaces.students.read(workspaceId, { 
+        active: true,
         archived: false, 
         orderBy: 'name' })
       .callback($.proxy(function (err, students) {
@@ -85,16 +86,9 @@
     $('.journal').journal({
       workspaceId: $("input[name='workspaceEntityId']").val(),
       canListAllEntries: $('.journal').attr('data-canListAllEntries') == 'true',
-      pageSize: 20,
-      groupMessagingPermission: $('.journal').attr('data-daadaa') == 'true'
+      pageSize: 20
     });
   });
-
-}).call(this);
-
-
-
-(function() {
 
   function confirmJournalEntryDeleteRequest(id) {
     renderDustTemplate(
