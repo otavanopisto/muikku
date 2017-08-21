@@ -12,4 +12,14 @@ runApp(reducer, App, (store)=>{
     "Communicator:threaddeleted": [actions.updateMessageCount]
   });
   store.dispatch(actions.messageCount.updateMessageCount());
+  store.dispatch(actions.labels.updateLabels());
+  
+  window.addEventListener("hashchange", ()=>{
+    store.dispatch(actions.hash.updateHash(window.location.hash.replace("#","")));
+  }, false);
+  if (!window.location.hash){
+    window.location.hash = "#inbox";
+  } else {
+    store.dispatch(actions.hash.updateHash(window.location.hash.replace("#","")));
+  }
 });

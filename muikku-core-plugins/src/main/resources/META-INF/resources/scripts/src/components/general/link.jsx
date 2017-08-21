@@ -2,6 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 function scrollToSection(anchor) {
+  if (!$("#anchor").size()){
+    window.location.href = anchor;
+    return;
+  }
+  
   let topOffset = 90;
   let scrollTop = $(anchor).offset().top - topOffset;
 
@@ -11,6 +16,10 @@ function scrollToSection(anchor) {
     duration : 500,
     easing : "easeInOutQuad"
   });
+  
+  setTimeout(()=>{
+    window.location.href = anchor;
+  }, 500);
 }
 
 export default class Link extends React.Component {

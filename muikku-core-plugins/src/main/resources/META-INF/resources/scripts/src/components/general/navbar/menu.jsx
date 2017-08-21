@@ -2,7 +2,7 @@ import Link from '../link.jsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import actions from '../../actions/base/status';
+import actions from '../../../actions/base/status';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 

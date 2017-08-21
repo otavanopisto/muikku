@@ -3,11 +3,15 @@ import messageCount from './message-count';
 import lastWorkspace from './last-workspace';
 import workspaces from './workspaces';
 import lastMessages from './last-messages';
+import labels from './labels';
+import hash from './hash';
 
 export default {
   announcements,
   messageCount,
   lastWorkspace,
   workspaces,
-  lastMessages
+  lastMessages,
+  labels,
+  hash
 }

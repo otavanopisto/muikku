@@ -2,6 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import ApplicationPanel from '../../general/application-panel.jsx';
+import HoverButton from '../../general/hover-button.jsx';
+import Navigation from './application/navigation.jsx';
 
 class CommunicatorApplication extends React.Component {
   render(){
@@ -12,11 +14,14 @@ class CommunicatorApplication extends React.Component {
     let primaryOption = <a className="communicator button communicator-button-new-message">
         {this.props.i18n.text.get('plugin.communicator.newMessage')}
     </a>
-    let navigation = <div></div>
+    let navigation = <Navigation/>
     let toolbar = <div></div>
-    return (<ApplicationPanel classNameExtension="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={navigation}>
-      <div></div>
-    </ApplicationPanel>);
+    return (<div className="embbed embbed-full">
+      <ApplicationPanel classNameExtension="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={navigation}>
+        <div></div>
+      </ApplicationPanel>
+      <HoverButton icon="edit" classNameSuffix="new-message" classNameExtension="communicator"/>
+    </div>);
   }
 }
 
