@@ -14,6 +14,10 @@
       background: none;
       text-align: right;
       
+      .workspace-header-image-container {
+        display: none;
+      }
+      
       h1.workspace-title {
         top: auto;
         right: auto;
@@ -49,14 +53,15 @@
   }
   
   .content .workspace-meta-wrapper {
-    font-size: 12px;
-    text-transform: uppercase;
-    position: relative;
-    bottom: auto;
-    left: auto;
-    z-index: 13;
-    padding: 5px;
     background: #fff;
+    bottom: auto;
+    font-size: 12px;
+    left: auto;
+    padding: 5px;
+    position: relative;
+    text-align: right;
+    text-transform: uppercase;
+    z-index: 13;
   
     .workspace-meta-item-wrapper {
       margin: 0 5px 5px 0;

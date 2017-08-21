@@ -16,14 +16,23 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-management.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/workspace-copy-wizard.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/croppie/croppie.js"/>
   </ui:define>
   
   <ui:define name="workspace-view-styles">
     <link rel="stylesheet" type="text/css" href="/css/flex/workspace-management.css"/>  
+    <link rel="stylesheet" type="text/css" href="/scripts/croppie/croppie.css"/>
   </ui:define>
 
   <ui:define name="grid-content">
-    <form>
+    <!-- Workspace image uploader -->
+    <div class="workspace-frontpage-image-uploader" style="display:none;">
+      <form class="workspace-frontpage-image-form">
+        <input class="workspace-frontpage-image-input" name="file" type="file" accept="image/*"/>
+      </form>
+    </div>
+    
+    <form id="workspaceManagementForm">
       <section class="flex-row workspace-management-name">
         <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
           <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.management.pageTitle']}</h1>
@@ -39,15 +48,23 @@
         </div>
       </section>
       
-      <section class="flex-row workspace-management-image" style="display: none">
+      <section class="flex-row workspace-management-image">
         <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full no-margin-top no-margin-bottom">
           <h2 class="workspace-management-generic-title">#{i18n.text['plugin.workspace.management.imageSectionTitle']}</h2>
           <div class="workspace-management-container">
-            <div class="workspace-management-image-actions">
-              <div class="icon-edit workspace-management-image-edit"></div>
-              <div class="icon-delete workspace-management-image-delete"></div>
-            </div>
-            <img src="/gfx/workspace-default-header.jpg" />
+            <ui:fragment rendered="#{workspaceManagementBackingBean.hasCustomFrontPageImage}">
+              <div class="workspace-management-image-actions">
+	              <div class="icon-edit workspace-management-image-edit"></div>
+	              <div class="icon-delete workspace-management-image-delete"></div>
+	            </div>
+              <img src="#{workspaceManagementBackingBean.customFrontPageImageUrl}" />
+            </ui:fragment>
+            <ui:fragment rendered="#{!workspaceManagementBackingBean.hasCustomFrontPageImage}">
+              <div class="workspace-management-image-actions">
+                <div class="icon-edit workspace-management-image-edit"></div>
+              </div>
+              <img src="/gfx/workspace-default-header.jpg" />
+            </ui:fragment>
           </div>
         </div>
       </section>
