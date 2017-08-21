@@ -83,7 +83,8 @@ public class NotificationController {
     map.put("time", String.valueOf(System.currentTimeMillis()));
 
     UserEntity guidanceCounselor = null;
-    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserEntity(recipient);
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(recipient.getDefaultIdentifier(), recipient.getDefaultSchoolDataSource().getIdentifier());
+    List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(userIdentifier);
     
     // #3089: An awkward workaround to use the latest guidance group based on its identifier. Assumes a larger
     // identifier means a more recent entity. A more proper fix would be to sync group creation dates from
