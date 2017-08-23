@@ -575,7 +575,8 @@ public class PyramusSchoolDataEntityFactory {
         schoolIdentifier, 
         subjectIdentifier,
         curriculumIdentifier,
-        transferCredit.getOptionality() == CourseOptionality.OPTIONAL ? Optionality.OPTIONAL : Optionality.MANDATORY);
+        transferCredit.getOptionality() == CourseOptionality.OPTIONAL ? Optionality.OPTIONAL : Optionality.MANDATORY,
+        transferCredit.getOffCurriculum());
   }
 
   private String pyramusHost;
