@@ -75,15 +75,20 @@
     }
   }
 
-  &:hover,
-  &.hover {
+  &:hover:not(.disabled):not(:disabled),
+  &.hover:not(.disabled):not(:disabled) {
     background-color: $color-link-hover-background;
     color: $color-link-hover-text;
   }
 
-  &:active,
-  &.active {
+  &:active:not(.disabled):not(:disabled),
+  &.active:not(.disabled):not(:disabled) {
     background-color: $color-link-active-background;
     color: $color-link-active-text;
+  }
+  
+  &.disabled, &:disabled {
+    cursor: default;
+    opacity: 0.5;
   }
 }

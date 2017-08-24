@@ -3,8 +3,12 @@
     justify-content: flex-start;
     text-transform: none;
     
-    &.active {
+    &.selected {
       background-color: $color-communicator-link-label-active-background;
+    }
+    
+    &.semi-selected {
+      background-color: lighten($color-communicator-link-label-active-background, 50%);
     }
   }
 }

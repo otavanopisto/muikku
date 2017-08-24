@@ -61,15 +61,24 @@ export default class MuikkuWebsocket {
     });
     
     if (this.listeners[event]){
-      let listeners = this.listeners[event];
-      if (typeof listeners === "function"){
-        listeners(data);
+      let listeners = this.listeners[event] instanceof Array ? this.listeners[event] : this.listeners[event].actions;
+      if (listeners){
+        if (typeof listeners === "function"){
+          listeners = listeners(data);
+        }
+        for (action of listeners){
+          if (typeof action === "function"){
+            this.store.dispatch(action());
+          } else {
+            this.store.dispatch(action);
+          }
+        }
       }
-      for (action of listeners){
-        if (typeof action === "function"){
-          this.store.dispatch(action());
-        } else {
-          this.store.dispatch(action);
+      
+      let otherListeners = this.listeners[event].callbacks;
+      if (otherListeners){
+        for (callback of otherListeners){
+          callback(data);
         }
       }
     }

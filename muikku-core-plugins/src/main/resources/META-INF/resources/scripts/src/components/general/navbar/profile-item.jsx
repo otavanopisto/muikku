@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import Dropdown from '../dropdown.jsx';
-import Link from '../link.jsx';
+import Dropdown from '~/components/general/dropdown.jsx';
+import Link from '~/components/general/link.jsx';
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-import actions from '../../../actions/base/status';
+import actions from '~/actions/base/status';
 
 class ProfileItem extends React.Component {
   static propTypes = {

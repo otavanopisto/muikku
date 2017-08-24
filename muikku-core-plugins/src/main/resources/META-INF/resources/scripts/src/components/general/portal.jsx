@@ -33,8 +33,10 @@ export default class Portal extends React.Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
-    this.renderPortal(newProps);
+  componentWillUpdate(nextProps, nextState) {
+    if (nextState.active){
+      this.renderPortal(nextProps);
+    }
   }
 
   componentWillUnmount() {

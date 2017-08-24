@@ -1,4 +1,4 @@
-import Dialog from '../general/dialog.jsx';
+import Dialog from '~/components/general/dialog.jsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';

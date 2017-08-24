@@ -1,5 +1,5 @@
-import Navbar from '../../general/navbar.jsx';
-import Link from '../../general/link.jsx';
+import Navbar from '~/components/general/navbar.jsx';
+import Link from '~/components/general/link.jsx';
 import PropTypes from 'prop-types';
 
 import React from 'react';
@@ -7,7 +7,8 @@ import {connect} from 'react-redux';
 
 class MainFunctionNavbar extends React.Component {
   static propTypes = {
-    activeTrail: PropTypes.string.isRequired
+    activeTrail: PropTypes.string.isRequired,
+    navigation: PropTypes.element
   }
   render(){
     const itemData = [{
@@ -69,7 +70,7 @@ class MainFunctionNavbar extends React.Component {
       condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
     
-    return <Navbar classNameExtension="main-function" navbarItems={itemData.map((item)=>{
+    return <Navbar classNameExtension="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
       if (!item.condition){
         return null;
       }

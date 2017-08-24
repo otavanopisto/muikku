@@ -1,4 +1,4 @@
-import actions from '../../actions/base/notifications';
+import actions from '~/actions/base/notifications';
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';

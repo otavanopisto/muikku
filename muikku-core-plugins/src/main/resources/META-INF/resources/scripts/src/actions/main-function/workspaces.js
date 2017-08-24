@@ -6,7 +6,7 @@ export default {
       let userId = getState().status.userId;
       mApi().workspace.workspaces
        .read({userId})
-       .callback(function (err, workspaces) {
+       .callback(function (err, workspaces=[]) {
          if( err ){
            dispatch(actions.displayNotification(err.message, 'error'));
          } else {

@@ -33,11 +33,11 @@
     &.selected {
       background-color: $color-application-list-item-background-selected;
     }
-    
-    @include breakpoint-down($breakpoint-portrait-pad){
-      &.application-list-item-select-mode:not(.selected) {
-        opacity: 0.5;
-      }
+  }
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    &.application-list-select-mode .application-list-item:not(.selected) {
+      opacity: 0.5;
     }
   }
 }

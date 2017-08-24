@@ -1,6 +1,7 @@
 import Portal from './portal.jsx';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {findDOMNode} from 'react-dom';
 
 export default class Dropdown extends React.Component {
   static propTypes = {
@@ -24,7 +25,12 @@ export default class Dropdown extends React.Component {
     }
   }
   onOpen(DOMNode){
-    let $target = $(this.refs.activator);
+    let activator = this.refs.activator;
+    if (!(activator instanceof HTMLElement)){
+      activator = findDOMNode(activator);
+    }
+    
+    let $target = $(activator);
     let $arrow = $(this.refs.arrow);
     let $dropdown = $(this.refs.dropdown);
       

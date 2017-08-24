@@ -8,7 +8,7 @@ export default {
         .receiveditemscount
         .cacheClear()
         .read()
-        .callback(function (err, result) {
+        .callback(function (err, result=0) {
           if( err ){
             dispatch(actions.displayNotification(err.message, 'error'));
           } else {

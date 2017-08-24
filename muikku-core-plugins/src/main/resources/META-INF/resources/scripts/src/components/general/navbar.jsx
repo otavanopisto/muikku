@@ -20,7 +20,8 @@ export default class Navbar extends React.Component {
       item: PropTypes.element.isRequired
     })).isRequired,
     menuItems: PropTypes.arrayOf(PropTypes.element).isRequired,
-    defaultOptions: PropTypes.arrayOf(PropTypes.element).isRequired
+    defaultOptions: PropTypes.arrayOf(PropTypes.element).isRequired,
+    navigation: PropTypes.element
   }
   openMenu(){
     this.setState({
@@ -65,7 +66,8 @@ export default class Navbar extends React.Component {
                   </div>
                 </div>
               </nav>
-              <Menu open={this.state.isMenuOpen} onClose={this.closeMenu} items={this.props.menuItems} classNameExtension={this.props.classNameExtension}/>
+              <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}
+                items={this.props.menuItems} classNameExtension={this.props.classNameExtension} navigation={this.props.navigation}/>
             </div>
             );
   }

@@ -2,16 +2,21 @@ import Link from '../link.jsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import actions from '../../../actions/base/status';
+import actions from '~/actions/base/status';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+
+function checkLinkClicked(target){
+  return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
+}
 
 class Menu extends React.Component {
   static propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     items: PropTypes.arrayOf(PropTypes.element).isRequired,
-    classNameExtension: PropTypes.string.isRequired
+    classNameExtension: PropTypes.string.isRequired,
+    navigation: PropTypes.element
   }
   constructor(props){
     super(props);
@@ -62,7 +67,7 @@ class Menu extends React.Component {
     
     let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width*0.33;
     let youJustClickedTheOverlay = e.target === this.refs.menu && movement <= 5;
-    let youJustClickedALink = e.target.nodeName.toLowerCase() === "a" && movement <= 5;
+    let youJustClickedALink = checkLinkClicked(e.target) && movement <= 5;
     
     this.setState({dragging: false});
     setTimeout(()=>{
@@ -82,7 +87,7 @@ class Menu extends React.Component {
   }
   closeByOverlay(e){
     let isOverlay = e.target === e.currentTarget;
-    let isLink = !!e.target.href;
+    let isLink = checkLinkClicked(e.target);
     if (!this.state.dragging && (isOverlay || isLink)){
       this.close();
     }
@@ -104,6 +109,7 @@ class Menu extends React.Component {
                   <Link className="menu-header-button-close icon icon-arrow-left"></Link>
                 </div>
                 <div className="menu-body">
+                  {this.props.navigation ? <div className="menu-extras">{this.props.navigation}</div> : null}
                   <ul className="menu-items">
                     {this.props.items.map((item, index)=>{
                       if (!item){

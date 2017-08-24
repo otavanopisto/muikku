@@ -1,11 +1,17 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import PropTypes from 'prop-types';
 
-import ApplicationPanel from '../../general/application-panel.jsx';
-import HoverButton from '../../general/hover-button.jsx';
-import Navigation from './application/navigation.jsx';
+import ApplicationPanel from '~/components/general/application-panel.jsx';
+import HoverButton from '~/components/general/hover-button.jsx';
+
+import Toolbar from './application/toolbar.jsx';
+import CommunicatorMessages from './application/messages.jsx';
 
 class CommunicatorApplication extends React.Component {
+  static propTypes = {
+    navigation: PropTypes.element.isRequired
+  }
   render(){
     let title = <h2 className="communicator text text-panel-application-title communicator-text-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
     let icon = <a className="communicator button-pill communicator-button-pill-settings">
@@ -14,11 +20,10 @@ class CommunicatorApplication extends React.Component {
     let primaryOption = <a className="communicator button communicator-button-new-message">
         {this.props.i18n.text.get('plugin.communicator.newMessage')}
     </a>
-    let navigation = <Navigation/>
-    let toolbar = <div></div>
+    let toolbar = <Toolbar/>
     return (<div className="embbed embbed-full">
-      <ApplicationPanel classNameExtension="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={navigation}>
-        <div></div>
+      <ApplicationPanel classNameExtension="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={this.props.navigation}>
+        <CommunicatorMessages/>
       </ApplicationPanel>
       <HoverButton icon="edit" classNameSuffix="new-message" classNameExtension="communicator"/>
     </div>);

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 function scrollToSection(anchor) {
-  if (!$("#anchor").size()){
+  if (!$(anchor).size()){
     window.location.href = anchor;
     return;
   }
