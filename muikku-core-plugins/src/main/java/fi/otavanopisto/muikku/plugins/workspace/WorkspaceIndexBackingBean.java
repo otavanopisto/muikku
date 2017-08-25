@@ -18,6 +18,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -60,6 +61,9 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   
   @Inject
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
 
   @Inject
   private Logger logger;
@@ -135,6 +139,12 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+
+    WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped");
+    hasCustomFrontPageImage = customFrontImage != null;
+    customFrontPageImageUrl = hasCustomFrontPageImage ? 
+        String.format("/rest/workspace/workspaces/%d/workspacefile/workspace-frontpage-image-cropped", workspaceEntity.getId()) : 
+        null;
     
     materialsBaseUrl = String.format("/workspace/%s/materials", workspaceUrlName);
     announcementsBaseUrl = String.format("/workspace/%s/announcements", workspaceUrlName);
@@ -267,6 +277,14 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
     this.announcementsBaseUrl = announcementsBaseUrl;
   }
 
+  public String getCustomFrontPageImageUrl() {
+    return customFrontPageImageUrl;
+  }
+
+  public boolean getHasCustomFrontPageImage() {
+    return hasCustomFrontPageImage;
+  }
+
   private Long workspaceId;
   private String workspaceName;
   private String workspaceNameExtension;
@@ -288,4 +306,6 @@ public class WorkspaceIndexBackingBean extends AbstractWorkspaceBackingBean {
   private List<ContentNode> contentNodes;
   private String materialsBaseUrl;
   private String announcementsBaseUrl;
+  private String customFrontPageImageUrl;
+  private boolean hasCustomFrontPageImage;
 }

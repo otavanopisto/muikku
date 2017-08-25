@@ -12,6 +12,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceEntityFile;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -34,6 +35,9 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
   @Inject
   private WorkspaceBackingBean workspaceBackingBean;
   
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
+
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -55,6 +59,12 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     
+    WorkspaceEntityFile customFrontImage = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-cropped");
+    hasCustomFrontPageImage = customFrontImage != null;
+    customFrontPageImageUrl = hasCustomFrontPageImage ? 
+        String.format("/rest/workspace/workspaces/%d/workspacefile/workspace-frontpage-image-cropped", workspaceEntity.getId()) : 
+        null;
+    
     return null;
   }
 
@@ -70,5 +80,15 @@ public class WorkspaceManagementBackingBean extends AbstractWorkspaceBackingBean
     return workspaceEntityId;
   }
 
+  public String getCustomFrontPageImageUrl() {
+    return customFrontPageImageUrl;
+  }
+
+  public boolean getHasCustomFrontPageImage() {
+    return hasCustomFrontPageImage;
+  }
+
   private Long workspaceEntityId;
+  private String customFrontPageImageUrl;
+  private boolean hasCustomFrontPageImage;
 }

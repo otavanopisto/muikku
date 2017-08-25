@@ -122,9 +122,11 @@ public class DefaultSchoolDataUserGroupListener {
   public void onSchoolDataUserGroupUserUpdatedEvent(@Observes SchoolDataUserGroupUserUpdatedEvent event) {
     UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getUserGroupDataSource(), event.getUserGroupIdentifier());
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     
-    if ((userGroupUserEntity != null) && (userGroupEntity != null)) {
+    if ((userGroupUserEntity != null) && (userGroupEntity != null) && (userSchoolDataIdentifier != null)) {
       userGroupEntityController.updateUserGroupEntity(userGroupUserEntity, userGroupEntity);
+      userGroupEntityController.updateUserSchoolDataIdentifier(userGroupUserEntity, userSchoolDataIdentifier);
     } else
       logger.warning(String.format("Couldn't find userGroupUserEntity (%s) or userGroupEntity (%s)", event.getIdentifier(), event.getUserGroupIdentifier()));
   }  

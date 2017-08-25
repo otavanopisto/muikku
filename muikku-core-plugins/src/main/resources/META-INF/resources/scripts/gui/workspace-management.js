@@ -1,6 +1,113 @@
 (function() {
   'use strict';
   
+  $.widget("custom.workspaceFrontpageImage", {
+    options: {
+      workspaceEntityId: null
+    },
+    _create : function() {
+      $('.workspace-frontpage-image-input').on('change', $.proxy(this._onFileInputChange, this));
+    },
+    _onFileInputChange : function (event) {
+      var file = event.target.files[0];
+      var formData = new FormData($('.workspace-frontpage-image-form')[0]);
+      var workspaceId = this.options.workspaceEntityId;
+      
+      // Upload source image
+      
+      $.ajax({
+        url: CONTEXTPATH + '/tempFileUploadServlet',
+        type: 'POST',
+        data: formData,
+        success: $.proxy(function(xhr) {
+          mApi().workspace.workspaces.workspacefile
+            .create(workspaceId, {
+              contentType: xhr.fileContentType,
+              tempFileId: xhr.fileId,
+              fileIdentifier: 'workspace-frontpage-image-original'
+            })
+            .callback($.proxy(function(err, result) {
+
+              // Create cropping dialog
+              
+              renderDustTemplate('workspace/workspace-frontpage-image.dust', {}, $.proxy(function (text) {
+                var dialog = $(text);
+                
+                // Show cropping dialog
+                
+                $(text).dialog({
+                  modal: true, 
+                  resizable: false,
+                  width: 985,
+                  height: 440,
+                  dialogClass: "workspace-frontpage-image-dialog",
+                  close: function() {
+                    $(this).dialog().remove();
+                    $('.workspace-frontpage-image-input').val('');
+                  },
+                  open: function() {
+
+                    // Initialize Croppie
+                    
+                    var rnd = Math.floor(Math.random() * 1000) + 1
+                    $(this).find('.workspace-frontpage-image-container').croppie({
+                      url: '/rest/workspace/workspaces/' + workspaceId + '/workspacefile/workspace-frontpage-image-original?h=' + rnd,
+                      viewport: {
+                        width: 950,
+                        height: 240,
+                        type: 'square'
+                      },
+                      boundary: {
+                        width: 950,
+                        height: 240
+                      }
+                    });
+                  },
+                  buttons: [{
+                    'text': dialog.data('button-ok-text'),
+                    'class': 'send-button',
+                    'click': function(event) {
+                      
+                      // Create image
+
+                      $(this).find('.workspace-frontpage-image-container').croppie('result', {
+                        type: 'base64',
+                        size: {width: 950, height: 240},
+                        format: 'jpeg',
+                        quality: 0.8,
+                        circle: false
+                      }).then(function(data) {
+                        mApi().workspace.workspaces.workspacefile
+                          .create(workspaceId, {
+                            fileIdentifier: 'workspace-frontpage-image-cropped',
+                            contentType: 'image/jpeg',
+                            base64Data: data
+                          })
+                          .callback(function () {
+                            $(this).dialog('close');
+                            window.location.reload(true);
+                          });
+                      });
+                    }
+                  }, {
+                    'text': dialog.data('button-cancel-text'),
+                    'class': 'cancel-button',
+                    'click': function(event) {
+                      $(this).dialog('close');
+                    }
+                  }]
+                });
+              }, this));
+              
+            }, this));
+        }, this),
+        cache: false,
+        contentType: false,
+        processData: false
+      })
+    }
+  });
+  
   $.widget("custom.workspaceManagement", {
     options: {
       workspaceEntityId: null,
@@ -25,6 +132,8 @@
     _create: function () {
       
       this.element.on("click", ".copy-workspace-link", $.proxy(this._onCopyCourseClick, this));
+      
+      this.element.on("click", ".workspace-management-image-delete", $.proxy(this._onWorkspaceFrontPageImageDeleteClick, this));
       
       var loader = $('<div>')
         .addClass('loading')
@@ -267,10 +376,67 @@
       event.preventDefault();
     },
     
+    _onWorkspaceFrontPageImageDeleteClick(event) {
+      var workspaceEntityId = this.options.workspaceEntityId;
+      renderDustTemplate('workspace/workspace-frontpage-image-delete-confirm.dust', { }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          resizable: false,
+          width: 500,
+          dialogClass: "workspace-frontpage-image-delete-confirm-dialog",
+          buttons: [{
+            'text': dialog.data('button-delete-text'),
+            'class': 'delete-button',
+            'click': function(event) {
+              $(this).dialog().remove();
+              var removeCroppedCall = $.proxy(function (callback) {
+                mApi().workspace.workspaces.workspacefile
+                  .del(workspaceEntityId, 'workspace-frontpage-image-cropped')
+                  .callback($.proxy(function(err, result) {
+                    if (err)
+                      callback(err);
+                    else
+                      callback(undefined);
+                  })
+                );
+              });
+
+              var removeOriginalCall = $.proxy(function (callback) {
+                mApi().workspace.workspaces.workspacefile
+                  .del(workspaceEntityId, 'workspace-frontpage-image-original')
+                  .callback($.proxy(function(err, result) {
+                    if (err)
+                      callback(err);
+                    else
+                      callback(undefined);
+                  })
+                );
+              });
+              
+              var removeCalls = [removeCroppedCall, removeOriginalCall];
+              async.parallel(removeCalls, function(err) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else
+                  window.location.reload(true);
+              });
+            }
+          }, {
+            'text': dialog.data('button-cancel-text'),
+            'class': 'cancel-button',
+            'click': function(event) {
+              $(this).dialog().remove();
+            }
+          }]
+        });
+      }, this));
+    },
+    
     _onSaveClick: function (event) {      
       event.preventDefault();
       
-      var form = $(event.target).closest('form')[0];
+      var form = $("#workspaceManagementForm");
       
       if (form) {
         $(form).find('.validate-form-button')[0].click();
@@ -326,7 +492,14 @@
       $(evaluationLink).attr('href', href + '?workspaceEntityId=' + workspaceEntityId);
       $(evaluationLink).attr('target', '_blank');
     }
+    
+    $('.workspace-frontpage-image-uploader').workspaceFrontpageImage({
+      workspaceEntityId: workspaceEntityId
+    });
+    $('.workspace-management-image-edit').on('click', $.proxy(function() {
+      $('.workspace-frontpage-image-input').click();
+    }, this));
+    
   });
-  
-  
+
 }).call(this);

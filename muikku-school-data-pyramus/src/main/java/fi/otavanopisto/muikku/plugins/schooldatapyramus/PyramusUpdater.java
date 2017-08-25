@@ -359,11 +359,11 @@ public class PyramusUpdater {
       if (userGroupUserEntity != null)
         fireUserGroupUserRemoved(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
     } else {
+      String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId());
       if (userGroupUserEntity == null) {
-        String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId());
         fireUserGroupUserDiscovered(identifier, userGroupIdentifier, studentIdentifier);
       } else {
-        fireUserGroupUserUpdated(identifier, userGroupIdentifier, userGroupUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+        fireUserGroupUserUpdated(identifier, userGroupIdentifier, studentIdentifier);
       }
     }
   }
