@@ -196,7 +196,7 @@ public class ElasticSearchProvider implements SearchProvider {
          * List only active users. 
          * 
          * Active user is
-         * - staff member (TEACHER, MANAGER, ADMINISTRATOR, STUDY PROGRAMME LEADER) or
+         * - staff member (teacher, manager, study guider, study programme leader, administrator)
          * - student that has study start date (in the past) and no study end date
          * - student that has study start date (in the past) and study end date in the future
          * - student that has no study start and end date but belongs to an active workspace
@@ -210,9 +210,10 @@ public class ElasticSearchProvider implements SearchProvider {
         
         query.must(
           boolQuery()
-            .should(termsQuery("archetype",
+          .should(termsQuery("archetype",
               EnvironmentRoleArchetype.TEACHER.name().toLowerCase(),
               EnvironmentRoleArchetype.MANAGER.name().toLowerCase(),
+              EnvironmentRoleArchetype.STUDY_GUIDER.name().toLowerCase(),
               EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.name().toLowerCase(),
               EnvironmentRoleArchetype.ADMINISTRATOR.name().toLowerCase())
             )
