@@ -15,6 +15,8 @@ if [[ $release = "true" ]]; then
   git reset --hard
   git pull
   pushd .
+  echo Checking latest Pyramus SNAPSHOTS
+  mvn versions:use-latest-snapshots -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   echo Replacing SNAPSHOT versions to releases
   mvn versions:force-releases -Dincludes=fi.otavanopisto.pyramus:* --settings ~/.m2/mySettings.xml
   git add .
