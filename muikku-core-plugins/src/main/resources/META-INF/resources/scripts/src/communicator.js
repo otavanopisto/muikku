@@ -21,19 +21,26 @@ runApp(reducer, App, (store)=>{
       callbacks: [()=>mApi().communicator.cacheClear]
     }
   });
+  let currentLocation = window.location.hash.replace("#","").split("/");
+  
   store.dispatch(actions.messageCount.updateMessageCount());
-  store.dispatch(communicatorActions.communicatorNavigation.updateCommunicatorNavigationLabels());
+  store.dispatch(communicatorActions.communicatorNavigation.updateCommunicatorNavigationLabels(()=>{
+    if (currentLocation[0].includes("label")){
+      store.dispatch(communicatorActions.communicatorMessages.updateCommunicatorMessagesForLocation(currentLocation[0]));
+    }
+  }));
 
   window.addEventListener("hashchange", ()=>{
-    let newLocation = window.location.hash.replace("#","");
+    let newLocation = window.location.hash.replace("#","").split("/");
     store.dispatch(actions.hash.updateHash(newLocation));
-    store.dispatch(communicatorActions.communicatorMessages.updateCommunicatorMessagesForLocation(newLocation));
+    store.dispatch(communicatorActions.communicatorMessages.updateCommunicatorMessagesForLocation(newLocation[0]));
   }, false);
   if (!window.location.hash){
     window.location.hash = "#inbox";
   } else {
-    let currentLocation = window.location.hash.replace("#","");
     store.dispatch(actions.hash.updateHash(currentLocation));
-    store.dispatch(communicatorActions.communicatorMessages.updateCommunicatorMessagesForLocation(currentLocation));
+    if (!currentLocation[0].includes("labels")) {
+      store.dispatch(communicatorActions.communicatorMessages.updateCommunicatorMessagesForLocation(currentLocation[0]));
+    }
   }
 });

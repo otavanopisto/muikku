@@ -3,10 +3,11 @@ import thunk from 'redux-thunk';
 import React from 'react';
 import {Provider, connect} from 'react-redux';
 import {createStore, applyMiddleware} from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import {render} from 'react-dom';
 
 export default function runApp(reducer, App, callback){
-  let store = createStore(reducer, applyMiddleware(logger, thunk));
+  let store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk, logger)));
 
   render(<Provider store={store}>
     <App/>
@@ -43,5 +44,6 @@ export default function runApp(reducer, App, callback){
 //    }, mapDispatchToProps);
 //  }
   
+  window.STORE_DEBUG = newStore;
   callback && callback(newStore);
 }

@@ -4,6 +4,8 @@
 
 .communicator.application-list {
   padding: 0 5px;
+  height: 100%;
+  overflow-y: auto;
   
   .application-list-item {
     padding-left: 15px;

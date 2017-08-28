@@ -1,7 +1,14 @@
 import actions from '../base/notifications';
 
 export default {
-  updateMessageCount(){
+  updateMessageCount(value){
+    if (typeof value !== "undefined"){
+      return {
+        type: "UPDATE_MESSAGE_COUNT",
+        payload: value
+      }
+    }
+    
     return (dispatch, getState)=>{
       mApi()
         .communicator

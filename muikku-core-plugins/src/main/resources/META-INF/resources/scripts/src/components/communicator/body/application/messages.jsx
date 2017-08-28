@@ -16,6 +16,9 @@ class CommunicatorMessages extends React.Component {
     }
     
     this.toggleMessageSelection = this.toggleMessageSelection.bind(this);
+    this.onTouchStartMessage = this.onTouchStartMessage.bind(this);
+    this.onTouchEndMessage = this.onTouchEndMessage.bind(this);
+    this.onScroll = this.onScroll.bind(this);
   }
   onTouchStartMessage(message){
     if (!this.state.touchMode){
@@ -42,7 +45,7 @@ class CommunicatorMessages extends React.Component {
     }
   }
   toggleMessageSelection(message){
-    let isSelected = this.props.communicatorMessages.selectedIds.includes(message.id);
+    let isSelected = this.props.communicatorMessages.selectedIds.includes(message.communicatorMessageId);
     if (isSelected){
       this.props.removeFromCommunicatorSelectedMessages(message)
     } else {
@@ -50,8 +53,33 @@ class CommunicatorMessages extends React.Component {
     }
     return isSelected;
   }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.communicatorMessages.state === "LOADING"){
+      this.setState({
+        touchMode: false
+      });
+    }
+  }
+  componentDidUpdate(){
+    if (this.props.communicatorMessages.state === "READY" && this.props.communicatorMessages.hasMore){
+      let list = this.refs.list;
+      let doesNotHaveScrollBar = list.scrollHeight === list.offsetHeight;
+      if (doesNotHaveScrollBar){
+        this.props.loadMoreMessages();
+      }
+    }
+  }
+  onScroll(e){
+    if (this.props.communicatorMessages.state === "READY" && this.props.communicatorMessages.hasMore){
+      let list = this.refs.list;
+      let scrollBottomRemaining = list.scrollHeight - (list.scrollTop + list.offsetHeight)
+      if (scrollBottomRemaining <= 100){
+        this.props.loadMoreMessages();
+      }
+    }
+  }
   render(){
-    if (this.props.communicatorMessages.state === "WAIT"){
+    if (this.props.communicatorMessages.state === "LOADING"){
       return null;
     } else if (this.props.communicatorMessages.state === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
@@ -61,14 +89,15 @@ class CommunicatorMessages extends React.Component {
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className={`communicator application-list ${this.state.touchMode ? "application-list-select-mode" : ""}`}>{
+    return <div className={`communicator application-list ${this.state.touchMode ? "application-list-select-mode" : ""}`}
+     ref="list" onScroll={this.onScroll}>{
       this.props.communicatorMessages.messages.map((message, index)=>{
-        let isSelected = this.props.communicatorMessages.selectedIds.includes(message.id);
-        return <div key={message.id}
+        let isSelected = this.props.communicatorMessages.selectedIds.includes(message.communicatorMessageId);
+        return <div key={message.communicatorMessageId}
           className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
           onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)}>
           <div className="application-list-item-header">
-            <input type="checkbox" checked={isSelected} onClick={this.toggleMessageSelection.bind(this, message)}/>
+            <input type="checkbox" checked={isSelected} onChange={this.toggleMessageSelection.bind(this, message)}/>
             <span className="communicator text communicator-text-username">
               {message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}
             </span>
@@ -90,7 +119,10 @@ class CommunicatorMessages extends React.Component {
           </div>
         </div>
       })
-    }</div>
+    }{
+      this.props.communicatorMessages.state === "LOADING_MORE" ? 
+        <div className="application-list-item loader-empty"/>
+    : null}</div>
   }
 }
 

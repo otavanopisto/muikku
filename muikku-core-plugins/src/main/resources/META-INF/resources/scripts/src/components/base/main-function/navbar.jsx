@@ -32,7 +32,7 @@ class MainFunctionNavbar extends React.Component {
       href: "/communicator",
       icon: "envelope",
       condition: this.props.status.loggedIn,
-      badge: this.props.status.messageCount
+      badge: this.props.messageCount
     }, {
       classNameSuffix: "discussion",
       trail: "discussion",

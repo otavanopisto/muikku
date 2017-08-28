@@ -1,7 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown.jsx';
 import Link from '~/components/general/link.jsx';
+import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
+import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
 import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
 
 class CommunicatorToolbar extends React.Component {
@@ -19,7 +22,7 @@ class CommunicatorToolbar extends React.Component {
   }
   render(){
     let currentLocation = this.props.communicatorNavigation.find((item)=>{
-      return (item.location === this.props.hash);
+      return (item.location === this.props.hash[0]);
     });
     
     if (!currentLocation){
@@ -75,17 +78,18 @@ class CommunicatorToolbar extends React.Component {
         [
           <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-          <span className="communicator link link-full communicator-link-new">
+          <span className="communicator link link-full communicator-link-new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </span>
         ].concat(this.props.communicatorNavigation.filter((item)=>{
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
-        }).map((item)=>{
-          let isSelected = allInCommon.includes(item.id);
-          let isPartiallySelected = onlyInSome.includes(item.id);
-          return (<Link className={`communicator link link-full communicator-link-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}>
-            <span className="icon icon-tag" style={{color: item.color}}></span>
-            <span className="text">{filterHighlight(item.text(this.props.i18n), this.state.labelFilter)}</span>
+        }).map((label)=>{
+          let isSelected = allInCommon.includes(label.id);
+          let isPartiallySelected = onlyInSome.includes(label.id);
+          return (<Link className={`communicator link link-full communicator-link-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+            onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessages.bind(null, label) : this.props.removeLabelFromSelectedMessages.bind(null, label)}>
+            <span className="icon icon-tag" style={{color: label.color}}></span>
+            <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
           </Link>);
         }))
       }>
@@ -94,8 +98,10 @@ class CommunicatorToolbar extends React.Component {
         </Link>
       </Dropdown>
       
-      <Link className={`communicator button button-pill communicator-button-pill-toggle-read ${this.props.communicatorMessages.selected.length !== 1 ? "disabled" : ""}`}>
-        <span className={`icon icon-message-${this.props.communicatorMessages.selected.length === 1 && this.props.communicatorMessages.selected[0].unreadMessagesInThread ? "un" : ""}read`}></span>
+      <Link className="communicator button button-pill communicator-button-pill-toggle-read"
+        disabled={this.props.communicatorMessages.selected.length !== 1}
+        onClick={this.props.communicatorMessages.toolbarLock ? null : this.props.toggleMessagesReadStatus.bind(null, this.props.communicatorMessages.selected[0])}>
+        <span className={`icon icon-message-${this.props.communicatorMessages.selected.length === 1 && !this.props.communicatorMessages.selected[0].unreadMessagesInThread ? "un" : ""}read`}></span>
       </Link>
     </div>
   }
@@ -111,7 +117,7 @@ function mapStateToProps(state){
 };
 
 const mapDispatchToProps = (dispatch)=>{
-  return {};
+  return bindActionCreators(Object.assign({}, communicatorMessagesActions, communicatorNavigationActions), dispatch);
 };
 
 export default connect(

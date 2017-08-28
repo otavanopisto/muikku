@@ -45,6 +45,24 @@ export function colorIntToHex(color) {
   return "#" + rStr + gStr + bStr;
 }
 
+export function hexToColorInt(hexColor) {
+  let r = 255;
+  let g = 255;
+  let b = 255;
+
+  if (hexColor) {
+    if (hexColor.length == 7){
+      hexColor = hexColor.slice(1);
+    }
+    
+    r = parseInt(hexColor.slice(0, 2), 16);
+    g = parseInt(hexColor.slice(2, 4), 16);
+    b = parseInt(hexColor.slice(4, 6), 16);
+  }
+    
+  return (r << 16) + (g << 8) + b;
+}
+
 export function intersect(...elements){
   if (elements.length === 1){
     return elements[0];
