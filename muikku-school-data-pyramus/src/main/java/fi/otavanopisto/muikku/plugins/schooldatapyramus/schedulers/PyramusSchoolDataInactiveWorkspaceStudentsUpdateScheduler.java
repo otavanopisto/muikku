@@ -14,7 +14,7 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginD
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 
 @ApplicationScoped
-public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataInactiveWorkspaceStudentsUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
   private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-students.batchsize", "1"));
 
@@ -29,7 +29,7 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDa
   
   @Override
   public String getSchedulerName() {
-    return "workspace-students";
+    return "workspace-inactive-students";
   }
 
   @Override
@@ -44,14 +44,14 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler extends PyramusDa
         updateOffset(0);
       } else {
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-          logger.info(String.format("Synchronizing Pyramus workspace students of workspace %d", workspaceEntity.getId()));
-          count += pyramusUpdater.updateWorkspaceStudents(workspaceEntity);
+          logger.info(String.format("Synchronizing Pyramus workspace inactive students of workspace %d", workspaceEntity.getId()));
+          count += pyramusUpdater.updateInactiveWorkspaceStudents(workspaceEntity);
         }
 
         updateOffset(offset + workspaceEntities.size());
       }
     } finally {
-      logger.info(String.format("Synchronized %d Pyramus workspace students", count));
+      logger.info(String.format("Synchronized %d Pyramus inactive workspace students", count));
     }
   }
   
