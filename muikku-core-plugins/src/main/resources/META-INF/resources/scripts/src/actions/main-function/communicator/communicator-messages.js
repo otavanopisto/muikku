@@ -5,13 +5,15 @@ import {hexToColorInt} from '~/util/modifiers';
 
 const MAX_LOADED_AT_ONCE = 30;
 
-function getApiId(item){
+//Why in the world do we have a weird second version?
+//This is a serverside issue, just why we have different paths for different things.
+function getApiId(item, weirdSecondVersion){
   if (item.type === "folder"){
     switch(item.id){
     case "inbox":
-      return "items";
+      return !weirdSecondVersion ? "items" : "messages";
     case "unread":
-      return "items";
+      return !weirdSecondVersion ? "items" : "unread";
     case "sent":
       return "sentitems";
     case "trash":
@@ -21,11 +23,11 @@ function getApiId(item){
       console.warn("Invalid navigation item location",item);
     }
   } else {
-    return "items";
+    return !weirdSecondVersion ? "items" : "messages";
   }
 }
 
-function processMessages(dispatch, communicatorMessages, location, pages, concat, callback, err, messages){
+function processMessages(dispatch, communicatorMessages, location, pages, concat, err, messages){
   if (err){
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({
@@ -54,12 +56,10 @@ function processMessages(dispatch, communicatorMessages, location, pages, concat
       type: "UPDATE_MESSAGES_ALL_PROPERTIES",
       payload
     });
-    
-    callback && callback(payload);
   }
 }
 
-function loadMessages(location, initial, callback, dispatch, getState){
+function loadMessages(location, initial, dispatch, getState){
   if (initial){
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
@@ -87,7 +87,7 @@ function loadMessages(location, initial, callback, dispatch, getState){
   let firstResult = initial ? 0 : communicatorMessages.pages*MAX_LOADED_AT_ONCE;
   let pages = initial ? 1 : communicatorMessages.pages + 1;
   let concat = !initial;
-  let args = [this, dispatch, communicatorMessages, actualLocation, pages, concat, callback];
+  let args = [this, dispatch, communicatorMessages, actualLocation, pages, concat];
   if (item.type === 'folder'){
     let params = {
         firstResult,
@@ -159,7 +159,7 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
 
 export default {
   loadMessages(location){
-    return loadMessages.bind(this, location, true, null);
+    return loadMessages.bind(this, location, true);
   },
   updateCommunicatorSelectedMessages(messages){
     return {
@@ -180,7 +180,7 @@ export default {
     };
   },
   loadMoreMessages(){
-    return loadMessages.bind(this, null, false, null);
+    return loadMessages.bind(this, null, false);
   },
   addLabelToSelectedMessages(label){
     return setLabelStatusSelectedMessages.bind(this, label, true);
@@ -204,6 +204,7 @@ export default {
         dispatch({
           type: "UNLOCK_TOOLBAR"
         });
+        return;
       }
       
       dispatch({
@@ -261,6 +262,7 @@ export default {
         dispatch({
           type: "UNLOCK_TOOLBAR"
         });
+        return;
       }
       
       let {selected, selectedIds} = communicatorMessages;
@@ -268,6 +270,9 @@ export default {
       let done = 0;
       for (let message of selected){
         mApi().communicator[getApiId(item)].del(message.communicatorMessageId).callback((err)=>{
+          if (message.unreadMessagesInThread){
+            messageCount--;
+          }
           done++;
           if (err){
             dispatch(notificationActions.displayNotification(err.message, 'error'));
@@ -282,56 +287,41 @@ export default {
             dispatch({
               type: "UNLOCK_TOOLBAR"
             });
+            dispatch(messageCountActions.updateMessageCount(messageCount));
           }
         });
       }
     }
   },
-  setCurrentMessage(message){
+  loadMessage(location, messageId){
     return (dispatch, getState)=>{
-      let {communicatorMessages} = getState();
-      
-      let index = communicatorMessages.messages.findIndex((searchMessage)=>{
-        return searchMessage.communicatorMessageId === message.communicatorMessageId;
+      let {communicatorNavigation} = getState();
+      let item = communicatorNavigation.find((item)=>{
+        return item.location === location;
       });
-      if (index === -1){
+      if (!item){
         //TODO translate this
-        dispatch(notificationActions.displayNotification("Invalid message", 'error'));
+        dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
+        return;
       }
       
-      let payload = {
-        prev: communicatorMessages.messages[index + 1] || null,
-        current: message,
-        next: communicatorMessages.messages[index - 1] || null
-      }
-      
-      if (!payload.prev && communicatorMessages.hasMore){
+      mApi().communicator[getApiId(item, true)].read(messageId).callback((err, message)=>{
+        if (err){
+          dispatch(notificationActions.displayNotification(err.message, 'error'));
+          return;
+        }
+        
         dispatch({
-          type: "SET_ONLY_CURRENT_NEXT_MESSAGES",
-          payload
+          type: "SET_CURRENT_MESSAGE",
+          payload: message
         });
-        loadMessages(null, false, (stateChanges)=>{
-          dispatch({
-            type: "SET_ONLY_PREV_MESSAGE",
-            payload: stateChanges.messages[index + 1]
-          });
-        }, dispatch, getState);
-      } else {
-        dispatch({
-          type: "SET_PREV_CURRENT_NEXT_MESSAGES",
-          payload
-        });
-      }
+      });
     }
   },
-  closeCurrentMessage(){
+  unloadMessage(){
     return {
-      type: "SET_PREV_CURRENT_NEXT_MESSAGES",
-      payload: {
-        prev: null,
-        current: null,
-        next: null
-      }
+      type: "SET_CURRENT_MESSAGE",
+      payload: null
     }
   }
 }

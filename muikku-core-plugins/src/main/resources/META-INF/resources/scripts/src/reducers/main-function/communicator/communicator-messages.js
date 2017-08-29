@@ -7,9 +7,7 @@ export default function communicatorMessages(state={
   hasMore: false,
   location: "",
   toolbarLock: false,
-  current: null,
-  next: null,
-  prev: null
+  current: null
 }, action){
   if (action.type === "UPDATE_MESSAGES_STATE"){
     return Object.assign({}, state, {state: action.payload});
@@ -85,12 +83,8 @@ export default function communicatorMessages(state={
     }), messages: state.messages.filter((message)=>{
       return message.communicatorMessageId !== action.payload.communicatorMessageId
     }), selectedIds: state.selectedIds.filter((id)=>{return id !== action.payload.communicatorMessageId})});
-  } else if (action.type === "SET_PREV_CURRENT_NEXT_MESSAGES"){
-    return Object.assign({}, state, {current: action.payload.current, prev: action.payload.prev, next: action.payload.next}); 
-  } else if (action.type === "SET_ONLY_CURRENT_NEXT_MESSAGES"){
-    return Object.assign({}, state, {current: action.payload.current, next: action.payload.next});
-  } else if (action.type === "SET_ONLY_PREV_MESSAGE"){
-    return Object.assign({}, state, {prev: action.payload});
+  } else if (action.type === "SET_CURRENT_MESSAGE"){
+    return Object.assign({}, state, {current: action.payload}); 
   }
   return state;
 }

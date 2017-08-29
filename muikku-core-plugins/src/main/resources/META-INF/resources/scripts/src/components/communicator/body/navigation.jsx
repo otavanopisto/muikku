@@ -10,7 +10,7 @@ class Navigation extends React.Component {
         if (item.color){
           style.color = item.color;
         }
-        return <Link key={index} className={`item-list-item ${this.props.hash[0] === item.location ? "active" : ""}`} href={`#${item.location}`}>
+        return <Link key={index} className={`item-list-item ${this.props.communicatorMessages.location === item.location ? "active" : ""}`} href={`#${item.location}`}>
           <span className={`icon icon-${item.icon}`} style={style}></span>
           <span className="item-list-text-body text">
             {item.text(this.props.i18n)}
@@ -24,9 +24,9 @@ class Navigation extends React.Component {
 function mapStateToProps(state){
   return {
     labels: state.labels,
-    hash: state.hash,
     i18n: state.i18n,
-    communicatorNavigation: state.communicatorNavigation
+    communicatorNavigation: state.communicatorNavigation,
+    communicatorMessages: state.communicatorMessages
   }
 };
 

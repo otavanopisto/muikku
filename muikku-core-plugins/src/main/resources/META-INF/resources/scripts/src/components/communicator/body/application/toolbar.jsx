@@ -22,7 +22,7 @@ class CommunicatorToolbar extends React.Component {
   }
   render(){
     let currentLocation = this.props.communicatorNavigation.find((item)=>{
-      return (item.location === this.props.hash[0]);
+      return (item.location === this.props.communicatorMessages.location);
     });
     
     if (!currentLocation){
@@ -112,7 +112,6 @@ function mapStateToProps(state){
   return {
     communicatorNavigation: state.communicatorNavigation,
     communicatorMessages: state.communicatorMessages,
-    hash: state.hash,
     i18n: state.i18n
   }
 };
