@@ -25,7 +25,7 @@ function getApiId(item){
   }
 }
 
-function processMessages(dispatch, communicatorMessages, location, pages, concat, err, messages){
+function processMessages(dispatch, communicatorMessages, location, pages, concat, callback, err, messages){
   if (err){
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({
@@ -54,10 +54,12 @@ function processMessages(dispatch, communicatorMessages, location, pages, concat
       type: "UPDATE_MESSAGES_ALL_PROPERTIES",
       payload
     });
+    
+    callback && callback(payload);
   }
 }
 
-function loadMessages(location, initial, dispatch, getState){
+function loadMessages(location, initial, callback, dispatch, getState){
   if (initial){
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
@@ -84,8 +86,8 @@ function loadMessages(location, initial, dispatch, getState){
   
   let firstResult = initial ? 0 : communicatorMessages.pages*MAX_LOADED_AT_ONCE;
   let pages = initial ? 1 : communicatorMessages.pages + 1;
-  let args = [this, dispatch, communicatorMessages, actualLocation, pages, concat];
   let concat = !initial;
+  let args = [this, dispatch, communicatorMessages, actualLocation, pages, concat, callback];
   if (item.type === 'folder'){
     let params = {
         firstResult,
@@ -156,8 +158,8 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
 }
 
 export default {
-  updateCommunicatorMessagesForLocation(location, page){
-    return loadMessages.bind(this, location, true);
+  loadMessages(location){
+    return loadMessages.bind(this, location, true, null);
   },
   updateCommunicatorSelectedMessages(messages){
     return {
@@ -178,7 +180,7 @@ export default {
     };
   },
   loadMoreMessages(){
-    return loadMessages.bind(this, null, false);
+    return loadMessages.bind(this, null, false, null);
   },
   addLabelToSelectedMessages(label){
     return setLabelStatusSelectedMessages.bind(this, label, true);
@@ -240,6 +242,95 @@ export default {
       } else {
         dispatch(messageCountActions.updateMessageCount(messageCount + 1));
         mApi().communicator[getApiId(item)].markasunread.create(message.communicatorMessageId).callback(callback);
+      }
+    }
+  },
+  deleteSelectedMessages(){
+    return (dispatch, getState)=>{
+      dispatch({
+        type: "LOCK_TOOLBAR"
+      });
+      
+      let {communicatorNavigation, communicatorMessages, messageCount} = getState();
+      let item = communicatorNavigation.find((item)=>{
+        return item.location === communicatorMessages.location;
+      });
+      if (!item){
+        //TODO translate this
+        dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
+        dispatch({
+          type: "UNLOCK_TOOLBAR"
+        });
+      }
+      
+      let {selected, selectedIds} = communicatorMessages;
+      
+      let done = 0;
+      for (let message of selected){
+        mApi().communicator[getApiId(item)].del(message.communicatorMessageId).callback((err)=>{
+          done++;
+          if (err){
+            dispatch(notificationActions.displayNotification(err.message, 'error'));
+          } else {
+            dispatch({
+              type: "DELETE_MESSAGE",
+              payload: message
+            });
+          }
+          if (done === selected.length){
+            mApi().communicator[getApiId(item)].cacheClear();
+            dispatch({
+              type: "UNLOCK_TOOLBAR"
+            });
+          }
+        });
+      }
+    }
+  },
+  setCurrentMessage(message){
+    return (dispatch, getState)=>{
+      let {communicatorMessages} = getState();
+      
+      let index = communicatorMessages.messages.findIndex((searchMessage)=>{
+        return searchMessage.communicatorMessageId === message.communicatorMessageId;
+      });
+      if (index === -1){
+        //TODO translate this
+        dispatch(notificationActions.displayNotification("Invalid message", 'error'));
+      }
+      
+      let payload = {
+        prev: communicatorMessages.messages[index + 1] || null,
+        current: message,
+        next: communicatorMessages.messages[index - 1] || null
+      }
+      
+      if (!payload.prev && communicatorMessages.hasMore){
+        dispatch({
+          type: "SET_ONLY_CURRENT_NEXT_MESSAGES",
+          payload
+        });
+        loadMessages(null, false, (stateChanges)=>{
+          dispatch({
+            type: "SET_ONLY_PREV_MESSAGE",
+            payload: stateChanges.messages[index + 1]
+          });
+        }, dispatch, getState);
+      } else {
+        dispatch({
+          type: "SET_PREV_CURRENT_NEXT_MESSAGES",
+          payload
+        });
+      }
+    }
+  },
+  closeCurrentMessage(){
+    return {
+      type: "SET_PREV_CURRENT_NEXT_MESSAGES",
+      payload: {
+        prev: null,
+        current: null,
+        next: null
       }
     }
   }

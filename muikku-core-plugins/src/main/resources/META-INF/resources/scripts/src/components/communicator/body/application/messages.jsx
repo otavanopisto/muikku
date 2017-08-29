@@ -18,9 +18,28 @@ class CommunicatorMessages extends React.Component {
     this.toggleMessageSelection = this.toggleMessageSelection.bind(this);
     this.onTouchStartMessage = this.onTouchStartMessage.bind(this);
     this.onTouchEndMessage = this.onTouchEndMessage.bind(this);
+    this.onTouchMoveMessage = this.onTouchMoveMessage.bind(this);
     this.onScroll = this.onScroll.bind(this);
+    this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
+    this.onContextMenu = this.onContextMenu.bind(this);
+    
+    this.initialXPos = null;
+    this.initialYPos = null;
+    this.lastXPos = null;
+    this.lastYPos = null;
+    this.cancelSelection = false;
+    this.initialTime = null;
   }
-  onTouchStartMessage(message){
+  checkCanLoadMore(){
+    if (this.props.communicatorMessages.state === "READY" && this.props.communicatorMessages.hasMore){
+      let list = this.refs.list;
+      let scrollBottomRemaining = list.scrollHeight - (list.scrollTop + list.offsetHeight)
+      if (scrollBottomRemaining <= 100){
+        this.props.loadMoreMessages();
+      }
+    }
+  }
+  onTouchStartMessage(message, e){
     if (!this.state.touchMode){
       this.touchModeTimeout = setTimeout(()=>{
         this.toggleMessageSelection(message);
@@ -28,11 +47,35 @@ class CommunicatorMessages extends React.Component {
         this.setState({
           touchMode: true
         });
-      }, 300);
+      }, 600);
+    }
+    this.cancelSelection = false;
+    this.initialXPos = e.touches[0].pageX;
+    this.initialYPos = e.touches[0].pageY;
+    this.initialTime = (new Date()).getTime();
+  }
+  onTouchMoveMessage(message, e){
+    this.lastXPos = e.touches[0].pageX;
+    this.lastYPos = e.touches[0].pageY;
+    
+    if (Math.abs(this.initialXPos - this.lastXPos) >= 5 || Math.abs(this.initialYPos - this.lastYPos) >= 5){
+      clearTimeout(this.touchModeTimeout);
+      this.cancelSelection = true;
     }
   }
-  onTouchEndMessage(message){
+  onTouchEndMessage(message, e){
     clearTimeout(this.touchModeTimeout);
+    
+    if (this.cancelSelection){
+      return;
+    }
+    
+    let currentTime = (new Date()).getTime();
+    if (currentTime - this.initialTime <= 300 && !this.state.touchMode){
+      this.props.setCurrentMessage(message);
+      return;
+    }
+    
     if (this.state.touchMode && !this.firstWasJustSelected){
       let isSelected = this.toggleMessageSelection(message);
       if (isSelected && this.props.communicatorMessages.selectedIds.length === 1){
@@ -43,6 +86,10 @@ class CommunicatorMessages extends React.Component {
     } else if (this.firstWasJustSelected){
       this.firstWasJustSelected = false;
     }
+  }
+  onContextMenu(e){
+    e.preventDefault();
+    e.stopPropagation();
   }
   toggleMessageSelection(message){
     let isSelected = this.props.communicatorMessages.selectedIds.includes(message.communicatorMessageId);
@@ -68,15 +115,10 @@ class CommunicatorMessages extends React.Component {
         this.props.loadMoreMessages();
       }
     }
+    this.checkCanLoadMore();
   }
   onScroll(e){
-    if (this.props.communicatorMessages.state === "READY" && this.props.communicatorMessages.hasMore){
-      let list = this.refs.list;
-      let scrollBottomRemaining = list.scrollHeight - (list.scrollTop + list.offsetHeight)
-      if (scrollBottomRemaining <= 100){
-        this.props.loadMoreMessages();
-      }
-    }
+    this.checkCanLoadMore();
   }
   render(){
     if (this.props.communicatorMessages.state === "LOADING"){
@@ -95,7 +137,9 @@ class CommunicatorMessages extends React.Component {
         let isSelected = this.props.communicatorMessages.selectedIds.includes(message.communicatorMessageId);
         return <div key={message.communicatorMessageId}
           className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
-          onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)}>
+          onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)}
+          onTouchMove={this.onTouchMoveMessage.bind(this, message)} onClick={this.props.setCurrentMessage.bind(null, message)}
+          onContextMenu={this.onContextMenu}>
           <div className="application-list-item-header">
             <input type="checkbox" checked={isSelected} onChange={this.toggleMessageSelection.bind(this, message)}/>
             <span className="communicator text communicator-text-username">

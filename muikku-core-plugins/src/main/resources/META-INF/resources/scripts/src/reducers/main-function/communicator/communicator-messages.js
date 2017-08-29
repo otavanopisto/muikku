@@ -6,7 +6,10 @@ export default function communicatorMessages(state={
   pages: 1,
   hasMore: false,
   location: "",
-  toolbarLock: false
+  toolbarLock: false,
+  current: null,
+  next: null,
+  prev: null
 }, action){
   if (action.type === "UPDATE_MESSAGES_STATE"){
     return Object.assign({}, state, {state: action.payload});
@@ -76,6 +79,18 @@ export default function communicatorMessages(state={
       }
       return message;
     })});
+  } else if (action.type === "DELETE_MESSAGE"){
+    return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
+      return selected.communicatorMessageId !== action.payload.communicatorMessageId
+    }), messages: state.messages.filter((message)=>{
+      return message.communicatorMessageId !== action.payload.communicatorMessageId
+    }), selectedIds: state.selectedIds.filter((id)=>{return id !== action.payload.communicatorMessageId})});
+  } else if (action.type === "SET_PREV_CURRENT_NEXT_MESSAGES"){
+    return Object.assign({}, state, {current: action.payload.current, prev: action.payload.prev, next: action.payload.next}); 
+  } else if (action.type === "SET_ONLY_CURRENT_NEXT_MESSAGES"){
+    return Object.assign({}, state, {current: action.payload.current, next: action.payload.next});
+  } else if (action.type === "SET_ONLY_PREV_MESSAGE"){
+    return Object.assign({}, state, {prev: action.payload});
   }
   return state;
 }

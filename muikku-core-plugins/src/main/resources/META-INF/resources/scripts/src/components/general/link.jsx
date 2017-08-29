@@ -35,6 +35,10 @@ export default class Link extends React.Component {
     }
   }
   onClick(e, re){
+    if (this.props.disabled){
+      e.preventDefault();
+      return;
+    }
     if (this.props.href && this.props.href[0] === '#'){
       e.preventDefault();
       scrollToSection(this.props.href);
@@ -44,12 +48,20 @@ export default class Link extends React.Component {
     }
   }
   onTouchStart(e, re){
+    if (this.props.disabled){
+      e.preventDefault();
+      return;
+    }
     this.setState({active: true});
     if (this.props.onTouchStart){
       this.props.onTouchStart(e, re);
     }
   }
   onTouchEnd(e, re){
+    if (this.props.disabled){
+      e.preventDefault();
+      return;
+    }
     this.setState({active: false});
     this.onClick(e, re);
     if (this.props.onTouchEnd){
@@ -58,7 +70,7 @@ export default class Link extends React.Component {
   }
   render(){
     return <a {...this.props}
-      className={this.props.className + (this.state.active ? " active" : "")}
+      className={this.props.className + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd}/>
   }
 }

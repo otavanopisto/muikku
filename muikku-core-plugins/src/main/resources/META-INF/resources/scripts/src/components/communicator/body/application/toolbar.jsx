@@ -69,7 +69,8 @@ class CommunicatorToolbar extends React.Component {
     return <div className="communicator-navigation">
       <Link className="communicator text communicator-text-current-folder">{currentLocation.text(this.props.i18n)}</Link>
                 
-      <Link className={`communicator button button-pill communicator-button-pill-delete ${this.props.communicatorMessages.selected.length == 0 ? "disabled" : ""}`}>
+      <Link className="communicator button button-pill communicator-button-pill-delete"
+       disabled={this.props.communicatorMessages.selected.length == 0} onClick={this.props.deleteSelectedMessages}>
         {/* FIXME this is not the right icon, there are no trash bin in the file */}
         <span className="icon icon-forgotpassword"></span>
       </Link>
