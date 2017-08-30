@@ -120,17 +120,9 @@ export default class Portal extends React.Component {
       document.body.appendChild(this.node);
     }
 
-    let children = props.children;
-    // https://gist.github.com/jimfb/d99e0678e9da715ccf6454961ef04d1b
-    if (typeof props.children.type === 'function') {
-      children = React.cloneElement(props.children, {
-        closePortal: this.closePortal
-      });
-    }
-
     this.portal = unstable_renderSubtreeIntoContainer(
       this,
-      children,
+      typeof props.children === "function" ? props.children(this.closePortal) : props.children,
       this.node,
       this.props.onUpdate
     );
@@ -151,7 +143,7 @@ export default class Portal extends React.Component {
 }
 
 Portal.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.any.isRequired,
   openByClickOn: PropTypes.element,
   closeOnEsc: PropTypes.bool,
   closeOnOutsideClick: PropTypes.bool,

@@ -20,6 +20,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
     this.onNameChange = this.onNameChange.bind(this);
     this.removeLabel = this.removeLabel.bind(this);
     this.update = this.update.bind(this);
+    
     this.state = {
       color: props.label.color,
       name: props.label.text(props.i18n),
@@ -28,7 +29,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
   }
   componentWillReceiveProps(nextProps){
     if (nextProps.label.id !== this.props.label.id){
-      this.setState({color: nextProps.label.color, removed: false, name: nextProps.label.name});
+      this.setState({color: nextProps.label.color, removed: false, name: nextProps.label.text(this.props.i18n)});
     }
   }
   onColorChange(color, event){
@@ -61,21 +62,23 @@ class CommunicatorLabelUpdateDialog extends React.Component {
         </Link>
       </div>
     }
-    let content = <div style={{opacity: this.state.removed ? 0.5 : null}}>
-      <div className="communicator text communicator-text-label-update-dialog-icon">
-        <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
-      </div>
-      <input value={this.state.name}
-        className="communicator form-field communicator-form-field-label-name"
-        disabled={this.state.removed}
-        onChange={this.onNameChange}/>
-      <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
+    let content = (closeDialog)=>{
+      return <div style={{opacity: this.state.removed ? 0.5 : null}}>
+        <div className="communicator text communicator-text-label-update-dialog-icon">
+          <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+        </div>
+        <input value={this.state.name}
+          className="communicator form-field communicator-form-field-label-name"
+          disabled={this.state.removed}
+          onChange={this.onNameChange}/>
+        <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
       
-      {/*TODO please translate this*/}
-      <Link className="communicator button button-large button-fatal communicator-button-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
-        {this.state.removed ? "Label Removed" : "Remove Label"}
-      </Link>
-    </div>
+        {/*TODO please translate this*/}
+        <Link className="communicator button button-large button-fatal communicator-button-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
+          {this.state.removed ? "Label Removed" : "Remove Label"}
+        </Link>
+      </div>
+    }
     return <Dialog classNameExtension="communicator" 
      title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
      content={content} footer={footer}>{this.props.children}</Dialog>

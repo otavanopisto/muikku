@@ -10,7 +10,7 @@ class ForgotPasswordDialog extends React.Component {
     classNameExtension: PropTypes.string.isRequired
   }
   render(){
-    let content = (<div>
+    let content = (closeDialog)=><div>
         {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.instructions')}
         <br/>
         <br/>
@@ -21,7 +21,7 @@ class ForgotPasswordDialog extends React.Component {
               <input type="submit" className="form-hidden" id="form-reset-password-submit"/>
           </div>
         </form>
-      </div>);
+      </div>;
     let footer = (closeDialog)=>{
       return <div>
         <label htmlFor="form-reset-password-submit" className="button button-large">

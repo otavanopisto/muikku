@@ -13,7 +13,6 @@ export default class Dialog extends React.Component {
   constructor(props){
     super(props);
     
-    this.close = this.close.bind(this);
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.beforeClose = this.beforeClose.bind(this);
@@ -22,12 +21,9 @@ export default class Dialog extends React.Component {
       visible: false
     }
   }
-  close(){
-    this.refs.portal.closePortal();
-  }
-  onOverlayClick(e){
+  onOverlayClick(close, e){
     if (e.target === e.currentTarget){
-      this.close();
+      close();
     }
   }
   onOpen(){
@@ -44,23 +40,23 @@ export default class Dialog extends React.Component {
     setTimeout(removeFromDOM, 300);
   }
   render(){
-    return (<Portal ref="portal" openByClickOn={this.props.children} onOpen={this.onOpen} beforeClose={this.beforeClose} closeOnEsc>
-<div className={`dialog ${this.props.classNameExtension}-dialog ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick}>
+    return (<Portal openByClickOn={this.props.children} onOpen={this.onOpen} beforeClose={this.beforeClose} closeOnEsc>
+{(closePortal)=>{return <div className={`dialog ${this.props.classNameExtension}-dialog ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
   <div className="dialog-window">
       <div className="dialog-header">
         <div className="dialog-title">
             {this.props.title}
-            <span className="dialog-close icon icon-close" onClick={this.close}></span>
+            <span className="dialog-close icon icon-close" onClick={closePortal}></span>
         </div>
       </div>
       <div className="dialog-content">
-        {this.props.content}
+        {this.props.content(closePortal)}
       </div>
       <div className="dialog-footer">
-        {this.props.footer(this.close)}
+        {this.props.footer(closePortal)}
       </div>
   </div>
-</div>
+</div>}}
         </Portal>);
   }
 }
