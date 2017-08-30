@@ -25,6 +25,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void notLoggedInAnyoneCourseAccessTest() throws Exception {
@@ -60,6 +61,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void loggedInAnyoneCourseAccessTest() throws Exception {
@@ -96,6 +98,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void courseStudentAnyoneCourseAccessTest() throws Exception {
@@ -135,6 +138,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void notLoggedInLoggedInCourseAccessTest() throws Exception {
@@ -169,6 +173,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void loggedInLoggedInCourseAccessTest() throws Exception {
@@ -205,6 +210,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void courseStudentLoggedInCourseAccessTest() throws Exception {
@@ -244,6 +250,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void notLoggedInMembersOnlyCourseAccessTest() throws Exception {
@@ -280,7 +287,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.CHROME,
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void loggedInMembersOnlyCourseAccessTest() throws Exception {
@@ -294,9 +302,13 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
+        scrollIntoView(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        takeScreenshot();
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
         waitForNotVisible(".loading");
         sleep(1000);
+        
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitForPresent(".additionalinfo-data div input");
         assertChecked(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]", true);
@@ -321,6 +333,7 @@ public class CourseAccessTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
     }
   )
   public void courseStudentMembersOnlyCourseAccessTest() throws Exception {
