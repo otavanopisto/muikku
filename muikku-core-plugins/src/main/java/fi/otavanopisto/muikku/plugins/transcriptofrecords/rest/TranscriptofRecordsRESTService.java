@@ -219,6 +219,13 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     int numMandatoryCourses = 0;
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
     
+    
+    String curriculum = pluginSettingsController.getPluginSetting("transcriptofrecords", "curriculum");
+    SchoolDataIdentifier curriculumIdentifier = null;
+    if (curriculum != null) {
+      curriculumIdentifier = SchoolDataIdentifier.fromId(curriculum);
+    }
+    
     final List<String> subjectList = new ArrayList<String>();
     String commaSeparatedSubjectsOrder = pluginSettingsController.getPluginSetting("transcriptofrecords", "subjectsOrder");
     if (!StringUtils.isBlank(commaSeparatedSubjectsOrder)) {
@@ -238,7 +245,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
-        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+        courseNumber: for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
           boolean hasTransferCredit = false;
 
           for (TransferCredit transferCredit : transferCredits) {
@@ -293,8 +300,20 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                   courseNumber);
           
           List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
+          
+          boolean correctCurriculum = false;
+          
+          if (curriculumIdentifier == null) {
+            correctCurriculum = true;
+          } else {
+            for (VopsWorkspace workspace : workspaces) {
+              if (workspace.getCurriculumIdentifiers().contains(curriculumIdentifier)) {
+                correctCurriculum = true;
+              }
+            }
+          }
 
-          if (!hasTransferCredit && !workspaces.isEmpty()) {
+          if (!hasTransferCredit && !workspaces.isEmpty() && correctCurriculum) {
             SchoolDataIdentifier educationSubtypeIdentifier = null;
             boolean workspaceUserExists = false;
             String name = "";

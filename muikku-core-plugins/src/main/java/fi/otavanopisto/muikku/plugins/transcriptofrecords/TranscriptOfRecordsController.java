@@ -2,8 +2,10 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.enterprise.inject.Any;
@@ -159,11 +161,26 @@ public class TranscriptOfRecordsController {
             String educationTypeId = (String) result.get("educationSubtypeIdentifier");
             String name = (String) result.get("name");
             String description = (String) result.get("description");
+            @SuppressWarnings("unchecked")
+            ArrayList<String> curriculums = (ArrayList<String>) result.get("curriculumIdentifiers");
             
             SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(identifier, dataSource);
             SchoolDataIdentifier educationSubtypeIdentifier = SchoolDataIdentifier.fromId(educationTypeId);
+            Set<SchoolDataIdentifier> curriculumIdentifiers = new HashSet<>();
             
-            retval.add(new VopsWorkspace(workspaceIdentifier, educationSubtypeIdentifier, name, description));
+            for (String curriculum : curriculums) {
+              curriculumIdentifiers.add(SchoolDataIdentifier.fromId(curriculum));
+            }
+            
+            retval.add(
+                new VopsWorkspace(
+                    workspaceIdentifier,
+                    educationSubtypeIdentifier,
+                    curriculumIdentifiers,
+                    name,
+                    description
+                )
+            );
           }
         }
       }
