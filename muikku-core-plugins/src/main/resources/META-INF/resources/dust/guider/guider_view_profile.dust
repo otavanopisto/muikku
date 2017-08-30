@@ -358,6 +358,21 @@
           <div class="mf-vops-legend-content gt-vops-legend-content">
             <div class="mf-vops-legend-content-state gt-vops-legend-content-state"></div>
             <div class="mf-vops-legend-content-title gt-vops-legend-content-title"><span>{#localize key="plugin.records.studyplan.legend.title" /}</span></div>
+            <div class="mf-vops-legend-topic gt-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.shapes" /}</div>
+            <div class="mf-vops-legend-items gt-vops-legend-items">
+              <div class="mf-vops-legend-item gt-vops-legend-item">
+                <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item mandatory"></div>
+                <div>{#localize key="plugin.records.studyplan.legend.title.mandatory" /}</div>
+              </div>
+              <div class="mf-vops-legend-item gt-vops-legend-item" data-no="{courseNumber}">
+                <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item optional-national"></div>
+                <div>{#localize key="plugin.records.studyplan.legend.title.optional.national" /}</div>
+              </div>
+              <div class="mf-vops-legend-item gt-vops-legend-item">
+                <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item optional-school"></div>
+                <div>{#localize key="plugin.records.studyplan.legend.title.optional.school" /}</div>
+              </div>
+            </div>
             <div class="mf-vops-legend-topic gt-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.colors" /}</div>
             <div class="mf-vops-legend-items gt-vops-legend-items">
               <div class="mf-vops-legend-item gt-vops-legend-item">
@@ -383,21 +398,6 @@
               <div class="mf-vops-legend-item gt-vops-legend-item">
                 <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item failed"></div>
                 <div>{#localize key="plugin.records.studyplan.legend.title.failed" /}</div>
-              </div>
-            </div>
-            <div class="mf-vops-legend-topic gt-vops-legend-topic">{#localize key="plugin.records.studyplan.legend.title.shapes" /}</div>
-            <div class="mf-vops-legend-items gt-vops-legend-items">
-              <div class="mf-vops-legend-item gt-vops-legend-item">
-                <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item mandatory"></div>
-                <div>{#localize key="plugin.records.studyplan.legend.title.mandatory" /}</div>
-              </div>
-              <div class="mf-vops-legend-item gt-vops-legend-item" data-no="{courseNumber}">
-                <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item optional-national"></div>
-                <div>{#localize key="plugin.records.studyplan.legend.title.optional.national" /}</div>
-              </div>
-              <div class="mf-vops-legend-item gt-vops-legend-item">
-                <div class="mf-vops-legend-item-grid mf-vops-item gt-vops-legend-item-grid gt-vops-item optional-school"></div>
-                <div>{#localize key="plugin.records.studyplan.legend.title.optional.school" /}</div>
               </div>
             </div>
           </div>
