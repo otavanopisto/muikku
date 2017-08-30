@@ -36,7 +36,9 @@ export default class Link extends React.Component {
   }
   onClick(e, re){
     e.preventDefault();
-    e.stopPropagation();
+    if (this.props.disablePropagation){
+      e.stopPropagation();
+    }
     
     if (this.props.disabled){
       return;
@@ -53,7 +55,9 @@ export default class Link extends React.Component {
   }
   onTouchStart(e, re){
     e.preventDefault();
-    e.stopPropagation();
+    if (this.props.disablePropagation){
+      e.stopPropagation();
+    }
     
     if (!this.props.disabled){
       this.setState({active: true});
