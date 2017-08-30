@@ -245,7 +245,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
-        courseNumber: for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
           boolean hasTransferCredit = false;
 
           for (TransferCredit transferCredit : transferCredits) {
