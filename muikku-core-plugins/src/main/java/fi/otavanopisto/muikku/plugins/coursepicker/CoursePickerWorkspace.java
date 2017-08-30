@@ -19,7 +19,8 @@ public class CoursePickerWorkspace {
       Date lastVisit,
       String educationTypeName,
       boolean canSignup,
-      boolean isCourseMember) {
+      boolean isCourseMember, 
+      boolean hasCustomImage) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -33,6 +34,7 @@ public class CoursePickerWorkspace {
     this.canSignup = canSignup;
     this.isCourseMember = isCourseMember;
     this.educationTypeName = educationTypeName;
+    this.hasCustomImage = hasCustomImage;
   }
 
   public Long getId() {
@@ -131,6 +133,14 @@ public class CoursePickerWorkspace {
     this.educationTypeName = educationTypeName;
   }
   
+  public boolean getHasCustomImage() {
+    return hasCustomImage;
+  }
+
+  public void setHasCustomImage(boolean hasCustomImage) {
+    this.hasCustomImage = hasCustomImage;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -143,4 +153,5 @@ public class CoursePickerWorkspace {
   private Boolean canSignup;
   private Boolean isCourseMember;
   private String educationTypeName;
+  private boolean hasCustomImage;
 }

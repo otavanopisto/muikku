@@ -1856,6 +1856,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       String subjectIdentifier) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), 
         workspaceEntity.getUrlName(),
@@ -1869,7 +1870,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         numVisits, 
         lastVisit,
         curriculumIdentifiers,
-        subjectIdentifier);
+        subjectIdentifier,
+        hasCustomImage);
   }
 
   private fi.otavanopisto.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {

@@ -29,4 +29,8 @@ public class WorkspaceEntityFileController {
   public void deleteWorkspaceEntityFile(WorkspaceEntityFile workspaceEntityFile) {
     workspaceEntityFileDAO.delete(workspaceEntityFile);
   }
+
+  public boolean getHasCustomImage(WorkspaceEntity workspaceEntity) {
+    return findWorkspaceEntityFile(workspaceEntity, "workspace-frontpage-image-original") != null;
+  }
 }
