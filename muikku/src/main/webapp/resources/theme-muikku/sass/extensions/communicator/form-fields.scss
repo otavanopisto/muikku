@@ -2,4 +2,9 @@
   .communicator-form-field-recepients-input {
     display: block;
   }
+  &.communicator-form-field-label-name {
+    display: block;
+    margin-bottom: 24px;
+    text-align: center;
+  }
 }

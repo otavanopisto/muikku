@@ -43,13 +43,13 @@ class ProfileItem extends React.Component {
           <span>{this.props.i18n.text.get(item.text)}</span>
         </Link>}
       })}>
-      <a className="main-function button-pill main-function-button-pill-profile">
+      <Link className="main-function button-pill main-function-button-pill-profile">
         <object className="embbed embbed-full"
          data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
          type="image/jpeg">
           <span className="icon icon-user"></span>
         </object>
-      </a>
+      </Link>
     </Dropdown>
   }
 }

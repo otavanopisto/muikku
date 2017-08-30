@@ -1,5 +1,5 @@
 import actions from '~/actions/base/notifications';
-import {colorIntToHex} from '~/util/modifiers';
+import {colorIntToHex, hexToColorInt} from '~/util/modifiers';
 
 export default {
   updateCommunicatorNavigationLabels(callback){
@@ -48,6 +48,42 @@ export default {
               icon: "tag",
               text(){return label.name},
               color: colorIntToHex(label.color)
+            }
+          });
+        }
+      });
+    }
+  },
+  updateCommunicatorLabel(label, newName, newColor){
+    return (dispatch, getState)=>{
+      let newLabelData = {
+        name: newName,
+        color: hexToColorInt(newColor),
+        id: label.id
+      };
+        
+      mApi().communicator.userLabels.update(label.id, newLabelData).callback(function (err, label) {
+        if (err) {
+          dispatch(actions.displayNotification(err.message, 'error'));
+        } else  {
+          dispatch({
+            type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES",
+            payload: {
+              labelId: label.id,
+              update: {
+                labelName: newLabelData.name,
+                labelColor: newLabelData.color
+              }
+            }
+          });
+          dispatch({
+            type: "UPDATE_COMMUNICATOR_NAVIGATION_LABEL",
+            payload: {
+              labelId: label.id,
+              update: {
+                text: ()=>newLabelData.name,
+                color: newColor
+              }
             }
           });
         }

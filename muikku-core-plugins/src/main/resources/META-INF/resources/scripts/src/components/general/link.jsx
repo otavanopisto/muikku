@@ -35,41 +35,47 @@ export default class Link extends React.Component {
     }
   }
   onClick(e, re){
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (this.props.disabled){
-      e.preventDefault();
       return;
     }
     if (this.props.href && this.props.href[0] === '#'){
-      e.preventDefault();
       scrollToSection(this.props.href);
+    } else if (this.props.href){
+      location.href = this.props.href;
     }
+    
     if (this.props.onClick){
       this.props.onClick(e, re);
     }
   }
   onTouchStart(e, re){
-    if (this.props.disabled){
-      e.preventDefault();
-      return;
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!this.props.disabled){
+      this.setState({active: true});
     }
-    this.setState({active: true});
+    
     if (this.props.onTouchStart){
       this.props.onTouchStart(e, re);
     }
   }
   onTouchEnd(e, re){
-    if (this.props.disabled){
-      e.preventDefault();
-      return;
+    if (!this.props.disabled){
+      this.setState({active: false});
     }
-    this.setState({active: false});
+    
     this.onClick(e, re);
     if (this.props.onTouchEnd){
       this.props.onTouchEnd(e, re);
     }
   }
   render(){
-    return <a {...this.props}
+    let Element = this.props.as || 'a';
+    return <Element {...this.props}
       className={this.props.className + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd}/>
   }

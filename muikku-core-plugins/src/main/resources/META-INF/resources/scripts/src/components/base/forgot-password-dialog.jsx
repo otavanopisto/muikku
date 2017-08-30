@@ -2,6 +2,7 @@ import Dialog from '~/components/general/dialog.jsx';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
+import Link from '~/components/general/link.jsx';
 
 class ForgotPasswordDialog extends React.Component {
   static propTypes = {
@@ -26,9 +27,9 @@ class ForgotPasswordDialog extends React.Component {
         <label htmlFor="form-reset-password-submit" className="button button-large">
           {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel')}
         </label>
-        <a className="button button-large button-warn" onClick={closeDialog}>
+        <Link className="button button-large button-warn" onClick={closeDialog}>
           {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel')}
-        </a>
+        </Link>
       </div>
     }
     return <Dialog title={this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.title')}

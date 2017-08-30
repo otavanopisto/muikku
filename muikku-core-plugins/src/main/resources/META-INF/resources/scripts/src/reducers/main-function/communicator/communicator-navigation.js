@@ -38,10 +38,10 @@ export default function communicatorNavigation(state=defaultNavigation, action){
     return state.filter((item)=>{return item.location !== action.payload.location});
   } else if (action.type === 'UPDATE_COMMUNICATOR_NAVIGATION_LABEL'){
     return state.map((item)=>{
-      if (item.location !== action.payload.location){
+      if (item.id !== action.payload.labelId){
         return item;
       }
-      return action.payload;
+      return Object.assign({}, item, action.payload.update);
     });
   }
   return state;

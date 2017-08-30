@@ -4,6 +4,7 @@ import Dropdown from '~/components/general/dropdown.jsx';
 import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import Link from '~/components/general/link.jsx';
 
 class LanguagePicker extends React.Component {
   static propTypes = {
@@ -15,9 +16,9 @@ class LanguagePicker extends React.Component {
         <span>{locale.name}</span>
       </a>);
     })}>
-      <a className={`${this.props.classNameExtension} button-pill ${this.props.classNameExtension}-button-pill-language`}>
+      <Link className={`${this.props.classNameExtension} button-pill ${this.props.classNameExtension}-button-pill-language`}>
         <span>{this.props.locales.current}</span>
-      </a>
+      </Link>
     </Dropdown>
   }
 }

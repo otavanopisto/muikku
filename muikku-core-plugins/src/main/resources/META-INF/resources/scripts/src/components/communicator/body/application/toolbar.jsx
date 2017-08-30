@@ -6,6 +6,7 @@ import Link from '~/components/general/link.jsx';
 import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
 import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
 import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
+import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog.jsx';
 
 class CommunicatorToolbar extends React.Component {
   constructor(props){
@@ -66,9 +67,16 @@ class CommunicatorToolbar extends React.Component {
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(...partialIds);
     }
+    
     return <div className="communicator-navigation">
-      <Link className="communicator text communicator-text-current-folder">{currentLocation.text(this.props.i18n)}</Link>
-                
+      <div className="communicator text communicator-text-current-folder">
+        <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+        {"  " + currentLocation.text(this.props.i18n)}
+        {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
+          <Link className="communicator button-pill communicator-button-pill-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+         </LabelUpdateDialog> : null}
+      </div>
+      
       <Link className="communicator button button-pill communicator-button-pill-delete"
        disabled={this.props.communicatorMessages.selected.length == 0} onClick={this.props.deleteSelectedMessages}>
         {/* FIXME this is not the right icon, there are no trash bin in the file */}

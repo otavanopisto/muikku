@@ -190,6 +190,42 @@
       display: none;
     }
   }
+  
+  &.communicator-button-pill-toolbar-edit-label {
+    background-color: $color-communicator-button-pill-toolbar-edit-label-background;
+    color: $color-communicator-button-pill-toolbar-edit-label-text;
+    &:hover, &.hover {
+      background-color: $color-communicator-button-pill-toolbar-edit-label-background-hover;
+    }
+    
+    &:active, &.active {
+      background-color: $color-communicator-button-pill-toolbar-edit-label-background-active;
+    }
+    @include breakpoint-up($breakpoint-landscape-pad){
+      display: none;
+    }
+  }
+  
+  &.communicator-button-pill-navigation-edit-label {
+  	position: absolute;
+  	right: 0;
+  	top: 0;
+  	height: 32px;
+  	width: 32px;
+  	background-color: $color-communicator-button-pill-navigation-edit-label-background;
+    color: $color-communicator-button-pill-navigation-edit-label-text;
+    &:hover, &.hover {
+      background-color: $color-communicator-button-pill-navigation-edit-label-background-hover;
+    }
+    
+    &:active, &.active {
+      background-color: $color-communicator-button-pill-navigation-edit-label-background-active;
+    }
+   
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+  }
 }
 
 .communicator.button {
@@ -209,5 +245,17 @@
     &:active, &.active {
       background-color: darken($color-communicator-button-new-message-background, 20%);
     }
+  }
+  &.communicator-button-remove-label {
+  	float: left;
+  	margin-top: 48px;
+  	margin-bottom: 24px;
+  }
+  &.communicator-button-standard-ok {
+  	float: right;
+  }
+  &.commmunicator-button-standard-cancel {
+    float: left;
+    margin-left: 0;
   }
 }

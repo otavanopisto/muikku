@@ -84,7 +84,40 @@ export default function communicatorMessages(state={
       return message.communicatorMessageId !== action.payload.communicatorMessageId
     }), selectedIds: state.selectedIds.filter((id)=>{return id !== action.payload.communicatorMessageId})});
   } else if (action.type === "SET_CURRENT_MESSAGE"){
-    return Object.assign({}, state, {current: action.payload}); 
+    return Object.assign({}, state, {current: action.payload});
+  } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES"){
+    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
+      return Object.assign({}, selected, {labels: selected.labels.map((label)=>{
+        if (label.labelId === action.payload.labelId){
+          return Object.assign({}, label, action.payload.update);
+        }
+        return label;
+      })});
+    }), messages: state.messages.map((message)=>{
+      return Object.assign({}, message, {labels: message.labels.map((label)=>{
+        if (label.labelId === action.payload.labelId){
+          return Object.assign({}, label, action.payload.update);
+        }
+        return label;
+      })});
+    }), current : (state.current ? Object.assign({}, state.current, state.current.labels.map((label)=>{
+      if (label.labelId === action.payload.labelId){
+        return Object.assign({}, label, action.payload.update);
+      }
+      return label;
+    })) : state.current)});
+  } else if (action.type === "REMOVE_ONE_LABEL_FROM_ALL_MESSAGES"){
+    return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
+      return Object.assign({}, selected, {
+        labels: selected.labels.filter(label=>label.labelId !== action.payload.navigationLabel.id)
+      });
+    }), messages: state.messages.filter((message)=>{
+      return Object.assign({}, message, {
+        labels: message.labels.filter(label=>label.labelId !== action.payload.navigationLabel.id)
+      });
+    }), current : (state.current ? Object.assign({}, state.current, {
+      labels: state.current.labels.filter(label=>label.labelId !== action.payload.navigationLabel.id)
+    }) : state.current)});
   }
   return state;
 }
