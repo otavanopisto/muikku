@@ -309,6 +309,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             for (VopsWorkspace workspace : workspaces) {
               if (workspace.getCurriculumIdentifiers().contains(curriculumIdentifier)) {
                 correctCurriculum = true;
+                break;
               }
             }
           }
