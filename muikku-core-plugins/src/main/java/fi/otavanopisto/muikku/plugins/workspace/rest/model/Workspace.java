@@ -23,7 +23,8 @@ public class Workspace {
       Long numVisits,
       Date lastVisit,
       Set<String> curriculumIdentifiers,
-      String subjectIdentifier) {
+      String subjectIdentifier,
+      boolean hasCustomImage) {
     super();
     this.id = id;
     this.urlName = urlName;
@@ -38,6 +39,7 @@ public class Workspace {
     this.lastVisit = lastVisit;
     this.curriculumIdentifiers = curriculumIdentifiers;
     this.subjectIdentifier = subjectIdentifier;
+    this.hasCustomImage = hasCustomImage;
   }
 
   public Long getId() {
@@ -144,6 +146,14 @@ public class Workspace {
     this.subjectIdentifier = subjectIdentifier;
   }
 
+  public boolean getHasCustomImage() {
+    return hasCustomImage;
+  }
+
+  public void setHasCustomImage(boolean hasCustomImage) {
+    this.hasCustomImage = hasCustomImage;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
@@ -157,4 +167,5 @@ public class Workspace {
   private Boolean published;
   private Set<String> curriculumIdentifiers;
   private String subjectIdentifier;
+  private boolean hasCustomImage;
 }

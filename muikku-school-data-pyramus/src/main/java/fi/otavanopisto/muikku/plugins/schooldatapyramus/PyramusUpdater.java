@@ -648,17 +648,14 @@ public class PyramusUpdater {
   }
 
   /**
-   * Updates course students from Pyramus
+   * Updates active course students from Pyramus
    * 
    * @param courseId id of course in Pyramus
    * @return count of updated course students
    */
-  public int updateWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+  public int updateActiveWorkspaceStudents(WorkspaceEntity workspaceEntity) {
     int count = 0;
     Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
-
-    // Synchronize active students of a course
-    
     CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=true", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
@@ -681,9 +678,18 @@ public class PyramusUpdater {
         }
       }
     }
-
-    // Synchronize inactive students of a course
-    
+    return count;
+  }
+  
+  /**
+   * Updates inactive course students from Pyramus
+   * 
+   * @param courseId id of course in Pyramus
+   * @return count of updated course students
+   */
+  public int updateInactiveWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+    int count = 0;
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
     CourseStudent[] nonActiveCourseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false&activeStudents=false", CourseStudent[].class);
     if (nonActiveCourseStudents != null) {
       for (CourseStudent nonActiveCourseStudent : nonActiveCourseStudents) {
@@ -705,10 +711,9 @@ public class PyramusUpdater {
         }
       }
     }
-    
     return count;
   }
-  
+
   private void fireWorkspaceDiscovered(Course course) {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
     Map<String, Object> extra = new HashMap<>();

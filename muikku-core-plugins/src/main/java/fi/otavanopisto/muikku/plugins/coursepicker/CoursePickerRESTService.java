@@ -43,6 +43,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.otavanopisto.muikku.plugins.workspace.rest.WorkspaceUserEntityIdFinder;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
@@ -127,6 +128,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceUserEntityIdFinder workspaceUserEntityIdFinder;
+
+  @Inject
+  private WorkspaceEntityFileController workspaceEntityFileController;
   
   @Inject
   @Any
@@ -513,6 +517,7 @@ public class CoursePickerRESTService extends PluginRESTService {
   private CoursePickerWorkspace createRestModel(WorkspaceEntity workspaceEntity, String name, String nameExtension, String description, String educationTypeName, boolean canSignup, boolean isCourseMember) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
+    boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
     return new CoursePickerWorkspace(
         workspaceEntity.getId(), 
         workspaceEntity.getUrlName(),
@@ -525,7 +530,8 @@ public class CoursePickerRESTService extends PluginRESTService {
         lastVisit, 
         educationTypeName,
         canSignup, 
-        isCourseMember);
+        isCourseMember,
+        hasCustomImage);
   }
   
   private void waitForWorkspaceUserEntity(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {

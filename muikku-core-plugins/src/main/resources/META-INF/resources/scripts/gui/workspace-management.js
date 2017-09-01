@@ -376,7 +376,7 @@
       event.preventDefault();
     },
     
-    _onWorkspaceFrontPageImageDeleteClick(event) {
+    _onWorkspaceFrontPageImageDeleteClick: function (event) {
       var workspaceEntityId = this.options.workspaceEntityId;
       renderDustTemplate('workspace/workspace-frontpage-image-delete-confirm.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
