@@ -4,6 +4,8 @@ import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.Test;
+
+import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
@@ -17,6 +19,15 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 public class CourseAccessTestsBase extends AbstractUITest {
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void notLoggedInAnyoneCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -44,6 +55,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void loggedInAnyoneCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -72,6 +92,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void courseStudentAnyoneCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -103,6 +132,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void notLoggedInLoggedInCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -129,6 +167,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void loggedInLoggedInCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -157,6 +204,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void courseStudentLoggedInCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -188,6 +244,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void notLoggedInMembersOnlyCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     Builder mockBuilder = mocker();
@@ -201,6 +266,9 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForNotVisible(".loading");
         sleep(1000);
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        waitForVisible(".additionalinfo-data div input");
+        assertChecked(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]", true);
         logout();
         mockBuilder.clearLoginMock();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);        
@@ -214,6 +282,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
 
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void loggedInMembersOnlyCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -225,10 +302,18 @@ public class CourseAccessTestsBase extends AbstractUITest {
       try{
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
+        scrollIntoView(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        takeScreenshot();
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
         waitForNotVisible(".loading");
         sleep(1000);
+        
+        navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
+        waitForPresent(".additionalinfo-data div input");
+        assertChecked(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]", true);
         logout();
+        mockBuilder.clearLoginMock();
         mockBuilder.mockLogin(student);
         login();
         navigate(String.format("/workspace/%s", workspace.getUrlName()), true);        
@@ -242,6 +327,15 @@ public class CourseAccessTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.PHANTOMJS
+    }
+  )
   public void courseStudentMembersOnlyCourseAccessTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());

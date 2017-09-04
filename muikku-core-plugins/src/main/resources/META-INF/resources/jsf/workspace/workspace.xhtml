@@ -41,7 +41,16 @@
           <div class="workspace-additional-info-wrapper"><span>#{workspaceIndexBackingBean.workspaceNameExtension}</span></div>
         </ui:fragment>
         <div class="workspace-progress-widget workspace-progress-container sm-flex-hide">
-        </div>  
+        </div> 
+        <div class="workspace-header-image-container">
+	        <ui:fragment rendered="#{workspaceIndexBackingBean.hasCustomFrontPageImage}">
+	          <img src="#{workspaceIndexBackingBean.customFrontPageImageUrl}" />
+	        </ui:fragment>
+	        <ui:fragment rendered="#{!workspaceIndexBackingBean.hasCustomFrontPageImage}">
+	          <img src="/gfx/workspace-default-header.jpg" />
+	        </ui:fragment>
+        </div>
+         
       </div>
     </header>
     

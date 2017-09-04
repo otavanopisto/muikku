@@ -14,15 +14,28 @@
   position: relative;
   
   .workspace-header-container {
-    max-width: 950px;
     max-height: 240px;
+    max-width: 950px;
     position: relative;
-    background-image: url("/gfx/workspace-default-header.jpg");
-    background-repeat: no-repeat;
-    background-color: #d1e069;
-    background-size: cover;
-    background-position: center center;
     z-index: 15;
+  }
+  
+  .workspace-header-image-container {
+    background-color: #d1e069;
+    max-height: 240px;
+    max-width: 950px;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    
+    img {
+      height: auto;
+      max-height: 240px;
+      max-width: 950px;
+      width: auto;
+    }
+    
   }
 
   .workspace-progress-container {
@@ -32,6 +45,7 @@
     padding-right: 20px;  
     position: absolute;
     right: 0;
+    z-index: 10;
   }
   
   h1.workspace-title {
