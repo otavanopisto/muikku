@@ -109,15 +109,17 @@ export default function communicatorMessages(state={
   } else if (action.type === "REMOVE_ONE_LABEL_FROM_ALL_MESSAGES"){
     return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
       return Object.assign({}, selected, {
-        labels: selected.labels.filter(label=>label.labelId !== action.payload.navigationLabel.id)
+        labels: selected.labels.filter(label=>label.labelId !== action.payload.labelId)
       });
     }), messages: state.messages.filter((message)=>{
       return Object.assign({}, message, {
-        labels: message.labels.filter(label=>label.labelId !== action.payload.navigationLabel.id)
+        labels: message.labels.filter(label=>label.labelId !== action.payload.labelId)
       });
     }), current : (state.current ? Object.assign({}, state.current, {
-      labels: state.current.labels.filter(label=>label.labelId !== action.payload.navigationLabel.id)
+      labels: state.current.labels.filter(label=>label.labelId !== action.payload.labelId)
     }) : state.current)});
+  } else if (action.type === "PUSH_ONE_MESSAGE_FIRST"){
+    return Object.assign({}, state, {messages: [action.payload].concat(state.messages)});
   }
   return state;
 }

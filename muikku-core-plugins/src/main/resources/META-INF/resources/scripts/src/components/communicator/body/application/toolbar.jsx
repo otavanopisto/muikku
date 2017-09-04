@@ -13,13 +13,40 @@ class CommunicatorToolbar extends React.Component {
     super(props);
     
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
+    this.onGoBackClick = this.onGoBackClick.bind(this);
+    this.loadMessage = this.loadMessage.bind(this);
     
     this.state = {
       labelFilter: ""
     }
   }
+  loadMessage(messageId){
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState){
+      history.replaceState('', '', location.hash.split("/")[0] + "/" + messageId);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    } else {
+      location.hash = location.hash.split("/")[0] + "/" + messageId;
+    }
+  }
   updateLabelFilter(e){
     this.setState({labelFilter: e.target.value});
+  }
+  onGoBackClick(e){
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState){
+      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      if (canGoBack){
+        history.back();
+      } else {
+        history.replaceState('', '', location.hash.split("/")[0]);
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      location.hash = location.hash.split("/")[0];
+    }
   }
   render(){
     let currentLocation = this.props.communicatorNavigation.find((item)=>{
@@ -30,35 +57,42 @@ class CommunicatorToolbar extends React.Component {
       return null;
     }
     
-    if (this.props.inMessage){
+    if (this.props.communicatorMessages.current){
       return <div className="communicator-navigation">
-        <Link className="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back">
+        <Link className="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back" onClick={this.onGoBackClick}>
           <span className="icon icon-goback"></span>
         </Link>
+      
+        <div className="communicator text communicator-text-current-folder">
+          <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+          {"  " + currentLocation.text(this.props.i18n)}
+          {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
+            <Link className="communicator button-pill communicator-button-pill-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+          </LabelUpdateDialog> : null} {" / " + this.props.communicatorMessages.current.messages[0].caption}
+        </div>
                 
-        <Link className="communicator text communicator-text-current-folder">{this.props.folder}</Link>
-                
-        <Link className="communicator button button-pill communicator-button-pill-delete communicator-toolbar-interact-delete">
+        <Link className="communicator button button-pill communicator-button-pill-delete" onClick={this.props.deleteCurrentMessage}>
           {/* FIXME this is not the right icon, there are no trash bin in the file */}
           <span className="icon icon-forgotpassword"></span>
         </Link>
-        <Link className="communicator button button-pill communicator-button-pill-label communicator-toolbar-interact-label">
+        
+        <Link className="communicator button button-pill communicator-button-pill-label">
           <span className="icon icon-tag"></span>
         </Link>
-        
-        <Link className="communicator button button-pill communicator-button-pill-toggle-read communicator-toolbar-interact-toggle-read">
-          <span className="icon {?currentMessageHasUnreadMessages}icon-message-read{:else}icon-message-unread{/currentMessageHasUnreadMessages}"></span>
-        </Link>
                 
-        <Link className="communicator button button-pill communicator-button-pill-next-page communicator-toolbar-interact-toggle-next-page">
+        <Link className="communicator button button-pill communicator-button-pill-next-page"
+          disabled={this.props.communicatorMessages.current.newerThreadId === null}
+          onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.newerThreadId)}>
           <span className="icon icon-arrow-right"></span>
         </Link>
-        <Link className="communicator button button-pill communicator-button-pill-prev-page communicator-toolbar-interact-toggle-prev-page">
+        <Link className="communicator button button-pill communicator-button-pill-prev-page"
+          disabled={this.props.communicatorMessages.current.olderThreadId === null}
+          onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>
           <span className="icon icon-arrow-left"></span>
         </Link>
       </div>
     }
-    
+  
     let allInCommon = [];
     let onlyInSome = [];
     let isAtLeastOneSelected = this.props.communicatorMessages.selected.length >= 1;

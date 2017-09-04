@@ -79,7 +79,11 @@ export default class Link extends React.Component {
   }
   render(){
     let Element = this.props.as || 'a';
-    return <Element {...this.props}
+    let elementProps = Object.assign({}, this.props);
+    delete elementProps["disablePropagation"];
+    delete elementProps["disabled"];
+    
+    return <Element {...elementProps}
       className={this.props.className + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd}/>
   }

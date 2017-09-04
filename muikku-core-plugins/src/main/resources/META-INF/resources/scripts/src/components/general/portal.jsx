@@ -16,6 +16,7 @@ export default class Portal extends React.Component {
     this.handleKeydown = this.handleKeydown.bind(this);
     this.portal = null;
     this.node = null;
+    this.isUnmounted = false;
   }
 
   componentDidMount() {
@@ -53,7 +54,8 @@ export default class Portal extends React.Component {
       document.removeEventListener('scroll', this.handleOutsideMouseClick);
     }
 
-    this.closePortal(true);
+    this.isUnmounted = true;
+    this.closePortal();
   }
 
   handleWrapperClick(e) {
@@ -70,7 +72,7 @@ export default class Portal extends React.Component {
     this.renderPortal(props, true);
   }
 
-  closePortal(isUnmounted = false) {
+  closePortal() {
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
@@ -78,7 +80,7 @@ export default class Portal extends React.Component {
       }
       this.portal = null;
       this.node = null;
-      if (isUnmounted !== true) {
+      if (!this.isUnmounted) {
         this.setState({ active: false });
       }
     };
@@ -111,6 +113,8 @@ export default class Portal extends React.Component {
   handleKeydown(e) {
     if (e.keyCode === KEYCODES.ESCAPE && this.state.active) {
       this.closePortal();
+    } else if (this.state.active){
+      this.props.onKeyStroke && this.props.onKeyStroke(e.keyCode, this.closePortal);
     }
   }
 
@@ -151,7 +155,8 @@ Portal.propTypes = {
   onOpen: PropTypes.func,
   onClose: PropTypes.func,
   beforeClose: PropTypes.func,
-  onUpdate: PropTypes.func
+  onUpdate: PropTypes.func,
+  onKeyStroke: PropTypes.func
 };
 
 Portal.defaultProps = {

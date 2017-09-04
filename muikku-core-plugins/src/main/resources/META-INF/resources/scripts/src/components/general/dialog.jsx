@@ -7,8 +7,11 @@ export default class Dialog extends React.Component {
     children: PropTypes.element.isRequired,
     title: PropTypes.string.isRequired,
     classNameExtension: PropTypes.string.isRequired,
-    content: PropTypes.element.isRequired,
-    footer: PropTypes.func.isRequired
+    content: PropTypes.any.isRequired,
+    footer: PropTypes.func.isRequired,
+    onOpen: PropTypes.func,
+    onClose: PropTypes.func,
+    onKeyStroke: PropTypes.func
   }
   constructor(props){
     super(props);
@@ -32,6 +35,7 @@ export default class Dialog extends React.Component {
         visible: true
       });
     }, 10);
+    this.props.onOpen && this.props.onOpen();
   }
   beforeClose(DOMNode, removeFromDOM){
     this.setState({
@@ -40,7 +44,7 @@ export default class Dialog extends React.Component {
     setTimeout(removeFromDOM, 300);
   }
   render(){
-    return (<Portal openByClickOn={this.props.children} onOpen={this.onOpen} beforeClose={this.beforeClose} closeOnEsc>
+    return (<Portal onKeyStroke={this.props.onKeyStroke} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
 {(closePortal)=>{return <div className={`dialog ${this.props.classNameExtension}-dialog ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
   <div className="dialog-window">
       <div className="dialog-header">

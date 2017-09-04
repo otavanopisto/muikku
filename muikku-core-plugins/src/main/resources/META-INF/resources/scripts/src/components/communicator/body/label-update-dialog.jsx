@@ -8,6 +8,10 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {SliderPicker} from 'react-color';
 
+const KEYCODES = {
+  ENTER: 13
+}
+
 class CommunicatorLabelUpdateDialog extends React.Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
@@ -20,6 +24,8 @@ class CommunicatorLabelUpdateDialog extends React.Component {
     this.onNameChange = this.onNameChange.bind(this);
     this.removeLabel = this.removeLabel.bind(this);
     this.update = this.update.bind(this);
+    this.resetState = this.resetState.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
     
     this.state = {
       color: props.label.color,
@@ -27,10 +33,18 @@ class CommunicatorLabelUpdateDialog extends React.Component {
       removed: false
     }
   }
+  handleKeydown(code, closeDialog){
+    if (code === KEYCODES.ENTER){
+      this.update(closeDialog);
+    }
+  }
   componentWillReceiveProps(nextProps){
     if (nextProps.label.id !== this.props.label.id){
-      this.setState({color: nextProps.label.color, removed: false, name: nextProps.label.text(this.props.i18n)});
+      this.resetState(nextProps);
     }
+  }
+  resetState(props=this.props){
+    this.setState({color: props.label.color, removed: false, name: props.label.text(props.i18n)});
   }
   onColorChange(color, event){
     if (this.state.removed){
@@ -45,10 +59,12 @@ class CommunicatorLabelUpdateDialog extends React.Component {
     this.setState({removed: true});
   }
   update(closeDialog){
-    if (this.state.name !== this.props.label.name || this.state.color !== this.props.label.color){
-      this.props.updateCommunicatorLabel(this.props.label, this.state.name, this.state.color);
-    }
     closeDialog();
+    if ((this.state.name !== this.props.label.name || this.state.color !== this.props.label.color) && !this.state.removed){
+      this.props.updateCommunicatorLabel(this.props.label, this.state.name, this.state.color);
+    } else if (this.state.removed){
+      this.props.removeLabel(this.props.label);
+    }
   }
   render(){
     let footer = (closeDialog)=>{
@@ -79,7 +95,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
         </Link>
       </div>
     }
-    return <Dialog classNameExtension="communicator" 
+    return <Dialog onKeyStroke={this.handleKeydown} onOpen={this.resetState} classNameExtension="communicator" 
      title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

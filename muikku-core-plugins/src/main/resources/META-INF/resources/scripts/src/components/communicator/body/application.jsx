@@ -7,6 +7,7 @@ import HoverButton from '~/components/general/hover-button.jsx';
 
 import Toolbar from './application/toolbar.jsx';
 import CommunicatorMessages from './application/messages.jsx';
+import MessageView from './application/message-view.jsx';
 
 class CommunicatorApplication extends React.Component {
   static propTypes = {
@@ -21,9 +22,12 @@ class CommunicatorApplication extends React.Component {
         {this.props.i18n.text.get('plugin.communicator.newMessage')}
     </a>
     let toolbar = <Toolbar/>
+      
+    //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
     return (<div className="embbed embbed-full">
       <ApplicationPanel classNameExtension="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={this.props.navigation}>
         <CommunicatorMessages/>
+        <MessageView/>
       </ApplicationPanel>
       <HoverButton icon="edit" classNameSuffix="new-message" classNameExtension="communicator"/>
     </div>);
@@ -32,7 +36,8 @@ class CommunicatorApplication extends React.Component {
 
 function mapStateToProps(state){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    communicatorMessages: state.communicatorMessages
   }
 };
 

@@ -65,28 +65,54 @@ export default {
       mApi().communicator.userLabels.update(label.id, newLabelData).callback(function (err, label) {
         if (err) {
           dispatch(actions.displayNotification(err.message, 'error'));
-        } else  {
-          dispatch({
-            type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES",
-            payload: {
-              labelId: label.id,
-              update: {
-                labelName: newLabelData.name,
-                labelColor: newLabelData.color
-              }
-            }
-          });
-          dispatch({
-            type: "UPDATE_COMMUNICATOR_NAVIGATION_LABEL",
-            payload: {
-              labelId: label.id,
-              update: {
-                text: ()=>newLabelData.name,
-                color: newColor
-              }
-            }
-          });
         }
+        
+        dispatch({
+          type: "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES",
+          payload: {
+            labelId: label.id,
+            update: {
+              labelName: newLabelData.name,
+              labelColor: newLabelData.color
+            }
+          }
+        });
+        dispatch({
+          type: "UPDATE_COMMUNICATOR_NAVIGATION_LABEL",
+          payload: {
+            labelId: label.id,
+            update: {
+              text: ()=>newLabelData.name,
+              color: newColor
+            }
+          }
+        });
+      });
+    }
+  },
+  removeLabel(label){
+    return (dispatch, getState)=>{
+      mApi().communicator.userLabels.del(label.id).callback(function (err) {
+        if (err) {
+          return dispatch(actions.displayNotification(err.message, 'error'));
+        }
+        let {communicatorMessages} = getState();
+        
+        //Notice this is an external trigger, not the nicest thing, but as long as we use hash navigation, meh
+        if (communicatorMessages.location === label.location){
+          location.hash = "#inbox";
+        }
+        
+        dispatch({
+          type: "DELETE_COMMUNICATOR_NAVIGATION_LABEL",
+          payload: label
+        });
+        dispatch({
+          type: "REMOVE_ONE_LABEL_FROM_ALL_MESSAGES",
+          payload: {
+            labelId: label.id
+          }
+        });
       });
     }
   }

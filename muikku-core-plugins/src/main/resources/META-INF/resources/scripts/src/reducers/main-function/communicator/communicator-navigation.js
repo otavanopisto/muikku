@@ -35,7 +35,7 @@ export default function communicatorNavigation(state=defaultNavigation, action){
   } else if (action.type === 'ADD_COMMUNICATOR_NAVIGATION_LABEL'){
     return state.concat(action.payload);
   } else if (action.type === 'DELETE_COMMUNICATOR_NAVIGATION_LABEL'){
-    return state.filter((item)=>{return item.location !== action.payload.location});
+    return state.filter((item)=>{return item.id !== action.payload.id});
   } else if (action.type === 'UPDATE_COMMUNICATOR_NAVIGATION_LABEL'){
     return state.map((item)=>{
       if (item.id !== action.payload.labelId){

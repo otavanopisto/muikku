@@ -9,7 +9,7 @@ export default class ApplicationPanel extends React.Component {
     primaryOption: PropTypes.element.isRequired,
     toolbar: PropTypes.element.isRequired,
     navigation: PropTypes.element.isRequired,
-    children: PropTypes.element.isRequired
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)])
   }
   render(){
     return (<div className={`${this.props.classNameExtension} application-panel`}>

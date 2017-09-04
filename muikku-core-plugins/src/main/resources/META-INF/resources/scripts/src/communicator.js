@@ -9,7 +9,7 @@ import communicatorActions from './actions/main-function/communicator';
 runApp(reducer, App, (store)=>{
   let websocket = new Websocket(store, {
     "Communicator:newmessagereceived": {
-      actions: [actions.updateMessageCount],
+      actions: [actions.updateMessageCount, communicatorActions.loadNewlyReceivedMessage],
       callbacks: [()=>mApi().communicator.cacheClear]
     },
     "Communicator:messageread": {

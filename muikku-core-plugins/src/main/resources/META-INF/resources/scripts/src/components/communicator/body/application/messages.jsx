@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
+import equal from 'deep-equal';
 
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
@@ -33,11 +34,16 @@ class CommunicatorMessages extends React.Component {
     this.cancelSelection = false;
     this.initialTime = null;
   }
+  onMessageClick(message){
+    if (this.props.communicatorMessagesSelected.length === 0){
+      this.setCurrentMessage(message);
+    }
+  }
   setCurrentMessage(message){
     window.location.hash = window.location.hash.split("/")[0] + "/" + message.communicatorMessageId;
   }
   checkCanLoadMore(){
-    if (this.props.communicatorMessages.state === "READY" && this.props.communicatorMessages.hasMore){
+    if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
       let list = this.refs.list;
       let scrollBottomRemaining = list.scrollHeight - (list.scrollTop + list.offsetHeight)
       if (scrollBottomRemaining <= 100){
@@ -90,7 +96,7 @@ class CommunicatorMessages extends React.Component {
     
     if (this.state.touchMode && !this.firstWasJustSelected){
       let isSelected = this.toggleMessageSelection(message);
-      if (isSelected && this.props.communicatorMessages.selectedIds.length === 1){
+      if (isSelected && this.props.communicatorMessagesSelectedIds.length === 1){
         this.setState({
           touchMode: false
         });
@@ -104,7 +110,7 @@ class CommunicatorMessages extends React.Component {
     e.stopPropagation();
   }
   toggleMessageSelection(message){
-    let isSelected = this.props.communicatorMessages.selectedIds.includes(message.communicatorMessageId);
+    let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
     if (isSelected){
       this.props.removeFromCommunicatorSelectedMessages(message)
     } else {
@@ -113,14 +119,14 @@ class CommunicatorMessages extends React.Component {
     return isSelected;
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.communicatorMessages.state === "LOADING"){
+    if (nextProps.communicatorMessagesState === "LOADING"){
       this.setState({
         touchMode: false
       });
     }
   }
   componentDidUpdate(){
-    if (this.props.communicatorMessages.state === "READY" && this.props.communicatorMessages.hasMore){
+    if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
       let list = this.refs.list;
       let doesNotHaveScrollBar = list.scrollHeight === list.offsetHeight;
       if (doesNotHaveScrollBar){
@@ -133,24 +139,24 @@ class CommunicatorMessages extends React.Component {
     this.checkCanLoadMore();
   }
   render(){
-    if (this.props.communicatorMessages.state === "LOADING"){
+    if (this.props.communicatorMessagesState === "LOADING"){
       return null;
-    } else if (this.props.communicatorMessages.state === "ERROR"){
+    } else if (this.props.communicatorMessagesState === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.communicatorMessages.messages.length === 0){
+    } else if (this.props.communicatorMessagesMessages.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
     return <div className={`communicator application-list ${this.state.touchMode ? "application-list-select-mode" : ""}`}
      ref="list" onScroll={this.onScroll}>{
-      this.props.communicatorMessages.messages.map((message, index)=>{
-        let isSelected = this.props.communicatorMessages.selectedIds.includes(message.communicatorMessageId);
+      this.props.communicatorMessagesMessages.map((message, index)=>{
+        let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
         return <div key={message.communicatorMessageId}
           className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
           onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)}
-          onTouchMove={this.onTouchMoveMessage.bind(this, message)} onClick={this.setCurrentMessage.bind(null, message)}
+          onTouchMove={this.onTouchMoveMessage.bind(this, message)} onClick={this.onMessageClick.bind(this, message)}
           onContextMenu={this.onContextMenu}>
           <div className="application-list-item-header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
@@ -176,7 +182,7 @@ class CommunicatorMessages extends React.Component {
         </div>
       })
     }{
-      this.props.communicatorMessages.state === "LOADING_MORE" ? 
+      this.props.communicatorMessagesState === "LOADING_MORE" ? 
         <div className="application-list-item loader-empty"/>
     : null}</div>
   }
@@ -184,7 +190,11 @@ class CommunicatorMessages extends React.Component {
 
 function mapStateToProps(state){
   return {
-    communicatorMessages: state.communicatorMessages,
+    communicatorMessagesMessages: state.communicatorMessages.messages,
+    communicatorMessagesHasMore: state.communicatorMessages.hasMore,
+    communicatorMessagesState: state.communicatorMessages.state,
+    communicatorMessagesSelected: state.communicatorMessages.selected,
+    communicatorMessagesSelectedIds: state.communicatorMessages.selectedIds,
     i18n: state.i18n
   }
 };

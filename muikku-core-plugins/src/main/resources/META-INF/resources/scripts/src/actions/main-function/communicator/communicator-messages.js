@@ -28,21 +28,30 @@ function getApiId(item, weirdSecondVersion){
 }
 
 function processMessages(dispatch, communicatorMessages, location, pages, concat, err, messages){
+  //So if we failed to retrieve messages
   if (err){
+    //Error :(
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: "ERROR"
     });
   } else {
+    //so the hasMore property will depend on the fact of if we actually managed to load one more
     let hasMore = messages.length === MAX_LOADED_AT_ONCE + 1;
+    
+    //This is because of the array is actually a reference to a cached array
+    //so we rather make a copy otherwise you'll mess up the cache :/
+    let actualMessages = messages.concat([]);
     if (hasMore){
-      messages.pop();
+      //we got to get rid of that extra loaded message
+      actualMessages.pop();
     }
     
+    //Create the payload for updating all the communicator properties
     let payload = {
       state: "READY",
-      messages: (concat ? communicatorMessages.messages.concat(messages) : messages),
+      messages: (concat ? communicatorMessages.messages.concat(actualMessages) : actualMessages),
       pages: pages,
       hasMore,
       location
@@ -52,6 +61,7 @@ function processMessages(dispatch, communicatorMessages, location, pages, concat
       payload.selectedIds = [];
     }
     
+    //And there it goes
     dispatch({
       type: "UPDATE_MESSAGES_ALL_PROPERTIES",
       payload
@@ -60,20 +70,36 @@ function processMessages(dispatch, communicatorMessages, location, pages, concat
 }
 
 function loadMessages(location, initial, dispatch, getState){
+  //Remove the current messsage
+  dispatch({
+    type: "SET_CURRENT_MESSAGE",
+    payload: null
+  });
+  
+  let {communicatorNavigation, communicatorMessages} = getState();
+  let actualLocation = location || communicatorMessages.location;
+  
+  //Avoid loading messages again for the first time if it's the same location
+  if (initial && actualLocation === communicatorMessages.location && communicatorMessages.state === "READY"){
+    return;
+  }
+  
+  //If it's for the first time
   if (initial){
+    //We set this state to loading
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: "LOADING"
     });
   } else {
+    //Otherwise we are loading more
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: "LOADING_MORE"
     });
   }
   
-  let {communicatorNavigation, communicatorMessages} = getState();
-  let actualLocation = location || communicatorMessages.location;
+  //We get the navigation location item
   let item = communicatorNavigation.find((item)=>{
     return item.location === actualLocation;
   });
@@ -84,13 +110,20 @@ function loadMessages(location, initial, dispatch, getState){
     });
   }
   
+  //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
   let firstResult = initial ? 0 : communicatorMessages.pages*MAX_LOADED_AT_ONCE;
+  //The pages that we will have loaded will be the first one for initial or otherwise the current one plus 1
   let pages = initial ? 1 : communicatorMessages.pages + 1;
+  //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
+  //These are the api callback args
   let args = [this, dispatch, communicatorMessages, actualLocation, pages, concat];
+  
+  //If we got a folder
   if (item.type === 'folder'){
     let params = {
         firstResult,
+        //We load one more to check if they have more
         maxResults: MAX_LOADED_AT_ONCE + 1
     }
     switch(item.id){
@@ -103,13 +136,18 @@ function loadMessages(location, initial, dispatch, getState){
     }
     
     mApi().communicator[getApiId(item)].read(params).callback(processMessages.bind(...args));
+    
+  //If we got a label
   } else if (item.type === 'label') {
     let params = {
         labelId: item.id,
         firstResult,
+        //We load one more to check if they have more
         maxResults: MAX_LOADED_AT_ONCE + 1
     }
     mApi().communicator[getApiId(item)].read(params).callback(processMessages.bind(...args));
+  
+  //Otherwise if it's some weird thing we don't recognize
   } else {
     return dispatch({
       type: "UPDATE_MESSAGES_STATE",
@@ -312,16 +350,44 @@ export default {
         }
         
         dispatch({
-          type: "SET_CURRENT_MESSAGE",
-          payload: message
+          type: "UPDATE_MESSAGES_ALL_PROPERTIES",
+          payload: {
+            current: message,
+            location
+          }
         });
       });
     }
   },
-  unloadMessage(){
-    return {
-      type: "SET_CURRENT_MESSAGE",
-      payload: null
+  loadNewlyReceivedMessage(){
+    return (dispatch, getState)=>{
+      let {communicatorNavigation, communicatorMessages} = getState();
+      if (communicatorMessages.location === "unread" || communicatorMessages.location === "inbox"){
+        let item = communicatorNavigation.find((item)=>{
+          return item.location === communicatorMessages.location;
+        });
+        if (!item){
+          return;
+        }
+        let params = {
+            firstResult: 0,
+            maxResults: 1,
+            onlyUnread: true
+        }
+        
+        mApi().communicator[getApiId(item)].read(params).callback((err, messages)=>{
+          if (err){
+            return;
+          }
+          
+          if (messages[0]){
+            dispatch({
+              type: "PUSH_ONE_MESSAGE_FIRST",
+              payload: messages[0]
+            });
+          }
+        });
+      }
     }
   }
 }

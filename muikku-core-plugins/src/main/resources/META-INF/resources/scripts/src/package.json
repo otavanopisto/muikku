@@ -18,6 +18,7 @@
     "browserify": "^14.4.0"
   },
   "dependencies": {
+    "deep-equal": "^1.0.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-color": "^2.13.5",
