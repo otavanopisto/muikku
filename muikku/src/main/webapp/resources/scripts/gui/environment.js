@@ -8,12 +8,6 @@
 
 
   converse.initialize({
-    bosh_service_url: 'https://chatproto.muikkuverkko.fi/http-bind/',
-	show_controlbox_by_default: true,
-	authentication: "login",
-	keepalive: "true",
-	credentials_url: "/credentials",
-	auto_login: true
   });
 
   function reloadMessageCount() {
