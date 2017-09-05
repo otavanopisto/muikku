@@ -2,7 +2,7 @@
 @import "../../base/mixins";
 @import "../../base/breakpoints";
 
-.communicator.application-list {
+.communicator.application-list.communicator-application-list-messages {
   padding: 0 5px;
   height: 100%;
   overflow-y: auto;
@@ -56,4 +56,11 @@
       }
     }
   }
+}
+
+.communicator.application-list.communicator-application-list-message-view {
+  padding: 0 5px;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
 }

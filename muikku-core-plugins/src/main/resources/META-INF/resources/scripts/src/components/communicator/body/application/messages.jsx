@@ -149,7 +149,7 @@ class CommunicatorMessages extends React.Component {
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className={`communicator application-list ${this.state.touchMode ? "application-list-select-mode" : ""}`}
+    return <div className={`communicator application-list communicator-application-list-messages ${this.state.touchMode ? "application-list-select-mode" : ""}`}
      ref="list" onScroll={this.onScroll}>{
       this.props.communicatorMessagesMessages.map((message, index)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);

@@ -1,18 +1,17 @@
 import actions from '../base/notifications';
+import promisify from '~/util/promisify';
 
 export default {
   updateLastWorkspace(){
-    return (dispatch, getState)=>{
-      mApi().user.property.read('last-workspace').callback(function(err, property) {
-        if( err ){
-          dispatch(actions.displayNotification(err.message, 'error'));
-        } else {
-          dispatch({
-            type: 'UPDATE_LAST_WORKSPACE',
-            payload: property.value
-          });
-        }
-      })
+    return async (dispatch, getState)=>{
+      try {
+        dispatch({
+          type: 'UPDATE_LAST_WORKSPACE',
+          payload: (await promisify(mApi().user.property.read('last-workspace'), 'callback')()).value
+        });
+      } catch (err){
+        dispatch(actions.displayNotification(err.message, 'error'));
+      }
     }
   }
 }

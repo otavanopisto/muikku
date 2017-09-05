@@ -2,11 +2,12 @@ import notificationActions from '~/actions/base/notifications';
 import messageCountActions from '~/actions/main-function/message-count';
 
 import {hexToColorInt} from '~/util/modifiers';
+import promisify from '~/util/promisify';
 
 const MAX_LOADED_AT_ONCE = 30;
 
 //Why in the world do we have a weird second version?
-//This is a serverside issue, just why we have different paths for different things.
+//This is a server-side issue, just why we have different paths for different things.
 function getApiId(item, weirdSecondVersion){
   if (item.type === "folder"){
     switch(item.id){
@@ -27,49 +28,7 @@ function getApiId(item, weirdSecondVersion){
   }
 }
 
-function processMessages(dispatch, communicatorMessages, location, pages, concat, err, messages){
-  //So if we failed to retrieve messages
-  if (err){
-    //Error :(
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
-    dispatch({
-      type: "UPDATE_MESSAGES_STATE",
-      payload: "ERROR"
-    });
-  } else {
-    //so the hasMore property will depend on the fact of if we actually managed to load one more
-    let hasMore = messages.length === MAX_LOADED_AT_ONCE + 1;
-    
-    //This is because of the array is actually a reference to a cached array
-    //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualMessages = messages.concat([]);
-    if (hasMore){
-      //we got to get rid of that extra loaded message
-      actualMessages.pop();
-    }
-    
-    //Create the payload for updating all the communicator properties
-    let payload = {
-      state: "READY",
-      messages: (concat ? communicatorMessages.messages.concat(actualMessages) : actualMessages),
-      pages: pages,
-      hasMore,
-      location
-    }
-    if (!concat){
-      payload.selected = [];
-      payload.selectedIds = [];
-    }
-    
-    //And there it goes
-    dispatch({
-      type: "UPDATE_MESSAGES_ALL_PROPERTIES",
-      payload
-    });
-  }
-}
-
-function loadMessages(location, initial, dispatch, getState){
+async function loadMessages(location, initial, dispatch, getState){
   //Remove the current messsage
   dispatch({
     type: "SET_CURRENT_MESSAGE",
@@ -116,12 +75,11 @@ function loadMessages(location, initial, dispatch, getState){
   let pages = initial ? 1 : communicatorMessages.pages + 1;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
-  //These are the api callback args
-  let args = [this, dispatch, communicatorMessages, actualLocation, pages, concat];
   
+  let params;
   //If we got a folder
   if (item.type === 'folder'){
-    let params = {
+    params = {
         firstResult,
         //We load one more to check if they have more
         maxResults: MAX_LOADED_AT_ONCE + 1
@@ -134,22 +92,57 @@ function loadMessages(location, initial, dispatch, getState){
       params.onlyUnread = true;
       break;
     }
-    
-    mApi().communicator[getApiId(item)].read(params).callback(processMessages.bind(...args));
-    
-  //If we got a label
+    //If we got a label
   } else if (item.type === 'label') {
-    let params = {
+    params = {
         labelId: item.id,
         firstResult,
         //We load one more to check if they have more
         maxResults: MAX_LOADED_AT_ONCE + 1
     }
-    mApi().communicator[getApiId(item)].read(params).callback(processMessages.bind(...args));
-  
-  //Otherwise if it's some weird thing we don't recognize
+    //Otherwise if it's some weird thing we don't recognize
   } else {
     return dispatch({
+      type: "UPDATE_MESSAGES_STATE",
+      payload: "ERROR"
+    });
+  }
+  
+  try {
+    let messages = await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+    
+    let hasMore = messages.length === MAX_LOADED_AT_ONCE + 1;
+    
+    //This is because of the array is actually a reference to a cached array
+    //so we rather make a copy otherwise you'll mess up the cache :/
+    let actualMessages = messages.concat([]);
+    if (hasMore){
+      //we got to get rid of that extra loaded message
+      actualMessages.pop();
+    }
+    
+    //Create the payload for updating all the communicator properties
+    let payload = {
+      state: "READY",
+      messages: (concat ? communicatorMessages.messages.concat(actualMessages) : actualMessages),
+      pages: pages,
+      hasMore,
+      location
+    }
+    if (!concat){
+      payload.selected = [];
+      payload.selectedIds = [];
+    }
+    
+    //And there it goes
+    dispatch({
+      type: "UPDATE_MESSAGES_ALL_PROPERTIES",
+      payload
+    });
+  } catch (err){
+    //Error :(
+    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: "ERROR"
     });
@@ -227,7 +220,7 @@ export default {
     return setLabelStatusSelectedMessages.bind(this, label, false);
   },
   toggleMessagesReadStatus(message){
-    return (dispatch, getState)=>{
+    return async (dispatch, getState)=>{
       dispatch({
         type: "LOCK_TOOLBAR"
       });
@@ -255,37 +248,36 @@ export default {
         }
       });
       
-      function callback(err){
-        mApi().communicator[getApiId(item)].cacheClear();
-        if (err){
-          dispatch(notificationActions.displayNotification(err.message, 'error'));
-          dispatch({
-            type: "UPDATE_ONE_MESSAGE",
-            payload: {
-              message,
-              update: {
-                unreadMessagesInThread: message.unreadMessagesInThread
-              }
-            }
-          });
-          dispatch(messageCountActions.updateMessageCount(messageCount));
+      try {
+        if (message.unreadMessagesInThread){
+          dispatch(messageCountActions.updateMessageCount(messageCount - 1));
+          await promisify(mApi().communicator[getApiId(item)].markasread.create(message.communicatorMessageId), 'callback')();
+        } else {
+          dispatch(messageCountActions.updateMessageCount(messageCount + 1));
+          await promisify(mApi().communicator[getApiId(item)].markasunread.create(message.communicatorMessageId), 'callback')();
         }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
         dispatch({
-          type: "UNLOCK_TOOLBAR"
+          type: "UPDATE_ONE_MESSAGE",
+          payload: {
+            message,
+            update: {
+              unreadMessagesInThread: message.unreadMessagesInThread
+            }
+          }
         });
+        dispatch(messageCountActions.updateMessageCount(messageCount));
       }
       
-      if (message.unreadMessagesInThread){
-        dispatch(messageCountActions.updateMessageCount(messageCount - 1));
-        mApi().communicator[getApiId(item)].markasread.create(message.communicatorMessageId).callback(callback);
-      } else {
-        dispatch(messageCountActions.updateMessageCount(messageCount + 1));
-        mApi().communicator[getApiId(item)].markasunread.create(message.communicatorMessageId).callback(callback);
-      }
+      mApi().communicator[getApiId(item)].cacheClear();
+      dispatch({
+        type: "UNLOCK_TOOLBAR"
+      });
     }
   },
   deleteSelectedMessages(){
-    return (dispatch, getState)=>{
+    return async (dispatch, getState)=>{
       dispatch({
         type: "LOCK_TOOLBAR"
       });
@@ -305,34 +297,30 @@ export default {
       
       let {selected, selectedIds} = communicatorMessages;
       
-      let done = 0;
-      for (let message of selected){
-        mApi().communicator[getApiId(item)].del(message.communicatorMessageId).callback((err)=>{
+      await Promise.all(selected.map(async (message)=>{
+        try {
+          promisify(mApi().communicator[getApiId(item)].del(message.communicatorMessageId), 'callback')();
           if (message.unreadMessagesInThread){
             messageCount--;
           }
-          done++;
-          if (err){
-            dispatch(notificationActions.displayNotification(err.message, 'error'));
-          } else {
-            dispatch({
-              type: "DELETE_MESSAGE",
-              payload: message
-            });
-          }
-          if (done === selected.length){
-            mApi().communicator[getApiId(item)].cacheClear();
-            dispatch({
-              type: "UNLOCK_TOOLBAR"
-            });
-            dispatch(messageCountActions.updateMessageCount(messageCount));
-          }
-        });
-      }
+          dispatch({
+            type: "DELETE_MESSAGE",
+            payload: message
+          });
+        } catch(err){
+          dispatch(notificationActions.displayNotification(err.message, 'error'));
+        }
+      }));
+      
+      mApi().communicator[getApiId(item)].cacheClear();
+      dispatch({
+        type: "UNLOCK_TOOLBAR"
+      });
+      dispatch(messageCountActions.updateMessageCount(messageCount));
     }
   },
   loadMessage(location, messageId){
-    return (dispatch, getState)=>{
+    return async (dispatch, getState)=>{
       let {communicatorNavigation} = getState();
       let item = communicatorNavigation.find((item)=>{
         return item.location === location;
@@ -343,12 +331,8 @@ export default {
         return;
       }
       
-      mApi().communicator[getApiId(item, true)].read(messageId).callback((err, message)=>{
-        if (err){
-          dispatch(notificationActions.displayNotification(err.message, 'error'));
-          return;
-        }
-        
+      try {
+        let message = await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
         dispatch({
           type: "UPDATE_MESSAGES_ALL_PROPERTIES",
           payload: {
@@ -356,11 +340,13 @@ export default {
             location
           }
         });
-      });
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
     }
   },
   loadNewlyReceivedMessage(){
-    return (dispatch, getState)=>{
+    return async (dispatch, getState)=>{
       let {communicatorNavigation, communicatorMessages} = getState();
       if (communicatorMessages.location === "unread" || communicatorMessages.location === "inbox"){
         let item = communicatorNavigation.find((item)=>{
@@ -375,18 +361,15 @@ export default {
             onlyUnread: true
         }
         
-        mApi().communicator[getApiId(item)].read(params).callback((err, messages)=>{
-          if (err){
-            return;
-          }
-          
+        try {
+          let messages = await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
           if (messages[0]){
             dispatch({
               type: "PUSH_ONE_MESSAGE_FIRST",
               payload: messages[0]
             });
           }
-        });
+        } catch (err){}
       }
     }
   }

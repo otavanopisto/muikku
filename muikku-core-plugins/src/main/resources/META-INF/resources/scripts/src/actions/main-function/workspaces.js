@@ -1,21 +1,18 @@
 import actions from '../base/notifications';
+import promisify from '~/util/promisify';
 
 export default {
   updateWorkspaces(){
-    return (dispatch, getState)=>{
+    return async (dispatch, getState)=>{
       let userId = getState().status.userId;
-      mApi().workspace.workspaces
-       .read({userId})
-       .callback(function (err, workspaces=[]) {
-         if( err ){
-           dispatch(actions.displayNotification(err.message, 'error'));
-         } else {
-           dispatch({
-             type: "UPDATE_WORKSPACES",
-             payload: workspaces
-           });
-         }
-      });
+      try {
+        dispatch({
+          type: "UPDATE_WORKSPACES",
+          payload: (await (promisify(mApi().workspace.workspaces.read({userId}), 'callback')()) || 0)
+        });
+      } catch (err){
+        dispatch(actions.displayNotification(err.message, 'error'));
+      }
     }
   }
 }

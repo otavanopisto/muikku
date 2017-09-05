@@ -1,4 +1,5 @@
 import actions from '../base/notifications';
+import promisify from '~/util/promisify';
 
 export default {
   updateMessageCount(value){
@@ -9,22 +10,16 @@ export default {
       }
     }
     
-    return (dispatch, getState)=>{
-      mApi()
-        .communicator
-        .receiveditemscount
-        .cacheClear()
-        .read()
-        .callback(function (err, result=0) {
-          if( err ){
-            dispatch(actions.displayNotification(err.message, 'error'));
-          } else {
-            dispatch({
-              type: "UPDATE_MESSAGE_COUNT",
-              payload: result
-            });
-          }
+    return async (dispatch, getState)=>{
+      try {
+        dispatch({
+          type: "UPDATE_MESSAGE_COUNT",
+          payload: (await (promisify(mApi().communicator.receiveditemscount.cacheClear().read(), 'callback')()) || 0)
         });
+      } catch(err){
+        console.log(err);
+        dispatch(actions.displayNotification(err.message, 'error'));
+      }
     }
   }
 }

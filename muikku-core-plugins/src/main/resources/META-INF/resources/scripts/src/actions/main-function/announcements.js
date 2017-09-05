@@ -1,23 +1,17 @@
 import actions from '../base/notifications';
+import promisify from '~/util/promisify';
 
 export default {
-  updateAnnouncements(options={ hideWorkspaceAnnouncements: "false" }){
-    return (dispatch, getState)=>{
-      mApi()
-        .announcer
-        .announcements
-        .read(options)
-        .callback(function(err, announcements) {
-          if( err ){
-            dispatch(actions.displayNotification(err.message, 'error'));
-          } else {
-            dispatch({
-              type: 'UPDATE_ANNOUNCEMENTS',
-              payload: announcements
-            });
-          }
-         }
-      );
+  updateAnnouncements(options={hideWorkspaceAnnouncements: "false"}){
+    return async (dispatch, getState)=>{
+      try {
+        dispatch({
+          type: 'UPDATE_ANNOUNCEMENTS',
+          payload: await promisify(mApi().announcer.announcements.read(options), 'callback')()
+        });
+      } catch (err){
+        dispatch(actions.displayNotification(err.message, 'error'));
+      }
     }
   }
 }

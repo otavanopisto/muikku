@@ -88,9 +88,12 @@ class MessageView extends React.Component {
     }
     return <div className="communicator container communicator-container-message-view" onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
       <div className="communicator container communicator-container-message" style={{right: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
-      <div ref="centerContainer" className="communicator container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
+      <div ref="centerContainer" className="communicator application-list communicator-application-list-message-view container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
         {this.props.communicatorMessagesCurrent.messages.map((message)=>{
-          return <div key={message.id}><h4>{message.caption}</h4><p dangerouslySetInnerHTML={{__html: message.content}}></p></div>
+          return <div key={message.id} className="application-list-item">
+            <div className="application-list-item-header">
+            </div>
+          </div>
         })}
       </div>
       <div className="communicator container communicator-container-message" style={{left: "100%", transform: `translateX(${this.state.drag}px)`}}></div>

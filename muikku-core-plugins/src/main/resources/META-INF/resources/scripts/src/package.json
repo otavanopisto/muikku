@@ -5,19 +5,28 @@
   "main": "index.frontpage.js",
   "scripts": {
     "build": "bash build.sh",
+    "install": "node ./build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "babel-plugin-root-import": "^5.1.0",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.8",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.0",
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
-    "browserify": "^14.4.0"
+    "browserify": "^14.4.0",
+    "envify": "^4.1.0",
+    "through": "^2.3.8",
+    "uglify-es": "^3.0.28"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "deep-equal": "^1.0.1",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",

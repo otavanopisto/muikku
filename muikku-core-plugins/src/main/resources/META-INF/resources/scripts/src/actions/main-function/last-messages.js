@@ -1,21 +1,20 @@
 import actions from '../base/notifications';
+import promisify from '~/util/promisify';
 
 export default {
   updateLastMessages(maxResults){
-    return (dispatch, getState)=>{
-      mApi().communicator.items.read({
-        'firstResult': 0,
-        'maxResults': maxResults
-      }).callback(function (err, messages) {
-        if( err ){
-          dispatch(actions.displayNotification(err.message, 'error'));
-        } else {
-          dispatch({
-            type: 'UPDATE_LAST_MESSAGES',
-            payload: messages
-          });
-        }
-      });
+    return async (dispatch, getState)=>{
+      try {
+        dispatch({
+          type: 'UPDATE_LAST_MESSAGES',
+          payload: (await promisify(mApi().communicator.items.read({
+            'firstResult': 0,
+            'maxResults': maxResults
+          }), 'callback')())
+        });
+      } catch (err){
+        dispatch(actions.displayNotification(err.message, 'error'));
+      }
     }
   }
 }
