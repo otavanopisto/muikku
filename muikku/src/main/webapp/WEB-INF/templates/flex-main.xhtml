@@ -3,7 +3,16 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="flex-base.xhtml">
-  
+
+  <ui:define name="styles-main">
+    <link rel="stylesheet" href="//cdn.muikkuverkko.fi/libs/converse/3.2.1/converse.css" />
+  </ui:define>
+
+  <ui:define name="scripts-main">
+    <script defer="defer" src="//cdn.muikkuverkko.fi/libs/converse/3.2.1/converse-no-jquery.min.js"/>
+    <script defer="defer" jsf:name="/scripts/gui/environment.js"/>
+  </ui:define>
+    
   <ui:define name="body">
     <ui:insert name="notification-queue">
       <div class="notification-queue">
@@ -28,14 +37,10 @@
         </div>
       </div>
     </ui:insert>
+
     
     <ui:insert name="header"></ui:insert>
 
-    <ui:insert name="scripts-main">
-      <script defer="defer" jsf:name="//cdn.muikkuverkko.fi/libs/converse/3.2.1/converse-no-jquery.min.js"/>
-      <script defer="defer" jsf:name="/scripts/gui/environment.js"/>
-    </ui:insert>
-    
     <ui:insert name="navigation"></ui:insert>
     
     <ui:insert name="main">
