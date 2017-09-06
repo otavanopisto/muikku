@@ -5,6 +5,7 @@ import i18n from './base/i18n';
 import messageCount from './main-function/message-count';
 import communicatorNavigation from './main-function/communicator/communicator-navigation';
 import communicatorMessages from './main-function/communicator/communicator-messages';
+import title from './base/title';
 
 import {combineReducers} from 'redux';
 
@@ -15,5 +16,6 @@ export default combineReducers({
   status,
   messageCount,
   communicatorNavigation,
-  communicatorMessages
+  communicatorMessages,
+  title
 });

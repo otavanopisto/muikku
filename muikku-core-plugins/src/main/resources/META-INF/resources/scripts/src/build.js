@@ -93,6 +93,10 @@ if (specificFile){
     if (process.env.NODE_ENV === "production"){
       b.transform(uglify, {global: true});
     }
+    
+    if (!fs.existsSync(`${__dirname}/../dist`)){
+      fs.mkdirSync(`${__dirname}/../dist`);
+    }
   
     let stream = fs.createWriteStream(`${__dirname}/../dist/vendor.js`);
     b.bundle().pipe(stream);

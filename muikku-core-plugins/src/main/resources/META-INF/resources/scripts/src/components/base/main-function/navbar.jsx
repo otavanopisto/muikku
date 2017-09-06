@@ -70,7 +70,8 @@ class MainFunctionNavbar extends React.Component {
       condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
     
-    return <Navbar classNameExtension="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
+    return <Navbar mobileTitle={this.props.title}
+      classNameExtension="main-function" navigation={this.props.navigation} navbarItems={itemData.map((item)=>{
       if (!item.condition){
         return null;
       }
@@ -99,7 +100,8 @@ function mapStateToProps(state){
   return {
     i18n: state.i18n,
     status: state.status,
-    messageCount: state.messageCount
+    messageCount: state.messageCount,
+    title: state.title
   }
 };
 

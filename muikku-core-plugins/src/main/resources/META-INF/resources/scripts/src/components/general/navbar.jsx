@@ -21,7 +21,8 @@ export default class Navbar extends React.Component {
     })).isRequired,
     menuItems: PropTypes.arrayOf(PropTypes.element).isRequired,
     defaultOptions: PropTypes.arrayOf(PropTypes.element).isRequired,
-    navigation: PropTypes.element
+    navigation: PropTypes.element,
+    mobileTitle: PropTypes.string
   }
   openMenu(){
     this.setState({
@@ -57,6 +58,7 @@ export default class Navbar extends React.Component {
                       }).filter(item=>!!item)}
                     </ul>
                   </div>
+                  <div className="navbar-mobile-title">{this.props.mobileTitle}</div>
                   <div className="navbar-default-options">
                     <div className="navbar-default-options-container">
                       {this.props.defaultOptions}

@@ -5,6 +5,7 @@ import Websocket from '~/util/websocket';
 
 import actions from '~/actions/main-function';
 import communicatorActions from '~/actions/main-function/communicator';
+import titleActions from '~/actions/base/title';
 
 let store = runApp(reducer, App);
 let websocket = new Websocket(store, {
@@ -48,3 +49,5 @@ if (!window.location.hash){
     loadLocation(currentLocation);
   }
 }
+
+store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.communicator.pageTitle')));

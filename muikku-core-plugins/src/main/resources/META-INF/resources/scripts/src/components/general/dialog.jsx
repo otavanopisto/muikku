@@ -8,7 +8,7 @@ export default class Dialog extends React.Component {
     title: PropTypes.string.isRequired,
     classNameExtension: PropTypes.string.isRequired,
     content: PropTypes.any.isRequired,
-    footer: PropTypes.func.isRequired,
+    footer: PropTypes.func,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
     onKeyStroke: PropTypes.func
@@ -45,7 +45,7 @@ export default class Dialog extends React.Component {
   }
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-{(closePortal)=>{return <div className={`dialog ${this.props.classNameExtension}-dialog ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+{(closePortal)=>{return <div className={`dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
   <div className="dialog-window">
       <div className="dialog-header">
         <div className="dialog-title">
@@ -57,7 +57,7 @@ export default class Dialog extends React.Component {
         {this.props.content(closePortal)}
       </div>
       <div className="dialog-footer">
-        {this.props.footer(closePortal)}
+        {this.props.footer && this.props.footer(closePortal)}
       </div>
   </div>
 </div>}}

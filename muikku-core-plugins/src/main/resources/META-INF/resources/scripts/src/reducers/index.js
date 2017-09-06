@@ -2,6 +2,7 @@ import notifications from './base/notifications';
 import locales from './base/locales';
 import status from './base/status';
 import i18n from './base/i18n';
+import title from './base/title';
 import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 
@@ -22,5 +23,6 @@ export default combineReducers({
   lastWorkspace,
   workspaces,
   lastMessages,
-  messageCount
+  messageCount,
+  title
 });

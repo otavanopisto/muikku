@@ -4,6 +4,7 @@ import runApp from '~/run';
 import Websocket from '~/util/websocket';
 
 import actions from '~/actions/main-function';
+import titleActions from '~/actions/base/title';
 
 let store = runApp(reducer, App);
 let websocket = new Websocket(store, {
@@ -16,3 +17,5 @@ store.dispatch(actions.announcements.updateAnnouncements());
 store.dispatch(actions.lastWorkspace.updateLastWorkspace());
 store.dispatch(actions.workspaces.updateWorkspaces());
 store.dispatch(actions.lastMessages.updateLastMessages(6));
+
+store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.site.title')));
