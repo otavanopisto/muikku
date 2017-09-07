@@ -15,9 +15,11 @@ import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -47,6 +49,9 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private Logger logger;
+
+  @Context
+  private HttpServletRequest request;
    
   @GET
   @Path("/credentials")
@@ -63,7 +68,7 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Logged user identifier not found").build();
     }
     String userIdentifierString = loggedUserIdentifier.toId();
-    String tokenString = String.format("%s,%d", userIdentifierString, now.getEpochSecond());
+    String tokenString = now.getEpochSecond() + "," + userIdentifierString;
     byte[] hash = DigestUtils.sha256(tokenString);
     
     byte[] signature;
@@ -77,8 +82,11 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
     }
     
+    String serverName = request.getServerName();
+    String jid = userIdentifierString + "@" + serverName;
+    
     String password = tokenString + "," + Base64.encodeBase64String(signature);
-    return Response.ok(new CredentialsRESTModel(userIdentifierString, password)).build();
+    return Response.ok(new CredentialsRESTModel(jid, password)).build();
   }
   
   private PrivateKey getPrivateKey() {

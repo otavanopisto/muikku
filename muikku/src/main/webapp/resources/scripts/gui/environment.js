@@ -8,7 +8,12 @@
 
 
   converse.initialize({
-	  bosh_service_url: '/http-bind/'
+	  bosh_service_url: '/http-bind/',
+	  show_controlbox_by_default: true,
+      authentication: "login",
+      keepalive: "true",
+      credentials_url: "/rest/chat/credentials",
+      auto_login: true
   });
 
   function reloadMessageCount() {
