@@ -8,7 +8,7 @@
 
 
   converse.initialize({
-	  bosh_service_url: 'https://chatproto.muikkuverkko.fi/http-bind/'
+	  bosh_service_url: '/http-bind/'
   });
 
   function reloadMessageCount() {
