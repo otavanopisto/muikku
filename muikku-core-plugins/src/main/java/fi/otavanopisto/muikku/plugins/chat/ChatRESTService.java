@@ -2,8 +2,6 @@ package fi.otavanopisto.muikku.plugins.chat;
 
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
