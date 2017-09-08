@@ -14,6 +14,6 @@ public class CredentialsRESTModel {
     return password;
   }
 
-  final String jid;
-  final String password;
+  private final String jid;
+  private final String password;
 }

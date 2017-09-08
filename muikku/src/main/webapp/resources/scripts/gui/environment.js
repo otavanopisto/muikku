@@ -6,15 +6,20 @@
   /* global CURRENT_USER_FIRST_NAME */
   /* global CURRENT_USER_LAST_NAME */
 
-
-  converse.initialize({
-	  bosh_service_url: '/http-bind/',
-	  show_controlbox_by_default: true,
-      authentication: "login",
-      keepalive: "true",
-      credentials_url: "/rest/chat/credentials",
-      auto_login: true
+  
+  mApi().chat.status.read().callback(function(err, result) {
+    if (result && result.enabled) {
+      converse.initialize({
+        bosh_service_url : '/http-bind/',
+        show_controlbox_by_default : true,
+        authentication : "login",
+        keepalive : "true",
+        credentials_url : "/rest/chat/credentials",
+        auto_login : true
+      });
+    }
   });
+
 
   function reloadMessageCount() {
     if (MUIKKU_LOGGEDIN) {

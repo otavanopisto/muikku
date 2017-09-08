@@ -9,6 +9,8 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,8 +57,13 @@ public class ChatRESTService extends PluginRESTService {
    
   @GET
   @Path("/credentials")
-  @RESTPermit(handling = Handling.UNSECURED)
+  @RESTPermit(handling = Handling.INLINE)
   public Response fetchCredentials() {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
     PrivateKey privateKey = getPrivateKey();
     if (privateKey == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Private key not set").build();
@@ -103,6 +110,32 @@ public class ChatRESTService extends PluginRESTService {
     } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
       logger.log(Level.SEVERE, "Couldn't construct private key", e);
       return null;
+    }
+  }
+
+  @GET
+  @Path("/status")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response chatStatus() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
+    if (enabledUsersCsv == null) {
+      enabledUsersCsv = "";
+    }
+    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
+    SchoolDataIdentifier identifier = sessionController.getLoggedUser();
+    
+    if (identifier == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
+    }
+    
+    if (enabledUsers.contains(identifier.toId())) {
+      return Response.ok(new StatusRESTModel(true)).build();
+    } else {
+      return Response.ok(new StatusRESTModel(false)).build();
     }
   }
 }
