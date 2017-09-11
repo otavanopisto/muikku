@@ -189,6 +189,15 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
 }
 
 export default {
+  sendMessage(message){
+    //TODO actually send the message
+    return {
+      type: "FAKE_SEND_MESSAGE",
+      message
+    }
+    
+    message.success();
+  },
   loadMessages(location){
     return loadMessages.bind(this, location, true);
   },

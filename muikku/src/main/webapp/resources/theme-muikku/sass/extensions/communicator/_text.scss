@@ -7,13 +7,15 @@
     color: $color-communicator-text-title;
   }
   &.communicator-text-current-folder {
-    width: 40%;
+    width: 50%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     display: none;
     height: 34px;
     line-height: 34px;
+    position: relative;
+    padding-right: 45px;
     
     @include breakpoint-down($breakpoint-portrait-pad){
       display: inline-block;
@@ -60,5 +62,25 @@
     height: 112px;
     text-align: center;
     font-size: 92px;
+  }
+ 
+  &.communicator-text-new-message-recepient-tag {
+  	.icon {
+      display: inline-block;
+  	  margin-right: 5px;
+  	}
+    i {
+      opacity: 0.6;
+    }
+  }
+ 
+  &.communicator-text-new-message-recepient-autocomplete {
+  	.icon {
+      display: inline-block;
+  	  margin-right: 5px;
+  	}
+    i {
+      opacity: 0.6;
+    }
   }
 }
