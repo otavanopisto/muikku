@@ -1,5 +1,5 @@
 dist: precise
-sudo: enable
+sudo: required
 language: java
 branches:
   only:
