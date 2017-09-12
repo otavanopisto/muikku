@@ -63,7 +63,12 @@ const extraPlugins = {
 
 class CommunicatorNewMessage extends React.Component {
   static propTypes = {
-    children: PropTypes.element.isRequired
+    children: PropTypes.element.isRequired,
+    replyThreadId: PropTypes.bool,
+    initialSelectedItems: PropTypes.arrayOf(PropTypes.shape({
+      type: PropTypes.oneOf(["workspace", "user", "usergroup"]).isRequired,
+      value: PropTypes.any.isRequired
+    }))
   }
   constructor(props){
     super(props);
@@ -72,11 +77,14 @@ class CommunicatorNewMessage extends React.Component {
     this.setSelectedItems = this.setSelectedItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
+    this.onSignatureToggleClick = this.onSignatureToggleClick.bind(this);
     
     this.state = {
       text: "",
-      selectedItems: [],
-      subject: ""
+      selectedItems: props.initialSelectedItems || [],
+      subject: "",
+      locked: false,
+      includesSignature: true
     }
   }
   onCKEditorChange(text){
@@ -89,20 +97,32 @@ class CommunicatorNewMessage extends React.Component {
     this.setState({subject: e.target.value});
   }
   sendMessage(closeDialog){
+    this.setState({
+      locked: true
+    });
     this.props.sendMessage({
       to: this.state.selectedItems,
       subject: this.state.subject,
-      text: this.state.text,
+      text: (this.props.signature && this.state.includesSignature) ? this.state.text + this.props.signature: this.state.text,
       success: ()=>{
+        closeDialog();
         this.setState({
           text: "",
           selectedItems: [],
-          subject: ""
+          subject: "",
+          locked: false
         });
-        closeDialog();
       },
-      fail: null
+      fail: ()=>{
+        this.setState({
+          locked: false
+        });
+      },
+      replyThreadId: this.props.replyThreadId
     });
+  }
+  onSignatureToggleClick(){
+    this.setState({includesSignature: !this.state.includesSignature});
   }
   render(){
     let content = (closeDialog) => [
@@ -112,7 +132,11 @@ class CommunicatorNewMessage extends React.Component {
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
         value={this.state.subject} onChange={this.onSubjectChange}></input>),
       (<CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
+       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
+      (this.props.signature ? <div key="4" className="communicator container communicator-container-signature">
+        <input className="form-field" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
+      </div> : null)
     ]
        
     let footer = (closeDialog)=>{
@@ -120,7 +144,7 @@ class CommunicatorNewMessage extends React.Component {
         <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
         </Link>
-        <Link className="communicator button button-large button-warn communicator-button-standard-cancel" onClick={closeDialog}>
+        <Link className="communicator button button-large button-warn communicator-button-standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
         </Link>
       </div>
@@ -136,7 +160,8 @@ class CommunicatorNewMessage extends React.Component {
 
 function mapStateToProps(state){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    signature: state.communicatorMessages.signature
   }
 };
 

@@ -9,7 +9,10 @@ export default class InputContactsAutofill extends React.Component {
   static propTypes = {
     placeholder: PropTypes.string,
     onChange: PropTypes.func.isRequired,
-    selectedItems: PropTypes.any,
+    selectedItems: PropTypes.arrayOf(PropTypes.shape({
+      type: PropTypes.oneOf(["workspace", "user", "usergroup"]).isRequired,
+      value: PropTypes.any.isRequired
+    })).isRequired,
     classNameExtension: PropTypes.string.isRequired,
     classNameSuffix: PropTypes.string.isRequired,
     hasGroupMessagingPermission: PropTypes.bool.isRequired

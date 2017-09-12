@@ -190,13 +190,42 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
 
 export default {
   sendMessage(message){
-    //TODO actually send the message
-    return {
-      type: "FAKE_SEND_MESSAGE",
-      message
-    }
     
-    message.success();
+    let recepientWorkspaces = message.to.filter(x=>x.type === "workspace").map(x=>x.value.id)
+    let data = {
+      caption: message.subject,  
+      content: message.text,
+      categoryName: "message",
+      recipientIds: message.to.filter(x=>x.type === "user").map(x=>x.value.id),
+      recipientGroupIds: message.to.filter(x=>x.type === "usergroup").map(x=>x.value.id),
+      recipientStudentsWorkspaceIds: recepientWorkspaces,
+      recipientTeachersWorkspaceIds: recepientWorkspaces
+    };
+    
+    return async (dispatch, getState)=>{
+      try {
+        let result;
+        if (message.replyThreadId){
+          result = await promisify(mApi().communicator.messages.create(message.replyThreadId, data), 'callback')();
+        } else {
+          result = await promisify(mApi().communicator.messages.create(data), 'callback')();
+        }
+        
+        mApi().communicator[getApiId("sent")].cacheClear();
+        message.success && message.success(result);
+        
+        let {communicatorMessages} = getState();
+        if (communicatorMessages.location === "sent"){
+          dispatch({
+            type: "PUSH_ONE_MESSAGE_FIRST",
+            payload: result
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+        message.fail && message.fail();
+      }
+    }
   },
   loadMessages(location){
     return loadMessages.bind(this, location, true);
@@ -380,6 +409,21 @@ export default {
           }
         } catch (err){}
       }
+    }
+  },
+  loadSignature(){
+    return async (dispatch, getState)=>{
+      try {
+        let signatures = await promisify(mApi().communicator.signatures.read(), 'callback')();
+        if (signatures.length > 0){
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: "<br/> <i class='mf-signature'>" + signatures[0].signature + "</i>"
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      } 
     }
   }
 }
