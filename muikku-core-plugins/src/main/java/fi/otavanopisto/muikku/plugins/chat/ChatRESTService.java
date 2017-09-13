@@ -19,6 +19,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -30,6 +31,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -54,6 +56,9 @@ public class ChatRESTService extends PluginRESTService {
 
   @Context
   private HttpServletRequest request;
+  
+  @Inject
+  private ChatController chatController;
    
   @GET
   @Path("/credentials")
@@ -137,5 +142,46 @@ public class ChatRESTService extends PluginRESTService {
     } else {
       return Response.ok(new StatusRESTModel(false)).build();
     }
+  }
+
+  @GET
+  @Path("/settings")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response chatSettings() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
+    if (loggedUser == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user not found").build();
+    }
+    UserChatSettings settings = chatController.findUserChatSettings(loggedUser);
+    if (settings == null) {
+      return Response.status(Status.NOT_FOUND).entity("User settings not found").build();
+    }
+    
+    return Response.ok(settings).build();
+  }
+
+  @POST
+  @Path("/settings")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response setChatSettings(UserChatSettings input) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+    
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(input.getUserIdentifier());
+    
+    if (identifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Ill-formed identifier").build();
+    }
+    
+    UserChatSettings settings = chatController.createUserChatSettings(
+        SchoolDataIdentifier.fromId(input.getUserIdentifier()),
+        input.getVisibility());
+    
+    return Response.ok(settings).build();
   }
 }

@@ -11,6 +11,36 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class UserChatSettings {
+  public UserChatSettings(String userIdentifier, UserChatVisibility visibility) {
+    super();
+    this.userIdentifier = userIdentifier;
+    this.visibility = visibility;
+  }
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public String getUserIdentifier() {
+    return userIdentifier;
+  }
+
+  public void setUserIdentifier(String userIdentifier) {
+    this.userIdentifier = userIdentifier;
+  }
+
+  public UserChatVisibility getVisibility() {
+    return visibility;
+  }
+
+  public void setVisibility(UserChatVisibility visibility) {
+    this.visibility = visibility;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
