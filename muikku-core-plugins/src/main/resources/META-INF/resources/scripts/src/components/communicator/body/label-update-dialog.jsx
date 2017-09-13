@@ -15,7 +15,9 @@ const KEYCODES = {
 class CommunicatorLabelUpdateDialog extends React.Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
-    label: PropTypes.object.isRequired
+    label: PropTypes.object.isRequired,
+    isOpen: PropTypes.bool,
+    onClose: PropTypes.func
   }
   constructor(props){
     super(props);
@@ -95,7 +97,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
         </Link>
       </div>
     }
-    return <Dialog onKeyStroke={this.handleKeydown} onOpen={this.resetState} classNameExtension="communicator" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} classNameExtension="communicator" 
      title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

@@ -13,7 +13,8 @@ export default class CKEditor extends React.Component {
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChange: PropTypes.func.isRequired,
-    children: PropTypes.string.isRequired
+    children: PropTypes.string.isRequired,
+    autofocus: PropTypes.bool
   }
   constructor(props){
     super(props);
@@ -54,7 +55,8 @@ export default class CKEditor extends React.Component {
   }
   componentDidMount(){
     let extraConfig = {
-      height: 0
+      height: 0,
+      startupFocus: this.props.autofocus
     };
     if (this.props.extraPlugins){
       for (let [plugin, url] of Object.entries(this.props.extraPlugins)){

@@ -425,5 +425,8 @@ export default {
         dispatch(notificationActions.displayNotification(err.message, 'error'));
       } 
     }
+  },
+  updateSignature(newSignature){
+    //TODO
   }
 }

@@ -37,6 +37,10 @@ export default class Portal extends React.Component {
   componentWillUpdate(nextProps, nextState) {
     if (nextState.active){
       this.renderPortal(nextProps);
+    } else if (nextProps.isOpen === true && !this.props.isOpen && !this.state.active){
+      this.openPortal(nextProps);
+    } else if (nextProps.isOpen === false && this.state.active){
+      this.closePortal();
     }
   }
 
@@ -156,7 +160,8 @@ Portal.propTypes = {
   onClose: PropTypes.func,
   beforeClose: PropTypes.func,
   onUpdate: PropTypes.func,
-  onKeyStroke: PropTypes.func
+  onKeyStroke: PropTypes.func,
+  isOpen: PropTypes.bool
 };
 
 Portal.defaultProps = {
