@@ -9,7 +9,7 @@
   
   .application-list-item {
     padding-left: 15px;
-    
+
     &.communicator-application-list-item-unread::after {
       position: absolute;
       left: 5px;
@@ -55,6 +55,7 @@
         color: $color-communicator-application-list-item-checkbox-checked-mark;
       }
     }
+
   }
 }
 
@@ -63,4 +64,27 @@
   height: 100%;
   width: 100%;
   overflow-y: auto;
+  
+  .application-list-item {
+    background-color: $color-communicator-application-list-item-open-background;  
+    margin: 0;
+    padding: 0;
+
+    .application-list-item-header, .application-list-item-body, .application-list-item-footer {
+      padding:10px;
+    }
+
+    .application-list-item-header{
+      
+    }    
+    
+    .application-list-item-body {
+      background-color: #fff;
+    }    
+
+    .application-list-item-footer {
+      background-color: #fff;
+    }
+  
+  }
 }

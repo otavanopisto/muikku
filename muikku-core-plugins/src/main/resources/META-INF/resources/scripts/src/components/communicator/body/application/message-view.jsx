@@ -82,7 +82,7 @@ class MessageView extends React.Component {
       });
     }, 10);
   }
-  render(){
+  render(){ 
     if (this.props.communicatorMessagesCurrent === null){
       return null;
     }
@@ -90,10 +90,25 @@ class MessageView extends React.Component {
       <div className="communicator container communicator-container-message" style={{right: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
       <div ref="centerContainer" className="communicator application-list communicator-application-list-message-view container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
         {this.props.communicatorMessagesCurrent.messages.map((message)=>{
-          return <div key={message.id} className="application-list-item">
-            <div className="application-list-item-header">
+          return (              
+            <div key={message.id} className="application-list-item">            
+              <div className="application-list-item-header">
+                <div className="communicator-message-participants">
+                  <span className="communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
+                  {message.recipients.map((recipient) => 
+                    {
+                      return (
+                        <span className="communicator-message-recipient">{recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}</span>)
+                    })}
+                </div>              
+              </div>                  
+              <div className="application-list-item-body">
+                <h1>{message.caption}</h1>
+                <section dangerouslySetInnerHTML={{ __html: message.content}}></section>
+              </div>
+              <div clasSName="application-list-item-footer"></div>
             </div>
-          </div>
+          )
         })}
       </div>
       <div className="communicator container communicator-container-message" style={{left: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
