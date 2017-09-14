@@ -5,15 +5,14 @@ import equals from 'deep-equal';
 
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
+
 class MessageView extends React.Component {
   constructor(props){
     super(props);
-    
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.loadMessage = this.loadMessage.bind(this);
-    
     this.initialXPos = null;
     this.initialYPos = null;
     this.closeInterval = null;
@@ -91,22 +90,29 @@ class MessageView extends React.Component {
       <div ref="centerContainer" className="communicator application-list communicator-application-list-message-view container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
         {this.props.communicatorMessagesCurrent.messages.map((message)=>{
           return (              
-            <div key={message.id} className="application-list-item">            
+              
+            <div key={message.id} className="application-list-item text">            
               <div className="application-list-item-header">
                 <div className="communicator-message-participants">
                   <span className="communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
-                  {message.recipients.map((recipient) => 
-                    {
-                      return (
-                        <span className="communicator-message-recipient">{recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}</span>)
-                    })}
+                  <span className="communicator-message-recipients">
+                    {message.recipients.map((recipient) => {
+                        return (
+                          <span className="communicator-message-recipient">{recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}</span>
+                        )
+                      })}
+                  </span>
+                  <span className="communicator-message-created">{message.created}</span>
                 </div>              
               </div>                  
               <div className="application-list-item-body">
-                <h1>{message.caption}</h1>
+                <header>{message.caption}</header>
                 <section dangerouslySetInnerHTML={{ __html: message.content}}></section>
               </div>
-              <div clasSName="application-list-item-footer"></div>
+              <div className="application-list-item-footer">
+                 <a href="#">Linkki</a>
+                 <a href="#">Linkki</a>                 
+              </div>                
             </div>
           )
         })}
