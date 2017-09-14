@@ -40,7 +40,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component {
     this.update = this.update.bind(this);
     
     this.state = {
-      signature: props.signature || ""
+      signature: props.signature ? props.signature.signature : ""
     }
   }
   handleKeydown(code, closeDialog){
@@ -53,7 +53,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component {
   }
   resetState(){
     this.setState({
-      signature: this.props.signature || ""
+      signature: this.props.signature ? this.props.signature.signature : ""
     });
   }
   update(closeDialog){

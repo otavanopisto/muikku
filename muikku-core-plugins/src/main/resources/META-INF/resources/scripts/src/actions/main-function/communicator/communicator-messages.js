@@ -211,15 +211,24 @@ export default {
           result = await promisify(mApi().communicator.messages.create(data), 'callback')();
         }
         
-        mApi().communicator[getApiId("sent")].cacheClear();
+        mApi().communicator.sentitems.cacheClear();
         message.success && message.success(result);
         
         let {communicatorMessages} = getState();
         if (communicatorMessages.location === "sent"){
-          dispatch({
-            type: "PUSH_ONE_MESSAGE_FIRST",
-            payload: result
-          });
+          let params = {
+              firstResult: 0,
+              maxResults: 1
+          }
+          try {
+            let messages = await promisify(mApi().communicator.sentitems.read(params), 'callback')();
+            if (messages[0]){
+              dispatch({
+                type: "PUSH_ONE_MESSAGE_FIRST",
+                payload: messages[0]
+              });
+            }
+          } catch (err){}
         }
       } catch (err){
         dispatch(notificationActions.displayNotification(err.message, 'error'));
@@ -418,15 +427,39 @@ export default {
         if (signatures.length > 0){
           dispatch({
             type: "UPDATE_SIGNATURE",
-            payload: "<br/> <i class='mf-signature'>" + signatures[0].signature + "</i>"
+            payload: signatures[0]
           });
         }
       } catch (err){
         dispatch(notificationActions.displayNotification(err.message, 'error'));
-      } 
+      }
     }
   },
   updateSignature(newSignature){
-    //TODO
+    return async (dispatch, getState)=>{
+      let {communicatorMessages} = getState();
+      try {
+        if (newSignature && communicatorMessages.signature){
+          let nSignatureShape = {id: communicatorMessages.signature.id, name: communicatorMessages.signature.name, signature: newSignature};
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: await promisify(mApi().communicator.signatures.update(communicatorMessages.signature.id, nSignatureShape), 'callback')()
+          });
+        } else if (newSignature){
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: await promisify(mApi().communicator.signatures.create({name:"standard", signature: newSignature}), 'callback')()
+          });
+        } else {
+          await promisify(mApi().communicator.signatures.del(communicatorMessages.signature.id), 'callback')();
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: null
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
+    }
   }
 }

@@ -1,30 +1,3 @@
-//<div className="communicator jumbo-dialog">
-//  <div className="jumbo-dialog-wrapper">
-//    <div className="jumbo-dialog-window">
-//    
-//      <div className="jumbo-dialog-header">
-//        <div className="jumbo-dialog-title">
-//          {#localize key=""/}
-//          <span className="jumbo-dialog-close icon icon-close"></span>
-//        </div>
-//      </div>
-//      
-//      <div className="communicator form-field communicator-form-field-new-message-recepients">
-//        <input type="text" placeholder='{#localize key="plugin.communicator.createmessage.title.recipients"/}'></input>
-//      </div>
-//      <input type="text" className="communicator form-field communicator-form-field-new-message-subject" placeholder='{#localize key="plugin.communicator.createmessage.title.subject"/}'></input>
-//      <textarea className="communicator form-field communicator-form-field-new-message-body"></textarea>
-//      
-//      {?signature}
-//        <div className="communicator form-field communicator-form-field-signature-new-message-checkbox">
-//          <input type="checkbox" checked="checked" />
-//          {#localize key="plugin.communicator.createmessage.checkbox.signature"/}
-//        </div>
-//      {/signature}
-//    </div>
-//  </div>
-//</div>
-
 import PropTypes from 'prop-types';
 import React from 'react';
 import {connect} from 'react-redux';
@@ -103,7 +76,9 @@ class CommunicatorNewMessage extends React.Component {
     this.props.sendMessage({
       to: this.state.selectedItems,
       subject: this.state.subject,
-      text: (this.props.signature && this.state.includesSignature) ? this.state.text + this.props.signature: this.state.text,
+      text: ((this.props.signature && this.state.includesSignature) ? 
+        (this.state.text + "<br/> <i class='mf-signature'>" + this.props.signature.signature + "</i>"):
+        this.state.text),
       success: ()=>{
         closeDialog();
         this.setState({

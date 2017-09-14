@@ -60,5 +60,9 @@ export default function runApp(reducer, App){
     preApp.style.display = "none";
   }
   
+  if (process.env.NODE_ENV !== "production"){
+    window.STORE_DEBUG = store;
+  }
+  
   return newStore;
 }
