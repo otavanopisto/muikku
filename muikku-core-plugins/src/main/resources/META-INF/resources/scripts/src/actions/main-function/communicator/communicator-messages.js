@@ -189,6 +189,53 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
 }
 
 export default {
+  sendMessage(message){
+    
+    let recepientWorkspaces = message.to.filter(x=>x.type === "workspace").map(x=>x.value.id)
+    let data = {
+      caption: message.subject,  
+      content: message.text,
+      categoryName: "message",
+      recipientIds: message.to.filter(x=>x.type === "user").map(x=>x.value.id),
+      recipientGroupIds: message.to.filter(x=>x.type === "usergroup").map(x=>x.value.id),
+      recipientStudentsWorkspaceIds: recepientWorkspaces,
+      recipientTeachersWorkspaceIds: recepientWorkspaces
+    };
+    
+    return async (dispatch, getState)=>{
+      try {
+        let result;
+        if (message.replyThreadId){
+          result = await promisify(mApi().communicator.messages.create(message.replyThreadId, data), 'callback')();
+        } else {
+          result = await promisify(mApi().communicator.messages.create(data), 'callback')();
+        }
+        
+        mApi().communicator.sentitems.cacheClear();
+        message.success && message.success(result);
+        
+        let {communicatorMessages} = getState();
+        if (communicatorMessages.location === "sent"){
+          let params = {
+              firstResult: 0,
+              maxResults: 1
+          }
+          try {
+            let messages = await promisify(mApi().communicator.sentitems.read(params), 'callback')();
+            if (messages[0]){
+              dispatch({
+                type: "PUSH_ONE_MESSAGE_FIRST",
+                payload: messages[0]
+              });
+            }
+          } catch (err){}
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+        message.fail && message.fail();
+      }
+    }
+  },
   loadMessages(location){
     return loadMessages.bind(this, location, true);
   },
@@ -370,6 +417,48 @@ export default {
             });
           }
         } catch (err){}
+      }
+    }
+  },
+  loadSignature(){
+    return async (dispatch, getState)=>{
+      try {
+        let signatures = await promisify(mApi().communicator.signatures.read(), 'callback')();
+        if (signatures.length > 0){
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: signatures[0]
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
+    }
+  },
+  updateSignature(newSignature){
+    return async (dispatch, getState)=>{
+      let {communicatorMessages} = getState();
+      try {
+        if (newSignature && communicatorMessages.signature){
+          let nSignatureShape = {id: communicatorMessages.signature.id, name: communicatorMessages.signature.name, signature: newSignature};
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: await promisify(mApi().communicator.signatures.update(communicatorMessages.signature.id, nSignatureShape), 'callback')()
+          });
+        } else if (newSignature){
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: await promisify(mApi().communicator.signatures.create({name:"standard", signature: newSignature}), 'callback')()
+          });
+        } else {
+          await promisify(mApi().communicator.signatures.del(communicatorMessages.signature.id), 'callback')();
+          dispatch({
+            type: "UPDATE_SIGNATURE",
+            payload: null
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
       }
     }
   }

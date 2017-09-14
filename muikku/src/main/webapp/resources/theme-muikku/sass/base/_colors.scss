@@ -231,6 +231,19 @@ $color-form-field-border: #dcdcdc;
 $color-form-field-border-focus: #707070;
 $color-form-field-glow: $color-primary;
 
+// autocomplete
+$color-autocomplete-list-border: #dcdcdc;
+$color-autocomplete-list-background-color: $color-default;
+$color-autocomplete-list-item-hover: #eee;
+$color-autocomplete-list-item-active: #ddd;
+$color-autocomplete-list-item-selected: #29B0C4;
+
+// form field input tag
+$color-form-field-tag-input-tag-background: $color-default;
+$color-form-field-tag-input-tag-border: #dcdcdc;
+$color-form-field-tag-input-tag-text: $color-default-contrast;
+$color-form-field-tag-input-tag-delete-background-active: rgba(0, 0, 0, 0.2);
+
 @import "colors/frontpage";
 @import "colors/main-function";
 @import "colors/index";

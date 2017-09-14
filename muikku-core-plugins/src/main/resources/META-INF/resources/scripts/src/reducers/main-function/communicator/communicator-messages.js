@@ -7,7 +7,8 @@ export default function communicatorMessages(state={
   hasMore: false,
   location: "",
   toolbarLock: false,
-  current: null
+  current: null,
+  signature: null
 }, action){
   if (action.type === "UPDATE_MESSAGES_STATE"){
     return Object.assign({}, state, {state: action.payload});
@@ -120,6 +121,8 @@ export default function communicatorMessages(state={
     }) : state.current)});
   } else if (action.type === "PUSH_ONE_MESSAGE_FIRST"){
     return Object.assign({}, state, {messages: [action.payload].concat(state.messages)});
+  } else if (action.type === "UPDATE_SIGNATURE"){
+    return Object.assign({}, state, {signature: action.payload});
   }
   return state;
 }

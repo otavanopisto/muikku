@@ -51,3 +51,4 @@ if (!window.location.hash){
 }
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.communicator.pageTitle')));
+store.dispatch(communicatorActions.communicatorMessages.loadSignature());

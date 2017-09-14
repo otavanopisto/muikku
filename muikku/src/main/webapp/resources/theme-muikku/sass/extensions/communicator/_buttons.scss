@@ -192,6 +192,9 @@
   }
   
   &.communicator-button-pill-toolbar-edit-label {
+  	position: absoltute;
+  	top: 0;
+  	right: 0;
     background-color: $color-communicator-button-pill-toolbar-edit-label-background;
     color: $color-communicator-button-pill-toolbar-edit-label-text;
     &:hover, &.hover {

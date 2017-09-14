@@ -4,13 +4,14 @@ import React from 'react';
 
 export default class Dialog extends React.Component {
   static propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.element,
     title: PropTypes.string.isRequired,
     classNameExtension: PropTypes.string.isRequired,
     content: PropTypes.any.isRequired,
     footer: PropTypes.func,
     onOpen: PropTypes.func,
     onClose: PropTypes.func,
+    isOpen: PropTypes.bool,
     onKeyStroke: PropTypes.func
   }
   constructor(props){
@@ -44,7 +45,8 @@ export default class Dialog extends React.Component {
     setTimeout(removeFromDOM, 300);
   }
   render(){
-    return (<Portal onKeyStroke={this.props.onKeyStroke} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
+    return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
+        openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
 {(closePortal)=>{return <div className={`dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
   <div className="dialog-window">
       <div className="dialog-header">

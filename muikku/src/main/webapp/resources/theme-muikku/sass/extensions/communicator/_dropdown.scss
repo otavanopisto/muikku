@@ -18,4 +18,11 @@
       }
     }
   }
+ 
+   
+  &.communicator-dropdown-settings .dropdown-container {
+    padding: 5px;
+    background-color: $color-communicator-dropdown-settings-background;
+    border: solid 1px $color-communicator-dropdown-settings-border;
+  }
 }

@@ -4,21 +4,51 @@ import PropTypes from 'prop-types';
 
 import ApplicationPanel from '~/components/general/application-panel.jsx';
 import HoverButton from '~/components/general/hover-button.jsx';
+import Dropdown from '~/components/general/dropdown.jsx';
+import Link from '~/components/general/link.jsx';
 
 import Toolbar from './application/toolbar.jsx';
 import CommunicatorMessages from './application/messages.jsx';
 import MessageView from './application/message-view.jsx';
 import NewMessage from './application/new-message.jsx';
+import SignatureUpdateDialog from './signature-update-dialog.jsx';
 
 class CommunicatorApplication extends React.Component {
   static propTypes = {
     navigation: PropTypes.element.isRequired
   }
+  constructor(props){
+    super(props);
+    
+    this.openDialogSignature = this.openDialogSignature.bind(this);
+    this.closeDialogSignature = this.closeDialogSignature.bind(this);
+    
+    this.state = {
+      updateSignatureDialogOpened: false
+    }
+  }
+  openDialogSignature(closeDropdown){
+    this.setState({
+      updateSignatureDialogOpened: true
+    });
+    closeDropdown();
+  }
+  closeDialogSignature(){
+    this.setState({
+      updateSignatureDialogOpened: false
+    });
+  }
   render(){
     let title = <h2 className="communicator text text-panel-application-title communicator-text-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
-    let icon = <a className="communicator button-pill communicator-button-pill-settings">
-      <span className="icon icon-settings"></span>
-    </a>
+    let icon = <Dropdown classNameExtension="communicator" classNameSuffix="settings" items={[
+      closeDropdown=><Link className="link link-full" onClick={this.openDialogSignature.bind(this, closeDropdown)}>
+        <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
+      </Link>
+    ]}>
+      <Link className="communicator button-pill communicator-button-pill-settings">
+        <span className="icon icon-settings"></span>
+      </Link>
+    </Dropdown>
     let primaryOption = <NewMessage><a className="communicator button communicator-button-new-message">
         {this.props.i18n.text.get('plugin.communicator.newMessage')}
     </a></NewMessage>
@@ -30,6 +60,7 @@ class CommunicatorApplication extends React.Component {
         <CommunicatorMessages/>
         <MessageView/>
       </ApplicationPanel>
+      <SignatureUpdateDialog isOpen={this.state.updateSignatureDialogOpened} onClose={this.closeDialogSignature}/>
       <NewMessage><HoverButton icon="edit" classNameSuffix="new-message" classNameExtension="communicator"/></NewMessage>
     </div>);
   }
