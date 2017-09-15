@@ -224,7 +224,7 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
   });
 }
 
-export default {
+let defaultObject = {
   sendMessage(message){
     
     let recepientWorkspaces = message.to.filter(x=>x.type === "workspace").map(x=>x.value.id)
@@ -408,6 +408,52 @@ export default {
       dispatch(messageCountActions.updateMessageCount(messageCount));
     }
   },
+  deleteCurrentMessage(){
+    return async (dispatch, getState)=>{
+      dispatch({
+        type: "LOCK_TOOLBAR"
+      });
+      
+      let {communicatorNavigation, communicatorMessages} = getState();
+      let item = communicatorNavigation.find((item)=>{
+        return item.location === communicatorMessages.location;
+      });
+      if (!item){
+        //TODO translate this
+        dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
+        dispatch({
+          type: "UNLOCK_TOOLBAR"
+        });
+        return;
+      }
+      
+      let communicatorMessageId = communicatorMessages.current.messages[0].communicatorMessageId;
+      
+      try {
+        await promisify(mApi().communicator[getApiId(item)].del(communicatorMessageId), 'callback')();
+        dispatch({
+          type: "DELETE_MESSAGE",
+          payload: {
+            communicatorMessageId
+          }
+        });
+      } catch(err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
+      
+      mApi().communicator[getApiId(item)].cacheClear();
+      dispatch({
+        type: "UNLOCK_TOOLBAR"
+      });
+      
+      //SADLY the current message doesn't have a mention on wheter
+      //The message is read or unread so the message count has to be recalculated
+      //by server logic
+      dispatch(messageCountActions.updateMessageCount());
+      
+      location.hash = "#" + item.location;
+    }
+  },
   loadMessage(location, messageId){
     return async (dispatch, getState)=>{
       let {communicatorNavigation} = getState();
@@ -505,3 +551,4 @@ export default {
     }
   }
 }
+export default defaultObject;
