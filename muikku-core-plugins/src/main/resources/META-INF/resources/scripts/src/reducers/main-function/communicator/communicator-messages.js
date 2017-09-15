@@ -46,38 +46,57 @@ export default function communicatorMessages(state={
   } else if (action.type === "UNLOCK_TOOLBAR"){
     return Object.assign({}, state, {toolbarLock: false});
   } else if (action.type === "UPDATE_MESSAGE_ADD_LABEL"){
-    let newMessage = action.payload.message;
-    if (!newMessage.labels.find(label=>label.labelId === action.payload.label.labelId)){
-      newMessage = Object.assign({}, newMessage, {
-        labels: newMessage.labels.concat([action.payload.label])
+    let newCurrent = state.current;
+    if (newCurrent && newCurrent.messages[0].communicatorMessageId === action.payload.communicatorMessageId){
+      newCurrent = Object.assign(newCurrent, {labels: newCurrent.labels.concat([action.payload.label])});
+    }
+    
+    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
+      if (selected.communicatorMessageId === action.payload.communicatorMessageId){
+        if (!selected.labels.find(label=>label.labelId === action.payload.label.labelId)){
+          return Object.assign({}, selected, {
+            labels: selected.labels.concat([action.payload.label])
+          });
+        } else {
+          return selected;
+        }
+      }
+      return selected;
+    }), messages: state.messages.map((message)=>{
+      if (message.communicatorMessageId === action.payload.communicatorMessageId){
+        if (!message.labels.find(label=>label.labelId === action.payload.label.labelId)){
+          return Object.assign({}, message, {
+            labels: message.labels.concat([action.payload.label])
+          });
+        } else {
+          return message;
+        }
+      }
+      return message;
+    }), current: newCurrent});
+  } else if (action.type === "UPDATE_MESSAGE_DROP_LABEL"){   
+    let newCurrent = state.current;
+    if (newCurrent && newCurrent.messages[0].communicatorMessageId === action.payload.communicatorMessageId){
+      newCurrent = Object.assign(newCurrent, {
+        labels: newCurrent.labels.filter(label=>label.labelId !== action.payload.label.labelId)
       });
     }
+    
     return Object.assign({}, state, {selected: state.selected.map((selected)=>{
-      if (selected.communicatorMessageId === action.payload.message.communicatorMessageId){
-        return newMessage
+      if (selected.communicatorMessageId === action.payload.communicatorMessageId){
+        return Object.assign({}, selected, {
+          labels: selected.labels.filter(label=>label.labelId !== action.payload.label.labelId)
+        });
       }
       return selected;
     }), messages: state.messages.map((message)=>{
-      if (message.communicatorMessageId === action.payload.message.communicatorMessageId){
-        return newMessage
+      if (message.communicatorMessageId === action.payload.communicatorMessageId){
+        return Object.assign({}, message, {
+          labels: message.labels.filter(label=>label.labelId !== action.payload.label.labelId)
+        });
       }
       return message;
-    })});
-  } else if (action.type === "UPDATE_MESSAGE_DROP_LABEL"){
-    let newMessage = Object.assign({}, action.payload.message, {
-      labels: action.payload.message.labels.filter(label=>label.labelId !== action.payload.label.labelId)
-    });
-    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
-      if (selected.communicatorMessageId === action.payload.message.communicatorMessageId){
-        return newMessage
-      }
-      return selected;
-    }), messages: state.messages.map((message)=>{
-      if (message.communicatorMessageId === action.payload.message.communicatorMessageId){
-        return newMessage
-      }
-      return message;
-    })});
+    }), current: newCurrent});
   } else if (action.type === "DELETE_MESSAGE"){
     return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
       return selected.communicatorMessageId !== action.payload.communicatorMessageId

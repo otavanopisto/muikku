@@ -149,43 +149,79 @@ async function loadMessages(location, initial, dispatch, getState){
   }
 }
 
-function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState){
-  let {communicatorNavigation, communicatorMessages, i18n} = getState();
-  let item = communicatorNavigation.find((item)=>{
-    return item.location === communicatorMessages.location;
-  });
-  if (!item){
-    //TODO translate this
-    dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
-  }
+async function setLabelStatusCurrentMessage(label, isToAddLabel, dispatch, getState){
+  let {communicatorMessages} = getState();
+  let messageLabel = communicatorMessages.current.labels.find(mlabel=>mlabel.labelId === label.id);
+  let communicatorMessageId = communicatorMessages.current.messages[0].communicatorMessageId;
   
-  let callback = (message, originalLabel, err, label)=>{
-    if (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
-    } else {
+  try {
+    if (isToAddLabel && !messageLabel){
+      let serverProvidedLabel = await promisify(mApi().communicator.messages.labels.create(communicatorMessageId, {
+        labelId: label.id
+      }), 'callback')();
       dispatch({
-        type: isToAddLabel ? "UPDATE_MESSAGE_ADD_LABEL" : "UPDATE_MESSAGE_DROP_LABEL",
+        type: "UPDATE_MESSAGE_ADD_LABEL",
         payload: {
-          message,
-          label: originalLabel || label
+          communicatorMessageId,
+          label: serverProvidedLabel
         }
       });
-    }
-  }
-  
-  for (let message of communicatorMessages.selected){
-    let messageLabel = message.labels.find(mlabel=>mlabel.labelId === label.id);
-    if (isToAddLabel && !messageLabel){
-      mApi().communicator.messages.labels.create(message.communicatorMessageId, { labelId: label.id }).callback(callback.bind(this, message, null));
     } else if (!isToAddLabel){
       if (!messageLabel){
-        //TODO translate this
-        dispatch(notificationActions.displayNotification("Label already does not exist", 'error'));
+        dispatch(notificationActions.displayNotification("Label does not exist", 'error'));
       } else {
-        mApi().communicator.messages.labels.del(message.communicatorMessageId, messageLabel.id).callback(callback.bind(this, message, messageLabel));
+        await promisify(mApi().communicator.messages.labels.del(communicatorMessageId, messageLabel.id), 'callback')();
+        dispatch({
+          type: "UPDATE_MESSAGE_DROP_LABEL",
+          payload: {
+            communicatorMessageId,
+            label: messageLabel
+          }
+        });
       }
     }
+  } catch (err){
+    dispatch(notificationActions.displayNotification(err.message, 'error'));
   }
+}
+
+function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState){
+  let {communicatorMessages} = getState();
+  
+  communicatorMessages.selected.forEach(async (message)=>{
+    let messageLabel = message.labels.find(mlabel=>mlabel.labelId === label.id);
+    
+    try {
+      if (isToAddLabel && !messageLabel){
+        let serverProvidedLabel = await promisify(mApi().communicator.messages.labels.create(message.communicatorMessageId, {
+          labelId: label.id
+        }),'callback')();
+        dispatch({
+          type: "UPDATE_MESSAGE_ADD_LABEL",
+          payload: {
+            communicatorMessageId: message.communicatorMessageId,
+            label: serverProvidedLabel
+          }
+        });
+      } else if (!isToAddLabel){
+        if (!messageLabel){
+          //TODO translate this
+          dispatch(notificationActions.displayNotification("Label does not exist", 'error'));
+        } else {
+          await promisify(mApi().communicator.messages.labels.del(message.communicatorMessageId, messageLabel.id), 'callback')();
+          dispatch({
+            type: "UPDATE_MESSAGE_DROP_LABEL",
+            payload: {
+              communicatorMessageId: message.communicatorMessageId,
+              label: messageLabel
+            }
+          });
+        }
+      }
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  });
 }
 
 export default {
@@ -265,6 +301,12 @@ export default {
   },
   removeLabelFromSelectedMessages(label){
     return setLabelStatusSelectedMessages.bind(this, label, false);
+  },
+  addLabelToCurrentMessage(label){
+    return setLabelStatusCurrentMessage.bind(this, label, true);
+  },
+  removeLabelFromCurrentMessage(label){
+    return setLabelStatusCurrentMessage.bind(this, label, false);
   },
   toggleMessagesReadStatus(message){
     return async (dispatch, getState)=>{
