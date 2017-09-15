@@ -98,7 +98,7 @@ class MessageView extends React.Component {
                   <span className="communicator-message-recipients">
                     {message.recipients.map((recipient) => {
                         return (
-                          <span className="communicator-message-recipient">{recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}</span>
+                          <span key={recipient.id} className="communicator-message-recipient">{recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}</span>
                         )
                       })}
                   </span>
