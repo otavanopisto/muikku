@@ -89,8 +89,7 @@ class MessageView extends React.Component {
       <div className="communicator container communicator-container-message" style={{right: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
       <div ref="centerContainer" className="communicator application-list communicator-application-list-message-view container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
         {this.props.communicatorMessagesCurrent.messages.map((message)=>{
-          return (              
-              
+          return (
             <div key={message.id} className="application-list-item text">            
               <div className="application-list-item-header">
                 <div className="communicator-message-participants">
@@ -98,12 +97,14 @@ class MessageView extends React.Component {
                   <span className="communicator-message-recipients">
                     {message.recipients.map((recipient) => {
                         return (
-                          <span className="communicator-message-recipient">{recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}</span>
+                          <span className="communicator-message-recipient" key={recipient.recipientId}>
+                            {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
+                          </span>
                         )
-                      })}
+                    })}
                   </span>
-                  <span className="communicator-message-created">{message.created}</span>
-                </div>              
+                  <span className="communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
+                </div>
               </div>                  
               <div className="application-list-item-body">
                 <header>{message.caption}</header>
