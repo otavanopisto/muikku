@@ -5,6 +5,8 @@ import equals from 'deep-equal';
 
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
+import Link from '~/components/general/link.jsx';
+import NewMessage from './new-message.jsx';
 
 class MessageView extends React.Component {
   constructor(props){
@@ -89,6 +91,27 @@ class MessageView extends React.Component {
       <div className="communicator container communicator-container-message" style={{right: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
       <div ref="centerContainer" className="communicator application-list communicator-application-list-message-view container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
         {this.props.communicatorMessagesCurrent.messages.map((message)=>{
+          let senderObject = {
+            type: "user",
+            value: message.sender
+          };
+          let recipientsObject = message.recipients.map(r=>({
+            type: "user",
+            value: {
+              id: r.userId,
+              firstName: r.firstName,
+              lastName: r.lastName,
+              nickName: r.nickName
+            }
+          })).filter(user=>user.id !== MUIKKU_LOGGED_USER_ID);
+          let userGroupObject = message.userGroupRecipients.map(ug=>({
+            type: "usergroup",
+            value: ug
+          }));
+          let workspaceObject = message.workspaceRecipients.map(w=>({
+            type: "usergroup",
+            value: w
+          }));
           return (
             <div key={message.id} className="application-list-item text">            
               <div className="application-list-item-header">
@@ -111,8 +134,13 @@ class MessageView extends React.Component {
                 <section dangerouslySetInnerHTML={{ __html: message.content}}></section>
               </div>
               <div className="application-list-item-footer">
-                 <a href="#">Linkki</a>
-                 <a href="#">Linkki</a>                 
+                 <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
+                   <Link>{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+                 </NewMessage>
+                 <NewMessage replyThreadId={message.communicatorMessageId}
+                   initialSelectedItems={[senderObject].concat(recipientsObject).concat(userGroupObject).concat(workspaceObject)}>
+                   <Link>{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+                 </NewMessage>
               </div>                
             </div>
           )
