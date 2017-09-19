@@ -15,15 +15,15 @@ It'll create a dist folder on the parent of itself.
 When you develop it can be painfully slow to generate bundles, specially if they are triggered every time a file is changed you should
 build it from command line, use node directly for this you can do
 
-`node build.js`
+`node build.ts`
 
 To build all versions including the vendor file
 
-`node build.js communicator.js`
+`node build.ts communicator.ts`
 
 To build an specific entry file from the entry files, this is faster; and you'll use it a lot when modifying.
 
-`NODE_ENV=production node build.js`
+`NODE_ENV=production node build.ts`
 
 To build the production files (takes longer than anything)
 

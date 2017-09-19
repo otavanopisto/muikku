@@ -1,0 +1,49 @@
+{
+	"awesomeTypescriptLoaderOptions": {
+		"useWebpackText": true,
+		"useTranspileModule": true,
+		"doTypeCheck": true,
+		"forkChecker": true,
+		"ignoreDiagnostics": [
+			2339,
+			7006,
+			2304,
+			7005,
+			7019,
+			7034,
+			7016,
+			7018,
+			2307,
+			2691,
+			7010,
+			2345,
+			2554,
+			17001,
+			7023,
+			1192,
+			2393,
+			7011,
+			7017,
+			2322
+		]
+	},
+	"compilerOptions": {
+		"outDir": "../dist/",
+		"allowJs": true,
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"noImplicitAny": true,
+		"module": "commonjs",
+		"target": "es5",
+		"jsx": "react",
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"lib": [
+			"dom",
+			"es2016"
+		]
+	},
+	"exclude": [
+		"node_modules"
+	]
+}

@@ -98,11 +98,11 @@ if (specificFile){
       fs.mkdirSync(`${__dirname}/../dist`);
     }
   
-    let stream = fs.createWriteStream(`${__dirname}/../dist/vendor.js`);
+    let stream = fs.createWriteStream(`${__dirname}/../dist/vendor.ts`);
     b.bundle().pipe(stream);
   
     stream.on('finish', function () {
-      console.log("Finished vendor building at", `${__dirname}/../dist/vendor.js`);
+      console.log("Finished vendor building at", `${__dirname}/../dist/vendor.ts`);
     });
   })
 }
