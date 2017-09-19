@@ -6,7 +6,7 @@ import actions from '~/actions/base/status';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
-function checkLinkClicked(target){
+function checkLinkClicked(target: HTMLElement): boolean {
   return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
 }
 

@@ -5,7 +5,7 @@ let path = require("path");
 let plugins = [
 	new webpack.optimize.CommonsChunkPlugin({
 		name: 'vendor',
-		minChunks: ({ context }) => context.includes("node_modules"),
+		minChunks: ({ context }) => context && context.includes("node_modules"),
 	}),
 	new webpack.EnvironmentPlugin({
 		'NODE_ENV': "development"
@@ -75,6 +75,9 @@ module.exports = {
 	},
 	plugins,
 	externals: {
-		"jquery": "jQuery"
+		"jquery": "jQuery",
+		"mApi": "mApi",
+		"moment": "moment",
+		"getLocaleText": "getLocaleText"
 	}
 };

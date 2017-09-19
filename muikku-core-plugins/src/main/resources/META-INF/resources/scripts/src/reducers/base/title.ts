@@ -1,6 +1,9 @@
-export default function title(state="", action){
+import {ActionType} from "~/actions";
+
+export default function title(state: string="", action: ActionType<any>): string {
   if (action.type === "UPDATE_TITLE"){
-    return action.payload;
+    let newValue: string = action.payload;
+    return newValue;
   }
   return state;
 }

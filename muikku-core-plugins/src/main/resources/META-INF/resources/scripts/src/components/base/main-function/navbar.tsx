@@ -1,15 +1,25 @@
 import Navbar from '~/components/general/navbar.tsx';
 import Link from '~/components/general/link.tsx';
-import * as PropTypes from 'prop-types';
+import {i18nType} from '~/reducers/base/i18n';
+import {statusType} from '~/reducers/base/status';
 
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-class MainFunctionNavbar extends React.Component {
-  static propTypes = {
-    activeTrail: PropTypes.string.isRequired,
-    navigation: PropTypes.element
-  }
+interface MainFunctionNavbarProps {
+  activeTrail: string,
+  i18n: i18nType,
+  navigation?: React.ComponentType<any>,
+  status: statusType,
+  messageCount: number,
+  title: string
+}
+
+interface MainFunctionNavbarState {
+  
+}
+
+class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFunctionNavbarState> {
   render(){
     const itemData = [{
       classNameSuffix: "home",

@@ -1,14 +1,20 @@
 import Dialog from '~/components/general/dialog.tsx';
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Link from '~/components/general/link.tsx';
+import {i18nType} from '~/reducers/base/i18n';
 
-class ForgotPasswordDialog extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    classNameExtension: PropTypes.string.isRequired
-  }
+interface ForgotPasswordDialogProps {
+  i18n: i18nType,
+  children: React.ComponentType<any>,
+  classNameExtension: string
+}
+
+interface ForgotPasswordDialogState {
+  
+}
+
+class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, ForgotPasswordDialogState> {
   render(){
     let content = (closeDialog)=><div>
         {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.instructions')}

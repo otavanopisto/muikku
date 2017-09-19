@@ -4,6 +4,7 @@ import Autocomplete from '~/components/general/autocomplete.tsx';
 import TagInput from '~/components/general/tag-input.tsx';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
+import mApi from 'mApi';
 
 export default class InputContactsAutofill extends React.Component {
   static propTypes = {
@@ -67,14 +68,14 @@ export default class InputContactsAutofill extends React.Component {
           promisify(mApi().user.users.read({
             searchString: textInput,
             onlyDefaultUsers: true
-          }), 'callback')().then(result=>result || []).catch((err)=>[]),
+          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]),
           this.props.hasGroupMessagingPermission ? promisify(mApi().usergroup.groups.read({
             searchString: textInput
-          }), 'callback')().then(result=>result || []).catch((err)=>[]) : [],
+          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
           promisify(mApi().coursepicker.workspaces.read({
             search: textInput,
             myWorkspaces: true,
-          }), 'callback')().then(result=>result || []).catch((err)=>[]),
+          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]),
         ]
       );
       
@@ -110,11 +111,6 @@ export default class InputContactsAutofill extends React.Component {
       this.props.onChange(nvalue);
     } else {
       this.setState({isFocused: true});
-    }
-  }
-  componentWillReceiveProps(nextProps){
-    if (nextProps.selectedItems){
-      this.setState({selectedItems: nextProps.selectedItems});
     }
   }
   render(){

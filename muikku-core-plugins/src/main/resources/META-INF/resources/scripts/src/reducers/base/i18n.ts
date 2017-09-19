@@ -1,6 +1,10 @@
+import moment from 'moment';
+import getLocaleText from 'getLocaleText';
+import {ActionType} from '~/actions';
+
 export default function i18n(state={
   text: {
-    get(key, ...args){
+    get(key: string, ...args: (string | number)[]): string{
       let text = getLocaleText(key, args);
       if (text){
         text = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -23,6 +27,18 @@ export default function i18n(state={
       return moment(new Date(date)).add(input, value).calendar();
     }
   }
-}, action){
+}, action: ActionType<any>): i18nType {
   return state;
+}
+
+export interface i18nType {
+  text: {
+    get(key: string, ...args: (string | number)[]):string
+  },
+  time: {
+    format(date?: Date, format?: string):string,
+    fromNow(date?: Date):string,
+    subtract(date?: Date, input?: number, value?: string):string,
+    add(date?: Date, input?: number, value?: string):string
+  }
 }

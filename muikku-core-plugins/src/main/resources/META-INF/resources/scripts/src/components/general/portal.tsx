@@ -122,7 +122,7 @@ export default class Portal extends React.Component {
     }
   }
 
-  renderPortal(props, isOpening) {
+  renderPortal(props, isOpening:boolean = false) {
     if (!this.node) {
       this.node = document.createElement('div');
       document.body.appendChild(this.node);

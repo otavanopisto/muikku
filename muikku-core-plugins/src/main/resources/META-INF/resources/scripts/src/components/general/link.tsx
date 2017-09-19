@@ -101,9 +101,7 @@ export default class Link extends React.Component {
   }
   render(){
     let Element = this.props.as || 'a';
-    let elementProps = Object.assign({}, this.props);
-    delete elementProps["disablePropagation"];
-    delete elementProps["disabled"];
+    let elementProps = Object.assign({}, this.props, {disablePropagation: undefined, disabled: undefined});
     
     return <Element {...elementProps}
       className={this.props.className + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}

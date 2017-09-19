@@ -8,7 +8,7 @@ const MAX_LOADED_AT_ONCE = 30;
 
 //Why in the world do we have a weird second version?
 //This is a server-side issue, just why we have different paths for different things.
-function getApiId(item, weirdSecondVersion){
+function getApiId(item, weirdSecondVersion:boolean = false){
   if (item.type === "folder"){
     switch(item.id){
     case "inbox":

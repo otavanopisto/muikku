@@ -6,7 +6,7 @@ import communicatorMessagesActions from '~/actions/main-function/communicator/co
 import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {SliderPicker} from 'react-color';
+import {SliderPicker, ColorResult} from 'react-color';
 
 const KEYCODES = {
   ENTER: 13
@@ -48,7 +48,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
   resetState(props=this.props){
     this.setState({color: props.label.color, removed: false, name: props.label.text(props.i18n)});
   }
-  onColorChange(color, event){
+  onColorChange(color: ColorResult){
     if (this.state.removed){
       return;
     }

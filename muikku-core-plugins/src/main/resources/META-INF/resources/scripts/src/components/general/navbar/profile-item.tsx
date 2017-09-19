@@ -36,9 +36,9 @@ class ProfileItem extends React.Component {
       }
     ]
     return <Dropdown classNameExtension={this.props.classNameExtension} classNameSuffix="profile-menu" items={items.map((item)=>{
-        return (closeDropdown)=>{return <Link href="/profile"
+        return (closeDropdown: Function)=>{return <Link href={item.href}
          className={`${this.props.classNameExtension} link link-full ${this.props.classNameExtension}-link-profile-menu`}
-         onClick={(...args)=>{closeDropdown();item.onClick && item.onClick(...args)}} href={item.href}>
+         onClick={(...args)=>{closeDropdown();item.onClick && item.onClick(...args)}}>
           <span className={`icon icon-${item.icon}`}></span>
           <span>{this.props.i18n.text.get(item.text)}</span>
         </Link>}
