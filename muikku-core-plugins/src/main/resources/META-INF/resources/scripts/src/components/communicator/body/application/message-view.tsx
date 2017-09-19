@@ -139,7 +139,6 @@ class MessageView extends React.Component {
                   */}                 
                 </div>  
               </div>                  
-         
               <div className="application-list-item-body">
                 <header>{message.caption}</header>
                 <section dangerouslySetInnerHTML={{ __html: message.content}}></section>
