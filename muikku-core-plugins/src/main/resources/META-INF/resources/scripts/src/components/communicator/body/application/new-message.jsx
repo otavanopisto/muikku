@@ -37,7 +37,7 @@ const extraPlugins = {
 class CommunicatorNewMessage extends React.Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
-    replyThreadId: PropTypes.bool,
+    replyThreadId: PropTypes.number,
     initialSelectedItems: PropTypes.arrayOf(PropTypes.shape({
       type: PropTypes.oneOf(["workspace", "user", "usergroup"]).isRequired,
       value: PropTypes.any.isRequired
@@ -102,11 +102,13 @@ class CommunicatorNewMessage extends React.Component {
   render(){
     let content = (closeDialog) => [
       (<InputContactsAutofill key="1" hasGroupMessagingPermission classNameExtension="communicator" classNameSuffix="new-message-recepients" placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems}></InputContactsAutofill>),
+        selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (<input key="2" type="text" className="communicator form-field communicator-form-field-new-message-subject"
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
-        value={this.state.subject} onChange={this.onSubjectChange}></input>),
-      (<CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={this.props.initialSelectedItems}/>),
+      (<CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
+         draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
+        })} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
       (this.props.signature ? <div key="4" className="communicator container communicator-container-signature">
         <input className="form-field" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>

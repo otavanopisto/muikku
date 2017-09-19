@@ -15,7 +15,8 @@ export default class InputContactsAutofill extends React.Component {
     })).isRequired,
     classNameExtension: PropTypes.string.isRequired,
     classNameSuffix: PropTypes.string.isRequired,
-    hasGroupMessagingPermission: PropTypes.bool.isRequired
+    hasGroupMessagingPermission: PropTypes.bool.isRequired,
+    autofocus: PropTypes.bool
   }
   constructor(props){
     super(props);
@@ -26,7 +27,7 @@ export default class InputContactsAutofill extends React.Component {
       textInput: "",
       autocompleteOpened: false,
       fieldHeight: undefined,
-      isFocused: true
+      isFocused: this.props.autofocus === true
     }
     
     this.blurTimeout = null;
