@@ -128,7 +128,7 @@
   .application-list-item:first-child {
     
     .application-list-item-body {
-      background-color: #fff;
+      background-color: $color-communicator-application-list-item-open-content-background;
      
       header {
         font-size: 20px;
@@ -136,7 +136,7 @@
     }    
 
     .application-list-item-footer {
-      background-color: #fff;
+      background-color: $color-communicator-application-list-item-open-content-background;
     }
 
   
@@ -144,11 +144,11 @@
   
   .application-list-item:not(:first-child) {
     .application-list-item-header{
-      background-color: #fff;
+      background-color: $color-communicator-application-list-item-open-content-background;
     }   
     
     .application-list-item-body {
-      background-color: #fff;
+      background-color: $color-communicator-application-list-item-open-content-background;
      
       header {
         font-weight: 600;
@@ -157,7 +157,7 @@
     }    
 
     .application-list-item-footer {
-      background-color: #fff;
+      background-color: $color-communicator-application-list-item-open-content-background;
     }
 
   
