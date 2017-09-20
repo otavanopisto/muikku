@@ -5,8 +5,8 @@ import equals from 'deep-equal';
 
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
-import Link from '~/components/general/link.tsx';
-import NewMessage from './new-message.tsx';
+import Link from '~/components/general/link';
+import NewMessage from './new-message';
 
 class MessageView extends React.Component {
   constructor(props){

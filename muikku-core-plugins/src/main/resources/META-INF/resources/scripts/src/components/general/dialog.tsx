@@ -1,20 +1,24 @@
-import * as PropTypes from 'prop-types';
-import Portal from './portal.tsx';
+import Portal from './portal';
 import * as React from 'react';
 
-export default class Dialog extends React.Component {
-  static propTypes = {
-    children: PropTypes.element,
-    title: PropTypes.string.isRequired,
-    classNameExtension: PropTypes.string.isRequired,
-    content: PropTypes.any.isRequired,
-    footer: PropTypes.func,
-    onOpen: PropTypes.func,
-    onClose: PropTypes.func,
-    isOpen: PropTypes.bool,
-    onKeyStroke: PropTypes.func
-  }
-  constructor(props){
+interface DialogProps {
+  children?: React.ReactElement<any>,
+  title: string,
+  classNameExtension: string,
+  content: any,
+  footer?: (closePortal: ()=>any)=>any,
+  onOpen?(e: HTMLElement):any,
+  onClose?():any,
+  isOpen?:boolean,
+  onKeyStroke?(keyCode: number, closePortal: ()=>any): any,
+}
+
+interface DialogState {
+  visible: boolean
+}
+
+export default class Dialog extends React.Component<DialogProps, DialogState> {
+  constructor(props: DialogProps){
     super(props);
     
     this.onOverlayClick = this.onOverlayClick.bind(this);
@@ -25,20 +29,20 @@ export default class Dialog extends React.Component {
       visible: false
     }
   }
-  onOverlayClick(close, e){
+  onOverlayClick(close: ()=>any, e: Event){
     if (e.target === e.currentTarget){
       close();
     }
   }
-  onOpen(){
+  onOpen(element: HTMLElement){
     setTimeout(()=>{
       this.setState({
         visible: true
       });
     }, 10);
-    this.props.onOpen && this.props.onOpen();
+    this.props.onOpen && this.props.onOpen(element);
   }
-  beforeClose(DOMNode, removeFromDOM){
+  beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
     this.setState({
       visible: false
     });
@@ -47,7 +51,7 @@ export default class Dialog extends React.Component {
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-{(closePortal)=>{return <div className={`dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+{(closePortal: ()=>any)=>{return <div className={`dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
   <div className="dialog-window">
       <div className="dialog-header">
         <div className="dialog-title">

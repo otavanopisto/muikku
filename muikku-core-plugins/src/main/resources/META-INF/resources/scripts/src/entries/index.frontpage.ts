@@ -1,4 +1,4 @@
-import App from '~/containers/index.frontpage.tsx';
+import App from '~/containers/index.frontpage';
 import reducer from '~/reducers/index.frontpage';
 import runApp from '~/run';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import Link from '../../general/link.tsx';
+import Link from '../../general/link';
 import {i18nType, CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers';
 
 interface LastMessagesPanelProps {

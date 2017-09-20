@@ -1,4 +1,4 @@
-import App from '~/containers/index.tsx';
+import App from '~/containers/index';
 import reducer from '~/reducers/index';
 import runApp from '~/run';
 import Websocket from '~/util/websocket';

@@ -13,8 +13,8 @@ interface PortalProps {
   closeOnScroll?: boolean,
   onOpen?(e: HTMLElement):any,
   onClose?():any,
-  beforeClose?(e: HTMLElement, w: Function): any,
-  onKeyStroke?(keyCode: number, closePortal: Function): any,
+  beforeClose?(e: HTMLElement, resetPortalState: ()=>any): any,
+  onKeyStroke?(keyCode: number, closePortal: ()=>any): any,
   isOpen?: boolean
 }
 

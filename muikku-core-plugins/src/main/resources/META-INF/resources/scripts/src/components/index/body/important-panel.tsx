@@ -13,8 +13,8 @@ import * as React from 'react';
 
 //TODO not implemented
 //on the top the previous piece of code
-export default class ImportantPanel extends React.Component {
-  render(){
+export default class ImportantPanel extends React.Component<{},{}> {
+  render(): any{
     return null;
   }
 }

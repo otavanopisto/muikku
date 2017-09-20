@@ -1,6 +1,6 @@
-import MainFunctionNavbar from '~/components/base/main-function/navbar.tsx';
-import Application from './body/application.tsx';
-import Navigation from './body/navigation.tsx';
+import MainFunctionNavbar from '~/components/base/main-function/navbar';
+import Application from './body/application';
+import Navigation from './body/navigation';
 
 import * as React from 'react';
 

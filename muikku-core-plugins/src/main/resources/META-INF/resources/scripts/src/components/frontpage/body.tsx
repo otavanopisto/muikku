@@ -1,5 +1,5 @@
-import FrontpageNavbar from './navbar.tsx';
-import FrontpageFeed from './feed.tsx';
+import FrontpageNavbar from './navbar';
+import FrontpageFeed from './feed';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {i18nType} from '~/reducers';

@@ -1,12 +1,21 @@
-import Navbar from '../general/navbar.tsx';
-import Link from '../general/link.tsx';
-import LoginButton from '../base/login-button.tsx';
-import ForgotPasswordDialog from '../base/forgot-password-dialog.tsx';
+import Navbar from '../general/navbar';
+import Link from '../general/link';
+import LoginButton from '../base/login-button';
+import ForgotPasswordDialog from '../base/forgot-password-dialog';
 import * as React from 'react';
 import {connect} from 'react-redux';
+import {i18nType} from '~/reducers';
 
-class FrontpageNavbar extends React.Component {
-  constructor(props){
+interface FrontpageNavbarProps {
+  i18n: i18nType
+}
+
+interface FrontpageNavbarState {
+  
+}
+
+class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNavbarState> {
+  constructor(props: FrontpageNavbarProps){
     super(props);
   }
   render(){

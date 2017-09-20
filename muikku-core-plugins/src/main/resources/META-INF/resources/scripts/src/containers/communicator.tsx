@@ -1,5 +1,5 @@
-import Notifications from '../components/base/notifications.tsx';
-import Body from '../components/communicator/body.tsx';
+import Notifications from '../components/base/notifications';
+import Body from '../components/communicator/body';
 import * as React from 'react';
 
 export default class Communicator extends React.Component {

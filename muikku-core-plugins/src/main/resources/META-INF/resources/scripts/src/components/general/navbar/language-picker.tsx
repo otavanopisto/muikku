@@ -1,10 +1,10 @@
 import * as PropTypes from 'prop-types';
 import actions from '~/actions/base/locales';
-import Dropdown from '~/components/general/dropdown.tsx';
+import Dropdown from '~/components/general/dropdown';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import Link from '~/components/general/link.tsx';
+import Link from '~/components/general/link';
 
 class LanguagePicker extends React.Component {
   static propTypes = {

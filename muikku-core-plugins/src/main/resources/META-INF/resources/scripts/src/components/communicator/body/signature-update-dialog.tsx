@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import JumboDialog from '~/components/general/jumbo-dialog.tsx';
-import Link from '~/components/general/link.tsx';
-import CKEditor from '~/components/general/ckeditor.tsx';
+import JumboDialog from '~/components/general/jumbo-dialog';
+import Link from '~/components/general/link';
+import CKEditor from '~/components/general/ckeditor';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';

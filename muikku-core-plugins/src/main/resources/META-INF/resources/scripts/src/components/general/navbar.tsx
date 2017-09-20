@@ -1,7 +1,7 @@
 import * as PropTypes from 'prop-types';
-import LanguagePicker from './navbar/language-picker.tsx';
-import ProfileItem from './navbar/profile-item.tsx';
-import Menu from './navbar/menu.tsx';
+import LanguagePicker from './navbar/language-picker';
+import ProfileItem from './navbar/profile-item';
+import Menu from './navbar/menu';
 import * as React from 'react';
 
 export default class Navbar extends React.Component {

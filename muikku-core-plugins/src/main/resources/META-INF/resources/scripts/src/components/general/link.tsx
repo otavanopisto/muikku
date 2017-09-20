@@ -24,15 +24,15 @@ function scrollToSection(anchor: string) {
 }
 
 interface LinkProps {
-  active: boolean,
+  active?: boolean,
   disablePropagation?: boolean,
   disabled?: boolean,
   as?: string,
   href?: string,
-  onClick?: Function,
-  onTouchStart?: Function,
-  onTouchEnd?: Function,
-  onTouchMove?: Function,
+  onClick?: (e: Event, re: any)=>any,
+  onTouchStart?: (e: Event, re: any)=>any,
+  onTouchEnd?: (e: Event, re: any)=>any,
+  onTouchMove?: (e: Event, re: any)=>any,
   className?: string,
   [otherProp: string]: any
 }

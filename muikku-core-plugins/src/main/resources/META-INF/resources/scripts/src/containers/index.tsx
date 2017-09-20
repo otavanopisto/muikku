@@ -1,5 +1,5 @@
-import Notifications from '../components/base/notifications.tsx';
-import Body from '../components/index/body.tsx';
+import Notifications from '../components/base/notifications';
+import Body from '../components/index/body';
 import * as React from 'react';
 
 export default class Index extends React.Component {

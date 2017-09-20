@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import Link from '~/components/general/link.tsx';
-import LabelUpdateDialog from './label-update-dialog.tsx';
+import Link from '~/components/general/link';
+import LabelUpdateDialog from './label-update-dialog';
 import {i18nType, CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorMessagesType} from '~/reducers';
 
 interface NavigationProps {

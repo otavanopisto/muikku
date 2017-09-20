@@ -1,12 +1,12 @@
-import Dialog from '~/components/general/dialog.tsx';
+import Dialog from '~/components/general/dialog';
 import * as React from 'react';
 import {connect} from 'react-redux';
-import Link from '~/components/general/link.tsx';
+import Link from '~/components/general/link';
 import {i18nType} from '~/reducers';
 
 interface ForgotPasswordDialogProps {
   i18n: i18nType,
-  children: React.ComponentType<any>,
+  children: React.ReactElement<any>,
   classNameExtension: string
 }
 
@@ -16,7 +16,7 @@ interface ForgotPasswordDialogState {
 
 class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, ForgotPasswordDialogState> {
   render(){
-    let content = (closeDialog)=><div>
+    let content = (closeDialog: ()=>any)=><div>
         {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.instructions')}
         <br/>
         <br/>
@@ -28,7 +28,7 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
           </div>
         </form>
       </div>;
-    let footer = (closeDialog)=>{
+    let footer = (closeDialog: ()=>any)=>{
       return <div>
         <label htmlFor="form-reset-password-submit" className="button button-large">
           {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel')}

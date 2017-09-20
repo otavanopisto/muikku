@@ -1,6 +1,6 @@
 import * as PropTypes from 'prop-types';
-import Dropdown from '~/components/general/dropdown.tsx';
-import Link from '~/components/general/link.tsx';
+import Dropdown from '~/components/general/dropdown';
+import Link from '~/components/general/link';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -36,7 +36,7 @@ class ProfileItem extends React.Component {
       }
     ]
     return <Dropdown classNameExtension={this.props.classNameExtension} classNameSuffix="profile-menu" items={items.map((item)=>{
-        return (closeDropdown: Function)=>{return <Link href={item.href}
+        return (closeDropdown: ()=>any)=>{return <Link href={item.href}
          className={`${this.props.classNameExtension} link link-full ${this.props.classNameExtension}-link-profile-menu`}
          onClick={(...args)=>{closeDropdown();item.onClick && item.onClick(...args)}}>
           <span className={`icon icon-${item.icon}`}></span>

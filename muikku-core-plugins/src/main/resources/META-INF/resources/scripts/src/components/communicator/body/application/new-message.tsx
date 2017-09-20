@@ -2,10 +2,10 @@ import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import CKEditor from '~/components/general/ckeditor.tsx';
-import Link from '~/components/general/link.tsx';
-import InputContactsAutofill from '~/components/base/input-contacts-autofill.tsx';
-import JumboDialog from '~/components/general/jumbo-dialog.tsx';
+import CKEditor from '~/components/general/ckeditor';
+import Link from '~/components/general/link';
+import InputContactsAutofill from '~/components/base/input-contacts-autofill';
+import JumboDialog from '~/components/general/jumbo-dialog';
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
 const ckEditorConfig = {

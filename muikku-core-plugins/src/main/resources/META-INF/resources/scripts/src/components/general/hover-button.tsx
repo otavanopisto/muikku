@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Link from './link.tsx';
+import Link from './link';
 
 export default class HoverButton extends React.Component {
   static propTypes = {

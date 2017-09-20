@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import Dropdown from '~/components/general/dropdown.tsx';
-import Link from '~/components/general/link.tsx';
+import Dropdown from '~/components/general/dropdown';
+import Link from '~/components/general/link';
 import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
 import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
 import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
-import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog.tsx';
+import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
 
 class CommunicatorToolbar extends React.Component {
   constructor(props){

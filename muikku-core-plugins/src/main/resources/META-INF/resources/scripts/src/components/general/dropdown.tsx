@@ -3,7 +3,7 @@ import * as React from 'react';
 import {findDOMNode} from 'react-dom';
 import $ from "jquery";
 
-type itemType2 = (closeDropdown: Function)=>any
+type itemType2 = (closeDropdown: ()=>any)=>any
 
 interface DropdownProps {
   classNameExtension: string,

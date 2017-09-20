@@ -1,4 +1,4 @@
-import Link from '../../general/link.tsx';
+import Link from '../../general/link';
 import * as React from 'react';
 import {connect} from 'react-redux';
 

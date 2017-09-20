@@ -1,5 +1,5 @@
-import Navbar from '~/components/general/navbar.tsx';
-import Link from '~/components/general/link.tsx';
+import Navbar from '~/components/general/navbar';
+import Link from '~/components/general/link';
 import {i18nType, StatusType} from '~/reducers';
 
 import * as React from 'react';

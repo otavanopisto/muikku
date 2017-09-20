@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Autocomplete from '~/components/general/autocomplete.tsx';
-import TagInput from '~/components/general/tag-input.tsx';
+import Autocomplete from '~/components/general/autocomplete';
+import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
 import * as mApi from 'mApi';

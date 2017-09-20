@@ -1,4 +1,4 @@
-import Link from '../link.tsx';
+import Link from '../link';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 

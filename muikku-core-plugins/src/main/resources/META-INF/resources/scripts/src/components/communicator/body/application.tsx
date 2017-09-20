@@ -2,16 +2,16 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import * as PropTypes from 'prop-types';
 
-import ApplicationPanel from '~/components/general/application-panel.tsx';
-import HoverButton from '~/components/general/hover-button.tsx';
-import Dropdown from '~/components/general/dropdown.tsx';
-import Link from '~/components/general/link.tsx';
+import ApplicationPanel from '~/components/general/application-panel';
+import HoverButton from '~/components/general/hover-button';
+import Dropdown from '~/components/general/dropdown';
+import Link from '~/components/general/link';
 
-import Toolbar from './application/toolbar.tsx';
-import CommunicatorMessages from './application/messages.tsx';
-import MessageView from './application/message-view.tsx';
-import NewMessage from './application/new-message.tsx';
-import SignatureUpdateDialog from './signature-update-dialog.tsx';
+import Toolbar from './application/toolbar';
+import CommunicatorMessages from './application/messages';
+import MessageView from './application/message-view';
+import NewMessage from './application/new-message';
+import SignatureUpdateDialog from './signature-update-dialog';
 
 class CommunicatorApplication extends React.Component {
   static propTypes = {

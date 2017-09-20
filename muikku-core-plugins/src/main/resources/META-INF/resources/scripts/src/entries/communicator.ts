@@ -1,4 +1,4 @@
-import App from '~/containers/communicator.tsx';
+import App from '~/containers/communicator';
 import reducer from '~/reducers/communicator';
 import runApp from '~/run';
 import Websocket from '~/util/websocket';

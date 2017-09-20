@@ -1,11 +1,11 @@
-import MainFunctionNavbar from '../base/main-function/navbar.tsx';
-import ScreenContainer from '../general/screen-container.tsx';
+import MainFunctionNavbar from '../base/main-function/navbar';
+import ScreenContainer from '../general/screen-container';
 
-import AnnouncementsPanel from './body/announcements-panel.tsx';
-import ContinueStudiesPanel from './body/continue-studies-panel.tsx';
-import ImportantPanel from './body/important-panel.tsx';
-import LastMessagesPanel from './body/last-messages-panel.tsx';
-import WorkspacesPanel from './body/workspaces-panel.tsx';
+import AnnouncementsPanel from './body/announcements-panel';
+import ContinueStudiesPanel from './body/continue-studies-panel';
+import ImportantPanel from './body/important-panel';
+import LastMessagesPanel from './body/last-messages-panel';
+import WorkspacesPanel from './body/workspaces-panel';
 
 import * as React from 'react';
 

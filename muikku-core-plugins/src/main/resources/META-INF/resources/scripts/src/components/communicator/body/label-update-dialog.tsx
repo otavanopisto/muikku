@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import Dialog from '~/components/general/dialog.tsx';
-import Link from '~/components/general/link.tsx';
+import Dialog from '~/components/general/dialog';
+import Link from '~/components/general/link';
 import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
 import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
 import {connect} from 'react-redux';

@@ -1,5 +1,5 @@
-import Dialog from './dialog.tsx';
-import Portal from './portal.tsx';
+import Dialog from './dialog';
+import Portal from './portal';
 import * as React from 'react';
 
 export default class JumboDialog extends Dialog {

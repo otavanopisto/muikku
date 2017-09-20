@@ -3,7 +3,7 @@
 //if ever we wish to turn it into a SPA
 
 import * as PropTypes from 'prop-types';
-import Link from '~/components/general/link.tsx';
+import Link from '~/components/general/link';
 import * as React from 'react';
 import {connect} from 'react-redux';
 
