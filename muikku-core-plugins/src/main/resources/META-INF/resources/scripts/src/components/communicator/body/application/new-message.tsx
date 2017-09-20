@@ -1,12 +1,13 @@
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
 import actions from '~/actions/main-function/communicator/communicator-messages';
+import {i18nType, CommunicatorSignatureType} from '~/reducers/index.d';
+import {AnyActionType} from '~/actions';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -34,16 +35,24 @@ const extraPlugins = {
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
 
-class CommunicatorNewMessage extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    replyThreadId: PropTypes.number,
-    initialSelectedItems: PropTypes.arrayOf(PropTypes.shape({
-      type: PropTypes.oneOf(["workspace", "user", "usergroup"]).isRequired,
-      value: PropTypes.any.isRequired
-    }))
-  }
-  constructor(props){
+//TODO fix this
+interface CommunicatorNewMessageProps {
+  children: React.ReactElement<any>,
+  replyThreadId: number,
+  initialSelectedItems: Array<{
+    type: 'workspace' | 'user' | 'usergroup',
+    value: any
+  }>,
+  i18n: i18nType,
+  signature: CommunicatorSignatureType
+}
+
+interface CommunicatorNewMessageState {
+  
+}
+
+class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
+  constructor(props: CommunicatorNewMessageProps){
     super(props);
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -60,7 +69,7 @@ class CommunicatorNewMessage extends React.Component {
       includesSignature: true
     }
   }
-  onCKEditorChange(text){
+  onCKEditorChange(text: string){
     this.setState({text});
   }
   setSelectedItems(selectedItems){
@@ -105,7 +114,7 @@ class CommunicatorNewMessage extends React.Component {
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (<input key="2" type="text" className="communicator form-field communicator-form-field-new-message-subject"
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
-        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={this.props.initialSelectedItems}/>),
+        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>),
       (<CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
          draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
         })} extraPlugins={extraPlugins}
@@ -135,18 +144,18 @@ class CommunicatorNewMessage extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     signature: state.communicatorMessages.signature
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators(actions, dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorNewMessage);

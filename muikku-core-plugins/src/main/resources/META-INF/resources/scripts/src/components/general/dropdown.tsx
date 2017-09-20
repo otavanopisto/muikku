@@ -1,7 +1,7 @@
 import Portal from './portal';
 import * as React from 'react';
 import {findDOMNode} from 'react-dom';
-import $ from "jquery";
+import $ from "~/lib/jquery";
 
 type itemType2 = (closeDropdown: ()=>any)=>any
 

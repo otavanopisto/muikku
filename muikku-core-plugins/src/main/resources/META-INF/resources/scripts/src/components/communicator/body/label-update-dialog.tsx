@@ -1,25 +1,38 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Dialog from '~/components/general/dialog';
 import Link from '~/components/general/link';
 import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
 import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {SliderPicker, ColorResult} from 'react-color';
+import {CommunicatorNavigationItemType, i18nType,
+  CommunicatorMessagesType, CommunicatorNavigationItemListType} from '~/reducers/index.d';
+import {AnyActionType} from '~/actions';
 
 const KEYCODES = {
   ENTER: 13
 }
 
-class CommunicatorLabelUpdateDialog extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired,
-    label: PropTypes.object.isRequired,
-    isOpen: PropTypes.bool,
-    onClose: PropTypes.func
-  }
-  constructor(props){
+interface CommunicatorLabelUpdateDialogProps {
+  children: React.ReactElement<any>,
+  label: CommunicatorNavigationItemType,
+  isOpen: boolean,
+  onClose: ()=>any,
+  i18n: i18nType,
+  communicatorNavigation: CommunicatorNavigationItemListType,
+  communicatorMessages: CommunicatorMessagesType
+}
+
+interface CommunicatorLabelUpdateDialogState {
+  color: string,
+  name: string,
+  removed: boolean
+}
+
+
+class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpdateDialogProps, CommunicatorLabelUpdateDialogState> {
+  constructor(props: CommunicatorLabelUpdateDialogProps){
     super(props);
     
     this.onColorChange = this.onColorChange.bind(this);
@@ -45,7 +58,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
       this.resetState(nextProps);
     }
   }
-  resetState(props=this.props){
+  resetState(e:HTMLElement, props=this.props):void{
     this.setState({color: props.label.color, removed: false, name: props.label.text(props.i18n)});
   }
   onColorChange(color: ColorResult){
@@ -69,7 +82,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
     }
   }
   render(){
-    let footer = (closeDialog)=>{
+    let footer = (closeDialog: ()=>any)=>{
       return <div className="embbed embbed-full">
         <Link className="communicator button button-large button-warn commmunicator-button-standard-cancel" onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
@@ -80,7 +93,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
         </Link>
       </div>
     }
-    let content = (closeDialog)=>{
+    let content = (closeDialog: ()=>any)=>{
       return <div style={{opacity: this.state.removed ? 0.5 : null}}>
         <div className="communicator text communicator-text-label-update-dialog-icon">
           <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
@@ -103,7 +116,7 @@ class CommunicatorLabelUpdateDialog extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     communicatorNavigation: state.communicatorNavigation,
     communicatorMessages: state.communicatorMessages,
@@ -111,11 +124,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators(Object.assign({}, communicatorMessagesActions, communicatorNavigationActions), dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorLabelUpdateDialog);

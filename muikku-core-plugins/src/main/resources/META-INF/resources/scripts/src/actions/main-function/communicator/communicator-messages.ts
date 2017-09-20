@@ -7,7 +7,8 @@ import mApi from '~/lib/mApi';
 
 import {CommunicatorNavigationItemType, CommunicatorNavigationItemListType,
   CommunicatorMessagesType, CommunicatorMessageListType, CommunicatorMessagesPatchType,
-  CommunicatorMessageType, CommunicatorCurrentThreadType, CommunicatorSignatureType} from '~/reducers/index.d';
+  CommunicatorMessageType, CommunicatorCurrentThreadType, CommunicatorSignatureType,
+  CommunicatorStateType, CommunicatorMessageLabelType} from '~/reducers/index.d';
 import {Dispatch} from 'react-redux';
 import {AnyActionType} from '~/actions';
 
@@ -57,13 +58,13 @@ async function loadMessages(location:string | null, initial:boolean, dispatch:(a
     //We set this state to loading
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
-      payload: "LOADING"
+      payload: <CommunicatorStateType>"LOADING"
     });
   } else {
     //Otherwise we are loading more
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
-      payload: "LOADING_MORE"
+      payload: <CommunicatorStateType>"LOADING_MORE"
     });
   }
   
@@ -74,7 +75,7 @@ async function loadMessages(location:string | null, initial:boolean, dispatch:(a
   if (!item){
     return dispatch({
       type: "UPDATE_MESSAGES_STATE",
-      payload: "ERROR"
+      payload: <CommunicatorStateType>"ERROR"
     });
   }
   
@@ -113,7 +114,7 @@ async function loadMessages(location:string | null, initial:boolean, dispatch:(a
   } else {
     return dispatch({
       type: "UPDATE_MESSAGES_STATE",
-      payload: "ERROR"
+      payload: <CommunicatorStateType>"ERROR"
     });
   }
   
@@ -153,19 +154,19 @@ async function loadMessages(location:string | null, initial:boolean, dispatch:(a
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
-      payload: "ERROR"
+      payload: <CommunicatorStateType>"ERROR"
     });
   }
 }
 
-async function setLabelStatusCurrentMessage(label, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+async function setLabelStatusCurrentMessage(label: CommunicatorMessageLabelType, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   let {communicatorMessages} = getState();
-  let messageLabel = communicatorMessages.current.labels.find(mlabel=>mlabel.labelId === label.id);
+  let messageLabel = communicatorMessages.current.labels.find((mlabel:CommunicatorMessageLabelType)=>mlabel.labelId === label.id);
   let communicatorMessageId = communicatorMessages.current.messages[0].communicatorMessageId;
   
   try {
     if (isToAddLabel && !messageLabel){
-      let serverProvidedLabel = await promisify(mApi().communicator.messages.labels.create(communicatorMessageId, {
+      let serverProvidedLabel:CommunicatorMessageLabelType = <CommunicatorMessageLabelType>await promisify(mApi().communicator.messages.labels.create(communicatorMessageId, {
         labelId: label.id
       }), 'callback')();
       dispatch({
@@ -194,7 +195,7 @@ async function setLabelStatusCurrentMessage(label, isToAddLabel: boolean, dispat
   }
 }
 
-function setLabelStatusSelectedMessages(label, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+function setLabelStatusSelectedMessages(label:CommunicatorMessageLabelType, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   let communicatorMessages:CommunicatorMessagesType = getState().communicatorMessages;
   
   communicatorMessages.selected.forEach(async (message:CommunicatorMessageType)=>{
@@ -202,7 +203,7 @@ function setLabelStatusSelectedMessages(label, isToAddLabel: boolean, dispatch:(
     
     try {
       if (isToAddLabel && !messageLabel){
-        let serverProvidedLabel = await promisify(mApi().communicator.messages.labels.create(message.communicatorMessageId, {
+        let serverProvidedLabel:CommunicatorMessageLabelType = <CommunicatorMessageLabelType>await promisify(mApi().communicator.messages.labels.create(message.communicatorMessageId, {
           labelId: label.id
         }),'callback')();
         dispatch({
@@ -290,13 +291,13 @@ let defaultObject = {
       payload: messages
     };
   },
-  addToCommunicatorSelectedMessages(message: CommunicatorMessageListType):AnyActionType {
+  addToCommunicatorSelectedMessages(message: CommunicatorMessageType):AnyActionType {
     return {
       type: "ADD_TO_COMMUNICATOR_SELECTED_MESSAGES",
       payload: message
     };
   },
-  removeFromCommunicatorSelectedMessages(message: CommunicatorMessageListType):AnyActionType {
+  removeFromCommunicatorSelectedMessages(message: CommunicatorMessageType):AnyActionType {
     return {
       type: "REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES",
       payload: message
@@ -305,16 +306,16 @@ let defaultObject = {
   loadMoreMessages():AnyActionType{
     return loadMessages.bind(this, null, false);
   },
-  addLabelToSelectedMessages(label):AnyActionType{
+  addLabelToSelectedMessages(label: CommunicatorMessageLabelType):AnyActionType{
     return setLabelStatusSelectedMessages.bind(this, label, true) ;
   },
-  removeLabelFromSelectedMessages(label):AnyActionType{
+  removeLabelFromSelectedMessages(label: CommunicatorMessageLabelType):AnyActionType{
     return setLabelStatusSelectedMessages.bind(this, label, false) ;
   },
-  addLabelToCurrentMessage(label):AnyActionType{
+  addLabelToCurrentMessage(label: CommunicatorMessageLabelType):AnyActionType{
     return setLabelStatusCurrentMessage.bind(this, label, true) ;
   },
-  removeLabelFromCurrentMessage(label):AnyActionType{
+  removeLabelFromCurrentMessage(label: CommunicatorMessageLabelType):AnyActionType{
     return setLabelStatusCurrentMessage.bind(this, label, false) ;
   },
   toggleMessagesReadStatus(message: CommunicatorMessageType):AnyActionType {

@@ -3,10 +3,10 @@ export interface i18nType {
     get(key: string, ...args: (string | number)[]):string
   },
   time: {
-    format(date?: Date, format?: string):string,
-    fromNow(date?: Date):string,
-    subtract(date?: Date, input?: number, value?: string):string,
-    add(date?: Date, input?: number, value?: string):string
+    format(date?: Date | string, format?: string):string,
+    fromNow(date?: Date | string):string,
+    subtract(date?: Date | string, input?: number, value?: string):string,
+    add(date?: DateDate | string, input?: number, value?: string):string
   }
 }
 

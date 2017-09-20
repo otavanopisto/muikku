@@ -4,7 +4,15 @@ import Navigation from './body/navigation';
 
 import * as React from 'react';
 
-export default class CommunicatorBody extends React.Component {
+interface CommunicatorBodyProps {
+  
+}
+
+interface CommunicatorBodyState {
+  
+}
+
+export default class CommunicatorBody extends React.Component<CommunicatorBodyProps,CommunicatorBodyState> {
   render(){
     let navigation = <Navigation/>
     return (<div className="embbed embbed-full">

@@ -7,8 +7,8 @@ interface DialogProps {
   classNameExtension: string,
   content: any,
   footer?: (closePortal: ()=>any)=>any,
-  onOpen?(e: HTMLElement):any,
-  onClose?():any,
+  onOpen?: (e?: HTMLElement)=>any,
+  onClose?: ()=>any,
   isOpen?:boolean,
   onKeyStroke?(keyCode: number, closePortal: ()=>any): any,
 }

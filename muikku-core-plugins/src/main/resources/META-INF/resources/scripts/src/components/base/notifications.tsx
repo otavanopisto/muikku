@@ -1,14 +1,25 @@
-import actions from '~/actions/base/notifications';
+import {displayNotificationType, hideNotificationType, displayNotification, hideNotification} from '~/actions/base/notifications';
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
+import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
+import {NotificationListType, NotificationType} from '~/reducers/index.d';
 
-class Notifications extends React.Component {
+interface NotificationsProps {
+  notifications: NotificationListType,
+  hideNotification: hideNotificationType,
+  displayNotification: displayNotificationType
+}
+
+interface NotificationsState {
+}
+
+class Notifications extends React.Component<NotificationsProps, NotificationsState> {
   render(){
     return (
       <div className="notification-queue">
         <div className="notification-queue-items">
-          {this.props.notifications.map((notification)=>{
+          {this.props.notifications.map((notification: NotificationType)=>{
             return (
               <div key={notification.id} className={"notification-queue-item notification-queue-item-" + notification.severity}>
                 <span>{notification.message}</span>
@@ -22,17 +33,16 @@ class Notifications extends React.Component {
   }
 }
   
-function mapStateToProps(state){
+function mapStateToProps(state:any){
   return {
     notifications: state.notifications
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
-  return bindActionCreators(actions, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
+  return bindActionCreators({hideNotification, displayNotification}, dispatch);
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default (connect as any)(
+  mapStateToProps
 )(Notifications);

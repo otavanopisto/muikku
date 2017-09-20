@@ -8,8 +8,8 @@ import {connect} from 'react-redux';
 interface MainFunctionNavbarProps {
   activeTrail: string,
   i18n: i18nType,
-  navigation?: React.ComponentType<any>,
-  status: statusType,
+  navigation?: React.ReactElement<any>,
+  status: StatusType,
   messageCount: number,
   title: string
 }
