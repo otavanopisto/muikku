@@ -128,6 +128,16 @@ class MessageView extends React.Component {
                   </span>
                   <span className="communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
                 </div>
+                <div className="communicator-message-labels">
+                  {/* TODO: labels are outside of the message object
+                  {message.labels.map((label)=>{
+                    return <span className="communicator text communicator-text-tag" key={label.id}>
+                      <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                      {label.labelName}
+                    </span>
+                  })} 
+                  */}                 
+                </div>  
               </div>                  
               <div className="application-list-item-body">
                 <header>{message.caption}</header>

@@ -92,7 +92,11 @@
           content: ",";
         }
       }
-      
+
+      .communicator-message-label {
+        margin-left: 5px;
+      }
+
       .communicator-message-created {
         float: right;
       }
@@ -122,7 +126,6 @@
 
   
   .application-list-item:first-child {
-  
     
     .application-list-item-body {
       background-color: #fff;
