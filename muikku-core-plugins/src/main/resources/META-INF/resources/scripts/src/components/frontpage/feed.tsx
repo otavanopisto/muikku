@@ -1,7 +1,7 @@
 import Feed from '../general/feed';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import * as mApi from 'mApi';
+import mApi from '~/lib/mApi';
 
 interface FrontpageFeedProps {
   feedReadTarget: string,

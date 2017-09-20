@@ -1,7 +1,10 @@
+import {LOGOUT} from '~/actions';
+
 export default {
-  logout(){
+  logout():LOGOUT{
     return {
-      'type': 'LOGOUT'
+      type: 'LOGOUT',
+      payload: null
     }
   }
 };

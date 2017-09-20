@@ -4,16 +4,16 @@
 //2. in the main file gather those permissions... etc..., eg. index.ts make a call
 //3. dispatch the action to this same reducer and gather the action here
 //4. it works :D
-import * as $ from "jquery";
+import $ from '~/lib/jquery';
 import {ActionType} from "~/actions";
-import {StatusType} from '~/reducers';
+import {StatusType} from '~/reducers/index.d';
 
 export default function status(state: StatusType={
   loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,
   userId: (<any>window).MUIKKU_LOGGED_USER_ID,
   permissions: (<any>window).MUIKKU_PERMISSIONS,
   contextPath: (<any>window).CONTEXTPATH
-}, action: ActionType<any>): StatusType{
+}, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
     $('#logout').click();
     return state;

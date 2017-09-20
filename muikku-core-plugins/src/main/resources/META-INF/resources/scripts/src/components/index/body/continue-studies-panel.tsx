@@ -5,7 +5,7 @@ import Link from '../../general/link';
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {i18nType, StatusType, WorkspaceType} from '~/reducers';
+import {i18nType, StatusType, WorkspaceType} from '~/reducers/index.d';
 
 interface ContinueStudiesPanelProps {
   i18n: i18nType,

@@ -4,7 +4,7 @@ import Autocomplete from '~/components/general/autocomplete';
 import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
-import * as mApi from 'mApi';
+import mApi from '~/lib/mApi';
 
 export default class InputContactsAutofill extends React.Component {
   static propTypes = {

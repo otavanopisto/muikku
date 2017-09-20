@@ -1,7 +1,7 @@
 import {ActionType} from './actions';
 import {CommunicatorMessagesType, CommunicatorStateType, CommunicatorMessagesPatchType,
   CommunicatorMessageListType, CommunicatorMessageType, CommunicatorMessageUpdateType,
-  CommunicatorSignatureType, CommunicatorCurrentThreadType} from '~/reducers';
+  CommunicatorSignatureType, CommunicatorCurrentThreadType} from '~/reducers/index.d';
 
 export default function communicatorMessages(state: CommunicatorMessagesType={
   state: "LOADING",
@@ -14,7 +14,7 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
   toolbarLock: false,
   current: null,
   signature: null
-}, action: ActionType<any>): CommunicatorMessagesType {
+}, action: ActionType): CommunicatorMessagesType {
   if (action.type === "UPDATE_MESSAGES_STATE"){
     let newState: CommunicatorStateType = action.payload;
     return Object.assign({}, state, {state: newState});
@@ -120,7 +120,7 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
     }), messages: state.messages.filter((message: CommunicatorMessageType)=>{
       return message.communicatorMessageId !== action.payload.communicatorMessageId
     }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.communicatorMessageId})});
-  } else if (action.type === "SET_CURRENT_MESSAGE"){
+  } else if (action.type === "SET_CURRENT_THREAD"){
     return Object.assign({}, state, {current: <CommunicatorCurrentThreadType>action.payload});
   } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES"){
     let update: CommunicatorMessageUpdateType = action.payload.update;

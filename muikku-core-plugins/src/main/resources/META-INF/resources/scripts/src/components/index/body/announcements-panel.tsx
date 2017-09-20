@@ -2,7 +2,7 @@ import Link from '../../general/link';
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {StatusType, AnnouncementListType, AnnouncementType, i18nType} from '~/reducers';
+import {StatusType, AnnouncementListType, AnnouncementType, i18nType} from '~/reducers/index.d';
 
 interface AnnouncementsPanelProps {
   i18n: i18nType,

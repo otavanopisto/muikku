@@ -2,7 +2,7 @@ import Dialog from '~/components/general/dialog';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Link from '~/components/general/link';
-import {i18nType} from '~/reducers';
+import {i18nType} from '~/reducers/index.d';
 
 interface ForgotPasswordDialogProps {
   i18n: i18nType,

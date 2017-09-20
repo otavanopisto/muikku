@@ -1,6 +1,6 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import * as $ from 'jquery';
+import $ from '~/lib/jquery';
 
 function scrollToSection(anchor: string) {
   if (!$(anchor).size()){

@@ -3,12 +3,19 @@ import messageCountActions from '~/actions/main-function/message-count';
 
 import {hexToColorInt} from '~/util/modifiers';
 import promisify from '~/util/promisify';
+import mApi from '~/lib/mApi';
+
+import {CommunicatorNavigationItemType, CommunicatorNavigationItemListType,
+  CommunicatorMessagesType, CommunicatorMessageListType, CommunicatorMessagesPatchType,
+  CommunicatorMessageType, CommunicatorCurrentThreadType, CommunicatorSignatureType} from '~/reducers/index.d';
+import {Dispatch} from 'react-redux';
+import {AnyActionType} from '~/actions';
 
 const MAX_LOADED_AT_ONCE = 30;
 
 //Why in the world do we have a weird second version?
 //This is a server-side issue, just why we have different paths for different things.
-function getApiId(item, weirdSecondVersion:boolean = false){
+function getApiId(item:CommunicatorNavigationItemType, weirdSecondVersion:boolean = false){
   if (item.type === "folder"){
     switch(item.id){
     case "inbox":
@@ -28,15 +35,17 @@ function getApiId(item, weirdSecondVersion:boolean = false){
   }
 }
 
-async function loadMessages(location, initial, dispatch, getState){
+async function loadMessages(location:string | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   //Remove the current messsage
   dispatch({
-    type: "SET_CURRENT_MESSAGE",
+    type: "SET_CURRENT_THREAD",
     payload: null
   });
   
-  let {communicatorNavigation, communicatorMessages} = getState();
-  let actualLocation = location || communicatorMessages.location;
+  let state = getState();
+  let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation
+  let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+  let actualLocation:string = location || communicatorMessages.location;
   
   //Avoid loading messages again for the first time if it's the same location
   if (initial && actualLocation === communicatorMessages.location && communicatorMessages.state === "READY"){
@@ -86,10 +95,10 @@ async function loadMessages(location, initial, dispatch, getState){
     }
     switch(item.id){
     case "inbox":
-      params.onlyUnread = false;
+      (<any>params).onlyUnread = false;
       break;
     case "unread":
-      params.onlyUnread = true;
+      (<any>params).onlyUnread = true;
       break;
     }
     //If we got a label
@@ -109,9 +118,8 @@ async function loadMessages(location, initial, dispatch, getState){
   }
   
   try {
-    let messages = await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
-    
-    let hasMore = messages.length === MAX_LOADED_AT_ONCE + 1;
+    let messages:CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+    let hasMore:boolean = messages.length === MAX_LOADED_AT_ONCE + 1;
     
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
@@ -122,12 +130,13 @@ async function loadMessages(location, initial, dispatch, getState){
     }
     
     //Create the payload for updating all the communicator properties
-    let payload = {
+    let properLocation = location || item.location;
+    let payload:CommunicatorMessagesPatchType = {
       state: "READY",
       messages: (concat ? communicatorMessages.messages.concat(actualMessages) : actualMessages),
       pages: pages,
       hasMore,
-      location
+      location: properLocation
     }
     if (!concat){
       payload.selected = [];
@@ -149,7 +158,7 @@ async function loadMessages(location, initial, dispatch, getState){
   }
 }
 
-async function setLabelStatusCurrentMessage(label, isToAddLabel, dispatch, getState){
+async function setLabelStatusCurrentMessage(label, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   let {communicatorMessages} = getState();
   let messageLabel = communicatorMessages.current.labels.find(mlabel=>mlabel.labelId === label.id);
   let communicatorMessageId = communicatorMessages.current.messages[0].communicatorMessageId;
@@ -185,10 +194,10 @@ async function setLabelStatusCurrentMessage(label, isToAddLabel, dispatch, getSt
   }
 }
 
-function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState){
-  let {communicatorMessages} = getState();
+function setLabelStatusSelectedMessages(label, isToAddLabel: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+  let communicatorMessages:CommunicatorMessagesType = getState().communicatorMessages;
   
-  communicatorMessages.selected.forEach(async (message)=>{
+  communicatorMessages.selected.forEach(async (message:CommunicatorMessageType)=>{
     let messageLabel = message.labels.find(mlabel=>mlabel.labelId === label.id);
     
     try {
@@ -225,7 +234,7 @@ function setLabelStatusSelectedMessages(label, isToAddLabel, dispatch, getState)
 }
 
 let defaultObject = {
-  sendMessage(message){
+  sendMessage(message):AnyActionType {
     
     let recepientWorkspaces = message.to.filter(x=>x.type === "workspace").map(x=>x.value.id)
     let data = {
@@ -238,7 +247,7 @@ let defaultObject = {
       recipientTeachersWorkspaceIds: recepientWorkspaces
     };
     
-    return async (dispatch, getState)=>{
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
       try {
         let result;
         if (message.replyThreadId){
@@ -250,14 +259,14 @@ let defaultObject = {
         mApi().communicator.sentitems.cacheClear();
         message.success && message.success(result);
         
-        let {communicatorMessages} = getState();
+        let communicatorMessages:CommunicatorMessagesType = getState().communicatorMessages;
         if (communicatorMessages.location === "sent"){
           let params = {
               firstResult: 0,
               maxResults: 1
           }
           try {
-            let messages = await promisify(mApi().communicator.sentitems.read(params), 'callback')();
+            let messages:CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator.sentitems.read(params), 'callback')();
             if (messages[0]){
               dispatch({
                 type: "PUSH_ONE_MESSAGE_FIRST",
@@ -272,57 +281,63 @@ let defaultObject = {
       }
     }
   },
-  loadMessages(location){
+  loadMessages(location: string):AnyActionType {
     return loadMessages.bind(this, location, true);
   },
-  updateCommunicatorSelectedMessages(messages){
+  updateCommunicatorSelectedMessages(messages: CommunicatorMessageListType):AnyActionType {
     return {
       type: "UPDATE_SELECTED_MESSAGES",
       payload: messages
     };
   },
-  addToCommunicatorSelectedMessages(message){
+  addToCommunicatorSelectedMessages(message: CommunicatorMessageListType):AnyActionType {
     return {
       type: "ADD_TO_COMMUNICATOR_SELECTED_MESSAGES",
       payload: message
     };
   },
-  removeFromCommunicatorSelectedMessages(message){
+  removeFromCommunicatorSelectedMessages(message: CommunicatorMessageListType):AnyActionType {
     return {
       type: "REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES",
       payload: message
     };
   },
-  loadMoreMessages(){
+  loadMoreMessages():AnyActionType{
     return loadMessages.bind(this, null, false);
   },
-  addLabelToSelectedMessages(label){
-    return setLabelStatusSelectedMessages.bind(this, label, true);
+  addLabelToSelectedMessages(label):AnyActionType{
+    return setLabelStatusSelectedMessages.bind(this, label, true) ;
   },
-  removeLabelFromSelectedMessages(label){
-    return setLabelStatusSelectedMessages.bind(this, label, false);
+  removeLabelFromSelectedMessages(label):AnyActionType{
+    return setLabelStatusSelectedMessages.bind(this, label, false) ;
   },
-  addLabelToCurrentMessage(label){
-    return setLabelStatusCurrentMessage.bind(this, label, true);
+  addLabelToCurrentMessage(label):AnyActionType{
+    return setLabelStatusCurrentMessage.bind(this, label, true) ;
   },
-  removeLabelFromCurrentMessage(label){
-    return setLabelStatusCurrentMessage.bind(this, label, false);
+  removeLabelFromCurrentMessage(label):AnyActionType{
+    return setLabelStatusCurrentMessage.bind(this, label, false) ;
   },
-  toggleMessagesReadStatus(message){
-    return async (dispatch, getState)=>{
+  toggleMessagesReadStatus(message: CommunicatorMessageType):AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
       dispatch({
-        type: "LOCK_TOOLBAR"
+        type: "LOCK_TOOLBAR",
+        payload: null
       });
       
-      let {communicatorNavigation, communicatorMessages, messageCount} = getState();
-      let item = communicatorNavigation.find((item)=>{
+      let state = getState();
+      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
+      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      let messageCount:number = state.messageCount;
+      
+      let item = communicatorNavigation.find((item: CommunicatorNavigationItemType)=>{
         return item.location === communicatorMessages.location;
       });
       if (!item){
         //TODO translate this
         dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
         dispatch({
-          type: "UNLOCK_TOOLBAR"
+          type: "UNLOCK_TOOLBAR",
+          payload: null
         });
         return;
       }
@@ -361,30 +376,38 @@ let defaultObject = {
       
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
-        type: "UNLOCK_TOOLBAR"
+        type: "UNLOCK_TOOLBAR",
+        payload: null
       });
     }
   },
-  deleteSelectedMessages(){
-    return async (dispatch, getState)=>{
+  deleteSelectedMessages():AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
       dispatch({
-        type: "LOCK_TOOLBAR"
+        type: "LOCK_TOOLBAR",
+        payload: null
       });
       
-      let {communicatorNavigation, communicatorMessages, messageCount} = getState();
-      let item = communicatorNavigation.find((item)=>{
+      let state = getState();
+      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
+      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      let messageCount:number = state.messageCount;
+      
+      let item = communicatorNavigation.find((item: CommunicatorNavigationItemType)=>{
         return item.location === communicatorMessages.location;
       });
       if (!item){
         //TODO translate this
         dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
         dispatch({
-          type: "UNLOCK_TOOLBAR"
+          type: "UNLOCK_TOOLBAR",
+          payload: null
         });
         return;
       }
       
-      let {selected, selectedIds} = communicatorMessages;
+      let selected:CommunicatorMessageListType = state.communicatorNavigation;
+      let selectedIds:Array<number> = state.selectedIds;
       
       await Promise.all(selected.map(async (message)=>{
         try {
@@ -403,26 +426,31 @@ let defaultObject = {
       
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
-        type: "UNLOCK_TOOLBAR"
+        type: "UNLOCK_TOOLBAR",
+        payload: null
       });
       dispatch(messageCountActions.updateMessageCount(messageCount));
     }
   },
-  deleteCurrentMessage(){
-    return async (dispatch, getState)=>{
+  deleteCurrentMessage():AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
       dispatch({
-        type: "LOCK_TOOLBAR"
+        type: "LOCK_TOOLBAR",
+        payload: null
       });
       
-      let {communicatorNavigation, communicatorMessages} = getState();
-      let item = communicatorNavigation.find((item)=>{
+      let state = getState();
+      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
+      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      let item = communicatorNavigation.find((item: CommunicatorNavigationItemType)=>{
         return item.location === communicatorMessages.location;
       });
       if (!item){
         //TODO translate this
         dispatch(notificationActions.displayNotification("Invalid navigation location", 'error'));
         dispatch({
-          type: "UNLOCK_TOOLBAR"
+          type: "UNLOCK_TOOLBAR",
+          payload: null
         });
         return;
       }
@@ -431,19 +459,21 @@ let defaultObject = {
       
       try {
         await promisify(mApi().communicator[getApiId(item)].del(communicatorMessageId), 'callback')();
-        dispatch({
-          type: "DELETE_MESSAGE",
-          payload: {
-            communicatorMessageId
-          }
-        });
+        let toDeleteMessage:CommunicatorMessageType = communicatorMessages.messages.find((message:CommunicatorMessageType)=>message.communicatorMessageId === communicatorMessageId);
+        if (toDeleteMessage){
+          dispatch({
+            type: "DELETE_MESSAGE",
+            payload: toDeleteMessage
+          });
+        }
       } catch(err){
         dispatch(notificationActions.displayNotification(err.message, 'error'));
       }
       
       mApi().communicator[getApiId(item)].cacheClear();
       dispatch({
-        type: "UNLOCK_TOOLBAR"
+        type: "UNLOCK_TOOLBAR",
+        payload: null
       });
       
       //SADLY the current message doesn't have a mention on wheter
@@ -454,10 +484,13 @@ let defaultObject = {
       location.hash = "#" + item.location;
     }
   },
-  loadMessage(location, messageId){
-    return async (dispatch, getState)=>{
-      let {communicatorNavigation} = getState();
-      let item = communicatorNavigation.find((item)=>{
+  loadMessage(location: string, messageId: number):AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+      
+      let state = getState();
+      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
+      
+      let item = communicatorNavigation.find((item:CommunicatorNavigationItemType)=>{
         return item.location === location;
       });
       if (!item){
@@ -467,11 +500,11 @@ let defaultObject = {
       }
       
       try {
-        let message = await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
+        let currentThread:CommunicatorCurrentThreadType = <CommunicatorCurrentThreadType>await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
         dispatch({
           type: "UPDATE_MESSAGES_ALL_PROPERTIES",
           payload: {
-            current: message,
+            current: currentThread,
             location
           }
         });
@@ -480,9 +513,13 @@ let defaultObject = {
       }
     }
   },
-  loadNewlyReceivedMessage(){
-    return async (dispatch, getState)=>{
-      let {communicatorNavigation, communicatorMessages} = getState();
+  loadNewlyReceivedMessage():AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+      
+      let state = getState();
+      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
+      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      
       if (communicatorMessages.location === "unread" || communicatorMessages.location === "inbox"){
         let item = communicatorNavigation.find((item)=>{
           return item.location === communicatorMessages.location;
@@ -497,7 +534,7 @@ let defaultObject = {
         }
         
         try {
-          let messages = await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+          let messages:CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
           if (messages[0]){
             dispatch({
               type: "PUSH_ONE_MESSAGE_FIRST",
@@ -508,10 +545,10 @@ let defaultObject = {
       }
     }
   },
-  loadSignature(){
-    return async (dispatch, getState)=>{
+  loadSignature():AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
       try {
-        let signatures = await promisify(mApi().communicator.signatures.read(), 'callback')();
+        let signatures:Array<CommunicatorSignatureType> = <Array<CommunicatorSignatureType>>await promisify(mApi().communicator.signatures.read(), 'callback')();
         if (signatures.length > 0){
           dispatch({
             type: "UPDATE_SIGNATURE",
@@ -523,20 +560,24 @@ let defaultObject = {
       }
     }
   },
-  updateSignature(newSignature){
-    return async (dispatch, getState)=>{
-      let {communicatorMessages} = getState();
+  updateSignature(newSignature: string):AnyActionType {
+    return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+      let state = getState();
+      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      
       try {
         if (newSignature && communicatorMessages.signature){
-          let nSignatureShape = {id: communicatorMessages.signature.id, name: communicatorMessages.signature.name, signature: newSignature};
+          let nSignatureShape:CommunicatorSignatureType = <CommunicatorSignatureType>{id: communicatorMessages.signature.id, name: communicatorMessages.signature.name, signature: newSignature};
+          let payload:CommunicatorSignatureType = <CommunicatorSignatureType> await promisify(mApi().communicator.signatures.update(communicatorMessages.signature.id, nSignatureShape), 'callback')();
           dispatch({
             type: "UPDATE_SIGNATURE",
-            payload: await promisify(mApi().communicator.signatures.update(communicatorMessages.signature.id, nSignatureShape), 'callback')()
+            payload
           });
         } else if (newSignature){
+          let payload:CommunicatorSignatureType = <CommunicatorSignatureType> await promisify(mApi().communicator.signatures.create({name:"standard", signature: newSignature}), 'callback')();
           dispatch({
             type: "UPDATE_SIGNATURE",
-            payload: await promisify(mApi().communicator.signatures.create({name:"standard", signature: newSignature}), 'callback')()
+            payload
           });
         } else {
           await promisify(mApi().communicator.signatures.del(communicatorMessages.signature.id), 'callback')();

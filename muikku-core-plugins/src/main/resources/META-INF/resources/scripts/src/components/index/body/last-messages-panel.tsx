@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Link from '../../general/link';
-import {i18nType, CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers';
+import {i18nType, CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers/index.d';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
