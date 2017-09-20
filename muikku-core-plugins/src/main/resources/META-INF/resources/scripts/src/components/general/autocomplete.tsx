@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as PropTypes from 'prop-types';
-import equals from 'deep-equal';
+import equals = require("deep-equal");
 
 export default class Autocomplete extends React.Component {
   static propTypes = {

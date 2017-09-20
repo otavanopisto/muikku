@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
-import equal from 'deep-equal';
+import equals = require("deep-equal");
 
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
