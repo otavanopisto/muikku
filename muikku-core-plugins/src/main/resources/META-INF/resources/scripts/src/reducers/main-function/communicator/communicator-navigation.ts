@@ -1,6 +1,6 @@
 import {i18nType} from '~/reducers/i18n';
 import {ActionType} from '~/actions';
-import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorNavigationItemUpdateType} from '~/reducers';
+import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorNavigationItemUpdateType} from '~/reducers/index.d';
 
 const defaultNavigation: CommunicatorNavigationItemListType = [
   {
@@ -33,7 +33,7 @@ const defaultNavigation: CommunicatorNavigationItemListType = [
   }
 ]
 
-export default function communicatorNavigation(state:CommunicatorNavigationItemListType=defaultNavigation, action: ActionType<any>): CommunicatorNavigationItemListType {
+export default function communicatorNavigation(state:CommunicatorNavigationItemListType=defaultNavigation, action: ActionType): CommunicatorNavigationItemListType {
   if (action.type === 'UPDATE_COMMUNICATOR_NAVIGATION_LABELS'){
     return defaultNavigation.concat(<CommunicatorNavigationItemListType>action.payload);
   } else if (action.type === 'ADD_COMMUNICATOR_NAVIGATION_LABEL'){

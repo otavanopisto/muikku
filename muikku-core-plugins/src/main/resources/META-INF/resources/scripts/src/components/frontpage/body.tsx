@@ -2,7 +2,7 @@ import FrontpageNavbar from './navbar';
 import FrontpageFeed from './feed';
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {i18nType} from '~/reducers';
+import {i18nType} from '~/reducers/index.d';
 
 interface FrontpageBodyProps {
   i18n: i18nType

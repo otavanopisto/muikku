@@ -4,7 +4,7 @@ import LoginButton from '../base/login-button';
 import ForgotPasswordDialog from '../base/forgot-password-dialog';
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {i18nType} from '~/reducers';
+import {i18nType} from '~/reducers/index.d';
 
 interface FrontpageNavbarProps {
   i18n: i18nType

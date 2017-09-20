@@ -18,9 +18,11 @@ export interface LocaleListType {
   current: string
 }
 
+export type NotificationSeverityType = "error" | "warning" | "loading" | "default" | "warning" | "info" | "fatal" | "success" | "secondary" | "inverse";
+
 export interface NotificationType {
-  id?: number,
-  severity: "error" | "warning" | "loading" | "default" | "warning" | "info" | "fatal" | "success" | "secondary" | "inverse",
+  id: number,
+  severity: NotificationSeverityType, 
   message: string
 }
 
@@ -50,6 +52,15 @@ export interface CommunicatorMessageSenderType {
   hasEvaluationFees: false,
   curriculumIdentifier?: string | number | null;
 }
+export interface CommunicatorMessageLabelType {
+  id: number,
+  labelColor: number,
+  labelId: number,
+  labelName: string,
+  messageThreadId: number,
+  userEntityId: number
+}
+export interface CommunicatorMessageLabelListType extends Array<CommunicatorMessageLabelType> {};
 export interface CommunicatorMessageType {
   id: number,
   communicatorMessageId: number,
@@ -57,14 +68,12 @@ export interface CommunicatorMessageType {
   categoryName: "message",
   caption: string,
   created: string,
-  
-  //TODO fix anies
   tags: any,
   threadLatestMessageDate: string,
   unreadMessagesInThread: boolean,
   sender: CommunicatorMessageSenderType,
   messageCountInThread: number,
-  labels: any
+  labels: CommunicatorMessageLabelListType
 }
 export interface CommunicatorMessageUpdateType {
   communicatorMessageId?: number,
@@ -72,21 +81,25 @@ export interface CommunicatorMessageUpdateType {
   categoryName?: "message",
   caption?: string,
   created?: string,
-  
-  //TODO fix anies
   tags?: any,
   threadLatestMessageDate?: string,
   unreadMessagesInThread?: boolean,
   sender?: CommunicatorMessageSenderType,
   messageCountInThread?: number,
-  labels?: any
+  labels?: CommunicatorMessageLabelListType
 }
 export interface CommunicatorCurrentThreadType {
   olderThreadId?: number | null,
   newerThreadId?: number | null,
   messages: Array<CommunicatorMessageExtendedType>,
-  labels: any
+  labels: CommunicatorMessageLabelListType
 }
+export interface UserGroup {
+  id: number,
+  name: string,
+  userCount: number
+}
+export interface UserGroupList extends Array<UserGroup> {}
 export interface CommunicatorMessageExtendedType {
   caption: string,
   categoryName: "message",
@@ -99,7 +112,8 @@ export interface CommunicatorMessageExtendedType {
   sender: CommunicatorMessageSenderType,
   senderId: number,
   tags: any,
-  userGroupRecipients: any,
+  userGroupRecipients: UserGroupList,
+  //TODO I am not sure what this is yet
   workspaceRecipients: any
 }
 export interface CommunicatorMessageRecepientType {

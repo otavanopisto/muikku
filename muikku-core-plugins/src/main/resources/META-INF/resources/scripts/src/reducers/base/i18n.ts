@@ -1,7 +1,7 @@
-import * as moment from 'moment';
-import * as getLocaleText from 'getLocaleText';
+import moment from '~/lib/moment';
+import getLocaleText from '~/lib/getLocaleText';
 import {ActionType} from '~/actions';
-import {i18nType} from '~/reducers';
+import {i18nType} from '~/reducers/index.d';
 
 export default function i18n(state={
   text: {
@@ -28,6 +28,6 @@ export default function i18n(state={
       return moment(new Date(date)).add(input, value).calendar();
     }
   }
-}, action: ActionType<any>): i18nType {
+}, action: ActionType): i18nType {
   return state;
 }

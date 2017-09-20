@@ -1,6 +1,6 @@
 import Navbar from '~/components/general/navbar';
 import Link from '~/components/general/link';
-import {i18nType, StatusType} from '~/reducers';
+import {i18nType, StatusType} from '~/reducers/index.d';
 
 import * as React from 'react';
 import {connect} from 'react-redux';

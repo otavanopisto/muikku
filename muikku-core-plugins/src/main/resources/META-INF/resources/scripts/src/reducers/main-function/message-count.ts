@@ -1,6 +1,6 @@
 import {ActionType} from "~/actions";
 
-export default function messageCount(state: number=0, action: ActionType<any>): number {
+export default function messageCount(state: number=0, action: ActionType): number {
   if (action.type === "UPDATE_MESSAGE_COUNT"){
     let newValue: number = action.payload;
     return newValue;

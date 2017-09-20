@@ -1,6 +1,6 @@
 import actions from '../base/notifications';
 import promisify from '~/util/promisify';
-import * as mApi from 'mApi';
+import mApi from '~/lib/mApi';
 
 export default {
   updateAnnouncements(options: any={hideWorkspaceAnnouncements: "false"}){

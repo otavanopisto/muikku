@@ -1,5 +1,7 @@
+import {UPDATE_TITLE} from '~/actions';
+
 export default {
-  updateTitle(newTitle){
+  updateTitle(newTitle: string):UPDATE_TITLE{
     document.title = newTitle;
     return {
       type: 'UPDATE_TITLE',

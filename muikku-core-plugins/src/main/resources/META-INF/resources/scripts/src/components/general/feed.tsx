@@ -1,7 +1,7 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {i18nType} from '~/reducers';
+import {i18nType} from '~/reducers/index.d';
 
 interface FeedProps {
   entries: Array<{

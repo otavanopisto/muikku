@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import Link from '~/components/general/link';
 
-import {i18nType, WorkspaceListType, WorkspaceType} from '~/reducers';
+import {i18nType, WorkspaceListType, WorkspaceType} from '~/reducers/index.d';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
