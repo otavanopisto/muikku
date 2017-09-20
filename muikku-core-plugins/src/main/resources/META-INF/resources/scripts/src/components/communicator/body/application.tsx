@@ -50,7 +50,7 @@ class CommunicatorApplication extends React.Component {
       </Link>
     </Dropdown>
     let primaryOption = <NewMessage><a className="communicator button communicator-button-new-message">
-        {this.props.i18n.text.get('plugin.communicator.newMessage')}
+    {this.props.i18n.text.get('plugin.communicator.createmessage.label')}
     </a></NewMessage>
     let toolbar = <Toolbar/>
       
