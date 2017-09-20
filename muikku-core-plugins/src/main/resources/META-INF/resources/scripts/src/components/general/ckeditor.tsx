@@ -1,4 +1,4 @@
-import equals from 'deep-equal';
+import equals = require("deep-equal");
 import * as React from 'react';
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
