@@ -1,6 +1,7 @@
-import moment from 'moment';
-import getLocaleText from 'getLocaleText';
+import * as moment from 'moment';
+import * as getLocaleText from 'getLocaleText';
 import {ActionType} from '~/actions';
+import {i18nType} from '~/reducers';
 
 export default function i18n(state={
   text: {
@@ -29,16 +30,4 @@ export default function i18n(state={
   }
 }, action: ActionType<any>): i18nType {
   return state;
-}
-
-export interface i18nType {
-  text: {
-    get(key: string, ...args: (string | number)[]):string
-  },
-  time: {
-    format(date?: Date, format?: string):string,
-    fromNow(date?: Date):string,
-    subtract(date?: Date, input?: number, value?: string):string,
-    add(date?: Date, input?: number, value?: string):string
-  }
 }

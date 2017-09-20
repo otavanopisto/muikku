@@ -1,22 +1,28 @@
 import equals from 'deep-equal';
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
 //as well as the external jquery dependency (jquery is available in npm)
 
-export default class CKEditor extends React.Component {
-  static propTypes = {
-    configuration: PropTypes.object,
-    extraPlugins: PropTypes.object,
-    width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    onChange: PropTypes.func.isRequired,
-    children: PropTypes.string.isRequired,
-    autofocus: PropTypes.bool
-  }
-  constructor(props){
+interface CKEditorProps {
+  configuration: any,
+  extraPlugins: {
+    [plugin: string] : string
+  },
+  width?: number | string,
+  height?: number | string,
+  onChange(arg: string):any,
+  children: string,
+  autofocus?: boolean
+}
+
+interface CKEditorState {
+  
+}
+
+export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {
+  constructor(props: CKEditorProps){
     super(props);
     
     this.name = "ckeditor-" + (new Date()).getTime();
@@ -34,16 +40,16 @@ export default class CKEditor extends React.Component {
           parseInt(computedStyle.getPropertyValue("padding-top")) -
           parseInt(computedStyle.getPropertyValue("padding-top"));
       
-      for (let node of Array.from(this.refs.ckeditor.parentNode.childNodes)){
+      Array.from(this.refs.ckeditor.parentNode.childNodes).forEach((node: HTMLElement)=>{
         if (node === this.refs.ckeditor || node.id === ("cke_" + this.name)){
-          continue;
+          return;
         }
         
         let nComputedStyle = getComputedStyle(node, null);
         actualHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
           parseInt(nComputedStyle.getPropertyValue("margin-top")) +
           parseInt(nComputedStyle.getPropertyValue("margin-bottom"));
-      }
+      });
     }
     
     if (actualHeight !== this.height || this.width !== width){

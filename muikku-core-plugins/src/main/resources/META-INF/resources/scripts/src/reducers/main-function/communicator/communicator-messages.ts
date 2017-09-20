@@ -1,4 +1,9 @@
-export default function communicatorMessages(state={
+import {ActionType} from './actions';
+import {CommunicatorMessagesType, CommunicatorStateType, CommunicatorMessagesPatchType,
+  CommunicatorMessageListType, CommunicatorMessageType, CommunicatorMessageUpdateType,
+  CommunicatorSignatureType, CommunicatorCurrentThreadType} from '~/reducers';
+
+export default function communicatorMessages(state: CommunicatorMessagesType={
   state: "LOADING",
   messages: [],
   selected: [],
@@ -9,34 +14,46 @@ export default function communicatorMessages(state={
   toolbarLock: false,
   current: null,
   signature: null
-}, action){
+}, action: ActionType<any>): CommunicatorMessagesType {
   if (action.type === "UPDATE_MESSAGES_STATE"){
-    return Object.assign({}, state, {state: action.payload});
+    let newState: CommunicatorStateType = action.payload;
+    return Object.assign({}, state, {state: newState});
   } else if (action.type === "UPDATE_PAGES"){
-    return Object.assign({}, state, {pages: action.payload});
+    let newPageNumber: number = action.payload;
+    return Object.assign({}, state, {pages: newPageNumber});
   } else if (action.type === "UPDATE_HAS_MORE"){
-    return Object.assign({}, state, {hasMore: action.payload});
+    let newHasMore: boolean = action.payload;
+    return Object.assign({}, state, {hasMore: newHasMore});
   } else if (action.type === "UPDATE_MESSAGES_ALL_PROPERTIES"){
-    return Object.assign({}, state, action.payload);
+    let newAllProperties: CommunicatorMessagesPatchType = action.payload;
+    return Object.assign({}, state, newAllProperties);
   } else if (action.type === "UPDATE_MESSAGES"){
-    return Object.assign({}, state, {messages: action.payload});
+    let newMessages: CommunicatorMessageListType = action.payload;
+    return Object.assign({}, state, {messages: newMessages});
   } else if (action.type === "UPDATE_SELECTED_MESSAGES"){
-    return Object.assign({}, state, {selected: action.payload, selectedIds: action.payload.map(s=>s.communicatorMessageId)});
+    let newMessages: CommunicatorMessageListType = action.payload;
+    return Object.assign({}, state, {selected: newMessages, selectedIds: newMessages.map((s: CommunicatorMessageType)=>s.communicatorMessageId)});
   } else if (action.type === "ADD_TO_COMMUNICATOR_SELECTED_MESSAGES"){
-    return Object.assign({}, state, {selected: state.selected.concat([action.payload]), selectedIds: state.selectedIds.concat([action.payload.communicatorMessageId])});
+    let newMessage: CommunicatorMessageType = action.payload;
+    return Object.assign({}, state, {
+      selected: state.selected.concat([newMessage]),
+      selectedIds: state.selectedIds.concat([newMessage.communicatorMessageId])
+    });
   } else if (action.type === "REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES"){
-    return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
+    return Object.assign({}, state, {selected: state.selected.filter((selected: CommunicatorMessageType)=>{
       return selected.communicatorMessageId !== action.payload.communicatorMessageId
-    }), selectedIds: state.selectedIds.filter((id)=>{return id !== action.payload.communicatorMessageId})});
+    }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.communicatorMessageId})});
   } else if (action.type === "UPDATE_ONE_MESSAGE"){
-    let newMessage = Object.assign({}, action.payload.message, action.payload.update);
-    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
-      if (selected.communicatorMessageId === action.payload.message.communicatorMessageId){
+    let update: CommunicatorMessageUpdateType = action.payload.update;
+    let oldMessage: CommunicatorMessageType = action.payload.message;
+    let newMessage: CommunicatorMessageType = Object.assign({}, oldMessage, update);
+    return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
+      if (selected.communicatorMessageId === oldMessage.communicatorMessageId){
         return newMessage
       }
       return selected;
-    }), messages: state.messages.map((message)=>{
-      if (message.communicatorMessageId === action.payload.message.communicatorMessageId){
+    }), messages: state.messages.map((message: CommunicatorMessageType)=>{
+      if (message.communicatorMessageId === oldMessage.communicatorMessageId){
         return newMessage
       }
       return message;
@@ -51,7 +68,7 @@ export default function communicatorMessages(state={
       newCurrent = Object.assign(newCurrent, {labels: newCurrent.labels.concat([action.payload.label])});
     }
     
-    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
+    return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
       if (selected.communicatorMessageId === action.payload.communicatorMessageId){
         if (!selected.labels.find(label=>label.labelId === action.payload.label.labelId)){
           return Object.assign({}, selected, {
@@ -62,7 +79,7 @@ export default function communicatorMessages(state={
         }
       }
       return selected;
-    }), messages: state.messages.map((message)=>{
+    }), messages: state.messages.map((message: CommunicatorMessageType)=>{
       if (message.communicatorMessageId === action.payload.communicatorMessageId){
         if (!message.labels.find(label=>label.labelId === action.payload.label.labelId)){
           return Object.assign({}, message, {
@@ -82,14 +99,14 @@ export default function communicatorMessages(state={
       });
     }
     
-    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
+    return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
       if (selected.communicatorMessageId === action.payload.communicatorMessageId){
         return Object.assign({}, selected, {
           labels: selected.labels.filter(label=>label.labelId !== action.payload.label.labelId)
         });
       }
       return selected;
-    }), messages: state.messages.map((message)=>{
+    }), messages: state.messages.map((message: CommunicatorMessageType)=>{
       if (message.communicatorMessageId === action.payload.communicatorMessageId){
         return Object.assign({}, message, {
           labels: message.labels.filter(label=>label.labelId !== action.payload.label.labelId)
@@ -98,40 +115,41 @@ export default function communicatorMessages(state={
       return message;
     }), current: newCurrent});
   } else if (action.type === "DELETE_MESSAGE"){
-    return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
+    return Object.assign({}, state, {selected: state.selected.filter((selected: CommunicatorMessageType)=>{
       return selected.communicatorMessageId !== action.payload.communicatorMessageId
-    }), messages: state.messages.filter((message)=>{
+    }), messages: state.messages.filter((message: CommunicatorMessageType)=>{
       return message.communicatorMessageId !== action.payload.communicatorMessageId
-    }), selectedIds: state.selectedIds.filter((id)=>{return id !== action.payload.communicatorMessageId})});
+    }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.communicatorMessageId})});
   } else if (action.type === "SET_CURRENT_MESSAGE"){
-    return Object.assign({}, state, {current: action.payload});
+    return Object.assign({}, state, {current: <CommunicatorCurrentThreadType>action.payload});
   } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES"){
-    return Object.assign({}, state, {selected: state.selected.map((selected)=>{
+    let update: CommunicatorMessageUpdateType = action.payload.update;
+    return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
       return Object.assign({}, selected, {labels: selected.labels.map((label)=>{
         if (label.labelId === action.payload.labelId){
-          return Object.assign({}, label, action.payload.update);
+          return Object.assign({}, label, update);
         }
         return label;
       })});
-    }), messages: state.messages.map((message)=>{
+    }), messages: state.messages.map((message: CommunicatorMessageType)=>{
       return Object.assign({}, message, {labels: message.labels.map((label)=>{
         if (label.labelId === action.payload.labelId){
-          return Object.assign({}, label, action.payload.update);
+          return Object.assign({}, label, update);
         }
         return label;
       })});
     }), current : (state.current ? Object.assign({}, state.current, state.current.labels.map((label)=>{
       if (label.labelId === action.payload.labelId){
-        return Object.assign({}, label, action.payload.update);
+        return Object.assign({}, label, update);
       }
       return label;
     })) : state.current)});
   } else if (action.type === "REMOVE_ONE_LABEL_FROM_ALL_MESSAGES"){
-    return Object.assign({}, state, {selected: state.selected.filter((selected)=>{
+    return Object.assign({}, state, {selected: state.selected.filter((selected: CommunicatorMessageType)=>{
       return Object.assign({}, selected, {
         labels: selected.labels.filter(label=>label.labelId !== action.payload.labelId)
       });
-    }), messages: state.messages.filter((message)=>{
+    }), messages: state.messages.filter((message: CommunicatorMessageType)=>{
       return Object.assign({}, message, {
         labels: message.labels.filter(label=>label.labelId !== action.payload.labelId)
       });
@@ -139,9 +157,9 @@ export default function communicatorMessages(state={
       labels: state.current.labels.filter(label=>label.labelId !== action.payload.labelId)
     }) : state.current)});
   } else if (action.type === "PUSH_ONE_MESSAGE_FIRST"){
-    return Object.assign({}, state, {messages: [action.payload].concat(state.messages)});
+    return Object.assign({}, state, {messages: [<CommunicatorMessageType>action.payload].concat(state.messages)});
   } else if (action.type === "UPDATE_SIGNATURE"){
-    return Object.assign({}, state, {signature: action.payload});
+    return Object.assign({}, state, {signature: <CommunicatorSignatureType>action.payload});
   }
   return state;
 }

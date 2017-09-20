@@ -1,6 +1,9 @@
-export default function workspaces(state=[], action){
+import {WorkspaceListType} from "~/reducers";
+import {ActionType} from '~/actions';
+
+export default function workspaces(state: WorkspaceListType=[], action: ActionType<any>): WorkspaceListType{
   if (action.type === 'UPDATE_WORKSPACES'){
-    return action.payload;
+    return <WorkspaceListType>action.payload;
   }
   return state;
 }

@@ -1,7 +1,8 @@
 //TODO this reducer uses the api that interacts with the DOM in order to
 //retrieve data, please fix in next versions
-import $ from "jquery";
+import * as $ from "jquery";
 import {ActionType} from "~/actions";
+import {LocaleListType} from '~/reducers';
 
 export default function locales(state={
   avaliable: $.makeArray($("#language-picker a").map((index: number, element: HTMLElement)=>{
@@ -17,12 +18,4 @@ export default function locales(state={
     return Object.assign({}, state, {current: action.payload});
   }
   return state;
-}
-
-export interface LocaleListType {
-  avaliable: {
-    name: string,
-    locale: string
-  }[],
-  current: string
 }

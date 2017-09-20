@@ -2,12 +2,23 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import Link from '~/components/general/link.tsx';
 import LabelUpdateDialog from './label-update-dialog.tsx';
+import {i18nType, CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorMessagesType} from '~/reducers';
 
-class Navigation extends React.Component {
+interface NavigationProps {
+  i18n: i18nType,
+  communicatorNavigation: CommunicatorNavigationItemListType,
+  communicatorMessages: CommunicatorMessagesType
+}
+
+interface NavigationState {
+  
+}
+
+class Navigation extends React.Component<NavigationProps, NavigationState> {
   render(){
     return <div className="communicator item-list communicator-item-list-navigation">
-      {this.props.communicatorNavigation.map((item)=>{
-        let style = {};
+      {this.props.communicatorNavigation.map((item: CommunicatorNavigationItemType)=>{
+        let style: any = {};
         if (item.color){
           style.color = item.color;
         }
@@ -30,7 +41,6 @@ class Navigation extends React.Component {
 
 function mapStateToProps(state){
   return {
-    labels: state.labels,
     i18n: state.i18n,
     communicatorNavigation: state.communicatorNavigation,
     communicatorMessages: state.communicatorMessages

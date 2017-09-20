@@ -1,13 +1,23 @@
-import Feed from '../general/feed.tsx';
+import Feed from '../general/feed';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
+import * as mApi from 'mApi';
 
-export default class FrontpageFeed extends React.Component {
+interface FrontpageFeedProps {
+  feedReadTarget: string,
+  queryOptions: any
+}
+
+interface FrontpageFeedState {
+  entries: Array<any>
+}
+
+export default class FrontpageFeed extends React.Component<FrontpageFeedProps, FrontpageFeedState> {
   static propTypes = {
     feedReadTarget: PropTypes.string.isRequired,
     queryOptions: PropTypes.object.isRequired
   }
-  constructor(props){
+  constructor(props: FrontpageFeedProps){
     super(props);
     
     this.state = {
@@ -15,7 +25,7 @@ export default class FrontpageFeed extends React.Component {
     }
   }
   componentDidMount(){
-    mApi().feed.feeds.read(this.props.feedReadTarget, this.props.queryOptions).callback((err, entries)=>{
+    mApi().feed.feeds.read(this.props.feedReadTarget, this.props.queryOptions).callback((err: Error, entries: Array<any>)=>{
       if (!err){
         this.setState({entries});
       }

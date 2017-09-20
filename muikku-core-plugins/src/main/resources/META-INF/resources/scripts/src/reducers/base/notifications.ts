@@ -1,4 +1,5 @@
 import {ActionType} from "~/actions";
+import {NotificationType, NotificationListType} from '~/reducers';
 
 export default function notifications(state: NotificationListType=[], action: ActionType<any>){
   if (action.type === 'ADD_NOTIFICATION') {
@@ -10,11 +11,3 @@ export default function notifications(state: NotificationListType=[], action: Ac
   }
   return state;
 }
-
-export interface NotificationType {
-  id?: number,
-  severity: "error" | "warning" | "loading" | "default" | "warning" | "info" | "fatal" | "success" | "secondary" | "inverse",
-  message: string
-}
-
-export interface NotificationListType extends Array<NotificationType> {};

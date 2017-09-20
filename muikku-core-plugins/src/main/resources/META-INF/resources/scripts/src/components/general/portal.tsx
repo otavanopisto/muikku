@@ -1,4 +1,3 @@
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
 
@@ -6,7 +5,28 @@ const KEYCODES = {
   ESCAPE: 27
 };
 
-export default class Portal extends React.Component {
+interface PortalProps {
+  children?: any,
+  openByClickOn?: React.ReactElement<any>,
+  closeOnEsc?: boolean,
+  closeOnOutsideClick?: boolean,
+  closeOnScroll?: boolean,
+  onOpen?(e: HTMLElement):any,
+  onClose?():any,
+  beforeClose?(e: HTMLElement, w: Function): any,
+  onKeyStroke?(keyCode: number, closePortal: Function): any,
+  isOpen?: boolean
+}
+
+interface PortalState {
+  active: boolean
+}
+
+export default class Portal extends React.Component<PortalProps, PortalState> {
+  private portal: any;
+  private node: HTMLElement | null;
+  private isUnmounted: boolean;
+  
   constructor() {
     super();
     this.state = { active: false };
@@ -34,7 +54,7 @@ export default class Portal extends React.Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
     if (nextState.active){
       this.renderPortal(nextProps);
     } else if (nextProps.isOpen === true && !this.props.isOpen && !this.state.active){
@@ -62,7 +82,7 @@ export default class Portal extends React.Component {
     this.closePortal();
   }
 
-  handleWrapperClick(e) {
+  handleWrapperClick(e: Event) {
     e.preventDefault();
     e.stopPropagation();
     if (this.state.active) {
@@ -71,7 +91,7 @@ export default class Portal extends React.Component {
     this.openPortal();
   }
 
-  openPortal(props = this.props) {
+  openPortal(props: PortalProps = this.props) {
     this.setState({ active: true });
     this.renderPortal(props, true);
   }
@@ -96,17 +116,18 @@ export default class Portal extends React.Component {
         resetPortalState();
       }
 
-      this.props.onClose();
+      this.props.onClose && this.props.onClose();
     }
   }
 
-  handleOutsideMouseClick(e) {
+  handleOutsideMouseClick(e: Event) {
     if (!this.state.active) {
       return;
     }
 
     const root = findDOMNode(this.portal);
-    if (root.contains(e.target) || (e.button && e.button !== 0)) {
+    let node: Node = e.target as Node;
+    if (root.contains(node)) {
       return;
     }
 
@@ -114,7 +135,7 @@ export default class Portal extends React.Component {
     this.closePortal();
   }
 
-  handleKeydown(e) {
+  handleKeydown(e: KeyboardEvent) {
     if (e.keyCode === KEYCODES.ESCAPE && this.state.active) {
       this.closePortal();
     } else if (this.state.active){
@@ -122,7 +143,7 @@ export default class Portal extends React.Component {
     }
   }
 
-  renderPortal(props, isOpening:boolean = false) {
+  renderPortal(props: PortalProps, isOpening:boolean = false) {
     if (!this.node) {
       this.node = document.createElement('div');
       document.body.appendChild(this.node);
@@ -131,12 +152,11 @@ export default class Portal extends React.Component {
     this.portal = unstable_renderSubtreeIntoContainer(
       this,
       typeof props.children === "function" ? props.children(this.closePortal) : props.children,
-      this.node,
-      this.props.onUpdate
+      this.node
     );
     
     if (isOpening) {
-      this.props.onOpen(this.node);
+      this.props.onOpen && this.props.onOpen(this.node);
     }
   }
 
@@ -149,23 +169,3 @@ export default class Portal extends React.Component {
     return null;
   }
 }
-
-Portal.propTypes = {
-  children: PropTypes.any.isRequired,
-  openByClickOn: PropTypes.element,
-  closeOnEsc: PropTypes.bool,
-  closeOnOutsideClick: PropTypes.bool,
-  closeOnScroll: PropTypes.bool,
-  onOpen: PropTypes.func,
-  onClose: PropTypes.func,
-  beforeClose: PropTypes.func,
-  onUpdate: PropTypes.func,
-  onKeyStroke: PropTypes.func,
-  isOpen: PropTypes.bool
-};
-
-Portal.defaultProps = {
-  onOpen: () => {},
-  onClose: () => {},
-  onUpdate: () => {}
-};

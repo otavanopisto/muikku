@@ -1,8 +1,18 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 import Link from '../../general/link.tsx';
+import {i18nType, CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers';
 
-class LastMessagesPanel extends React.Component {
+interface LastMessagesPanelProps {
+  i18n: i18nType,
+  lastMessages: CommunicatorMessageListType
+}
+
+interface LastMessagesPanelState {
+  
+}
+
+class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
     return (<div className="ordered-container-item index panel">
       <div className="index text index-text-for-panels-title index-text-for-panels-title-last-messages">
@@ -11,7 +21,7 @@ class LastMessagesPanel extends React.Component {
       </div>
       {this.props.lastMessages ? (
         <div className="index item-list index-item-list-panel-last-messages">
-          {this.props.lastMessages.map((message)=>{
+          {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
             return (<Link key={message.id} className={`item-list-item ${message.unreadMessagesInThread ? "item-list-item-unread" : ""}`}
                     href={`/communicator#inbox/${message.communicatorMessageId}`}>
               <span className={`icon icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>

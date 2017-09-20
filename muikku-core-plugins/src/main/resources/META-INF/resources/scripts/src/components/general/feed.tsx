@@ -1,16 +1,23 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {connect} from 'react-redux';
+import {i18nType} from '~/reducers';
 
-class Feed extends React.Component {
-  static propTypes = {
-    entries: PropTypes.arrayOf(PropTypes.shape({
-      publicationDate: PropTypes.string.isRequired,
-      description: PropTypes.string.isRequired,
-      link: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired
-    })).isRequired
-  }
+interface FeedProps {
+  entries: Array<{
+    publicationDate: string,
+    description: string,
+    link: string,
+    title: string
+  }>,
+  i18n: i18nType
+}
+
+interface FeedState {
+  
+}
+
+class Feed extends React.Component<FeedProps, FeedState> {
   render(){
     return <ul className="feed">
       {this.props.entries.map((entry, index)=>{

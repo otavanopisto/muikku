@@ -1,7 +1,6 @@
 import Navbar from '~/components/general/navbar.tsx';
 import Link from '~/components/general/link.tsx';
-import {i18nType} from '~/reducers/base/i18n';
-import {statusType} from '~/reducers/base/status';
+import {i18nType, StatusType} from '~/reducers';
 
 import * as React from 'react';
 import {connect} from 'react-redux';

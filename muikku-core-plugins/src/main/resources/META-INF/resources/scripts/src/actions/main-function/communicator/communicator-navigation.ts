@@ -100,7 +100,9 @@ export default {
         
         dispatch({
           type: "DELETE_COMMUNICATOR_NAVIGATION_LABEL",
-          payload: label
+          payload: {
+            labelId: label.id
+          }
         });
         dispatch({
           type: "REMOVE_ONE_LABEL_FROM_ALL_MESSAGES",

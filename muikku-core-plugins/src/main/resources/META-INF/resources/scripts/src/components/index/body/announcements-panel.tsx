@@ -2,7 +2,19 @@ import Link from '../../general/link.tsx';
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-class AnnouncementsPanel extends React.Component {
+import {StatusType, AnnouncementListType, AnnouncementType, i18nType} from '~/reducers';
+
+interface AnnouncementsPanelProps {
+  i18n: i18nType,
+  status: StatusType,
+  announcements: AnnouncementListType
+}
+
+interface AnnouncementsPanelState {
+  
+}
+
+class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   render(){
     return (<div className="ordered-container-item index panel">
         <div className="index text index-text-for-panels-title index-text-for-panels-title-announcements">
@@ -11,7 +23,7 @@ class AnnouncementsPanel extends React.Component {
       </div>
       {this.props.announcements.length !== 0 ?
         <div className="index item-list index-item-list-panel-announcements">
-          {this.props.announcements.map((announcement)=>{
+          {this.props.announcements.map((announcement: AnnouncementType)=>{
             return <Link key={announcement.id} className={`item-list-item ${announcement.workspaces ? "item-list-item-has-workspaces" : ""}`}
               href={`/announcements?announcementId=${announcement.id}`}>
               <span className="icon icon-announcer"></span>

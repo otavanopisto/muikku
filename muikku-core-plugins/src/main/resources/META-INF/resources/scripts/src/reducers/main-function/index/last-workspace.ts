@@ -1,4 +1,7 @@
-export default function announcements(state=null, action){
+import {WorkspaceType} from "~/reducers";
+import {ActionType} from "~/actions";
+
+export default function lastWorkspace (state: WorkspaceType=null, action: ActionType<any>): WorkspaceType{
   if (action.type === 'UPDATE_LAST_WORKSPACE'){
     return action.payload;
   }

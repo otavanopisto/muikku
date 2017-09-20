@@ -2,8 +2,17 @@ import FrontpageNavbar from './navbar.tsx';
 import FrontpageFeed from './feed.tsx';
 import * as React from 'react';
 import {connect} from 'react-redux';
+import {i18nType} from '~/reducers';
 
-class FrontpageBody extends React.Component {
+interface FrontpageBodyProps {
+  i18n: i18nType
+}
+
+interface FrontpageBodyState {
+  
+}
+
+class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodyState> {
   componentDidMount(){
     this.addCarousels();
   }

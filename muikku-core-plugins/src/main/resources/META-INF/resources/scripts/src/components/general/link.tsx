@@ -1,7 +1,8 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
+import * as $ from 'jquery';
 
-function scrollToSection(anchor) {
+function scrollToSection(anchor: string) {
   if (!$(anchor).size()){
     window.location.href = anchor;
     return;
@@ -22,8 +23,29 @@ function scrollToSection(anchor) {
   }, 500);
 }
 
-export default class Link extends React.Component {
-  constructor(props){
+interface LinkProps {
+  active: boolean,
+  disablePropagation?: boolean,
+  disabled?: boolean,
+  as?: string,
+  href?: string,
+  onClick?: Function,
+  onTouchStart?: Function,
+  onTouchEnd?: Function,
+  onTouchMove?: Function,
+  className?: string,
+  [otherProp: string]: any
+}
+
+interface LinkState {
+  active: boolean
+}
+
+export default class Link extends React.Component<LinkProps, LinkState> {
+  private touchCordX: number | null;
+  private touchCordY: number | null;
+
+  constructor(props: LinkProps){
     super(props);
     
     this.onClick = this.onClick.bind(this);
@@ -38,7 +60,7 @@ export default class Link extends React.Component {
     this.touchCordX = null;
     this.touchCordY = null;
   }
-  onClick(e, re){
+  onClick(e: Event, re: any){
     e.preventDefault();
     if (this.props.disablePropagation){
       e.stopPropagation();
@@ -57,7 +79,7 @@ export default class Link extends React.Component {
       this.props.onClick(e, re);
     }
   }
-  onTouchStart(e, re){
+  onTouchStart(e: TouchEvent, re: any){
     e.preventDefault();
     if (this.props.disablePropagation){
       e.stopPropagation();
@@ -73,7 +95,7 @@ export default class Link extends React.Component {
       }
     } 
   }
-  onTouchMove(e, re){
+  onTouchMove(e: TouchEvent, re: any){
     if (this.state.active){
       let X = e.changedTouches[0].pageX;
       let Y = e.changedTouches[0].pageY;
@@ -87,7 +109,7 @@ export default class Link extends React.Component {
       this.props.onTouchMove(e, re);
     }
   }
-  onTouchEnd(e, re){
+  onTouchEnd(e: TouchEvent, re: any){
     if (!this.props.disabled){
       this.setState({active: false});
     }
@@ -101,7 +123,9 @@ export default class Link extends React.Component {
   }
   render(){
     let Element = this.props.as || 'a';
-    let elementProps = Object.assign({}, this.props, {disablePropagation: undefined, disabled: undefined});
+    let elementProps:LinkProps  = Object.assign({}, this.props);
+    delete elementProps["disablePropagation"];
+    delete elementProps["disabled"]
     
     return <Element {...elementProps}
       className={this.props.className + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}

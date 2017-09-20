@@ -5,7 +5,19 @@ import Link from '../../general/link.tsx';
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-class ContinueStudiesPanel extends React.Component {
+import {i18nType, StatusType, WorkspaceType} from '~/reducers';
+
+interface ContinueStudiesPanelProps {
+  i18n: i18nType,
+  status: StatusType,
+  lastWorkspace: WorkspaceType
+}
+
+interface ContinueStudiesPanelState {
+  
+}
+
+class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, ContinueStudiesPanelState> {
   render(){
     if (!this.props.status.loggedIn){
       return null;
