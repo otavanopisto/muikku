@@ -29,7 +29,7 @@ class CommunicatorToolbar extends React.Component {
     } else {
       location.hash = location.hash.split("/")[0] + "/" + messageId;
     }
-  }
+  } 
   updateLabelFilter(e){
     this.setState({labelFilter: e.target.value});
   }
@@ -61,21 +61,17 @@ class CommunicatorToolbar extends React.Component {
       return <div className="communicator-navigation">
         <Link className="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back" onClick={this.onGoBackClick}>
           <span className="icon icon-goback"></span>
-        </Link>
-      
+        </Link>      
         <div className="communicator text communicator-text-current-folder">
           <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
           {"  " + currentLocation.text(this.props.i18n)}
           {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
             <Link className="communicator button-pill communicator-button-pill-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
           </LabelUpdateDialog> : null} {" / " + this.props.communicatorMessages.current.messages[0].caption}
-        </div>
-                
+        </div>                
         <Link className="communicator button button-pill communicator-button-pill-delete" onClick={this.props.deleteCurrentMessage}>
-          {/* FIXME this is not the right icon, there are no trash bin in the file */}
-          <span className="icon icon-forgotpassword"></span>
+          <span className="icon icon-delete"></span>
         </Link>
-        
         <Dropdown classNameExtension="communicator" classNameSuffix="labels" items={
           [
             <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
@@ -132,10 +128,9 @@ class CommunicatorToolbar extends React.Component {
       
       <Link className="communicator button button-pill communicator-button-pill-delete"
        disabled={this.props.communicatorMessages.selected.length == 0} onClick={this.props.deleteSelectedMessages}>
-        {/* FIXME this is not the right icon, there are no trash bin in the file */}
-        <span className="icon icon-forgotpassword"></span>
+        <span className="icon icon-delete"></span>
       </Link>
-    
+               
       <Dropdown classNameExtension="communicator" classNameSuffix="labels" items={
         [
           <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}

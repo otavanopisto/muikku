@@ -137,7 +137,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     }
     
     return <JumboDialog classNameExtension="communicator"
-      title={this.props.i18n.text.get('plugin.communicator.createmessage.topic')}
+      title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
       content={content} footer={footer}>
       {this.props.children}
     </JumboDialog>
