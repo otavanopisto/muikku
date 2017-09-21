@@ -19,4 +19,8 @@ public class ChatController {
   public UserChatSettings createUserChatSettings(SchoolDataIdentifier userIdentifier, UserChatVisibility visibility) {
     return userChatSettingsDAO.create(userIdentifier.toId(), visibility);
   }
+
+  public UserChatSettings updateUserChatSettings(UserChatSettings settings, UserChatVisibility visibility) {
+    return userChatSettingsDAO.updateVisibility(settings, visibility);
+  }
 }

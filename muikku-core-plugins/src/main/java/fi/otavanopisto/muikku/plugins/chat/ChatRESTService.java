@@ -19,7 +19,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -64,7 +64,6 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/credentials")
   @RESTPermit(handling = Handling.INLINE)
   public Response fetchCredentials() {
-    
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
@@ -164,7 +163,7 @@ public class ChatRESTService extends PluginRESTService {
     return Response.ok(settings).build();
   }
 
-  @POST
+  @PUT
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE)
   public Response setChatSettings(UserChatSettings input) {
@@ -177,10 +176,15 @@ public class ChatRESTService extends PluginRESTService {
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Ill-formed identifier").build();
     }
-    
-    UserChatSettings settings = chatController.createUserChatSettings(
+    UserChatSettings settings = chatController.findUserChatSettings(identifier);
+
+    if (settings == null) {
+      settings = chatController.createUserChatSettings(
         SchoolDataIdentifier.fromId(input.getUserIdentifier()),
         input.getVisibility());
+    } else {
+      chatController.updateUserChatSettings(settings, input.getVisibility());
+    }
     
     return Response.ok(settings).build();
   }

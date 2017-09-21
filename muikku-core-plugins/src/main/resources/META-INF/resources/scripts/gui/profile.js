@@ -2,6 +2,34 @@
 
 (function() {
   
+  $.widget("custom.chatVisibility", {
+    _create: function() {
+      mApi().chat.status.read({}).callback($.proxy(function (status) {
+        if (status && status.enabled) {
+          mApi().chat.settings.read({}).callback($.proxy(function (settings) {
+            var data = {};
+            if (settings.visibility === "VISIBLE_TO_ALL") {
+              data.visible_to_all_selected = "selected";
+            }
+            if (settings.visibility === "INVISIBLE") {
+              data.invisible_selected = "selected";
+            }
+            renderDustTemplate('profile/chat-visibility.dust', data, $.proxy(function (text) {
+              this.element.html(text);
+              this.element.find("select").on('change', $.proxy(function() {
+                this._setVisibility(event.target.value);
+              });
+            });
+          });
+        }
+      });
+    },
+    
+    _setVisibility: function(visibility) {
+      mApi().chat.settings.update({visibility: visibility});
+    }
+  });
+  
   $.widget("custom.profileImage", {
     _create : function() {
       $('.profile-image-input').on('change', $.proxy(this._onFileInputChange, this));
@@ -288,6 +316,10 @@
   });
 
   $(document).ready(function() {
+    
+    // Chat visibility
+    
+    $('.profile-chat-visibility').chatVisibility();
     
     // Profile image support
     
