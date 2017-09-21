@@ -103,7 +103,7 @@ class MessageView extends React.Component {
               lastName: r.lastName,
               nickName: r.nickName
             }
-          })).filter(user=>user.id !== MUIKKU_LOGGED_USER_ID);
+          })).filter(user=>user.id !== this.props.status.userId);
           let userGroupObject = message.userGroupRecipients.map(ug=>({
             type: "usergroup",
             value: ug
@@ -164,7 +164,8 @@ class MessageView extends React.Component {
 function mapStateToProps(state){
   return {
     communicatorMessagesCurrent: state.communicatorMessages.current,
-    i18n: state.i18n
+    i18n: state.i18n,
+    status: state.status
   }
 };
 

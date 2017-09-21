@@ -1,6 +1,7 @@
 import actions from '~/actions/base/notifications';
 import {colorIntToHex, hexToColorInt} from '~/util/modifiers';
 import promisify from '~/util/promisify';
+import mApi from '~/lib/mApi';
 
 export default {
   updateCommunicatorNavigationLabels(callback){

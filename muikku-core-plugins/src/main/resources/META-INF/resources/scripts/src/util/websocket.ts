@@ -1,5 +1,7 @@
 import actions from '../actions/base/notifications';
 import {Store} from 'react-redux';
+import $ from '~/lib/jquery';
+import mApi from '~/lib/mApi';
 
 type ListenerType = {
     [name: string]: {
@@ -189,7 +191,7 @@ export default class MuikkuWebsocket {
     if ((typeof window.WebSocket) !== 'undefined') {
       return new WebSocket(url);
     } else if ((typeof window.MozWebSocket) !== 'undefined') {
-      return new MozWebSocket(url);
+      return new window.MozWebSocket(url);
     }
     
     return null;

@@ -1,16 +1,16 @@
 import * as React from 'react';
 
-function escapeRegExp(str) {
+function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }
 
-function intersectTwo(a, b){
+function intersectTwo(a: any[], b: any[]){
   return a.filter(function(n) {
     return b.indexOf(n) > -1;
   });
 }
 
-function differenceTwo(a, b){
+function differenceTwo(a: any[], b: any[]){
   let inAButNotInB = a.filter(function(n) {
     return b.indexOf(n) === -1;
   });
@@ -20,11 +20,11 @@ function differenceTwo(a, b){
   return inAButNotInB.concat(inBButNotInA);
 }
 
-export function filterMatch(string, filter){
+export function filterMatch(string: string, filter: string){
   return string.match(new RegExp(escapeRegExp(filter), "i"));
 }
 
-export function filterHighlight(string, filter){
+export function filterHighlight(string: string, filter: string){
   return string.split(new RegExp("(" + escapeRegExp(filter) + ")", "i")).map((element, index)=>{
     if (index % 2 === 0){
       return React.createElement(
@@ -41,7 +41,7 @@ export function filterHighlight(string, filter){
   });
 }
 
-export function colorIntToHex(color) {
+export function colorIntToHex(color: number) {
   let b = (color & 255).toString(16);
   let g = ((color >> 8) & 255).toString(16);
   let r = ((color >> 16) & 255).toString(16);
@@ -53,7 +53,7 @@ export function colorIntToHex(color) {
   return "#" + rStr + gStr + bStr;
 }
 
-export function hexToColorInt(hexColor) {
+export function hexToColorInt(hexColor: string) {
   let r = 255;
   let g = 255;
   let b = 255;
@@ -71,7 +71,7 @@ export function hexToColorInt(hexColor) {
   return (r << 16) + (g << 8) + b;
 }
 
-export function intersect(...elements){
+export function intersect(...elements:any[]){
   if (elements.length === 1){
     return elements[0];
   }
@@ -79,7 +79,7 @@ export function intersect(...elements){
   return elements.reduce(intersectTwo);
 }
 
-export function difference(...elements){
+export function difference(...elements:any[]){
   if (elements.length === 1){
     return [];
   }
@@ -87,7 +87,7 @@ export function difference(...elements){
   return elements.reduce(differenceTwo);
 }
 
-export function escapeHTML(str){
+export function escapeHTML(str: string){
   return str.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -95,7 +95,7 @@ export function escapeHTML(str){
     .replace(/'/g, '&apos;');
 }
 
-export function unescapeHTML(str){
+export function unescapeHTML(str: string){
   const doc = new DOMParser().parseFromString(str, "text/html");
   return doc.documentElement.textContent;
 }

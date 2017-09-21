@@ -6,10 +6,7 @@
 		"forkChecker": true,
 		"ignoreDiagnostics": [
 			2339,
-			7006,
-			2304,
-			7005,
-			7019
+			7006
 		]
 	},
 	"compilerOptions": {
