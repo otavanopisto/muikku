@@ -1,16 +1,24 @@
-import * as PropTypes from 'prop-types';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
+import {AnyActionType} from '~/actions';
+import {i18nType, StatusType} from '~/reducers/index.d';
 import {bindActionCreators} from 'redux';
 
 import actions from '~/actions/base/status';
 
-class ProfileItem extends React.Component {
-  static propTypes = {
-    classNameExtension: PropTypes.string.isRequired,
-  }
+interface ProfileItemProps {
+  classNameExtension: string,
+  i18n: i18nType,
+  status: StatusType
+}
+
+interface ProfileItemState {
+  
+}
+
+class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
   render(){
     if (!this.props.status.loggedIn){
       return null;
@@ -54,18 +62,18 @@ class ProfileItem extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     status: state.status
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators(actions, dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(ProfileItem);

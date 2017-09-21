@@ -1,7 +1,7 @@
 import thunk from 'redux-thunk';
 import * as React from 'react';
-import {Provider} from 'react-redux';
-import {createStore, applyMiddleware} from 'redux';
+import {Provider, Store} from 'react-redux';
+import {createStore, applyMiddleware, Reducer} from 'redux';
 import {render} from 'react-dom';
 import {logger} from 'redux-logger';
 import {composeWithDevTools} from 'redux-devtools-extension';
@@ -24,10 +24,10 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 //    }
 // })
 
-export default function runApp(reducer, App, existentStore=null){
+export default function runApp(reducer: Reducer<any>, App: any, existentStore: Store<any>=null): Store<any> {
   let store = existentStore;
   if (!store){
-    if (process.env.NODE_ENV !== "production"){
+    if (process.env["NODE_ENV"] !== "production"){
       store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk, logger)));
     } else {
       store = createStore(reducer, applyMiddleware(thunk));
@@ -41,31 +41,31 @@ export default function runApp(reducer, App, existentStore=null){
   ), document.querySelector("#app"));
   
   let newStore = {
-    dispatch(action){
+    dispatch(action: any){
       if (typeof action === 'function') {
         return action(store.dispatch, store.getState);
       }
       
       return store.dispatch(action);
     },
-    subscribe(...args){
-      return store.subscribe(...args);
+    subscribe(...args: any[]){
+      return (store.subscribe as any)(...args);
     },
-    getState(...args){
-      return store.getState(...args);
+    getState(...args: any[]){
+      return (store.getState as any)(...args);
     },
-    replaceReducer(...args){
-      return store.replaceReducer(...args);
+    replaceReducer(...args: any[]){
+      return (store.replaceReducer as any)(...args);
     }
   }
   
-  let preApp = document.querySelector("#loading");
+  let preApp: HTMLElement = <HTMLElement>document.querySelector("#loading");
   if (preApp){
     preApp.style.display = "none";
   }
   
-  if (process.env.NODE_ENV !== "production"){
-    window.STORE_DEBUG = store;
+  if (process.env["NODE_ENV"] !== "production"){
+    (window as any).STORE_DEBUG = store;
   }
   
   return newStore;

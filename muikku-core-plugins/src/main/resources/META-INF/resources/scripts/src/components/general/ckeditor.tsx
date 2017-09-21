@@ -1,5 +1,6 @@
 import equals = require("deep-equal");
 import * as React from 'react';
+import CKEDITOR from '~/lib/ckeditor';
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -22,6 +23,11 @@ interface CKEditorState {
 }
 
 export default class CKEditor extends React.Component<CKEditorProps, CKEditorState> {
+  private name:string;
+  private currentData:string;
+  private width: number | string;
+  private height: number | string;
+  
   constructor(props: CKEditorProps){
     super(props);
     
@@ -32,24 +38,28 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.width = null;
     this.height = null;
   }
-  resize(width, height){
-    let actualHeight = height;
+  resize(width: number | string, height: number | string){
+    let actualHeight:number | string;
     if (height === "grow"){
-      let computedStyle = getComputedStyle(this.refs.ckeditor.parentNode, null);
-      actualHeight = parseInt(computedStyle.getPropertyValue("height")) -
+      let nActualHeight:number;
+      let computedStyle = getComputedStyle(this.refs["ckeditor"].parentNode, null);
+      nActualHeight = parseInt(computedStyle.getPropertyValue("height")) -
           parseInt(computedStyle.getPropertyValue("padding-top")) -
           parseInt(computedStyle.getPropertyValue("padding-top"));
       
-      Array.from(this.refs.ckeditor.parentNode.childNodes).forEach((node: HTMLElement)=>{
-        if (node === this.refs.ckeditor || node.id === ("cke_" + this.name)){
+      Array.from(this.refs["ckeditor"].parentNode.childNodes).forEach((node: HTMLElement)=>{
+        if (node === this.refs["ckeditor"] || node.id === ("cke_" + this.name)){
           return;
         }
         
         let nComputedStyle = getComputedStyle(node, null);
-        actualHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
+        nActualHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
           parseInt(nComputedStyle.getPropertyValue("margin-top")) +
           parseInt(nComputedStyle.getPropertyValue("margin-bottom"));
+        actualHeight = nActualHeight;
       });
+    } else {
+      actualHeight = height;
     }
     
     if (actualHeight !== this.height || this.width !== width){

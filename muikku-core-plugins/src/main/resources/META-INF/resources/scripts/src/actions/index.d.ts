@@ -12,7 +12,8 @@ export interface SpecificActionType<ActionType, PayloadType> extends ActionType 
 
 type dispatch = (action:any)=>any;
 type getState = ()=>any;
-type DeferredAction = (dispatch, getState)=>any;
+type AsyncDeferredAction = (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>Promise<void>;
+type DeferredAction = (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>any;
 
 export interface SET_LOCALE extends SpecificActionType<"SET_LOCALE", string>{}
 export interface ADD_NOTIFICATION extends SpecificActionType<"ADD_NOTIFICATION", dataTypes.NotificationType>{}
@@ -20,6 +21,10 @@ export interface HIDE_NOTIFICATION extends SpecificActionType<"HIDE_NOTIFICATION
 export interface LOGOUT extends SpecificActionType<"LOGOUT", null>{}
 export interface UPDATE_TITLE extends SpecificActionType<"UPDATE_TITLE", string>{}
 export interface UPDATE_MESSAGE_COUNT extends SpecificActionType<"UPDATE_MESSAGE_COUNT", number>{}
+export interface UPDATE_LAST_WORKSPACE extends SpecificActionType<"UPDATE_LAST_WORKSPACE", dataTypes.WorkspaceType>{}
+export interface UPDATE_WORKSPACES extends SpecificActionType<"UPDATE_WORKSPACES", dataTypes.WorkspaceListType>{}
+export interface UPDATE_LAST_MESSAGES extends SpecificActionType<"UPDATE_LAST_MESSAGES", dataTypes.CommunicatorMessageListType>{}
+export interface UPDATE_ANNOUNCEMENTS extends SpecificActionType<"UPDATE_ANNOUNCEMENTS", dataTypes.AnnouncementListType>{}
 
 export interface SET_CURRENT_THREAD extends SpecificActionType<"SET_CURRENT_THREAD", dataTypes.CommunicatorCurrentThreadType>{}
 export interface UPDATE_MESSAGES_STATE extends SpecificActionType<"UPDATE_MESSAGES_STATE", dataTypes.CommunicatorStateType>{}
@@ -49,6 +54,7 @@ export type AnyActionType = SET_CURRENT_THREAD | UPDATE_MESSAGES_STATE |
   UPDATE_MESSAGES_ALL_PROPERTIES | UPDATE_MESSAGE_ADD_LABEL | UPDATE_MESSAGE_DROP_LABEL | PUSH_ONE_MESSAGE_FIRST |
   LOCK_TOOLBAR | UNLOCK_TOOLBAR | UPDATE_ONE_MESSAGE | DELETE_MESSAGE | UPDATE_MESSAGES_ALL_PROPERTIES | UPDATE_SIGNATURE |
   SET_LOCALE | ADD_NOTIFICATION | HIDE_NOTIFICATION | LOGOUT | UPDATE_TITLE | UPDATE_SELECTED_MESSAGES | ADD_TO_COMMUNICATOR_SELECTED_MESSAGES |
-  REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES | UPDATE_MESSAGE_COUNT
-  | DeferredAction
+  REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES | UPDATE_MESSAGE_COUNT | UPDATE_LAST_WORKSPACE | UPDATE_WORKSPACES | UPDATE_LAST_MESSAGES |
+  UPDATE_ANNOUNCEMENTS
+  | DeferredAction | AsyncDeferredAction
   

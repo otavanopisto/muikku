@@ -1,13 +1,31 @@
 import actions from '../actions/base/notifications';
+import {Store} from 'react-redux';
+
+type ListenerType = {
+    [name: string]: {
+      actions?: Array<Function>,
+      callbacks?: Array<Function>
+    }
+  }
 
 export default class MuikkuWebsocket {
-  constructor(store, listeners=[], options={
+  private options:any;
+  private ticket:any;
+  private webSocket:WebSocket;
+  private socketOpen:boolean;
+  private messagesPending:any[];
+  private pingHandle:any;
+  private pinging:boolean;
+  private pingTime:number;
+  private listeners:ListenerType;
+  private store: Store<any>;
+  
+  constructor(store: Store<any>, listeners: ListenerType, options={
     reconnectInterval: 200,
     pingTimeStep: 1000,
     pingTimeout: 10000
   }) {
     this.options = options;
-    this.listeners = listeners;
     
     this.ticket = null;
     this.webSocket = null;
@@ -16,10 +34,10 @@ export default class MuikkuWebsocket {
     this.pingHandle = null;
     this.pinging = false;
     this.pingTime = 0;
-    this.listeners = {};
+    this.listeners = listeners;
     this.store = store;
     
-    this.getTicket((ticket)=> {
+    this.getTicket((ticket: any)=> {
       if (this.ticket) {
         this.openWebSocket();
         this.startPinging();
@@ -61,12 +79,12 @@ export default class MuikkuWebsocket {
     });
     
     if (this.listeners[event]){
-      let listeners = this.listeners[event] instanceof Array ? this.listeners[event] : this.listeners[event].actions;
+      let listeners = this.listeners[event].actions;
       if (listeners){
         if (typeof listeners === "function"){
           listeners = listeners(data);
         }
-        for (action of listeners){
+        for (let action of listeners){
           if (typeof action === "function"){
             this.store.dispatch(action());
           } else {
@@ -77,7 +95,7 @@ export default class MuikkuWebsocket {
       
       let otherListeners = this.listeners[event].callbacks;
       if (otherListeners){
-        for (callback of otherListeners){
+        for (let callback of otherListeners){
           callback(data);
         }
       }

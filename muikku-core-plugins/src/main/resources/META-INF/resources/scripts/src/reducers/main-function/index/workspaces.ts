@@ -1,4 +1,4 @@
-import {WorkspaceListType} from "~/reducers";
+import {WorkspaceListType} from "~/reducers/index.d";
 import {ActionType} from '~/actions';
 
 export default function workspaces(state: WorkspaceListType=[], action: ActionType): WorkspaceListType{

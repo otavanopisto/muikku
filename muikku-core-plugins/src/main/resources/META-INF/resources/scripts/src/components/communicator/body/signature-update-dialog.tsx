@@ -1,11 +1,12 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import JumboDialog from '~/components/general/jumbo-dialog';
 import Link from '~/components/general/link';
 import CKEditor from '~/components/general/ckeditor';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
+import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
 import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
+import {CommunicatorSignatureType} from '~/reducers/index.d';
 
 const KEYCODES = {
   ENTER: 13
@@ -25,13 +26,19 @@ const CKEDITOR_CONFIG = {
 
 const CKEDITOR_PLUGINS = {};
 
-class CommunicatorSignatureUpdateDialog extends React.Component {
-  static propTypes = {
-    children: PropTypes.element,
-    isOpen: PropTypes.bool,
-    onClose: PropTypes.func
-  }
-  constructor(props){
+interface CommunicatorSignatureUpdateDialogProps {
+  children: React.ReactElement<any>,
+  isOpen: boolean,
+  onClose: ()=>any,
+  signature: CommunicatorSignatureType
+}
+
+interface CommunicatorSignatureUpdateDialogState {
+  signature: string
+}
+
+class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSignatureUpdateDialogProps, CommunicatorSignatureUpdateDialogState> {
+  constructor(props: CommunicatorSignatureUpdateDialogProps){
     super(props);
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -43,12 +50,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component {
       signature: props.signature ? props.signature.signature : ""
     }
   }
-  handleKeydown(code, closeDialog){
+  handleKeydown(code: number, closeDialog: ()=>any){
     if (code === KEYCODES.ENTER){
       this.update(closeDialog);
     }
   }
-  onCKEditorChange(signature){
+  onCKEditorChange(signature: string){
     this.setState({signature});
   }
   resetState(){
@@ -56,7 +63,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component {
       signature: this.props.signature ? this.props.signature.signature : ""
     });
   }
-  update(closeDialog){
+  update(closeDialog: ()=>any){
     this.props.updateSignature(this.state.signature.trim() || null);
     closeDialog();
   }
@@ -81,18 +88,18 @@ class CommunicatorSignatureUpdateDialog extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     signature: state.communicatorMessages.signature,
     i18n: state.i18n
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators(communicatorMessagesActions, dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorSignatureUpdateDialog);

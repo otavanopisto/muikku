@@ -1,4 +1,4 @@
-import {ActionType} from './actions';
+import {ActionType} from '~/actions';
 import {CommunicatorMessagesType, CommunicatorStateType, CommunicatorMessagesPatchType,
   CommunicatorMessageListType, CommunicatorMessageType, CommunicatorMessageUpdateType,
   CommunicatorSignatureType, CommunicatorCurrentThreadType} from '~/reducers/index.d';

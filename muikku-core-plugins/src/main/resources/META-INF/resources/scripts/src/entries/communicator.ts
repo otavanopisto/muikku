@@ -2,36 +2,39 @@ import App from '~/containers/communicator';
 import reducer from '~/reducers/communicator';
 import runApp from '~/run';
 import Websocket from '~/util/websocket';
+import mApi from '~/lib/mApi';
 
 import actions from '~/actions/main-function';
 import communicatorActions from '~/actions/main-function/communicator';
 import titleActions from '~/actions/base/title';
 
+import {Action} from 'redux';
+
 let store = runApp(reducer, App);
 let websocket = new Websocket(store, {
   "Communicator:newmessagereceived": {
-    actions: [actions.updateMessageCount, communicatorActions.loadNewlyReceivedMessage],
+    actions: [actions.messageCount.updateMessageCount, communicatorActions.communicatorMessages.loadNewlyReceivedMessage],
     callbacks: [()=>mApi().communicator.cacheClear]
   },
   "Communicator:messageread": {
-    actions: [actions.updateMessageCount],
+    actions: [actions.messageCount.updateMessageCount],
     callbacks: [()=>mApi().communicator.cacheClear]
   },
   "Communicator:threaddeleted": {
-    actions: [actions.updateMessageCount],
+    actions: [actions.messageCount.updateMessageCount],
     callbacks: [()=>mApi().communicator.cacheClear]
   }
 });
 let currentLocation = window.location.hash.replace("#","").split("/");
-function loadLocation(location){
+function loadLocation(location: string[]){
   if (location.length === 1){
-    store.dispatch(communicatorActions.communicatorMessages.loadMessages(location[0]));
+    store.dispatch(<Action>communicatorActions.communicatorMessages.loadMessages(location[0]));
   } else {
-    store.dispatch(communicatorActions.communicatorMessages.loadMessage(location[0], parseInt(location[1])));
+    store.dispatch(<Action>communicatorActions.communicatorMessages.loadMessage(location[0], parseInt(location[1])));
   }
 }
 
-store.dispatch(actions.messageCount.updateMessageCount());
+store.dispatch(<Action>actions.messageCount.updateMessageCount());
 store.dispatch(communicatorActions.communicatorNavigation.updateCommunicatorNavigationLabels(()=>{
   if (currentLocation[0].includes("label")){
     loadLocation(currentLocation);
@@ -39,7 +42,7 @@ store.dispatch(communicatorActions.communicatorNavigation.updateCommunicatorNavi
 }));
 
 window.addEventListener("hashchange", ()=>{
-  let newLocation = window.location.hash.replace("#","").split("/");
+  let newLocation: string[] = window.location.hash.replace("#","").split("/");
   loadLocation(newLocation);
 }, false);
 if (!window.location.hash){
@@ -51,4 +54,4 @@ if (!window.location.hash){
 }
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.communicator.pageTitle')));
-store.dispatch(communicatorActions.communicatorMessages.loadSignature());
+store.dispatch(<Action>communicatorActions.communicatorMessages.loadSignature());

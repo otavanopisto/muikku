@@ -1,4 +1,4 @@
-import {i18nType} from '~/reducers/i18n';
+import {i18nType} from '~/reducers/index.d';
 import {ActionType} from '~/actions';
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorNavigationItemUpdateType} from '~/reducers/index.d';
 
