@@ -1,15 +1,10 @@
 $item-list-item-min-height: 32px;
 
 .item-list {
-  width: 100%;
-  display: block;
-  position: relative;
   
   .item-list-item {
-    width: 100%;
     min-height: $item-list-item-min-height;
     transition: background-color 0.3s;
-    position: relative;
     cursor: pointer;
     display: flex;
     

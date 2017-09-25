@@ -233,9 +233,9 @@
 
 .communicator.button {
   &.communicator-button-new-message {
-    width: 200px;
+    width:100%;
+    height: 34px;
     @include breakpoint-down($breakpoint-landscape-pad){
-      width: 150px;
     }
     
     color: $color-communicator-button-new-message-text;
