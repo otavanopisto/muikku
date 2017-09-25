@@ -7,6 +7,7 @@ import communicatorMessagesActions from '~/actions/main-function/communicator/co
 import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
 import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
+import {CommunicatorMessageType} from '~/reducers/index.d';
 
 class CommunicatorToolbar extends React.Component {
   constructor(props){
@@ -108,11 +109,11 @@ class CommunicatorToolbar extends React.Component {
       </div>
     }
   
-    let allInCommon = [];
-    let onlyInSome = [];
+    let allInCommon:CommunicatorMessageType[] = [];
+    let onlyInSome:CommunicatorMessageType[] = [];
     let isAtLeastOneSelected = this.props.communicatorMessages.selected.length >= 1;
     if (isAtLeastOneSelected){
-      let partialIds = this.props.communicatorMessages.selected.map((message)=>{return message.labels.map(l=>l.labelId)});
+      let partialIds = this.props.communicatorMessages.selected.map((message: CommunicatorMessageType)=>{return message.labels.map(l=>l.labelId)});
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(...partialIds);
     }

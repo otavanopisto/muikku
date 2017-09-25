@@ -3,6 +3,7 @@ import FrontpageFeed from './feed';
 import * as React from 'react';
 import {connect} from 'react-redux';
 import {i18nType} from '~/reducers/index.d';
+import $ from '~/lib/jquery';
 
 interface FrontpageBodyProps {
   i18n: i18nType

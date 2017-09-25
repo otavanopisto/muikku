@@ -6,6 +6,7 @@ import * as PropTypes from 'prop-types';
 import Link from '~/components/general/link';
 import * as React from 'react';
 import {connect} from 'react-redux';
+import $ from '~/lib/jquery';
 
 class LoginButton extends React.Component {
   static propTypes = {

@@ -5,6 +5,7 @@ import * as React from 'react';
 import actions from '~/actions/base/status';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import $ from '~/lib/jquery';
 
 function checkLinkClicked(target: HTMLElement): boolean {
   return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
