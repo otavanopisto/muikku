@@ -16,12 +16,13 @@ $application-panel-internal-navigation-padding: 10px;
   .application-panel-helper-container{
     flex: 0 2 auto;
     width: 220px;  
-    margin-left: 30px;
+    margin-left: 15px;
+    padding: 10px 0;
   }
   
   .application-panel-main-container{
     flex: 1  1 auto;
-    margin: 0 30px 0 30px;
+    margin: 0 15px 0 25px;
     padding: 10px 0;    
   }
   
@@ -42,6 +43,7 @@ $application-panel-internal-navigation-padding: 10px;
       @include breakpoint-down($breakpoint-portrait-pad){
         display: none;
       }
+
       
       .application-panel-main-container {
         display: flex;
@@ -85,6 +87,11 @@ $application-panel-internal-navigation-padding: 10px;
     .application-panel-content {
       display: flex;
       flex-direction: row;
+
+      .application-panel-helper-container{
+        padding-top:10px;
+      }
+      
     }
 
     .application-panel-main-container {
