@@ -4,15 +4,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
+import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
-import static org.junit.Assert.assertNotEquals;
 
-import java.io.File;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
@@ -31,12 +29,10 @@ import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
 import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
 import fi.otavanopisto.pyramus.rest.model.Course;
-import fi.otavanopisto.pyramus.rest.model.CourseType;
 import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseUpdatePayload;
-import fi.otavanopisto.pyramus.webhooks.data.WebhookCourseData;
 
 public class CourseManagementTestsBase extends AbstractUITest {
   
@@ -348,8 +344,7 @@ public class CourseManagementTestsBase extends AbstractUITest {
         TestEnvironments.Browser.CHROME,
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
-        TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.PHANTOMJS
+        TestEnvironments.Browser.EDGE
     }
   )
   public void addWorkspaceProducerTest() throws Exception {
