@@ -26,11 +26,11 @@
               this.element.html(text);
               this.element.find("select").on('change', $.proxy(function() {
                 this._setVisibility(event.target.value);
-              }));
-            }));
-          }));
+              }, this));
+            }, this));
+          }, this));
         }
-      }));
+      }, this));
     },
     
     _setVisibility: function(visibility) {
