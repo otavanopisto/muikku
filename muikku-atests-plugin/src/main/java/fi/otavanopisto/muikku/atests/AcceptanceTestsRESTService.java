@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
+import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
@@ -37,6 +38,7 @@ import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupUserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.model.workspace.WorkspaceMaterialProducer;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.notifier.NotifierController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
@@ -71,8 +73,10 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
+import fi.otavanopisto.muikku.security.impl.WorkspaceEntityContextResolverImpl;
 import fi.otavanopisto.muikku.session.local.LocalSession;
 import fi.otavanopisto.muikku.session.local.LocalSessionController;
 import fi.otavanopisto.muikku.users.FlagController;
@@ -104,6 +108,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private WorkspaceController workspaceController;
+  
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
   
@@ -372,7 +379,14 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(404).entity("Not found").build();
     }
-    
+    try{
+      List<WorkspaceMaterialProducer> workspaceMaterialProducers = workspaceController.listWorkspaceMaterialProducers(workspaceEntity);
+      for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
+        workspaceController.deleteWorkspaceMaterialProducer(workspaceMaterialProducer);
+      }
+    }catch (Exception e) {
+      return Response.status(500).entity(e.getMessage()).build();
+    }
     try {
       workspaceMaterialController.deleteAllWorkspaceNodes(workspaceEntity);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
