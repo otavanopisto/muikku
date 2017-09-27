@@ -15,7 +15,11 @@
         authentication : "login",
         keepalive : "true",
         credentials_url : "/rest/chat/credentials",
-        auto_login : true
+        auto_login : true,
+        muc_domain : 'conference.dev.muikkuverkko.fi',
+        hide_muc_server : true,
+        auto_join_rooms : ['muikku@conference.dev.muikkuverkko.fi'],
+        ping_interval: 45
       });
     }
   });
