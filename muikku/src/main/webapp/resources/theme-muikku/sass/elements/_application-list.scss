@@ -3,15 +3,10 @@
 @import "../base/breakpoints";
 
 .application-list {
-  width: 100%;
-  height: 100%;
-  position: relative;
+   width: 100%;
   
   .application-list-item {
-    width: 100%;
-    position: relative;
     padding: 10px;
-    margin: 5px 0;
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
@@ -21,7 +16,10 @@
       width: 100%;
       position: relative;
     }
-    
+
+    &:not(:first-child) {
+      margin-top: 5px;
+    }    
     &:hover, &.hover {
       background-color: $color-application-list-item-background-hover;
     }

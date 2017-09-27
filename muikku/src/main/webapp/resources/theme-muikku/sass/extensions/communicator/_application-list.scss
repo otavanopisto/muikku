@@ -3,21 +3,12 @@
 @import "../../base/breakpoints";
 
 .communicator.application-list.communicator-application-list-messages {
-  padding: 0 5px;
   height: 100%;
-  overflow-y: auto;
   
   .application-list-item {
     padding-left: 15px;
 
-    &.communicator-application-list-item-unread::after {
-      position: absolute;
-      left: 5px;
-      width: 4px;
-      top: 5px;
-      bottom: 5px;
-      display: block;
-      content: " ";
+    &.communicator-application-list-item-unread {
       border-left: solid 4px $color-communicator-application-list-item-unread-border;
     }
     
