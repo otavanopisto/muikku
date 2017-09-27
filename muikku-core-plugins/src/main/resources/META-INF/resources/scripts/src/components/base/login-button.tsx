@@ -2,17 +2,23 @@
 //page hence it doesn't really need a reducer, however it could be implmented
 //if ever we wish to turn it into a SPA
 
-import * as PropTypes from 'prop-types';
 import Link from '~/components/general/link';
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import $ from '~/lib/jquery';
+import {i18nType} from '~/reducers/base/i18n';
 
-class LoginButton extends React.Component {
-  static propTypes = {
-    classNameExtension: PropTypes.string.isRequired
-  }
-  constructor(props){
+interface LoginButtonProps {
+  classNameExtension: string,
+  i18n: i18nType
+}
+
+interface LoginButtonState {
+  
+}
+
+class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
+  constructor(props: LoginButtonProps){
     super(props);
     
     this.login = this.login.bind(this);
@@ -28,17 +34,17 @@ class LoginButton extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(LoginButton);

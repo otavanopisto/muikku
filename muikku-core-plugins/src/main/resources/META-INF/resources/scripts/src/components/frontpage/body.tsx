@@ -1,8 +1,8 @@
 import FrontpageNavbar from './navbar';
 import FrontpageFeed from './feed';
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {i18nType} from '~/reducers/index.d';
+import {connect, Dispatch} from 'react-redux';
+import {i18nType} from '~/reducers/base/i18n';
 import $ from '~/lib/jquery';
 
 interface FrontpageBodyProps {
@@ -29,12 +29,12 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       href: '//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.css'
     }).appendTo('head');
       
-    $.getScript("//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js", function( data, textStatus, jqxhr ) {
-      $(".carousel-item").each((index, element)=>{
+    $.getScript("//cdn.muikkuverkko.fi/libs/slick/1.6.0/slick.min.js", function(data: any, textStatus: string, jqxhr: any) {
+      $(".carousel-item").each((index: number, element: HTMLElement)=>{
         $(element).show();
       });
 
-      $(".carousel").each((index, element)=>{
+      $(".carousel").each((index: number, element: HTMLElement)=>{
         $(element).slick({
           appendDots: $(element).siblings(".carousel-controls"),
           arrows: false,
@@ -361,17 +361,17 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(FrontpageBody);

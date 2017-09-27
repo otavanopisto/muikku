@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
-import * as PropTypes from 'prop-types';
+import {connect, Dispatch} from 'react-redux';
 
 import ApplicationPanel from '~/components/general/application-panel';
 import HoverButton from '~/components/general/hover-button';
@@ -12,12 +11,19 @@ import CommunicatorMessages from './application/messages';
 import MessageView from './application/message-view';
 import NewMessage from './application/new-message';
 import SignatureUpdateDialog from './signature-update-dialog';
+import {i18nType} from '~/reducers/base/i18n';
 
-class CommunicatorApplication extends React.Component {
-  static propTypes = {
-    navigation: PropTypes.element.isRequired
-  }
-  constructor(props){
+interface CommunicatorApplicationProps {
+  navigation: React.ReactElement<any>,
+  i18n: i18nType
+}
+
+interface CommunicatorApplicationState {
+  updateSignatureDialogOpened: boolean
+}
+
+class CommunicatorApplication extends React.Component<CommunicatorApplicationProps, CommunicatorApplicationState> {
+  constructor(props: CommunicatorApplicationProps){
     super(props);
     
     this.openDialogSignature = this.openDialogSignature.bind(this);
@@ -27,7 +33,7 @@ class CommunicatorApplication extends React.Component {
       updateSignatureDialogOpened: false
     }
   }
-  openDialogSignature(closeDropdown){
+  openDialogSignature(closeDropdown: ()=>any){
     this.setState({
       updateSignatureDialogOpened: true
     });
@@ -66,18 +72,18 @@ class CommunicatorApplication extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     communicatorMessages: state.communicatorMessages
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorApplication);

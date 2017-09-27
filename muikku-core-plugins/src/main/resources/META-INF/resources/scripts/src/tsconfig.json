@@ -4,10 +4,7 @@
 		"useTranspileModule": true,
 		"doTypeCheck": true,
 		"forkChecker": true,
-		"ignoreDiagnostics": [
-			2339,
-			7006
-		]
+		"ignoreDiagnostics": []
 	},
 	"compilerOptions": {
 		"outDir": "../dist/",

@@ -1,15 +1,18 @@
-import {ADD_NOTIFICATION, HIDE_NOTIFICATION} from '~/actions';
-import {NotificationSeverityType, NotificationType} from '~/reducers/index.d';
+import {SpecificActionType} from '~/actions';
+import {NotificationSeverityType, NotificationType} from '~/reducers/base/notifications';
 
-export interface displayNotificationType {
+export interface ADD_NOTIFICATION extends SpecificActionType<"ADD_NOTIFICATION", NotificationType>{}
+export interface HIDE_NOTIFICATION extends SpecificActionType<"HIDE_NOTIFICATION", NotificationType>{}
+
+export interface DisplayNotificationTriggerType {
   (message: string, severity: NotificationSeverityType):ADD_NOTIFICATION
 }
 
-export interface hideNotificationType {
+export interface HideNotificationTriggerType {
   (notification: NotificationType):HIDE_NOTIFICATION
 }
 
-let displayNotification:displayNotificationType = function displayNotification(message, severity){
+let displayNotification:DisplayNotificationTriggerType = function displayNotification(message, severity){
   return {
     'type': 'ADD_NOTIFICATION',
     'payload': {
@@ -20,7 +23,7 @@ let displayNotification:displayNotificationType = function displayNotification(m
   }
 }
 
-let hideNotification:hideNotificationType = function hideNotificationType(notification){
+let hideNotification:HideNotificationTriggerType = function hideNotificationType(notification){
   return {
     'type': 'HIDE_NOTIFICATION',
     'payload': notification

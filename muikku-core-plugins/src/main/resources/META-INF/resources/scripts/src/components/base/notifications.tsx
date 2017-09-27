@@ -1,14 +1,14 @@
-import {displayNotificationType, hideNotificationType, displayNotification, hideNotification} from '~/actions/base/notifications';
+import {DisplayNotificationTriggerType, HideNotificationTriggerType, displayNotification, hideNotification} from '~/actions/base/notifications';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
-import {NotificationListType, NotificationType} from '~/reducers/index.d';
+import {NotificationListType, NotificationType} from '~/reducers/base/notifications';
 
 interface NotificationsProps {
   notifications: NotificationListType,
-  hideNotification: hideNotificationType,
-  displayNotification: displayNotificationType
+  hideNotification: HideNotificationTriggerType,
+  displayNotification: DisplayNotificationTriggerType
 }
 
 interface NotificationsState {

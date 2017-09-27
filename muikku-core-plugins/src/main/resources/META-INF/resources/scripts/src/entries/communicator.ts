@@ -35,7 +35,7 @@ function loadLocation(location: string[]){
 }
 
 store.dispatch(<Action>actions.messageCount.updateMessageCount());
-store.dispatch(communicatorActions.communicatorNavigation.updateCommunicatorNavigationLabels(()=>{
+store.dispatch(<Action>communicatorActions.communicatorNavigation.updateCommunicatorNavigationLabels(()=>{
   if (currentLocation[0].includes("label")){
     loadLocation(currentLocation);
   }

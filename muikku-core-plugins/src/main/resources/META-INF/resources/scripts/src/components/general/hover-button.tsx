@@ -1,14 +1,21 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Link from './link';
 
-export default class HoverButton extends React.Component {
-  static propTypes = {
-    onClick: PropTypes.func,
-    classNameExtension: PropTypes.string.isRequired,
-    classNameSuffix: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    href: PropTypes.string
+interface HoverButtonProps {
+  onClick?: (e: Event, re: any)=>any,
+  classNameExtension: string,
+  icon: string,
+  href?: string,
+  classNameSuffix: string
+}
+
+interface HoverButtonState {
+  
+}
+
+export default class HoverButton extends React.Component<HoverButtonProps, HoverButtonState> {
+  constructor(props: HoverButtonProps){
+    super(props);
   }
   render(){
     return (<Link href={this.props.href} onClick={this.props.onClick}

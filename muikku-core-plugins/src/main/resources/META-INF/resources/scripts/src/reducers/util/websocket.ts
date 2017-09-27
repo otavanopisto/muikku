@@ -1,5 +1,8 @@
 import {ActionType} from '~/actions';
-import {WebsocketStateType} from '~/reducers/index.d';
+
+export interface WebsocketStateType {
+  connected: boolean
+}
 
 export default function websocket(state: WebsocketStateType={
   connected: false

@@ -1,47 +1,54 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 
-export default class TagInput extends React.Component {
-  static propTypes = {
-    classNameExtension: PropTypes.string.isRequired,
-    classNameSuffix: PropTypes.string.isRequired,
-    inputValue: PropTypes.string.isRequired,
-    onInputDataChange: PropTypes.func.isRequired,
-    onDelete: PropTypes.func.isRequired,
-    placeholder: PropTypes.string.isRequired,
-    isFocused: PropTypes.bool,
-    onBlur: PropTypes.func,
-    onFocus: PropTypes.func,
-    tags: PropTypes.arrayOf(PropTypes.shape({
-      node: PropTypes.element.isRequired,
-      value: PropTypes.any.isRequired
-    })).isRequired
-  }
+interface Tag {
+  node: React.ReactElement<any>,
+  value: any
+}
+
+interface TagInputProps {
+  classNameExtension: string,
+  classNameSuffix: string,
+  inputValue: string,
+  onInputDataChange: (e: React.ChangeEvent<HTMLInputElement>)=>any,
+  onDelete: (v: any)=>any,
+  placeholder: string,
+  isFocused?: boolean,
+  onBlur?: (e: React.FocusEvent<any>)=>any,
+  onFocus?: (e: React.FocusEvent<any>)=>any,
+  tags: Tag[],
+  autofocus?: boolean
+}
+
+interface TagInputState {
+  
+}
+
+export default class TagInput extends React.Component<TagInputProps, TagInputState> {
   componentDidMount(){
     if (this.props.autofocus){
-      this.refs.input.focus();
+      (this.refs["input"] as HTMLElement).focus();
     }
   }
-  constructor(props){
+  constructor(props: TagInputProps){
     super(props);
     
     this.onKeyDown = this.onKeyDown.bind(this);
     this.focus = this.focus.bind(this);
     this.onDeleteTag = this.onDeleteTag.bind(this);
   }
-  onKeyDown(e){
+  onKeyDown(e: React.KeyboardEvent<any>){
     if (e.keyCode === 8 && this.props.inputValue === "" && this.props.tags.length > 0){
       this.props.onDelete(this.props.tags[this.props.tags.length -1].value);
     }
   }
   focus(){
-    this.refs.input.focus();
+    (this.refs["input"] as HTMLElement).focus();
   }
   blur(){
-    this.refs.input.blur();
+    (this.refs["input"] as HTMLElement).blur();
   }
   getHeight(){
-    return this.refs.inputbody.offsetHeight;
+    return (this.refs["inputbody"] as HTMLElement).offsetHeight;
   }
   componentDidUpdate(){
     if (this.props.isFocused){
@@ -50,12 +57,12 @@ export default class TagInput extends React.Component {
       this.blur();
     }
   }
-  onDeleteTag(tag){
+  onDeleteTag(tag: Tag){
     this.props.onDelete(tag.value);
   }
   render(){
     return <div className={`${this.props.classNameExtension} form-field-tag-input ${this.props.classNameExtension}-form-field-tag-input-${this.props.classNameSuffix} ${this.props.isFocused?  "focus" : ""}`}>
-      <div className="form-field-tag-input-field" ref="inputbody" onClick={this.props.onFocus}>
+      <div className="form-field-tag-input-field" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
         {this.props.tags.map((tag, index)=>{
           return <span key={index} className="form-field-tag-input-tag">
             <span className="form-field-tag-input-tag-text">{tag.node}</span>

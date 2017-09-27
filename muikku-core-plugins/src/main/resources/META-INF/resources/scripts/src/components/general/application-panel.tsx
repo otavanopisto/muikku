@@ -1,15 +1,22 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 
-export default class ApplicationPanel extends React.Component {
-  static propTypes = {
-    classNameExtension: PropTypes.string.isRequired,
-    title: PropTypes.element.isRequired,
-    icon: PropTypes.element.isRequired,
-    primaryOption: PropTypes.element.isRequired,
-    toolbar: PropTypes.element.isRequired,
-    navigation: PropTypes.element.isRequired,
-    children: PropTypes.oneOfType([PropTypes.element, PropTypes.arrayOf(PropTypes.element)])
+interface ApplicationPanelProps {
+  classNameExtension: string,
+  title: React.ReactElement<any> | string,
+  icon: React.ReactElement<any> | string,
+  primaryOption: React.ReactElement<any>,
+  toolbar: React.ReactElement<any>,
+  navigation: React.ReactElement<any>,
+  children?: React.ReactElement<any> | Array<React.ReactElement<any>>
+}
+
+interface ApplicationPanelState {
+  
+}
+
+export default class ApplicationPanel extends React.Component<ApplicationPanelProps, ApplicationPanelState> {
+  constructor(props: ApplicationPanelProps){
+    super(props);
   }
   render(){
     return (<div className={`${this.props.classNameExtension} application-panel`}>

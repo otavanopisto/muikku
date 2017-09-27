@@ -1,13 +1,42 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
-class CommunicatorMessages extends React.Component {
-  constructor(props){
+import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
+import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
+import {i18nType} from '~/reducers/base/i18n';
+
+interface CommunicatorMessagesProps {
+  communicatorMessagesSelected: CommunicatorMessageListType,
+  communicatorMessagesHasMore: boolean,
+  communicatorMessagesState: CommunicatorStateType,
+  communicatorMessagesSelectedIds: Array<number>,
+  communicatorMessagesMessages: CommunicatorMessageListType,
+  loadMoreMessages: LoadMoreMessagesTriggerType,
+  removeFromCommunicatorSelectedMessages: RemoveFromCommunicatorSelectedMessagesTriggerType,
+  addToCommunicatorSelectedMessages: AddToCommunicatorSelectedMessagesTriggerType,
+  i18n: i18nType
+}
+
+interface CommunicatorMessagesState {
+  touchMode: boolean
+}
+
+class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, CommunicatorMessagesState> {
+  private touchModeTimeout: NodeJS.Timer;
+  private firstWasJustSelected: boolean;
+  private initialXPos: number;
+  private initialYPos: number;
+  private lastXPos: number;
+  private lastYPos: number;
+  private cancelSelection: boolean;
+  private initialTime: number;
+  
+  constructor(props: CommunicatorMessagesProps){
     super(props);
     
     this.touchModeTimeout = null;
@@ -34,30 +63,30 @@ class CommunicatorMessages extends React.Component {
     this.cancelSelection = false;
     this.initialTime = null;
   }
-  onMessageClick(message){
+  onMessageClick(message: CommunicatorMessageType){
     if (this.props.communicatorMessagesSelected.length === 0){
       this.setCurrentMessage(message);
     }
   }
-  setCurrentMessage(message){
+  setCurrentMessage(message: CommunicatorMessageType){
     window.location.hash = window.location.hash.split("/")[0] + "/" + message.communicatorMessageId;
   }
   checkCanLoadMore(){
     if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
-      let list = this.refs.list;
+      let list:HTMLElement = this.refs["list"] as HTMLElement;
       let scrollBottomRemaining = list.scrollHeight - (list.scrollTop + list.offsetHeight)
       if (scrollBottomRemaining <= 100){
         this.props.loadMoreMessages();
       }
     }
   }
-  onCheckBoxChange(message, e){
+  onCheckBoxChange(message: CommunicatorMessageType, e: React.MouseEvent<any>){
     this.toggleMessageSelection(message);
   }
-  onCheckBoxClick(e){
+  onCheckBoxClick(e: React.MouseEvent<any>){
     e.stopPropagation();
   }
-  onTouchStartMessage(message, e){
+  onTouchStartMessage(message: CommunicatorMessageType, e: React.TouchEvent<any>){
     if (!this.state.touchMode){
       this.touchModeTimeout = setTimeout(()=>{
         this.toggleMessageSelection(message);
@@ -72,7 +101,7 @@ class CommunicatorMessages extends React.Component {
     this.initialYPos = e.touches[0].pageY;
     this.initialTime = (new Date()).getTime();
   }
-  onTouchMoveMessage(message, e){
+  onTouchMoveMessage(message: CommunicatorMessageType, e: React.TouchEvent<any>){
     this.lastXPos = e.touches[0].pageX;
     this.lastYPos = e.touches[0].pageY;
     
@@ -81,7 +110,7 @@ class CommunicatorMessages extends React.Component {
       this.cancelSelection = true;
     }
   }
-  onTouchEndMessage(message, e){
+  onTouchEndMessage(message: CommunicatorMessageType, e: React.TouchEvent<any>){
     clearTimeout(this.touchModeTimeout);
     
     if (this.cancelSelection){
@@ -105,11 +134,11 @@ class CommunicatorMessages extends React.Component {
       this.firstWasJustSelected = false;
     }
   }
-  onContextMenu(e){
+  onContextMenu(e: React.MouseEvent<any>){
     e.preventDefault();
     e.stopPropagation();
   }
-  toggleMessageSelection(message){
+  toggleMessageSelection(message: CommunicatorMessageType){
     let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
     if (isSelected){
       this.props.removeFromCommunicatorSelectedMessages(message)
@@ -118,7 +147,7 @@ class CommunicatorMessages extends React.Component {
     }
     return isSelected;
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: CommunicatorMessagesProps){
     if (nextProps.communicatorMessagesState === "LOADING"){
       this.setState({
         touchMode: false
@@ -127,7 +156,7 @@ class CommunicatorMessages extends React.Component {
   }
   componentDidUpdate(){
     if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
-      let list = this.refs.list;
+      let list:HTMLElement = this.refs["list"] as HTMLElement;
       let doesNotHaveScrollBar = list.scrollHeight === list.offsetHeight;
       if (doesNotHaveScrollBar){
         this.props.loadMoreMessages();
@@ -135,7 +164,7 @@ class CommunicatorMessages extends React.Component {
     }
     this.checkCanLoadMore();
   }
-  onScroll(e){
+  onScroll(e: React.UIEvent<any>){
     this.checkCanLoadMore();
   }
   render(){
@@ -151,7 +180,7 @@ class CommunicatorMessages extends React.Component {
     
     return <div className={`communicator application-list communicator-application-list-messages ${this.state.touchMode ? "application-list-select-mode" : ""}`}
      ref="list" onScroll={this.onScroll}>{
-      this.props.communicatorMessagesMessages.map((message, index)=>{
+      this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
         return <div key={message.communicatorMessageId}
           className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
@@ -169,8 +198,8 @@ class CommunicatorMessages extends React.Component {
                 {label.labelName}
               </span>
             })}</span>
-            {message.messageCountInthread ? <span className="communicator text communicator-text-counter">
-              {message.messageCountInthread}
+            {message.messageCountInThread ? <span className="communicator text communicator-text-counter">
+              {message.messageCountInThread}
             </span> : null}
             <span className="communicator text communicator-text-date">
               {this.props.i18n.time.format(message.threadLatestMessageDate)}
@@ -188,7 +217,7 @@ class CommunicatorMessages extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     communicatorMessagesMessages: state.communicatorMessages.messages,
     communicatorMessagesHasMore: state.communicatorMessages.hasMore,
@@ -199,11 +228,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators(actions, dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorMessages);

@@ -1,14 +1,16 @@
 import * as React from 'react';
 import Dialog from '~/components/general/dialog';
 import Link from '~/components/general/link';
-import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
-import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
+import {updateCommunicatorLabel, UpdateCommunicatorLabelTriggerType, removeLabel, RemoveLabelTriggerType} from '~/actions/main-function/communicator/communicator-navigation';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {SliderPicker, ColorResult} from 'react-color';
-import {CommunicatorNavigationItemType, i18nType,
-  CommunicatorMessagesType, CommunicatorNavigationItemListType} from '~/reducers/index.d';
+import {ColorResult} from 'react-color';
+//Another weird typescript bug, won't import properly
+const SliderPicker:any = require('react-color').SliderPicker;
 import {AnyActionType} from '~/actions';
+import {CommunicatorNavigationItemType, CommunicatorNavigationItemListType} from '~/reducers/main-function/communicator/communicator-navigation';
+import {i18nType } from '~/reducers/base/i18n';
+import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
 
 const KEYCODES = {
   ENTER: 13
@@ -21,7 +23,9 @@ interface CommunicatorLabelUpdateDialogProps {
   onClose: ()=>any,
   i18n: i18nType,
   communicatorNavigation: CommunicatorNavigationItemListType,
-  communicatorMessages: CommunicatorMessagesType
+  communicatorMessages: CommunicatorMessagesType,
+  updateCommunicatorLabel: UpdateCommunicatorLabelTriggerType,
+  removeLabel: RemoveLabelTriggerType
 }
 
 interface CommunicatorLabelUpdateDialogState {
@@ -48,14 +52,14 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
       removed: false
     }
   }
-  handleKeydown(code, closeDialog){
+  handleKeydown(code: number, closeDialog: ()=>any){
     if (code === KEYCODES.ENTER){
       this.update(closeDialog);
     }
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: CommunicatorLabelUpdateDialogProps){
     if (nextProps.label.id !== this.props.label.id){
-      this.resetState(nextProps);
+      this.resetState(null, nextProps);
     }
   }
   resetState(e:HTMLElement, props=this.props):void{
@@ -67,15 +71,15 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     }
     this.setState({color: color.hex});
   }
-  onNameChange(e){
+  onNameChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({name: e.target.value});
   }
   removeLabel(){
     this.setState({removed: true});
   }
-  update(closeDialog){
+  update(closeDialog: ()=>any){
     closeDialog();
-    if ((this.state.name !== this.props.label.name || this.state.color !== this.props.label.color) && !this.state.removed){
+    if ((this.state.name !== this.props.label.text(this.props.i18n) || this.state.color !== this.props.label.color) && !this.state.removed){
       this.props.updateCommunicatorLabel(this.props.label, this.state.name, this.state.color);
     } else if (this.state.removed){
       this.props.removeLabel(this.props.label);
@@ -93,6 +97,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         </Link>
       </div>
     }
+    let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
       return <div style={{opacity: this.state.removed ? 0.5 : null}}>
         <div className="communicator text communicator-text-label-update-dialog-icon">
@@ -102,7 +107,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
           className="communicator form-field communicator-form-field-label-name"
           disabled={this.state.removed}
           onChange={this.onNameChange}/>
-        <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
+        {sliderPicker}
       
         {/*TODO please translate this*/}
         <Link className="communicator button button-large button-fatal communicator-button-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
@@ -125,7 +130,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators(Object.assign({}, communicatorMessagesActions, communicatorNavigationActions), dispatch);
+  return bindActionCreators({updateCommunicatorLabel, removeLabel}, dispatch);
 };
 
 export default (connect as any)(

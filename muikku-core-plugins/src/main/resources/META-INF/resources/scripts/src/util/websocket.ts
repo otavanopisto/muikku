@@ -21,6 +21,7 @@ export default class MuikkuWebsocket {
   private pingTime:number;
   private listeners:ListenerType;
   private store: Store<any>;
+  private reconnectTimeout: number;
   
   constructor(store: Store<any>, listeners: ListenerType, options={
     reconnectInterval: 200,
@@ -50,7 +51,7 @@ export default class MuikkuWebsocket {
 
     $(window).on("beforeunload", this.onBeforeWindowUnload.bind(this));
   }
-  sendMessage(eventType, data){
+  sendMessage(eventType: any, data: any){
     let message = {
       eventType,
       data
@@ -71,7 +72,7 @@ export default class MuikkuWebsocket {
     }
   }
   
-  trigger(event, data=null){
+  trigger(event: any, data: any=null){
     this.store.dispatch({
       'type': 'WEBSOCKET_EVENT',
       'payload': {
@@ -104,25 +105,25 @@ export default class MuikkuWebsocket {
     }
   }
   
-  getTicket(callback) {
+  getTicket(callback: Function) {
     try {
       if (this.ticket) {
         // We have a ticket, so we need to validate it before using it
-        mApi().websocket.cacheClear().ticket.check.read(this.ticket).callback($.proxy(function (err, response) {
+        mApi().websocket.cacheClear().ticket.check.read(this.ticket).callback((err: Error, response: any)=>{
           if (err) {
             // Ticket did not pass validation, so we need to create a new one
-            this.createTicket($.proxy(function (ticket) {
+            this.createTicket((ticket: any)=>{
               this.ticket = ticket;
               callback(ticket);
-            }, this));
+            });
           } else {
             // Ticket passed validation, so we use it
             callback(this.ticket);
           }
-        }, this));
+        });
       } else {
         // Create new ticket
-        this.createTicket((ticket)=>{
+        this.createTicket((ticket: any)=>{
           this.ticket = ticket;
           callback(ticket);
         });
@@ -132,9 +133,9 @@ export default class MuikkuWebsocket {
     }
   }
   
-  createTicket(callback) {
+  createTicket(callback: Function) {
     mApi().websocket.ticket.create()
-      .callback((err, ticket)=>{
+      .callback((err: Error, ticket: any)=>{
         if (!err) {
           callback(ticket.ticket);
         } else {
@@ -187,11 +188,11 @@ export default class MuikkuWebsocket {
     }
   }
   
-  createWebSocket(url) {
-    if ((typeof window.WebSocket) !== 'undefined') {
+  createWebSocket(url: string) {
+    if ((typeof (<any>window).WebSocket) !== 'undefined') {
       return new WebSocket(url);
-    } else if ((typeof window.MozWebSocket) !== 'undefined') {
-      return new window.MozWebSocket(url);
+    } else if ((typeof (<any>window).MozWebSocket) !== 'undefined') {
+      return new (<any>window).MozWebSocket(url);
     }
     
     return null;
@@ -238,7 +239,7 @@ export default class MuikkuWebsocket {
         // Ignore exceptions related to discarding a WebSocket 
       }
       
-      this.getTicket((ticket)=>{
+      this.getTicket((ticket: any)=>{
         if (this.ticket) {
           this.openWebSocket();
         } else {
@@ -249,7 +250,7 @@ export default class MuikkuWebsocket {
     }, this.options.reconnectInterval);
   }
   
-  onWebSocketMessage(event) {
+  onWebSocketMessage(event: any) {
     var message = JSON.parse(event.data);
     var eventType = message.eventType;
     

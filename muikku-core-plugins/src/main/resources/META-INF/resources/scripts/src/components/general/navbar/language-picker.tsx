@@ -1,13 +1,15 @@
-import actions from '~/actions/base/locales';
+import {setLocale, SetLocaleTriggerType} from '~/actions/base/locales';
 import Dropdown from '~/components/general/dropdown';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
+import {LocaleListType} from '~/reducers/base/locales';
 
 interface LanguagePickerProps {
-  classNameExtension: string
+  classNameExtension: string,
+  locales: LocaleListType,
+  setLocale: SetLocaleTriggerType
 }
 
 interface LanguagePickerState {
@@ -34,8 +36,8 @@ function mapStateToProps(state: any){
   }
 };
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyActionType>)=>{
-  return bindActionCreators(actions, dispatch);
+const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
+  return bindActionCreators({setLocale}, dispatch);
 };
 
 export default (connect as any)(

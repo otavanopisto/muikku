@@ -1,4 +1,3 @@
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import $ from '~/lib/jquery';
 
@@ -30,9 +29,9 @@ interface LinkProps {
   as?: string,
   href?: string,
   onClick?: (e: Event, re: any)=>any,
-  onTouchStart?: (e: Event, re: any)=>any,
-  onTouchEnd?: (e: Event, re: any)=>any,
-  onTouchMove?: (e: Event, re: any)=>any,
+  onTouchStart?: (e: React.TouchEvent<any>, re: any)=>any,
+  onTouchEnd?: (e: React.TouchEvent<any>, re: any)=>any,
+  onTouchMove?: (e: React.TouchEvent<any>, re: any)=>any,
   className?: string,
   [otherProp: string]: any
 }
@@ -79,7 +78,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onClick(e, re);
     }
   }
-  onTouchStart(e: TouchEvent, re: any){
+  onTouchStart(e: React.TouchEvent<any>, re: any){
     e.preventDefault();
     if (this.props.disablePropagation){
       e.stopPropagation();
@@ -95,7 +94,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       }
     } 
   }
-  onTouchMove(e: TouchEvent, re: any){
+  onTouchMove(e: React.TouchEvent<any>, re: any){
     if (this.state.active){
       let X = e.changedTouches[0].pageX;
       let Y = e.changedTouches[0].pageY;
@@ -109,13 +108,13 @@ export default class Link extends React.Component<LinkProps, LinkState> {
       this.props.onTouchMove(e, re);
     }
   }
-  onTouchEnd(e: TouchEvent, re: any){
+  onTouchEnd(e: React.TouchEvent<any>, re: any){
     if (!this.props.disabled){
       this.setState({active: false});
     }
     
     if (this.state.active){
-      this.onClick(e, re);
+      this.onClick(e as any, re);
     }
     if (!this.props.disabled && this.props.onTouchEnd){
       this.props.onTouchEnd(e, re);

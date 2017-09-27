@@ -5,9 +5,11 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import actions from '~/actions/main-function/communicator/communicator-messages';
-import {i18nType, CommunicatorSignatureType} from '~/reducers/index.d';
+import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
 import {AnyActionType} from '~/actions';
+import {i18nType} from '~/reducers/base/i18n';
+import {CommunicatorMessageWorkspaceRecepientType,
+  CommunicatorMessageUserRecepientType, CommunicatorMessageUserGroupRecepientType, CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -35,20 +37,23 @@ const extraPlugins = {
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
 
-//TODO fix this
+type SelectedItemListType = Array<CommunicatorMessageWorkspaceRecepientType | CommunicatorMessageUserRecepientType | CommunicatorMessageUserGroupRecepientType>;
+
 interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
   replyThreadId: number,
-  initialSelectedItems: Array<{
-    type: 'workspace' | 'user' | 'usergroup',
-    value: any
-  }>,
+  initialSelectedItems: SelectedItemListType,
   i18n: i18nType,
-  signature: CommunicatorSignatureType
+  signature: CommunicatorSignatureType,
+  sendMessage: SendMessageTriggerType
 }
 
 interface CommunicatorNewMessageState {
-  
+  text: string,
+  selectedItems: SelectedItemListType,
+  subject: string,
+  locked: boolean,
+  includesSignature: boolean
 }
 
 class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
@@ -72,13 +77,13 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
   onCKEditorChange(text: string){
     this.setState({text});
   }
-  setSelectedItems(selectedItems){
+  setSelectedItems(selectedItems: SelectedItemListType){
     this.setState({selectedItems});
   }
-  onSubjectChange(e){
+  onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({subject: e.target.value});
   }
-  sendMessage(closeDialog){
+  sendMessage(closeDialog: ()=>any){
     this.setState({
       locked: true
     });
@@ -109,7 +114,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     this.setState({includesSignature: !this.state.includesSignature});
   }
   render(){
-    let content = (closeDialog) => [
+    let content = (closeDialog: ()=>any) => [
       (<InputContactsAutofill key="1" hasGroupMessagingPermission classNameExtension="communicator" classNameSuffix="new-message-recepients" placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (<input key="2" type="text" className="communicator form-field communicator-form-field-new-message-subject"
@@ -125,7 +130,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
       </div> : null)
     ]
        
-    let footer = (closeDialog)=>{
+    let footer = (closeDialog: ()=>any)=>{
       return <div>
         <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
@@ -152,7 +157,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators(actions, dispatch);
+  return bindActionCreators({sendMessage}, dispatch);
 };
 
 export default (connect as any)(

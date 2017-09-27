@@ -2,16 +2,17 @@ import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-import {AnyActionType} from '~/actions';
-import {i18nType, StatusType} from '~/reducers/index.d';
+import {i18nType} from '~/reducers/base/i18n';
+import {StatusType} from '~/reducers/base/status';
 import {bindActionCreators} from 'redux';
 
-import actions from '~/actions/base/status';
+import {logout, LogoutTriggerType} from '~/actions/base/status';
 
 interface ProfileItemProps {
   classNameExtension: string,
   i18n: i18nType,
-  status: StatusType
+  status: StatusType,
+  logout: LogoutTriggerType
 }
 
 interface ProfileItemState {
@@ -23,7 +24,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
     if (!this.props.status.loggedIn){
       return null;
     }
-    const items = [
+    const items: Array<any> = [
       {
         icon: "user",
         text: 'plugin.profile.links.personal',
@@ -69,8 +70,8 @@ function mapStateToProps(state: any){
   }
 };
 
-function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators(actions, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return bindActionCreators({logout}, dispatch);
 };
 
 export default (connect as any)(

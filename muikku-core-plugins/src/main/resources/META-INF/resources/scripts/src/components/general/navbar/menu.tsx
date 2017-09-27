@@ -1,25 +1,40 @@
 import Link from '../link';
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 
-import actions from '~/actions/base/status';
-import {connect} from 'react-redux';
+import {logout, LogoutTriggerType} from '~/actions/base/status';
+import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import $ from '~/lib/jquery';
+import {i18nType} from '~/reducers/base/i18n';
+import {StatusType} from '~/reducers/base/status';
 
 function checkLinkClicked(target: HTMLElement): boolean {
   return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
 }
 
-class Menu extends React.Component {
-  static propTypes = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    items: PropTypes.arrayOf(PropTypes.element).isRequired,
-    classNameExtension: PropTypes.string.isRequired,
-    navigation: PropTypes.element
-  }
-  constructor(props){
+interface MenuProps {
+  open: boolean,
+  onClose: ()=>any,
+  items: Array<React.ReactElement<any>>,
+  classNameExtension: string,
+  navigation?: React.ReactElement<any>,
+  status: StatusType,
+  i18n: i18nType,
+  logout: LogoutTriggerType
+}
+
+interface MenuState {
+  displayed: boolean,
+  visible: boolean,
+  dragging: boolean,
+  drag: number,
+  open: boolean
+}
+
+class Menu extends React.Component<MenuProps, MenuState> {
+  private touchCordX: number;
+  private touchMovementX: number;
+  constructor(props: MenuProps){
     super(props);
     
     this.onTouchStart = this.onTouchStart.bind(this);
@@ -37,20 +52,20 @@ class Menu extends React.Component {
       open: props.open
     }
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: MenuProps){
     if (nextProps.open && !this.state.open){
       this.open();
     } else if (!nextProps.open && this.state.open){
       this.close();
     }
   }
-  onTouchStart(e){
+  onTouchStart(e: React.TouchEvent<any>){
     this.setState({'dragging': true});
     this.touchCordX = e.changedTouches[0].pageX;
     this.touchMovementX = 0;
     e.preventDefault();
   }
-  onTouchMove(e){
+  onTouchMove(e: React.TouchEvent<any>){
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
     let absoluteDifferenceX = Math.abs(diffX - this.state.drag);
     this.touchMovementX += absoluteDifferenceX;
@@ -61,14 +76,14 @@ class Menu extends React.Component {
     this.setState({drag: diffX});
     e.preventDefault();
   }
-  onTouchEnd(e){
-    let width = $(this.refs.menuContainer).width();
+  onTouchEnd(e: React.TouchEvent<any>){
+    let width = $(this.refs["menuContainer"]).width();
     let diff = this.state.drag;
     let movement = this.touchMovementX;
     
     let menuHasSlidedEnoughForClosing = Math.abs(diff) >= width*0.33;
-    let youJustClickedTheOverlay = e.target === this.refs.menu && movement <= 5;
-    let youJustClickedALink = checkLinkClicked(e.target) && movement <= 5;
+    let youJustClickedTheOverlay = e.target === this.refs["menu"] && movement <= 5;
+    let youJustClickedALink = checkLinkClicked(e.target as HTMLElement) && movement <= 5;
     
     this.setState({dragging: false});
     setTimeout(()=>{
@@ -86,9 +101,9 @@ class Menu extends React.Component {
     }, 10);
     $(document.body).css({'overflow': 'hidden'});
   }
-  closeByOverlay(e){
+  closeByOverlay(e: React.MouseEvent<any>){
     let isOverlay = e.target === e.currentTarget;
-    let isLink = checkLinkClicked(e.target);
+    let isLink = checkLinkClicked(e.target as HTMLElement);
     if (!this.state.dragging && (isOverlay || isLink)){
       this.close();
     }
@@ -154,18 +169,18 @@ class Menu extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     status: state.status
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
-  return bindActionCreators(actions, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return bindActionCreators({logout}, dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(Menu);

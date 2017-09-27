@@ -1,5 +1,4 @@
 import Feed from '../general/feed';
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import mApi from '~/lib/mApi';
 
@@ -13,10 +12,6 @@ interface FrontpageFeedState {
 }
 
 export default class FrontpageFeed extends React.Component<FrontpageFeedProps, FrontpageFeedState> {
-  static propTypes = {
-    feedReadTarget: PropTypes.string.isRequired,
-    queryOptions: PropTypes.object.isRequired
-  }
   constructor(props: FrontpageFeedProps){
     super(props);
     

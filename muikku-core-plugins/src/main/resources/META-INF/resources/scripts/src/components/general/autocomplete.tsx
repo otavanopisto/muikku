@@ -1,31 +1,35 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import equals = require("deep-equal");
 
-export default class Autocomplete extends React.Component {
-  static propTypes = {
-    onItemClick: PropTypes.func.isRequired,
-    opened: PropTypes.bool.isRequired,
-    items: PropTypes.arrayOf(PropTypes.shape({
-      node: PropTypes.element.isRequired,
-      value: PropTypes.any.isRequired,
-      selected: PropTypes.bool,
-    })).isRequired,
-    pixelsOffset: PropTypes.number,
-    classNameExtension: PropTypes.string.isRequired,
-    classNameSuffix: PropTypes.string.isRequired
-  }
-  constructor(props){
+interface AutocompleteProps {
+  onItemClick: (item: any, selected: boolean)=>any,
+  opened: boolean,
+  items: {
+    node: React.ReactElement<any>,
+    value: any,
+    selected?: boolean
+  }[],
+  pixelsOffset?: number,
+  classNameExtension: string,
+  classNameSuffix: string
+}
+
+interface AutocompleteState {
+  
+}
+
+export default class Autocomplete extends React.Component<AutocompleteProps, AutocompleteState> {
+  constructor(props:AutocompleteProps){
     super(props);
     
     this.onItemClick = this.onItemClick.bind(this);
   }
-  onItemClick(value, selected, e){
+  onItemClick(value: any, selected: boolean, e: Event){
     e.stopPropagation();
     this.props.onItemClick(value, selected);
   }
   render(){
-    let style = {};
+    let style:any = {};
     if (this.props.pixelsOffset){
       style.top = this.props.pixelsOffset;
     }

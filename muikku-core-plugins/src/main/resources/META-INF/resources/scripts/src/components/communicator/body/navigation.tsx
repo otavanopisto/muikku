@@ -1,8 +1,10 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import LabelUpdateDialog from './label-update-dialog';
-import {i18nType, CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorMessagesType} from '~/reducers/index.d';
+import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
+import {i18nType} from '~/reducers/base/i18n';
+import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -39,7 +41,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     communicatorNavigation: state.communicatorNavigation,
@@ -47,11 +49,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(Navigation);

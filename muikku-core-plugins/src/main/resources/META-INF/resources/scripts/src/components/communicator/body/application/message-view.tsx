@@ -1,15 +1,30 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import equals = require("deep-equal");
 
-import actions from '~/actions/main-function/communicator/communicator-messages';
-
 import Link from '~/components/general/link';
 import NewMessage from './new-message';
+import {CommunicatorCurrentThreadType} from '~/reducers/main-function/communicator/communicator-messages';
+import {StatusType} from '~/reducers/base/status';
+import {i18nType} from '~/reducers/base/i18n';
 
-class MessageView extends React.Component {
-  constructor(props){
+interface MessageViewProps {
+  i18n: i18nType,
+  communicatorMessagesCurrent: CommunicatorCurrentThreadType,
+  status: StatusType
+}
+
+interface MessageVitewState {
+  drag: number
+}
+
+class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
+  private initialXPos: number;
+  private initialYPos: number;
+  private closeInterval: NodeJS.Timer;
+  
+  constructor(props: MessageViewProps){
     super(props);
     this.onTouchStart = this.onTouchStart.bind(this);
     this.onTouchMove = this.onTouchMove.bind(this);
@@ -23,7 +38,7 @@ class MessageView extends React.Component {
       drag: 0
     }
   }
-  loadMessage(messageId){
+  loadMessage(messageId: number){
     if (history.replaceState){
       history.replaceState('', '', location.hash.split("/")[0] + "/" + messageId);
       window.dispatchEvent(new HashChangeEvent("hashchange"));
@@ -31,34 +46,34 @@ class MessageView extends React.Component {
       location.hash = location.hash.split("/")[0] + "/" + messageId;
     }
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: MessageViewProps){
     if (!equals(nextProps.communicatorMessagesCurrent, this.props.communicatorMessagesCurrent)){
       this.setState({
         drag: 0
       });
     }
   }
-  onTouchStart(e){
+  onTouchStart(e: React.TouchEvent<any>){
     this.initialXPos = e.touches[0].pageX;
     this.initialYPos = e.touches[0].pageY;
     clearInterval(this.closeInterval);
   }
-  onTouchMove(e){
+  onTouchMove(e: React.TouchEvent<any>){
     let diff = this.initialXPos - e.touches[0].pageX;
     if (!this.props.communicatorMessagesCurrent.newerThreadId && diff > 0){
       diff = 0;
     } else if (!this.props.communicatorMessagesCurrent.olderThreadId && diff < 0){
       diff = 0;
-    } else if (this.refs.centerContainer.offsetWidth < Math.abs(diff)){
-      diff = Math.sign(diff)*this.refs.centerContainer.offsetWidth;
+    } else if ((this.refs["centerContainer"] as HTMLElement).offsetWidth < Math.abs(diff)){
+      diff = Math.sign(diff)*(this.refs["centerContainer"] as HTMLElement).offsetWidth;
     }
     this.setState({
       drag: -diff
     });
   }
-  onTouchEnd(e){
+  onTouchEnd(e: React.TouchEvent<any>){
     let allDrag = Math.abs(this.state.drag);
-    let totalDrag = this.refs.centerContainer.offsetWidth;
+    let totalDrag = (this.refs["centerContainer"] as HTMLElement).offsetWidth;
     let sign = Math.sign(this.state.drag);
     
     let closeToNext = allDrag >= totalDrag/3;
@@ -103,12 +118,12 @@ class MessageView extends React.Component {
               lastName: r.lastName,
               nickName: r.nickName
             }
-          })).filter(user=>user.id !== this.props.status.userId);
-          let userGroupObject = message.userGroupRecipients.map(ug=>({
+          })).filter(user=>user.value.id !== this.props.status.userId);
+          let userGroupObject = message.userGroupRecipients.map((ug:any)=>({
             type: "usergroup",
             value: ug
           }));
-          let workspaceObject = message.workspaceRecipients.map(w=>({
+          let workspaceObject = message.workspaceRecipients.map((w:any)=>({
             type: "usergroup",
             value: w
           }));
@@ -148,7 +163,7 @@ class MessageView extends React.Component {
                    <Link>{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
                  </NewMessage>
                  <NewMessage replyThreadId={message.communicatorMessageId}
-                   initialSelectedItems={[senderObject].concat(recipientsObject).concat(userGroupObject).concat(workspaceObject)}>
+                   initialSelectedItems={[senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)}>
                    <Link>{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
                  </NewMessage>
               </div>                
@@ -161,7 +176,7 @@ class MessageView extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     communicatorMessagesCurrent: state.communicatorMessages.current,
     i18n: state.i18n,
@@ -169,11 +184,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
-  return bindActionCreators(actions, dispatch);
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(MessageView);

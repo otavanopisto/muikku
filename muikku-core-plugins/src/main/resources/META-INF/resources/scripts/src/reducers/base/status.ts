@@ -6,7 +6,13 @@
 //4. it works :D
 import $ from '~/lib/jquery';
 import {ActionType} from "~/actions";
-import {StatusType} from '~/reducers/index.d';
+
+export interface StatusType {
+  loggedIn: boolean,
+  userId: number,
+  permissions: any,
+  contextPath: string
+}
 
 export default function status(state: StatusType={
   loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,

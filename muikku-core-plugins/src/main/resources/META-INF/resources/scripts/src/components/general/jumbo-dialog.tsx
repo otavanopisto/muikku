@@ -6,7 +6,7 @@ export default class JumboDialog extends Dialog {
   render(){
     return (
         <Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-          {(closePortal)=>{return <div className={`jumbo-dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+          {(closePortal: ()=>any)=>{return <div className={`jumbo-dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
             <div className="jumbo-dialog-wrapper">
                <div className="jumbo-dialog-window">
                   <div className="jumbo-dialog-header">

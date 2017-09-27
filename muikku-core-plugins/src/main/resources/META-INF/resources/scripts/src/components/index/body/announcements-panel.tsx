@@ -1,8 +1,10 @@
 import Link from '../../general/link';
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
+import {i18nType} from '~/reducers/base/i18n';
+import {StatusType} from '~/reducers/base/status';
+import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/index/announcements';
 
-import {StatusType, AnnouncementListType, AnnouncementType, i18nType} from '~/reducers/index.d';
 
 interface AnnouncementsPanelProps {
   i18n: i18nType,
@@ -43,7 +45,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     status: state.status,
     i18n: state.i18n,
@@ -51,11 +53,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncementsPanel);

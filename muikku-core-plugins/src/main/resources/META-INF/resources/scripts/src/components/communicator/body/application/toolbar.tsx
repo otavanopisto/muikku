@@ -1,16 +1,39 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
-import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
-import communicatorNavigationActions from '~/actions/main-function/communicator/communicator-navigation';
+import {deleteCurrentMessage, DeleteCurrentMessageTriggerType, addLabelToCurrentMessage, AddLabelToCurrentMessageTriggerType,
+  removeLabelFromSelectedMessages, RemoveLabelFromSelectedMessagesTriggerType, deleteSelectedMessages, DeleteSelectedMessagesTriggerType,
+  toggleMessagesReadStatus, ToggleMessageReadStatusTriggerType, removeLabelFromCurrentMessage, RemoveLabelFromCurrentMessageTriggerType,
+  addLabelToSelectedMessages, AddLabelToSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
+import {addCommunicatorLabel, AddCommunicatorLabelTriggerType} from '~/actions/main-function/communicator/communicator-navigation';
 import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
-import {CommunicatorMessageType} from '~/reducers/index.d';
+import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
+import {CommunicatorMessagesType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
+import {i18nType} from '~/reducers/base/i18n';
 
-class CommunicatorToolbar extends React.Component {
-  constructor(props){
+interface CommunicatorToolbarProps {
+  communicatorNavigation: CommunicatorNavigationItemListType,
+  communicatorMessages: CommunicatorMessagesType,
+  i18n: i18nType,
+  deleteCurrentMessage: DeleteCurrentMessageTriggerType,
+  addLabelToCurrentMessage: AddLabelToCurrentMessageTriggerType,
+  removeLabelFromSelectedMessages: RemoveLabelFromSelectedMessagesTriggerType,
+  deleteSelectedMessages: DeleteSelectedMessagesTriggerType,
+  toggleMessagesReadStatus: ToggleMessageReadStatusTriggerType,
+  addCommunicatorLabel: AddCommunicatorLabelTriggerType,
+  removeLabelFromCurrentMessage: RemoveLabelFromCurrentMessageTriggerType,
+  addLabelToSelectedMessages: AddLabelToSelectedMessagesTriggerType
+}
+
+interface CommunicatorToolbarState {
+  labelFilter: string
+}
+
+class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, CommunicatorToolbarState> {
+  constructor(props: CommunicatorToolbarProps){
     super(props);
     
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
@@ -21,7 +44,7 @@ class CommunicatorToolbar extends React.Component {
       labelFilter: ""
     }
   }
-  loadMessage(messageId){
+  loadMessage(messageId: number){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
@@ -31,10 +54,10 @@ class CommunicatorToolbar extends React.Component {
       location.hash = location.hash.split("/")[0] + "/" + messageId;
     }
   } 
-  updateLabelFilter(e){
+  updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({labelFilter: e.target.value});
   }
-  onGoBackClick(e){
+  onGoBackClick(e: Event){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
@@ -109,8 +132,8 @@ class CommunicatorToolbar extends React.Component {
       </div>
     }
   
-    let allInCommon:CommunicatorMessageType[] = [];
-    let onlyInSome:CommunicatorMessageType[] = [];
+    let allInCommon:number[] = [];
+    let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.communicatorMessages.selected.length >= 1;
     if (isAtLeastOneSelected){
       let partialIds = this.props.communicatorMessages.selected.map((message: CommunicatorMessageType)=>{return message.labels.map(l=>l.labelId)});
@@ -141,9 +164,9 @@ class CommunicatorToolbar extends React.Component {
           </span>
         ].concat(this.props.communicatorNavigation.filter((item)=>{
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
-        }).map((label)=>{
-          let isSelected = allInCommon.includes(label.id);
-          let isPartiallySelected = onlyInSome.includes(label.id);
+        }).map((label: CommunicatorNavigationItemType)=>{
+          let isSelected = allInCommon.includes(label.id as number);
+          let isPartiallySelected = onlyInSome.includes(label.id as number);
           return (<Link className={`communicator link link-full communicator-link-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessages.bind(null, label) : this.props.removeLabelFromSelectedMessages.bind(null, label)}>
             <span className="icon icon-tag" style={{color: label.color}}></span>
@@ -165,7 +188,7 @@ class CommunicatorToolbar extends React.Component {
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     communicatorNavigation: state.communicatorNavigation,
     communicatorMessages: state.communicatorMessages,
@@ -173,11 +196,13 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
-  return bindActionCreators(Object.assign({}, communicatorMessagesActions, communicatorNavigationActions), dispatch);
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return bindActionCreators({deleteCurrentMessage, addLabelToCurrentMessage,
+    removeLabelFromSelectedMessages, deleteSelectedMessages,
+    toggleMessagesReadStatus, addCommunicatorLabel}, dispatch);
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorToolbar);

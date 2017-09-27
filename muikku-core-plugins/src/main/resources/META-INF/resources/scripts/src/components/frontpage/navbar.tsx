@@ -3,8 +3,8 @@ import Link from '../general/link';
 import LoginButton from '../base/login-button';
 import ForgotPasswordDialog from '../base/forgot-password-dialog';
 import * as React from 'react';
-import {connect} from 'react-redux';
-import {i18nType} from '~/reducers/index.d';
+import {connect, Dispatch} from 'react-redux';
+import {i18nType} from '~/reducers/base/i18n';
 
 interface FrontpageNavbarProps {
   i18n: i18nType
@@ -55,17 +55,17 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(FrontpageNavbar);

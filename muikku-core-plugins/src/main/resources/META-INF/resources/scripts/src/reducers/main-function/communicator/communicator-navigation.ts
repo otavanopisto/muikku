@@ -1,6 +1,33 @@
-import {i18nType} from '~/reducers/index.d';
 import {ActionType} from '~/actions';
-import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType, CommunicatorNavigationItemUpdateType} from '~/reducers/index.d';
+import {i18nType} from '~/reducers/base/i18n';
+
+export interface CommunicatorNavigationItemUpdateType {
+  location?: string,
+  type?: string,
+  id?: string | number,
+  icon?: string,
+  color?: string,
+  text?(i18n: i18nType):string
+}
+
+export interface CommunicatorNavigationItemType {
+  location: string,
+  type: string,
+  id: string | number,
+  icon: string,
+  color?: string,
+  text(i18n: i18nType):string
+}
+
+export interface LabelType {
+  id: number,
+  color: number,
+  name: string
+}
+
+export interface LabelListType extends Array<LabelType> {};
+
+export interface CommunicatorNavigationItemListType extends Array<CommunicatorNavigationItemType> {}
 
 const defaultNavigation: CommunicatorNavigationItemListType = [
   {

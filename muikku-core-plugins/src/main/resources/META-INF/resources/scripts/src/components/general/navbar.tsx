@@ -1,28 +1,32 @@
-import * as PropTypes from 'prop-types';
 import LanguagePicker from './navbar/language-picker';
 import ProfileItem from './navbar/profile-item';
 import Menu from './navbar/menu';
 import * as React from 'react';
 
-export default class Navbar extends React.Component {
-  constructor(props){
+interface NavbarProps {
+  classNameExtension: string,
+  navbarItems: ({
+    classNameSuffix?:string,
+    item: React.ReactElement<any>
+  })[],
+  menuItems: (React.ReactElement<any>)[],
+  defaultOptions: (React.ReactElement<any>)[],
+  navigation?: React.ReactElement<any>,
+  mobileTitle?: string
+}
+
+interface NavbarState {
+  isMenuOpen: boolean
+}
+
+export default class Navbar extends React.Component<NavbarProps, NavbarState> {
+  constructor(props: NavbarProps){
     super(props);
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
     this.state = {
       isMenuOpen: false
     }
-  }
-  static propTypes = {
-    classNameExtension: PropTypes.string.isRequired,
-    navbarItems: PropTypes.arrayOf(PropTypes.shape({
-      classNameSuffix: PropTypes.string,
-      item: PropTypes.element.isRequired
-    })).isRequired,
-    menuItems: PropTypes.arrayOf(PropTypes.element).isRequired,
-    defaultOptions: PropTypes.arrayOf(PropTypes.element).isRequired,
-    navigation: PropTypes.element,
-    mobileTitle: PropTypes.string
   }
   openMenu(){
     this.setState({

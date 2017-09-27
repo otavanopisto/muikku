@@ -2,7 +2,14 @@
 //retrieve data, please fix in next versions
 import $ from '~/lib/jquery';
 import {ActionType} from "~/actions";
-import {LocaleListType} from '~/reducers/index.d';
+
+export interface LocaleListType {
+  avaliable: {
+    name: string,
+    locale: string
+  }[],
+  current: string
+}
 
 export default function locales(state={
   avaliable: $.makeArray($("#language-picker a").map((index: number, element: HTMLElement)=>{

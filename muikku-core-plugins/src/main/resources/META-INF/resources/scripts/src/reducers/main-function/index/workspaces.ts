@@ -1,5 +1,24 @@
-import {WorkspaceListType} from "~/reducers/index.d";
 import {ActionType} from '~/actions';
+
+//TODO remove anies
+export interface WorkspaceType {
+  access: string,
+  archived: boolean,
+  curriculumIdentifiers: Array<any>,
+  description: string,
+  hasCustomImage: boolean,
+  id: number,
+  lastVisit: string,
+  materialDefaultLicense: string,
+  name: string,
+  nameExtension?: string | null,
+  numVisits: number,
+  published: boolean,
+  subjectIdentifier: string | number,
+  urlName: string
+}
+
+export interface WorkspaceListType extends Array<WorkspaceType> {}
 
 export default function workspaces(state: WorkspaceListType=[], action: ActionType): WorkspaceListType{
   if (action.type === 'UPDATE_WORKSPACES'){

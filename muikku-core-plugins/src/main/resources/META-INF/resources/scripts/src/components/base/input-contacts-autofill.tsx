@@ -1,25 +1,36 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
 import Autocomplete from '~/components/general/autocomplete';
 import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
+import {CommunicatorMessageItemRecepientType, CommunicatorMessageUserGroupRecepientType,
+  CommunicatorMessageWorkspaceRecepientType, CommunicatorMessageUserRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
+import {WorkspaceType} from '~/reducers/main-function/index/workspaces';
 
-export default class InputContactsAutofill extends React.Component {
-  static propTypes = {
-    placeholder: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
-    selectedItems: PropTypes.arrayOf(PropTypes.shape({
-      type: PropTypes.oneOf(["workspace", "user", "usergroup"]).isRequired,
-      value: PropTypes.any.isRequired
-    })).isRequired,
-    classNameExtension: PropTypes.string.isRequired,
-    classNameSuffix: PropTypes.string.isRequired,
-    hasGroupMessagingPermission: PropTypes.bool.isRequired,
-    autofocus: PropTypes.bool
-  }
-  constructor(props){
+export interface InputContactsAutofillProps {
+  placeholder?: string,
+  onChange: (newValue: CommunicatorMessageItemRecepientType[])=>any,
+  selectedItems: CommunicatorMessageItemRecepientType[],
+  classNameExtension: string,
+  classNameSuffix: string,
+  hasGroupMessagingPermission: boolean,
+  autofocus?: boolean
+}
+
+export interface InputContactsAutofillState {
+  autocompleteSearchItems: CommunicatorMessageItemRecepientType[],
+  selectedItems: CommunicatorMessageItemRecepientType[],
+  textInput: string,
+  autocompleteOpened: boolean,
+  fieldHeight?: number,
+  isFocused: boolean
+}
+
+export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
+  private blurTimeout:NodeJS.Timer;
+  
+  constructor(props: InputContactsAutofillProps){
     super(props);
     
     this.state = {
@@ -40,25 +51,25 @@ export default class InputContactsAutofill extends React.Component {
     this.setHeight = this.setHeight.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: InputContactsAutofillProps){
     if (nextProps.selectedItems !== this.props.selectedItems){
       this.setState({selectedItems: nextProps.selectedItems})
     }
   }
   setHeight(){
-    let fieldHeight = this.refs.taginput.getHeight();
+    let fieldHeight = (this.refs["taginput"] as TagInput).getHeight();
     if (fieldHeight !== this.state.fieldHeight){
       this.setState({fieldHeight});
     }
   }
-  onInputBlur(e){
+  onInputBlur(e: React.FocusEvent<any>){
     this.blurTimeout = setTimeout(()=>this.setState({isFocused: false}), 100);
   }
-  onInputFocus(e){
+  onInputFocus(e: React.FocusEvent<any>){
     clearTimeout(this.blurTimeout);
     this.setState({isFocused: true});
   }
-  async onInputChange(e){
+  async onInputChange(e: React.ChangeEvent<HTMLInputElement>){
     let textInput = e.target.value;
     this.setState({textInput, autocompleteOpened: true});
     
@@ -79,9 +90,12 @@ export default class InputContactsAutofill extends React.Component {
         ]
       );
       
-      let allItems = searchResults[0].map(item=>({type: "user", value: item}))
-        .concat(searchResults[1].map(item=>({type: "usergroup", value: item})))
-        .concat(searchResults[2].map(item=>({type: "workspace", value: item})));
+      //TODO fix anies
+      
+      let userItems:CommunicatorMessageItemRecepientType[] = (searchResults[0] as any[]).map((item: any)=>({type: "user", value: item} as CommunicatorMessageUserRecepientType));
+      let userGroupItems:CommunicatorMessageItemRecepientType[] = (searchResults[1] as any[]).map((item: any)=>({type: "usergroup", value: item} as CommunicatorMessageUserGroupRecepientType));
+      let workspaceItems:CommunicatorMessageItemRecepientType[] = (searchResults[2] as WorkspaceType[]).map((item: WorkspaceType)=>({type: "workspace", value: item} as CommunicatorMessageWorkspaceRecepientType))
+      let allItems:CommunicatorMessageItemRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems);
       this.setState({
         autocompleteSearchItems: allItems
       });
@@ -91,14 +105,14 @@ export default class InputContactsAutofill extends React.Component {
       });
     }
   }
-  onDelete(item){
+  onDelete(item: CommunicatorMessageItemRecepientType){
     clearTimeout(this.blurTimeout);
     this.setState({
       selectedItems: this.state.selectedItems.filter(selectedItem=>selectedItem.type !== item.type || selectedItem.value.id !== item.value.id),
       isFocused: true
     }, this.setHeight);
   }
-  onAutocompleteItemClick(item, selected){
+  onAutocompleteItemClick(item: CommunicatorMessageItemRecepientType, selected: boolean){
     clearTimeout(this.blurTimeout);
     if (!selected){
       let nvalue = this.state.selectedItems.concat([item]);
@@ -175,7 +189,7 @@ export default class InputContactsAutofill extends React.Component {
       classNameSuffix={this.props.classNameSuffix}>
       <TagInput ref="taginput" classNameExtension={this.props.classNameExtension} classNameSuffix={this.props.classNameSuffix}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
-        placeholder={this.props.placeholder} onItemClick={this.props.onAutocompleteItemClick} items={autocompleteItems}
+        placeholder={this.props.placeholder}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete}/>
     </Autocomplete>
       

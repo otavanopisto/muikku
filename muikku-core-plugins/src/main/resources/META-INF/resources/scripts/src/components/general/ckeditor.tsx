@@ -14,7 +14,7 @@ interface CKEditorProps {
   width?: number | string,
   height?: number | string,
   onChange(arg: string):any,
-  children: string,
+  children?: string,
   autofocus?: boolean
 }
 
@@ -42,12 +42,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     let actualHeight:number | string;
     if (height === "grow"){
       let nActualHeight:number;
-      let computedStyle = getComputedStyle(this.refs["ckeditor"].parentNode, null);
+      let computedStyle = getComputedStyle((this.refs["ckeditor"] as HTMLElement).parentNode as HTMLElement, null);
       nActualHeight = parseInt(computedStyle.getPropertyValue("height")) -
           parseInt(computedStyle.getPropertyValue("padding-top")) -
           parseInt(computedStyle.getPropertyValue("padding-top"));
       
-      Array.from(this.refs["ckeditor"].parentNode.childNodes).forEach((node: HTMLElement)=>{
+      Array.from((this.refs["ckeditor"] as HTMLElement).parentNode.childNodes).forEach((node: HTMLElement)=>{
         if (node === this.refs["ckeditor"] || node.id === ("cke_" + this.name)){
           return;
         }
@@ -70,12 +70,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     this.height = actualHeight;
   }
   componentDidMount(){
-    let extraConfig = {
+    let extraConfig: any = {
       height: 0,
       startupFocus: this.props.autofocus
     };
     if (this.props.extraPlugins){
-      for (let [plugin, url] of Object.entries(this.props.extraPlugins)){
+      for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
         CKEDITOR.plugins.addExternal(plugin, url);
       }
       extraConfig.extraPlugins = Object.keys(this.props.extraPlugins).join(',');
@@ -96,7 +96,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentWillUnmount(){
     CKEDITOR.instances[this.name].destroy();
   }
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps: CKEditorProps){
     if (!equals(nextProps.configuration, this.props.configuration)){
       CKEDITOR.replace(this.name, this.props.configuration)
     }

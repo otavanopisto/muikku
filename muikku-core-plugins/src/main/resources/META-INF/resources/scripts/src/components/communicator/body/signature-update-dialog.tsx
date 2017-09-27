@@ -5,8 +5,9 @@ import CKEditor from '~/components/general/ckeditor';
 import {connect, Dispatch} from 'react-redux';
 import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
-import communicatorMessagesActions from '~/actions/main-function/communicator/communicator-messages';
-import {CommunicatorSignatureType} from '~/reducers/index.d';
+import {updateSignature, UpdateSignatureTriggerType} from '~/actions/main-function/communicator/communicator-messages';
+import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
+import {i18nType} from '~/reducers/base/i18n';
 
 const KEYCODES = {
   ENTER: 13
@@ -30,7 +31,9 @@ interface CommunicatorSignatureUpdateDialogProps {
   children: React.ReactElement<any>,
   isOpen: boolean,
   onClose: ()=>any,
-  signature: CommunicatorSignatureType
+  signature: CommunicatorSignatureType,
+  updateSignature: UpdateSignatureTriggerType,
+  i18n: i18nType
 }
 
 interface CommunicatorSignatureUpdateDialogState {
@@ -68,7 +71,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
     closeDialog();
   }
   render(){
-    let footer = (closeDialog)=>{
+    let footer = (closeDialog: ()=>any)=>{
       return <div className="embbed embbed-full">
         <Link className="communicator button button-large button-warn commmunicator-button-standard-cancel" onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
@@ -78,7 +81,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
         </Link>
       </div>
     }
-    let content = (closeDialog)=>{
+    let content = (closeDialog: ()=>any)=>{
       return <CKEditor width="100%" height="grow" configuration={CKEDITOR_CONFIG} extraPlugins={CKEDITOR_PLUGINS}
       onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
     }
@@ -96,7 +99,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators(communicatorMessagesActions, dispatch);
+  return bindActionCreators({updateSignature}, dispatch);
 };
 
 export default (connect as any)(

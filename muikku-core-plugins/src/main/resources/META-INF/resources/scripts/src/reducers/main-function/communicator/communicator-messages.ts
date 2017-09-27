@@ -1,7 +1,148 @@
 import {ActionType} from '~/actions';
-import {CommunicatorMessagesType, CommunicatorStateType, CommunicatorMessagesPatchType,
-  CommunicatorMessageListType, CommunicatorMessageType, CommunicatorMessageUpdateType,
-  CommunicatorSignatureType, CommunicatorCurrentThreadType} from '~/reducers/index.d';
+import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/index/workspaces';
+
+export type CommunicatorStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+export interface CommunicatorSignatureType {
+  id: number,
+  name: string,
+  signature: string
+}
+
+export interface CommunicatorMessageSenderType {
+  id: Number,
+  firstName: string,
+  lastName?: string | null,
+  nickName?: string | null,
+  studyProgrammeName?: string | null,
+  hasImage: boolean,
+  hasEvaluationFees: false,
+  curriculumIdentifier?: string | number | null;
+}
+export interface CommunicatorMessageLabelType {
+  id: number,
+  labelColor: number,
+  labelId: number,
+  labelName: string,
+  messageThreadId: number,
+  userEntityId: number
+}
+export interface CommunicatorMessageLabelPatchType {
+  id?: number,
+  labelColor?: number,
+  labelId?: number,
+  labelName?: string,
+  messageThreadId?: number,
+  userEntityId?: number
+}
+export interface CommunicatorMessageLabelListType extends Array<CommunicatorMessageLabelType> {};
+export interface CommunicatorMessageType {
+  id: number,
+  communicatorMessageId: number,
+  senderId: number,
+  categoryName: "message",
+  caption: string,
+  created: string,
+  tags: any,
+  threadLatestMessageDate: string,
+  unreadMessagesInThread: boolean,
+  sender: CommunicatorMessageSenderType,
+  messageCountInThread: number,
+  labels: CommunicatorMessageLabelListType
+}
+export interface CommunicatorMessageUpdateType {
+  communicatorMessageId?: number,
+  senderId?: number,
+  categoryName?: "message",
+  caption?: string,
+  created?: string,
+  tags?: any,
+  threadLatestMessageDate?: string,
+  unreadMessagesInThread?: boolean,
+  sender?: CommunicatorMessageSenderType,
+  messageCountInThread?: number,
+  labels?: CommunicatorMessageLabelListType
+}
+export interface CommunicatorCurrentThreadType {
+  olderThreadId?: number | null,
+  newerThreadId?: number | null,
+  messages: Array<CommunicatorMessageExtendedType>,
+  labels: CommunicatorMessageLabelListType
+}
+export interface UserGroup {
+  id: number,
+  name: string,
+  userCount: number
+}
+export interface UserGroupList extends Array<UserGroup> {}
+export interface CommunicatorMessageExtendedType {
+  caption: string,
+  categoryName: "message",
+  communicatorMessageId: number,
+  content: string,
+  created: string,
+  id: number,
+  recipientCount: number,
+  recipients: Array<CommunicatorMessageRecepientType>,
+  sender: CommunicatorMessageSenderType,
+  senderId: number,
+  tags: any,
+  userGroupRecipients: UserGroupList,
+  //TODO I am not sure what this is yet
+  workspaceRecipients: WorkspaceListType
+}
+export interface CommunicatorMessageRecepientType {
+  communicatorMessageId: number,
+  userId: number,
+  nickName?: string | null,
+  firstName: string,
+  lastName?: string | null,
+  recipientId: number
+}
+export interface CommunicatorMessageListType extends Array<CommunicatorMessageType> {}
+
+export interface CommunicatorMessagesType {
+  state: CommunicatorStateType,
+  messages: CommunicatorMessageListType,
+  selected: CommunicatorMessageListType,
+  selectedIds: Array<number>,
+  pages: number,
+  hasMore: boolean,
+  location: string,
+  toolbarLock: boolean,
+  current: CommunicatorCurrentThreadType | null,
+  signature: CommunicatorSignatureType | null
+}
+
+export interface CommunicatorMessagesPatchType {
+  state?: CommunicatorStateType,
+  messages?: CommunicatorMessageListType,
+  selected?: CommunicatorMessageListType,
+  selectedIds?: Array<number>,
+  pages?: number,
+  hasMore?: boolean,
+  location?: string,
+  toolbarLock?: boolean,
+  current?: CommunicatorCurrentThreadType | null,
+  signature?: CommunicatorSignatureType | null
+}
+
+//TODO fix these anies
+export interface CommunicatorMessageWorkspaceRecepientType {
+  type: "workspace",
+  value: WorkspaceType
+}
+
+export interface CommunicatorMessageUserRecepientType {
+  type: "user",
+  value: any        //TODO fix user and usergoup type
+}
+
+export interface CommunicatorMessageUserGroupRecepientType {
+  type: "usergroup",
+  value: any
+}
+
+export type CommunicatorMessageItemRecepientType = CommunicatorMessageWorkspaceRecepientType | CommunicatorMessageUserRecepientType  | CommunicatorMessageUserGroupRecepientType
 
 export default function communicatorMessages(state: CommunicatorMessagesType={
   state: "LOADING",
@@ -18,18 +159,9 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
   if (action.type === "UPDATE_MESSAGES_STATE"){
     let newState: CommunicatorStateType = action.payload;
     return Object.assign({}, state, {state: newState});
-  } else if (action.type === "UPDATE_PAGES"){
-    let newPageNumber: number = action.payload;
-    return Object.assign({}, state, {pages: newPageNumber});
-  } else if (action.type === "UPDATE_HAS_MORE"){
-    let newHasMore: boolean = action.payload;
-    return Object.assign({}, state, {hasMore: newHasMore});
   } else if (action.type === "UPDATE_MESSAGES_ALL_PROPERTIES"){
     let newAllProperties: CommunicatorMessagesPatchType = action.payload;
     return Object.assign({}, state, newAllProperties);
-  } else if (action.type === "UPDATE_MESSAGES"){
-    let newMessages: CommunicatorMessageListType = action.payload;
-    return Object.assign({}, state, {messages: newMessages});
   } else if (action.type === "UPDATE_SELECTED_MESSAGES"){
     let newMessages: CommunicatorMessageListType = action.payload;
     return Object.assign({}, state, {selected: newMessages, selectedIds: newMessages.map((s: CommunicatorMessageType)=>s.communicatorMessageId)});
@@ -123,7 +255,7 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
   } else if (action.type === "SET_CURRENT_THREAD"){
     return Object.assign({}, state, {current: <CommunicatorCurrentThreadType>action.payload});
   } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES"){
-    let update: CommunicatorMessageUpdateType = action.payload.update;
+    let update: CommunicatorMessageLabelPatchType = action.payload.update;
     return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
       return Object.assign({}, selected, {labels: selected.labels.map((label)=>{
         if (label.labelId === action.payload.labelId){

@@ -1,5 +1,14 @@
 import {ActionType} from "~/actions";
-import {NotificationType, NotificationListType} from '~/reducers/index.d';
+
+export type NotificationSeverityType = "error" | "warning" | "loading" | "default" | "warning" | "info" | "fatal" | "success" | "secondary" | "inverse";
+
+export interface NotificationType {
+  id: number,
+  severity: NotificationSeverityType, 
+  message: string
+}
+
+export interface NotificationListType extends Array<NotificationType> {}
 
 export default function notifications(state: NotificationListType=[], action: ActionType){
   if (action.type === 'ADD_NOTIFICATION') {

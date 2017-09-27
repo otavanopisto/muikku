@@ -1,20 +1,27 @@
 import actions from '../base/notifications';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
-import {AnyActionType} from '~/actions';
-import {AnnouncementListType} from '~/reducers/index.d';
+import {AnyActionType, SpecificActionType} from '~/actions';
+import {AnnouncementListType} from '~/reducers/main-function/index/announcements';
 
-export default {
-  updateAnnouncements(options: any={hideWorkspaceAnnouncements: "false"}):AnyActionType{
-    return async (dispatch, getState)=>{
-      try {
-        dispatch({
-          type: 'UPDATE_ANNOUNCEMENTS',
-          payload: <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')()
-        });
-      } catch (err){
-        dispatch(actions.displayNotification(err.message, 'error'));
-      }
+export interface UpdateAnnouncementsTriggerType {
+  (options?: any):AnyActionType
+}
+
+export interface UPDATE_ANNOUNCEMENTS extends SpecificActionType<"UPDATE_ANNOUNCEMENTS", AnnouncementListType>{}
+
+let updateAnnouncements:UpdateAnnouncementsTriggerType = function updateAnnouncements(options={hideWorkspaceAnnouncements: "false"}){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      dispatch({
+        type: 'UPDATE_ANNOUNCEMENTS',
+        payload: <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')()
+      });
+    } catch (err){
+      dispatch(actions.displayNotification(err.message, 'error'));
     }
   }
 }
+
+export default {updateAnnouncements}
+export {updateAnnouncements}

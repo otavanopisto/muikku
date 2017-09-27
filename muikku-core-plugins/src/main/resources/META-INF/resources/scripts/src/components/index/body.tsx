@@ -9,7 +9,7 @@ import WorkspacesPanel from './body/workspaces-panel';
 
 import * as React from 'react';
 
-export default class IndexBody extends React.Component {
+export default class IndexBody extends React.Component<{},{}> {
   render(){
     return (<div className="embbed embbed-full">
       <MainFunctionNavbar activeTrail="index"/>

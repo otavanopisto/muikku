@@ -1,9 +1,20 @@
 import Navbar from '~/components/general/navbar';
 import Link from '~/components/general/link';
-import {i18nType, StatusType} from '~/reducers/index.d';
 
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {connect, Dispatch} from 'react-redux';
+import {i18nType} from '~/reducers/base/i18n';
+import {StatusType} from '~/reducers/base/status';
+
+interface ItemDataElement {
+  classNameSuffix: string,
+  trail: string,
+  text: string,
+  href: string,
+  icon: string,
+  condition?: boolean,
+  badge?: number
+}
 
 interface MainFunctionNavbarProps {
   activeTrail: string,
@@ -20,7 +31,7 @@ interface MainFunctionNavbarState {
 
 class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFunctionNavbarState> {
   render(){
-    const itemData = [{
+    const itemData: ItemDataElement[] = [{
       classNameSuffix: "home",
       trail: "index",
       text: 'plugin.home.home',
@@ -92,7 +103,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
           {item.badge ? <span className="main-function indicator">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
       }
-    })} defaultOptions={[]} menuItems={itemData.map((item)=>{
+    })} defaultOptions={[]} menuItems={itemData.map((item: ItemDataElement)=>{
       if (!item.condition){
         return null;
       }
@@ -105,7 +116,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     status: state.status,
@@ -114,11 +125,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(MainFunctionNavbar);

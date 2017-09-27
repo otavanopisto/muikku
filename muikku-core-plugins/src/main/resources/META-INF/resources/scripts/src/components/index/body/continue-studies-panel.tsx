@@ -3,14 +3,15 @@
 
 import Link from '../../general/link';
 import * as React from 'react';
-import {connect} from 'react-redux';
-
-import {i18nType, StatusType, WorkspaceType} from '~/reducers/index.d';
+import {connect, Dispatch} from 'react-redux';
+import {i18nType} from '~/reducers/base/i18n';
+import {StatusType} from '~/reducers/base/status';
+import {LastWorkspaceType} from '~/reducers/main-function/index/last-workspace';
 
 interface ContinueStudiesPanelProps {
   i18n: i18nType,
   status: StatusType,
-  lastWorkspace: WorkspaceType
+  lastWorkspace: LastWorkspaceType
 }
 
 interface ContinueStudiesPanelState {
@@ -40,7 +41,7 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
   }
 }
 
-function mapStateToProps(state){
+function mapStateToProps(state: any){
   return {
     status: state.status,
     i18n: state.i18n,
@@ -48,11 +49,11 @@ function mapStateToProps(state){
   }
 };
 
-const mapDispatchToProps = (dispatch)=>{
+function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default connect(
+export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
 )(ContinueStudiesPanel);

@@ -1,9 +1,16 @@
-import * as PropTypes from 'prop-types';
 import * as React from 'react';
 
-export default class ScreenContainer extends React.Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired
+interface ScreenContainerProps {
+  children?: React.ReactElement<any>
+}
+
+interface ScreenContainerState {
+  
+}
+
+export default class ScreenContainer extends React.Component<ScreenContainerProps, ScreenContainerState> {
+  constructor(props: ScreenContainerProps){
+    super(props);
   }
   render(){
     return <div className="screen-container screen-container-full-height">
