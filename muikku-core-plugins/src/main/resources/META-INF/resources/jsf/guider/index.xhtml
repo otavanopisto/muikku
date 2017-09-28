@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!-- <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -38,21 +38,21 @@
       <h2 class="main-functionality-page-title">#{i18n.text['plugin.guider.pageTitle']}</h2>
       <ui:insert name="mf-content-functions">
         <div class="mf-content-functions flex-row flex-align-items-center">
-<!--           <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">                    -->
-<!--             <div class="mf-primary-function"> -->
-<!--               <div class="gt-dropdown-button mf-primary-function-content"> -->
-<!--                 <span id="btnValue" class="mf-primary-function-text gt-main-dropdown-label">#{i18n.text['plugin.communicator.newMessage']}</span> -->
-<!--                 <span style="display:none" class="mf-primary-function-dropdown-chevron gt-main-dropdown-chevron icon-arrow-down"></span>                 -->
-<!--               </div> -->
-<!--          <div class="gt-side-button-dropdown"> -->
-<!--           <ul id="gtCategories"> -->
-<!--             <li id="cat-1"><span id="my" class="gt-category-myCourses">Omat opiskelijat</span></li> -->
-<!--             <li id="cat-2" ><span id="all" class="gt-category-allCourses">Kaikki opiskelijat</span></li> -->
-<!--           </ul> -->
-<!--         </div>               -->
-<!--             </div>   -->
-<!--           </div> -->
-<!--           <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2"> -->
+          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-8 sm-flex-order-1 sm-flex-cell-first">                   
+            <div class="mf-primary-function">
+              <div class="gt-dropdown-button mf-primary-function-content">
+                <span id="btnValue" class="mf-primary-function-text gt-main-dropdown-label">#{i18n.text['plugin.communicator.newMessage']}</span>
+                <span style="display:none" class="mf-primary-function-dropdown-chevron gt-main-dropdown-chevron icon-arrow-down"></span>                
+              </div>
+         <div class="gt-side-button-dropdown">
+          <ul id="gtCategories">
+            <li id="cat-1"><span id="my" class="gt-category-myCourses">Omat opiskelijat</span></li>
+            <li id="cat-2" ><span id="all" class="gt-category-allCourses">Kaikki opiskelijat</span></li>
+          </ul>
+        </div>              
+            </div>  
+          </div>
+          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-8 sm-flex-order-2">
 
           <div class="mf-controls-container gt-controls-container lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16 sm-flex-order-2">
            <div class="mf-search gt-search">
@@ -78,4 +78,21 @@
       </ui:insert>
     </div>
   </ui:define>
+</ui:composition> -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/base.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/dist/guider.js" />
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/css/guider.css" />
+  </ui:define>
+
 </ui:composition>
