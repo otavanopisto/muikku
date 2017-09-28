@@ -1,6 +1,7 @@
 import MainFunctionNavbar from '~/components/base/main-function/navbar';
 
 import * as React from 'react';
+import Playground from '../__playground';
 
 interface GuiderBodyProps {
   
@@ -14,6 +15,7 @@ export default class GuiderBody extends React.Component<GuiderBodyProps,GuiderBo
   render(){
     return (<div className="embbed embbed-full">
       <MainFunctionNavbar activeTrail="guider"/>
+      <Playground/>
     </div>);
   }
 }
