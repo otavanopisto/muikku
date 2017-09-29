@@ -2,7 +2,7 @@ import * as React from 'react';
 import AceEditor from 'react-ace';
 import brace from 'brace';
 
-import 'brace/mode/java';
+import 'brace/mode/html';
 import 'brace/theme/github';
 
 interface PlaygroundProps {
@@ -64,7 +64,7 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
         this.setState({codeDisplayed: !this.state.codeDisplayed})
       } else if (e.keyCode == 27 && e.ctrlKey){
         this.reloadStylesheets();
-      } else if (e.keyCode == 67 && e.ctrlKey){
+      } else if (e.keyCode == 81 && e.ctrlKey){
         this.showURLEncoded();
       }
     });
