@@ -14,7 +14,7 @@ interface AnnouncerBodyState {
 export default class AnnouncerBody extends React.Component<AnnouncerBodyProps,AnnouncerBodyState> {
   render(){
     return (<div className="embbed embbed-full">
-      <MainFunctionNavbar activeTrail="guider"/>
+      <MainFunctionNavbar activeTrail="announcer"/>
       <Playground/>
     </div>);
   }
