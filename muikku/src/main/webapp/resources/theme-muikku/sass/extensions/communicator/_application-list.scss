@@ -5,6 +5,9 @@
 .communicator.application-list.communicator-application-list-messages {
   height: 100%;
   
+
+
+
   .application-list-item {
     padding-left: 15px;
 
@@ -13,9 +16,7 @@
     }
     
     .application-list-item-header {
-      >* {
-        vertical-align: top;
-      }
+      align-items: center;
     
       input {
         -webkit-appearance: none;
@@ -47,6 +48,10 @@
       }
     }
   }
+  .application-list-item-header, .application-list-item-body, .application-list-item-footer {
+    display: flex;      
+    align-items: center;
+  }  
 }
 
 .communicator.application-list.communicator-application-list-message-view {

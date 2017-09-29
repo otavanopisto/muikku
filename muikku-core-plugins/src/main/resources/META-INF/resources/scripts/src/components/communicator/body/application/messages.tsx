@@ -189,21 +189,22 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
           onContextMenu={this.onContextMenu}>
           <div className="application-list-item-header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
-            <span className="communicator text communicator-text-username">
-              {message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}
-            </span>
-            <span className="communicator-application-list-item-labels">{message.labels.map((label)=>{
-              return <span className="communicator text communicator-text-tag" key={label.id}>
+            <div className="communicator text communicator-text-usernames">
+              <span className="communicator text communicator-text-username">{message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}</span>
+            </div>              
+            <div className="communicator text communicator-text-labels">{message.labels.map((label)=>{
+              return <span className="communicator text communicator-text-label" key={label.id}>
                 <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                 {label.labelName}
               </span>
-            })}</span>
-            {message.messageCountInThread ? <span className="communicator text communicator-text-counter">
+            })}</div>
+            {message.messageCountInThread ? <div className="communicator text communicator-text-counter">
               {message.messageCountInThread}
-            </span> : null}
-            <span className="communicator text communicator-text-date">
+            </div> : null}
+            <div className="communicator text communicator-text-date">
               {this.props.i18n.time.format(message.threadLatestMessageDate)}
-            </span>
+            </div>
+              
           </div>
           <div className="application-list-item-body">
             <span className="communicator text communicator-text-body">{message.caption}</span>

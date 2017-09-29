@@ -21,19 +21,41 @@
       display: inline-block;
     }
   }
+  &.communicator-text-labels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;
+  }  
+  
   &.communicator-text-username {
-    display: inline-block;
+    white-space: nowrap;
     
     .communicator-application-list-item-unread & {
       font-weight: 600;
     }
   }
+  
+  &.communicator-text-counter {
+
+    align-items: center;
+    border-radius: 50%;
+    background-color: #FFF6AE;
+    display: flex;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    padding: 0px 15px;
+    width: 28px;
+  }
+  
   &.communicator-text-date {
-    display: inline-block;
     opacity: 0.75;
     font-style: italic;
-    float: right;
+    width: 130px;
+    text-align: right;
   }
+  
   &.communicator-text-body {
     display: inline-block;
     font-weight: 300;
@@ -41,8 +63,8 @@
       padding-left: 30px;
     }
   }
-  &.communicator-text-tag {
-    display: inline-block;
+  
+  &.communicator-text-label {
     font-weight: 300;
     
     .icon {
