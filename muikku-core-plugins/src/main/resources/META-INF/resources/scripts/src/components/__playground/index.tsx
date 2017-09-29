@@ -20,9 +20,17 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
     
     this.onChange = this.onChange.bind(this);
     this.reloadStylesheets = this.reloadStylesheets.bind(this);
+    this.showURLEncoded = this.showURLEncoded.bind(this);
+    
+    let data = window.location.hash.replace("#","").split("?")[1];
+    let def;
+    if (data){
+      let url = new ((window as any).URL)("http://__playground?" + data);
+      def = url.searchParams.get("__playground");
+    }
     
     this.state = {
-      html: localStorage.getItem('HTML') || "",
+      html: def || localStorage.getItem('HTML') || "",
       codeDisplayed: true
     }
   }
@@ -36,6 +44,19 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
       }
     }
   }
+  showURLEncoded(){
+    let text = encodeURIComponent(this.state.html);
+    let newHash = location.hash;
+    if (newHash && newHash.indexOf("?")){
+      newHash += "&__playground=" + text;
+    } else if (newHash){
+      newHash += "?__playground=" + text;
+    } else {
+      newHash += "#?__playground=" + text;
+    }
+    let url = location.protocol + "//" + location.host + location.pathname + location.search + newHash;
+    prompt("copy this", url);
+  }
   componentDidMount(){
     document.addEventListener("keyup", (e)=>{
       if (e.keyCode == 27 && !e.ctrlKey) {
@@ -43,6 +64,8 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
         this.setState({codeDisplayed: !this.state.codeDisplayed})
       } else if (e.keyCode == 27 && e.ctrlKey){
         this.reloadStylesheets();
+      } else if (e.keyCode == 67 && e.ctrlKey){
+        this.showURLEncoded();
       }
     });
   }
