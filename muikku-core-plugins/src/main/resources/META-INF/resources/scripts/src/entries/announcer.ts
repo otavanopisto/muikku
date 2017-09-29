@@ -1,5 +1,5 @@
-import App from '~/containers/guider';
-import reducer from '~/reducers/guider';
+import App from '~/containers/announcer';
+import reducer from '~/reducers/announcer';
 import runApp from '~/run';
 import Websocket from '~/util/websocket';
 import {Action} from 'redux';
@@ -20,4 +20,4 @@ let websocket = new Websocket(store, {
   }
 });
 store.dispatch(<Action>actions.messageCount.updateMessageCount());
-store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.guider.guider')));
+store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.announcer.pageTitle')));
