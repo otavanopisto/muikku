@@ -14,6 +14,8 @@ export interface i18nType {
   }
 }
 
+//TODO it uses the global muikku locale because the i18n time part doesn't have a way to know
+//the current locale, it should be a method somehow
 export default function i18n(state={
   text: {
     get(key: string, ...args: (string | number)[]): string{
@@ -27,7 +29,7 @@ export default function i18n(state={
   },
   time: {
     format(date=new Date(), format="L"){
-      return moment(new Date(date)).format(format);
+      return moment(new Date(date)).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(format);
     },
     fromNow(date=new Date()){
       return moment(new Date(date)).fromNow();
