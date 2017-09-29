@@ -26,7 +26,7 @@ export default function i18n(state={
     }
   },
   time: {
-    format(date=new Date(), format="DD.MM.YYYY hh:mm"){
+    format(date=new Date(), format="L"){
       return moment(new Date(date)).format(format);
     },
     fromNow(date=new Date()){
