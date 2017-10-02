@@ -182,34 +182,35 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
      ref="list" onScroll={this.onScroll}>{
       this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
-        return <div key={message.communicatorMessageId}
-          className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
-          onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)}
-          onTouchMove={this.onTouchMoveMessage.bind(this, message)} onClick={this.onMessageClick.bind(this, message)}
-          onContextMenu={this.onContextMenu}>
-          <div className="application-list-item-header">
+        return (
+          <div key={message.communicatorMessageId} className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
+            onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)} onTouchMove={this.onTouchMoveMessage.bind(this, message)} 
+            onClick={this.onMessageClick.bind(this, message)} onContextMenu={this.onContextMenu}>
+            <div className="application-list-item-header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
             <div className="communicator text communicator-text-usernames">
               <span className="communicator text communicator-text-username">{message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}</span>
             </div>              
-            <div className="communicator text communicator-text-labels">{message.labels.map((label)=>{
-              return <span className="communicator text communicator-text-label" key={label.id}>
-                <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                {label.labelName}
-              </span>
-            })}</div>
             {message.messageCountInThread ? <div className="communicator text communicator-text-counter">
               {message.messageCountInThread}
             </div> : null}
             <div className="communicator text communicator-text-date">
               {this.props.i18n.time.format(message.threadLatestMessageDate)}
-            </div>
-              
+            </div>                
           </div>
           <div className="application-list-item-body">
             <span className="communicator text communicator-text-body">{message.caption}</span>
           </div>
+          <div className="application-list-item-footer">
+            <div className="communicator text communicator-text-labels">{message.labels.map((label)=>{
+              return <span className="communicator text communicator-text-label" key={label.id}>
+                <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                <span className="label-name">{label.labelName}</span>
+              </span>
+            })}</div>            
+          </div>                      
         </div>
+       )
       })
     }{
       this.props.communicatorMessagesState === "LOADING_MORE" ? 
