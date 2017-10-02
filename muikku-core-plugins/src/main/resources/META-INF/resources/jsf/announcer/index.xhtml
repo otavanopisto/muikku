@@ -82,6 +82,11 @@
   template="/WEB-INF/templates/base.xhtml">
   
   <ui:define name="scripts">
+  	<script defer="defer">
+  	  MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT = #{announcerBackingBean.canPublishEnvironment};
+  	  MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_WORKSPACES = true;
+  	  MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_GROUPS = #{announcerBackingBean.canPublishGroups};
+  	</script>
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/announcer.js" />
   </ui:define>

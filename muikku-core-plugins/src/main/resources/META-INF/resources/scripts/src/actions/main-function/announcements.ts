@@ -2,7 +2,7 @@ import actions from '../base/notifications';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {AnnouncementListType} from '~/reducers/main-function/index/announcements';
+import {AnnouncementListType} from 'reducers/main-function/announcer/announcements';
 
 export interface UpdateAnnouncementsTriggerType {
   (options?: any):AnyActionType
