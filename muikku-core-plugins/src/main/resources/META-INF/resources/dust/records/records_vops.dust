@@ -51,6 +51,7 @@
   </div>
   <div class="mf-vops-progress-courses-container tr-vops-progress-courses-container">
     <div class="mf-vops-progress-courses tr-vops-progress-courses">
+      <span>{#localize key="plugin.records.studyplan.progress.title.courses.info" /}</span>
       <span>{#localize key="plugin.records.studyplan.progress.title.courses.all" arg0=numCourses /}</span>
       <span>{#localize key="plugin.records.studyplan.progress.title.courses.mandatory" arg0=numMandatoryCourses /}</span>
     </div>  
