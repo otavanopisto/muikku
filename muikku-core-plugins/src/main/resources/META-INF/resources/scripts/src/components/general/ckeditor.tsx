@@ -56,8 +56,9 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
         nActualHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
           parseInt(nComputedStyle.getPropertyValue("margin-top")) +
           parseInt(nComputedStyle.getPropertyValue("margin-bottom"));
-        actualHeight = nActualHeight;
       });
+      
+      actualHeight = nActualHeight;
     } else {
       actualHeight = height;
     }

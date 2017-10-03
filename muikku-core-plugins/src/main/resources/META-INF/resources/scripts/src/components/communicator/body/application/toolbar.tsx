@@ -204,7 +204,8 @@ function mapStateToProps(state: any){
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({deleteCurrentMessage, addLabelToCurrentMessage,
     removeLabelFromSelectedMessages, deleteSelectedMessages,
-    toggleMessagesReadStatus, addCommunicatorLabel, addLabelToSelectedMessages}, dispatch);
+    toggleMessagesReadStatus, addCommunicatorLabel, addLabelToSelectedMessages,
+    removeLabelFromCurrentMessage}, dispatch);
 };
 
 export default (connect as any)(

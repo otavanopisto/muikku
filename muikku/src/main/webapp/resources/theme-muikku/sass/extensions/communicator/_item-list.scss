@@ -4,11 +4,17 @@
 
 .communicator.item-list {
   &.communicator-item-list-navigation {
-    @include breakpoint-down($breakpoint-landscape-pad){
-    }
-    
+  	width: 100%;
+  	height: 100%;
+  	overflow-y: scroll;
+  	
+  	.item-list-item {
+      padding-right: 10px;
+  	}    
   }
   
   .menu &.communicator-item-list-navigation {
+  	width: 100%;
+    padding: 0 0 10px 0;
   }
 }

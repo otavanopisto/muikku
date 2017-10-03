@@ -44,5 +44,6 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
 };
 
 export default (connect as any)(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(Notifications);
