@@ -99,21 +99,23 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     }
     let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
-      return <div style={{opacity: this.state.removed ? 0.5 : null}}>
-        <div className="communicator text communicator-text-label-update-dialog-icon">
-          <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+      return (          
+        <div style={{opacity: this.state.removed ? 0.5 : null}}>
+          <div className="communicator text communicator-text-label-update-dialog-icon">
+            <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+          </div>
+          <input value={this.state.name}
+            className="communicator form-field communicator-form-field-label-name"
+            disabled={this.state.removed}
+            onChange={this.onNameChange}/>
+          {sliderPicker}
+        
+          {/*TODO please translate this*/}
+          <Link className="communicator button button-large button-fatal communicator-button-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
+            {this.state.removed ? "Label Removed" : "Remove Label"}
+          </Link>
         </div>
-        <input value={this.state.name}
-          className="communicator form-field communicator-form-field-label-name"
-          disabled={this.state.removed}
-          onChange={this.onNameChange}/>
-        {sliderPicker}
-      
-        {/*TODO please translate this*/}
-        <Link className="communicator button button-large button-fatal communicator-button-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
-          {this.state.removed ? "Label Removed" : "Remove Label"}
-        </Link>
-      </div>
+      )
     }
     return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} classNameExtension="communicator" 
      title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}

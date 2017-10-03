@@ -72,14 +72,16 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="embbed embbed-full">
-        <Link className="communicator button button-large button-warn commmunicator-button-standard-cancel" onClick={closeDialog}>
-         {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
-        </Link>
-        <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.update.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.communicator.settings.signatures.create')}
-        </Link>
-      </div>
+      return (
+        <div className="jumbo-dialog-button-container">
+          <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.update.bind(this, closeDialog)}>
+            {this.props.i18n.text.get('plugin.communicator.settings.signatures.create')}
+          </Link>
+          <Link className="communicator button button-large button-warn commmunicator-button-standard-cancel" onClick={closeDialog}>
+          {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
+         </Link>
+        </div>                   
+      )    
     }
     let content = (closeDialog: ()=>any)=>{
       return <CKEditor width="100%" height="grow" configuration={CKEDITOR_CONFIG} extraPlugins={CKEDITOR_PLUGINS}

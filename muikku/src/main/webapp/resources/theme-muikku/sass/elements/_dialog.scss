@@ -18,6 +18,7 @@ $dialog-button-close-height: 45px;
   right: 0;
   top: 0;
   z-index: 10;
+  
 
   > .dialog-window {
     background-color: $color-dialog-default-background;
@@ -28,6 +29,7 @@ $dialog-button-close-height: 45px;
     overflow: hidden;
     padding: 20px;
     position: relative;
+    
 
     @include breakpoint-down($breakpoint-medium-mobile) {
       border: 0;
@@ -119,7 +121,7 @@ $dialog-button-close-height: 45px;
       bottom: 0;
     }
   }
-  
+
   .jumbo-dialog-wrapper {
   	@include breakpoint-down($breakpoint-landscape-pad) {
       
@@ -150,6 +152,7 @@ $dialog-button-close-height: 45px;
       position: relative;
       display: flex;
       flex-direction: column;
+      padding-top: 20px;
       
       @media screen and (max-width: $breakpoint-max-usable-screen){
       	.jumbo-dialog-footer, .jumbo-dialog-body {
@@ -166,7 +169,18 @@ $dialog-button-close-height: 45px;
       	width: 100%;
       	padding-top: 10px;
       	padding-bottom: 10px;
+
       }
+
+      .jumbo-dialog-button-container {
+        align-items: center;
+        display: flex;
+        justify-content: left;
+        margin-bottom: 20px;
+        a:not(:first-child) {
+          margin-left: 10px;         
+        }                  
+      }       
       
       .jumbo-dialog-header {
         border-bottom: solid 1px $color-dialog-default-border;

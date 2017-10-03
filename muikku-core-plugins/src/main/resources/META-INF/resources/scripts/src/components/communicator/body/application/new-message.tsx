@@ -131,14 +131,16 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     ]
        
     let footer = (closeDialog: ()=>any)=>{
-      return <div>
-        <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
-        </Link>
-        <Link className="communicator button button-large button-warn communicator-button-standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
-        </Link>
-      </div>
+      return (          
+         <div className="jumbo-dialog-button-container">
+          <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
+            {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
+          </Link>
+          <Link className="communicator button button-large button-warn communicator-button-standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
+          </Link>
+        </div>
+      )
     }
     
     return <JumboDialog classNameExtension="communicator"
