@@ -21,13 +21,13 @@
       display: inline-block;
     }
   }
-  &.communicator-text-labels {
+
+  &.communicator-text-usernames {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    flex: 1;
-  }  
-  
+    flex: 1;  
+  }
   &.communicator-text-username {
     white-space: nowrap;
     
@@ -63,17 +63,26 @@
       padding-left: 30px;
     }
   }
+
+  &.communicator-text-labels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;
+    padding: 10px 0 0;
+  }  
   
   &.communicator-text-label {
     font-weight: 300;
-    
+    display: flex;
+    align-items: end; 
+   
     .icon {
       padding-left: 32px;
       
       &::before {
-        position: absolute;
-        left: 12px;
-        bottom: -1px;
+        display: inline-block;
+        margin-right: 5px;
       }
     }
   }

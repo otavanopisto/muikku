@@ -33,13 +33,13 @@ $item-list-item-min-height: 32px;
     }
     
     .item-list-text-body {
-      display: block;
       flex: 1 1 auto;
       font-size: 14px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       padding-top: 7px;
+      max-width: 157px;
     }
     
     .item-list-text-body.item-list-text-body-multiline {
