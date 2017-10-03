@@ -81,13 +81,13 @@ export default function announcements(state: AnnouncementsType={
   } else if (action.type === "UPDATE_SELECTED_ANNOUNCEMENTS"){
     let newAnnouncements: AnnouncementListType = action.payload;
     return Object.assign({}, state, {selected: newAnnouncements, selectedIds: newAnnouncements.map((s: AnnouncementType)=>s.id)});
-  } else if (action.type === "ADD_TO_ANNOUNCEMENTS_SELECTED_MESSAGES"){
+  } else if (action.type === "ADD_TO_ANNOUNCEMENTS_SELECTED"){
     let newAnnouncement: AnnouncementType = action.payload;
     return Object.assign({}, state, {
       selected: state.selected.concat([newAnnouncement]),
       selectedIds: state.selectedIds.concat([newAnnouncement.id])
     });
-  } else if (action.type === "REMOVE_FROM_ANNOUNCEMENTS_SELECTED_MESSAGES"){
+  } else if (action.type === "REMOVE_FROM_ANNOUNCEMENTS_SELECTED"){
     return Object.assign({}, state, {selected: state.selected.filter((selected: AnnouncementType)=>{
       return selected.id !== action.payload.id
     }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.id})});

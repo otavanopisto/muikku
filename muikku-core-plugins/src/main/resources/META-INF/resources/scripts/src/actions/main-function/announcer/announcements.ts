@@ -25,10 +25,34 @@ export interface AddToAnnouncementsSelectedTriggerType {
   (announcement: AnnouncementType):AnyActionType
 }
 
+export interface RemoveFromAnnouncementsSelectedTriggerType {
+  (announcement: AnnouncementType):AnyActionType
+}
+
+export interface UpdateAnnouncementTriggerType {
+  (announcement: AnnouncementType, update: AnnouncementUpdateType):AnyActionType
+}
+
 let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId){
   return loadAnnouncementsHelper.bind(this, location, workspaceId);
 }
 
 let addToAnnouncementsSelected:AddToAnnouncementsSelectedTriggerType = function addToAnnouncementsSelected(announcement){
-  
+  return {
+    type: "ADD_TO_ANNOUNCEMENTS_SELECTED",
+    payload: announcement
+  }
+}
+
+let removeFromAnnouncementsSelected:AddToAnnouncementsSelectedTriggerType = function removeFromAnnouncementsSelected(announcement){
+  return {
+    type: "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
+    payload: announcement
+  }
+}
+
+let updateAnnouncement:UpdateAnnouncementTriggerType = function(announcement, update){
+  return  (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    //TODO
+  }
 }
