@@ -1,3 +1,5 @@
-let ckeditor = (<any>window).CKEDITOR;
+function getCKEDITOR(){
+  return (<any>window).CKEDITOR;
+}
 
-export default ckeditor;
+export default getCKEDITOR;

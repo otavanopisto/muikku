@@ -1,6 +1,6 @@
 import equals = require("deep-equal");
 import * as React from 'react';
-import CKEDITOR from '~/lib/ckeditor';
+import getCKEDITOR from '~/lib/ckeditor';
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -63,7 +63,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     }
     
     if (actualHeight !== this.height || this.width !== width){
-      CKEDITOR.instances[this.name].resize(width, actualHeight);
+      getCKEDITOR().instances[this.name].resize(width, actualHeight);
     }
     
     this.width = width;
@@ -76,37 +76,37 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     };
     if (this.props.extraPlugins){
       for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){
-        CKEDITOR.plugins.addExternal(plugin, url);
+        getCKEDITOR().plugins.addExternal(plugin, url);
       }
       extraConfig.extraPlugins = Object.keys(this.props.extraPlugins).join(',');
     }
-    CKEDITOR.replace(this.name, Object.assign(extraConfig, this.props.configuration));
-    CKEDITOR.instances[this.name].on('change', ()=>{
-      let data = CKEDITOR.instances[this.name].getData();
+    getCKEDITOR().replace(this.name, Object.assign(extraConfig, this.props.configuration));
+    getCKEDITOR().instances[this.name].on('change', ()=>{
+      let data = getCKEDITOR().instances[this.name].getData();
       this.currentData = data;
       this.props.onChange(data);
     });
-    CKEDITOR.instances[this.name].on('instanceReady', ()=>{
-      CKEDITOR.instances[this.name].setData(this.props.children);
+    getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
+      getCKEDITOR().instances[this.name].setData(this.props.children);
       if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
         this.resize(this.props.width, this.props.height);
       }
     });
   }
   componentWillUnmount(){
-    CKEDITOR.instances[this.name].destroy();
+    getCKEDITOR().instances[this.name].destroy();
   }
   componentWillReceiveProps(nextProps: CKEditorProps){
     if (!equals(nextProps.configuration, this.props.configuration)){
-      CKEDITOR.replace(this.name, this.props.configuration)
+      getCKEDITOR().replace(this.name, this.props.configuration)
     }
     
     if (nextProps.children !== this.currentData){
-      CKEDITOR.instances[this.name].setData(nextProps.children);
+      getCKEDITOR().instances[this.name].setData(nextProps.children);
     }
     
     if (nextProps.children !== this.currentData){
-      CKEDITOR.instances[this.name].setData(nextProps.children);
+      getCKEDITOR().instances[this.name].setData(nextProps.children);
     }
     
     if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){
