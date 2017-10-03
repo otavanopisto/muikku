@@ -80,56 +80,61 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     if (!currentLocation){
       return null;
     }
-    
     if (this.props.communicatorMessages.current){
-      return <div className="communicator-navigation">
-        <Link className="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back" onClick={this.onGoBackClick}>
-          <span className="icon icon-goback"></span>
-        </Link>      
-        <div className="communicator text communicator-text-current-folder">
-          <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
-          {"  " + currentLocation.text(this.props.i18n)}
-          {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-            <Link className="communicator button-pill communicator-button-pill-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
-          </LabelUpdateDialog> : null} {" / " + this.props.communicatorMessages.current.messages[0].caption}
-        </div>                
-        <Link className="communicator button button-pill communicator-button-pill-delete" onClick={this.props.deleteCurrentMessage}>
-          <span className="icon icon-delete"></span>
-        </Link>
-        <Dropdown classNameExtension="communicator" classNameSuffix="labels" items={
-          [
-            <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-              type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-            <span className="communicator link link-full communicator-link-new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
-              {this.props.i18n.text.get("plugin.communicator.label.create")}
-            </span>
-          ].concat(this.props.communicatorNavigation.filter((item)=>{
-            return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
-          }).map((label)=>{
-            let isSelected = this.props.communicatorMessages.current.labels.find(l=>l.labelId === label.id);
-            return (<Link className={`communicator link link-full communicator-link-label ${isSelected ? "selected" : ""}`}
-              onClick={!isSelected ? this.props.addLabelToCurrentMessage.bind(null, label) : this.props.removeLabelFromCurrentMessage.bind(null, label)}>
-              <span className="icon icon-tag" style={{color: label.color}}></span>
-              <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
-            </Link>);
-          }))
-        }>
-          <Link className="communicator button button-pill communicator-button-pill-label">
-            <span className="icon icon-tag"></span>
-          </Link>
-        </Dropdown>
-                
-        <Link className="communicator button button-pill communicator-button-pill-next-page"
-          disabled={this.props.communicatorMessages.current.newerThreadId === null}
-          onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.newerThreadId)}>
-          <span className="icon icon-arrow-right"></span>
-        </Link>
-        <Link className="communicator button button-pill communicator-button-pill-prev-page"
-          disabled={this.props.communicatorMessages.current.olderThreadId === null}
-          onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>
-          <span className="icon icon-arrow-left"></span>
-        </Link>
-      </div>
+      return ( 
+        <div className="communicator-actions">
+          <div className="communicator-actions-main">          
+            <Link className="communicator button button-pill communicator-button-pill-go-back communicator-interact-go-back" onClick={this.onGoBackClick}>
+              <span className="icon icon-goback"></span>
+            </Link>      
+            <div className="communicator text communicator-text-current-folder">
+              <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+              {"  " + currentLocation.text(this.props.i18n)}
+              {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
+                <Link className="communicator button-pill communicator-button-pill-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+              </LabelUpdateDialog> : null} {" / " + this.props.communicatorMessages.current.messages[0].caption}
+            </div>                
+            <Link className="communicator button button-pill communicator-button-pill-delete" onClick={this.props.deleteCurrentMessage}>
+              <span className="icon icon-delete"></span>
+            </Link>          
+            <Dropdown classNameExtension="communicator" classNameSuffix="labels" items={
+              [
+                <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
+                  type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
+                <span className="communicator link link-full communicator-link-new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+                  {this.props.i18n.text.get("plugin.communicator.label.create")}
+                </span>
+              ].concat(this.props.communicatorNavigation.filter((item)=>{
+                return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
+              }).map((label)=>{
+                let isSelected = this.props.communicatorMessages.current.labels.find(l=>l.labelId === label.id);
+                return (<Link className={`communicator link link-full communicator-link-label ${isSelected ? "selected" : ""}`}
+                  onClick={!isSelected ? this.props.addLabelToCurrentMessage.bind(null, label) : this.props.removeLabelFromCurrentMessage.bind(null, label)}>
+                  <span className="icon icon-tag" style={{color: label.color}}></span>
+                  <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
+                </Link>);
+              }))
+            }>
+              <Link className="communicator button button-pill communicator-button-pill-label">
+                <span className="icon icon-tag"></span>
+              </Link>
+            </Dropdown>
+          </div>
+          <div className="communicator-actions-aside">
+            <Link className="communicator button button-pill communicator-button-pill-prev-page"
+              disabled={this.props.communicatorMessages.current.olderThreadId === null}
+              onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>
+              <span className="icon icon-arrow-left"></span>
+            </Link>        
+            
+            <Link className="communicator button button-pill communicator-button-pill-next-page"
+              disabled={this.props.communicatorMessages.current.newerThreadId === null}
+              onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.newerThreadId)}>
+              <span className="icon icon-arrow-right"></span>
+            </Link>
+          </div>
+        </div>
+      )
     }
   
     let allInCommon:number[] = [];

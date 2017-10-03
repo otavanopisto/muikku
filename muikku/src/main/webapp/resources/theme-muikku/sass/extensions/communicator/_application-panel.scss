@@ -1,11 +1,20 @@
 .communicator.application-panel {
 
   
-  .communicator-navigation {
+  .communicator-actions {
     user-select: none;
     display: flex;
     justify-content: flex-start;
     width: 100%;
+    
+    .communicator-actions-main {
+      display: flex;
+      flex: 1 1 auto;
+    }
+    .communicator-actions-aside {
+      display: flex;
+      justify-content: flex-end;
+    }
     
     [data-controller-widget] {
       display: inline-block;
