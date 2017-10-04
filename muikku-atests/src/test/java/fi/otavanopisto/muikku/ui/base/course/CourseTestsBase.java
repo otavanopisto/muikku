@@ -315,4 +315,53 @@ public class CourseTestsBase extends AbstractUITest {
       WireMock.reset();
     }
   }  
+
+  @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI
+      }
+    )
+  public void courseTeacherVacationInfoTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    long courseId = 1l;
+    CourseStaffMember courseStaffMember = new CourseStaffMember(1l, courseId, admin.getId(), 7l);
+    MockCourseStudent courseStudent = new MockCourseStudent(2l, courseId, student.getId());
+    
+    mockBuilder
+    .addStudent(student)
+    .addStaffMember(admin)
+    .mockLogin(admin)
+    .build();
+    
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", Long.toString(courseId), Boolean.TRUE);
+    
+    mockBuilder
+    .addCourseStaffMember(courseId, courseStaffMember)
+    .addCourseStudent(courseId, courseStudent)
+    .build();
+    try{
+      navigate("/profile", true);
+      waitForPresent(".profile-vacation-date");
+      sendKeys(".profile-vacation-date input[name=\"profile-vacation-start\"]", "21.12.2010");
+      sendKeys(".profile-vacation-date input[name=\"profile-vacation-end\"]", "21.12.2025");
+      waitAndClick(".save-profile-fields");
+      logout();
+      mockBuilder.mockLogin(student);
+      login();
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      waitForPresent(".workspace-teacher-info .vacation-period");
+      assertNotTextIgnoreCase(".workspace-teacher-info .vacation-period", "Unavailable 21.12.2010 - 21.12.2025");      
+    }finally{
+      WireMock.reset();
+      deleteWorkspace(workspace.getId());  
+    }
+  }
 }

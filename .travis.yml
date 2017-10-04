@@ -110,14 +110,6 @@ after_failure:
 - pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly10x/log/server.log;
 notifications:
-  irc:
-    channels:
-    - chat.freenode.net#otavanopisto-muikku
-    use_notice: true
-    skip_join: true
-    template:
-    - '%{repository} (%{commit}) : %{message} %{foo} '
-    - 'Build details: %{build_url}'
   webhooks:
     urls:
     - http://build.staging.fi/travis.php
