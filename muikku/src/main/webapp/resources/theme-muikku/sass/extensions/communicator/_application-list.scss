@@ -39,9 +39,6 @@
       input:checked::after {
         content: "\e639";
         font-family: muikku;
-        position: absolute;
-        top: 1px;
-        left: 1px;
         font-size: 18px;
         color: $color-communicator-application-list-item-checkbox-checked-mark;
       }
