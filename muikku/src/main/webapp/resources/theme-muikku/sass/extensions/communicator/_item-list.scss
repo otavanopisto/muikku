@@ -5,8 +5,8 @@
 .communicator.item-list {
   &.communicator-item-list-navigation {
   	width: 100%;
-  	height: 100%;
-  	overflow-y: auto;
+  	padding-top: 10px;
+  	padding-bottom: 10px;
   	
   	.item-list-item {
       padding-right: 10px;

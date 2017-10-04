@@ -191,7 +191,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
             <div className="communicator text communicator-text-usernames">
               <span className="communicator text communicator-text-username">{message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}</span>
             </div>              
-            {message.messageCountInThread ? <div className="communicator text communicator-text-counter">
+            {message.messageCountInThread > 1 ? <div className="communicator text communicator-text-counter">
               {message.messageCountInThread}
             </div> : null}
             <div className="communicator text communicator-text-date">

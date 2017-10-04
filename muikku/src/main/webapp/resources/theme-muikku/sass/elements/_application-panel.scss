@@ -4,7 +4,7 @@ $application-panel-internal-navigation-padding: 10px;
   align-items: center;
   display: flex;
   justify-content: center;
-  padding: 70px 0 50px 0;
+  padding: 70px 0 20px 0;
   
   @include breakpoint-down($breakpoint-portrait-pad){
     padding-bottom: 0;
@@ -88,9 +88,26 @@ $application-panel-internal-navigation-padding: 10px;
       height: 100%;
 
       .application-panel-helper-container{
-        padding-top: 10px;
-        overflow: hidden;
-      } 
+        padding: 0;
+        overflow: auto;
+        
+        &::-webkit-scrollbar { 
+          display: none; 
+        }
+       
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        overflow: -moz-scrollbars-none;
+      }
+     
+      .application-panel-main-container {
+      	padding: 0;
+      	margin: 0;
+      	&::-webkit-scrollbar { 
+          display: none; 
+        }
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        overflow: -moz-scrollbars-none;
+      }
     }
   }
 }

@@ -6,6 +6,13 @@
   height: 100%;
   width: 100%;
   overflow-y: auto;
+  padding: 10px 15px 10px 25px;
+  
+  &::-webkit-scrollbar { 
+    display: none; 
+  }
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: -moz-scrollbars-none;
 
   .application-list-item {
     padding-left: 15px;
@@ -51,10 +58,9 @@
 }
 
 .communicator.application-list.communicator-application-list-message-view {
-  padding: 10px 5px;
+  padding: 10px 20px 10px 30px;
   height: 100%;
   width: 100%;
-  overflow-y: auto;
 
   .application-list-item {  
     margin: 0;
@@ -130,8 +136,6 @@
     .application-list-item-footer {
       background-color: $color-communicator-application-list-item-open-content-background;
     }
-
-  
   }
   
   .application-list-item:not(:first-child) {
