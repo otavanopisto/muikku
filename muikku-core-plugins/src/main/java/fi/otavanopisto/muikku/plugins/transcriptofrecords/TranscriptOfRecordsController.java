@@ -68,6 +68,10 @@ public class TranscriptOfRecordsController {
     String religion = userProperties.asString("religion");
 
     String code = subject.getCode();
+    
+    if ("MUU".equals(code)) {
+      return false;
+    }
 
     if ("MAA".equals(mathSyllabus) && "MAB".equals(code)) {
       return false;
