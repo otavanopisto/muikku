@@ -80,6 +80,7 @@
 		<module>muikku-atests</module>
     <module>muikku-atests-plugin</module>
     <module>muikku-atests-plugin-rest-model</module>
+    <module>muikku-openfire-rest-client</module>
 	</modules>
 
 	<properties>

@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -13,12 +14,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
-import org.igniterealtime.restclient.RestApiClient;
-import org.igniterealtime.restclient.entity.AuthenticationToken;
-import org.igniterealtime.restclient.entity.UserEntity;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
+import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
+import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.users.UserController;
@@ -38,7 +40,7 @@ public class ChatUserSyncScheduler {
   @Inject
   private UserController userController;
 
-  @Schedule(second = "0", minute = "*/15", hour = "*")
+  @Schedule(second = "*", minute = "*/15", hour = "*")
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatUsers() {
     
@@ -72,7 +74,11 @@ public class ChatUserSyncScheduler {
 
     AuthenticationToken token = new AuthenticationToken(openfireToken);
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
+    
+    SecureRandom random = new SecureRandom();
+    
     for (String enabledUser : enabledUsers) {
+      logger.log(Level.INFO, "Syncing chat user " + enabledUser);
       try {
         // Checking before creating is subject to a race condition, but in the worst case
         // the creation just fails, resulting in a log entry
@@ -80,15 +86,22 @@ public class ChatUserSyncScheduler {
         if (userEntity == null) {
           SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(enabledUser);
           if (identifier == null) {
-            logger.log(Level.WARNING, "Invalid user identifier %s, skipping...", enabledUser);
+            logger.log(Level.WARNING, "Invalid user identifier " + enabledUser + ", skipping...");
             continue;
           }
           User user = userController.findUserByIdentifier(identifier);
           if (user == null) {
-            logger.log(Level.WARNING, "No user found for identifier %s, skipping...", enabledUser);
+            logger.log(Level.WARNING, "No user found for identifier " + enabledUser + ", skipping...");
             continue;
           }
-          userEntity = new UserEntity(enabledUser, user.getDisplayName(), "", "");
+          
+          // Can't leave the password empty, so next best thing is random passwords
+          // The passwords are not actually used
+          byte[] passwordBytes = new byte[20];
+          random.nextBytes(passwordBytes);
+          String password = Base64.encodeBase64String(passwordBytes);
+
+          userEntity = new UserEntity(enabledUser, user.getDisplayName(), "", password);
           client.createUser(userEntity);
         }
       } catch (Exception e) {
