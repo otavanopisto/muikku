@@ -78,12 +78,12 @@ public class ChatUserSyncScheduler {
     SecureRandom random = new SecureRandom();
     
     for (String enabledUser : enabledUsers) {
-      logger.log(Level.INFO, "Syncing chat user " + enabledUser);
       try {
         // Checking before creating is subject to a race condition, but in the worst case
         // the creation just fails, resulting in a log entry
         UserEntity userEntity = client.getUser(enabledUser);
         if (userEntity == null) {
+          logger.log(Level.INFO, "Syncing chat user " + enabledUser);
           SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(enabledUser);
           if (identifier == null) {
             logger.log(Level.WARNING, "Invalid user identifier " + enabledUser + ", skipping...");
