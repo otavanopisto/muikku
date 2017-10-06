@@ -1,0 +1,169 @@
+//
+// Basic labels
+//
+//   a.label[ | .label-large | .label-medium | .label-small ]
+//          [ | .label-dynamic-height | .label-dynamic-word-break | .label-dynamic-word-break-full-width ]
+//          [ COLORMAPPING ]
+//      [ | .label-clickable ]
+//      [ | .label-centered | .label-right | .label-left ]
+//    span
+//       (BODY)
+//
+
+@import "../base/colors";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+$label-font-family: "Exo 2", Arial, sans-serif;
+
+$label-small-height: 21px;
+$label-small-font-size: 12px;
+
+$label-medium-height: 27px;
+$label-medium-font-size: 15px;
+
+$label-large-height: 33px;
+$label-large-font-size: 17px;
+
+.label {
+  @include prefix(transition, moz o ms webkit, color 0.3s);
+  color: $color-label-default;
+  display: inline-block;
+  font-family: $label-font-family;
+  font-size: $label-medium-font-size;
+  height: $label-medium-height;
+  line-height: $label-medium-height;
+  padding: 0 $label-medium-font-size;
+  position: relative;
+  text-align: left;
+  vertical-align: center;
+  
+  &.label--primary {
+    color: $color-label-primary;
+  }
+  
+  &.label--warn {
+    color: $color-label-warn;
+  }
+  
+  &.label--info {
+    color: $color-label-info;
+  }
+  
+  &.label--fatal {
+    color: $color-label-fatal;
+  }
+  
+  &.label--error {
+    color: $color-label-error;
+  }
+  
+  &.label--success {
+    color: $color-label-success;
+  }
+  
+  &.label--loading {
+    color: $color-label-loading;
+  }
+  
+  &.label--secondary {
+    color: $color-label-secondary;
+  }
+  
+  &.label--inverse {
+    color: $color-label-inverse;
+  }
+ 
+  &.label--clickable {
+    @include prefix(user-select, moz o ms webkit, none);
+    cursor: pointer;
+  }
+
+  //TODO get rid of large medium and small, and pretty much all the rest
+  &.label--large {
+    font-size: $label-large-font-size;
+    height: $label-large-height;
+    line-height: $label-large-height;
+    padding: 0 $label-large-font-size;
+  }
+
+//  &.label-medium {
+//  }
+
+  &.label--small {
+    font-size: $label-small-font-size;
+    height: $label-small-height;
+    line-height: $label-medium-height;
+    padding: 0 $label-small-font-size;
+  }
+
+  &.label--dynamic-height {
+    height: auto;
+    overflow-wrap: break-word;
+    width: 100%;
+  }
+
+  &.label--dynamic-word-break {
+    height: auto;
+    width: auto;
+
+    >span {
+      display: table-caption;
+    }
+  }
+
+  &.label--dynamic-word-break-full-width {
+    height: auto;
+    width: 100%;
+
+    >span {
+      display: table-caption;
+    }
+  }
+
+  &.label--dynamic-height,
+  &.label--dynamic-word-break,
+  &.label--dynamic-word-break-full-width {
+    line-height: $label-medium-font-size;
+    padding: #{$label-medium-font-size / 2} $label-medium-font-size;
+
+    &.label--small {
+      line-height: $label-small-font-size;
+      padding: #{$label-small-font-size / 2} $label-small-font-size;
+    }
+//    &.label-medium {
+//    }
+    &.label--large {
+      line-height: $label-large-font-size;
+      padding: #{$label-large-font-size / 2} $label-large-font-size;
+    }
+  }
+
+  &.label--centered {
+    text-align: center;
+  }
+
+  &.label--right {
+    text-align: right;
+  }
+
+//  &.label-left {
+//  }
+
+  //FRONTPAGE
+  &.label--forgot-password {
+    color: $color-frontpage-label-forgot-password;
+    height: auto;
+    width: auto;
+    cursor: pointer;
+    line-height: $label-medium-font-size;
+    padding: #{$label-medium-font-size / 2} $label-medium-font-size;
+
+    >span {
+      display: table-caption;
+    }
+    @include breakpoint-up($breakpoint-medium-mobile){
+      margin-right: 15px;
+    }
+  }
+}

@@ -1,0 +1,162 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+.communicator.application-list.communicator-application-list-messages {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding: 10px 15px 10px 25px;
+  
+  &::-webkit-scrollbar { 
+    display: none; 
+  }
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: -moz-scrollbars-none;
+
+  .application-list-item {
+    padding-left: 15px;
+
+    &.communicator-application-list-item-unread {
+      border-left: solid 4px $color-communicator-application-list-item-unread-border;
+    }
+    
+    .application-list-item-header {
+      align-items: center;
+    
+      input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: solid 1px $color-communicator-application-list-item-checkbox-border;
+        border-radius: 3px;
+        margin-right: 8px;
+        
+        @include breakpoint-down($breakpoint-portrait-pad){
+          display: none;
+        }
+      }
+      
+      input:checked {
+        background-color: $color-communicator-application-list-item-checkbox-checked-background;
+      }
+      
+      input:checked::after {
+        content: "\e639";
+        font-family: muikku;
+        font-size: 18px;
+        color: $color-communicator-application-list-item-checkbox-checked-mark;
+      }
+    }
+  }
+  .application-list-item-header, .application-list-item-body, .application-list-item-footer {
+    display: flex;      
+    align-items: center;
+  }  
+}
+
+.communicator.application-list.communicator-application-list-message-view {
+  padding: 10px 20px 10px 30px;
+  height: 100%;
+  width: 100%;
+
+  .application-list-item {  
+    margin: 0;
+    padding: 0 0 1px 0;
+    background-color: $color-communicator-application-list-item-open-background;
+    cursor: default;
+    
+    .application-list-item-header, .application-list-item-body, .application-list-item-footer {
+      padding:10px;
+    }
+
+    .application-list-item-header{
+    
+      .communicator-message-sender {
+        font-weight: 600;
+        
+        &::after {
+          content: ">";
+          margin: 0 10px;
+        }
+      }
+
+      .communicator-message-recipient {        
+        margin-left: 5px;
+        
+        &:not(:last-child):after {
+          content: ",";
+        }
+      }
+
+      .communicator-message-label {
+        margin-left: 5px;
+      }
+
+      .communicator-message-created {
+        float: right;
+      }
+    }    
+    
+    .application-list-item-body {     
+      header {
+        margin-bottom: 20px;
+      }
+    }    
+
+    .application-list-item-footer {
+      margin-bottom: 5px;
+      padding: 20px 10px;
+      a {
+        text-decoration: underline;  
+        cursor: pointer;
+               
+        &:not(:first-child) {
+          margin-left: 20px;
+        } 
+      }
+    }
+
+  
+  }
+
+  
+  .application-list-item:first-child {
+    
+    .application-list-item-body {
+      background-color: $color-communicator-application-list-item-open-content-background;
+     
+      header {
+        font-size: 20px;
+      }
+    }    
+
+    .application-list-item-footer {
+      background-color: $color-communicator-application-list-item-open-content-background;
+    }
+  }
+  
+  .application-list-item:not(:first-child) {
+    .application-list-item-header{
+      background-color: $color-communicator-application-list-item-open-content-background;
+    }   
+    
+    .application-list-item-body {
+      background-color: $color-communicator-application-list-item-open-content-background;
+     
+      header {
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+    }    
+
+    .application-list-item-footer {
+      background-color: $color-communicator-application-list-item-open-content-background;
+    }
+
+  
+  }  
+  
+}

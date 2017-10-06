@@ -12,11 +12,15 @@ function checkLinkClicked(target: HTMLElement): boolean {
   return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
 }
 
+import '~/sass/elements/menu.scss';
+import '~/sass/elements/container.scss';
+import '~/sass/elements/link.scss';
+
 interface MenuProps {
   open: boolean,
   onClose: ()=>any,
   items: Array<React.ReactElement<any>>,
-  classNameExtension: string,
+  modifier: string,
   navigation?: React.ReactElement<any>,
   status: StatusType,
   i18n: i18nType,
@@ -117,26 +121,26 @@ class Menu extends React.Component<MenuProps, MenuState> {
     }, 300);
   }
   render(){
-    return (<div className={`${this.props.classNameExtension} menu ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
+    return (<div className={`menu menu--${this.props.modifier} ${this.state.displayed ? "displayed" : ""} ${this.state.visible ? "visible" : ""} ${this.state.dragging ? "dragging" : ""}`}
               onClick={this.closeByOverlay} onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd} ref="menu">
-             <div className="menu-container" ref="menuContainer" style={{left: this.state.drag}}>
-                <div className="menu-header">
-                  <div className="menu-logo"></div>
-                  <Link className="menu-header-button-close icon icon-arrow-left"></Link>
+             <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
+                <div className="menu__header">
+                  <div className="menu__logo"></div>
+                  <Link className="menu__header__button--close icon icon-arrow-left"></Link>
                 </div>
-                <div className="menu-body">
-                  {this.props.navigation ? <div className="menu-extras">{this.props.navigation}</div> : null}
-                  <ul className="menu-items">
+                <div className="menu__body">
+                  {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
+                  <ul className="menu__items">
                     {this.props.items.map((item, index)=>{
                       if (!item){
                         return null;
                       }
-                      return <li className="menu-item" key={index}>{item}</li>
+                      return <li className="menu__item" key={index}>{item}</li>
                     })}
-                    {this.props.status.loggedIn ? <li className="menu-item menu-item-space"></li> : null}
-                    {this.props.status.loggedIn ? <li className="menu-item">
-                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-profile" href="/profile">
-                        <object className="embbed embbed-profile-image"
+                    {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
+                    {this.props.status.loggedIn ? <li className="menu__item">
+                      <Link className="link link--full link--menu link--menu--profile" href="/profile">
+                        <object className="container container--profile-image"
                           data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
                           type="image/jpeg">
                           <span className="icon icon-user"></span>
@@ -144,20 +148,20 @@ class Menu extends React.Component<MenuProps, MenuState> {
                         {this.props.i18n.text.get('plugin.profile.profile')}
                       </Link>
                     </li> : null}
-                    {this.props.status.loggedIn ? <li className="menu-item">
-                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-instructions">
+                    {this.props.status.loggedIn ? <li className="menu__item">
+                      <Link className="link link--full link--menu link--menu--instructions">
                         <span className="icon icon-forgotpassword"/>
                         {this.props.i18n.text.get('plugin.footer.instructions')}
                       </Link>
                     </li> : null}
-                    {this.props.status.loggedIn ? <li className="menu-item">
-                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-helpdesk">
+                    {this.props.status.loggedIn ? <li className="menu__item">
+                      <Link className="link link--full link--menu link--menu--helpdesk">
                         <span className="icon icon-helpdesk"></span>
                         {this.props.i18n.text.get('plugin.home.helpdesk')}
                       </Link>
                     </li> : null}
-                    {this.props.status.loggedIn ? <li className="menu-item">
-                      <Link className="main-function link link-full main-function-link-menu main-function-link-menu-logout" onClick={this.props.logout}>
+                    {this.props.status.loggedIn ? <li className="menu__item">
+                      <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
                         <span className="icon icon-signout"></span>
                         {this.props.i18n.text.get('plugin.logout.logout')}
                       </Link>

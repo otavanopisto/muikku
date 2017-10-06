@@ -1,0 +1,18 @@
+@import "../../base/colors";
+@import "../../base/breakpoints";
+@import "../../base/mixins";
+
+.index.panel {
+  margin-top: 20px;
+  padding: 20px 0 20px 0;
+  
+  &::before {
+    @include breakpoint-down($breakpoint-portrait-pad){
+      border-left: none;
+      border-right: none;
+    }
+    @include breakpoint-up($breakpoint-landscape-pad){
+      top: 42px;
+    }
+  }
+}

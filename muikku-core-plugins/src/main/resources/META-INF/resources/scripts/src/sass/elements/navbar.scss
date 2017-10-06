@@ -1,0 +1,121 @@
+@import "../base/mixins";
+@import "../base/colors";
+@import "../base/breakpoints";
+
+$navbar-height: 70px;
+$navbar-font: 'Exo 2', Arial, sans-serif;
+
+.navbar {
+  background-color: $color-navbar-default-background;
+  box-shadow: 0 0 10px $color-navbar-default-shadow;
+  box-sizing: border-box;
+  color: $color-navbar-default-text;
+  font-family: $navbar-font;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 9;
+
+  .navbar__logo {
+    display: inline-block;
+    height: $navbar-height;
+    width: 175px;
+  }
+ 
+  .navbar__wrapper .navbar__logo {
+    background: none;
+    flex: 0 0 auto;
+    width: 10px;
+
+    @include breakpoint-up($breakpoint-wide-screen) {
+      background: url("/gfx/of-site-logo-text.png") no-repeat center center;
+      width: 175px;
+    }
+  }
+ 
+  .navbar__mobile-title {
+    height: $navbar-height;
+    line-height: 68px;
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+    top: 0;
+    left: 60px;
+    font-size: 28px;
+    font-weight: 300;
+    color: $color-navbar-default-text;
+      
+    @include breakpoint-up($breakpoint-landscape-pad){
+      display: none;
+    }
+  }
+
+  .navbar__wrapper {
+    align-items: stretch;
+    display: flex;
+    flex-flow: row nowrap;
+    height: $navbar-height;
+    margin: 0 auto;
+    max-width: 1280px;
+
+    .navbar__wrapper__items {
+      flex: 1 0 auto;
+      height: 100%;
+      position: relative;
+
+      .navbar__wrapper__items__container {
+        display: block;
+        height: $navbar-height;
+        line-height: $navbar-height;
+        list-style-type: none;
+        margin: 0;
+        overflow: hidden;
+        padding: 0;
+        position: relative;
+        white-space: nowrap;
+      }
+    }
+  }
+ 
+  .navbar__item {
+    display: inline-block;
+    height: $navbar-height;
+    line-height: $navbar-height;
+    margin: 0;
+    vertical-align: top;
+    float: left;
+  }
+
+  .navbar__default-options {
+    flex: 0 0 auto;
+
+    .navbar__default-options__container {
+      align-items: center;
+      display: flex;
+      height: $navbar-height;
+      justify-content: center;
+    }
+  }
+
+  @include breakpoint-up($breakpoint-medium-screen){
+    .navbar__item.navbar__item--menu-button {
+      display: none;
+    };
+  };
+  @include breakpoint-down($breakpoint-landscape-pad){
+    .navbar__item.navbar__item--otavan-opisto,
+    .navbar__item.navbar__item--news  {
+      display: none;
+    };
+  };
+  @include breakpoint-down($breakpoint-portrait-pad){
+    .navbar__item.navbar__item--studying,
+    .navbar__item.navbar__item--contact,
+    .navbar__item.navbar__item--open-materials  {
+      display: none;
+    }
+  };
+}

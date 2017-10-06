@@ -1,0 +1,74 @@
+//
+// Standard footer
+//
+// footer.footer
+//   div.footer-container
+//     div.footer-item
+//       (BODY)
+//     ...
+//
+
+@import "../base/breakpoints";
+@import "../base/colors";
+
+$footer-height: 320px;
+
+.footer {
+  align-items: center;
+  background-color: $color-footer-default-background;
+  display: flex;
+  height: $footer-height;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+
+  .footer__container {
+    align-items: center;
+    display: flex;
+    height: $footer-height;
+    justify-content: center;
+    max-width: $breakpoint-max-usable-screen;
+    position: relative;
+    width: 100%;
+    
+    .footer__item {
+      flex: 1 0 auto;
+      height: $footer-height;
+      padding: 40px;
+      position: relative;
+    }
+  }
+
+  @include breakpoint-down($breakpoint-portrait-pad) {
+    height: auto;
+
+    .footer__container {
+      flex-direction: column;
+      height: auto;
+
+      .footer__item {
+        height: auto;
+      }
+    }
+  }
+ 
+  //FRONTPAGE
+  .footer__container {
+  	.footer__item {
+  	  &.footer__item--contact {
+	
+	  }
+	  &.footer__item--logos {
+	    align-items: flex-end;
+	    display: flex;
+	    flex-direction: column;
+	    justify-content: space-around;
+	
+	    @include breakpoint-down($breakpoint-portrait-pad){
+	      display: none;
+	    }
+      }
+  	}
+  }
+  
+}

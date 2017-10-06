@@ -5,6 +5,8 @@ import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
 import {NotificationListType, NotificationType} from '~/reducers/base/notifications';
 
+import '~/sass/elements/notification-queue.scss';
+
 interface NotificationsProps {
   notifications: NotificationListType,
   hideNotification: HideNotificationTriggerType,
@@ -18,12 +20,12 @@ class Notifications extends React.Component<NotificationsProps, NotificationsSta
   render(){
     return (
       <div className="notification-queue">
-        <div className="notification-queue-items">
+        <div className="notification-queue__items">
           {this.props.notifications.map((notification: NotificationType)=>{
             return (
-              <div key={notification.id} className={"notification-queue-item notification-queue-item-" + notification.severity}>
+              <div key={notification.id} className={"notification-queue__items__item notification-queue__items__item--" + notification.severity}>
                 <span>{notification.message}</span>
-                <a className="notification-queue-item-close" onClick={this.props.hideNotification.bind(this, notification)}></a>
+                <a className="notification-queue__items__item__close" onClick={this.props.hideNotification.bind(this, notification)}></a>
               </div>
             );
           })}

@@ -1,0 +1,405 @@
+@import "../base/colors";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+$button-font-family: "Exo 2", Arial, sans-serif;
+$button-default-height: 27px;
+$button-default-font-size: 15px;
+
+.button {
+  @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+  align-items : center;
+  background-color: $color-button-default-background;
+  border-radius: 2px;
+  cursor: pointer;
+  color: $color-button-default-text;
+  display : flex;
+  font-family: $button-font-family;
+  font-size: $button-default-font-size;
+  height: $button-default-height;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 $button-default-font-size;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  text-transform: uppercase; 
+  white-space: nowrap;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  
+  &.button--primary {
+    background-color: $color-button-primary-background;
+    color: $color-button-primary-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-primary-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-primary-background, 20%);
+    }
+  }
+  
+  &.button--warn {
+    background-color: $color-button-warn-background;
+    color: $color-button-warn-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-warn-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-warn-background, 20%);
+    }
+  }
+  
+  &.button--info {
+    background-color: $color-button-info-background;
+    color: $color-button-info-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-info-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-info-background, 20%);
+    }
+  }
+  
+  &.button--fatal {
+    background-color: $color-button-fatal-background;
+    color: $color-button-fatal-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-fatal-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-fatal-background, 20%);
+    }
+  }
+  
+  &.button--error {
+    background-color: $color-button-error-background;
+    color: $color-button-error-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-error-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-error-background, 20%);
+    }
+  }
+  
+  &.button--success {
+    background-color: $color-button-success-background;
+    color: $color-button-success-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-success-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-success-background, 20%);
+    }
+  }
+  
+  &.button--loading {
+    background-color: $color-button-loading-background;
+    color: $color-button-loading-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-loading-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-loading-background, 20%);
+    }
+  }
+  
+  &.button--secondary {
+    background-color: $color-button-secondary-background;
+    color: $color-button-secondary-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-secondary-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-secondary-background, 20%);
+    }
+  }
+  
+  &.button--inverse {
+    background-color: $color-button-inverse-background;
+    color: $color-button-inverse-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-inverse-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-inverse-background, 20%);
+    }
+  }
+ 
+  //FRONTPAGE
+  &.button--forgotpassword-dialog {
+  	display: inline-flex;
+  }
+ 
+  &.button--forgotpassword-dialog-cancel {
+  	display: inline-flex;
+  	float: left;
+  }
+ 
+  &.button--login {
+    background-color: $color-frontpage-button-login-background;
+    color: $color-frontpage-button-login-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-login-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-login-background, 20%);
+    }
+    
+    @include breakpoint-up($breakpoint-medium-mobile){
+      margin-right: 14px;
+    }
+  }
+
+  &.button--frontpage-studying-readmore {
+    background-color: $color-frontpage-button-studying-readmore-background;
+    color: $color-frontpage-button-studying-readmore-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-studying-readmore-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-studying-readmore-background, 20%);
+    }
+  }
+
+  &.button--frontpage-school-readmore {
+    background-color: $color-frontpage-button-school-readmore-background;
+    color: $color-frontpage-button-school-readmore-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-school-readmore-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-school-readmore-background, 20%);
+    }
+  }
+
+  &.button--frontpage-courses-readmore {
+    background-color: $color-frontpage-button-courses-readmore-background;
+    color: $color-frontpage-button-courses-readmore-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-courses-readmore-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-courses-readmore-background, 20%);
+    }
+  }
+
+  &.button--frontpage-website {
+    background-color: $color-frontpage-button-website-background;
+    color: $color-frontpage-button-website-text;
+    margin-bottom: 10px;
+    
+    @include breakpoint-up($breakpoint-medium-mobile){
+      display: inline-flex;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-website-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-website-background, 20%);
+    }
+  }
+
+  &.button--frontpage-newsletter {
+    background-color: $color-frontpage-button-newsletter-background;
+    color: $color-frontpage-button-newsletter-text;
+    
+    @include breakpoint-up($breakpoint-medium-mobile){
+      display: inline-flex;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-newsletter-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-newsletter-background, 20%);
+    }
+  }
+ 
+  &.button--frontpage-bubble {
+  	height: auto;
+    overflow-wrap: break-word;
+    white-space: normal;
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  //TODO get rid of these dudes, all of them!!!!
+  &.button-dynamic-height {
+    height: auto;
+    overflow-wrap: break-word;
+    white-space: normal;
+    width: 100%;
+  }
+
+  &.button-dynamic-word-break {
+    height: auto;
+    white-space: auto;
+    width: auto;
+
+    > span {
+      display: table-caption;
+    }
+  }
+
+  &.button-dynamic-word-break-full-width {
+    height: auto;
+    width: 100%;
+
+    > span {
+      display: table-caption;
+    }
+  }
+
+  &.button-dynamic-height,
+  &.button-dynamic-word-break,
+  &.button-dynamic-word-break-full-width {
+    line-height: $button-default-font-size;
+    padding: #{$button-default-font-size / 2} $button-default-font-size;
+  }
+
+  &.button-right {
+    text-align: right;
+  }
+
+  &.button-left {
+    text-align: left;
+  }
+}
+
+$button-pill-font-family: "Exo 2", Arial, sans-serif;
+
+$button-pill-size: 34px;
+$button-pill-font-size: 16px;
+
+$button-pill-floating-size: 70px;
+$button-pill-floating-font-size: 25px;
+
+.button-pill {
+  @include prefix(user-select, moz o ms webkit, none);
+  @include prefix(transition, moz o ms webkit, background-color 0.3s);
+  align-items: center;
+  justify-content: center;
+  background-color: $color-button-pill-background;
+  border-radius: 100%;
+  color: $color-button-pill-text;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: $button-pill-font-family;
+  font-size: $button-pill-font-size;
+  height: $button-pill-size;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  width: $button-pill-size;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  
+  &:hover, &.hover {
+    background-color: darken($color-button-pill-background, 10%);
+  }
+  
+  &:active, &.active {
+    background-color: darken($color-button-pill-background, 20%);
+  }
+  
+  &.button-pill--floating {
+    font-size: $button-pill-floating-font-size;
+    height: $button-pill-floating-size;
+    width: $button-pill-floating-size;
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.25);
+    transition: box-shadow 0.3s;
+    
+    &:active {
+      box-shadow: 0 0 0 rgba(0,0,0,.25);
+    }
+  }
+  
+  &.disabled, &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+    cursor: default;
+  }
+ 
+  //FRONTPAGE
+  &.button-pill--language-picker {
+    background-color: $color-frontpage-button-pill-language-background;
+    color: $color-frontpage-button-pill-language-text;
+    margin-right: 14px;
+    
+    &:hover, &.hover {
+      background-color: darken($color-frontpage-button-pill-language-background, 5%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-frontpage-button-pill-language-background, 10%);
+    }
+  }
+}
+
+$button-social-size: 40px;
+
+.button-social {
+  @include prefix(transition, moz ms o webkit, color 0.3s, background-color 0.3s);
+  @include prefix(user-select, moz ms o webkit, none);
+  background-color: $color-button-social-default-background;
+  border-radius: $button-social-size;
+  color: $color-button-social-default-text;
+  cursor: pointer;
+  display: inline-block;
+  font-family: muikku;
+  font-variant: normal;
+  height: $button-social-size;
+  line-height: $button-social-size;
+  speak: none;
+  text-align: center;
+  text-decoration: none;
+  text-transform: none;
+  vertical-align: middle;
+  width: $button-social-size;
+  margin: 10px 10px 20px 0;
+
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-button-social-highlight-background;
+    color: $color-button-social-highlight-text;
+  }
+}

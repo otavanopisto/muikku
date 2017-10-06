@@ -6,8 +6,12 @@ import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {LocaleListType} from '~/reducers/base/locales';
 
+import '~/sass/elements/dropdown.scss';
+import '~/sass/elements/link.scss';
+import '~/sass/elements/buttons.scss';
+
 interface LanguagePickerProps {
-  classNameExtension: string,
+  modifier: string,
   locales: LocaleListType,
   setLocale: SetLocaleTriggerType
 }
@@ -18,12 +22,12 @@ interface LanguagePickerState {
 
 class LanguagePicker extends React.Component<LanguagePickerProps, LanguagePickerState> {
   render(){
-    return <Dropdown classNameExtension={this.props.classNameExtension} classNameSuffix="language-picker" items={this.props.locales.avaliable.map((locale)=>{
-      return (<Link className={`${this.props.classNameExtension} link link-full ${this.props.classNameExtension}-link-language-picker`} onClick={this.props.setLocale.bind(this, locale.locale)}>
+    return <Dropdown modifier={this.props.modifier + "-language-picker"} items={this.props.locales.avaliable.map((locale)=>{
+      return (<Link className={`link link--full link--${this.props.modifier}-language-picker`} onClick={this.props.setLocale.bind(this, locale.locale)}>
         <span>{locale.name}</span>
       </Link>);
     })}>
-      <Link className={`${this.props.classNameExtension} button-pill ${this.props.classNameExtension}-button-pill-language`}>
+      <Link className={`button-pill button-pill--language-picker button-pill--${this.props.modifier}-language-picker`}>
         <span>{this.props.locales.current}</span>
       </Link>
     </Dropdown>

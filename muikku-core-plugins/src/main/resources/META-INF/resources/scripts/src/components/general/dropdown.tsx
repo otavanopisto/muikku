@@ -3,11 +3,12 @@ import * as React from 'react';
 import {findDOMNode} from 'react-dom';
 import $ from "~/lib/jquery";
 
+import '~/sass/elements/dropdown.scss';
+
 type itemType2 = (closeDropdown: ()=>any)=>any
 
 interface DropdownProps {
-  classNameExtension: string,
-  classNameSuffix: string,
+  modifier: string,
   children?: React.ReactElement<any>,
   items: Array<(React.ReactElement<any> | itemType2)>;
 }
@@ -85,12 +86,12 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
           top: this.state.top,
           left: this.state.left
         }}
-        className={`${this.props.classNameExtension} dropdown ${this.props.classNameExtension}-dropdown-${this.props.classNameSuffix} ${this.state.visible ? "visible" : ""}`}>
-        <span className="arrow" ref="arrow" style={{left: this.state.arrowLeft, right: this.state.arrowRight}}></span>
-        <div className="dropdown-container">
+        className={`dropdown ${this.props.modifier ? 'dropdown--' + this.props.modifier : ''} ${this.state.visible ? "visible" : ""}`}>
+        <span className="dropdown__arrow" ref="arrow" style={{left: this.state.arrowLeft, right: this.state.arrowRight}}></span>
+        <div className="dropdown__container">
           {this.props.items.map((item, index)=>{
             let element = typeof item === "function" ? item(this.close) : item;
-            return (<div className="dropdown-item" key={index}>
+            return (<div className="dropdown__container__item" key={index}>
               {element}
             </div>);
           })}

@@ -1,0 +1,87 @@
+//
+// A default nice looking card designed to be inside a container
+//
+// div.card
+//    img.card-image?
+//    div.card-content?
+//      div.card-title
+//      div.card-text
+//    div.card-footer?
+//
+
+@import "../base/colors";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
+$card-font-family: "Exo 2", Arial, sans-serif;
+
+.card {
+  background-color: $color-card-default-background;
+  border: solid 1px $color-card-default-border;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  font-family: $card-font-family;
+  height: 100%;
+  min-height: 45px;
+  overflow: hidden;
+  width: 100%;
+
+  .card__image {
+    position: relative;
+    width: 100%;
+  }
+
+  .card__content {
+    color: $color-card-default-text;
+    flex-grow: 1;
+    font-weight: 400;
+    line-height: 1.15;
+    min-height: 118px;
+    padding: 20px 20px 10px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+
+    .card__title {
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+      overflow: hidden;
+      padding-bottom: 20px;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+
+      @include breakpoint-down($breakpoint-landscape-pad) {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .card__footer {
+    padding: 0 20px 20px;
+    position: relative;
+    text-align: left;
+    width: 100%;
+  }
+ 
+  &.card--frontpage-studying {
+    .card__title {
+      color: $color-frontpage-card-studying-title;
+    }
+  }
+  &.card--frontpage-school {
+    .card__title {
+      color: $color-frontpage-card-school-title;
+    }
+  }
+  &.card--frontpage-courses {
+    .card__title {
+      color: $color-frontpage-card-courses-title;
+    }
+  }
+  &.card--frontpage-otavan-opisto {
+    margin-bottom: 90px;
+    padding: 20px;
+  }
+}

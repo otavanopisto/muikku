@@ -1,0 +1,76 @@
+@import "../base/breakpoints";
+
+$frontpage-orderd-container-separation: 10;
+
+.ordered-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 25px;
+  position: relative;
+  width: 100%;
+
+  .ordered-container__item {
+    min-height: 25px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  &.ordered-container--row {
+  	flex-direction: row;
+  }
+  
+  &.ordered-container--row .ordered-container__item {
+  	flex: 1 1 0;
+    width: auto;
+  }
+ 
+  @include breakpoint-down($breakpoint-portrait-pad) {
+    &.ordered-container--row.ordered-container--responsive {
+      flex-direction: column;
+    }
+   
+    &.ordered-container--row.ordered-container--responsive .ordered-container__item {
+      flex: 0 0 auto;
+      width: 100%;
+    }
+  }
+ 
+  &.ordered-container--frontpage-studying, &.ordered-container--frontpage-news-subcontainer {
+  	>.ordered-container__item {
+  	  margin-bottom: #{$frontpage-orderd-container-separation}px
+  	}
+    @include breakpoint-up($breakpoint-medium-screen){
+      width: calc(100% + #{$frontpage-orderd-container-separation*2}px);
+      margin-left: -#{$frontpage-orderd-container-separation}px;
+      >.ordered-container__item {
+        margin: 0 #{$frontpage-orderd-container-separation}px #{$frontpage-orderd-container-separation}px #{$frontpage-orderd-container-separation}px;
+      }
+    }
+  }
+ 
+  &.ordered-container--frontpage-otavan-opisto-info {
+    .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+ 
+    @include breakpoint-up($breakpoint-landscape-pad){
+      >.ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+        flex-direction: row;
+      }
+    }
+ 
+    @include breakpoint-down($breakpoint-portrait-pad){
+      >.ordered-container__item.ordered-container__item--frontpage-otavan-opisto-logo {
+        order: -1;
+        text-align: center;
+
+        >img {
+          height: 60px;
+        }
+      }
+    }
+  }
+}

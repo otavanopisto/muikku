@@ -1,6 +1,8 @@
 import * as React from 'react';
 import $ from '~/lib/jquery';
 
+import '~/sass/elements/link.scss';
+
 function scrollToSection(anchor: string) {
   if (!$(anchor).size()){
     window.location.href = anchor;

@@ -1,0 +1,49 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+.main-function.button {
+
+}
+
+$main-function-button-pill-size: 48px;
+
+.main-function.button-pill {
+  margin-right: 14px;
+  height: $main-function-button-pill-size;
+  width: $main-function-button-pill-size;
+  line-height: $main-function-button-pill-size;
+  font-size: 22px;
+  
+  &.main-function-button-pill-language {
+    background-color: $color-main-function-button-pill-language-background;
+    color: $color-main-function-button-pill-language-text;
+    
+    &:hover, &.hover {
+      background-color: darken($color-main-function-button-pill-language-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-main-function-button-pill-language-background, 20%);
+    }
+  }
+  
+  &.main-function-button-pill-profile {
+    .icon {
+      color: $color-main-function-button-pill-icon-user;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+  }
+  
+  &.main-function-button-pill-search {
+    .icon {
+      color: $color-main-function-button-pill-icon-search;
+    }
+  }
+}
+
+.main-function.button-social {
+  margin: 10px 10px 20px 0;
+}

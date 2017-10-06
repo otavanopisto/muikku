@@ -1,0 +1,20 @@
+@import "../../base/colors";
+@import "../../base/breakpoints";
+@import "../../base/mixins";
+
+.communicator.item-list {
+  &.communicator-item-list-navigation {
+  	width: 100%;
+  	padding-top: 10px;
+  	padding-bottom: 10px;
+  	
+  	.item-list-item {
+      padding-right: 10px;
+  	}    
+  }
+  
+  .menu &.communicator-item-list-navigation {
+  	width: 100%;
+    padding: 0 0 10px 0;
+  }
+}

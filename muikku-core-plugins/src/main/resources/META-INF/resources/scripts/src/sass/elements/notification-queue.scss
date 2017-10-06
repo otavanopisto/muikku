@@ -1,0 +1,140 @@
+//
+// This element represents the display of the notification queue
+// That usually shows at the top of the screen
+//
+//   div.notification-queue
+//     div.notification-queue-items
+//      div.notification-queue-item.notification-queue-item-[info | warn | error | fatal | success | loading]
+//        span
+//                  (BODY)
+//        div.notification-queue-item-close
+//      ...
+//
+
+@import "../base/colors";
+@import "../base/mixins";
+
+// ROOT
+.notification-queue {
+  height: 0;
+  left: 0;
+  line-height: 0;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  top: 0;
+  z-index: 99999;
+
+  // LIST CONTAINER
+  .notification-queue__items {
+    background: $color-notification-queue-item-container-background;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 0 8px $color-notification-queue-item-container-shadow;
+    display: inline-block;
+    font-family: "Exo 2", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1;
+    max-width: 100%;
+    position: relative;
+    width: 600px;
+
+    .notification-queue__items__item {
+      @include prefix(transition, webkit ms o moz, height 0.3s);
+      background-color: $color-notification-queue-item-default-background;
+      color: $color-notification-queue-item-default-text;
+      display: block;
+      font-size: 16px;
+      font-weight: 400;
+      height: 44px;
+      margin: 0;
+      margin-bottom: 1px;
+      overflow: hidden;
+      padding-left: 36px;
+      padding-right: 36px;
+      position: relative;
+      text-align: center;
+      width: 100%;
+      word-wrap: break-word;
+      z-index: 2;
+      
+      &.notification-queue__items__item--primary {
+        background-color: $color-notification-queue-item-primary-background;
+        color: $color-notification-queue-item-primary-text;
+      }
+      
+      &.notification-queue__items__item--warn {
+        background-color: $color-notification-queue-item-warn-background;
+        color: $color-notification-queue-item-warn-text;
+      }
+      
+      &.notification-queue__items__item--info {
+        background-color: $color-notification-queue-item-info-background;
+        color: $color-notification-queue-item-info-text;
+      }
+      
+      &.notification-queue__items__item--fatal {
+        background-color: $color-notification-queue-item-fatal-background;
+        color: $color-notification-queue-item-fatal-text;
+      }
+      
+      &.notification-queue__items__item--error {
+        background-color: $color-notification-queue-item-error-background;
+        color: $color-notification-queue-item-error-text;
+      }
+      
+      &.notification-queue__items__item--success {
+        background-color: $color-notification-queue-item-success-background;
+        color: $color-notification-queue-item-success-text;
+      }
+      
+      &.notification-queue__items__item--loading {
+        background-color: $color-notification-queue-item-loading-background;
+        color: $color-notification-queue-item-loading-text;
+      }
+      
+      &.notification-queue__items__item--secondary {
+        background-color: $color-notification-queue-item-secondary-background;
+        color: $color-notification-queue-item-secondary-text;
+      }
+      
+      &.notification-queue__items__item--inverse {
+        background-color: $color-notification-queue-item-inverse-background;
+        color: $color-notification-queue-item-inverse-text;
+      }
+
+      &.hidden {
+        height: 0;
+      }
+
+      &.notification-queue__items__item--loading {
+        background-image: url("/gfx/eventqueueloader.png");
+        background-position: 8px center;
+        background-repeat: no-repeat;
+      }
+
+      .notification-queue__items__item__close {
+        background-image: url("/gfx/eventqueueclose.png");
+        cursor: pointer;
+        height: 24px;
+        position: absolute;
+        right: 8px;
+        top: 12px;
+        width: 24px;
+      }
+
+      &:last-child {
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+        margin-bottom: 0;
+      }
+
+      >span {
+        display: inline-block;
+        padding-bottom: 16px;
+        padding-top: 12px;
+      }
+    }
+  }
+}

@@ -1,0 +1,117 @@
+@import "../../base/colors";
+@import "../../base/breakpoints";
+@import "../../base/mixins";
+
+.communicator.text {
+  &.communicator-text-title {
+    color: $color-communicator-text-title;
+  }
+  &.communicator-text-current-folder {
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: none;
+    height: 34px;
+    line-height: 34px;
+    position: relative;
+    padding-right: 45px;
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: inline-block;
+    }
+  }
+
+  &.communicator-text-usernames {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;  
+  }
+  &.communicator-text-username {
+    white-space: nowrap;
+    
+    .communicator-application-list-item-unread & {
+      font-weight: 600;
+    }
+  }
+  
+  &.communicator-text-counter {
+
+    align-items: center;
+    border-radius: 50%;
+    background-color: #FFF6AE;
+    display: flex;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    padding: 0px 15px;
+    width: 28px;
+  }
+  
+  &.communicator-text-date {
+    opacity: 0.75;
+    font-style: italic;
+    width: 130px;
+    text-align: right;
+  }
+  
+  &.communicator-text-body {
+    display: inline-block;
+    font-weight: 300;
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-left: 30px;
+    }
+  }
+
+  &.communicator-text-labels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;
+    padding: 10px 0 0;
+  }  
+  
+  &.communicator-text-label {
+    font-weight: 300;
+    display: flex;
+    align-items: end; 
+   
+    .icon {
+      padding-left: 32px;
+      
+      &::before {
+        display: inline-block;
+        margin-right: 5px;
+      }
+    }
+  }
+  &.communicator-text-label-update-dialog-icon {
+    display: block;
+    width: 100%;
+    min-width: 350px;
+    height: 112px;
+    text-align: center;
+    font-size: 92px;
+  }
+ 
+  &.communicator-text-new-message-recepient-tag {
+  	.icon {
+      display: inline-block;
+  	  margin-right: 5px;
+  	}
+    i {
+      opacity: 0.6;
+    }
+  }
+ 
+  &.communicator-text-new-message-recepient-autocomplete {
+  	.icon {
+      display: inline-block;
+  	  margin-right: 5px;
+  	}
+    i {
+      opacity: 0.6;
+    }
+  }
+}

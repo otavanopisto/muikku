@@ -97,7 +97,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <Link className="communicator button button-pill communicator-button-pill-delete" onClick={this.props.deleteCurrentMessage}>
               <span className="icon icon-delete"></span>
             </Link>          
-            <Dropdown classNameExtension="communicator" classNameSuffix="labels" items={
+            <Dropdown modifier="communicator-labels" items={
               [
                 <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                   type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
@@ -160,7 +160,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         <span className="icon icon-delete"></span>
       </Link>
                
-      <Dropdown classNameExtension="communicator" classNameSuffix="labels" items={
+      <Dropdown modifier="communicator-labels" items={
         [
           <input className="form-field" id="communicator-toolbar-labels-dropdown-input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,

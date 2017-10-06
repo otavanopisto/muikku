@@ -1,10 +1,12 @@
 import Portal from './portal';
 import * as React from 'react';
 
+import '~/sass/elements/dialog.scss';
+
 interface DialogProps {
   children?: React.ReactElement<any>,
   title: string,
-  classNameExtension: string,
+  modifier: string,
   content: any,
   footer?: (closePortal: ()=>any)=>any,
   onOpen?: (e?: HTMLElement)=>any,
@@ -51,18 +53,18 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-{(closePortal: ()=>any)=>{return <div className={`dialog ${this.props.classNameExtension} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-  <div className="dialog-window">
-      <div className="dialog-header">
-        <div className="dialog-title">
+{(closePortal: ()=>any)=>{return <div className={`dialog dialog--${this.props.modifier} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+  <div className="dialog__window">
+      <div className="dialog__header">
+        <div className="dialog__title">
             {this.props.title}
-            <span className="dialog-close icon icon-close" onClick={closePortal}></span>
+            <span className="dialog__close icon icon-close" onClick={closePortal}></span>
         </div>
       </div>
-      <div className="dialog-content">
+      <div className="dialog__content">
         {this.props.content(closePortal)}
       </div>
-      <div className="dialog-footer">
+      <div className="dialog__footer">
         {this.props.footer && this.props.footer(closePortal)}
       </div>
   </div>

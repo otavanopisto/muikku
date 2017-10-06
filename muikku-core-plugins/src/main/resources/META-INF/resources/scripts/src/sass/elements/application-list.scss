@@ -1,0 +1,40 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.application-list {
+  .&__item {
+    padding: 10px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    
+    .&__header, .&__body, .&__footer {    
+    }
+
+    &:not(:first-child) {
+      margin-top: 5px;
+    }
+   
+    &:hover, &.hover {
+      background-color: $color-application-list-item-background-hover;
+    }
+    
+    &:active, &.active {
+      background-color: $color-application-list-item-background-active;
+    }
+    
+    &.&--selected {
+      background-color: $color-application-list-item-background-selected;
+    }
+  }
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    &.&--select-mode {
+      .&__item:not(.selected) {
+      	opacity: 0.5;
+      }
+    }
+  }
+}

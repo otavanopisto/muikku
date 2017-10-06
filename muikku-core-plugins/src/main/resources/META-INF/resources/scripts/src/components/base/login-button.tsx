@@ -9,7 +9,6 @@ import $ from '~/lib/jquery';
 import {i18nType} from '~/reducers/base/i18n';
 
 interface LoginButtonProps {
-  classNameExtension: string,
   i18n: i18nType
 }
 
@@ -28,7 +27,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
     window.location.replace($("#login").attr("href"));
   }
   render(){
-    return (<Link className={`${this.props.classNameExtension} button ${this.props.classNameExtension}-button-login`} onClick={this.login}>
+    return (<Link className="button button--login" onClick={this.login}>
       <span>{this.props.i18n.text.get('plugin.login.buttonLabel')}</span>
     </Link>);
   }

@@ -1,0 +1,59 @@
+@import "../base/breakpoints";
+@import "../base/colors";
+
+.hero {
+  background: url("/gfx/of-site-header-background.png") no-repeat center center $color-hero-default-background;
+  background-size: cover;
+  display: block;
+  height: 520px;
+  width: 100%;
+
+  .hero__wrapper {
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+    justify-content: center;
+    margin: 0 auto;
+    max-width: $breakpoint-max-usable-screen;
+    padding: 24px;
+    position: relative;
+
+    .hero__wrapper__item {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+  }
+
+  @include breakpoint-down($breakpoint-landscape-pad) {
+    background-image: url("/gfx/of-site-header-background-mobile.jpg");
+    height: auto;
+
+    .hero__wrapper {
+      flex-direction: column;
+      padding: 24px 0 0;
+
+      .hero__wrapper__item {
+        padding: 0 24px 24px;
+        width: 100%;
+      }
+    }
+  }
+ 
+  //FRONPAGE
+  &.hero--frontpage {
+    margin-top: 70px;
+
+    @include breakpoint-down($breakpoint-landscape-pad) {
+      .hero__wrapper {
+      	.hero__wrapper__item:nth-child(2) {
+      	  order: -1
+      	}
+      }
+    }
+  }
+}

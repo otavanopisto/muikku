@@ -1,0 +1,33 @@
+@import "../../base/colors";
+@import "../../base/mixins";
+@import "../../base/breakpoints";
+
+.main-function.navbar {
+  background-color: $color-main-function-navbar-background;
+  
+  .navbar-logo {
+    @include breakpoint-up($breakpoint-wide-screen) {
+      background: url(/gfx/of-site-logo-text-white.png) no-repeat center center;
+    }
+  }
+  
+  @include breakpoint-up($breakpoint-landscape-pad){
+    .navbar-item.main-function-navbar-item-menu-button {
+      display: none;
+    };
+  };
+  @include breakpoint-down($breakpoint-portrait-pad){
+    .navbar-item:not(.main-function-navbar-item-menu-button) {
+      display: none;
+    };
+  }
+  
+  .navbar-item:not(.main-function-navbar-item-menu-button) {
+    width: 70px;
+    font-size: 32px;
+  }
+  
+  .navbar-mobile-title {
+    color: $color-main-function-navbar-title;
+  }
+}

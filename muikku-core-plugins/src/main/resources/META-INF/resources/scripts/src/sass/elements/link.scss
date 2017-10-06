@@ -1,0 +1,156 @@
+//
+// Defines a link and its structure, links can be icons and can use the icon element class
+//
+//   a.link[ | .link-icon | .link-highlight | .link-default | .link-inverse][ | .link-full]
+//    [.link-uppercase][.link-lowercase]
+//    span
+//      (BODY)
+//
+
+@import "../base/colors";
+@import "../base/mixins";
+
+.link {
+  @include prefix(transition, moz ms webkit o, background-color 0.3s);
+  @include prefix(user-select, moz ms webkit o, none);
+  color: $color-link-default-text;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  vertical-align: middle;
+  position: relative;
+  white-space: nowrap;
+  font-family: "Exo 2", Arial, sans-serif;
+
+  &.link--icon {
+    @include prefix(font-smoothing, webkit moz o ms, antialiased);
+    font-family: muikku;
+    font-size: 26px;
+    font-style: normal;
+    font-variant: none;
+    font-weight: normal;
+    speak: none;
+    text-transform: none;
+  }
+  
+  .icon {
+    display: inline-block;
+  }
+  
+  &:not(.link--icon) .icon {
+    margin-right: 10px;
+  }
+ 
+  &.link--highlight {
+    background-color: $color-link-highlight-background;
+    color: $color-link-highlight-text;
+  }
+
+  &.link--inverse {
+    background-color: $color-link-inverse-background;
+    color: $color-link-inverse-text;
+
+    &:hover,
+    &.hover {
+      background-color: $color-link-hover-background;
+      color: $color-link-inverse-text;
+    }
+
+    &:active,
+    &.active {
+      background-color: $color-link-hover-background;
+      color: $color-link-inverse-text;
+    }
+  }
+
+  &:hover:not(.disabled):not(:disabled),
+  &.hover:not(.disabled):not(:disabled) {
+    background-color: $color-link-hover-background;
+    color: $color-link-hover-text;
+  }
+
+  &:active:not(.disabled):not(:disabled),
+  &.active:not(.disabled):not(:disabled) {
+    background-color: $color-link-active-background;
+    color: $color-link-active-text;
+  }
+  
+  &.disabled, &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  //GET RID OF THESE
+  &.link--full {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    padding: 0 10px;
+    width: 100%;
+  }
+ 
+  //FRONTPAGE
+  &.link--frontpage-language-picker {
+    font-size: 14px;
+    background-color: $color-frontpage-link-language-picker-background;
+    color: $color-frontpage-link-language-picker-text;
+
+    &:hover,
+    &.hover {
+      background-color: opacify($color-frontpage-link-language-picker-hover-background, 0.6);
+      color: $color-frontpage-link-language-picker-text;
+    }
+
+    &:active,
+    &.active {
+      background-color: opacify($color-frontpage-link-language-picker-hover-background, 0.6);
+      color: $color-frontpage-link-language-picker-text;
+    }
+  }
+ 
+  &.link--menu {
+  	.icon {
+      background-color: $color-main-function-link-menu-icon-background;
+      color: $color-main-function-link-menu-icon-color;
+      width: 35px;
+      height: 35px;
+      border-radius: 100%;
+      font-size: 20px;
+      line-height: 35px;
+      vertical-align: middle;
+      text-align: center;
+    }
+   
+    &.link--menu--profile {
+      .icon {
+        margin-right: 0;
+        background: $color-main-function-link-menu-profile-icon-background;
+        color: $color-main-function-link-menu-profile-icon-color;
+      }
+    }
+    
+    &.link--menu--instructions {
+      .icon {
+        background: $color-main-function-link-menu-instructions-icon-background;
+        color: $color-main-function-link-menu-instructions-icon-color;
+      }
+    }
+    
+    &.link--menu--helpdesk {
+      .icon {
+        background: $color-main-function-link-menu-heldesk-icon-background;
+        color: $color-main-function-link-menu-helpdesk-icon-color;
+      }
+    }
+    &.link--menu--logout {
+      .icon {
+        background: $color-main-function-link-menu-logout-icon-background;
+        color: $color-main-function-link-menu-logout-icon-color;
+      }
+    }
+  }
+}

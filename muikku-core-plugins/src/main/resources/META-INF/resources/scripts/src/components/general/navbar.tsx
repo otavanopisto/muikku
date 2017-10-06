@@ -3,10 +3,12 @@ import ProfileItem from './navbar/profile-item';
 import Menu from './navbar/menu';
 import * as React from 'react';
 
+import '~/sass/elements/navbar.scss';
+
 interface NavbarProps {
-  classNameExtension: string,
+  modifier: string,
   navbarItems: ({
-    classNameSuffix?:string,
+    modifier?:string,
     item: React.ReactElement<any>
   })[],
   menuItems: (React.ReactElement<any>)[],
@@ -41,14 +43,14 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
   render(){
     return (
             <div>
-              <nav className={`navbar ${this.props.classNameExtension}`}>
-                <div className="navbar-wrapper">
-                  <div className="navbar-logo"></div>
+              <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`}>
+                <div className="navbar__wrapper">
+                  <div className="navbar__logo"></div>
             
-                  <div className="navbar-items">
-                    <ul className="navbar-items-container">
-                      <li className={`navbar-item ${this.props.classNameExtension}-navbar-item-menu-button`}>
-                        <a className={`${this.props.classNameExtension} link link-icon link-full`} onClick={this.openMenu}>
+                  <div className="navbar__wrapper__items">
+                    <ul className="navbar__wrapper__items__container">
+                      <li className={`navbar__item navbar__item--menu-button`}>
+                        <a className="link link--icon link--full" onClick={this.openMenu}>
                           <span className="icon icon-navicon"></span>
                         </a>
                       </li>
@@ -56,24 +58,24 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
                         if (!item){
                           return null;
                         }
-                        return (<li key={index} className={`navbar-item ${this.props.classNameExtension}-navbar-item-${item.classNameSuffix}`}>
+                        return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`}>
                           {item.item}
                         </li>);
                       }).filter(item=>!!item)}
                     </ul>
                   </div>
-                  <div className="navbar-mobile-title">{this.props.mobileTitle}</div>
-                  <div className="navbar-default-options">
-                    <div className="navbar-default-options-container">
+                  <div className="navbar__mobile-title">{this.props.mobileTitle}</div>
+                  <div className="navbar__default-options">
+                    <div className="navbar__default-options__container">
                       {this.props.defaultOptions}
-                      <ProfileItem classNameExtension={this.props.classNameExtension}/>
-                      <LanguagePicker classNameExtension={this.props.classNameExtension} />
+                      <ProfileItem modifier={this.props.modifier}/>
+                      <LanguagePicker modifier={this.props.modifier} />
                     </div>
                   </div>
                 </div>
               </nav>
               <Menu open={this.state.isMenuOpen} onClose={this.closeMenu}
-                items={this.props.menuItems} classNameExtension={this.props.classNameExtension} navigation={this.props.navigation}/>
+                items={this.props.menuItems} modifier={this.props.modifier} navigation={this.props.navigation}/>
             </div>
             );
   }
