@@ -357,18 +357,33 @@ $button-pill-floating-font-size: 25px;
     cursor: default;
   }
  
-  //FRONTPAGE
-  &.button-pill--language-picker {
-    background-color: $color-frontpage-button-pill-language-background;
-    color: $color-frontpage-button-pill-language-text;
+  &.button-pill--current-language {
+    background-color: $color-main-function-button-pill-language-background;
+    color: $color-main-function-button-pill-language-text;
     margin-right: 14px;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-pill-language-background, 5%);
+      background-color: darken($color-main-function-button-pill-language-background, 5%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-pill-language-background, 10%);
+      background-color: darken($color-main-function-button-pill-language-background, 10%);
+    }
+  }
+ 
+  &.button-pill--profile {
+  	margin-right: 7px;
+    .icon {
+      color: $color-main-function-button-pill-icon-user;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+  }
+  
+  &.button-pill--search {
+    .icon {
+      color: $color-main-function-button-pill-icon-search;
     }
   }
 }

@@ -15,20 +15,20 @@ interface LastMessagesPanelState {
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="ordered-container-item index panel">
-      <div className="index text index-text-for-panels-title index-text-for-panels-title-last-messages">
+    return (<div className="ordered-container__item panel panel--index">
+      <div className="text text--for-panels-title text--for-panels-title--last-messages">
         <span className="icon icon-envelope"></span>
         <span>{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
       {this.props.lastMessages ? (
-        <div className="index item-list index-item-list-panel-last-messages">
+        <div className="item-list item-list--panel-last-messages">
           {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
-            return (<Link key={message.id} className={`item-list-item ${message.unreadMessagesInThread ? "item-list-item-unread" : ""}`}
+            return (<Link key={message.id} className={`item-list__item ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
                     href={`/communicator#inbox/${message.communicatorMessageId}`}>
               <span className={`icon icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
-              <span className="text item-list-text-body item-list-text-body-multiline">
+              <span className="text item-list__text-body item-list__text-body--multiline">
                 {message.caption}
-                <span className="index text index-text-last-message-date">
+                <span className="text text--last-message-date">
                   {this.props.i18n.time.format(message.created)}
                 </span>
               </span>
@@ -36,7 +36,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
           })}
         </div>
       ) : (
-        <div className="index text index-text-panel-no-last-messages">{this.props.i18n.text.get("plugin.frontPage.messages.noMessages")}</div>
+        <div className="text text--panel-nothing">{this.props.i18n.text.get("plugin.frontPage.messages.noMessages")}</div>
       )}
     </div>);
   }

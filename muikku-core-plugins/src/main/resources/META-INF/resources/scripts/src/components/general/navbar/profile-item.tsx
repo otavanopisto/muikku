@@ -47,16 +47,16 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         onClick: this.props.logout
       }
     ]
-    return <Dropdown modifier={this.props.modifier + "-profile-menu"} items={items.map((item)=>{
+    return <Dropdown modifier="profile" items={items.map((item)=>{
         return (closeDropdown: ()=>any)=>{return <Link href={item.href}
-         className={`link link--full link--profile-menu link--${this.props.modifier}-profile-menu`}
+         className={`link link--full link--profile`}
          onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
           <span className={`icon icon-${item.icon}`}></span>
           <span>{this.props.i18n.text.get(item.text)}</span>
         </Link>}
       })}>
       <Link className="button-pill button-pill--profile">
-        <object className="container container--full"
+        <object className="container container--profile-image"
          data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
          type="image/jpeg">
           <span className="icon icon-user"></span>

@@ -15,7 +15,7 @@ interface CommunicatorBodyState {
 export default class CommunicatorBody extends React.Component<CommunicatorBodyProps,CommunicatorBodyState> {
   render(){
     let navigation = <Navigation/>
-    return (<div className="embbed embbed-full">
+    return (<div className="container container--full">
       <MainFunctionNavbar activeTrail="communicator" navigation={navigation}/>
       <Application navigation={navigation}/>
     </div>);

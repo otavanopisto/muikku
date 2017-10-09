@@ -8,13 +8,13 @@
   	width: 100%;
   	height: 100%;
   }
-  
-  //FRONTPAGE
   &.container--profile-image {
-    width: 35px;
-    height: 35px;
-    border-radius: 100%;
-    margin-right: 10px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   &.container--muikku-logo {
     align-items: center;

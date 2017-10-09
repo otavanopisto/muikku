@@ -159,4 +159,24 @@ $menu-font: 'Exo 2', Arial, sans-serif;
       transition: none;
     }
   }
+ 
+  &.menu--main-function {
+    .menu__header {
+      background-color: $color-main-function-menu-header-background;
+    }
+    .menu__logo {
+      background: url("/gfx/of-site-logo-text-white.png") no-repeat center center;
+    }
+    .menu__container .menu__items .menu__item {
+      height: 50px;
+      
+      .link.link--menu {
+        justify-content: flex-start;
+      }
+    
+      &.menu__item--space {
+        height: 30px;
+      }
+    }
+  }
 }

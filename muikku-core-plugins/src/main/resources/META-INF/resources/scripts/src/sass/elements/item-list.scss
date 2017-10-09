@@ -1,8 +1,11 @@
+@import "../base/colors";
+@import "../base/mixins";
+
 $item-list-item-min-height: 32px;
 
 .item-list {
   
-  .item-list-item {
+  .item-list__item {
     min-height: $item-list-item-min-height;
     transition: background-color 0.3s;
     cursor: pointer;
@@ -16,7 +19,7 @@ $item-list-item-min-height: 32px;
       background-color: $color-item-list-item-background-hover;
     }
     
-    &.item-list-item-bordered {
+    &.item-list__item--bordered {
       border-left: solid 4px; 
     }
     
@@ -32,7 +35,7 @@ $item-list-item-min-height: 32px;
       margin-left: 4px;
     }
     
-    .item-list-text-body {
+    .item-list__text-body {
       flex: 1 2 auto;
       font-size: 14px;
       white-space: nowrap;
@@ -42,9 +45,52 @@ $item-list-item-min-height: 32px;
       max-width: 157px;
     }
     
-    .item-list-text-body.item-list-text-body-multiline {
+    .item-list__text-body.item-list__text-body--multiline {
       white-space: auto;
     }
   }
   
+  &.item-list--panel-workspaces {
+    .icon {
+      color: $color-index-item-list-item-panel-workspaces-icon;
+    }
+  }
+  &.item-list--panel-last-messages {
+    .item-list__item {
+      &:after {
+        content:''; 
+        left: 6px;
+        right: 6px;
+        height: 1px;
+        position: absolute; 
+        bottom: 0;
+        border-bottom: solid 1px $color-index-item-list-item-panel-last-messages-border;
+      }
+    }
+    .icon {
+      color: $color-index-item-list-item-panel-last-messages-icon;
+    }
+    .item-list__item--unread .icon {
+      color: $color-index-item-list-item-panel-last-messages-unread-icon;
+    }
+  }
+  &.item-list--panel-announcements {
+    .item-list__item {
+      &:after {
+        content:''; 
+        left: 6px;
+        right: 6px;
+        height: 1px;
+        position: absolute; 
+        bottom: 0;
+        border-bottom: solid 1px $color-index-item-list-item-panel-announcements-border;
+      }
+    }
+    .icon {
+      color: $color-index-item-list-item-panel-announcements-icon;
+    }
+    .item-list__item--has-workspaces .icon {
+      color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
+    }
+  }
 }

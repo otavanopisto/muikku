@@ -10,6 +10,8 @@
 @import "../base/colors";
 @import "../base/mixins";
 
+$main-function-link-icon-active-border-size: 5px;
+
 .link {
   @include prefix(transition, moz ms webkit o, background-color 0.3s);
   @include prefix(user-select, moz ms webkit o, none);
@@ -83,7 +85,6 @@
     opacity: 0.5;
   }
 
-  //GET RID OF THESE
   &.link--full {
     align-items: center;
     display: flex;
@@ -93,22 +94,21 @@
     width: 100%;
   }
  
-  //FRONTPAGE
-  &.link--frontpage-language-picker {
+  &.link--language {
     font-size: 14px;
-    background-color: $color-frontpage-link-language-picker-background;
-    color: $color-frontpage-link-language-picker-text;
+    background-color: $color-main-function-link-language-background;
+    color: $color-main-function-link-language-text;
 
     &:hover,
     &.hover {
-      background-color: opacify($color-frontpage-link-language-picker-hover-background, 0.6);
-      color: $color-frontpage-link-language-picker-text;
+      background-color: opacify($color-main-function-link-language-hover-background, 0.6);
+      color: $color-main-function-link-language-text;
     }
 
     &:active,
     &.active {
-      background-color: opacify($color-frontpage-link-language-picker-hover-background, 0.6);
-      color: $color-frontpage-link-language-picker-text;
+      background-color: opacify($color-main-function-link-language-hover-background, 0.6);
+      color: $color-main-function-link-language-text;
     }
   }
  
@@ -151,6 +151,47 @@
         background: $color-main-function-link-menu-logout-icon-background;
         color: $color-main-function-link-menu-logout-icon-color;
       }
+    }
+  }
+ 
+  &.link--main-function-navbar {
+  	&.link--icon {
+      color: $color-main-function-link-icon-color;
+    
+      &:hover, &.hover {
+        color: $color-main-function-link-icon-color-hover;
+      }
+      &:active, &.active {
+        &::before {
+          content: " ";
+          height: $main-function-link-icon-active-border-size;
+          background-color: $color-main-function-link-icon-border-top-color-active;
+          position: absolute;
+          top: 0;
+          width: 100%;
+          left: 0;
+        }
+        color: $color-main-function-link-icon-color-active;
+      }
+    }
+  }
+ 
+  &.link--profile {
+    font-size: 14px;
+    background-color: $color-main-function-link-profile-menu-background;
+    color: $color-main-function-link-profile-menu-text;
+    justify-content: flex-start;
+
+    &:hover,
+    &.hover {
+      background-color: $color-main-function-link-profile-menu-hover-background;
+      color: $color-main-function-link-profile-menu-text;
+    }
+
+    &:active,
+    &.active {
+      background-color: $color-main-function-link-profile-menu-hover-background;
+      color: $color-main-function-link-profile-menu-text;
     }
   }
 }

@@ -104,18 +104,52 @@ $navbar-font: 'Exo 2', Arial, sans-serif;
     .navbar__item.navbar__item--menu-button {
       display: none;
     };
-  };
+  }
   @include breakpoint-down($breakpoint-landscape-pad){
     .navbar__item.navbar__item--otavan-opisto,
     .navbar__item.navbar__item--news  {
       display: none;
     };
-  };
+  }
   @include breakpoint-down($breakpoint-portrait-pad){
     .navbar__item.navbar__item--studying,
     .navbar__item.navbar__item--contact,
     .navbar__item.navbar__item--open-materials  {
       display: none;
     }
-  };
+  }
+ 
+  &.navbar--main-function {
+    background-color: $color-main-function-navbar-background;
+  
+    .navbar__logo {
+      @include breakpoint-up($breakpoint-wide-screen) {
+        background: url(/gfx/of-site-logo-text-white.png) no-repeat center center;
+      }
+    }
+   
+    .navbar__item.navbar__item--menu-button .link {
+      color: $color-main-function-navbar-item-menu-button;
+    }
+  
+    @include breakpoint-up($breakpoint-landscape-pad){
+      .navbar__item.navbar__item--menu-button {
+        display: none;
+      }
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      .navbar__item:not(.navbar__item--menu-button) {
+        display: none;
+      }
+    }
+  
+    .navbar__item:not(.navbar__item--menu-button) {
+      width: 70px;
+      font-size: 32px;
+    }
+  
+    .navbar__mobile-title {
+      color: $color-main-function-navbar-title;
+    }
+  }
 }

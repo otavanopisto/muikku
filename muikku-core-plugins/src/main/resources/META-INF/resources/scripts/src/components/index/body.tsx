@@ -9,26 +9,29 @@ import WorkspacesPanel from './body/workspaces-panel';
 
 import * as React from 'react';
 
+import '~/sass/elements/container.scss';
+import '~/sass/elements/ordered-container.scss';
+
 export default class IndexBody extends React.Component<{},{}> {
   render(){
-    return (<div className="embbed embbed-full">
+    return (<div className="container container--full">
       <MainFunctionNavbar activeTrail="index"/>
       <ScreenContainer>
-        <div className="index ordered-container ordered-container-row ordered-container-responsive index-ordered-container-for-panels">
-          <div className="ordered-container-item">
-            <div className="index ordered-container index-ordered-container-for-panels-column">
+        <div className="ordered-container ordered-container--row ordered-container--responsive ordered-container--index-panels">
+          <div className="ordered-container__item">
+            <div className="ordered-container ordered-container--index-column">
               <ContinueStudiesPanel/>
               <WorkspacesPanel/>
             </div>
           </div>
-          <div className="ordered-container-item">
-            <div className="index ordered-container index-ordered-container-for-panels-column">
+          <div className="ordered-container__item">
+            <div className="ordered-container ordered-container--index-column">
               <LastMessagesPanel/>
               <ImportantPanel/>
             </div>
           </div>
-          <div className="ordered-container-item">
-            <div className="index ordered-container index-ordered-container-for-panels-column">
+          <div className="ordered-container__item">
+            <div className="ordered-container ordered-container--index-column">
               <AnnouncementsPanel/>
             </div>
           </div>

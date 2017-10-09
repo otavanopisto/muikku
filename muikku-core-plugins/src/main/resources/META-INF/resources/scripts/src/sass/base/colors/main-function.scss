@@ -1,6 +1,7 @@
 // NAVBAR
 $color-main-function-navbar-background: #009FE3;
 $color-main-function-navbar-title: $color-default;
+$color-main-function-navbar-item-menu-button: $color-default;
 
 // ICON LINKS
 $color-main-function-link-icon-color: $color-default;
@@ -9,9 +10,9 @@ $color-main-function-link-icon-color-active: $color-default;
 $color-main-function-link-icon-border-top-color-active: rgba(255,255,255,0.6);
 
 // DEFAULT LINKS
-$color-main-function-link-language-picker-background: $color-link-inverse-background;
-$color-main-function-link-language-picker-text: $color-link-inverse-text;
-$color-main-function-link-language-picker-hover-background: $color-link-hover-background;
+$color-main-function-link-language-background: $color-link-inverse-background;
+$color-main-function-link-language-text: $color-link-inverse-text;
+$color-main-function-link-language-hover-background: $color-link-hover-background;
 
 $color-main-function-link-profile-menu-background: $color-link-default-background;
 $color-main-function-link-profile-menu-text: $color-link-default-text;

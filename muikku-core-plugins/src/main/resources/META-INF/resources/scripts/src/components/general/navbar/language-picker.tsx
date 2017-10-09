@@ -11,7 +11,6 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/buttons.scss';
 
 interface LanguagePickerProps {
-  modifier: string,
   locales: LocaleListType,
   setLocale: SetLocaleTriggerType
 }
@@ -22,12 +21,12 @@ interface LanguagePickerState {
 
 class LanguagePicker extends React.Component<LanguagePickerProps, LanguagePickerState> {
   render(){
-    return <Dropdown modifier={this.props.modifier + "-language-picker"} items={this.props.locales.avaliable.map((locale)=>{
-      return (<Link className={`link link--full link--${this.props.modifier}-language-picker`} onClick={this.props.setLocale.bind(this, locale.locale)}>
+    return <Dropdown modifier="language-picker" items={this.props.locales.avaliable.map((locale)=>{
+      return (<Link className={`link link--full link--language`} onClick={this.props.setLocale.bind(this, locale.locale)}>
         <span>{locale.name}</span>
       </Link>);
     })}>
-      <Link className={`button-pill button-pill--language-picker button-pill--${this.props.modifier}-language-picker`}>
+      <Link className={`button-pill button-pill--current-language`}>
         <span>{this.props.locales.current}</span>
       </Link>
     </Dropdown>

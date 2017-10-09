@@ -6,6 +6,9 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
 
+import '~/sass/elements/link.scss';
+import '~/sass/elements/indicator.scss';
+
 interface ItemDataElement {
   modifier: string,
   trail: string,
@@ -97,19 +100,19 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       }
       return {
         modifier: item.modifier,
-        item: (<Link href={item.href} className={`main-function link link-icon link-full ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+        item: (<Link href={item.href} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
           title={this.props.i18n.text.get(item.text)}>
           <span className={`icon icon-${item.icon}`}/>
-          {item.badge ? <span className="main-function indicator">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
+          {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
       }
     })} defaultOptions={[]} menuItems={itemData.map((item: ItemDataElement)=>{
       if (!item.condition){
         return null;
       }
-      return <Link href={item.href} className={`main-function link link-full main-function-link-menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
+      return <Link href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
         <span className={`icon icon-${item.icon}`}/>
-        {item.badge ? <span className="main-function indicator">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
+        {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         {this.props.i18n.text.get(item.text)}
       </Link>
     })}/>

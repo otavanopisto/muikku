@@ -1,13 +1,3 @@
-//
-// Dropdown for menus
-//
-// In order to properly create a dropdown you need the dropdown.js interaction library
-//
-//  [div | form].dropdown
-//    div.dropdown-item...
-//      (BODY)
-//
-
 @import "../base/colors";
 @import "../base/mixins";
 
@@ -58,14 +48,39 @@
     opacity: 1;
   }
  
-  &.dropdown--frontpage-language-picker {
+  &.dropdown--language-picker {
     .dropdown__container {
-      background-color: $color-frontpage-dropdown-language-picker-background;
-      color: $color-frontpage-dropdown-language-picker-text;
-      box-shadow: 0 10px 20px $color-frontpage-dropdown-language-picker-shadow;
+      background-color: $color-main-function-dropdown-language-picker-background;
+      color: $color-main-function-dropdown-language-picker-text;
+      box-shadow: 0 10px 20px $color-main-function-dropdown-language-picker-shadow;
     }
     .dropdown__arrow {
-      border-bottom-color: $color-frontpage-dropdown-language-picker-background;
+      border-bottom-color: $color-main-function-dropdown-language-picker-background;
+    }
+  }
+ 
+  &.dropdown--profile {
+    .dropdown__container {
+      background-color: $color-main-function-dropdown-profile-menu-background;
+      color: $color-main-function-dropdown-profile-menu-text;
+      box-shadow: 0 10px 20px $color-main-function-dropdown-profile-menu-shadow;
+      padding: 5px;
+    
+      .dropdown__item:first-child {
+        border-bottom: solid 1px darken($color-main-function-dropdown-profile-menu-background, 8);
+      }
+    
+      .dropdown__item {
+        border-bottom: solid 1px darken($color-main-function-dropdown-profile-menu-background, 3);
+        height: 42px;
+      }
+    
+      .dropdown__item:last-child {
+        border-bottom: none;
+      }
+    }
+    .dropdown__arrow {
+      border-bottom-color: $color-main-function-dropdown-profile-menu-background;
     }
   }
 }
