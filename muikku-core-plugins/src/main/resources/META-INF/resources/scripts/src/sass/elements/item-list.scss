@@ -93,4 +93,19 @@ $item-list-item-min-height: 32px;
       color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
     }
   }
+ 
+  &.item-list--communicator-navigation {
+  	width: 100%;
+  	padding-top: 10px;
+  	padding-bottom: 10px;
+  	
+  	.item-list-item {
+      padding-right: 10px;
+  	}    
+  }
+  
+  .menu &.item-list--communicator-navigation {
+  	width: 100%;
+    padding: 0 0 10px 0;
+  }
 }

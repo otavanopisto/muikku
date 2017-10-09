@@ -4,6 +4,8 @@ import Navigation from './body/navigation';
 
 import * as React from 'react';
 
+import '~/sass/elements/container.scss';
+
 interface CommunicatorBodyProps {
   
 }

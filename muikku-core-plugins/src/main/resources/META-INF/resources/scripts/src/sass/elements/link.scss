@@ -1,12 +1,3 @@
-//
-// Defines a link and its structure, links can be icons and can use the icon element class
-//
-//   a.link[ | .link-icon | .link-highlight | .link-default | .link-inverse][ | .link-full]
-//    [.link-uppercase][.link-lowercase]
-//    span
-//      (BODY)
-//
-
 @import "../base/colors";
 @import "../base/mixins";
 
@@ -192,6 +183,19 @@ $main-function-link-icon-active-border-size: 5px;
     &.active {
       background-color: $color-main-function-link-profile-menu-hover-background;
       color: $color-main-function-link-profile-menu-text;
+    }
+  }
+ 
+  &.link--communicator-label {
+    justify-content: flex-start;
+    text-transform: none;
+    
+    &.selected {
+      background-color: $color-communicator-link-label-active-background;
+    }
+    
+    &.semi-selected {
+      background-color: lighten($color-communicator-link-label-active-background, 50%);
     }
   }
 }

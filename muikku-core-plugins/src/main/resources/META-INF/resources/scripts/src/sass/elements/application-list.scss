@@ -3,14 +3,14 @@
 @import "../base/breakpoints";
 
 .application-list {
-  .&__item {
+  .application-list__item {
     padding: 10px;
     cursor: pointer;
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     
-    .&__header, .&__body, .&__footer {    
+    .application-list__item__header, .application-list__item__body, .application-list__item__footer {    
     }
 
     &:not(:first-child) {
@@ -25,15 +25,141 @@
       background-color: $color-application-list-item-background-active;
     }
     
-    &.&--selected {
+    &.application-list__item--selected {
       background-color: $color-application-list-item-background-selected;
     }
   }
   
   @include breakpoint-down($breakpoint-portrait-pad){
-    &.&--select-mode {
-      .&__item:not(.selected) {
+    &.application-list--select-mode {
+      .application-list__item:not(.selected) {
       	opacity: 0.5;
+      }
+    }
+  }
+ 
+  &.application-list--communicator-messages {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 10px 15px 10px 25px;
+  
+    &::-webkit-scrollbar { 
+      display: none; 
+    }
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    overflow: -moz-scrollbars-none;
+
+    .application-list__item {
+      padding-left: 15px;
+
+      &.application-list__item--communicator-unread {
+        border-left: solid 4px $color-communicator-application-list-item-unread-border;
+      }
+    
+      .application-list__item__header {
+        align-items: center;
+    
+        input {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border: solid 1px $color-communicator-application-list-item-checkbox-border;
+          border-radius: 3px;
+          margin-right: 8px;
+        
+          @include breakpoint-down($breakpoint-portrait-pad){
+            display: none;
+          }
+        }
+      
+        input:checked {
+          background-color: $color-communicator-application-list-item-checkbox-checked-background;
+        }
+      
+        input:checked::after {
+          content: "\e639";
+          font-family: muikku;
+          font-size: 18px;
+          color: $color-communicator-application-list-item-checkbox-checked-mark;
+        }
+      }
+    }
+    .application-list__item__header, .application-list__item__body, .application-list__item__footer {
+      display: flex;      
+      align-items: center;
+    }  
+  }
+
+  &.application-list--communicator-message-view {
+    padding: 10px 20px 10px 30px;
+    height: 100%;
+    width: 100%;
+
+    .application-list__item {  
+      margin: 0;
+      padding: 0 0 1px 0;
+      background-color: $color-communicator-application-list-item-open-background;
+      cursor: default;
+    
+      .application-list__item__header, .application-list__item__body, .application-list__item__footer {
+        padding:10px;
+      }   
+    
+      .application-list__item__body {     
+        header {
+          margin-bottom: 20px;
+        }
+      }
+
+      .application-list__item__footer {
+        margin-bottom: 5px;
+        padding: 20px 10px;
+        a {
+          text-decoration: underline;  
+          cursor: pointer;
+               
+          &:not(:first-child) {
+            margin-left: 20px;
+          } 
+        }
+      }
+    }
+
+  
+    .application-list__item:first-child {
+    
+      .application-list__item__body {
+        background-color: $color-communicator-application-list-item-open-content-background;
+     
+        header {
+          font-size: 20px;
+        }
+      }
+
+      .application-list__item__footer {
+        background-color: $color-communicator-application-list-item-open-content-background;
+      }
+    }
+  
+    .application-list__item:not(:first-child) {
+      .application-list__item__header{
+        background-color: $color-communicator-application-list-item-open-content-background;
+      }   
+    
+      .application-list__item__body {
+        background-color: $color-communicator-application-list-item-open-content-background;
+     
+        header {
+          font-weight: 600;
+          margin-bottom: 20px;
+        }
+      }    
+
+      .application-list__item__footer {
+        background-color: $color-communicator-application-list-item-open-content-background;
       }
     }
   }

@@ -115,16 +115,16 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill key="1" hasGroupMessagingPermission classNameExtension="communicator" classNameSuffix="new-message-recepients" placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupMessagingPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
-      (<input key="2" type="text" className="communicator form-field communicator-form-field-new-message-subject"
+      (<input key="2" type="text" className="form-field form-field--communicator-new-message-subject"
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
         value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>),
       (<CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
          draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
         })} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
-      (this.props.signature ? <div key="4" className="communicator container communicator-container-signature">
+      (this.props.signature ? <div key="4" className="container container--communicator-signature">
         <input className="form-field" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
       </div> : null)
@@ -132,18 +132,18 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog-button-container">
-          <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
-            {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
-          </Link>
-          <Link className="communicator button button-large button-warn communicator-button-standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+         <div className="jumbo-dialog__button-container">
+          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
+          </Link>
+          <Link className="button button--standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
+            {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
           </Link>
         </div>
       )
     }
     
-    return <JumboDialog classNameExtension="communicator"
+    return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
       content={content} footer={footer}>
       {this.props.children}

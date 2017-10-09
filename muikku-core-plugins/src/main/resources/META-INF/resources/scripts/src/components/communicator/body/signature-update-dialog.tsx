@@ -9,6 +9,9 @@ import {updateSignature, UpdateSignatureTriggerType} from '~/actions/main-functi
 import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/text.scss';
+import '~/sass/elements/buttons.scss';
+
 const KEYCODES = {
   ENTER: 13
 }
@@ -73,21 +76,21 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return (
-        <div className="jumbo-dialog-button-container">
-          <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        <div className="jumbo-dialog__button-container">
+          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+            {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
+          </Link>
+          <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.settings.signatures.create')}
           </Link>
-          <Link className="communicator button button-large button-warn commmunicator-button-standard-cancel" onClick={closeDialog}>
-          {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
-         </Link>
-        </div>                   
+        </div>
       )    
     }
     let content = (closeDialog: ()=>any)=>{
       return <CKEditor width="100%" height="grow" configuration={CKEDITOR_CONFIG} extraPlugins={CKEDITOR_PLUGINS}
       onChange={this.onCKEditorChange} autofocus>{this.state.signature}</CKEditor>
     }
-    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} classNameExtension="communicator" 
+    return <JumboDialog onClose={this.props.onClose} isOpen={this.props.isOpen} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="update-signature" 
      title={this.props.i18n.text.get("plugin.communicator.settings.signatures")}
      content={content} footer={footer}>{this.props.children}</JumboDialog>
   }

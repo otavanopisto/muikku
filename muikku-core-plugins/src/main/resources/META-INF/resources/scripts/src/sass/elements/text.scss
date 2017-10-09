@@ -287,6 +287,150 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     font-style: italic;
     padding-bottom: 7px;
   }
+ 
+  &.text--communicator-title {
+    color: $color-communicator-text-title;
+  }
+  &.text--communicator-current-folder {
+    width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: none;
+    height: 34px;
+    line-height: 34px;
+    position: relative;
+    padding-right: 45px;
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: inline-block;
+    }
+  }
+
+  &.text--communicator-usernames {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;  
+  }
+  &.text--communicator-username {
+    white-space: nowrap;
+    
+    .application-list__item--unread & {
+      font-weight: 600;
+    }
+  }
+  
+  &.text--communicator-counter {
+    align-items: center;
+    border-radius: 50%;
+    background-color: #FFF6AE;
+    display: flex;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    padding: 0px 15px;
+    width: 28px;
+  }
+  
+  &.text--communicator-date {
+    opacity: 0.75;
+    font-style: italic;
+    width: 130px;
+    text-align: right;
+  }
+  
+  &.text--communicator-body {
+    display: inline-block;
+    font-weight: 300;
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-left: 30px;
+    }
+  }
+
+  &.text--communicator-labels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 1;
+    padding: 10px 0 0;
+  }  
+  
+  &.text--communicator-label {
+    font-weight: 300;
+    display: flex;
+    align-items: end; 
+   
+    .icon {
+      padding-left: 32px;
+      
+      &::before {
+        display: inline-block;
+        margin-right: 5px;
+      }
+    }
+  }
+  &.text--communicator-label-update-dialog-icon {
+    display: block;
+    width: 100%;
+    min-width: 350px;
+    height: 112px;
+    text-align: center;
+    font-size: 92px;
+  }
+ 
+  &.text--recepient-tag {
+  	.icon {
+      display: inline-block;
+  	  margin-right: 5px;
+  	}
+    i {
+      opacity: 0.6;
+    }
+  }
+ 
+  &.text--recepient-autocomplete {
+  	.icon {
+      display: inline-block;
+  	  margin-right: 5px;
+  	}
+    i {
+      opacity: 0.6;
+    }
+  }
+ 
+  &.text--communicator-message-sender {
+    font-weight: 600;
+    display: inline-block;
+        
+    &::after {
+      content: ">";
+      margin: 0 10px;
+    }
+  }
+ 
+  &.text--communicator-message-recipients {
+    display: inline-block;
+  }
+
+  &.text--communicator-message-recipient {        
+    margin-left: 5px;
+    display: inline-block;
+        
+    &:not(:last-child):after {
+      content: ",";
+    }
+  }
+
+  &.text--communicator-message-label {
+    margin-left: 5px;
+    display: inline-block;
+  }
+
+  &.text--communicator-message-created {
+    float: right;
+    display: inline-block;
+  }
 
   //TODO REMOVE ALL THESE
   &.text-icon, .text-icon {

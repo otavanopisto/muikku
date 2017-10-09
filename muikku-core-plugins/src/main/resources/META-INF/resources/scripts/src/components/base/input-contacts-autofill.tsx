@@ -11,9 +11,8 @@ import {WorkspaceType} from '~/reducers/main-function/index/workspaces';
 export interface InputContactsAutofillProps {
   placeholder?: string,
   onChange: (newValue: CommunicatorMessageItemRecepientType[])=>any,
+  modifier: string,
   selectedItems: CommunicatorMessageItemRecepientType[],
-  classNameExtension: string,
-  classNameSuffix: string,
   hasGroupMessagingPermission: boolean,
   autofocus?: boolean
 }
@@ -131,7 +130,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     let selectedItems = this.state.selectedItems.map((item)=>{
       if (item.type === "user"){
         return {
-          node: <span className={`${this.props.classNameExtension} text ${this.props.classNameExtension}-text-new-message-recepient-tag`}>
+          node: <span className="text text--recepient-tag">
             <span className="icon icon-user"/>
             {
               (item.value.firstName + " " || "") + (item.value.lastName || "")
@@ -141,14 +140,14 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         };
       } else if (item.type === "usergroup"){
         return {
-          node: <span className={`${this.props.classNameExtension} text ${this.props.classNameExtension}-text-new-message-recepient-tag`}>
+          node: <span className="text text--recepient-tag">
             <span className="icon icon-members"/>{item.value.name}
           </span>,
           value: item
         };
       } else {
         return {
-          node: <span className={`${this.props.classNameExtension} text ${this.props.classNameExtension}-text-new-message-recepient-tag`}>
+          node: <span className="text text--recepient-tag">
             <span className="icon icon-books"/>{item.value.name}
           </span>,
           value: item
@@ -160,19 +159,19 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     let autocompleteItems = this.state.autocompleteSearchItems.map((item)=>{
       let node;
       if (item.type === "user"){
-        node = <div className={`${this.props.classNameExtension} text ${this.props.classNameExtension}-text-new-message-recepient-autocomplete`}>
+        node = <div className="text text--recepient-autocomplete">
           <span className="icon icon-user"></span>
           {
             filterHighlight((item.value.firstName + " " || "") + (item.value.lastName || ""), this.state.textInput)
           } <i>{item.value.email}</i>
         </div>;
       } else if (item.type === "usergroup"){
-        node = <div className={`${this.props.classNameExtension} text ${this.props.classNameExtension}-text-new-message-recepient-autocomplete`}>
+        node = <div className="text text--recepient-autocomplete">
           <span className="icon icon-members"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
       } else {
-        node = <div className={`${this.props.classNameExtension} text ${this.props.classNameExtension}-text-new-message-recepient-autocomplete`}>
+        node = <div className="text text--recepient-autocomplete">
           <span className="icon icon-books"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
@@ -185,9 +184,8 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     });
     
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
-      opened={this.state.autocompleteOpened} pixelsOffset={this.state.fieldHeight} classNameExtension={this.props.classNameExtension}
-      classNameSuffix={this.props.classNameSuffix}>
-      <TagInput ref="taginput" classNameExtension={this.props.classNameExtension} classNameSuffix={this.props.classNameSuffix}
+      opened={this.state.autocompleteOpened} pixelsOffset={this.state.fieldHeight} modifier={this.props.modifier}>
+      <TagInput ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         placeholder={this.props.placeholder}
         tags={selectedItems} onInputDataChange={this.onInputChange} inputValue={this.state.textInput} onDelete={this.onDelete}/>

@@ -1,6 +1,8 @@
 import * as React from 'react';
 import equals = require("deep-equal");
 
+import '~/sass/elements/autocomplete.scss';
+
 interface AutocompleteProps {
   onItemClick: (item: any, selected: boolean)=>any,
   opened: boolean,
@@ -10,8 +12,7 @@ interface AutocompleteProps {
     selected?: boolean
   }[],
   pixelsOffset?: number,
-  classNameExtension: string,
-  classNameSuffix: string
+  modifier: string
 }
 
 interface AutocompleteState {
@@ -33,11 +34,11 @@ export default class Autocomplete extends React.Component<AutocompleteProps, Aut
     if (this.props.pixelsOffset){
       style.top = this.props.pixelsOffset;
     }
-    return <div className={`${this.props.classNameExtension} autocomplete ${this.props.classNameExtension}-autocomplete-${this.props.classNameSuffix}`}>
-      <div className="autocomplete-input" ref="input">{this.props.children}</div>
-      {this.props.items.length && this.props.opened ? <div className="autocomplete-list" style={style}>{this.props.items.map((item, index)=>{
+    return <div className={`autocomplete autocomplete--${this.props.modifier}`}>
+      <div className="autocomplete__input" ref="input">{this.props.children}</div>
+      {this.props.items.length && this.props.opened ? <div className="autocomplete__list" style={style}>{this.props.items.map((item, index)=>{
         return <div key={typeof item.value.id === "undefined" ? index : item.value.id}
-          className={`autocomplete-list-item ${item.selected ? "selected" : ""}`}
+          className={`autocomplete__list__item ${item.selected ? "selected" : ""}`}
           onClick={this.onItemClick.bind(this, item.value, item.selected)}>
           {item.node}
         </div>

@@ -8,12 +8,12 @@
   position: relative;
   z-index: 99;
   
-  .autocomplete-input {
+  .autocomplete__input {
     display: block;
     width: 100%;
   }
 
-  .autocomplete-list {
+  .autocomplete__list {
     position: absolute;
     overflow: auto;
     top: 100%;
@@ -24,7 +24,7 @@
     border: solid 1px $color-autocomplete-list-border;
     border-top: none;
     
-    .autocomplete-list-item {
+    .autocomplete__list__item {
       @include prefix(transition, moz o ms webkit, background-color 0.3s);
       border-top: solid 1px $color-autocomplete-list-border;
       background-color: $color-autocomplete-list-background-color;
@@ -42,5 +42,9 @@
       	background-color: $color-autocomplete-list-item-selected;
       }
     }
+  }
+ 
+  &.autocomplete--new-messsage {
+  	margin-bottom: 5px;
   }
 }

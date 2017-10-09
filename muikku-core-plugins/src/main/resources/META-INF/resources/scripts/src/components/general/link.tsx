@@ -129,7 +129,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     delete elementProps["disabled"]
     
     return <Element {...elementProps}
-      className={this.props.className + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
+      className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}
       onClick={this.onClick} onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchMove={this.onTouchMove}/>
   }
 }

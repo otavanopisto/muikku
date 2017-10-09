@@ -13,6 +13,10 @@ import NewMessage from './application/new-message';
 import SignatureUpdateDialog from './signature-update-dialog';
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/text.scss';
+import '~/sass/elements/link.scss';
+import '~/sass/elements/container.scss';
+
 interface CommunicatorApplicationProps {
   navigation: React.ReactElement<any>,
   i18n: i18nType
@@ -45,29 +49,29 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
     });
   }
   render(){
-    let title = <h2 className="communicator text text-panel-application-title communicator-text-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
+    let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
     let icon = <Dropdown modifier="communicator-settings" items={[
-      closeDropdown=><Link className="link link-full" onClick={this.openDialogSignature.bind(this, closeDropdown)}>
+      closeDropdown=><Link className="link link--full" onClick={this.openDialogSignature.bind(this, closeDropdown)}>
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
       </Link>
     ]}>
-      <Link className="communicator button-pill communicator-button-pill-settings">
+      <Link className="button-pill button-pill--communicator-settings">
         <span className="icon icon-settings"></span>
       </Link>
     </Dropdown>
-    let primaryOption = <NewMessage><a className="communicator button communicator-button-new-message">
+    let primaryOption = <NewMessage><a className="button button--communicator-new-message">
     {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
     </a></NewMessage>
     let toolbar = <Toolbar/>
       
     //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
-    return (<div className="embbed embbed-full">
-      <ApplicationPanel classNameExtension="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={this.props.navigation}>
+    return (<div className="container container--full">
+      <ApplicationPanel modifier="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={this.props.navigation}>
         <CommunicatorMessages/>
         <MessageView/>
       </ApplicationPanel>
       <SignatureUpdateDialog isOpen={this.state.updateSignatureDialogOpened} onClose={this.closeDialogSignature}/>
-      <NewMessage><HoverButton icon="edit" classNameSuffix="new-message" classNameExtension="communicator"/></NewMessage>
+      <NewMessage><HoverButton icon="edit" modifier="communicator-new-message"/></NewMessage>
     </div>);
   }
 }

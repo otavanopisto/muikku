@@ -1,12 +1,13 @@
 import * as React from 'react';
 import Link from './link';
 
+import '~/sass/elements/buttons.scss';
+
 interface HoverButtonProps {
   onClick?: (e: Event, re: any)=>any,
-  classNameExtension: string,
+  modifier: string,
   icon: string,
-  href?: string,
-  classNameSuffix: string
+  href?: string
 }
 
 interface HoverButtonState {
@@ -19,7 +20,7 @@ export default class HoverButton extends React.Component<HoverButtonProps, Hover
   }
   render(){
     return (<Link href={this.props.href} onClick={this.props.onClick}
-       className={`${this.props.classNameExtension} button-pill button-pill-floating ${this.props.classNameExtension}-button-pill-${this.props.classNameSuffix}`}>
+       className={`button-pill button-pill--floating button-pill--${this.props.modifier}`}>
       <span className={`icon icon-${this.props.icon}`}></span>
     </Link>);
   }

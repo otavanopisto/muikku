@@ -12,6 +12,10 @@ import {CommunicatorNavigationItemType, CommunicatorNavigationItemListType} from
 import {i18nType } from '~/reducers/base/i18n';
 import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
 
+import '~/sass/elements/container.scss';
+import '~/sass/elements/buttons.scss';
+import '~/sass/elements/form-fields.scss';
+
 const KEYCODES = {
   ENTER: 13
 }
@@ -87,11 +91,11 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="embbed embbed-full">
-        <Link className="communicator button button-large button-warn commmunicator-button-standard-cancel" onClick={closeDialog}>
+      return <div className="container container--full">
+        <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
         </Link>
-        <Link className="communicator button button-large communicator-button-standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
           {/*TODO this should be OK but instead it says edit, please fix*/}
           {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
         </Link>
@@ -101,23 +105,23 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
-          <div className="communicator text communicator-text-label-update-dialog-icon">
+          <div className="text text--communicator-label-update-dialog-icon">
             <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
           </div>
           <input value={this.state.name}
-            className="communicator form-field communicator-form-field-label-name"
+            className="form-field form-field--communicator-label-name"
             disabled={this.state.removed}
             onChange={this.onNameChange}/>
           {sliderPicker}
         
           {/*TODO please translate this*/}
-          <Link className="communicator button button-large button-fatal communicator-button-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
+          <Link className="button button--fatal button--communicator-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
             {this.state.removed ? "Label Removed" : "Remove Label"}
           </Link>
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} classNameExtension="communicator" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="communicator" 
      title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

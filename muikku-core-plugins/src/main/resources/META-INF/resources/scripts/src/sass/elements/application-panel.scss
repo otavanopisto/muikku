@@ -1,3 +1,7 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
 $application-panel-internal-navigation-padding: 10px;
 
 .application-panel {
@@ -10,7 +14,7 @@ $application-panel-internal-navigation-padding: 10px;
     padding-bottom: 0;
   }
   
-  .application-panel-helper-container{
+  .application-panel__helper-container{
     width: 220px;  
     margin-left: 15px;
     padding: 10px 0;
@@ -20,7 +24,7 @@ $application-panel-internal-navigation-padding: 10px;
     }
   }
   
-  .application-panel-main-container {
+  .application-panel__main-container {
   	display: flex;
     flex: 1  1 auto;
     margin: 0 15px 0 25px;
@@ -29,7 +33,7 @@ $application-panel-internal-navigation-padding: 10px;
     position: relative;
   }
   
-  .application-panel-container {
+  .application-panel__container {
     max-width: $breakpoint-max-usable-screen;
     overflow: visible;
     flex-direction: column;
@@ -37,7 +41,7 @@ $application-panel-internal-navigation-padding: 10px;
     width:100%;
     height: 100%;
     
-    .application-panel-header {
+    .application-panel__header {
       display: flex;
       align-items: center;
       flex: 0 0 auto;
@@ -47,7 +51,7 @@ $application-panel-internal-navigation-padding: 10px;
         display: none;
       }
       
-      .application-panel-main-container {
+      .application-panel__main-container {
         display: flex;
         justify-content: flex-end;
         margin-right: 0;
@@ -55,7 +59,7 @@ $application-panel-internal-navigation-padding: 10px;
     }  
   }
   
-  .application-panel-body {
+  .application-panel__body {
     background-color: $color-application-panel-box-background;
     border: solid 1px $color-application-panel-box-border;
     display: flex;
@@ -67,27 +71,27 @@ $application-panel-internal-navigation-padding: 10px;
       border-right: 0;
     }
     
-    .application-panel-actions {
+    .application-panel__actions {
       display: flex;
       align-items: center;
       flex: 0 0 auto;
       justify-content: space-between;
       
-      .application-panel-helper-container {
+      .application-panel__helper-container {
         border-bottom: 1px solid $color-communicator-application-panel-actions-border;
       }
       
-      .application-panel-main-container {
+      .application-panel__main-container {
         border-bottom: 1px solid $color-communicator-application-panel-actions-border;  
       }
     }
 
-    .application-panel-content {
+    .application-panel__content {
       display: flex;
       flex-direction: row;
       height: 100%;
 
-      .application-panel-helper-container{
+      .application-panel__helper-container{
         padding: 0;
         overflow: auto;
         
@@ -99,7 +103,7 @@ $application-panel-internal-navigation-padding: 10px;
         overflow: -moz-scrollbars-none;
       }
      
-      .application-panel-main-container {
+      .application-panel__main-container {
       	padding: 0;
       	margin: 0;
       	&::-webkit-scrollbar { 
@@ -107,6 +111,29 @@ $application-panel-internal-navigation-padding: 10px;
         }
         -ms-overflow-style: -ms-autohiding-scrollbar;
         overflow: -moz-scrollbars-none;
+      }
+    }
+  }
+ 
+  &.application-panel--communicator {
+    height: 100%;
+  
+    .application-panel__communicator-navigation {
+  	  width: 100%;
+    }
+  
+    .application-panel__communicator-actions {
+      user-select: none;
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+    
+      .application-panel__communicator-actions__main {
+        flex: 1 1 auto;
+      }
+      .application-panel__communicator-actions__aside {
+        display: flex;
+        justify-content: flex-end;
       }
     }
   }

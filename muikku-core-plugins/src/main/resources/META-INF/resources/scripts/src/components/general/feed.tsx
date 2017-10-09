@@ -2,6 +2,8 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/feed.scss';
+
 interface FeedProps {
   entries: Array<{
     publicationDate: string,

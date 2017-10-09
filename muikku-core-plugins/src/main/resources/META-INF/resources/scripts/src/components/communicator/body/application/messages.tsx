@@ -10,6 +10,11 @@ import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTrigg
 import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/empty.scss';
+import '~/sass/elements/loaders.scss';
+import '~/sass/elements/application-list.scss';
+import '~/sass/elements/text.scss';
+
 interface CommunicatorMessagesProps {
   communicatorMessagesSelected: CommunicatorMessageListType,
   communicatorMessagesHasMore: boolean,
@@ -178,34 +183,34 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className={`communicator application-list communicator-application-list-messages ${this.state.touchMode ? "application-list-select-mode" : ""}`}
+    return <div className={`application-list application-list--communicator-messages ${this.state.touchMode ? "application-list--select-mode" : ""}`}
      ref="list" onScroll={this.onScroll}>{
       this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
         return (
-          <div key={message.communicatorMessageId} className={`application-list-item ${message.unreadMessagesInThread ? "communicator-application-list-item-unread" : ""} ${isSelected ? "selected" : ""}`}
+          <div key={message.communicatorMessageId} className={`application-list__item ${message.unreadMessagesInThread ? "application-list__item--communicator-unread" : ""} ${isSelected ? "selected" : ""}`}
             onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)} onTouchMove={this.onTouchMoveMessage.bind(this, message)} 
             onClick={this.onMessageClick.bind(this, message)} onContextMenu={this.onContextMenu}>
-            <div className="application-list-item-header">
+            <div className="application-list__item__header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
-            <div className="communicator text communicator-text-usernames">
-              <span className="communicator text communicator-text-username">{message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}</span>
-            </div>              
-            {message.messageCountInThread > 1 ? <div className="communicator text communicator-text-counter">
+            <div className="text text--communicator-usernames">
+              <span className="text text--communicator-username">{message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}</span>
+            </div>
+            {message.messageCountInThread > 1 ? <div className="text text--communicator-counter">
               {message.messageCountInThread}
             </div> : null}
-            <div className="communicator text communicator-text-date">
+            <div className="text text--communicator-date">
               {this.props.i18n.time.format(message.threadLatestMessageDate)}
             </div>                
           </div>
-          <div className="application-list-item-body">
-            <span className="communicator text communicator-text-body">{message.caption}</span>
+          <div className="application-list__item__body">
+            <span className="text text--communicator-body">{message.caption}</span>
           </div>
-          <div className="application-list-item-footer">
-            <div className="communicator text communicator-text-labels">{message.labels.map((label)=>{
-              return <span className="communicator text communicator-text-label" key={label.id}>
+          <div className="application-list__item__footer">
+            <div className="text text--communicator-labels">{message.labels.map((label)=>{
+              return <span className="text text--communicator-label" key={label.id}>
                 <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                <span className="label-name">{label.labelName}</span>
+                <span>{label.labelName}</span>
               </span>
             })}</div>            
           </div>                      
@@ -214,7 +219,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
       })
     }{
       this.props.communicatorMessagesState === "LOADING_MORE" ? 
-        <div className="application-list-item loader-empty"/>
+        <div className="application-list__item loader-empty"/>
     : null}</div>
   }
 }

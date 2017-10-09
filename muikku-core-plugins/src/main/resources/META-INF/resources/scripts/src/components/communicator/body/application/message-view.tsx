@@ -9,6 +9,10 @@ import {CommunicatorCurrentThreadType} from '~/reducers/main-function/communicat
 import {StatusType} from '~/reducers/base/status';
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/link.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/application-list.scss';
+
 interface MessageViewProps {
   i18n: i18nType,
   communicatorMessagesCurrent: CommunicatorCurrentThreadType,
@@ -102,9 +106,9 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
     if (this.props.communicatorMessagesCurrent === null){
       return null;
     }
-    return <div className="communicator container communicator-container-message-view" onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
-      <div className="communicator container communicator-container-message" style={{right: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
-      <div ref="centerContainer" className="communicator application-list communicator-application-list-message-view container communicator-container-message communicator-container-message-center" style={{transform: `translateX(${this.state.drag}px)`}}>
+    return <div className="container container--communicator-message-view" onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
+      <div className="container container--communicator-message" style={{right: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
+      <div ref="centerContainer" className="application-list application-list--communicator-message-view container container--communicator-message container--communicator-message--center" style={{transform: `translateX(${this.state.drag}px)`}}>
         {this.props.communicatorMessagesCurrent.messages.map((message)=>{
           let senderObject = {
             type: "user",
@@ -128,22 +132,22 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
             value: w
           }));
           return (
-            <div key={message.id} className="application-list-item text">            
-              <div className="application-list-item-header">
-                <div className="communicator-message-participants">
-                  <span className="communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
-                  <span className="communicator-message-recipients">
+            <div key={message.id} className="application-list__item">            
+              <div className="application-list__item__header">
+                <div className="container container--communicator-message-participants">
+                  <span className="text text--communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
+                  <span className="text text--communicator-message-recipients">
                     {message.recipients.map((recipient) => {
                         return (
-                          <span className="communicator-message-recipient" key={recipient.recipientId}>
+                          <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
                             {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
                           </span>
                         )
                     })}
                   </span>
-                  <span className="communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
+                  <span className="text text--communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
                 </div>
-                <div className="communicator-message-labels">
+                <div className="container container--communicator-message-labels">
                   {/* TODO: labels are outside of the message object
                   {message.labels.map((label)=>{
                     return <span className="communicator text communicator-text-tag" key={label.id}>
@@ -154,11 +158,11 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
                   */}                 
                 </div>  
               </div>                  
-              <div className="application-list-item-body">
-                <header>{message.caption}</header>
-                <section dangerouslySetInnerHTML={{ __html: message.content}}></section>
+              <div className="application-list__item__body">
+                <header className="text text-communicator-message-caption">{message.caption}</header>
+                <section className="text text-communicator-message-content" dangerouslySetInnerHTML={{ __html: message.content}}></section>
               </div>
-              <div className="application-list-item-footer">
+              <div className="application-list__item__footer">
                  <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
                    <Link>{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
                  </NewMessage>
@@ -171,7 +175,7 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
           )
         })}
       </div>
-      <div className="communicator container communicator-container-message" style={{left: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
+      <div className="container container--communicator-message" style={{left: "100%", transform: `translateX(${this.state.drag}px)`}}></div>
     </div>
   }
 }

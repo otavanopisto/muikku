@@ -117,12 +117,12 @@ $dialog-button-close-height: 45px;
   &.visible {
     opacity: 1;
     
-    .jumbo-dialog-wrapper {
+    .jumbo-dialog__wrapper {
       bottom: 0;
     }
   }
 
-  .jumbo-dialog-wrapper {
+  .jumbo-dialog__wrapper {
   	@include breakpoint-down($breakpoint-landscape-pad) {
       
     }
@@ -144,7 +144,7 @@ $dialog-button-close-height: 45px;
       @include prefix(transition, moz ms webkit o, bottom 0.3s);
     }
     
-    .jumbo-dialog-window {
+    .jumbo-dialog__window {
       max-width: $breakpoint-max-usable-screen;
       font-family: $dialog-font-family;
       height: 100%;
@@ -161,18 +161,18 @@ $dialog-button-close-height: 45px;
       	}
       }
      
-      .jumbo-dialog-body {
+      .jumbo-dialog__body {
         flex: 1 1 auto;
       }
       
-      .jumbo-dialog-footer {
+      .jumbo-dialog__footer {
       	width: 100%;
       	padding-top: 10px;
       	padding-bottom: 10px;
 
       }
 
-      .jumbo-dialog-button-container {
+      .jumbo-dialog__button-container {
         align-items: center;
         display: flex;
         justify-content: left;
@@ -182,7 +182,7 @@ $dialog-button-close-height: 45px;
         }                  
       }       
       
-      .jumbo-dialog-header {
+      .jumbo-dialog__header {
         border-bottom: solid 1px $color-dialog-default-border;
         color: $color-dialog-default-title-text;
         margin-bottom: 20px;
@@ -190,7 +190,7 @@ $dialog-button-close-height: 45px;
         position: relative;
         width: 100%;
   
-        .jumbo-dialog-title {
+        .jumbo-dialog__title {
           font-weight: 500;
           position: relative;
           text-align: left;
@@ -202,7 +202,7 @@ $dialog-button-close-height: 45px;
         }
       }
   
-      .jumbo-dialog-close {
+      .jumbo-dialog__close {
         @include prefix(transition, moz ms o webkit, background-color 0.3s);
         border-radius: $dialog-button-close-height;
         cursor: pointer;

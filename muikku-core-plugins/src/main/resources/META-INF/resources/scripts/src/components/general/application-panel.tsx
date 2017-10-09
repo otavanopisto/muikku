@@ -1,7 +1,10 @@
 import * as React from 'react';
 
+import '~/sass/elements/application-panel.scss';
+import '~/sass/elements/loaders.scss';
+
 interface ApplicationPanelProps {
-  classNameExtension: string,
+  modifier: string,
   title: React.ReactElement<any> | string,
   icon: React.ReactElement<any> | string,
   primaryOption: React.ReactElement<any>,
@@ -19,21 +22,21 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     super(props);
   }
   render(){
-    return (<div className={`${this.props.classNameExtension} application-panel`}>
-      <div className="application-panel-container">                
-        <div className="application-panel-header">
-          <div className="application-panel-helper-container">{this.props.title}</div>
-          <div className="application-panel-main-container">{this.props.icon}</div>
+    return (<div className={`application-panel application-panel--${this.props.modifier}`}>
+      <div className="application-panel__container">                
+        <div className="application-panel__header">
+          <div className="application-panel__helper-container">{this.props.title}</div>
+          <div className="application-panel__main-container">{this.props.icon}</div>
         </div>          
-        <div className="application-panel-body">
+        <div className="application-panel__body">
           {/* TODO: This not a navigation */}
-          <div className="application-panel-actions">
-            <div className="application-panel-helper-container">{this.props.primaryOption}</div>
-            <div className="application-panel-main-container">{this.props.toolbar}</div>
+          <div className="application-panel__actions">
+            <div className="application-panel__helper-container">{this.props.primaryOption}</div>
+            <div className="application-panel__main-container">{this.props.toolbar}</div>
           </div>
-          <div className="application-panel-content">
-            <div className="application-panel-helper-container">{this.props.navigation}</div>
-            <div className="application-panel-main-container loader-empty">{this.props.children}</div>
+          <div className="application-panel__content">
+            <div className="application-panel__helper-container">{this.props.navigation}</div>
+            <div className="application-panel__main-container loader-empty">{this.props.children}</div>
           </div>
         </div>
       </div>

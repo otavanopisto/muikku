@@ -6,6 +6,9 @@ import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from
 import {i18nType} from '~/reducers/base/i18n';
 import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
 
+import '~/sass/elements/buttons.scss';
+import '~/sass/elements/item-list.scss';
+
 interface NavigationProps {
   i18n: i18nType,
   communicatorNavigation: CommunicatorNavigationItemListType,
@@ -18,20 +21,20 @@ interface NavigationState {
 
 class Navigation extends React.Component<NavigationProps, NavigationState> {
   render(){
-    return <div className="communicator item-list communicator-item-list-navigation">
+    return <div className="item-list item-list--communicator-navigation">
       {this.props.communicatorNavigation.map((item: CommunicatorNavigationItemType)=>{
         let style: any = {};
         if (item.color){
           style.color = item.color;
         }
         
-        return <Link key={item.id} className={`item-list-item ${this.props.communicatorMessages.location === item.location ? "active" : ""}`} href={`#${item.location}`}>
+        return <Link key={item.id} className={`item-list__item ${this.props.communicatorMessages.location === item.location ? "active" : ""}`} href={`#${item.location}`}>
           <span className={`icon icon-${item.icon}`} style={style}></span>
-          <span className="item-list-text-body text">
+          <span className="item-list__text-body text">
             {item.text(this.props.i18n)}
           </span>
           {item.type === "label" ? <LabelUpdateDialog label={item}>
-            <Link disablePropagation as="span" className="communicator button-pill communicator-button-pill-navigation-edit-label">
+            <Link disablePropagation as="span" className="button-pill button-pill--communicator-navigation-edit-label">
               <span className="icon icon-edit"/>
             </Link>
           </LabelUpdateDialog> : null}
