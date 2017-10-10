@@ -284,7 +284,6 @@ public class CourseTestsBase extends AbstractUITest {
         waitClassPresent(String.format("#page-%d .muikku-text-field", exerciseMaterial.getId()), "muikku-field-saved");
         waitAndClick(String.format("#page-%d .muikku-assignment-button", exerciseMaterial.getId()));
         waitUntilAnimationIsDone(".materials-progress-practice-status .slice .bar");
-        waitUntilContentChanged(".materials-progress-practice-status span", "0/1");
         waitForPresent(".materials-progress-practice-status");
         assertTextIgnoreCase(".materials-progress-practice-status span", "1/1");
         
