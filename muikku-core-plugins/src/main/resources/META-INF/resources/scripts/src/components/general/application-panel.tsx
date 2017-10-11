@@ -29,7 +29,6 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
           <div className="application-panel__main-container">{this.props.icon}</div>
         </div>          
         <div className="application-panel__body">
-          {/* TODO: This not a navigation */}
           <div className="application-panel__actions">
             <div className="application-panel__helper-container">{this.props.primaryOption}</div>
             <div className="application-panel__main-container">{this.props.toolbar}</div>
