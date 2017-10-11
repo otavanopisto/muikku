@@ -392,8 +392,9 @@ let loadMessage:LoadMessageTriggerType = function loadMessage(location, messageI
       return;
     }
     
+    let currentThread:CommunicatorCurrentThreadType;
     try {
-      let currentThread:CommunicatorCurrentThreadType = <CommunicatorCurrentThreadType>await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
+      currentThread = <CommunicatorCurrentThreadType>await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
       dispatch({
         type: "UPDATE_MESSAGES_ALL_PROPERTIES",
         payload: {
@@ -403,6 +404,20 @@ let loadMessage:LoadMessageTriggerType = function loadMessage(location, messageI
       });
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+    
+    let communicatorMessagesMessages:CommunicatorMessageListType = state.communicatorMessages.messages;
+    let existantMessage:CommunicatorMessageType = communicatorMessagesMessages.find((message:CommunicatorMessageType)=>{
+      return message.communicatorMessageId === currentThread.messages[0].communicatorMessageId;
+    });
+    
+    if (existantMessage && existantMessage.unreadMessagesInThread){
+      dispatch(toggleMessagesReadStatus(existantMessage));
+    } else if (!existantMessage) {
+      try {
+        await promisify(mApi().communicator[getApiId(item)].markasread.create(currentThread.messages[0].communicatorMessageId), 'callback')();
+      } catch (err){
+      }
     }
   }
 }

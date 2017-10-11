@@ -36,18 +36,22 @@ export interface CommunicatorMessageLabelPatchType {
 }
 export interface CommunicatorMessageLabelListType extends Array<CommunicatorMessageLabelType> {};
 export interface CommunicatorMessageType {
-  id: number,
-  communicatorMessageId: number,
-  senderId: number,
-  categoryName: "message",
   caption: string,
+  categoryName: "message",
+  communicatorMessageId: number,
   created: string,
+  id: number,
+  labels: CommunicatorMessageLabelListType,
+  messageCountInThread: number,
+  recipientCount?: number,
+  recipients?: Array<CommunicatorMessageRecepientType>,
+  sender: CommunicatorMessageSenderType,
+  senderId: number,
   tags: any,
   threadLatestMessageDate: string,
   unreadMessagesInThread: boolean,
-  sender: CommunicatorMessageSenderType,
-  messageCountInThread: number,
-  labels: CommunicatorMessageLabelListType
+  userGroupRecipients?: UserGroupList,
+  workspaceRecipients?: WorkspaceListType
 }
 export interface CommunicatorMessageUpdateType {
   communicatorMessageId?: number,
@@ -65,7 +69,7 @@ export interface CommunicatorMessageUpdateType {
 export interface CommunicatorCurrentThreadType {
   olderThreadId?: number | null,
   newerThreadId?: number | null,
-  messages: Array<CommunicatorMessageExtendedType>,
+  messages: Array<CommunicatorMessageInThreadType>,
   labels: CommunicatorMessageLabelListType
 }
 export interface UserGroup {
@@ -74,7 +78,7 @@ export interface UserGroup {
   userCount: number
 }
 export interface UserGroupList extends Array<UserGroup> {}
-export interface CommunicatorMessageExtendedType {
+export interface CommunicatorMessageInThreadType {
   caption: string,
   categoryName: "message",
   communicatorMessageId: number,
@@ -87,7 +91,6 @@ export interface CommunicatorMessageExtendedType {
   senderId: number,
   tags: any,
   userGroupRecipients: UserGroupList,
-  //TODO I am not sure what this is yet
   workspaceRecipients: WorkspaceListType
 }
 export interface CommunicatorMessageRecepientType {

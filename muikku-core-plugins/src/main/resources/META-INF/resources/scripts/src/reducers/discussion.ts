@@ -6,9 +6,6 @@ import title from './base/title';
 import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 
-import announcements from './main-function/announcer/announcements';
-import announcerNavigation from './main-function/announcer/announcer-navigation';
-
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -18,7 +15,5 @@ export default combineReducers({
   status,
   websocket,
   messageCount,
-  title,
-  announcements,
-  announcerNavigation
+  title
 });

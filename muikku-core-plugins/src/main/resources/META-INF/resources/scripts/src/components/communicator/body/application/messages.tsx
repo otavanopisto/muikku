@@ -7,13 +7,31 @@ import equals = require("deep-equal");
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
 import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
-import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
+import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+
+function getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
+  if (message.senderId !== userId || !message.recipients){
+    if (message.senderId === userId){
+      //TODO Ukkonen translate this
+      return "me";
+    }
+    return (message.sender.firstName ? message.sender.firstName + " " : "")+(message.sender.lastName ? message.sender.lastName : "");
+  }
+  
+  return message.recipients.map((recipient: CommunicatorMessageRecepientType)=>{
+    if (recipient.userId === userId){
+      //TODO Ukkonen translate this
+      return "me";
+    }
+    return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
+  }).join(", ");
+}
 
 interface CommunicatorMessagesProps {
   communicatorMessagesSelected: CommunicatorMessageListType,
@@ -24,7 +42,8 @@ interface CommunicatorMessagesProps {
   loadMoreMessages: LoadMoreMessagesTriggerType,
   removeFromCommunicatorSelectedMessages: RemoveFromCommunicatorSelectedMessagesTriggerType,
   addToCommunicatorSelectedMessages: AddToCommunicatorSelectedMessagesTriggerType,
-  i18n: i18nType
+  i18n: i18nType,
+  userId: number
 }
 
 interface CommunicatorMessagesState {
@@ -194,7 +213,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
             <div className="application-list__item__header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
             <div className="text text--communicator-usernames">
-              <span className="text text--communicator-username">{message.sender.firstName ? message.sender.firstName + " " : ""}{message.sender.lastName ? message.sender.lastName : ""}</span>
+              <span className="text text--communicator-username">{getMessageUserNames(message, this.props.userId)}</span>
             </div>
             {message.messageCountInThread > 1 ? <div className="text text--communicator-counter">
               {message.messageCountInThread}
@@ -231,7 +250,8 @@ function mapStateToProps(state: any){
     communicatorMessagesState: state.communicatorMessages.state,
     communicatorMessagesSelected: state.communicatorMessages.selected,
     communicatorMessagesSelectedIds: state.communicatorMessages.selectedIds,
-    i18n: state.i18n
+    i18n: state.i18n,
+    userId: state.status.userId
   }
 };
 
