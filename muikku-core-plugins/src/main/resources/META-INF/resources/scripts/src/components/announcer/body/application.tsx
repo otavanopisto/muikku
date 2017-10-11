@@ -22,7 +22,7 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 
 interface AnnouncerApplicationProps {
-  navigation: React.ReactElement<any>,
+  aside: React.ReactElement<any>,
   i18n: i18nType
 }
 
@@ -40,18 +40,18 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
             <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
           </Link>
         ]}>
-          <Link className="button-pill button-pill--communicator-settings">
+          <Link className="button-pill button-pill--announcer-settings">
             <span className="icon icon-settings"></span>
           </Link>
         </Dropdown>
-        let primaryOption = <a className="button button--communicator-new-message">
+        let primaryOption = <a className="button button--announcer-new-message">
         {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
         let toolbar = <Toolbar/>
           
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
         return (<div className="container container--full">
-          <ApplicationPanel modifier="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={this.props.navigation}>
+          <ApplicationPanel modifier="announcer" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} aside={this.props.aside}>
       
           </ApplicationPanel>
         </div>);

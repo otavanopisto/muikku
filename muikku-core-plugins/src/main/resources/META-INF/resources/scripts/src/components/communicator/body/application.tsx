@@ -18,7 +18,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
 
 interface CommunicatorApplicationProps {
-  navigation: React.ReactElement<any>,
+  aside: React.ReactElement<any>,
   i18n: i18nType
 }
 
@@ -66,7 +66,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
       
     //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
     return (<div className="container container--full">
-      <ApplicationPanel modifier="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} navigation={this.props.navigation}>
+      <ApplicationPanel modifier="communicator" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} aside={this.props.aside}>
         <CommunicatorMessages/>
         <MessageView/>
       </ApplicationPanel>

@@ -9,7 +9,7 @@ interface ApplicationPanelProps {
   icon: React.ReactElement<any> | string,
   primaryOption: React.ReactElement<any>,
   toolbar: React.ReactElement<any>,
-  navigation: React.ReactElement<any>,
+  aside: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>
 }
 
@@ -34,7 +34,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
             <div className="application-panel__main-container">{this.props.toolbar}</div>
           </div>
           <div className="application-panel__content">
-            <div className="application-panel__helper-container">{this.props.navigation}</div>
+            <div className="application-panel__helper-container">{this.props.aside}</div>
             <div className="application-panel__main-container loader-empty">{this.props.children}</div>
           </div>
         </div>
