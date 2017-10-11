@@ -30,28 +30,8 @@ interface AnnouncerApplicationState {
 
 }
 
-{/*      <div className="application-panel application-panel--announcer">
-  <div className="application-panel__container">                
-    <div className="application-panel__header">
-      <div className="application-panel__helper-container"></div>
-      <div className="application-panel__main-container"></div>
-    </div>          
-    <div className="application-panel__body">
-      <div className="application-panel__actions">
-        <div className="application-panel__helper-container"></div>
-        <div className="application-panel__main-container"></div>
-      </div>
-      <div className="application-panel__content">
-        <div className="application-panel__helper-container"></div>
-        <div className="application-panel__main-container"></div>
-      </div>
-    </div>
-  </div>
-</div>
-*/ }
 
-
-export default class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
+class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
 
   render(){
         let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
@@ -78,3 +58,17 @@ export default class AnnouncerApplication extends React.Component<AnnouncerAppli
   }
 }
 
+function mapStateToProps(state: any){
+  return {
+    i18n: state.i18n
+  }
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
+  return {};
+};
+
+export default (connect as any)(
+  mapStateToProps,
+  mapDispatchToProps
+)(AnnouncerApplication);
