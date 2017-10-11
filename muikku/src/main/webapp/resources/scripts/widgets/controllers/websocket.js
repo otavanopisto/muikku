@@ -1,6 +1,3 @@
-module([], function() {
-  'use strict';
-  
   $.widget("custom.muikkuWebSocket", {
     
     options: {
@@ -260,5 +257,5 @@ module([], function() {
       }
     }
   });
-  
-});
+
+  $(document).muikkuWebSocket();
