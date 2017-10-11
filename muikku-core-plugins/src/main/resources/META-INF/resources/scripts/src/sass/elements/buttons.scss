@@ -2,6 +2,10 @@
 @import "../base/breakpoints";
 @import "../base/mixins";
 
+
+// TODO: communicator color variables removing from main function styles
+
+
 $button-font-family: "Exo 2", Arial, sans-serif;
 $button-default-height: 27px;
 $button-default-font-size: 15px;
@@ -299,7 +303,7 @@ $button-default-font-size: 15px;
  
    //TILL HERE
  
-  &.button--communicator-new-message {
+  &.button--new-message {
     width:100%;
     height: 34px;
     @include breakpoint-down($breakpoint-landscape-pad){
@@ -316,7 +320,7 @@ $button-default-font-size: 15px;
       background-color: darken($color-communicator-button-new-message-background, 20%);
     }
   }
-  &.button--communicator-remove-label {
+  &.button--remove-label {
   	float: left;
   	margin-top: 48px;
   	margin-bottom: 24px;
@@ -419,7 +423,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
  
-  &.button-pill--communicator-settings {
+  &.button-pill--settings {
     background-color: $color-communicator-button-pill-settings-background;
     color: $color-communicator-button-pill-settings-text;
     vertical-align: top;
@@ -438,7 +442,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
 
-  &.button-pill--communicator-delete {
+  &.button-pill--delete {
     background-color: $color-communicator-button-pill-delete-background;
     color: $color-communicator-button-pill-delete-text;
     vertical-align: top;
@@ -465,7 +469,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-label {
+  &.button-pill--label {
     background-color: $color-communicator-button-pill-label-background;
     color: $color-communicator-button-pill-label-text;
     vertical-align: top;
@@ -492,7 +496,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-toggle-read {
+  &.button-pill--toggle-read {
     background-color: $color-communicator-button-pill-toggle-read-background;
     color: $color-communicator-button-pill-toggle-read-text;
     vertical-align: top;
@@ -519,7 +523,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-go-back {
+  &.button-pill--go-back {
     background-color: $color-communicator-button-pill-go-back-background;
     color: $color-communicator-button-pill-go-back-text;
     margin-right: 15px;
@@ -540,7 +544,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-prev-page {
+  &.button-pill--prev-page {
     background-color: $color-communicator-button-pill-prev-page-background;
     color: $color-communicator-button-pill-prev-page-text;
     margin-left: 5px;
@@ -566,7 +570,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-next-page {
+  &.button-pill--next-page {
     background-color: $color-communicator-button-pill-next-page-background;
     color: $color-communicator-button-pill-next-page-text;
     margin-left: 5px;
@@ -592,7 +596,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-new-message {
+  &.button-pill--new-message {
     background-color: $color-communicator-button-pill-new-message-background;
     color: $color-communicator-button-pill-new-message-text;
     &:hover, &.hover {
@@ -607,7 +611,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-toolbar-edit-label {
+  &.button-pill--toolbar-edit-label {
   	position: absoltute;
   	top: 0;
   	right: 0;
@@ -625,7 +629,7 @@ $button-pill-floating-font-size: 25px;
     }
   }
   
-  &.button-pill--communicator-navigation-edit-label {
+  &.button-pill--navigation-edit-label {
   	height: 32px;
   	width: 32px;
   	background-color: $color-communicator-button-pill-navigation-edit-label-background;

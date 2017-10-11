@@ -90,50 +90,50 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       return ( 
         <div className="application-panel__communicator-actions">
           <div className="application-panel__communicator-actions__main">          
-            <Link className="button-pill button-pill--communicator-go-back" onClick={this.onGoBackClick}>
+            <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
             </Link>      
-            <div className="text text--communicator-current-folder">
+            <div className="text text--current-folder">
               <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               {"  " + currentLocation.text(this.props.i18n)}
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-                <Link className="button-pill button-pill--communicator-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+                <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
               </LabelUpdateDialog> : null} {" / " + this.props.communicatorMessages.current.messages[0].caption}
             </div>                
-            <Link className="button-pill button-pill--communicator-delete" onClick={this.props.deleteCurrentMessage}>
+            <Link className="button-pill button-pill--delete" onClick={this.props.deleteCurrentMessage}>
               <span className="icon icon-delete"></span>
             </Link>          
             <Dropdown modifier="communicator-labels" items={
               [
                 <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                   type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-                <Link className="link link--full link--communicator-new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+                <Link className="link link--full link--new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
                   {this.props.i18n.text.get("plugin.communicator.label.create")}
                 </Link>
               ].concat(this.props.communicatorNavigation.filter((item)=>{
                 return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
               }).map((label)=>{
                 let isSelected = this.props.communicatorMessages.current.labels.find(l=>l.labelId === label.id);
-                return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
+                return (<Link className={`link link--full link--label ${isSelected ? "selected" : ""}`}
                   onClick={!isSelected ? this.props.addLabelToCurrentMessage.bind(null, label) : this.props.removeLabelFromCurrentMessage.bind(null, label)}>
                   <span className="icon icon-tag" style={{color: label.color}}></span>
                   <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
                 </Link>);
               }))
             }>
-              <Link className="button-pill button-pill--communicator-label">
+              <Link className="button-pill button-pill--label">
                 <span className="icon icon-tag"></span>
               </Link>
             </Dropdown>
           </div>
           <div className="application-panel__communicator-actions__aside">
-            <Link className="button-pill button-pill--communicator-prev-page"
+            <Link className="button-pill button-pill--prev-page"
               disabled={this.props.communicatorMessages.current.olderThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>
               <span className="icon icon-arrow-left"></span>
             </Link>        
             
-            <Link className="button-pill button-pill--communicator-next-page"
+            <Link className="button-pill button-pill--next-page"
               disabled={this.props.communicatorMessages.current.newerThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.newerThreadId)}>
               <span className="icon icon-arrow-right"></span>
@@ -157,11 +157,11 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         {"  " + currentLocation.text(this.props.i18n)}
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-          <Link className="button-pill button-pill--communicator-toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+          <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
          </LabelUpdateDialog> : null}
       </div>
       
-      <Link className="button-pill button-pill--communicator-delete"
+      <Link className="button-pill button-pill--delete"
        disabled={this.props.communicatorMessages.selected.length == 0} onClick={this.props.deleteSelectedMessages}>
         <span className="icon icon-delete"></span>
       </Link>
@@ -185,12 +185,12 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           </Link>);
         }))
       }>
-        <Link className="button-pill button-pill--communicator-label">
+        <Link className="button-pill button-pill--label">
           <span className="icon icon-tag"></span>
         </Link>
       </Dropdown>
       
-      <Link className="button-pill button-pill--communicator-toggle-read"
+      <Link className="button-pill button-pill--toggle-read"
         disabled={this.props.communicatorMessages.selected.length !== 1}
         onClick={this.props.communicatorMessages.toolbarLock ? null : this.props.toggleMessagesReadStatus.bind(null, this.props.communicatorMessages.selected[0])}>
         <span className={`icon icon-message-${this.props.communicatorMessages.selected.length === 1 && !this.props.communicatorMessages.selected[0].unreadMessagesInThread ? "un" : ""}read`}></span>

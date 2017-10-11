@@ -1,6 +1,6 @@
 import MainFunctionNavbar from '~/components/base/main-function/navbar';
 import Application from './body/application';
-import Navigation from './body/aside';
+import Aside from './body/aside';
 
 import * as React from 'react';
 
@@ -16,9 +16,9 @@ interface CommunicatorBodyState {
 
 export default class CommunicatorBody extends React.Component<CommunicatorBodyProps,CommunicatorBodyState> {
   render(){
-    let navigation = <Navigation/>
+    let aside = <Aside />
     return (<div className="container container--full">
-      <MainFunctionNavbar activeTrail="communicator" navigation={navigation}/>
+      <MainFunctionNavbar activeTrail="communicator" />
       <Application aside={aside}/>
         
     </div>);
