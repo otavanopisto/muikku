@@ -34,7 +34,7 @@ interface AnnouncerApplicationState {
 class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
 
   render(){
-        let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
+        let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
         let icon = <Dropdown modifier="communicator-settings" items={[
           closeDropdown=><Link className="link link--full" >
             <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
@@ -45,7 +45,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
           </Link>
         </Dropdown>
         let primaryOption = <a className="button button--communicator-new-message">
-        {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
+        {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
         let toolbar = <Toolbar/>
           

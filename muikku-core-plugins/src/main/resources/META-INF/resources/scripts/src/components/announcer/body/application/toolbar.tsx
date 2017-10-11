@@ -24,10 +24,10 @@ export default class AnnouncerToolbar extends React.Component<AnnouncerToolbarPr
 
   render(){
       return ( 
-        <div className="application-panel__communicator-actions">
-          <div className="application-panel__communicator-actions__main">          
-            <Link className="button-pill button-pill--communicator-go-back">
-              <span className="icon icon-goback"></span>
+        <div className="application-panel__announcer-actions">
+          <div className="application-panel__announcer-actions__main">          
+            <Link className="button-pill button-pill--announcer-delete-back--disabled">
+              <span className="icon icon-delete"></span>
             </Link>
           </div>
         </div>
