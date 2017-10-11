@@ -187,7 +187,18 @@
     text-decoration: underline;
   }
   
-  
+}
+
+// HIGHLIGTH TEXT
+.material-text-highlight {
+  padding: 15px 20px;
+  color: #000;
+  background: #f8f8f8;
+  font-size: 20px;
+  border-left: 3px solid #12cbcb;
+  border-radius: 0;
+  line-height: 35px;
+  display: inline-block;
 }
 
 // CITATION TEXT
@@ -197,50 +208,6 @@
   font-size: 20px;
   font-style: italic;
   line-height: 40px;
-  display: inline-block;
-  quotes: "\201C""\201D";
-  
-  &::before {
-    color: #ccc;
-    content: open-quote;
-    display: inline-block;
-    font-family: arial;
-    font-size: 70px;
-    font-style: normal;
-    left: 0;
-    line-height: 1px;
-    margin-right: 25px;
-    vertical-align: -25px;
-    width: 0;
-  }
-  
-  &::after {
-    color: #ccc;
-    content: close-quote;
-    display: inline-block;
-    font-family: arial;
-    font-size: 70px;
-    font-style: normal;
-    left: 3px;
-    line-height: 1px;
-    margin-left: 5px;
-    position: relative;
-    vertical-align: -25px;
-    width: 1px;
-  }
-  
-}
-
-// HIGHLIGTH CITATION TEXT
-.material-citation-highlight {
-  padding: 20px 35px;
-  color: #000;
-  background: #f8f8f8;
-  font-size: 20px;
-  border-left: 3px solid #a30606;
-  border-radius: 0;
-  line-height: 40px;
-  font-style: italic;
   display: inline-block;
   quotes: "\201C""\201D";
   
