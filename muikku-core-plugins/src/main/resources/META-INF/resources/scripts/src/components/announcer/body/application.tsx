@@ -10,8 +10,6 @@ import Toolbar from './application/toolbar';
 
 
 import {i18nType} from '~/reducers/base/i18n';
-
-
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
@@ -27,9 +25,7 @@ interface AnnouncerApplicationProps {
 }
 
 interface AnnouncerApplicationState {
-
 }
-
 
 class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
 
@@ -40,11 +36,11 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
             <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
           </Link>
         ]}>
-          <Link className="button-pill button-pill--announcer-settings">
+          <Link className="button-pill button-pill--settings">
             <span className="icon icon-settings"></span>
           </Link>
         </Dropdown>
-        let primaryOption = <a className="button button--announcer-new-message">
+        let primaryOption = <a className="button button--new-message">
         {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
         let toolbar = <Toolbar/>

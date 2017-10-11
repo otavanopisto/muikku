@@ -55,11 +55,11 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
       </Link>
     ]}>
-      <Link className="button-pill button-pill--communicator-settings">
+      <Link className="button-pill button-pill--settings">
         <span className="icon icon-settings"></span>
       </Link>
     </Dropdown>
-    let primaryOption = <NewMessage><a className="button button--communicator-new-message">
+    let primaryOption = <NewMessage><a className="button button--new-message">
     {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
     </a></NewMessage>
     let toolbar = <Toolbar/>
