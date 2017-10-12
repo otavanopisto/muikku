@@ -42,6 +42,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitForVisible(".additionalinfo-data div input");
         assertChecked(".additionalinfo-data div input[value=\"ANYONE\"]", true);
@@ -79,6 +81,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"ANYONE\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
@@ -124,6 +128,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitForVisible(".additionalinfo-data div input");
         assertChecked(".additionalinfo-data div input[value=\"ANYONE\"]", true);
@@ -163,6 +169,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitForVisible(".additionalinfo-data div input");
         assertChecked(".additionalinfo-data div input[value=\"LOGGED_IN\"]", true);
@@ -200,6 +208,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"LOGGED_IN\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
@@ -245,6 +255,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitForVisible(".additionalinfo-data div input");
         assertChecked(".additionalinfo-data div input[value=\"LOGGED_IN\"]", true);
@@ -282,6 +294,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
@@ -322,6 +336,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         scrollIntoView(".workspace-management-footer .workspace-management-footer-actions-container button.save");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
@@ -366,6 +382,8 @@ public class CourseAccessTestsBase extends AbstractUITest {
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
         waitAndClick(".additionalinfo-data div input[value=\"MEMBERS_ONLY\"]");
         waitAndClick(".workspace-management-footer .workspace-management-footer-actions-container button.save");
+        waitForVisible(".loading");
+        waitForNotVisible(".loading");
         waitForVisible(".loading");
         waitForNotVisible(".loading");
         navigate(String.format("/workspace/%s/workspace-management", workspace.getUrlName()), true);
