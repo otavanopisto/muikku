@@ -22,12 +22,24 @@ interface AnnouncerAsideState {
 
 class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAsideState> {
   render(){
-    return <div className="item-list item-list--announcer-navigation">       
-        <span className="icon icon-folder"></span>
-        <span className="item-list__text-body text">
-          Folder 1
-        </span>
-    </div>
+    return (    
+
+      <div className="item-list item-list--announcer-navigation">       
+        <a className="item-list__item active">
+          <span className="icon icon-folder"></span>
+          <span className="item-list__text-body text">
+            Folder 1
+          </span>
+        </a>
+        <a className="item-list__item">
+          <span className="icon icon-folder"></span>
+          <span className="item-list__text-body text">
+            Folder 2
+          </span> 
+        </a>
+      </div>
+ 
+    )
   }
 }
 
