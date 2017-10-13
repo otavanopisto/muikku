@@ -6,11 +6,10 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 
 
-import '~/sass/elements/link.scss';
-import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/item-list.scss';
+
+
 
 interface AnnouncerAsideProps {
   i18n: i18nType
@@ -20,19 +19,20 @@ interface AnnouncerAsideState {
 
 }
 
+
 class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAsideState> {
   render(){
     return (    
 
-      <div className="item-list item-list--announcer-navigation">       
+      <div className="item-list item-list--aside-navigation">       
         <a className="item-list__item active">
-          <span className="icon icon-folder"></span>
+          <span className="icon icon-new-section"></span>
           <span className="item-list__text-body text">
             Folder 1
           </span>
         </a>
         <a className="item-list__item">
-          <span className="icon icon-folder"></span>
+          <span className="icon icon-new-section"></span>
           <span className="item-list__text-body text">
             Folder 2
           </span> 
