@@ -21,7 +21,7 @@ interface NavigationState {
 
 class Navigation extends React.Component<NavigationProps, NavigationState> {
   render(){
-    return <div className="item-list item-list--communicator-navigation">
+    return <div className="item-list item-list--aside-navigation">
       {this.props.communicatorNavigation.map((item: CommunicatorNavigationItemType)=>{
         let style: any = {};
         if (item.color){

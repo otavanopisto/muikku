@@ -2,6 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 
 import ApplicationPanel from '~/components/general/application-panel';
+import Announcements from './application/announcements';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
@@ -28,7 +29,6 @@ interface AnnouncerApplicationState {
 }
 
 class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
-
   render(){
         let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
         let icon = <Dropdown modifier="communicator-settings" items={[
@@ -44,11 +44,11 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
         {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
         let toolbar = <Toolbar/>
-          
+ 
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
         return (<div className="container container--full">
           <ApplicationPanel modifier="announcer" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} aside={this.props.aside}>
-      
+            <Announcements />
           </ApplicationPanel>
         </div>);
   }

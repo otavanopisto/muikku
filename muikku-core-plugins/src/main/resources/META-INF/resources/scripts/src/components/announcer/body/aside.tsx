@@ -6,32 +6,58 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 
 
-import '~/sass/elements/link.scss';
-import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/item-list.scss';
 
-interface AnnouncerToolbarProps {
+
+
+interface AnnouncerAsideProps {
+  i18n: i18nType
 }
 
-interface AnnouncerToolbarState {
+interface AnnouncerAsideState {
 
 }
 
-export default class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerToolbarState> {
 
-
+class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAsideState> {
   render(){
-      return ( 
-        <div className="application-panel__announcer-actions">
-          <div className="application-panel__announcer-actions__main">          
-            <Link className="button-pill button-pill--announcer-delete-back--disabled">
-              <span className="icon icon-delete"></span>
-            </Link>
-          </div>
-        </div>
-      )
-    }
-  
+    return (    
+
+      <div className="item-list item-list--aside-navigation">       
+        <a className="item-list__item active">
+          <span className="icon icon-new-section"></span>
+          <span className="item-list__text-body text">
+            Folder 1
+          </span>
+        </a>
+        <a className="item-list__item">
+          <span className="icon icon-new-section"></span>
+          <span className="item-list__text-body text">
+            Folder 2
+          </span> 
+        </a>
+      </div>
+ 
+    )
   }
+}
+
+
+
+function mapStateToProps(state: any){
+  return {
+    i18n: state.i18n,
+    announcerNavigation: state.AnnouncerAside
+  }
+};
+
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return {};
+};
+
+
+export default (connect as any)(
+  mapStateToProps,
+  mapDispatchToProps
+)(AnnouncerAside);
