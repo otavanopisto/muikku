@@ -20,7 +20,6 @@ export default class CommunicatorBody extends React.Component<CommunicatorBodyPr
     return (<div className="container container--full">
       <MainFunctionNavbar activeTrail="communicator" />
       <Application aside={aside}/>
-        
     </div>);
   }
 }
