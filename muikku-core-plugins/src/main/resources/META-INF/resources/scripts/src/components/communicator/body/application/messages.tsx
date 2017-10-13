@@ -97,8 +97,9 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
   }
   checkCanLoadMore(){
     if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
-      let list:HTMLElement = this.refs["list"] as HTMLElement;
-      let scrollBottomRemaining = list.scrollHeight - (list.scrollTop + list.offsetHeight)
+      let scrollBottomRemaining = (document.body.scrollHeight || document.documentElement.scrollHeight) -
+        ((document.body.scrollTop || document.documentElement.scrollTop) +
+         (document.body.offsetHeight || document.documentElement.offsetHeight))
       if (scrollBottomRemaining <= 100){
         this.props.loadMoreMessages();
       }
@@ -178,17 +179,23 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
       });
     }
   }
+  componentDidMount(){
+    window.addEventListener("scroll", this.onScroll);
+  }
+  componentWillUnmount(){
+    window.removeEventListener("scroll", this.onScroll);
+  }
   componentDidUpdate(){
     if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
-      let list:HTMLElement = this.refs["list"] as HTMLElement;
-      let doesNotHaveScrollBar = list.scrollHeight === list.offsetHeight;
+      let doesNotHaveScrollBar = (document.body.scrollHeight || document.documentElement.scrollHeight) === 
+        (document.body.offsetHeight || document.documentElement.offsetHeight);
       if (doesNotHaveScrollBar){
         this.props.loadMoreMessages();
       }
     }
     this.checkCanLoadMore();
   }
-  onScroll(e: React.UIEvent<any>){
+  onScroll(e: Event){
     this.checkCanLoadMore();
   }
   render(){
@@ -202,8 +209,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className={`application-list application-list--communicator-messages ${this.state.touchMode ? "application-list--select-mode" : ""}`}
-     ref="list" onScroll={this.onScroll}>{
+    return <div className={`application-list application-list--communicator-messages ${this.state.touchMode ? "application-list--select-mode" : ""}`}>{
       this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
         return (

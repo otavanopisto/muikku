@@ -71,7 +71,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <MessageView/>
       </ApplicationPanel>
       <SignatureUpdateDialog isOpen={this.state.updateSignatureDialogOpened} onClose={this.closeDialogSignature}/>
-      <NewMessage><HoverButton icon="edit" modifier="communicator-new-message"/></NewMessage>
+      <NewMessage><HoverButton icon="edit" modifier="new-message"/></NewMessage>
     </div>);
   }
 }

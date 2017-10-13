@@ -16,6 +16,10 @@ html, body, #app, #root {
 }
 
 body {
+  overflow-y: auto;
+}
+
+body {
   background-color: $color-default-body;
 }
 
