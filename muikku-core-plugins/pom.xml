@@ -16,6 +16,7 @@
 
 	<properties>
 		<google-diff-match-patch.version>1.1.11</google-diff-match-patch.version>
+		<frontend.environment>production</frontend.environment>
 	</properties>
 
 	<dependencies>
@@ -232,6 +233,15 @@
 			<artifactId>rome</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<profiles>
+	  <profile>
+	    <id>development</id>
+	    <properties>
+	      <frontend.environment></frontend.environment>
+	    </properties>
+	  </profile>
+	</profiles>
 
 	<build>
 		<pluginManagement>
@@ -319,7 +329,7 @@
                 <configuration>
                     <workingDirectory>src/main/resources/META-INF/resources/scripts/src/</workingDirectory>
                     <environmentVariables>
-                        <NODE_ENV>${NODE_ENV}</NODE_ENV>
+                        <NODE_ENV>${frontend.environment}</NODE_ENV>
                     </environmentVariables>   
                 </configuration>
                 
