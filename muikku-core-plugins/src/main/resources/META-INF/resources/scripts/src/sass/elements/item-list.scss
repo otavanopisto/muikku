@@ -22,11 +22,8 @@ $item-list-item-min-height: 32px;
       }
     }
     
-    
-    
-    &:hover, &.hover {
-      background-color: $color-item-list-item-background-hover;
-    }
+   &:hover, &.hover {
+   }
     
     
     &.item-list__item--bordered {
@@ -58,6 +55,7 @@ $item-list-item-min-height: 32px;
       white-space: auto;
     }
   }
+  
   
   &.item-list--panel-workspaces {
     .icon {
