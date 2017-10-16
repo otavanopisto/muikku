@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 
+
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
 import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
@@ -19,7 +20,7 @@ function getMessageUserNames(message:CommunicatorMessageType, userId: number):st
   if (message.senderId !== userId || !message.recipients){
     if (message.senderId === userId){
       //TODO Ukkonen translate this
-      return "me";
+      return this.props.i18n.text.get("plugin.communicator.sender.self");
     }
     return (message.sender.firstName ? message.sender.firstName + " " : "")+(message.sender.lastName ? message.sender.lastName : "");
   }
@@ -27,7 +28,7 @@ function getMessageUserNames(message:CommunicatorMessageType, userId: number):st
   return message.recipients.map((recipient: CommunicatorMessageRecepientType)=>{
     if (recipient.userId === userId){
       //TODO Ukkonen translate this
-      return "me";
+      return this.props.i18n.text.get("plugin.communicator.sender.self");
     }
     return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
   }).join(", ");

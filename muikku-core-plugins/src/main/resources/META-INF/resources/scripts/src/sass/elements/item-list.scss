@@ -11,18 +11,27 @@ $item-list-item-min-height: 32px;
     cursor: pointer;
     display: flex;
     
+    
+    
     &:active, &.active {
       background-color: $color-item-list-item-background-active;
+      color: $color-item-list-item-font-color-active;
+    
+      .text {
+        color: $color-item-list-item-font-color-active;            
+      }
     }
+    
+    
     
     &:hover, &.hover {
       background-color: $color-item-list-item-background-hover;
     }
     
+    
     &.item-list__item--bordered {
       border-left: solid 4px; 
     }
-    
     .icon {
       flex: 0 0 auto;
       display: block;
