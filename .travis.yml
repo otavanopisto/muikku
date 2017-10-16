@@ -3,7 +3,6 @@ dist: trusty
 language: java
 branches:
   only:
-    - FTR-3517-test-changes
     - master
     - devel
 jdk:
