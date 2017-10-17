@@ -113,7 +113,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       return <Link href={item.href} className={`link link--full link--menu ${this.props.activeTrail === item.trail ? 'active' : ''}`}>
         <span className={`icon icon-${item.icon}`}/>
         {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
-        {this.props.i18n.text.get(item.text)}
+        <span className="link--menu__text">{this.props.i18n.text.get(item.text)}</span>
       </Link>
     })}/>
   }

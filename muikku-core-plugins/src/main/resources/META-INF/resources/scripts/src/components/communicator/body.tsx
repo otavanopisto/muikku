@@ -18,7 +18,7 @@ export default class CommunicatorBody extends React.Component<CommunicatorBodyPr
   render(){
     let aside = <Aside />
     return (<div className="container container--full">
-      <MainFunctionNavbar activeTrail="communicator" />
+      <MainFunctionNavbar activeTrail="communicator" navigation={aside}/>
       <Application aside={aside}/>
     </div>);
   }

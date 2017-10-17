@@ -6,10 +6,10 @@ import '~/sass/elements/loaders.scss';
 interface ApplicationPanelProps {
   modifier: string,
   title: React.ReactElement<any> | string,
-  icon: React.ReactElement<any> | string,
+  icon?: React.ReactElement<any> | string,
   primaryOption: React.ReactElement<any>,
   toolbar: React.ReactElement<any>,
-  aside: React.ReactElement<any>,
+  aside?: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>
 }
 
@@ -40,6 +40,9 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     window.removeEventListener("scroll", this.onScroll);
   }
   setRemainingHeight(){
+    if (!this.props.aside){
+      return;
+    }
     let top = (document.documentElement.scrollTop || document.body.scrollTop);
     let height = (document.documentElement.offsetHeight || document.body.offsetHeight);
     let diff = this.offsetTop - top;

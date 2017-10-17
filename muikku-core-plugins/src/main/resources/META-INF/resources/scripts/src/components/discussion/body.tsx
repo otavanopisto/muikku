@@ -1,6 +1,6 @@
 import MainFunctionNavbar from '~/components/base/main-function/navbar';
-
 import * as React from 'react';
+import Application from './body/application';
 
 interface DiscussionBodyProps {
   
@@ -14,6 +14,7 @@ export default class AnnouncerBody extends React.Component<DiscussionBodyProps,D
   render(){
     return (<div className="container container--full">
       <MainFunctionNavbar activeTrail="discussion"/>
+      <Application/>
     </div>);
   }
 }

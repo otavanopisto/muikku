@@ -15,6 +15,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    &.container--profile-image--in-menu {
+      flex: 0;
+      margin-right: 5px;
+    }
   }
   &.container--muikku-logo {
     align-items: center;
