@@ -1,14 +1,10 @@
 package fi.otavanopisto.muikku.ui.base.course.management;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.putRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 
 import java.time.OffsetDateTime;
@@ -168,25 +164,12 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-
-        Course course = new Course(courseId, "testcourse", null, null, "<p>test course for testing</p>\n", false, 1, 
-          (long) 25, null, null, "For Test", (double) 15, (double) 45, (double) 45,
-          (double) 15, (double) 45, (double) 45, null, (long) 1,
-          (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
-          null, null);
-      
-        String courseJson = objectMapper.writeValueAsString(course);
-        
-        verify(putRequestedFor(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
-            .withHeader("Content-Type", equalTo("application/json"))
-            .withRequestBody(equalToJson(objectMapper.writeValueAsString(course), true, true )));
-        
-        course = new Course(courseId, "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
+        Course course = new Course(courseId, "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "For Test", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
             null, null);
-        
+        String courseJson = objectMapper.writeValueAsString(course);        
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
@@ -245,25 +228,13 @@ public class CourseManagementTestsBase extends AbstractUITest {
         OffsetDateTime created = OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
         OffsetDateTime end = OffsetDateTime.of(2050, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
-
-        Course course = new Course(courseId, "testcourse", null, null, "<p>test course for testing</p>\n", false, 1, 
-          (long) 25, null, null, "test extension", (double) 15, (double) 45, (double) 45,
-          (double) 15, (double) 45, (double) 45, null, (long) 1,
-          (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
-          null, null);
-      
-        String courseJson = objectMapper.writeValueAsString(course);
-        
-        verify(putRequestedFor(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
-            .withHeader("Content-Type", equalTo("application/json"))
-            .withRequestBody(equalToJson(objectMapper.writeValueAsString(course), true, true )));
-        
-        course = new Course(courseId, "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
+ 
+        Course course = new Course(courseId, "testcourse", created, created, "<p>test course for testing</p>\n", false, 1, 
             (long) 25, begin, end, "test extension", (double) 15, (double) 45, (double) 45,
             (double) 15, (double) 45, (double) 45, end, (long) 1,
             (long) 1, (long) 1, null, (double) 45, (long) 1, (long) 1, (long) 1, (long) 2, 
             null, null);
-        
+        String courseJson = objectMapper.writeValueAsString(course);
         stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", courseId)))
             .willReturn(aResponse()
               .withHeader("Content-Type", "application/json")
