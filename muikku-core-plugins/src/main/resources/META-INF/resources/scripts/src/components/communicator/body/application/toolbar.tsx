@@ -92,7 +92,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           <div className="application-panel__communicator-actions__main">          
             <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
-            </Link>      
+            </Link>
             <div className="text text--current-folder">
               <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               {"  " + currentLocation.text(this.props.i18n)}
@@ -152,7 +152,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       onlyInSome = difference(...partialIds);
     }
     
-    return <div className="application-panel__communicator-navigation">
+    return <div className="application-panel__toolbar">
       <div className="text text--communicator-current-folder">
         <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         {"  " + currentLocation.text(this.props.i18n)}

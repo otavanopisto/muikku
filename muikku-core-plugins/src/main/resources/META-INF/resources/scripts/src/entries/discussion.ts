@@ -6,6 +6,7 @@ import {Action} from 'redux';
 
 import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
+import {updateDiscussionAreas} from '~/actions/main-function/discussion/areas';
 
 let store = runApp(reducer, App);
 let websocket = new Websocket(store, {
@@ -21,3 +22,4 @@ let websocket = new Websocket(store, {
 });
 store.dispatch(<Action>actions.messageCount.updateMessageCount());
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.forum.pageTitle')));
+store.dispatch(<Action>updateDiscussionAreas())

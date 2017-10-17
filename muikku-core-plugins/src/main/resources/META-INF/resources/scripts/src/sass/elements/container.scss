@@ -83,4 +83,15 @@
   	background-color: white;
   	padding: 10px;
   }
+  &.container--new-message-toolbar-container {
+  	width: 250px;
+  	height: 100%;
+  	display: inline-block;
+  	vertical-align: top;
+  	margin-right: 10px;
+  	
+  	@include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
+  }
 }

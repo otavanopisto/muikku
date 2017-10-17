@@ -122,6 +122,18 @@ div.form-field-tag-input {
     margin-bottom: 24px;
     text-align: center;
   }
+  &.form-field--toolbar-selector {
+  	display: inline-block;
+  	height: 100%;
+  	width: 100%;
+  	max-width: 250px;
+  	vertical-align: top;
+  	margin-right: 10px;
+  	
+  	@include breakpoint-down($breakpoint-medium-mobile){
+      max-width: 150px;
+    }
+  }
 }
 
 .form-field-tag-input.form-field-tag-input--new-message {

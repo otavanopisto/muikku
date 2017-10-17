@@ -175,11 +175,11 @@ $application-panel-internal-navigation-padding: 10px;
     }
   }
  
+  .application-panel__toolbar {
+    width: 100%;
+  }
+ 
   &.application-panel--communicator {
-  
-    .application-panel__communicator-navigation {
-  	  width: 100%;
-    }
   
     .application-panel__communicator-actions {
       user-select: none;
