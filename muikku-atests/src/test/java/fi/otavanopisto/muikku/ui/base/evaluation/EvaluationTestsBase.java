@@ -101,7 +101,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".assignment-submitted");
           waitAndClick(".cke_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+          addTextToCKEditor("Test evaluation.");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           click(".save-evaluation-button");
