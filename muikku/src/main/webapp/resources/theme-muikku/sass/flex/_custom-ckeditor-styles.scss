@@ -191,24 +191,24 @@
 
 // HIGHLIGTH TEXT
 .material-text-highlight {
-  padding: 15px 20px;
-  color: #000;
   background: #f8f8f8;
-  font-size: 20px;
   border-left: 3px solid #12cbcb;
   border-radius: 0;
-  line-height: 35px;
+  color: #000;
   display: inline-block;
+  font-size: 20px;
+  line-height: 35px;
+  padding: 15px 20px; 
 }
 
 // CITATION TEXT
 .material-citation-basic {
-  padding: 10px 35px;
   color: #000;
+  display: inline-block;
   font-size: 20px;
   font-style: italic;
   line-height: 40px;
-  display: inline-block;
+  padding: 10px 35px;
   quotes: "\201C""\201D";
   
   &::before {
