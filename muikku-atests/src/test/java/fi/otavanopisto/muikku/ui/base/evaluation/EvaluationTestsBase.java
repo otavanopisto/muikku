@@ -100,7 +100,6 @@ public class EvaluationTestsBase extends AbstractUITest {
           navigate(String.format("/evaluation"), true);
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".assignment-submitted");
-          waitAndClick(".cke_contents");
           addTextToCKEditor("Test evaluation.");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
@@ -199,8 +198,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           navigate(String.format("/evaluation"), true);
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".assignment-submitted");
-          waitAndClick(".cke_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+          addTextToCKEditor("Test evaluation.");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           click(".save-evaluation-button");
@@ -216,8 +214,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresent(".cke_contents");
           assertEquals("Test evaluation.", getCKEditorContent());
           
-          waitAndClick(".cke_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test evaluation in re-evaluation.");
+          addTextToCKEditor("Test evaluation in re-evaluation.");
           selectOption("#grade", "2/PYRAMUS@1/PYRAMUS");
           selectOption("select[name='assessor']", assessorId.toString());
           click(".save-evaluation-button");
@@ -327,8 +324,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           navigate(String.format("/evaluation"), true);
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".evaluation-student-name");
-          waitAndClick(".cke_contents");
-          getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+          addTextToCKEditor("Test evaluation.");
           clearElement("#evaluationDate");
           sendKeys("#evaluationDate", "2.12.2015");
           selectOption("#grade", "1/PYRAMUS@1/PYRAMUS");
