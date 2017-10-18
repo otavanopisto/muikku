@@ -15,6 +15,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    
+    &.container--profile-image--in-menu {
+      flex: 0;
+      margin-right: 5px;
+    }
   }
   &.container--muikku-logo {
     align-items: center;
@@ -77,5 +82,16 @@
   	display: block;
   	background-color: white;
   	padding: 10px;
+  }
+  &.container--new-message-toolbar-container {
+  	width: 250px;
+  	height: 100%;
+  	display: inline-block;
+  	vertical-align: top;
+  	margin-right: 10px;
+  	
+  	@include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
+    }
   }
 }

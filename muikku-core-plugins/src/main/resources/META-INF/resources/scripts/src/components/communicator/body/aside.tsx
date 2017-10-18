@@ -34,7 +34,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             {item.text(this.props.i18n)}
           </span>
           {item.type === "label" ? <LabelUpdateDialog label={item}>
-            <Link disablePropagation as="span" className="button-pill button-pill--communicator-navigation-edit-label">
+            <Link disablePropagation as="span" className="button-pill button-pill--navigation-edit-label">
               <span className="icon icon-edit"/>
             </Link>
           </LabelUpdateDialog> : null}

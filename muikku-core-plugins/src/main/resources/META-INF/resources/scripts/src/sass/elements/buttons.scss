@@ -306,7 +306,9 @@ $button-default-font-size: 15px;
   &.button--primary-function {
     width:100%;
     height: 34px;
-    @include breakpoint-down($breakpoint-landscape-pad){
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      display: none;
     }
     
     color: $color-communicator-button-new-message-text;
@@ -320,6 +322,7 @@ $button-default-font-size: 15px;
       background-color: darken($color-communicator-button-new-message-background, 20%);
     }
   }
+  
   &.button--remove-label {
   	float: left;
   	margin-top: 48px;
@@ -468,6 +471,34 @@ $button-pill-floating-font-size: 25px;
       color: $color-button-pill-text-disabled;
     }
   }
+  
+  
+  &.button-pill--discussion-toolbar {
+    background-color: $color-button-pill-edit-background;
+    color: $color-button-pill-edit-text;
+    vertical-align: top;
+    
+    @include breakpoint-up($breakpoint-landscape-pad){
+      margin-right: 5px;
+    }
+    @include breakpoint-down($breakpoint-portrait-pad){
+      margin-left: 5px;
+      float: right;
+    }
+    
+    &:hover, &.hover {
+      background-color: darken($color-button-pill-edit-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-button-pill-edit-background, 20%);
+    }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
+  }  
   
   &.button-pill--label {
     background-color: $color-communicator-button-pill-label-background;

@@ -104,6 +104,8 @@ $main-function-link-icon-active-border-size: 5px;
   }
  
   &.link--menu {
+  	overflow: hidden;
+  	
   	.icon {
       background-color: $color-main-function-link-menu-icon-background;
       color: $color-main-function-link-menu-icon-color;
@@ -114,6 +116,11 @@ $main-function-link-icon-active-border-size: 5px;
       line-height: 35px;
       vertical-align: middle;
       text-align: center;
+    }
+   
+    .link--menu__text {
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
    
     &.link--menu--profile {

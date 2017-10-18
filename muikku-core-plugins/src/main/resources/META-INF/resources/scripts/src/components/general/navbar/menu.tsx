@@ -140,30 +140,30 @@ class Menu extends React.Component<MenuProps, MenuState> {
                     {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--profile" href="/profile">
-                        <object className="container container--profile-image"
+                        <object className="container container--profile-image container--profile-image--in-menu"
                           data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
                           type="image/jpeg">
                           <span className="icon icon-user"></span>
                         </object>
-                        {this.props.i18n.text.get('plugin.profile.profile')}
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profile.profile')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--instructions">
                         <span className="icon icon-forgotpassword"/>
-                        {this.props.i18n.text.get('plugin.footer.instructions')}
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.footer.instructions')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--helpdesk">
                         <span className="icon icon-helpdesk"></span>
-                        {this.props.i18n.text.get('plugin.home.helpdesk')}
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.home.helpdesk')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
                         <span className="icon icon-signout"></span>
-                        {this.props.i18n.text.get('plugin.logout.logout')}
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.logout.logout')}</span>
                       </Link>
                     </li> : null}
                   </ul>

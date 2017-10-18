@@ -64,7 +64,7 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
                       }).filter(item=>!!item)}
                     </ul>
                   </div>
-                  <div className="navbar__mobile-title">{this.props.mobileTitle}</div>
+                  {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
                   <div className="navbar__default-options">
                     <div className="navbar__default-options__container">
                       {this.props.defaultOptions}
