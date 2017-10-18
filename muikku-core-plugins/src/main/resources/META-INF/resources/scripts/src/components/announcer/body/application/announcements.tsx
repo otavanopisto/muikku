@@ -23,40 +23,77 @@ interface AnnouncementsState {
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
   render(){
     return ( 
-      <div className={`application-list application-list--announcements`}
+      <div className="application-list application-list__items"
        ref="list" >
-            <div key={1} className='application-list__item--announcement envinronment-announcement'>
-              <div className="application-list__item__header">
-              <input type="checkbox"/>
-              <div className="text text--communicator-usernames">
-                <span className="text text--communicator-username">Kayttaja Nimi</span>
-              </div>
-              <div className="text text--communicator-date">
-                {this.props.i18n.time.format()}
-              </div>                
+          <div key={1} className='application-list__item workspace-announcement'>
+            <div className="application-list__item__header">
+              <input type="checkbox"/>        
+              <div className="text text--announcer-header-main">
+                <span className="icon icon-clock"></span>
+                <span className="text text--announcer-times">
+                {this.props.i18n.time.format()} - {this.props.i18n.time.format()}
+                </span>
+              </div> 
+              <div className="text text--announcer-header-aside">
+                <span className="icon icon-books"></span>
+                <span className="text text--announcer-workspace">
+                  WOR-WORKSPACENAME (2009-workspacing across the universe)
+                </span>
+              </div>                  
             </div>
             <div className="application-list__item__body">
-              <span className="text text--communicator-body">Otsikko</span>
+              <div className="text text--communicator-body">
+                <article>
+                  <header className="">Otsikko 1</header>
+                  <p>Vivamus placerat lacus vel vehicula scelerisque, dui enim adipiscing lacus sit amet sagittis, libero enim vitae mi. In neque magna posuere, euismod ac tincidunt tempor est. Ut suscipit nisi eu purus. Proin ut pede mauris eget ipsum. Integer vel quam nunc commodo consequat. Integer ac eros eu tellus dignissim viverra. Maecenas erat aliquam erat volutpat. Ut venenatis ipsum quis turpis. Integer cursus scelerisque lorem. Sed nec mauris id quam blandit consequat. Cras nibh mi hendrerit vitae, dapibus et aliquam et magna. Nulla vitae elit. Mauris consectetuer odio vitae augue.</p>
+              </article>
+             </div>
             </div>
             <div className="application-list__item__footer">         
             </div>                      
           </div>      
-          <div key={1} className='application-list__item--announcement workspace-announcement'>
+          <div key={2} className='application-list__item environment-announcement'>
             <div className="application-list__item__header">
-              <input type="checkbox"/>
-              <div className="text text--communicator-usernames">
-                <span className="text text--communicator-username">Kayttaja Nimi</span>
+            <input type="checkbox"/>        
+            <div className="text text--announcer-header-main">
+              <span className="icon icon-clock"></span>
+              <span className="text text--announcer-times">
+              {this.props.i18n.time.format()} - {this.props.i18n.time.format()}
+              </span>
+            </div>                 
+          </div>              
+          <div className="application-list__item__body">
+            <div className="text text--communicator-body">
+              <article>
+                <header>Otsikko 1</header>
+                <p>Vivamus placerat lacus vel vehicula scelerisque, dui enim adipiscing lacus sit amet sagittis, libero enim vitae mi. In neque magna posuere, euismod ac tincidunt tempor est. Ut suscipit nisi eu purus. Proin ut pede mauris eget ipsum. Integer vel quam nunc commodo consequat. Integer ac eros eu tellus dignissim viverra. Maecenas erat aliquam erat volutpat. Ut venenatis ipsum quis turpis. Integer cursus scelerisque lorem. Sed nec mauris id quam blandit consequat. Cras nibh mi hendrerit vitae, dapibus et aliquam et magna. Nulla vitae elit. Mauris consectetuer odio vitae augue.</p>
+            </article>
+           </div>
+          </div>
+          <div className="application-list__item__footer">         
+          </div>                       
+          </div>
+          <div key={3} className='application-list__item environment-announcement'>
+                <div className="application-list__item__header">
+                <input type="checkbox"/>        
+                <div className="text text--announcer-header-main">
+                  <span className="icon icon-clock"></span>
+                  <span className="text text--announcer-times">
+                  {this.props.i18n.time.format()} - {this.props.i18n.time.format()}
+                  </span>
+                </div>                
+              </div>                 
+              <div className="application-list__item__body">
+                <div className="text text--communicator-body">
+                  <article>
+                    <header>Otsikko 1</header>
+                    <p>Vivamus placerat lacus vel vehicula scelerisque, dui enim adipiscing lacus sit amet sagittis, libero enim vitae mi. In neque magna posuere, euismod ac tincidunt tempor est. Ut suscipit nisi eu purus. Proin ut pede mauris eget ipsum. Integer vel quam nunc commodo consequat. Integer ac eros eu tellus dignissim viverra. Maecenas erat aliquam erat volutpat. Ut venenatis ipsum quis turpis. Integer cursus scelerisque lorem. Sed nec mauris id quam blandit consequat. Cras nibh mi hendrerit vitae, dapibus et aliquam et magna. Nulla vitae elit. Mauris consectetuer odio vitae augue.</p>
+                </article>
+               </div>
               </div>
-              <div className="text text--communicator-date">
-                {this.props.i18n.time.format()}
-              </div>                
-            </div>
-            <div className="application-list__item__body">
-              <span className="text text--communicator-body">Otsikko</span>
-            </div>
-            <div className="application-list__item__footer">         
-            </div>                      
-          </div>               
+              <div className="application-list__item__footer">         
+              </div>                      
+          </div>                    
     </div>
   )}
 }

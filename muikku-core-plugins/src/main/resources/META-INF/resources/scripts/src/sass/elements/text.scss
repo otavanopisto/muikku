@@ -23,7 +23,6 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   display: block;
   font-family: $text-font-family;
   font-weight: 400;
-  text-align: left;
   
   a {
     color: $color-text-link;
@@ -307,12 +306,14 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     }
   }
 
+
   &.text--communicator-usernames {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    flex: 1;  
+    flex: 1;    
   }
+  
   &.text--communicator-username {
     white-space: nowrap;
     
@@ -431,6 +432,36 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     float: right;
     display: inline-block;
   }
+  
+  &.text--announcer-times {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 15px;
+  }
+  
+  &.text--announcer-header-main {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex: 0 2 auto;
+  }
+  
+  &.text--announcer-header-aside {
+
+    opacity: 0.75;
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
+
+  &.text--announcer-workspace {
+    color: #000;
+    font-size: 15px;
+    margin-left: 5px;
+  }
+
 
   //TODO REMOVE ALL THESE
   &.text-icon, .text-icon {

@@ -59,7 +59,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <span className="icon icon-settings"></span>
       </Link>
     </Dropdown>
-    let primaryOption = <NewMessage><a className="button button--new-message">
+    let primaryOption = <NewMessage><a className="button button--primary-function">
     {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
     </a></NewMessage>
     let toolbar = <Toolbar/>

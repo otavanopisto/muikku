@@ -33,14 +33,13 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
         let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
         let icon = <Dropdown modifier="communicator-settings" items={[
           closeDropdown=><Link className="link link--full" >
-            <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
           </Link>
         ]}>
           <Link className="button-pill button-pill--settings">
             <span className="icon icon-settings"></span>
           </Link>
         </Dropdown>
-        let primaryOption = <a className="button button--new-message">
+        let primaryOption = <a className="button button--primary-function">
         {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
         let toolbar = <Toolbar/>
