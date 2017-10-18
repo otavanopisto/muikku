@@ -6,6 +6,9 @@ import ApplicationPanel from '~/components/general/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
+import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
+
+import DiscussionThreads from './application/discussion-threads';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
@@ -16,7 +19,8 @@ interface DiscussionApplicationState {
 }
 
 interface DiscussionApplicationProps {
-  i18n: i18nType
+  i18n: i18nType,
+  discussionThreads: DiscussionType
 }
 
 class DiscussionApplication extends React.Component<DiscussionApplicationProps, DiscussionApplicationState> {
@@ -28,7 +32,9 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
     let toolbar = <Toolbar/>
     
     return <div className="container container--full">
-      <ApplicationPanel title={title} modifier="discussion" toolbar={toolbar}></ApplicationPanel>
+      <ApplicationPanel title={title} modifier="discussion" toolbar={toolbar}>
+        <DiscussionThreads/>
+      </ApplicationPanel>
       <HoverButton icon="edit" modifier="new-message"/>
     </div>
   }
@@ -36,7 +42,8 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
 
 function mapStateToProps(state: any){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    discussionThreads: state.discussionThreads
   }
 };
 

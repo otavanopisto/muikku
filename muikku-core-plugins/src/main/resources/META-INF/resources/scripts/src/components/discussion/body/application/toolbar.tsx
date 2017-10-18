@@ -8,11 +8,13 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import {DiscussionAreaListType} from '~/reducers/main-function/discussion/areas';
+import {DiscussionAreaListType} from '~/reducers/main-function/discussion/discussion-areas';
+import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
 
 interface DiscussionToolbarProps {
   i18n: i18nType,
-  areas: DiscussionAreaListType
+  areas: DiscussionAreaListType,
+  discussionThreads: DiscussionType
 }
 
 interface DiscussionToolbarState {
@@ -29,9 +31,9 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
           {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
         </Link>
       </div>
-      <select className="form-field form-field--toolbar-selector">
-        <option>{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
-        {this.props.areas.map((area)=><option key={area.id}>
+      <select className="form-field form-field--toolbar-selector" value={this.props.discussionThreads.areaId}>
+        <option value={null}>{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
+        {this.props.areas.map((area)=><option key={area.id} value={area.id}>
           {area.name}
         </option>)}
       </select>
@@ -51,7 +53,8 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
 function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
-    areas: state.areas
+    areas: state.areas,
+    discussionThreads: state.discussionThreads
   }
 };
 

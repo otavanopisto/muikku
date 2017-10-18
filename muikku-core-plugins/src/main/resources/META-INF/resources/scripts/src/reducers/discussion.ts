@@ -7,7 +7,8 @@ import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 
 import {combineReducers} from 'redux';
-import areas from '~/reducers/main-function/discussion/areas';
+import areas from '~/reducers/main-function/discussion/discussion-areas';
+import discussionThreads from '~/reducers/main-function/discussion/discussion-threads';
 
 export default combineReducers({
   notifications,
@@ -17,5 +18,6 @@ export default combineReducers({
   websocket,
   messageCount,
   title,
-  areas
+  areas,
+  discussionThreads
 });
