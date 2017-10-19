@@ -151,7 +151,7 @@ $main-function-link-icon-active-border-size: 5px;
       }
     }
   }
- 
+  
   &.link--main-function-navbar {
   	&.link--icon {
       color: $color-main-function-link-icon-color;
@@ -205,4 +205,10 @@ $main-function-link-icon-active-border-size: 5px;
       background-color: lighten($color-communicator-link-label-active-background, 50%);
     }
   }
+  
+  &.link--application-list-item-footer {
+    color: $color-link-application-item-footer;
+    text-decoration: underline;
+    text-transform: none;
+  }  
 }

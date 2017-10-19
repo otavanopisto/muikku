@@ -10,8 +10,6 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     
-    .application-list__item__header, .application-list__item__body, .application-list__item__footer {    
-    }
 
     &:not(:first-child) {
       margin-top: 5px;
@@ -106,7 +104,19 @@
     .application-list__item__header, .application-list__item__body, .application-list__item__footer {
       display: flex;      
       align-items: center;
-    }  
+    }
+    
+    .application-list__item__footer {
+      margin-bottom: 5px;
+      a {
+        text-decoration: underline;  
+        cursor: pointer;
+             
+        &:not(:first-child) {
+          margin-left: 20px;
+        } 
+      }
+    }      
   }
 
   &.application-list--communicator-message-view {

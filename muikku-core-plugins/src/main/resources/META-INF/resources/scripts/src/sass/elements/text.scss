@@ -275,6 +275,19 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     padding: 4px #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
   }
   
+  
+  &.text__item-article {  
+    padding: 10px 0;
+    font-weight: 300;
+  }
+  
+    
+
+  &.text__item-article-header {
+    font-weight: 400;
+    padding: 10px 0;
+  }
+    
   &.text--last-message-date {
     color: $color-index-text-panel-last-messages-date;
     font-style: italic;
