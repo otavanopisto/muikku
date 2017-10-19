@@ -42,14 +42,21 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               </div>                  
             </div>
             <div className="application-list__item__body">
-              <div className="text text--communicator-body">
-                <article>
-                  <header className="">Otsikko 1</header>
+              <div className="text text--item-body">
+                <article className="text text__item-article">
+                  <header className="text text__item-article-title">Otsikko 1</header>
                   <p>Vivamus placerat lacus vel vehicula scelerisque, dui enim adipiscing lacus sit amet sagittis, libero enim vitae mi. In neque magna posuere, euismod ac tincidunt tempor est. Ut suscipit nisi eu purus. Proin ut pede mauris eget ipsum. Integer vel quam nunc commodo consequat. Integer ac eros eu tellus dignissim viverra. Maecenas erat aliquam erat volutpat. Ut venenatis ipsum quis turpis. Integer cursus scelerisque lorem. Sed nec mauris id quam blandit consequat. Cras nibh mi hendrerit vitae, dapibus et aliquam et magna. Nulla vitae elit. Mauris consectetuer odio vitae augue.</p>
               </article>
              </div>
             </div>
-            <div className="application-list__item__footer">         
+            <div className="application-list__item__footer">     
+                <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
+                  <Link>{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+                </NewMessage>
+                <NewMessage replyThreadId={message.communicatorMessageId}
+                  initialSelectedItems={[senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)}>
+                  <Link>{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+                </NewMessage>                  
             </div>                      
           </div>      
           <div key={2} className='application-list__item environment-announcement'>

@@ -231,7 +231,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
             </div>                
           </div>
           <div className="application-list__item__body">
-            <span className="text text--communicator-body">{message.caption}</span>
+            <span className="text text__item-body">{message.caption}</span>
           </div>
           <div className="application-list__item__footer">
             <div className="text text--communicator-labels">{message.labels.map((label)=>{

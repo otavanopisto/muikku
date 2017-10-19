@@ -281,11 +281,24 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     padding-bottom: 7px;
   }
   
-  &.text--announcements-date {
-    color: $color-index-text-panel-announcements-date;
-    font-style: italic;
-    padding-bottom: 7px;
+  &.text__item-body {
+    display: inline-block;
+    font-weight: 300;
+    @include breakpoint-up($breakpoint-landscape-pad){
+      padding-left: 30px;
+    }
+  }  
+
+  &.text__item-article {
+    padding: 5px 0;
+  }  
+
+  &.text__item-article-title {
+    font-weight: 400;
+    padding: 10px 0;
   }
+
+// Communicator spesific
  
   &.text--communicator-title {
     color: $color-communicator-text-title;
@@ -341,13 +354,7 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     text-align: right;
   }
   
-  &.text--communicator-body {
-    display: inline-block;
-    font-weight: 300;
-    @include breakpoint-up($breakpoint-landscape-pad){
-      padding-left: 30px;
-    }
-  }
+
 
   &.text--communicator-labels {
     display: flex;
@@ -432,7 +439,15 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     float: right;
     display: inline-block;
   }
-  
+
+// Announcer spesific
+
+  &.text--announcements-date {
+    color: $color-index-text-panel-announcements-date;
+    font-style: italic;
+    padding-bottom: 7px;
+  }
+
   &.text--announcer-times {
     display: inline-block;
     margin-left: 5px;
