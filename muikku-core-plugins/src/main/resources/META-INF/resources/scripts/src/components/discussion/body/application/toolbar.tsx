@@ -23,6 +23,11 @@ interface DiscussionToolbarState {
 class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, DiscussionToolbarState> {
   constructor(props: DiscussionToolbarProps){
     super(props);
+    
+    this.onSelectChange = this.onSelectChange.bind(this);
+  }
+  onSelectChange(e: React.ChangeEvent<HTMLSelectElement>){
+    window.location.hash = e.target.value;
   }
   render(){
     return <div className="application-panel__toolbar">
@@ -31,8 +36,8 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
           {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
         </Link>
       </div>
-      <select className="form-field form-field--toolbar-selector" value={this.props.discussionThreads.areaId}>
-        <option value={null}>{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
+      <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussionThreads.areaId || ""}>
+        <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
         {this.props.areas.map((area)=><option key={area.id} value={area.id}>
           {area.name}
         </option>)}
