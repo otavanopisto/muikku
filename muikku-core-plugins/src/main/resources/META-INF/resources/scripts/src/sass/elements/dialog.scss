@@ -117,7 +117,7 @@ $dialog-button-close-height: 45px;
   &.visible {
     opacity: 1;
     
-    .jumbo-dialog-wrapper {
+    .jumbo-dialog__wrapper {
       bottom: 0;
     }
   }
@@ -227,15 +227,8 @@ $dialog-button-close-height: 45px;
  
   &.jumbo-dialog--new-message, &.jumbo-dialog--update-signature {
   
-    &.visible {
-      .jumbo-dialog__wrapper {
-        bottom: 0;
-      }
-    }
-  
     .jumbo-dialog__wrapper {
       height: 520px;
-      bottom: -520px;
       background-color: $color-communicator-jumbo-dialog-background-color;
     
       @include breakpoint-down($breakpoint-landscape-pad) {

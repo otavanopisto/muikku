@@ -57,6 +57,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
 
 function mapStateToProps(state: any){
   return {
+    i18n: state.i18n,
     discussionThreads: state.discussionThreads
   }
 };

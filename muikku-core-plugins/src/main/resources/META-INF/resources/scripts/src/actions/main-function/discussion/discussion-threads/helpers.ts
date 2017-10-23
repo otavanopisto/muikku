@@ -42,7 +42,8 @@ export async function loadThreadsHelper(initial:boolean, areaId:number | null, d
   }
   
   try {
-    let threads:DiscussionThreadListType = <DiscussionThreadListType>await promisify(actualAreaId ? mApi().forum.areas.threads.read(actualAreaId, params) : mApi().forum.latest.read(params), 'callback')();
+    let threads:DiscussionThreadListType = <DiscussionThreadListType>await promisify(actualAreaId ? mApi().forum.areas.threads
+        .read(actualAreaId, params) : mApi().forum.latest.read(params), 'callback')();
     let hasMore:boolean = threads.length === MAX_LOADED_AT_ONCE + 1;
     
     //This is because of the array is actually a reference to a cached array

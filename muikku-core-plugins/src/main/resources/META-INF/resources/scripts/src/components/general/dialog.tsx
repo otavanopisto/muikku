@@ -20,12 +20,16 @@ interface DialogState {
 }
 
 export default class Dialog extends React.Component<DialogProps, DialogState> {
+  private oldOverflow:string;
+  
   constructor(props: DialogProps){
     super(props);
     
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.beforeClose = this.beforeClose.bind(this);
+    
+    this.oldOverflow = null;
     
     this.state = {
       visible: false
@@ -42,12 +46,15 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         visible: true
       });
     }, 10);
+    this.oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     this.props.onOpen && this.props.onOpen(element);
   }
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
     this.setState({
       visible: false
     });
+    document.body.style.overflow = this.oldOverflow;
     setTimeout(removeFromDOM, 300);
   }
   render(){

@@ -11,6 +11,10 @@ import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionAreaListType} from '~/reducers/main-function/discussion/discussion-areas';
 import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
 
+import NewArea from './new-area';
+import ModifyArea from './modify-area';
+
+
 interface DiscussionToolbarProps {
   i18n: i18nType,
   areas: DiscussionAreaListType,
@@ -42,12 +46,12 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
           {area.name}
         </option>)}
       </select>
-      <Link className="button-pill button-pill--discussion-toolbar">
+      <NewArea><Link className="button-pill button-pill--discussion-toolbar">
         <span className="icon icon-add"></span>
-      </Link>
-      <Link className="button-pill button-pill--discussion-toolbar">
+      </Link></NewArea>
+      <ModifyArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
         <span className="icon icon-edit"></span>
-      </Link>
+      </Link></ModifyArea>
       <Link className="button-pill button-pill--discussion-toolbar">
         <span className="icon icon-delete"></span>
       </Link>
