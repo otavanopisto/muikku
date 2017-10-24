@@ -13,10 +13,12 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
+import { UserIndexType } from '~/reducers/main-function/user-index';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
-  i18n: i18nType
+  i18n: i18nType,
+  userIndex: UserIndexType
 }
 
 interface DiscussionThreadsState {
@@ -39,10 +41,16 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
     
     return <div className="application-list application-list--discussion-threads">{
       this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)=>{
+        
+        //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
+        //round so put something as a placeholder in order to be efficient and make short rendering cycles
+        let user = this.props.userIndex[thread.creator];
+        
         return (
           <div key={thread.id} className="application-list__item">
             <div className="application-list__item__header">{thread.title}</div>
             <div className="application-list__item__body">
+              <div className="container container--discussion-thread-user">{user && user.firstName + user.lastName}</div>
               <span className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></span>
             </div>
           </div>
@@ -58,7 +66,8 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
 function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
-    discussionThreads: state.discussionThreads
+    discussionThreads: state.discussionThreads,
+    userIndex: state.userIndex
   }
 };
 

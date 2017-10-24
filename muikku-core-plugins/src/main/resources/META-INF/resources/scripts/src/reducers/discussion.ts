@@ -5,10 +5,11 @@ import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
+import userIndex from './main-function/user-index';
 
 import {combineReducers} from 'redux';
 import areas from '~/reducers/main-function/discussion/discussion-areas';
-import discussionThreads from '~/reducers/main-function/discussion/discussion-threads';
+import discussionThreads from '~/reducers/main-function/discussion/discussion-threads'
 
 export default combineReducers({
   notifications,
@@ -19,5 +20,6 @@ export default combineReducers({
   messageCount,
   title,
   areas,
-  discussionThreads
+  discussionThreads,
+  userIndex
 });

@@ -3,6 +3,8 @@ import promisify from "~/util/promisify";
 import mApi from '~/lib/mApi';
 import notificationActions from '~/actions/base/notifications';
 import {DiscussionType, DiscussionStateType, DiscussionThreadListType, DiscussionPatchType} from "~/reducers/main-function/discussion/discussion-threads";
+import { UserIndexType } from "~/reducers/main-function/user-index";
+import { loadUserIndex } from "~/actions/main-function/user-index";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -53,6 +55,10 @@ export async function loadThreadsHelper(initial:boolean, areaId:number | null, d
       //we got to get rid of that extra loaded message
       actualThreads.pop();
     }
+    
+    actualThreads.forEach((thread)=>{
+      dispatch(loadUserIndex(thread.creator));
+    });
     
     //Create the payload for updating all the communicator properties
     let payload:DiscussionPatchType = {

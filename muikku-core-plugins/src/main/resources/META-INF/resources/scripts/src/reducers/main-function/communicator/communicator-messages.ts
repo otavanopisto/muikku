@@ -1,5 +1,6 @@
 import {ActionType} from '~/actions';
 import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/index/workspaces';
+import { UserType } from '~/reducers/main-function/user-index';
 
 export type CommunicatorStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface CommunicatorSignatureType {
@@ -8,16 +9,6 @@ export interface CommunicatorSignatureType {
   signature: string
 }
 
-export interface CommunicatorMessageSenderType {
-  id: Number,
-  firstName: string,
-  lastName?: string | null,
-  nickName?: string | null,
-  studyProgrammeName?: string | null,
-  hasImage: boolean,
-  hasEvaluationFees: false,
-  curriculumIdentifier?: string | number | null;
-}
 export interface CommunicatorMessageLabelType {
   id: number,
   labelColor: number,
@@ -45,7 +36,7 @@ export interface CommunicatorMessageType {
   messageCountInThread: number,
   recipientCount?: number,
   recipients?: Array<CommunicatorMessageRecepientType>,
-  sender: CommunicatorMessageSenderType,
+  sender: UserType,
   senderId: number,
   tags: any,
   threadLatestMessageDate: string,
@@ -62,7 +53,7 @@ export interface CommunicatorMessageUpdateType {
   tags?: any,
   threadLatestMessageDate?: string,
   unreadMessagesInThread?: boolean,
-  sender?: CommunicatorMessageSenderType,
+  sender?: UserType,
   messageCountInThread?: number,
   labels?: CommunicatorMessageLabelListType
 }
@@ -87,7 +78,7 @@ export interface CommunicatorMessageInThreadType {
   id: number,
   recipientCount: number,
   recipients: Array<CommunicatorMessageRecepientType>,
-  sender: CommunicatorMessageSenderType,
+  sender: UserType,
   senderId: number,
   tags: any,
   userGroupRecipients: UserGroupList,
