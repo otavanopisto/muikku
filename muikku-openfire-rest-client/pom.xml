@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>openfire-rest-client</artifactId>
   <packaging>jar</packaging>
-  <name>Openfire REST client</name>
+  <name>Muikku Openfire REST client</name>
   <description>IgniteRealtime's Openfire REST client modified to use RESTEasy instead of Jersey.</description>
 
   <parent>
