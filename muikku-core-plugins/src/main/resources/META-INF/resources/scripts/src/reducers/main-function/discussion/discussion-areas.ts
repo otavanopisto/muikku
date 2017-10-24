@@ -32,6 +32,8 @@ export default function areas(state: DiscussionAreaListType=[], action: ActionTy
       }
       return area;
     })
+  } else if (action.type === "DELETE_DISCUSSION_AREA"){
+    return state.filter(area=>area.id!==action.payload);
   }
   return state;
 }

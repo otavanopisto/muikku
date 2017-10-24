@@ -101,7 +101,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
       )
     }
     
-    return <JumboDialog modifier="new-area"
+    return <JumboDialog modifier="modify-area"
       title={this.props.i18n.text.get('plugin.discussion.createarea.topic')}
       content={content} footer={footer}>
       {this.props.children}

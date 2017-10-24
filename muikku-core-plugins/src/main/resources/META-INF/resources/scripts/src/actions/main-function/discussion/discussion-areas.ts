@@ -10,6 +10,7 @@ export interface UPDATE_DISCUSSION_AREA extends SpecificActionType<"UPDATE_DISCU
   areaId: number,
   update: DiscussionAreaUpdateType
 }>{}
+export interface DELETE_DISCUSSION_AREA extends SpecificActionType<"DELETE_DISCUSSION_AREA", number>{}
 
 export interface LoadDiscussionAreasTriggerType {
   (callback?: ()=>any):AnyActionType
@@ -82,5 +83,26 @@ let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscus
   }
 }
   
-export {loadDiscussionAreas, createDiscussionArea, updateDiscussionArea}
-export default {loadDiscussionAreas, createDiscussionArea, updateDiscussionArea}
+export interface DeleteDiscussionAreaTriggerType {
+  (data:{id: number, success?: ()=>any, fail?: ()=>any}):AnyActionType
+}
+
+let deleteDiscussionArea:DeleteDiscussionAreaTriggerType = function deleteDiscussionArea(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      await promisify(mApi().forum.areas.del(data.id), 'callback')();
+      location.hash = "";
+      dispatch({
+        type: 'DELETE_DISCUSSION_AREA',
+        payload: data.id
+      });
+      data.success && data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+  
+export {loadDiscussionAreas, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea}
+export default {loadDiscussionAreas, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea}

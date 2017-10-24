@@ -13,6 +13,7 @@ import {DiscussionType} from '~/reducers/main-function/discussion/discussion-thr
 
 import NewArea from './new-area';
 import ModifyArea from './modify-area';
+import DeleteArea from './delete-area';
 
 
 interface DiscussionToolbarProps {
@@ -52,9 +53,9 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       <ModifyArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
         <span className="icon icon-edit"></span>
       </Link></ModifyArea>
-      <Link className="button-pill button-pill--discussion-toolbar">
+      <DeleteArea><Link className="button-pill button-pill--discussion-toolbar">
         <span className="icon icon-delete"></span>
-      </Link>
+      </Link></DeleteArea>
     </div>
   }
 }
