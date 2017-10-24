@@ -53,7 +53,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       <ModifyArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
         <span className="icon icon-edit"></span>
       </Link></ModifyArea>
-      <DeleteArea><Link className="button-pill button-pill--discussion-toolbar">
+      <DeleteArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
         <span className="icon icon-delete"></span>
       </Link></DeleteArea>
     </div>
