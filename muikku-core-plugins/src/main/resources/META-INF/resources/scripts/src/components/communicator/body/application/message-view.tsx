@@ -161,15 +161,15 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
               <div className="application-list__item__body">
                 <header className="text text-communicator-message-caption">{message.caption}</header>
                 <section className="text text-communicator-message-content" dangerouslySetInnerHTML={{ __html: message.content}}></section>
-              </div>
+              </div>                
               <div className="application-list__item__footer">
                  <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
-                   <Link>{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+                   <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
                  </NewMessage>
                  <NewMessage replyThreadId={message.communicatorMessageId}
                    initialSelectedItems={[senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)}>
-                   <Link>{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
-                 </NewMessage>
+                   <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+                 </NewMessage>                   
               </div>                
             </div>
           )

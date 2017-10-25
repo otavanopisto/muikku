@@ -120,6 +120,7 @@ $color-label-inverse: $color-default;
 $color-text-default: $color-inverse;
 $color-text-link: $color-primary;
 
+
 //Separator
 $color-separator-background: $color-inverse;
 
@@ -139,6 +140,7 @@ $color-link-highlight-background: rgba(0, 0, 0, 0);
 $color-link-hover-background: rgba(0, 0, 0, 0.05);
 $color-link-active-background: rgba(0, 0, 0, 0.1);
 $color-link-inverse-background: invisible;
+$color-link-application-item-footer: #5aa6e1;
 
 // Menu
 $color-menu-default-background: #f5f5f5;
@@ -206,7 +208,8 @@ $color-panel-background: $color-default;
 $color-panel-border: #ccc;
 
 // item list
-$color-item-list-item-background-active: rgba(0, 0, 0, 0.3);
+$color-item-list-item-font-color-active: #fff;
+$color-item-list-item-background-active: rgb(98,174,193);
 $color-item-list-item-background-hover: rgba(0, 0, 0, 0.1);
 
 // indicator
@@ -221,6 +224,7 @@ $color-application-panel-box-border: #ccc;
 $color-application-list-item-background-hover: #eee;
 $color-application-list-item-background-active: #ddd;
 $color-application-list-item-background-selected: #29B0C4;
+
 
 // loader
 $color-loader-empty-ring: #f3f3f3;

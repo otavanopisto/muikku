@@ -18,6 +18,7 @@ $application-panel-internal-navigation-padding: 10px;
     width: 220px;  
     margin-left: 15px;
     padding: 10px 0;
+    flex: 0 0 220px;
     
     @include breakpoint-down($breakpoint-portrait-pad){
       display: none;

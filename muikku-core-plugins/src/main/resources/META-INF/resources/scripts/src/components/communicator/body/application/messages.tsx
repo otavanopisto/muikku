@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 
+
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
 import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
@@ -15,23 +16,6 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 
-function getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
-  if (message.senderId !== userId || !message.recipients){
-    if (message.senderId === userId){
-      //TODO Ukkonen translate this
-      return "me";
-    }
-    return (message.sender.firstName ? message.sender.firstName + " " : "")+(message.sender.lastName ? message.sender.lastName : "");
-  }
-  
-  return message.recipients.map((recipient: CommunicatorMessageRecepientType)=>{
-    if (recipient.userId === userId){
-      //TODO Ukkonen translate this
-      return "me";
-    }
-    return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
-  }).join(", ");
-}
 
 interface CommunicatorMessagesProps {
   communicatorMessagesSelected: CommunicatorMessageListType,
@@ -87,6 +71,24 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
     this.cancelSelection = false;
     this.initialTime = null;
   }
+  
+  getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
+    if (message.senderId !== userId || !message.recipients){
+      if (message.senderId === userId){
+        //TODO Ukkonen translate this
+        return this.props.i18n.text.get("plugin.communicator.sender.self");
+      }
+      return (message.sender.firstName ? message.sender.firstName + " " : "")+(message.sender.lastName ? message.sender.lastName : "");
+    }
+    
+    return message.recipients.map((recipient: CommunicatorMessageRecepientType)=>{
+      if (recipient.userId === userId){
+        //TODO Ukkonen translate this
+        return this.props.i18n.text.get("plugin.communicator.sender.self");
+      }
+      return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
+    }).join(", ");
+  }  
   onMessageClick(message: CommunicatorMessageType){
     if (this.props.communicatorMessagesSelected.length === 0){
       this.setCurrentMessage(message);
@@ -209,7 +211,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className={`application-list application-list--communicator-messages ${this.state.touchMode ? "application-list--select-mode" : ""}`}>{
+    return <div className={`application-list application-list__items ${this.state.touchMode ? "application-list--select-mode" : ""}`}>{
       this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
         return (
@@ -219,7 +221,7 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
             <div className="application-list__item__header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
             <div className="text text--communicator-usernames">
-              <span className="text text--communicator-username">{getMessageUserNames(message, this.props.userId)}</span>
+              <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
             </div>
             {message.messageCountInThread > 1 ? <div className="text text--communicator-counter">
               {message.messageCountInThread}
