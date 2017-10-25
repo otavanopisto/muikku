@@ -17,6 +17,10 @@ export interface LoadMoreDiscussionThreadsTriggerType {
   (areaId: number):AnyActionType
 }
 
+export interface SetCurrentDiscussionThreadTriggerType {
+  (threadId: number):AnyActionType
+}
+
 let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscussionThreads(areaId){
   return loadThreadsHelper.bind(null, true, areaId);
 }

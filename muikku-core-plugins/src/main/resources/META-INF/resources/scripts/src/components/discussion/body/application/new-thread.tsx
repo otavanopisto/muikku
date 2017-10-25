@@ -62,6 +62,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
+    this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
   }
   onCKEditorChange(text: string){
@@ -69,6 +70,9 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   }
   createThread(closeDialog: ()=>any){
 
+  }
+  onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
+    this.setState({title: e.target.value});
   }
   togglePinned(){
     this.setState({threadPinned: !this.state.threadPinned});
@@ -87,7 +91,8 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   render(){
     let content = (closeDialog: ()=>any) => [
       <div key="1" className="container container--new-discussion-options">
-        <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title" value={this.state.title}/>
+        <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title"
+          value={this.state.title} onChange={this.onTitleChange}/>
         <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId}>
           {this.props.areas.map((area)=><option key={area.id} value={area.id}>
             {area.name}
