@@ -8,8 +8,8 @@ import JumboDialog from '~/components/general/jumbo-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-
-//TODO
+import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
+import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -22,24 +22,20 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'communicator-new-message',
+  draftKey: 'discussion-new-message',
   resize_enabled: false
 }
 const extraPlugins = {
-  'widget': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/',
-  'lineutils': '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/',
-  'filetools' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/',
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-  'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js',
-  'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
-  'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
+  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js'
 }
 
 interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
-  i18n: i18nType
+  areas: DiscussionAreaListType,
+  i18n: i18nType,
+  discussionThreads: DiscussionType
 }
 
 interface DicussionNewThreadState {
@@ -47,12 +43,26 @@ interface DicussionNewThreadState {
   title: string,
   locked: boolean,
   threadPinned: boolean,
-  threadLocked: boolean
+  threadLocked: boolean,
+  selectedAreaId: number
 }
 
 class DicussionNewThread extends React.Component<DicussionNewThreadProps, DicussionNewThreadState> {
   constructor(props: DicussionNewThreadProps){
     super(props);
+    
+    this.state = {
+      text: "",
+      title: "",
+      locked: false,
+      threadPinned: false,
+      threadLocked: false,
+      selectedAreaId: props.areas[0] && props.areas[0].id
+    }
+    
+    this.togglePinned = this.togglePinned.bind(this);
+    this.toggleLocked = this.toggleLocked.bind(this);
+    this.onCKEditorChange = this.onCKEditorChange.bind(this);
   }
   onCKEditorChange(text: string){
     this.setState({text});
@@ -60,16 +70,47 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   createThread(closeDialog: ()=>any){
 
   }
+  togglePinned(){
+    this.setState({threadPinned: !this.state.threadPinned});
+  }
+  toggleLocked(){
+    this.setState({threadLocked: !this.state.threadLocked});
+  }
+  componentWillReceiveProps(nextProps: DicussionNewThreadProps){
+    if (nextProps.discussionThreads.areaId !== this.state.selectedAreaId){
+      this.setState({selectedAreaId: nextProps.discussionThreads.areaId || (nextProps.areas[0] && nextProps.areas[0].id)});
+    }
+  }
+  onAreaChange(e: React.ChangeEvent<HTMLSelectElement>){
+    this.setState({selectedAreaId: parseInt(e.target.value)});
+  }
   render(){
-    let content = (closeDialog: ()=>any) => []
+    let content = (closeDialog: ()=>any) => [
+      <div key="1" className="container container--new-discussion-options">
+        <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title" value={this.state.title}/>
+        <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId}>
+          {this.props.areas.map((area)=><option key={area.id} value={area.id}>
+            {area.name}
+          </option>)}
+        </select>
+      </div>,
+      <div key="2" className="container container--new-discussion-checkboxs">
+        <span className="text text--for-checkbox-discussion">TODO translate Pinned</span>
+        <input type="checkbox" className="form-field" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+        <span className="text text--for-checkbox-discussion">TODO translate Locked</span>
+        <input type="checkbox" className="form-field" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+      </div>,
+      <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+    ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="jumbo-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
+            TODO cancel
           </Link>
           <Link className="button button--standard-ok" onClick={this.createThread.bind(this, closeDialog)}>
-            {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
+            TODO create
           </Link>
         </div>
       )
@@ -85,7 +126,9 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
 
 function mapStateToProps(state: any){
   return {
-    i18n: state.i18n
+    areas: state.areas,
+    i18n: state.i18n,
+    discussionThreads: state.discussionThreads
   }
 };
 

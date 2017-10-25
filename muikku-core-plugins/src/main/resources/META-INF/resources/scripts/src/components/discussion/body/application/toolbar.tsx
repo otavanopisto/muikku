@@ -10,7 +10,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionAreaListType} from '~/reducers/main-function/discussion/discussion-areas';
 import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
-
+import NewThread from './new-thread';
 import NewArea from './new-area';
 import ModifyArea from './modify-area';
 import DeleteArea from './delete-area';
@@ -37,9 +37,9 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
   render(){
     return <div className="application-panel__toolbar">
       <div className="container container--new-message-toolbar-container">
-        <Link className="button button--new-message">
+        <NewThread><Link className="button button--new-message">
           {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
-        </Link>
+        </Link></NewThread>
       </div>
       <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussionThreads.areaId || ""}>
         <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
