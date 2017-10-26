@@ -47,6 +47,10 @@ export default function discussionThreads(state: DiscussionType={
   } else if (action.type === "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES"){
     let newAllProperties: DiscussionPatchType = action.payload;
     return Object.assign({}, state, newAllProperties);
+  } else if (action.type === "PUSH_DISCUSSION_THREAD_FIRST"){
+    return Object.assign({}, state, {
+      threads: [action.payload].concat(state.threads)
+    });
   }
   return state;
 }

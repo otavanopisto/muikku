@@ -10,6 +10,7 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
 import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
+import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -35,7 +36,8 @@ interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
   areas: DiscussionAreaListType,
   i18n: i18nType,
-  discussionThreads: DiscussionType
+  discussionThreads: DiscussionType,
+  createDiscussionThread: CreateDiscussionThreadTriggerType
 }
 
 interface DicussionNewThreadState {
@@ -64,12 +66,34 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
+    this.onAreaChange = this.onAreaChange.bind(this);
   }
   onCKEditorChange(text: string){
     this.setState({text});
   }
   createThread(closeDialog: ()=>any){
-
+    this.props.createDiscussionThread({
+      forumAreaId: this.state.selectedAreaId,
+      locked: this.state.threadLocked,
+      sticky: this.state.threadPinned,
+      message: this.state.text,
+      title: this.state.title,
+      success: ()=>{
+        this.setState({
+          text: "",
+          title: "",
+          locked: false,
+          threadLocked: false,
+          threadPinned: false
+        });
+        closeDialog();
+      },
+      fail: ()=>{
+        this.setState({
+          locked: false
+        });
+      }
+    });
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({title: e.target.value});
@@ -93,7 +117,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
       <div key="1" className="container container--new-discussion-options">
         <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title"
           value={this.state.title} onChange={this.onTitleChange}/>
-        <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId}>
+        <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
           {this.props.areas.map((area)=><option key={area.id} value={area.id}>
             {area.name}
           </option>)}
@@ -138,7 +162,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({sendMessage}, dispatch);
+  return bindActionCreators({sendMessage, createDiscussionThread}, dispatch);
 };
 
 export default (connect as any)(
