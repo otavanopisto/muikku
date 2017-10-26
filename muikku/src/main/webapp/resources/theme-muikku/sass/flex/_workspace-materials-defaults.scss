@@ -451,6 +451,7 @@
     cursor: help;
     font-weight: 400;
     position: relative;
+    z-index: 99; // Just to be on the safe side
   }
           
   figure.image {
