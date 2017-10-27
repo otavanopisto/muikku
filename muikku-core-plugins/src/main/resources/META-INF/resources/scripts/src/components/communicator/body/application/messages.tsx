@@ -15,6 +15,7 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+import BodyScrollLoader from '~/components/general/body-scroll-loader';
 
 
 interface CommunicatorMessagesProps {
@@ -34,7 +35,7 @@ interface CommunicatorMessagesState {
   touchMode: boolean
 }
 
-class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, CommunicatorMessagesState> {
+class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, CommunicatorMessagesState> {
   private touchModeTimeout: NodeJS.Timer;
   private firstWasJustSelected: boolean;
   private initialXPos: number;
@@ -70,6 +71,10 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
     this.lastYPos = null;
     this.cancelSelection = false;
     this.initialTime = null;
+    
+    this.statePropertyLocation = "communicatorMessagesState";
+    this.hasMorePropertyLocation = "communicatorMessagesHasMore";
+    this.loadMoreTriggerFunctionLocation = "loadMoreMessages";
   }
   
   getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
@@ -96,16 +101,6 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
   }
   setCurrentMessage(message: CommunicatorMessageType){
     window.location.hash = window.location.hash.split("/")[0] + "/" + message.communicatorMessageId;
-  }
-  checkCanLoadMore(){
-    if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
-      let scrollBottomRemaining = (document.body.scrollHeight || document.documentElement.scrollHeight) -
-        ((document.body.scrollTop || document.documentElement.scrollTop) +
-         (document.body.offsetHeight || document.documentElement.offsetHeight))
-      if (scrollBottomRemaining <= 100){
-        this.props.loadMoreMessages();
-      }
-    }
   }
   onCheckBoxChange(message: CommunicatorMessageType, e: React.MouseEvent<any>){
     this.toggleMessageSelection(message);
@@ -180,25 +175,6 @@ class CommunicatorMessages extends React.Component<CommunicatorMessagesProps, Co
         touchMode: false
       });
     }
-  }
-  componentDidMount(){
-    window.addEventListener("scroll", this.onScroll);
-  }
-  componentWillUnmount(){
-    window.removeEventListener("scroll", this.onScroll);
-  }
-  componentDidUpdate(){
-    if (this.props.communicatorMessagesState === "READY" && this.props.communicatorMessagesHasMore){
-      let doesNotHaveScrollBar = (document.body.scrollHeight || document.documentElement.scrollHeight) === 
-        (document.body.offsetHeight || document.documentElement.offsetHeight);
-      if (doesNotHaveScrollBar){
-        this.props.loadMoreMessages();
-      }
-    }
-    this.checkCanLoadMore();
-  }
-  onScroll(e: Event){
-    this.checkCanLoadMore();
   }
   render(){
     if (this.props.communicatorMessagesState === "LOADING"){

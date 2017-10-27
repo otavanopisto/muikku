@@ -7,7 +7,7 @@ import {Action} from 'redux';
 import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
 import {loadDiscussionAreas} from '~/actions/main-function/discussion/discussion-areas';
-import {loadDiscussionThreads} from '~/actions/main-function/discussion/discussion-threads';
+import {loadDiscussionThreads, loadDiscussionThread} from '~/actions/main-function/discussion/discussion-threads';
 
 let store = runApp(reducer, App);
 let websocket = new Websocket(store, {
@@ -37,7 +37,7 @@ function loadLocation(location: string[]){
   } else if (location.length === 1){
     store.dispatch(<Action>loadDiscussionThreads(parseInt(location[0])));
   } else {
-    //store.dispatch(<Action>loadDiscussionThread(location[0], parseInt(location[1])));
+    store.dispatch(<Action>loadDiscussionThread(parseInt(location[0]), parseInt(location[1])));
   }
 }
 window.addEventListener("hashchange", ()=>{

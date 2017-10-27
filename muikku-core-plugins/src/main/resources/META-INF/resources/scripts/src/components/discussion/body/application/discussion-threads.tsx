@@ -3,9 +3,6 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
-
-import actions from '~/actions/main-function/communicator/communicator-messages';
-
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
@@ -14,19 +11,27 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
 import { UserIndexType } from '~/reducers/main-function/user-index';
+import BodyScrollLoader from '~/components/general/body-scroll-loader';
+import { loadMoreDiscussionThreads } from '~/actions/main-function/discussion/discussion-threads';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
   i18n: i18nType,
-  userIndex: UserIndexType
+  userIndex: UserIndexType,
+  discussionThreadsState: string,
+  discussionThreadsHasMore: string
 }
 
 interface DiscussionThreadsState {
 }
 
-class DiscussionThreads extends React.Component<DiscussionThreadsProps, DiscussionThreadsState> {
+class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, DiscussionThreadsState> {
   constructor(props: DiscussionThreadsProps){
     super(props);
+    
+    this.statePropertyLocation = "discussionThreadsState";
+    this.hasMorePropertyLocation = "discussionThreadsHasMore";
+    this.loadMoreTriggerFunctionLocation = "loadMoreDiscussionThreads"
   }
   render(){
     if (this.props.discussionThreads.state === "LOADING"){
@@ -67,12 +72,14 @@ function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     discussionThreads: state.discussionThreads,
-    userIndex: state.userIndex
+    userIndex: state.userIndex,
+    discussionThreadsState: state.discussionThreads.state,
+    discussionThreadsHasMore: state.discussionThreads.hasMore
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators(actions, dispatch);
+  return bindActionCreators({loadMoreDiscussionThreads}, dispatch);
 };
 
 export default (connect as any)(

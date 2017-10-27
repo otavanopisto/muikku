@@ -22,8 +22,8 @@ export interface CreateDiscussionThreadTriggerType {
   (data:{forumAreaId: number, locked: boolean, message: string, sticky: boolean, title: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
 }
 
-export interface SetCurrentDiscussionThreadTriggerType {
-  (threadId: number):AnyActionType
+export interface LoadDiscussionThreadTriggerType {
+  (areaId: number, threadId: number):AnyActionType
 }
 
 let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscussionThreads(areaId){
@@ -53,5 +53,11 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
   }
 }
 
-export {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread}
-export default {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread}
+let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussionThread(areaId, threadId){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+export {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread, loadDiscussionThread}
+export default {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread, loadDiscussionThread}
