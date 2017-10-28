@@ -31,6 +31,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -399,7 +400,14 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   }
   
   protected void waitForVisible(String selector) {
-    new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.cssSelector(selector))));    
+    int attempts = 0;
+    while (attempts < 2) {
+      try{
+        new WebDriverWait(getWebDriver(), 60).until(ExpectedConditions.visibilityOf(getWebDriver().findElement(By.cssSelector(selector))));          
+      }catch (StaleElementReferenceException e) {
+      }      
+      attempts++;
+    }
   }
   
   protected void waitForUrlNotMatches(final String regex) {

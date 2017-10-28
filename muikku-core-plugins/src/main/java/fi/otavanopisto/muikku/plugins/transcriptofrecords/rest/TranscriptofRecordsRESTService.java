@@ -245,7 +245,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
-        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+        course: for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
           boolean hasTransferCredit = false;
 
           for (TransferCredit transferCredit : transferCredits) {
@@ -319,6 +319,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
             boolean workspaceUserExists = false;
             String name = "";
             String description = "";
+            boolean canSignUp = false;
 
             for (VopsWorkspace workspace : workspaces) {
               WorkspaceEntity workspaceEntity =
@@ -331,8 +332,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               
               List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupsByUserIdentifier(studentIdentifier);
               
-              boolean canSignUp = false;
-              
               Permission permission = permissionController.findByName(MuikkuPermissions.WORKSPACE_SIGNUP);
               for (UserGroupEntity userGroupEntity : userGroupEntities) {
                 if (permissionController.hasWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission)) {
@@ -341,11 +340,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
                 }
               }
               
-              if (!canSignUp) {
-                continue;
-              }
-              
-              
               if (workspaceAssesment != null) {
                 workspaceAssessments.add(workspaceAssesment);
               }
@@ -353,6 +347,11 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
               if (workspaceUser != null) {
                 workspaceUserExists = true;
               }
+            }
+
+            if (!canSignUp) {
+              entries.add(new VopsRESTModel.VopsPlaceholder());
+              continue course;
             }
             
             for (VopsWorkspace workspace : workspaces) {
