@@ -95,7 +95,8 @@ public class VopsLister {
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
         for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
-          if (processCourse(subject, entries, courseNumber)) {
+          VopsRESTModel.VopsEntry entry = processCourse(subject, courseNumber);
+          if (!(entry instanceof VopsRESTModel.VopsPlaceholder)) {
             subjectHasCourses = true;
           }
         }
@@ -109,52 +110,10 @@ public class VopsLister {
     }
   }
 
-  private boolean processCourse(Subject subject, List<VopsRESTModel.VopsEntry> entries, int courseNumber) {
-    boolean hasTransferCredit = false;
-
-    for (TransferCredit transferCredit : transferCredits) {
-      boolean subjectsMatch = Objects.equals(
-          transferCredit.getSubjectIdentifier(),
-          new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()));
-      boolean courseNumbersMatch = Objects.equals(
-          transferCredit.getCourseNumber(),
-          courseNumber);
-      if (subjectsMatch && courseNumbersMatch) {
-        String grade = "";
-        GradingScaleItem gradingScaleItem = null;
-        Mandatority mandatority = Mandatority.MANDATORY;
-        if (transferCredit.getOptionality() == Optionality.OPTIONAL) {
-          mandatority = Mandatority.UNSPECIFIED_OPTIONAL;
-        }
-
-        if (transferCredit.getGradeIdentifier() != null
-            && transferCredit.getGradingScaleIdentifier() != null) {
-          gradingScaleItem = findGradingScaleItemCached(
-              transferCredit.getGradingScaleIdentifier(),
-              transferCredit.getGradeIdentifier()
-          );
-          
-          String gradeName = gradingScaleItem.getName();
-          if (!StringUtils.isBlank(gradeName)) {
-            if (gradeName.length() > 2)
-              grade = gradeName.substring(0, 2);
-            else
-              grade = gradeName;
-          }
-        }
-        entries.add(new VopsRESTModel.VopsItem(
-            courseNumber,
-            CourseCompletionState.ASSESSED,
-            (String)null,
-            mandatority,
-            grade,
-            false,
-            transferCredit.getCourseName(),
-            ""
-        ));
-        hasTransferCredit = true;
-        break;
-      }
+  private VopsRESTModel.VopsEntry processCourse(Subject subject, int courseNumber) {
+    VopsRESTModel.VopsEntry transferCreditEntry = processTransferCredits(subject, courseNumber);
+    if (transferCreditEntry != null) {
+      return transferCreditEntry;
     }
 
     List<VopsWorkspace> workspaces =
@@ -178,7 +137,7 @@ public class VopsLister {
       }
     }
 
-    if (!hasTransferCredit && !workspaces.isEmpty() && correctCurriculum) {
+    if (!workspaces.isEmpty() && correctCurriculum) {
       SchoolDataIdentifier educationSubtypeIdentifier = null;
       boolean workspaceUserExists = false;
       String name = "";
@@ -214,8 +173,7 @@ public class VopsLister {
       }
 
       if (!canSignUp) {
-        entries.add(new VopsRESTModel.VopsPlaceholder());
-        return false;
+        return new VopsRESTModel.VopsPlaceholder();
       }
       
       for (VopsWorkspace workspace : workspaces) {
@@ -292,7 +250,7 @@ public class VopsLister {
         state = CourseCompletionState.PLANNED;
       }
       
-      entries.add(new VopsRESTModel.VopsItem(
+      return new VopsRESTModel.VopsItem(
           courseNumber,
           state,
           educationSubtypeIdentifier != null ? educationSubtypeIdentifier.toId() : null,
@@ -301,12 +259,56 @@ public class VopsLister {
           workspaceUserExists,
           clean(name),
           clean(description)
-      ));
-      return true;
-    } else if (!hasTransferCredit) {
-      entries.add(new VopsRESTModel.VopsPlaceholder());
+      );
     }
-    return false;
+
+    return new VopsRESTModel.VopsPlaceholder();
+  }
+
+  private VopsRESTModel.VopsEntry processTransferCredits(Subject subject, int courseNumber) {
+    for (TransferCredit transferCredit : transferCredits) {
+      boolean subjectsMatch = Objects.equals(
+          transferCredit.getSubjectIdentifier(),
+          new SchoolDataIdentifier(subject.getIdentifier(), subject.getSchoolDataSource()));
+      boolean courseNumbersMatch = Objects.equals(
+          transferCredit.getCourseNumber(),
+          courseNumber);
+      if (subjectsMatch && courseNumbersMatch) {
+        String grade = "";
+        GradingScaleItem gradingScaleItem = null;
+        Mandatority mandatority = Mandatority.MANDATORY;
+        if (transferCredit.getOptionality() == Optionality.OPTIONAL) {
+          mandatority = Mandatority.UNSPECIFIED_OPTIONAL;
+        }
+
+        if (transferCredit.getGradeIdentifier() != null
+            && transferCredit.getGradingScaleIdentifier() != null) {
+          gradingScaleItem = findGradingScaleItemCached(
+              transferCredit.getGradingScaleIdentifier(),
+              transferCredit.getGradeIdentifier()
+          );
+          
+          String gradeName = gradingScaleItem.getName();
+          if (!StringUtils.isBlank(gradeName)) {
+            if (gradeName.length() > 2)
+              grade = gradeName.substring(0, 2);
+            else
+              grade = gradeName;
+          }
+        }
+        return new VopsRESTModel.VopsItem(
+            courseNumber,
+            CourseCompletionState.ASSESSED,
+            (String)null,
+            mandatority,
+            grade,
+            false,
+            transferCredit.getCourseName(),
+            ""
+        );
+      }
+    }
+    return null;
   }
 
   private String clean(String html) {
@@ -367,7 +369,6 @@ public class VopsLister {
   }
   
   private Map<GradingScaleItemCoordinates, GradingScaleItem> gradingScaleCache = new HashMap<>();
-
   
   public List<VopsRow> getRows() {
     return rows;
