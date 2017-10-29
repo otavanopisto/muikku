@@ -296,6 +296,10 @@ public class VopsLister {
               grade = gradeName;
           }
         }
+        numCourses++;
+        if (mandatority == Mandatority.MANDATORY) {
+          numMandatoryCourses++;
+        }
         return new VopsRESTModel.VopsItem(
             courseNumber,
             CourseCompletionState.ASSESSED,
