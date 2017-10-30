@@ -10,6 +10,7 @@ export interface UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES extends SpecificAction
 export interface UPDATE_DISCUSSION_THREADS_STATE extends SpecificActionType<"UPDATE_DISCUSSION_THREADS_STATE", DiscussionStateType>{}
 export interface UPDATE_DISCUSSION_CURRENT_THREAD_STATE extends SpecificActionType<"UPDATE_DISCUSSION_CURRENT_THREAD_STATE", DiscussionStateType>{}
 export interface PUSH_DISCUSSION_THREAD_FIRST extends SpecificActionType<"PUSH_DISCUSSION_THREAD_FIRST", DiscussionThreadType>{};
+export interface SET_CURRENT_DISCUSSION_THREAD extends SpecificActionType<"SET_CURRENT_DISCUSSION_THREAD", DiscussionThreadType>{};
 
 export interface LoadDiscussionThreadsTriggerType {
   (areaId: number):AnyActionType

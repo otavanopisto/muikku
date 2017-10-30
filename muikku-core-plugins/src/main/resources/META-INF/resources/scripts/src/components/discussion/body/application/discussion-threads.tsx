@@ -35,8 +35,8 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
     this.hasMorePropertyLocation = "discussionThreadsHasMore";
     this.loadMoreTriggerFunctionLocation = "loadMoreDiscussionThreads"
   }
-  getToThread(threadId: number){
-    window.location.hash = window.location.hash.split("/")[0] + "/" + threadId;
+  getToThread(thread: DiscussionThreadType){
+    window.location.hash = thread.forumAreaId + "/" + thread.id;
   }
   render(){
     if (this.props.discussionThreads.state === "LOADING"){
@@ -57,7 +57,7 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
         let user = this.props.userIndex[thread.creator];
         
         return (
-          <div key={thread.id} className="application-list__item" onClick={this.getToThread.bind(this, thread.id)}>
+          <div key={thread.id} className="application-list__item" onClick={this.getToThread.bind(this, thread)}>
             <div className="application-list__item__header">{thread.title}</div>
             <div className="application-list__item__body">
               <div className="container container--discussion-thread-user">{user && user.firstName + user.lastName}</div>

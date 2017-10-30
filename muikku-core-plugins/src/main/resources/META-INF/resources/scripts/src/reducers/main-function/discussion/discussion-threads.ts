@@ -3,7 +3,7 @@ import {ActionType} from '~/actions';
 export interface DiscussionThreadType {
   created: string,
   creator: number,
-  forumAreadId: number,
+  forumAreaId: number,
   id: number,
   lastModified: string,
   locked: boolean,
@@ -14,6 +14,19 @@ export interface DiscussionThreadType {
   updated: string
 }
 
+export interface DiscussionThreadReplyType {
+  childReplyCount: number,
+  created: string,
+  creator: number,
+  deleted: boolean,
+  forumAreaId: number,
+  id: number,
+  lasModified: string,
+  message: string,
+  parentReplyId: number
+}
+
+export interface DiscussionThreadReplyListType extends Array<DiscussionThreadReplyType> {}
 export interface DiscussionThreadListType extends Array<DiscussionThreadType> {}
 
 export type DiscussionStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -25,7 +38,8 @@ export interface DiscussionType {
   areaId: number,
   pages: number,
   hasMore: boolean,
-  current: any,
+  current: DiscussionThreadType,
+  currentReplies: DiscussionThreadReplyListType,
   currentHasMore: boolean,
   currentPages: number
 }
@@ -39,6 +53,7 @@ export interface DiscussionPatchType {
   hasMore?: boolean,
   current?: any,
   currentHasMore?: boolean,
+  currentReplies?: DiscussionThreadReplyListType,
   currentPages?: number
 }
 
@@ -51,7 +66,8 @@ export default function discussionThreads(state: DiscussionType={
     hasMore: false,
     current: null,
     currentHasMore: false,
-    currentPages: 1
+    currentPages: 1,
+    currentReplies: []
 }, action: ActionType): DiscussionType {
   if (action.type === "UPDATE_DISCUSSION_THREADS_STATE"){
     let newState: DiscussionStateType = action.payload;

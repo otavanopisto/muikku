@@ -2,7 +2,7 @@ import { AnyActionType } from "~/actions";
 import promisify from "~/util/promisify";
 import mApi from '~/lib/mApi';
 import notificationActions from '~/actions/base/notifications';
-import {DiscussionType, DiscussionStateType, DiscussionThreadListType, DiscussionPatchType} from "~/reducers/main-function/discussion/discussion-threads";
+import {DiscussionType, DiscussionStateType, DiscussionThreadListType, DiscussionPatchType, DiscussionThreadType, DiscussionThreadReplyListType} from "~/reducers/main-function/discussion/discussion-threads";
 import { UserIndexType } from "~/reducers/main-function/user-index";
 import { loadUserIndex } from "~/actions/main-function/user-index";
 
@@ -101,6 +101,9 @@ export async function loadThreadMessagesHelper(initial:boolean, areaId:number | 
     return;
   }
   
+  let actualAreaId = initial ? areaId : discussion.areaId;
+  let actualThreadId = initial ? threadId : discussion.current.id;
+  
   if (initial){
     //We set this state to loading
     dispatch({
@@ -128,7 +131,38 @@ export async function loadThreadMessagesHelper(initial:boolean, areaId:number | 
   }
   
   try {
-    console.log("DONE");
+    
+    let newProps:DiscussionPatchType = {};
+    
+    if (initial){
+      newProps.current = discussion.threads.find((thread)=>{
+        return thread.id === actualThreadId;
+      }) || <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(actualAreaId, actualThreadId), 'callback')();
+    }
+    
+    let replies:DiscussionThreadReplyListType = <DiscussionThreadReplyListType>await promisify(mApi().forum.areas.threads.replies.read(actualAreaId, actualThreadId, params), 'callback')();
+    let hasMore:boolean = replies.length === MAX_LOADED_AT_ONCE + 1;
+    
+    let actualReplies = replies.concat([]);
+    if (hasMore){
+      //we got to get rid of that extra loaded message
+      actualReplies.pop();
+    }
+    
+    actualReplies.forEach((reply)=>{
+      dispatch(loadUserIndex(reply.creator));
+    });
+    
+    newProps.currentReplies = actualReplies;
+    newProps.currentState = "READY";
+    newProps.pages = pages;
+    newProps.hasMore = hasMore;
+    newProps.areaId = actualAreaId;
+    
+    dispatch({
+      type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+      payload: newProps
+    });
   } catch (err){
     //Error :(
     dispatch(notificationActions.displayNotification(err.message, 'error'));
