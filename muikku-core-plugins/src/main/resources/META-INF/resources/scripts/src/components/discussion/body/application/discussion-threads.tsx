@@ -12,7 +12,7 @@ import '~/sass/elements/text.scss';
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
 import { UserIndexType } from '~/reducers/main-function/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
-import { loadMoreDiscussionThreads } from '~/actions/main-function/discussion/discussion-threads';
+import {loadMoreDiscussionThreads} from '~/actions/main-function/discussion/discussion-threads';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
@@ -29,9 +29,14 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
   constructor(props: DiscussionThreadsProps){
     super(props);
     
+    this.getToThread = this.getToThread.bind(this);
+    
     this.statePropertyLocation = "discussionThreadsState";
     this.hasMorePropertyLocation = "discussionThreadsHasMore";
     this.loadMoreTriggerFunctionLocation = "loadMoreDiscussionThreads"
+  }
+  getToThread(threadId: number){
+    window.location.hash = window.location.hash.split("/")[0] + "/" + threadId;
   }
   render(){
     if (this.props.discussionThreads.state === "LOADING"){
@@ -52,7 +57,7 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
         let user = this.props.userIndex[thread.creator];
         
         return (
-          <div key={thread.id} className="application-list__item">
+          <div key={thread.id} className="application-list__item" onClick={this.getToThread.bind(this, thread.id)}>
             <div className="application-list__item__header">{thread.title}</div>
             <div className="application-list__item__body">
               <div className="container container--discussion-thread-user">{user && user.firstName + user.lastName}</div>

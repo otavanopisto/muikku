@@ -25,11 +25,19 @@ export async function loadThreadsHelper(initial:boolean, areaId:number | null, d
   
   let actualAreaId = initial ? areaId : discussion.areaId;
   
-  //We set this state to loading
-  dispatch({
-    type: "UPDATE_DISCUSSION_THREADS_STATE",
-    payload: <DiscussionStateType>"LOADING"
-  });
+  if (initial){
+    //We set this state to loading
+    dispatch({
+      type: "UPDATE_DISCUSSION_THREADS_STATE",
+      payload: <DiscussionStateType>"LOADING"
+    });
+  } else {
+    //Otherwise we are loading more
+    dispatch({
+      type: "UPDATE_DISCUSSION_THREADS_STATE",
+      payload: <DiscussionStateType>"LOADING_MORE"
+    });
+  }
   
   //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
   let firstResult = initial ? 0 : discussion.pages*MAX_LOADED_AT_ONCE;
@@ -79,6 +87,53 @@ export async function loadThreadsHelper(initial:boolean, areaId:number | null, d
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({
       type: "UPDATE_DISCUSSION_THREADS_STATE",
+      payload: <DiscussionStateType>"ERROR"
+    });
+  }
+}
+
+export async function loadThreadMessagesHelper(initial:boolean, areaId:number | null, threadId: number | null, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+  let state = getState();
+  let discussion:DiscussionType = state.discussionThreads
+  
+  //Avoid loading if it's the same thread that has been loaded already
+  if (initial && discussion.current && discussion.current.id !== threadId && discussion.currentState === "READY"){
+    return;
+  }
+  
+  if (initial){
+    //We set this state to loading
+    dispatch({
+      type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
+      payload: <DiscussionStateType>"LOADING"
+    });
+  } else {
+    //Otherwise we are loading more
+    dispatch({
+      type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
+      payload: <DiscussionStateType>"LOADING_MORE"
+    });
+  }
+  
+  //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
+  let firstResult = initial ? 0 : discussion.currentPages*MAX_LOADED_AT_ONCE;
+  //The pages that we will have loaded will be the first one for initial or otherwise the current one plus 1
+  let pages = initial ? 1 : discussion.currentPages + 1;
+  //We only concat if it is not the initial, that means adding to the next messages
+  let concat = !initial;
+  
+  let params = {
+    firstResult,
+    maxResults: MAX_LOADED_AT_ONCE + 1
+  }
+  
+  try {
+    console.log("DONE");
+  } catch (err){
+    //Error :(
+    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch({
+      type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
       payload: <DiscussionStateType>"ERROR"
     });
   }
