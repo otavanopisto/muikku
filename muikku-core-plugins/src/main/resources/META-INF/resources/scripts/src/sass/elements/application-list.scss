@@ -36,6 +36,8 @@
     }
   }
  
+
+ 
   &.application-list__items {
     height: 100%;
     width: 100%;
@@ -118,6 +120,88 @@
       }
     }      
   }
+
+  &.application-list--item-open {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 10px 15px 10px 27px;    
+
+    &::-webkit-scrollbar { 
+      display: none; 
+    }
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    overflow: -moz-scrollbars-none;
+
+    .application-list__item {
+      padding-left: 15px;
+
+      &.application-list__item--communicator-unread {
+        border-left: solid 4px $color-communicator-application-list-item-unread-border;
+      }
+    
+      .application-list__item__header {
+        align-items: center;
+    
+        input {
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          border: solid 1px $color-communicator-application-list-item-checkbox-border;
+          border-radius: 3px;
+          margin-right: 8px;
+        
+          @include breakpoint-down($breakpoint-portrait-pad){
+            display: none;
+          }
+        }
+      
+        input:checked {
+          background-color: $color-communicator-application-list-item-checkbox-checked-background;
+        }
+      
+        input:checked::after {
+          content: "\e639";
+          font-family: muikku;
+          font-size: 18px;
+          color: $color-communicator-application-list-item-checkbox-checked-mark;
+        }
+      }
+      &.workspace-announcement {
+        .icon::before {
+          color: #afe5d3;
+        }
+      }
+      &.environment-announcement {      
+        .icon::before {
+          color: #539fde;
+        }
+      }
+      
+      
+    }
+    .application-list__item__header, .application-list__item__body, .application-list__item__footer {
+      display: flex;      
+      align-items: center;
+    }
+    
+    .application-list__item__footer {
+      margin-bottom: 5px;
+      a {
+        text-decoration: underline;  
+        cursor: pointer;
+             
+        &:not(:first-child) {
+          margin-left: 20px;
+        } 
+      }
+    }  
+
+  } 
+
+
 
   &.application-list--communicator-message-view {
     padding: 10px 20px 10px 30px;

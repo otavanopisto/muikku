@@ -44,7 +44,7 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className="application-list application-list--discussion-threads">{
+    return <div className="application-list application-list__items">{
       this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)=>{
         
         //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
