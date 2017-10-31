@@ -55,23 +55,23 @@ public class ChatRoomSyncScheduler {
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
-      logger.log(Level.INFO, "No openfire token set, skipping user sync");
+      logger.log(Level.INFO, "No openfire token set, skipping room sync");
       return;
     }
       
     String openfireUrl = pluginSettingsController.getPluginSetting("chat", "openfireUrl");
     if (openfireUrl == null) {
-      logger.log(Level.INFO, "No openfire url set, skipping user sync");
+      logger.log(Level.INFO, "No openfire url set, skipping room sync");
       return;
     }
 
     String openfirePort = pluginSettingsController.getPluginSetting("chat", "openfirePort");
     if (openfirePort == null) {
-      logger.log(Level.INFO, "No openfire port set, skipping user sync");
+      logger.log(Level.INFO, "No openfire port set, skipping room sync");
       return;
     }
     if (!StringUtils.isNumeric(openfirePort)) {
-      logger.log(Level.WARNING, "Invalid openfire port, skipping user sync");
+      logger.log(Level.WARNING, "Invalid openfire port, skipping room sync");
       return;
     }
 
