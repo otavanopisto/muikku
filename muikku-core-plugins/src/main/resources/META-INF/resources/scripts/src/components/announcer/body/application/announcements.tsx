@@ -23,8 +23,8 @@ interface AnnouncementsState {
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
   render(){
     return ( 
-      <div className="application-list application-list--items"
-       ref="list" >
+      <div className="application-list application-list__items"
+       ref="list" >        
         <div key={1} className='application-list__item workspace-announcement'>
           <div className="application-list__item__header">
             <input type="checkbox"/>        
