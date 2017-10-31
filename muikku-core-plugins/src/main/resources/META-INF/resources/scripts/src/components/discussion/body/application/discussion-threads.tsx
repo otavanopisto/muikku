@@ -12,28 +12,22 @@ import '~/sass/elements/text.scss';
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
 import { UserIndexType } from '~/reducers/main-function/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
-import {loadMoreDiscussionThreads} from '~/actions/main-function/discussion/discussion-threads';
+import Pager from '~/components/general/pager';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
   i18n: i18nType,
-  userIndex: UserIndexType,
-  discussionThreadsState: string,
-  discussionThreadsHasMore: string
+  userIndex: UserIndexType
 }
 
 interface DiscussionThreadsState {
 }
 
-class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, DiscussionThreadsState> {
+class DiscussionThreads extends React.Component<DiscussionThreadsProps, DiscussionThreadsState> {
   constructor(props: DiscussionThreadsProps){
     super(props);
     
     this.getToThread = this.getToThread.bind(this);
-    
-    this.statePropertyLocation = "discussionThreadsState";
-    this.hasMorePropertyLocation = "discussionThreadsHasMore";
-    this.loadMoreTriggerFunctionLocation = "loadMoreDiscussionThreads"
   }
   getToThread(thread: DiscussionThreadType){
     window.location.hash = thread.forumAreaId + "/" + thread.id;
@@ -66,10 +60,7 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
           </div>
        )
       })
-    }{
-      this.props.discussionThreads.state === "LOADING_MORE" ? 
-        <div className="application-list__item loader-empty"/>
-    : null}</div>
+    }<Pager onClick={(n)=>{console.log(n)}} current={this.props.discussionThreads.page} pages={this.props.discussionThreads.totalPages}/></div>
   }
 }
 
@@ -77,14 +68,12 @@ function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     discussionThreads: state.discussionThreads,
-    userIndex: state.userIndex,
-    discussionThreadsState: state.discussionThreads.state,
-    discussionThreadsHasMore: state.discussionThreads.hasMore
+    userIndex: state.userIndex
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({loadMoreDiscussionThreads}, dispatch);
+  return {};
 };
 
 export default (connect as any)(
