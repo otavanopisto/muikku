@@ -4,11 +4,13 @@ import promisify from "~/util/promisify";
 import notificationActions from '~/actions/base/notifications';
 import mApi from '~/lib/mApi';
 import {DiscussionPatchType, DiscussionStateType, DiscussionThreadType} from "~/reducers/main-function/discussion/discussion-threads";
-import {loadThreadsHelper} from "./discussion-threads/helpers";
+import {loadThreadsHelper, loadThreadMessagesHelper} from "./discussion-threads/helpers";
 
 export interface UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES", DiscussionPatchType>{}
 export interface UPDATE_DISCUSSION_THREADS_STATE extends SpecificActionType<"UPDATE_DISCUSSION_THREADS_STATE", DiscussionStateType>{}
+export interface UPDATE_DISCUSSION_CURRENT_THREAD_STATE extends SpecificActionType<"UPDATE_DISCUSSION_CURRENT_THREAD_STATE", DiscussionStateType>{}
 export interface PUSH_DISCUSSION_THREAD_FIRST extends SpecificActionType<"PUSH_DISCUSSION_THREAD_FIRST", DiscussionThreadType>{};
+export interface SET_CURRENT_DISCUSSION_THREAD extends SpecificActionType<"SET_CURRENT_DISCUSSION_THREAD", DiscussionThreadType>{};
 
 export interface LoadDiscussionThreadsTriggerType {
   (areaId: number):AnyActionType
@@ -24,6 +26,10 @@ export interface CreateDiscussionThreadTriggerType {
 
 export interface LoadDiscussionThreadTriggerType {
   (areaId: number, threadId: number):AnyActionType
+}
+
+export interface LoadMoreOfCurrentDiscussionThreadTriggerType {
+  ():AnyActionType
 }
 
 let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscussionThreads(areaId){
@@ -54,10 +60,12 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
 }
 
 let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussionThread(areaId, threadId){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
-  }
+  return loadThreadMessagesHelper.bind(null, true, areaId, threadId); 
 }
 
-export {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread, loadDiscussionThread}
-export default {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread, loadDiscussionThread}
+let loadMoreOfCurrentDiscussionThread:LoadMoreOfCurrentDiscussionThreadTriggerType = function loadMoreOfCurrentDiscussionThread(){
+  return loadThreadMessagesHelper.bind(null, false, null, null); 
+}
+
+export {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread, loadDiscussionThread, loadMoreOfCurrentDiscussionThread}
+export default {loadDiscussionThreads, loadMoreDiscussionThreads, createDiscussionThread, loadDiscussionThread, loadMoreOfCurrentDiscussionThread}

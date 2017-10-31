@@ -11,7 +11,7 @@ const MAX_LOADED_AT_ONCE = 30;
 export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   //Remove the current messsage
   dispatch({
-    type: "SET_CURRENT_THREAD",
+    type: "SET_CURRENT_MESSAGE_THREAD",
     payload: null
   });
   

@@ -14,7 +14,7 @@ import {CommunicatorCurrentThreadType, CommunicatorStateType,
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 
 //////////////////////////////////////// INTERFACES FOR ACTIONS
-export interface SET_CURRENT_THREAD extends SpecificActionType<"SET_CURRENT_THREAD", CommunicatorCurrentThreadType>{}
+export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", CommunicatorCurrentThreadType>{}
 export interface UPDATE_MESSAGES_STATE extends SpecificActionType<"UPDATE_MESSAGES_STATE", CommunicatorStateType>{}
 export interface UPDATE_MESSAGES_ALL_PROPERTIES extends SpecificActionType<"UPDATE_MESSAGES_ALL_PROPERTIES", CommunicatorMessagesPatchType>{}
 export interface UPDATE_MESSAGE_ADD_LABEL extends SpecificActionType<"UPDATE_MESSAGE_ADD_LABEL", {

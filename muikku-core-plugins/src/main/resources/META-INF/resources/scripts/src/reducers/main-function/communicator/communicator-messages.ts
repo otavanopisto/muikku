@@ -246,7 +246,7 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
     }), messages: state.messages.filter((message: CommunicatorMessageType)=>{
       return message.communicatorMessageId !== action.payload.communicatorMessageId
     }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.communicatorMessageId})});
-  } else if (action.type === "SET_CURRENT_THREAD"){
+  } else if (action.type === "SET_CURRENT_MESSAGE_THREAD"){
     return Object.assign({}, state, {current: <CommunicatorCurrentThreadType>action.payload});
   } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES"){
     let update: CommunicatorMessageLabelPatchType = action.payload.update;

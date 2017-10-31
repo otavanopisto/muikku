@@ -39,7 +39,7 @@ export function getApiId(item:CommunicatorNavigationItemType, weirdSecondVersion
 export async function loadMessagesHelper(location:string | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   //Remove the current messsage
   dispatch({
-    type: "SET_CURRENT_THREAD",
+    type: "SET_CURRENT_MESSAGE_THREAD",
     payload: null
   });
   
