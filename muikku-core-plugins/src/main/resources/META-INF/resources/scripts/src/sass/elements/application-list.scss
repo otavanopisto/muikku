@@ -52,7 +52,9 @@
 
     .application-list__item {
       padding-left: 15px;
-
+      
+      // This is wrong, should be item--communicator-unread
+      
       &.application-list__item--communicator-unread {
         border-left: solid 4px $color-communicator-application-list-item-unread-border;
       }
@@ -103,6 +105,30 @@
       
       
     }
+
+    .application-list__item-content-container--avatar {
+      display: flex;              
+    }   
+
+    .application-list__item-content--avatar-container {
+      flex: 0 0 100px;
+      .application-list__item-content-avatar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        background-color: skyblue;
+        color: #fff;
+      }  
+    }
+
+    .application-list__item-content--content-container {
+      flex: 1 1 auto;            
+    }    
+  
     .application-list__item__header, .application-list__item__body, .application-list__item__footer {
       display: flex;      
       align-items: center;
