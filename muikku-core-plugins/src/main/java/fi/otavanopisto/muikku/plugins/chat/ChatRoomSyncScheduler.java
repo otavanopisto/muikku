@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.Resource;
-import javax.ejb.EJBContext;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -30,9 +28,6 @@ public class ChatRoomSyncScheduler {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
-
-  @Resource
-  private EJBContext ejbContext;
   
   @Inject
   private Logger logger;
