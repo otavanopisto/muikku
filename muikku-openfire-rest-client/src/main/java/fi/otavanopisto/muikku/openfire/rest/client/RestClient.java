@@ -9,11 +9,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -245,16 +240,7 @@ public final class RestClient {
   private Client createrRestClient() throws KeyManagementException, NoSuchAlgorithmException {
     ClientBuilder clientBuilder = ClientBuilder.newBuilder();
 
-    SSLContext sslContext = null;
-    try {
-      sslContext = SSLContext.getInstance("SSL");
-      sslContext.init(null, null, null);
-    } catch (NoSuchAlgorithmException | KeyManagementException e) {
-      LOG.log(Level.SEVERE, "Failed to initialize trust all certificate manager", e);
-    }
-    
     ClientBuilder builder = clientBuilder
-        .sslContext(sslContext)
         .register(new JacksonConfigurator());
     
     return builder.build();
