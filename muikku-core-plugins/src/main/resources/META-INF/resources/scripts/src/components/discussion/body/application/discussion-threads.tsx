@@ -13,11 +13,13 @@ import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/dis
 import { UserIndexType } from '~/reducers/main-function/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
+import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
   i18n: i18nType,
-  userIndex: UserIndexType
+  userIndex: UserIndexType,
+  hidden: boolean
 }
 
 interface DiscussionThreadsState {
@@ -52,7 +54,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className="application-list application-list__items">{
+    return <BodyScrollKeeper hidden={this.props.hidden}><div className="application-list application-list__items">{
       this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)=>{
         
         //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
@@ -74,7 +76,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
           </div>
        )
       })
-    }<Pager onClick={this.getToPage} current={this.props.discussionThreads.page} pages={this.props.discussionThreads.totalPages}/></div>
+    }<Pager onClick={this.getToPage} current={this.props.discussionThreads.page} pages={this.props.discussionThreads.totalPages}/></div></BodyScrollKeeper>
   }
 }
 
