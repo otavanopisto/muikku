@@ -47,19 +47,24 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className="application-list application-list--discussion-threads">{
+    return <div className="application-list application-list__items">{
       this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)=>{
         
         //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
         //round so put something as a placeholder in order to be efficient and make short rendering cycles
-        let user = this.props.userIndex[thread.creator];
-        
+        let user = this.props.userIndex[thread.creator];        
         return (
-          <div key={thread.id} className="application-list__item" onClick={this.getToThread.bind(this, thread)}>
-            <div className="application-list__item__header">{thread.title}</div>
-            <div className="application-list__item__body">
-              <div className="container container--discussion-thread-user">{user && user.firstName + user.lastName}</div>
-              <span className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></span>
+          <div key={thread.id} className="application-list__item-content-container--avatar" onClick={this.getToThread.bind(this, thread)}>            
+            <div className="application-list__item-content--avatar-container">
+              <div className="application-list__item-content-avatar">D</div>
+            </div>            
+            <div className="application-list__item-content--content-container">
+              <div className="application-list__item__header">{thread.title}</div>
+              <div className="application-list__item__body">
+                <span className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></span>
+                <div className="container container--discussion-thread-user">{user && user.firstName + user.lastName}</div>
+
+              </div>
             </div>
           </div>
        )
