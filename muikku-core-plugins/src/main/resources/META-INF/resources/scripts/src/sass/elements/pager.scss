@@ -1,21 +1,37 @@
+//FIX this I just made it up, so everything has inline block and some symbols, apply the design that you see fits
 .pager {
+  display: inline-block;
+	
   .pager__body {
-  	.pager__first {
+  	display: inline-block;
   	
+  	.pager__first {
+  	  display: inline-block;
     }
     .pager__last {
-    
+      display: inline-block;
     }
     .pager__gap {
-      
+      display: inline-block;
     }
   	.pager__less {
-  	
+  	  display: inline-block;
+  	  
+  	  &::before {
+  	  	display: block;
+  	  	content: "<"
+  	  }
     }
     .pager__more {
-    
+      display: inline-block;
+      
+      &::before {
+      	display: block;
+  	  	content: ">";
+  	  }
     }
     .pager__number {
+      display: inline-block;
   	  &.pager__number--current {
   	  
   	  }

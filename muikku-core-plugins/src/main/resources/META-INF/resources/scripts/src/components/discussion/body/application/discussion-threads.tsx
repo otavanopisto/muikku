@@ -34,7 +34,12 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
     window.location.hash = (this.props.discussionThreads.areaId || 0) + "/" + n;
   }
   getToThread(thread: DiscussionThreadType){
-    window.location.hash = thread.forumAreaId + "/" + thread.id;
+    if (this.props.discussionThreads.areaId === thread.forumAreaId){
+      window.location.hash = thread.forumAreaId + "/" + this.props.discussionThreads.page +
+      "/" + thread.id + "/1";
+    }
+    window.location.hash = thread.forumAreaId + "/1" +
+      "/" + thread.id + "/1";
   }
   render(){
     if (this.props.discussionThreads.state === "LOADING"){
