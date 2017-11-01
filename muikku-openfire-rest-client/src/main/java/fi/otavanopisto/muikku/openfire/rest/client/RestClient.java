@@ -9,11 +9,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -244,37 +239,8 @@ public final class RestClient {
    */
   private Client createrRestClient() throws KeyManagementException, NoSuchAlgorithmException {
     ClientBuilder clientBuilder = ClientBuilder.newBuilder();
-    
-    TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-      public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-        return null;
-      }
 
-      public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-      }
-
-      public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-      }
-    } };
-
-    SSLContext sslContext = null;
-    try {
-      sslContext = SSLContext.getInstance("SSL");
-      sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-    } catch (NoSuchAlgorithmException | KeyManagementException e) {
-      LOG.log(Level.SEVERE, "Failed to initialize trust all certificate manager", e);
-    }
-
-    HostnameVerifier fakeHostnameVerifier = new HostnameVerifier() {
-      @Override
-      public boolean verify(String hostname, SSLSession session) {
-        return true;
-      }
-    };
-    
     ClientBuilder builder = clientBuilder
-        .sslContext(sslContext)
-        .hostnameVerifier(fakeHostnameVerifier)
         .register(new JacksonConfigurator());
     
     return builder.build();
