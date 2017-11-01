@@ -28,6 +28,10 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
     super(props);
     
     this.getToThread = this.getToThread.bind(this);
+    this.getToPage = this.getToPage.bind(this);
+  }
+  getToPage(n: number){
+    window.location.hash = (this.props.discussionThreads.areaId || 0) + "/" + n;
   }
   getToThread(thread: DiscussionThreadType){
     window.location.hash = thread.forumAreaId + "/" + thread.id;
@@ -60,7 +64,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
           </div>
        )
       })
-    }<Pager onClick={(n)=>{console.log(n)}} current={this.props.discussionThreads.page} pages={this.props.discussionThreads.totalPages}/></div>
+    }<Pager onClick={this.getToPage} current={this.props.discussionThreads.page} pages={this.props.discussionThreads.totalPages}/></div>
   }
 }
 

@@ -52,15 +52,15 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
     
     return <div className={`pager ${this.props.modifier ? "pager--" + this.props.modifier : ""}`}>
       <div className="pager__body">
-        {isPagerLessVisible ? [<div className="pager__less" onClick={this.props.onClick.bind(pagerLessNumber)}/>,
-                               <div className="pager__first" onClick={this.props.onClick.bind(1)}>1</div>,
+        {isPagerLessVisible ? [<div className="pager__less" onClick={this.props.onClick.bind(null, pagerLessNumber)}/>,
+                               <div className="pager__first" onClick={this.props.onClick.bind(null, 1)}>1</div>,
                                <div className="pager_gap">...</div>] : null}
         {Array.from(new Array(leftPage - rightPage + 1),(x,i)=> leftPage+i).map((page)=>{
-          return <div className={`pager__number ${page === this.props.current ? "pager__number--current" : ""}`} onClick={this.props.onClick.bind(page)}>{page}</div>
+          return <div className={`pager__number ${page === this.props.current ? "pager__number--current" : ""}`} onClick={this.props.onClick.bind(null, page)}>{page}</div>
         })}
         {isPagerMoreVisible ? [<div className="pager_gap">...</div>,
-                               <div className="pager__last" onClick={this.props.onClick.bind(this.props.pages)}>{this.props.pages}</div>,
-                               <div className="pager__more" onClick={this.props.onClick.bind(pagerMoreNumber)}/>] : null}
+                               <div className="pager__last" onClick={this.props.onClick.bind(null, this.props.pages)}>{this.props.pages}</div>,
+                               <div className="pager__more" onClick={this.props.onClick.bind(null, pagerMoreNumber)}/>] : null}
       </div>
     </div>
   }
