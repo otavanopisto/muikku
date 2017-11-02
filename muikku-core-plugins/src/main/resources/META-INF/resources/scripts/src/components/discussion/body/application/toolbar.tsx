@@ -29,11 +29,42 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
     super(props);
     
     this.onSelectChange = this.onSelectChange.bind(this);
+    this.onGoBackClick = this.onGoBackClick.bind(this);
   }
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement>){
     window.location.hash = e.target.value;
   }
+  onGoBackClick(e: Event){
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState){
+      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      if (canGoBack){
+        history.back();
+      } else {
+        let splitted = location.hash.split("/");
+        history.replaceState('', '', splitted[0] + "/" + splitted[1]);
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      let splitted = location.hash.split("/");
+      location.hash = splitted[0] + "/" + splitted[1];
+    }
+  }
   render(){
+    if (this.props.discussionThreads.current){
+      let currentArea = this.props.areas.find((area)=>area.id === this.props.discussionThreads.current.forumAreaId);
+      return <div className="application-panel__toolbar">
+        <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
+          <span className="icon icon-goback"></span>
+        </Link>
+        <div className="text text--discussion-current-thread">
+          {currentArea.name} >
+          {this.props.discussionThreads.current.title}
+        </div>
+      </div>
+    }
+    
     return <div className="application-panel__toolbar">
       <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussionThreads.areaId || ""}>
         <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
