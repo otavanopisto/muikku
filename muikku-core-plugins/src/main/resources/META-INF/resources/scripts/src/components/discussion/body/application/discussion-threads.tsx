@@ -71,7 +71,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
                 <div className="text text--discussion-thread-item-title">{thread.title}</div></div>
               <div className="application-list__item__body">
                 <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
-              </div>              
+              </div>
               <div className="application-list__item__footer">
                 <div className="text text--discussion-thread-user">
                   <span>{user && user.firstName +  ' ' + user.lastName}</span> 
