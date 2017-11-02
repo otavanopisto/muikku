@@ -29,44 +29,44 @@ export interface DiscussionThreadReplyType {
 export interface DiscussionThreadReplyListType extends Array<DiscussionThreadReplyType> {}
 export interface DiscussionThreadListType extends Array<DiscussionThreadType> {}
 
-export type DiscussionStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
+export type DiscussionStateType = "LOADING" | "ERROR" | "READY";
 
 export interface DiscussionType {
   state: DiscussionStateType,
-  currentState: DiscussionStateType,
   threads: DiscussionThreadListType,
+  page: number,
   areaId: number,
-  pages: number,
-  hasMore: boolean,
+  totalPages: number,
   current: DiscussionThreadType,
+  currentState: DiscussionStateType,
   currentReplies: DiscussionThreadReplyListType,
-  currentHasMore: boolean,
-  currentPages: number
+  currentPage: number,
+  currentTotalPages: number
 }
 
 export interface DiscussionPatchType {
   state?: DiscussionStateType,
-  currentState?: DiscussionStateType,
   threads?: DiscussionThreadListType,
+  page?: number,
   areaId?: number,
-  pages?: number,
-  hasMore?: boolean,
-  current?: any,
-  currentHasMore?: boolean,
+  totalPages?: number,
+  current?: DiscussionThreadType,
+  currentState?: DiscussionStateType,
   currentReplies?: DiscussionThreadReplyListType,
-  currentPages?: number
+  currentPage?: number,
+  currentTotalPages?: number
 }
 
 export default function discussionThreads(state: DiscussionType={
     state: "LOADING",
-    currentState: "READY",
     threads: [],
     areaId: null,
-    pages: 1,
-    hasMore: false,
+    page: 1,
+    totalPages: 1,
     current: null,
-    currentHasMore: false,
-    currentPages: 1,
+    currentState: "READY",
+    currentPage: 1,
+    currentTotalPages: 1,
     currentReplies: []
 }, action: ActionType): DiscussionType {
   if (action.type === "UPDATE_DISCUSSION_THREADS_STATE"){
@@ -85,6 +85,14 @@ export default function discussionThreads(state: DiscussionType={
   } else if (action.type === "SET_CURRENT_DISCUSSION_THREAD"){
     return Object.assign({}, state, {
       current: action.payload
+    });
+  } else if (action.type === "SET_TOTAL_DISCUSSION_PAGES"){
+    return Object.assign({}, state, {
+      totalPages: action.payload
+    });
+  } else if (action.type === "SET_TOTAL_DISCUSSION_THREAD_PAGES"){
+    return Object.assign({}, state, {
+      currentTotalPages: action.payload
     });
   }
   return state;

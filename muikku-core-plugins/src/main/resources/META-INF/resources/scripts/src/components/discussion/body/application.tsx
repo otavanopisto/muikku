@@ -36,7 +36,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
 
     return <div className="container container--full">
       <ApplicationPanel title={title} modifier="discussion" primaryOption={primaryOption} toolbar={toolbar}>
-        <DiscussionThreads/>
+        <DiscussionThreads hidden={!!this.props.discussionThreads.current}/>
       </ApplicationPanel>
       <HoverButton icon="edit" modifier="new-message"/>
     </div>
