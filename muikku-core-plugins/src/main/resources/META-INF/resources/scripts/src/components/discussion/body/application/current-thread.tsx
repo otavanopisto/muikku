@@ -36,7 +36,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     //Again note that the user might not be ready
     let userCreator = this.props.userIndex[this.props.discussionThreads.current.creator];
     
-    return <div><div className="application-list application-list__items">
+    return <div className="application-list application-list__items">
       <div className="application-list__item application-list__item--discussion-current-thread">
         <div className="application-list__item__header">
           {this.props.discussionThreads.current.title}
@@ -50,14 +50,15 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           //Again note that the user might not be ready
           let user = this.props.userIndex[reply.creator];
           
-          return <div className={`application-list__item application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
+          return <div key={reply.id} className={`application-list__item application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
             <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
             <div className="application-list__item__footer">
             </div>
           </div>
         })
       }
-    </div><Pager onClick={this.getToPage} current={this.props.discussionThreads.page} pages={this.props.discussionThreads.totalPages}/></div>
+      <Pager onClick={this.getToPage} current={this.props.discussionThreads.currentPage} pages={this.props.discussionThreads.currentTotalPages}/>
+    </div>
   }
 }
 
