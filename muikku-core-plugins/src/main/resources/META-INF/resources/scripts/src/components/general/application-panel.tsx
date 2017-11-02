@@ -70,7 +70,8 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     this.setRemainingHeight();
   }
   render(){
-    return (<div className={`application-panel application-panel--${this.props.modifier} ${this.state.sticky ? "application-panel--sticky" : ''}`}>
+    return (
+    <div className={`application-panel application-panel--${this.props.modifier} ${this.state.sticky ? "application-panel--sticky" : ''}`}>
       <div className="application-panel__container">                
         <div className="application-panel__header">
           <div className="application-panel__header__wrapper">
@@ -82,12 +83,12 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
           <div className="application-panel__actions" ref="scrollReference">
             <div className="application-panel__actions__wrapper">
               {this.props.primaryOption ? <div className="application-panel__helper-container">{this.props.primaryOption}</div> : null}
-              <div className="application-panel__main-container">{this.props.toolbar}</div>
+              <div className="application-panel__main-container ">{this.props.toolbar}</div>
             </div>
           </div>
           <div ref="damn" className="application-panel__content">
             {this.props.aside ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
-            <div className="application-panel__main-container loader-empty">{this.props.children}</div>
+            <div className={`application-panel__main-container ${this.props.aside ? "application-panel__main-container--aside" : 'application-panel__main-container--full'} loader-empty`}>{this.props.children}</div>
           </div>
         </div>
       </div>

@@ -1,9 +1,8 @@
 //FIX this I just made it up, so everything has inline block and some symbols, apply the design that you see fits
 .pager {
-  display: inline-block;
 	
   .pager__body {
-  	display: inline-block;
+    display:flex;
   	
   	.pager__first {
   	  display: inline-block;
