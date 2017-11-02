@@ -9,6 +9,7 @@ import Toolbar from './application/toolbar';
 import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
 
 import DiscussionThreads from './application/discussion-threads';
+import CurrentThread from './application/current-thread';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
@@ -30,13 +31,14 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
   render(){
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.forum.pageTitle')}</h2>
     let toolbar = <Toolbar/>
-    let primaryOption = <NewThread><Link className="button button--primary-function">    
+    let primaryOption = !this.props.discussionThreads.current ? <NewThread><Link className="button button--primary-function">    
     {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
-    </Link></NewThread>
+    </Link></NewThread> : null;
 
     return <div className="container container--full">
       <ApplicationPanel title={title} modifier="discussion" primaryOption={primaryOption} toolbar={toolbar}>
-        <DiscussionThreads hidden={!!this.props.discussionThreads.current}/>
+        <DiscussionThreads/>
+        <CurrentThread/>
       </ApplicationPanel>
       <HoverButton icon="edit" modifier="new-message"/>
     </div>

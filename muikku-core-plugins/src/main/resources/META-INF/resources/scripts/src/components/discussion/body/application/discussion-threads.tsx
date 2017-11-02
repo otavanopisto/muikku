@@ -18,8 +18,7 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
   i18n: i18nType,
-  userIndex: UserIndexType,
-  hidden: boolean
+  userIndex: UserIndexType
 }
 
 interface DiscussionThreadsState {
@@ -54,7 +53,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <BodyScrollKeeper hidden={this.props.hidden}><div className="application-list application-list__items">{
+    return <BodyScrollKeeper hidden={!!this.props.discussionThreads.current}><div className="application-list application-list__items">{
       this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)=>{
         
         //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
