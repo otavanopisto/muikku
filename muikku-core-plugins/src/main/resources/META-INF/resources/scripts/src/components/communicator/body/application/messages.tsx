@@ -199,7 +199,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             <div className="text text--communicator-usernames">
               <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
             </div>
-            {message.messageCountInThread > 1 ? <div className="text text--communicator-counter">
+            {message.messageCountInThread > 1 ? <div className="text text--item-counter">
               {message.messageCountInThread}
             </div> : null}
             <div className="text text--communicator-date">

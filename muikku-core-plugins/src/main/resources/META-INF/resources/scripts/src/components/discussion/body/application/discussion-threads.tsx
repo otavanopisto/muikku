@@ -48,7 +48,7 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
     } else if (this.props.discussionThreads.threads.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
-    
+
     return <div className="application-list application-list__items">{
       this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)=>{
         
@@ -61,12 +61,27 @@ class DiscussionThreads extends BodyScrollLoader<DiscussionThreadsProps, Discuss
               <div className="application-list__item-content-avatar">D</div>
             </div>            
             <div className="application-list__item-content--content-container">
-              <div className="application-list__item__header">{thread.title}</div>
+              <div className="application-list__item__header application-list__item__header--discussion-item-header">
+                <div className="icon-lock"></div>
+                <div className="icon-pin"></div>
+                <div className="text text--discussion-thread-item-title">{thread.title}</div></div>
               <div className="application-list__item__body">
-                <span className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></span>
-                <div className="container container--discussion-thread-user">{user && user.firstName + user.lastName}</div>
-
-              </div>
+                <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
+              </div>              
+              <div className="application-list__item__footer">
+                <div className="text text--discussion-thread-user">
+                  <span>{user && user.firstName +  ' ' + user.lastName}</span> 
+                  <span>{this.props.i18n.time.format()}</span>
+                </div>                
+                <div className="text text--discussion-thread-meta">
+                  <div className="text text--item-counter">
+                    <span>15</span>
+                  </div>
+                  <div className="text text--discussion-thread-meta-latest-reply">
+                    <span>TODO Viimeisin viesti: {this.props.i18n.time.format()}</span>
+                  </div>
+                </div>  
+              </div>  
             </div>
           </div>
        )
