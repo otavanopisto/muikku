@@ -183,6 +183,11 @@
       <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
 
+		<dependency>
+		  <groupId>fi.otavanopisto.muikku</groupId>
+		  <artifactId>openfire-rest-client</artifactId>
+		</dependency>
+
 		<!-- Test -->
 
 		<dependency>

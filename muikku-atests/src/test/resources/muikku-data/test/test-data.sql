@@ -1,5 +1,5 @@
 insert into PluginSettingKey(name, plugin) select 'roles.workspace.TEACHER', 'school-data-pyramus' from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER' having count(*) = 0;
-insert into PluginSetting (value, key_id) select '1', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER') from PluginSetting having count(*) = 0;
+insert into PluginSetting (value, key_id) select '7', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'roles.workspace.TEACHER') from PluginSetting having count(*) = 0;
 
 insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8081, 8443);
 

@@ -81,7 +81,7 @@ public class TranscriptOfRecordsController {
       return false;
     }
 
-    if ("S2".equals(finnish) && "AI".equals(code)) {
+    if ("S2".equals(finnish) && "ÄI".equals(code)) {
       return false;
     }
 
