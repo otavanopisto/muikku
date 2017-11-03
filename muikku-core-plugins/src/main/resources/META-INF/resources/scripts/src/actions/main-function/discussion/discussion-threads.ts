@@ -44,12 +44,16 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
       type: "SET_CURRENT_DISCUSSION_THREAD",
       payload: null
     });
+    dispatch({
+      type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
+      payload: <DiscussionStateType>"WAIT"
+    });
     
     let state = getState();
     let discussion:DiscussionType = state.discussionThreads;
     
     //Avoid loading if it's the same area
-    if (discussion.areaId === data.areaId && discussion.state === "READY"){
+    if (discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
       return;
     }
     
@@ -126,6 +130,18 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
       let discussion:DiscussionType = getState().discussionThreads;
       window.location.hash = newThread.forumAreaId + "/" + 
         (newThread.forumAreaId === discussion.areaId ? discussion.page : "1") + "/" + newThread.id + "/1";
+      
+      //since we cannot be sure how the new tread affected whatever they are looking at now, and we can't just push first
+      //because we might not have the last, lets make it so that when they go back the server is called in order
+      //to retrieve the data properly
+      
+      //this will do it, since it will consider the discussion thread to be in a waiting state
+      //non-ready
+      dispatch({
+        type: "UPDATE_DISCUSSION_THREADS_STATE",
+        payload: <DiscussionStateType>"WAIT"
+      });
+      
       data.success && data.success();
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
@@ -140,7 +156,7 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
     let discussion:DiscussionType = state.discussionThreads
     
     //Avoid loading if it's the same thread that has been loaded already
-    if (discussion.current && discussion.current.id === data.threadId){
+    if (discussion.current && discussion.current.id === data.threadId && discussion.currentPage === data.threadPage){
       return;
     }
     
