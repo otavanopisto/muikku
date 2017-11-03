@@ -50,28 +50,63 @@ $frontpage-orderd-container-separation: 10;
   }
  
   &.ordered-container--frontpage-otavan-opisto-info {
+    justify-content: center;
+  
+    .ordered-container__item.ordered-container__item--otavan-opisto-logo {
+      flex: 1 0 100%;
+      order: 1;
+    }
+    
     .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
+      flex: 1 0 100%;
+      order: 3;
     }
- 
-    @include breakpoint-up($breakpoint-landscape-pad){
-      >.ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-        flex-direction: row;
+  
+    .ordered-container__item.ordered-container__item--otavan-opisto-description {
+      flex: 1 0 100%;
+      order: 2;
+    }
+    
+    @include breakpoint($breakpoint-pad){
+      flex-flow: row wrap;
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-logo {
+        flex: 1 1 50%;
+        order: 1;
+      }
+      
+      .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+        flex: 1 1 50%;
+        order: 2;
+      }
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-description {
+        flex: 1 0 100%;
+        order: 3;
       }
     }
- 
-    @include breakpoint-down($breakpoint-portrait-pad){
-      >.ordered-container__item.ordered-container__item--frontpage-otavan-opisto-logo {
-        order: -1;
-        text-align: center;
-
-        >img {
-          height: 60px;
-        }
+    
+    @include breakpoint($breakpoint-desktop){
+      flex-flow: row wrap;
+      justify-content: flex-start;
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-logo {
+        flex: 0 1 30%;
+        order: 1;
+      }
+      
+      .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+        flex: 1 1 100%;
+        margin: 1.5rem 0 0 30%;
+        order: 3;
+      }
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-description {
+        flex: 1 1 70%;
+        order: 2;
       }
     }
+    
   }
  
   &.ordered-container--index-panels {

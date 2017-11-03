@@ -76,7 +76,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
 <header className="hero hero--frontpage">
   <div className="hero__wrapper">
     <div className="hero__wrapper__item">
-      <div className="bubble bubble--responsive">
+      <div className="bubble bubble--application">
         <div className="bubble__title">
           {this.props.i18n.text.get('plugin.header.studentApplicationBubble.title')}
         </div>
@@ -92,7 +92,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     </div>
     <div className="hero__wrapper__item">
       <div className="container container--muikku-logo">
-        <img className="logo logo--muikku-verkko" src="/gfx/of-site-logo.png"></img>
+        <img className="logo logo--muikku-verkko" src="/gfx/oo-branded-site-logo.png"></img>
         <div className="text">
           <div className="text text--frontpage-muikku-author">{this.props.i18n.text.get('plugin.header.site.author')}</div>
           <div className="text text--frontpage-muikku">MUIKKU</div>
@@ -102,7 +102,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       <div className="text text--frontpage-muikku-description">{this.props.i18n.text.get('plugin.header.site.description')}</div>
     </div>
     <div className="hero__wrapper__item">
-      <div className="bubble bubble--responsive">
+      <div className="bubble bubble--goto-materials">
         <div className="bubble__title">{this.props.i18n.text.get('plugin.header.openMaterialsBubble.title')}</div>
         <div className="bubble__content">{this.props.i18n.text.get('plugin.header.openMaterialsBubble.description')}</div>
         <div className="bubble__button-container">
@@ -205,7 +205,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
 
     <section id="news" className="container container--frontpage-section">
 
-      <h2 className="frontpage text frontpage-text-title">{this.props.i18n.text.get('plugin.sectionTitle.news')}</h2>
+      <h2 className="text text--frontpage-title">{this.props.i18n.text.get('plugin.sectionTitle.news')}</h2>
 
       <div className="ordered-container ordered-container--frontpage-news">
 
@@ -307,8 +307,14 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       <div className="card card--frontpage-otavan-opisto">
 
         <div className="ordered-container ordered-container--frontpage-otavan-opisto-info">
+                  
+          <div className="ordered-container__item ordered-container__item--otavan-opisto-logo">
+            <div className="container container--otavan-opisto-logo">
+              <img src="/gfx/oo-branded-organization-logo.jpg" alt="logo" title="logo" />
+            </div>
+          </div>
+                  
           <div className="ordered-container__item ordered-container__item--otavan-opisto-social-media">
-
             <div className="container container--otavan-opisto-social-media">
               <h2 className="text text--otavan-opisto-info-title">
                 {this.props.i18n.text.get('plugin.organization.some.title')}
@@ -319,7 +325,9 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
               <a className="button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
               <a className="button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
             </div>
-
+          </div>
+                
+          <div className="ordered-container__item ordered-container__item--otavan-opisto-description">
             <div className="container container--otavan-opisto-description">
               <div className="text text--otavan-opisto-info-description"
                 dangerouslySetInnerHTML={{__html: this.props.i18n.text.get('plugin.organization.description')}}>
@@ -327,16 +335,13 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
               <a href="http://www.otavanopisto.fi" target="top" className="button button--frontpage-website">
                 www.otavanopisto.fi
               </a>
-              <br/>
               <a href="http://www.otavanopisto.fi/uutiskirje" target="top" className="button button--frontpage-newsletter">
                 {this.props.i18n.text.get('plugin.organization.newsletter.link')}
               </a>
             </div>
+            
           </div>
-
-          <div className="ordered-container__item ordered-container__item--frontpage-otavan-opisto-logo">
-            <img src="/gfx/of-organization-logo.jpg" alt="logo" title="logo" />
-          </div>
+             
         </div>
 
       </div>
