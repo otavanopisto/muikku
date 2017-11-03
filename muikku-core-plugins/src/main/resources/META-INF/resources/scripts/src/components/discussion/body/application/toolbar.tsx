@@ -13,12 +13,14 @@ import {DiscussionType} from '~/reducers/main-function/discussion/discussion-thr
 import NewArea from './new-area';
 import ModifyArea from './modify-area';
 import DeleteArea from './delete-area';
+import { StatusType } from '~/reducers/base/status';
 
 
 interface DiscussionToolbarProps {
   i18n: i18nType,
   areas: DiscussionAreaListType,
-  discussionThreads: DiscussionType
+  discussionThreads: DiscussionType,
+  status: StatusType
 }
 
 interface DiscussionToolbarState {
@@ -72,15 +74,15 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
           {area.name}
         </option>)}
       </select>
-      <NewArea><Link className="button-pill button-pill--discussion-toolbar">
+      {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? <NewArea><Link className="button-pill button-pill--discussion-toolbar">
         <span className="icon icon-add"></span>
-      </Link></NewArea>
-      <ModifyArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
+      </Link></NewArea> : null}
+      {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? <ModifyArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
         <span className="icon icon-edit"></span>
-      </Link></ModifyArea>
-      <DeleteArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
+      </Link></ModifyArea> : null}
+      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? <DeleteArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
         <span className="icon icon-delete"></span>
-      </Link></DeleteArea>
+      </Link></DeleteArea> : null}
     </div>
   }
 }
@@ -89,7 +91,8 @@ function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     areas: state.areas,
-    discussionThreads: state.discussionThreads
+    discussionThreads: state.discussionThreads,
+    status: state.status
   }
 };
 
