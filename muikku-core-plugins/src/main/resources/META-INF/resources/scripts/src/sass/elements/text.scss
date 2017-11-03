@@ -485,7 +485,7 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   &.text--discussion-thread-meta {
     display: flex;
     flex: 1 1 auto;
-    justify-content: end;
+    justify-content: flex-end;
   }
 
   &.text--discussion-thread-user {
@@ -499,7 +499,7 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     text-align: right;
     display: flex;
     align-items: center;
-    justify-content: right;
+    justify-content: flex-end;
   }
   
   &.text--discussion-thread-item-title {
