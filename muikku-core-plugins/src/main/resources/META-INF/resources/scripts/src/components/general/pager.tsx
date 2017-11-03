@@ -56,7 +56,7 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
                                <div className="pager__first" onClick={this.props.onClick.bind(null, 1)}>1</div>,
                                <div className="pager_gap">...</div>] : null}
         {Array.from(new Array(rightPage - leftPage + 1),(x,i)=> leftPage+i).map((page)=>{
-          return <div className={`pager__number ${page === this.props.current ? "pager__number--current" : ""}`}
+          return <div key={page} className={`pager__number ${page === this.props.current ? "pager__number--current" : ""}`}
             onClick={this.props.onClick.bind(null, page)}>{page}</div>
         })}
         {isPagerMoreVisible ? [<div className="pager_gap">...</div>,
