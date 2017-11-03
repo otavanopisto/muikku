@@ -1,9 +1,14 @@
-//FIX this I just made it up, so everything has inline block and some symbols, apply the design that you see fits
+@import "../base/colors";
+@import "../base/breakpoints";
+@import "../base/mixins";
+
 .pager {
 	
   .pager__body {
     display:flex;
-  	
+    align-items: center;
+    justify-content: center;
+  	padding: 10px 0;
   	.pager__first {
   	  display: inline-block;
     }
@@ -30,9 +35,18 @@
   	  }
     }
     .pager__number {
-      display: inline-block;
+      align-items: center;      
+      display: flex;      
+      height: 30px;
+      justify-content: center;
+      width: 30px;
+      border-radius: 5px;
+      
+      color: $color-pager-page-index-font;
   	  &.pager__number--current {
-  	  
+         background-color: $color-pager-selected-page-index-background;
+  	     color: $color-pager-selected-page-index-font;
+
   	  }
     }
   }
