@@ -162,7 +162,7 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         return thread.id === data.threadId;
       }) || <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
       
-      let pages:number = Math.ceil(newCurrentThread.numReplies / MAX_LOADED_AT_ONCE);
+      let pages:number = Math.ceil(newCurrentThread.numReplies / MAX_LOADED_AT_ONCE) || 1;
     
       dispatch({
         type: "SET_TOTAL_DISCUSSION_THREAD_PAGES",
