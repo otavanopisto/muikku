@@ -50,7 +50,7 @@ export default class Pager extends React.Component<PagerProps, PagerState>{
       pagerMoreNumber = this.props.pages;
     }
     
-    return <div className={`pager ${this.props.modifier ? "pager--" + this.props.modifier : ""}`}>
+    return <div className={`text pager ${this.props.modifier ? "pager--" + this.props.modifier : ""}`}>
       <div className="pager__body">
         {isPagerLessVisible ? [<div className="pager__less" onClick={this.props.onClick.bind(null, pagerLessNumber)}/>,
                                <div className="pager__first" onClick={this.props.onClick.bind(null, 1)}>1</div>,

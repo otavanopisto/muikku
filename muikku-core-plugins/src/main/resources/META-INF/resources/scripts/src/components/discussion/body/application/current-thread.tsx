@@ -39,9 +39,11 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     return <div className="application-list application-list__items">
       <div className="application-list__item application-list__item--discussion-current-thread">
         <div className="application-list__item__header">
-          {this.props.discussionThreads.current.title}
+          <h1 className="text">{this.props.discussionThreads.current.title}</h1>
         </div>
-        <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></div>
+        <div className="application-list__item__body">
+          <article className="text" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
+        </div>
         <div className="application-list__item__footer">
         </div>
       </div>

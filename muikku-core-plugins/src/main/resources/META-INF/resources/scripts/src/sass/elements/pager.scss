@@ -35,14 +35,16 @@
   	  }
     }
     .pager__number {
-      align-items: center;      
-      display: flex;      
-      height: 30px;
-      justify-content: center;
-      width: 30px;
-      border-radius: 5px;
-      
+      align-items: center;
+      border-radius: 10px;
+      color: #000;
       color: $color-pager-page-index-font;
+      display: flex;
+      height: 35px;
+      justify-content: center;
+      margin-left: 10px;     
+      width: 34px;      
+      
   	  &.pager__number--current {
          background-color: $color-pager-selected-page-index-background;
   	     color: $color-pager-selected-page-index-font;

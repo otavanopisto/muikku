@@ -505,8 +505,33 @@ $text-font-family: "Exo 2", Arial, sans-serif;
   &.text--discussion-thread-item-title {
     border-left: 5px solid skyblue;
     padding-left: 5px;
+    
   }
 
+  &.text--discussion-current-thread {
+    display: flex;
+    align-items: center;    
+    span:not(:first-child) {
+      margin-left: 10px;    
+    }
+  }
+
+  &.text__discussion-breadcrumb-item {
+    padding-left: 5px;
+    
+    &:not(:first-child){
+      margin-left: 10px;
+    }
+       
+    &:not(:last-child)::after {
+      content: '>';
+      margin-left: 5px;
+    }
+  }
+
+  &.text__discussion-breadcrumb-item--area {
+    border-left: 5px solid skyblue;
+  }
 
   //TODO REMOVE ALL THESE
   &.text-icon, .text-icon {
