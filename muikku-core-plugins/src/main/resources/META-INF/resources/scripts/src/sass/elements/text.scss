@@ -533,6 +533,16 @@ $text-font-family: "Exo 2", Arial, sans-serif;
     border-left: 5px solid skyblue;
   }
 
+  &.text--new-discussion-create-state{
+    margin-right: 10px;
+    &:not(:first-child) {
+      margin-left: 20px;
+    
+    }
+    
+  }
+
+
   //TODO REMOVE ALL THESE
   &.text-icon, .text-icon {
     font-family: muikku;

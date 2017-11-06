@@ -115,18 +115,18 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   render(){
     let content = (closeDialog: ()=>any) => [
       <div key="1" className="container container--new-discussion-options">
-        <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title"
+        <input className="form-field form-field--new-discussion-thread-title" placeholder="TODO translate title"
           value={this.state.title} onChange={this.onTitleChange}/>
-        <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
+        <select className="form-field form-field--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
           {this.props.areas.map((area)=><option key={area.id} value={area.id}>
             {area.name}
           </option>)}
         </select>
       </div>,
-      <div key="2" className="container container--new-discussion-checkboxs">
-        <span className="text text--for-checkbox-discussion">TODO translate Pinned</span>
+      <div key="2" className="container container--new-discussion-thread-states">
+        <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
         <input type="checkbox" className="form-field" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-        <span className="text text--for-checkbox-discussion">TODO translate Locked</span>
+        <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
         <input type="checkbox" className="form-field" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
       </div>,
       <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
@@ -136,10 +136,10 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
       return (          
          <div className="jumbo-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-            TODO cancel
+            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>
           <Link className="button button--standard-ok" onClick={this.createThread.bind(this, closeDialog)}>
-            TODO create
+            {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
         </div>
       )
