@@ -160,23 +160,37 @@ $application-panel-internal-navigation-padding: 10px;
       	padding: 0;
       	margin: 0;
       	
-      	@include breakpoint-up($breakpoint-landscape-pad){
-      	  @at-root .application-panel--sticky#{&} {
-      	  	//width of side panel
-      	    padding-left: 235px;
-          }
-        }
-      	
       	&::-webkit-scrollbar { 
           display: none; 
         }
         -ms-overflow-style: -ms-autohiding-scrollbar;
         overflow: -moz-scrollbars-none;
       }
+
+      .application-panel__main-container--full {
+
+        @include breakpoint-up($breakpoint-landscape-pad){
+          @at-root .application-panel--sticky#{&} {
+            //width of side panel           
+            padding-left: 0;
+          }
+        }
+      } 
+      
+      .application-panel__main-container--aside {
+        
+        @include breakpoint-up($breakpoint-landscape-pad){
+          @at-root .application-panel--sticky#{&} {
+            //width of side panel 
+            padding-left: 235px;
+          }
+        }        
+      }      
     }
   }
  
   .application-panel__toolbar {
+    display: flex;
     width: 100%;
   }
  

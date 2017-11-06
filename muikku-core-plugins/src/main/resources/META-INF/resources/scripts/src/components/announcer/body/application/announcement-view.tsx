@@ -22,7 +22,8 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
 
   render(){ 
     return ( 
-      <div className="application-list application-list__items"
+        
+      <div className="application-list  application-list--item-open"
        ref="list" > 
         <div key={1} className='application-list__item environment-announcement'>
           <div className="application-list__item__header">   

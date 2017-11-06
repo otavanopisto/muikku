@@ -279,6 +279,18 @@
     font-weight: 400;
     padding: 10px 0;
   }
+
+  &.text--item-counter {
+    align-items: center;
+    border-radius: 50%;
+    background-color: #FFF6AE;
+    display: flex;
+    font-size: 18px;
+    height: 28px;
+    justify-content: center;
+    padding: 0px 15px;
+    width: 28px;
+  }
     
   &.text--last-message-date {
     color: $color-index-text-panel-last-messages-date;
@@ -327,17 +339,7 @@
     }
   }
   
-  &.text--communicator-counter {
-    align-items: center;
-    border-radius: 50%;
-    background-color: #FFF6AE;
-    display: flex;
-    font-size: 18px;
-    height: 28px;
-    justify-content: center;
-    padding: 0px 15px;
-    width: 28px;
-  }
+
   
   &.text--communicator-date {
     opacity: 0.75;
@@ -453,7 +455,6 @@
   }
   
   &.text--announcer-header-aside {
-
     opacity: 0.75;
     flex: 1 1 auto;
     display: flex;
@@ -467,6 +468,62 @@
     margin-left: 5px;
   }
 
+  &.text--discussion-thread-item-body {
+    font-style: italic;
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  &.text--discussion-thread-meta {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+  }
+
+  &.text--discussion-thread-user {
+    span:not(:first-child) {
+      margin-left: 10px;    
+    }
+  }
+
+  &.text--discussion-thread-meta-latest-reply {
+    width: 250px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  &.text--discussion-thread-item-title {
+    border-left: 5px solid skyblue;
+    padding-left: 5px;
+    
+  }
+
+  &.text--discussion-current-thread {
+    display: flex;
+    align-items: center;    
+    span:not(:first-child) {
+      margin-left: 10px;    
+    }
+  }
+
+  &.text__discussion-breadcrumb-item {
+    padding-left: 5px;
+    
+    &:not(:first-child){
+      margin-left: 10px;
+    }
+       
+    &:not(:last-child)::after {
+      content: '>';
+      margin-left: 5px;
+    }
+  }
+
+  &.text__discussion-breadcrumb-item--area {
+    border-left: 5px solid skyblue;
+  }
 
   //TODO REMOVE ALL THESE
   &.text-icon, .text-icon {

@@ -69,8 +69,11 @@ if (process.env.NODE_ENV !== "production") {
 let entries = {};
 let filenames = fs.readdirSync('./entries');
 for (let file of filenames) {
-	let actualFileName = file.split(".");
-	actualFileName.pop();
+  let actualFileName = file.split(".");
+  actualFileName.pop();
+  if (process.env.TARGET && process.env.TARGET !== actualFileName.join(".")){
+    continue;
+  }
   entries[actualFileName.join(".")] = './entries/' + file;
 }
 

@@ -161,6 +161,14 @@ waiting for backend & scripts to make this work
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/discussion.js" />
     
+    <script defer="defer">
+  	  MUIKKU_PERMISSIONS.AREA_PERMISSIONS = #{discussionBackingBean.areaPermissions};
+  	  MUIKKU_PERMISSIONS.LOCK_STICKY_PERMISSION = #{discussionBackingBean.lockStickyPermission};
+  	  MUIKKU_PERMISSIONS.SHOW_FULL_NAME_PERMISSION = #{discussionBackingBean.showFullNamePermission};
+  	  MUIKKU_PERMISSIONS.FORUM_CREATEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')};
+  	  MUIKKU_PERMISSIONS.FORUM_UPDATEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')};
+  	  MUIKKU_PERMISSIONS.FORUM_DELETEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')};
+  	</script>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
