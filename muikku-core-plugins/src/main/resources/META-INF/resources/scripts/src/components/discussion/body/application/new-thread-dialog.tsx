@@ -13,7 +13,6 @@ import { DiscussionType } from '~/reducers/main-function/discussion/discussion-t
 import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
 
 const ckEditorConfig = {
-  uploadUrl: '/communicatorAttachmentUploadServlet',
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'links', items: [ 'Link' ] },
@@ -146,7 +145,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     }
     
     return <JumboDialog modifier="new-message"
-      title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
+      title={this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
       content={content} footer={footer}>
       {this.props.children}
     </JumboDialog>

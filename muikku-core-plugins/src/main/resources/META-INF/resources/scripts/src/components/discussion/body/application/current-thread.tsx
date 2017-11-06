@@ -5,6 +5,7 @@ import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-funct
 import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
+import ReplyThread from './reply-thread-dialog';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -53,7 +54,9 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <article className="text" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
         </div>
         <div className="application-list__item__footer">
-          <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
+          <ReplyThread thread={this.props.discussionThreads.current}>
+            <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
+          </ReplyThread>
           <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
           {canEditThread ? <Link as="span" className="link link--discussion-item-action">TODO translate edit</Link> : null}
           {canRemoveThread ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
@@ -70,7 +73,9 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return <div key={reply.id} className={`application-list__item application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
             <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
             <div className="application-list__item__footer">
-              <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
+              <ReplyThread thread={this.props.discussionThreads.current} message={reply}>
+                <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
+              </ReplyThread>
               <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
               {canEditMessage ? <Link as="span" className="link link--discussion-item-action">TODO translate edit</Link> : null}
               {canRemoveMessage ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
