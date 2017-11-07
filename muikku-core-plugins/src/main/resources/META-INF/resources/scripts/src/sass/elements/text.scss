@@ -152,17 +152,17 @@
   }
   &.text--contact-us {
     color: $color-frontpage-text-contact-us;
-    font-size: 40px;
+    font-size: 2.5rem;
     font-weight: 300;
-    margin-bottom: 30px;
+    margin-bottom: 1.5rem;
   }
   &.text--contact-us-information {
     color: $color-frontpage-text-contact-us-information;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: .875rem;
+    margin-bottom: .875rem;
 
     * {
-      margin-right: 10px;
+      margin-right: .625rem;
     }
   }
  

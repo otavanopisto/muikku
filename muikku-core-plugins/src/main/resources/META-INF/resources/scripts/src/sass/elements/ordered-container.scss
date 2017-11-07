@@ -17,22 +17,52 @@
   }
  
   @include breakpoint($breakpoint-pad) {
-    .ordered-container__item.ordered-container__item--upper-secondary-school {
+    // Upper secondary school card (Nettilukio)
+    .ordered-container__item.ordered-container__item--upper-secondary-school{
       flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
       margin: 0 $frontpage-ordered-container-separation 0 0;
       order: 1;
     }
     
+    // Secondary school card (Nettiperuskoulu)
     .ordered-container__item.ordered-container__item--secondary-school {
       flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
       margin: 0 0 0 $frontpage-ordered-container-separation;
       order: 2;
     }
     
+    // Open materials card (Aineopiskelu)
     .ordered-container__item.ordered-container__item--open-materials {
       flex: 1 1 100%;
-      margin-top: $frontpage-ordered-container-separation;
       order: 3;
+    }
+    
+    // Events card
+    .ordered-container__item.ordered-container__item--frontpage-events {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 $frontpage-ordered-container-separation 0 0;
+      order: 1;
+    }
+    
+    // News card
+    .ordered-container__item.ordered-container__item--frontpage-news {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 0 0 $frontpage-ordered-container-separation;
+      order: 2;
+    }
+    
+    // Images card
+    .ordered-container__item.ordered-container__item--frontpage-images {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 $frontpage-ordered-container-separation 0 0;
+      order: 3;
+    }
+    
+    // Blogs card
+    .ordered-container__item.ordered-container__item--frontpage-blogs {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 0 0 $frontpage-ordered-container-separation;
+      order: 4;
     }
   }
  
@@ -44,7 +74,7 @@
     
     .ordered-container__item.ordered-container__item--secondary-school {
       flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
-      margin: 0 $frontpage-ordered-container-separation;
+      margin: 0 calc(2 * #{$frontpage-ordered-container-separation});
     }
     
     .ordered-container__item.ordered-container__item--open-materials {
@@ -54,13 +84,16 @@
   }
   
   &.ordered-container--frontpage-studying,
-  &.ordered-container--frontpage-news {
+  &.ordered-container--frontpage-news-and-events {
   
     .ordered-container__item {
       margin-bottom: $frontpage-ordered-container-separation;
+      
+      @include breakpoint($breakpoint-pad) {
+        margin-bottom: calc(2 * #{$frontpage-ordered-container-separation});
+      }
     }
   }
- 
   &.ordered-container--frontpage-otavan-opisto-info {
     justify-content: center;
   
@@ -78,7 +111,7 @@
       flex: 1 0 100%;
       order: 2;
     }
-    
+
     @include breakpoint($breakpoint-pad){
       flex-flow: row wrap;
     
@@ -118,9 +151,7 @@
         order: 2;
       }
     }
-    
   }
- 
   &.ordered-container--index-panels {
     height: 100%;
     padding: 80px 0 70px 0;
@@ -134,7 +165,6 @@
       }
     }
   }
-  
   &.ordered-container--index-column {
     height: 100%;
     width: 100%;
