@@ -10,10 +10,9 @@
 //
 
 @import "../base/colors";
-@import "../base/breakpoints";
+@import "../base/vars";
 @import "../base/mixins";
-
-$card-font-family: "Exo 2", Arial, sans-serif;
+@import "../base/breakpoints";
 
 .card {
   background-color: $color-card-default-background;
@@ -36,48 +35,51 @@ $card-font-family: "Exo 2", Arial, sans-serif;
     color: $color-card-default-text;
     flex-grow: 1;
     font-weight: 400;
-    line-height: 1.15;
+    line-height: 1.15rem;
     min-height: 118px;
-    padding: 20px 20px 10px;
+    padding: 1.6rem;
     position: relative;
     text-align: left;
     width: 100%;
 
     .card__title {
-      font-size: 26px;
-      font-weight: 300;
+      color: $color-frontpage-text-title;
+      font-size: 1.2rem;
+      font-weight: 400;
       line-height: 1;
       overflow: hidden;
       padding-bottom: 20px;
       text-overflow: ellipsis;
       text-transform: uppercase;
-
-      @include breakpoint-down($breakpoint-landscape-pad) {
-        font-size: 20px;
+      
+      @include breakpoint($breakpoint-pad){
+        font-size: 1.5rem;
+        font-weight: 300;
       }
+      
     }
   }
 
   .card__footer {
-    padding: 0 20px 20px;
+    padding: 0 1.6rem 1.6rem;
     position: relative;
     text-align: left;
     width: 100%;
   }
  
-  &.card--frontpage-studying {
+  &.card--frontpage-upper-secondary-school {
     .card__title {
-      color: $color-frontpage-card-studying-title;
+      color: $color-frontpage-card-upper-secondary-school-title;
     }
   }
-  &.card--frontpage-school {
+  &.card--frontpage-secondary-school {
     .card__title {
-      color: $color-frontpage-card-school-title;
+      color: $color-frontpage-card-secondary-school-title;
     }
   }
-  &.card--frontpage-courses {
+  &.card--frontpage-open-materials {
     .card__title {
-      color: $color-frontpage-card-courses-title;
+      color: $color-frontpage-card-open-materials-title;
     }
   }
   &.card--frontpage-otavan-opisto {

@@ -27,6 +27,10 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   
+  &.button--branded {
+    font-family: $button-branded-font-family;
+  }
+  
   &.button--primary {
     background-color: $color-button-primary-background;
     color: $color-button-primary-text;
@@ -171,42 +175,45 @@
     }
   }
 
-  &.button--frontpage-studying-readmore {
-    background-color: $color-frontpage-button-studying-readmore-background;
-    color: $color-frontpage-button-studying-readmore-text;
+  &.button--frontpage-upper-secondary-school-readmore {
+    background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
+    color: $color-frontpage-button-upper-secondary-school-readmore-text;
+    display: inline-flex;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-studying-readmore-background, 10%);
+      background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 10%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-studying-readmore-background, 20%);
+      background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 20%);
     }
   }
 
-  &.button--frontpage-school-readmore {
-    background-color: $color-frontpage-button-school-readmore-background;
-    color: $color-frontpage-button-school-readmore-text;
+  &.button--frontpage-secondary-school-readmore {
+    background-color: $color-frontpage-button-secondary-school-readmore-background;
+    color: $color-frontpage-button-secondary-school-readmore-text;
+    display: inline-flex;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-school-readmore-background, 10%);
+      background-color: darken($color-frontpage-button-secondary-school-readmore-background, 10%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-school-readmore-background, 20%);
+      background-color: darken($color-frontpage-button-secondary-school-readmore-background, 20%);
     }
   }
 
-  &.button--frontpage-courses-readmore {
-    background-color: $color-frontpage-button-courses-readmore-background;
-    color: $color-frontpage-button-courses-readmore-text;
+  &.button--frontpage-open-materials-readmore {
+    background-color: $color-frontpage-button-open-materials-readmore-background;
+    color: $color-frontpage-button-open-materials-readmore-text;
+    display: inline-flex;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-courses-readmore-background, 10%);
+      background-color: darken($color-frontpage-button-open-materials-readmore-background, 10%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-courses-readmore-background, 20%);
+      background-color: darken($color-frontpage-button-open-materials-readmore-background, 20%);
     }
   }
 

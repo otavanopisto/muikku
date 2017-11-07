@@ -23,6 +23,10 @@
   font-family: $text-font-family;
   font-weight: 400;
   
+  &.text--branded {
+    font-family: $text-branded-font-family;
+  }
+  
   a {
     color: $color-text-link;
   }
@@ -109,7 +113,7 @@
     color: $color-frontpage-text-title;
     font-size: 1.7rem;
     text-align: left;
-    font-weight: 200;
+    font-weight: 300;
     margin-bottom: 20px;
     
     @include breakpoint($breakpoint-mobile-xl){
@@ -118,6 +122,7 @@
     
     @include breakpoint($breakpoint-pad){
       font-size: 2rem;
+      font-weight: 200;
     }
     
     @include breakpoint($breakpoint-desktop){
