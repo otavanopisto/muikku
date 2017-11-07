@@ -34,14 +34,17 @@
   .card__content {
     color: $color-card-default-text;
     flex-grow: 1;
+    font-size: $text-mobile-font-size;
     font-weight: 400;
-    line-height: 1.15rem;
+    line-height: 1.2rem;
     padding: 1.1rem;
     position: relative;
     text-align: left;
     width: 100%;
     
     @include breakpoint($breakpoint-pad) {
+      font-size: $text-desktop-font-size;
+      line-height: 1.3rem;
       padding: 1.6rem;
     }
 

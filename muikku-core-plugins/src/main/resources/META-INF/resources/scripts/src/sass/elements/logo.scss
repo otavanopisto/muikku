@@ -8,17 +8,17 @@
   overflow: hidden;
   
   &.logo--muikku-verkko {
-    height: $logo-default-size;
+    height: $logo-mobile-size;
     box-shadow: 0 15px 15px $color-frontpage-logo-muikku-verkko-box-shadow;
     border-radius: 100%;
     margin: 0 1rem 0 0;
     text-align: center;
-    width: $logo-default-size;
+    width: $logo-mobile-size;
 
     @include breakpoint($breakpoint-pad){
-      height: 5.625rem;
+      height: $logo-desktop-size;
       margin: 0 0 2.25rem;
-      width: 5.625rem;
+      width: $logo-desktop-size;
     }
   }
 }

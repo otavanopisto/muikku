@@ -11,8 +11,18 @@ $text-font-family: "Open Sans", Arial, sans-serif;
 $index-text-mobile-padding-horizontal: 10;
 $index-text-icon-size: 35;
 
+// Basic Paragraph Text
+$text-mobile-font-size: .875rem;
+$text-desktop-font-size: 1rem;
+
 // Logo
-$logo-default-size: 4.5rem;
+$logo-mobile-size: 4.5rem;
+$logo-desktop-size: 5.625rem;
+
+// Text Logo
+$logo-text-mobile-size: 4rem;
+$logo-text-pad-size: 4.5rem;
+$logo-text-desktop-size: 5.375rem;
 
 // Bubble - Used only in the branded front page
 $bubble-size-small: 16.25rem;

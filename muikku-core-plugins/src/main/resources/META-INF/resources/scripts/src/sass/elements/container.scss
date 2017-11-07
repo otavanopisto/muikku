@@ -1,3 +1,4 @@
+@import "../base/vars";
 @import "../base/breakpoints";
 	
 // Mobile styles
@@ -49,6 +50,18 @@
     
     @include breakpoint($breakpoint-desktop) {
       text-align: left;
+    }
+    
+    img {
+      height: $logo-text-mobile-size;
+      
+      @include breakpoint($breakpoint-pad) {
+        height: $logo-text-pad-size;
+      }
+      
+      @include breakpoint($breakpoint-desktop) {
+        height: $logo-text-desktop-size;
+      }
     }
   }
   
