@@ -73,7 +73,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return <div key={reply.id} className={`application-list__item application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
             <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
             <div className="application-list__item__footer">
-              <ReplyThread thread={this.props.discussionThreads.current} message={reply}>
+              <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                 <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
               </ReplyThread>
               <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
