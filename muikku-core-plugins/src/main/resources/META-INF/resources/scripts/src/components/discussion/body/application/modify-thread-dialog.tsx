@@ -9,11 +9,10 @@ import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/commu
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
-import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
+import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion/discussion-threads';
 import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
 
 const ckEditorConfig = {
-  uploadUrl: '/communicatorAttachmentUploadServlet',
   toolbar: [
     { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
     { name: 'links', items: [ 'Link' ] },
@@ -37,7 +36,8 @@ interface DicussionNewThreadProps {
   areas: DiscussionAreaListType,
   i18n: i18nType,
   discussionThreads: DiscussionType,
-  createDiscussionThread: CreateDiscussionThreadTriggerType
+  createDiscussionThread: CreateDiscussionThreadTriggerType,
+  thread: DiscussionThreadType
 }
 
 interface DicussionNewThreadState {
@@ -45,8 +45,7 @@ interface DicussionNewThreadState {
   title: string,
   locked: boolean,
   threadPinned: boolean,
-  threadLocked: boolean,
-  selectedAreaId: number
+  threadLocked: boolean
 }
 
 class DicussionNewThread extends React.Component<DicussionNewThreadProps, DicussionNewThreadState> {
@@ -54,46 +53,24 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     super(props);
     
     this.state = {
-      text: "",
-      title: "",
+      text: this.props.thread.message,
+      title: this.props.thread.title,
       locked: false,
-      threadPinned: false,
-      threadLocked: false,
-      selectedAreaId: props.areas[0] && props.areas[0].id
+      threadPinned: this.props.thread.sticky,
+      threadLocked: this.props.thread.locked
     }
     
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
-    this.onAreaChange = this.onAreaChange.bind(this);
+    this.modifyThread = this.modifyThread.bind(this);
   }
   onCKEditorChange(text: string){
     this.setState({text});
   }
-  createThread(closeDialog: ()=>any){
-    this.props.createDiscussionThread({
-      forumAreaId: this.state.selectedAreaId,
-      locked: this.state.threadLocked,
-      sticky: this.state.threadPinned,
-      message: this.state.text,
-      title: this.state.title,
-      success: ()=>{
-        this.setState({
-          text: "",
-          title: "",
-          locked: false,
-          threadLocked: false,
-          threadPinned: false
-        });
-        closeDialog();
-      },
-      fail: ()=>{
-        this.setState({
-          locked: false
-        });
-      }
-    });
+  modifyThread(closeDialog: ()=>any){
+    
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({title: e.target.value});
@@ -105,23 +82,20 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     this.setState({threadLocked: !this.state.threadLocked});
   }
   componentWillReceiveProps(nextProps: DicussionNewThreadProps){
-    if (nextProps.discussionThreads.areaId !== this.state.selectedAreaId){
-      this.setState({selectedAreaId: nextProps.discussionThreads.areaId || (nextProps.areas[0] && nextProps.areas[0].id)});
+    if (nextProps.thread.id !== this.props.thread.id){
+      this.setState({
+        text: nextProps.thread.message,
+        title: nextProps.thread.title,
+        threadPinned: nextProps.thread.sticky,
+        threadLocked: nextProps.thread.locked
+      });
     }
-  }
-  onAreaChange(e: React.ChangeEvent<HTMLSelectElement>){
-    this.setState({selectedAreaId: parseInt(e.target.value)});
   }
   render(){
     let content = (closeDialog: ()=>any) => [
       <div key="1" className="container container--new-discussion-options">
         <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title"
           value={this.state.title} onChange={this.onTitleChange}/>
-        <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
-          {this.props.areas.map((area)=><option key={area.id} value={area.id}>
-            {area.name}
-          </option>)}
-        </select>
       </div>,
       <div key="2" className="container container--new-discussion-checkboxs">
         <span className="text text--for-checkbox-discussion">TODO translate Pinned</span>
@@ -138,15 +112,15 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             TODO cancel
           </Link>
-          <Link className="button button--standard-ok" onClick={this.createThread.bind(this, closeDialog)}>
-            TODO create
+          <Link className="button button--standard-ok" onClick={this.modifyThread.bind(this, closeDialog)}>
+            TODO ok
           </Link>
         </div>
       )
     }
     
-    return <JumboDialog modifier="new-message"
-      title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
+    return <JumboDialog modifier="modify-message"
+      title="TODO modify thread"
       content={content} footer={footer}>
       {this.props.children}
     </JumboDialog>

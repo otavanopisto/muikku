@@ -10,9 +10,9 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionAreaListType} from '~/reducers/main-function/discussion/discussion-areas';
 import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
-import NewArea from './new-area';
-import ModifyArea from './modify-area';
-import DeleteArea from './delete-area';
+import NewArea from './new-area-dialog';
+import ModifyArea from './modify-area-dialog';
+import DeleteArea from './delete-area-dialog';
 import { StatusType } from '~/reducers/base/status';
 
 
