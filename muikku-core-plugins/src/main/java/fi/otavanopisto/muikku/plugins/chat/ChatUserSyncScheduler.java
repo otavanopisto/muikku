@@ -40,7 +40,7 @@ public class ChatUserSyncScheduler {
   @Inject
   private UserController userController;
 
-  @Schedule(second = "*", minute = "*/15", hour = "*")
+  @Schedule(second = "*", minute = "*/15", hour = "*", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatUsers() {
     
