@@ -38,7 +38,7 @@ public class ChatRoomSyncScheduler {
   @Inject
   private WorkspaceController workspaceController;
 
-  @Schedule(second = "*", minute = "*/15", hour = "*")
+  @Schedule(second = "*", minute = "*/15", hour = "*", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatRooms() {
     
