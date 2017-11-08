@@ -93,7 +93,7 @@
               </div>
             </div>
           </div>
-          <div class="flex-cell-8 flex-cell-first">
+          <div class="flex-cell-8">
             <div class="selection-wrapper">
               <div class="selection-item">
                 <input type="checkbox" id="copy-discussions-areas" name="copy-discussions-areas"/>
@@ -117,7 +117,7 @@
               </div>
             </div>
           </div>
-          <div class="flex-cell-8 flex-cell-first">
+          <div class="flex-cell-8">
           </div>
         </div>
       </div>
