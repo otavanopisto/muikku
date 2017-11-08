@@ -109,7 +109,6 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   onAreaChange(e: React.ChangeEvent<HTMLSelectElement>){
     this.setState({selectedAreaId: parseInt(e.target.value)});
   }
-  
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
@@ -160,7 +159,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({sendMessage, createDiscussionThread}, dispatch);
+  return bindActionCreators({createDiscussionThread}, dispatch);
 };
 
 export default (connect as any)(
