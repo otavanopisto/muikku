@@ -9,22 +9,26 @@ $color-frontpage-text-muikku-author: $color-default;
 $color-frontpage-text-muikku: $color-default;
 $color-frontpage-text-muikku-text-shadow: rgba(0, 0, 0, 0.3);
 
+$color-frontpage-text-author-text-shadow: rgba(0, 0, 0, 0.3);
+
 $color-frontpage-text-verkko: $color-default;
 $color-frontpage-text-verkko-text-shadow: rgba(0, 0, 0, 0.6);
 $color-frontpage-text-title: $color-primary;
 
-//STUDYING
-$color-frontpage-card-studying-title: #5db5c5;
-$color-frontpage-button-studying-readmore-text: $color-default;
-$color-frontpage-button-studying-readmore-background: $color-frontpage-card-studying-title;
+$color-frontpage-text-description-text-shadow: rgba(0, 0, 0, 0.3);
 
-$color-frontpage-card-school-title: #f58220;
-$color-frontpage-button-school-readmore-text: $color-default;
-$color-frontpage-button-school-readmore-background: $color-frontpage-card-school-title;
+// SRTUDYING
+$color-frontpage-card-upper-secondary-school-title: #5db5c5;
+$color-frontpage-button-upper-secondary-school-readmore-text: $color-default;
+$color-frontpage-button-upper-secondary-school-readmore-background: $color-frontpage-card-upper-secondary-school-title;
 
-$color-frontpage-card-courses-title: #c64986;
-$color-frontpage-button-courses-readmore-text: $color-default;
-$color-frontpage-button-courses-readmore-background: $color-frontpage-card-courses-title;
+$color-frontpage-card-secondary-school-title: #f58220;
+$color-frontpage-button-secondary-school-readmore-text: $color-default;
+$color-frontpage-button-secondary-school-readmore-background: $color-frontpage-card-secondary-school-title;
+
+$color-frontpage-card-open-materials-title: #c64986;
+$color-frontpage-button-open-materials-readmore-text: $color-default;
+$color-frontpage-button-open-materials-readmore-background: $color-frontpage-card-open-materials-title;
 
 // Otavan opisto card
 $color-frontpage-text-otavan-opisto-info-title: $color-inverse;

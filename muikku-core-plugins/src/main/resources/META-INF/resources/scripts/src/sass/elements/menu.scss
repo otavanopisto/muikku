@@ -17,11 +17,12 @@
 
 @import "../base/colors";
 @import "../base/mixins";
+@import "../base/vars";
 @import "../base/breakpoints";
 
 $menu-width-pad: 350px;
 $menu-width-mobile: 250px;
-$menu-header-height: 70px;
+$menu-header-height: $navbar-height;
 $menu-font: 'Exo 2', Arial, sans-serif;
 
 .menu {
@@ -38,7 +39,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
   z-index: 99;
 
   .menu__logo {
-    background: url("/gfx/of-site-logo-text.png") no-repeat center center;
+    background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
     display: inline-block;
     height: 70px;
     width: 175px;
@@ -165,7 +166,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
       background-color: $color-main-function-menu-header-background;
     }
     .menu__logo {
-      background: url("/gfx/of-site-logo-text-white.png") no-repeat center center;
+      background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat center center;
     }
     .menu__container .menu__items .menu__item {
       height: 50px;

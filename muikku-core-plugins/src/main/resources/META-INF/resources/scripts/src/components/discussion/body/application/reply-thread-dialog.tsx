@@ -7,12 +7,16 @@ import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
 import JumboDialog from "~/components/general/jumbo-dialog";
+import { replyToCurrentDiscussionThread, ReplyToCurrentDiscussionThreadTriggerType } from "~/actions/main-function/discussion/discussion-threads";
 
 interface ReplyThreadProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
-  thread: DiscussionThreadType,
-  message?: DiscussionThreadReplyType
+  reply: DiscussionThreadType,
+  message?: DiscussionThreadReplyType,
+  replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
+  quote?: string,
+  quoteAuthor?: string
 }
 
 interface ReplyThreadState {
@@ -43,6 +47,10 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
   constructor(props: ReplyThreadProps){
     super(props);
     
+    this.onCKEditorChange = this.onCKEditorChange.bind(this);
+    this.createReply = this.createReply.bind(this);
+    this.onDialogOpen = this.onDialogOpen.bind(this);
+    
     this.state = {
       locked: false,
       text: ""
@@ -52,11 +60,32 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
     this.setState({text});
   }
   createReply(closeDialog: ()=>any){
-    console.log("create reply", this.props, this.state);
+    this.setState({
+      locked: true
+    });
+    this.props.replyToCurrentDiscussionThread({
+      replyId: this.props.reply && this.props.reply.id,
+      message: this.state.text,
+      success: ()=>{
+        closeDialog();
+      },
+      fail: ()=>{
+        this.setState({
+          locked: false
+        });
+      }
+    });
+  }
+  onDialogOpen(){
+    if (this.props.quote && this.state.text !== this.props.quote){
+      this.setState({
+        text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote>"
+      });
+    }
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-      <CKEditor key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+      <CKEditor autofocus key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
@@ -72,7 +101,7 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
       )
     }
     
-    return <JumboDialog modifier="new-message"
+    return <JumboDialog modifier="reply-thread" onOpen={this.onDialogOpen}
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
       content={content} footer={footer}>
       {this.props.children}
@@ -87,7 +116,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({replyToCurrentDiscussionThread}, dispatch);
 };
 
 export default (connect as any)(

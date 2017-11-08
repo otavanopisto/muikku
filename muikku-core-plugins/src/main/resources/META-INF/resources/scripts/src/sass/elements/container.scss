@@ -1,5 +1,7 @@
+@import "../base/vars";
 @import "../base/breakpoints";
 	
+// Mobile styles
 .container {
   width: 100%;
   
@@ -8,49 +10,84 @@
   	position: relative;
   	width: 100%;
   }
+  
   &.container--profile-image {
     display: flex;
     justify-content: center;
     
     &.container--profile-image--in-menu {
+      border-radius: 100%;
       flex: 0;
+      height: 35px;
       margin-right: 5px;
+      width: 35px;
     }
   }
+  
   &.container--muikku-logo {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    @include breakpoint-down($breakpoint-landscape-pad) {
-      flex-direction: row;
+   align-items: center;
+   display: flex;
+   flex-direction: row;
+   flex-flow: nowrap;
+   justify-content: center;
+    
+    @include breakpoint($breakpoint-pad) {
+      flex-direction: column;
     }
   }
+  
   &.container--frontpage-section {
-    margin-top: 70px;
-    padding: 0 10px 0 10px;
+    margin-top: 1.5rem;
+    padding: 0 .625rem;
 
-    @include breakpoint-down($breakpoint-portrait-pad){
-      margin-top: 25px;
+    @include breakpoint($breakpoint-pad){
+      margin-top: 4.375rem;
     }
   }
+  
+  &.container--otavan-opisto-logo {
+    text-align: center;
+    
+    @include breakpoint($breakpoint-desktop) {
+      text-align: left;
+    }
+    
+    img {
+      height: $logo-text-mobile-size;
+      
+      @include breakpoint($breakpoint-pad) {
+        height: $logo-text-pad-size;
+      }
+      
+      @include breakpoint($breakpoint-desktop) {
+        height: $logo-text-desktop-size;
+      }
+    }
+  }
+  
   &.container--otavan-opisto-social-media {
-    flex: 0 0 430px;
-    text-align: left;
+    margin-top: 1.5rem;
+    text-align: center;
 
-    @include breakpoint-down($breakpoint-portrait-pad) {
-      flex: 0 0 auto;
-      order: 2;
-      text-align: center;
+    @include breakpoint($breakpoint-pad) {
+      margin-top: 0;
+    }
+
+    @include breakpoint($breakpoint-desktop) {
+      text-align: left;
     }
   }
+  
   &.container--otavan-opisto-description {
-    @include breakpoint-down($breakpoint-portrait-pad) {
-      margin-bottom: 20px;
-      text-align: center;
+    margin-top: 1.5rem;
+    text-align: center;
+    
+    @include breakpoint($breakpoint-desktop) {
+      margin-top: 0;
+      text-align: left;
     }
   }
+  
   &.container--communicator-message {
     background-color: white;
     border-left: solid 1px #ccc;
@@ -63,6 +100,7 @@
       border: none;
     }
   }
+  
   &.container--communicator-message-view {
     bottom: 0;
   	left: 0;
@@ -72,6 +110,7 @@
   	top: 0;
 
   }
+  
   &.container--communicator-signature {
     background-color: white;
     display: block;

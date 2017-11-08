@@ -5,6 +5,7 @@ import notificationActions from '~/actions/base/notifications';
 import mApi from '~/lib/mApi';
 import {DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType, DiscussionThreadListType, DiscussionThreadReplyListType} from "~/reducers/main-function/discussion/discussion-threads";
 import { loadUserIndex } from "~/actions/main-function/user-index";
+import {loadDiscussionAreas} from './discussion-areas';
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -30,15 +31,26 @@ export interface CreateDiscussionThreadTriggerType {
 export interface LoadDiscussionThreadTriggerType {
   (data:{
     areaId: number,
-    page: number,
+    page?: number,
     threadId: number,
-    threadPage: number
+    threadPage?: number,
+    success?: ()=>any,
+    fail?: ()=>any
   }):AnyActionType
 }
 
-//NOTE this function must run only when areas area loaded otherwise the thread will fail
+export interface ReplyToCurrentDiscussionThreadTriggerType {
+  (data:{
+    message: string,
+    replyId?: number,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
 let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscussionThreads(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
     //Remove the current messsage
     dispatch({
       type: "SET_CURRENT_DISCUSSION_THREAD",
@@ -49,76 +61,82 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
       payload: <DiscussionStateType>"WAIT"
     });
     
-    let state = getState();
-    let discussion:DiscussionType = state.discussionThreads;
-    
-    //Avoid loading if it's the same area
-    if (discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
-      return;
-    }
-    
-    dispatch({
-      type: "UPDATE_DISCUSSION_THREADS_STATE",
-      payload: <DiscussionStateType>"LOADING"
-    });
-    
-    //Calculate the amount of pages
-    let allThreadNumber = 0;
-    if (data.areaId){
-      let area:DiscussionAreaType = state.areas.find((area: DiscussionAreaType)=>{
-        return area.id === data.areaId;
-      });
-      allThreadNumber = area.numThreads;
-    } else {
-      state.areas.forEach((area: DiscussionAreaType)=>{
-        allThreadNumber += area.numThreads;
-      });
-    }
-    
-    let pages = Math.ceil(allThreadNumber / MAX_LOADED_AT_ONCE) || 1;
-    
-    dispatch({
-      type: "SET_TOTAL_DISCUSSION_PAGES",
-      payload: pages
-    });
-    
-    //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
-    let firstResult = (data.page-1)*MAX_LOADED_AT_ONCE;
-    
-    let params = {
-        firstResult,
-        maxResults: MAX_LOADED_AT_ONCE
-    }
-    
-    try {
-      let threads:DiscussionThreadListType = <DiscussionThreadListType>await promisify(data.areaId ? mApi().forum.areas.threads
-          .read(data.areaId, params) : mApi().forum.latest.read(params), 'callback')();
+    //NOTE we reload the discussion areas every time we load the threads because we have absolutely no
+    //idea if the amount of pages per thread change every time I select a page, data updates on the fly
+    //one solution would be to make a realtime change
+    dispatch(loadDiscussionAreas(async ()=>{
       
-      threads.forEach((thread)=>{
-        dispatch(loadUserIndex(thread.creator));
-      });
+      let state = getState();
+      let discussion:DiscussionType = state.discussionThreads;
       
-      //Create the payload for updating all the communicator properties
-      let payload:DiscussionPatchType = {
-        state: "READY",
-        threads,
-        page: data.page,
-        areaId: data.areaId
+      //Avoid loading if it's the same area
+      if (discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
+        return;
       }
       
-      //And there it goes
-      dispatch({
-        type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
-        payload
-      });
-    } catch (err){
-      //Error :(
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
       dispatch({
         type: "UPDATE_DISCUSSION_THREADS_STATE",
-        payload: <DiscussionStateType>"ERROR"
+        payload: <DiscussionStateType>"LOADING"
       });
-    }
+      
+      //Calculate the amount of pages
+      let allThreadNumber = 0;
+      if (data.areaId){
+        let area:DiscussionAreaType = state.areas.find((area: DiscussionAreaType)=>{
+          return area.id === data.areaId;
+        });
+        allThreadNumber = area.numThreads;
+      } else {
+        state.areas.forEach((area: DiscussionAreaType)=>{
+          allThreadNumber += area.numThreads;
+        });
+      }
+      
+      let pages = Math.ceil(allThreadNumber / MAX_LOADED_AT_ONCE) || 1;
+      
+      dispatch({
+        type: "SET_TOTAL_DISCUSSION_PAGES",
+        payload: pages
+      });
+      
+      //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
+      let firstResult = (data.page-1)*MAX_LOADED_AT_ONCE;
+      
+      let params = {
+          firstResult,
+          maxResults: MAX_LOADED_AT_ONCE
+      }
+      
+      try {
+        let threads:DiscussionThreadListType = <DiscussionThreadListType>await promisify(data.areaId ? mApi().forum.areas.threads
+            .read(data.areaId, params) : mApi().forum.latest.read(params), 'callback')();
+        
+        threads.forEach((thread)=>{
+          dispatch(loadUserIndex(thread.creator));
+        });
+        
+        //Create the payload for updating all the communicator properties
+        let payload:DiscussionPatchType = {
+          state: "READY",
+          threads,
+          page: data.page,
+          areaId: data.areaId
+        }
+        
+        //And there it goes
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
+          payload
+        });
+      } catch (err){
+        //Error :(
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+        dispatch({
+          type: "UPDATE_DISCUSSION_THREADS_STATE",
+          payload: <DiscussionStateType>"ERROR"
+        });
+      }
+    }));
   }
 }
 
@@ -136,7 +154,8 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
       //to retrieve the data properly
       
       //this will do it, since it will consider the discussion thread to be in a waiting state
-      //non-ready
+      //non-ready, also area count might change, so let's reload it
+      dispatch(loadDiscussionAreas());
       dispatch({
         type: "UPDATE_DISCUSSION_THREADS_STATE",
         payload: <DiscussionStateType>"WAIT"
@@ -160,13 +179,16 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
       return;
     }
     
+    let actualThreadPage = data.threadPage || discussion.currentPage;
+    let actualPage = data.page || discussion.page;
+    
     dispatch({
       type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
       payload: <DiscussionStateType>"LOADING"
     });
     
     //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
-    let firstResult = (data.threadPage-1)*MAX_LOADED_AT_ONCE;
+    let firstResult = (actualThreadPage-1)*MAX_LOADED_AT_ONCE;
 
     let params = {
       firstResult,
@@ -194,8 +216,8 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         current: newCurrentThread,
         currentReplies: replies,
         currentState: "READY",
-        page: data.page,
-        currentPage: data.threadPage
+        page: actualPage,
+        currentPage: actualThreadPage
       };
       
       //In a nutshell, if I go from all areas to a specific thread, then once going back it will cause it to load twice
@@ -210,6 +232,8 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         type: "UPDATE_DISCUSSION_THREADS_ALL_PROPERTIES",
         payload: newProps
       });
+      
+      data.success && data.success();
     } catch (err){
       //Error :(
       dispatch(notificationActions.displayNotification(err.message, 'error'));
@@ -217,9 +241,43 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
         payload: <DiscussionStateType>"ERROR"
       });
+      
+      data.fail && data.fail();
     }
   }
 }
 
-export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread}
-export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread}
+let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = function replyToDiscussionThread(data){ 
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let payload:any = {
+      message: data.message
+    }
+    
+    if (data.replyId){
+      payload.parentReplyId = data.replyId;
+    }
+  
+    let state = getState();
+    let discussion:DiscussionType = state.discussionThreads
+    
+    try {
+      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.replies.create(
+          discussion.current.forumAreaId, discussion.current.id, payload), 'callback')();
+      
+      //sadly the new calculation is overly complex and error prone so we'll just do this;
+      
+      dispatch(loadDiscussionThread({
+        areaId: discussion.current.forumAreaId,
+        threadId: discussion.current.id,
+        success: data.success,
+        fail: data.fail
+      }));
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread}
+export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread}

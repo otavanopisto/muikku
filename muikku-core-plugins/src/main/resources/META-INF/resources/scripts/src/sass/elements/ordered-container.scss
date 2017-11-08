@@ -1,79 +1,157 @@
+@import "../base/vars";
 @import "../base/breakpoints";
-
-$frontpage-orderd-container-separation: 10;
 
 .ordered-container {
   display: flex;
-  flex-direction: column;
+  flex-flow: row wrap;
   min-height: 25px;
   position: relative;
   width: 100%;
 
   .ordered-container__item {
+    flex: 1 1 100%;
+    max-width: 100%;
     min-height: 25px;
     overflow: hidden;
     position: relative;
-    width: 100%;
   }
-
-  &.ordered-container--row {
-  	flex-direction: row;
+ 
+  @include breakpoint($breakpoint-pad) {
+    // Upper secondary school card (Nettilukio)
+    .ordered-container__item.ordered-container__item--upper-secondary-school{
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 $frontpage-ordered-container-separation 0 0;
+      order: 1;
+    }
+    
+    // Secondary school card (Nettiperuskoulu)
+    .ordered-container__item.ordered-container__item--secondary-school {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 0 0 $frontpage-ordered-container-separation;
+      order: 2;
+    }
+    
+    // Open materials card (Aineopiskelu)
+    .ordered-container__item.ordered-container__item--open-materials {
+      flex: 1 1 100%;
+      order: 3;
+    }
+    
+    // Events card
+    .ordered-container__item.ordered-container__item--frontpage-events {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 $frontpage-ordered-container-separation 0 0;
+      order: 1;
+    }
+    
+    // News card
+    .ordered-container__item.ordered-container__item--frontpage-news {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 0 0 $frontpage-ordered-container-separation;
+      order: 2;
+    }
+    
+    // Images card
+    .ordered-container__item.ordered-container__item--frontpage-images {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 $frontpage-ordered-container-separation 0 0;
+      order: 3;
+    }
+    
+    // Blogs card
+    .ordered-container__item.ordered-container__item--frontpage-blogs {
+      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
+      margin: 0 0 0 $frontpage-ordered-container-separation;
+      order: 4;
+    }
+  }
+ 
+  @include breakpoint($breakpoint-desktop) {
+    .ordered-container__item.ordered-container__item--upper-secondary-school {
+      flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
+      margin: 0;
+    }
+    
+    .ordered-container__item.ordered-container__item--secondary-school {
+      flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
+      margin: 0 calc(2 * #{$frontpage-ordered-container-separation});
+    }
+    
+    .ordered-container__item.ordered-container__item--open-materials {
+      flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
+      margin: 0;
+    }
   }
   
-  &.ordered-container--row .ordered-container__item {
-  	flex: 1 1 0;
-    width: auto;
-  }
- 
-  @include breakpoint-down($breakpoint-portrait-pad) {
-    &.ordered-container--row.ordered-container--responsive {
-      flex-direction: column;
-    }
-   
-    &.ordered-container--row.ordered-container--responsive .ordered-container__item {
-      flex: 0 0 auto;
-      width: 100%;
-    }
-  }
- 
-  &.ordered-container--frontpage-studying, &.ordered-container--frontpage-news-subcontainer {
-  	>.ordered-container__item {
-  	  margin-bottom: #{$frontpage-orderd-container-separation}px
-  	}
-    @include breakpoint-up($breakpoint-medium-screen){
-      width: calc(100% + #{$frontpage-orderd-container-separation*2}px);
-      margin-left: -#{$frontpage-orderd-container-separation}px;
-      >.ordered-container__item {
-        margin: 0 #{$frontpage-orderd-container-separation}px #{$frontpage-orderd-container-separation}px #{$frontpage-orderd-container-separation}px;
+  &.ordered-container--frontpage-studying,
+  &.ordered-container--frontpage-news-and-events {
+  
+    .ordered-container__item {
+      margin-bottom: $frontpage-ordered-container-separation;
+      
+      @include breakpoint($breakpoint-pad) {
+        margin-bottom: calc(2 * #{$frontpage-ordered-container-separation});
       }
     }
   }
- 
   &.ordered-container--frontpage-otavan-opisto-info {
-    .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
+    justify-content: center;
+  
+    .ordered-container__item.ordered-container__item--otavan-opisto-logo {
+      flex: 1 0 100%;
+      order: 1;
     }
- 
-    @include breakpoint-up($breakpoint-landscape-pad){
-      >.ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-        flex-direction: row;
+    
+    .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+      flex: 1 0 100%;
+      order: 3;
+    }
+  
+    .ordered-container__item.ordered-container__item--otavan-opisto-description {
+      flex: 1 0 100%;
+      order: 2;
+    }
+
+    @include breakpoint($breakpoint-pad){
+      flex-flow: row wrap;
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-logo {
+        flex: 1 1 50%;
+        order: 1;
+      }
+      
+      .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+        flex: 1 1 50%;
+        order: 2;
+      }
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-description {
+        flex: 1 0 100%;
+        order: 3;
       }
     }
- 
-    @include breakpoint-down($breakpoint-portrait-pad){
-      >.ordered-container__item.ordered-container__item--frontpage-otavan-opisto-logo {
-        order: -1;
-        text-align: center;
-
-        >img {
-          height: 60px;
-        }
+    
+    @include breakpoint($breakpoint-desktop){
+      flex-flow: row wrap;
+      justify-content: flex-start;
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-logo {
+        flex: 0 1 30%;
+        order: 1;
+      }
+      
+      .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
+        flex: 1 1 100%;
+        margin: 1.5rem 0 0 30%;
+        order: 3;
+      }
+    
+      .ordered-container__item.ordered-container__item--otavan-opisto-description {
+        flex: 1 1 70%;
+        order: 2;
       }
     }
   }
- 
   &.ordered-container--index-panels {
     height: 100%;
     padding: 80px 0 70px 0;
@@ -87,7 +165,6 @@ $frontpage-orderd-container-separation: 10;
       }
     }
   }
-  
   &.ordered-container--index-column {
     height: 100%;
     width: 100%;

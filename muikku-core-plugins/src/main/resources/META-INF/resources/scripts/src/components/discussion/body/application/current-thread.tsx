@@ -10,6 +10,7 @@ import ReplyThread from './reply-thread-dialog';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
+import { getName } from "~/util/modifiers";
 
 interface CurrentThreadProps {
   discussionThreads: DiscussionType,
@@ -81,7 +82,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return <div key={reply.id} className={`application-list__item--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
             <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
             <div className="application-list__item__footer">
-              <ReplyThread thread={this.props.discussionThreads.current} message={reply}>
+              <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread>
               <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>

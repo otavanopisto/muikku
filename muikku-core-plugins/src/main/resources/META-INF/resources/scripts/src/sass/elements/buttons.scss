@@ -1,14 +1,9 @@
 @import "../base/colors";
-@import "../base/breakpoints";
 @import "../base/mixins";
-
+@import "../base/vars";
+@import "../base/breakpoints";
 
 // TODO: communicator color variables removing from main function styles
-
-
-$button-font-family: "Exo 2", Arial, sans-serif;
-$button-default-height: 27px;
-$button-default-font-size: 15px;
 
 .button {
   @include prefix(user-select, moz o ms webkit, none);
@@ -31,6 +26,10 @@ $button-default-font-size: 15px;
   white-space: nowrap;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  
+  &.button--branded {
+    font-family: $button-branded-font-family;
+  }
   
   &.button--primary {
     background-color: $color-button-primary-background;
@@ -149,7 +148,7 @@ $button-default-font-size: 15px;
     }
   }
  
-  //FRONTPAGE
+  // FRONTPAGE
   &.button--forgotpassword-dialog {
   	display: inline-flex;
   }
@@ -176,54 +175,54 @@ $button-default-font-size: 15px;
     }
   }
 
-  &.button--frontpage-studying-readmore {
-    background-color: $color-frontpage-button-studying-readmore-background;
-    color: $color-frontpage-button-studying-readmore-text;
+  &.button--frontpage-upper-secondary-school-readmore {
+    background-color: $color-frontpage-button-upper-secondary-school-readmore-background;
+    color: $color-frontpage-button-upper-secondary-school-readmore-text;
+    display: inline-flex;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-studying-readmore-background, 10%);
+      background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 10%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-studying-readmore-background, 20%);
+      background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 20%);
     }
   }
 
-  &.button--frontpage-school-readmore {
-    background-color: $color-frontpage-button-school-readmore-background;
-    color: $color-frontpage-button-school-readmore-text;
+  &.button--frontpage-secondary-school-readmore {
+    background-color: $color-frontpage-button-secondary-school-readmore-background;
+    color: $color-frontpage-button-secondary-school-readmore-text;
+    display: inline-flex;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-school-readmore-background, 10%);
+      background-color: darken($color-frontpage-button-secondary-school-readmore-background, 10%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-school-readmore-background, 20%);
+      background-color: darken($color-frontpage-button-secondary-school-readmore-background, 20%);
     }
   }
 
-  &.button--frontpage-courses-readmore {
-    background-color: $color-frontpage-button-courses-readmore-background;
-    color: $color-frontpage-button-courses-readmore-text;
+  &.button--frontpage-open-materials-readmore {
+    background-color: $color-frontpage-button-open-materials-readmore-background;
+    color: $color-frontpage-button-open-materials-readmore-text;
+    display: inline-flex;
     
     &:hover, &.hover {
-      background-color: darken($color-frontpage-button-courses-readmore-background, 10%);
+      background-color: darken($color-frontpage-button-open-materials-readmore-background, 10%);
     }
     
     &:active, &.active {
-      background-color: darken($color-frontpage-button-courses-readmore-background, 20%);
+      background-color: darken($color-frontpage-button-open-materials-readmore-background, 20%);
     }
   }
 
   &.button--frontpage-website {
     background-color: $color-frontpage-button-website-background;
     color: $color-frontpage-button-website-text;
-    margin-bottom: 10px;
-    
-    @include breakpoint-up($breakpoint-medium-mobile){
-      display: inline-flex;
-    }
-    
+    display: inline-flex;
+    margin: .3rem;
+   
     &:hover, &.hover {
       background-color: darken($color-frontpage-button-website-background, 10%);
     }
@@ -231,16 +230,18 @@ $button-default-font-size: 15px;
     &:active, &.active {
       background-color: darken($color-frontpage-button-website-background, 20%);
     }
+
+    @include breakpoint($breakpoint-desktop){
+      margin: 0 .6rem 0 0;
+    }
   }
 
   &.button--frontpage-newsletter {
     background-color: $color-frontpage-button-newsletter-background;
     color: $color-frontpage-button-newsletter-text;
-    
-    @include breakpoint-up($breakpoint-medium-mobile){
-      display: inline-flex;
-    }
-    
+    display: inline-flex;
+    margin: 0.3rem;
+     
     &:hover, &.hover {
       background-color: darken($color-frontpage-button-newsletter-background, 10%);
     }
@@ -248,9 +249,14 @@ $button-default-font-size: 15px;
     &:active, &.active {
       background-color: darken($color-frontpage-button-newsletter-background, 20%);
     }
+    
+    @include breakpoint($breakpoint-desktop){
+      margin: 0 0 0 0;
+    }
   }
  
   &.button--frontpage-bubble {
+    border-radius: 5px;
   	height: auto;
     overflow-wrap: break-word;
     white-space: normal;
@@ -339,7 +345,7 @@ $button-default-font-size: 15px;
 
 $button-pill-font-family: "Exo 2", Arial, sans-serif;
 
-$button-pill-size: 34px;
+$button-pill-size: 40px;
 $button-pill-font-size: 16px;
 
 $button-pill-floating-size: 70px;
@@ -411,12 +417,15 @@ $button-pill-floating-font-size: 25px;
   }
  
   &.button-pill--profile {
-  	margin-right: 7px;
-    .icon {
-      color: $color-main-function-button-pill-icon-user;
-    }
-    @include breakpoint-down($breakpoint-portrait-pad){
-      display: none;
+    display: none;
+
+    @include breakpoint($breakpoint-pad){
+      box-shadow: $color-button-pill-shadow;
+      display: inline-flex;
+      margin-right: 10px;
+      .icon {
+        color: $color-main-function-button-pill-icon-user;
+      }
     }
   }
   
@@ -679,8 +688,6 @@ $button-pill-floating-font-size: 25px;
   }
 }
 
-$button-social-size: 40px;
-
 .button-social {
   @include prefix(transition, moz ms o webkit, color 0.3s, background-color 0.3s);
   @include prefix(user-select, moz ms o webkit, none);
@@ -699,7 +706,7 @@ $button-social-size: 40px;
   text-transform: none;
   vertical-align: middle;
   width: $button-social-size;
-  margin: 10px 10px 20px 0;
+  margin: 0 .3rem;
 
   &:hover,
   &.hover,
@@ -707,5 +714,15 @@ $button-social-size: 40px;
   &.active {
     background-color: $color-button-social-highlight-background;
     color: $color-button-social-highlight-text;
+  }
+  
+  @include breakpoint($breakpoint-desktop){ 
+    &:first-of-type {
+      margin: 0 .3rem 0 0;
+    }
+    
+    &:last-of-type {
+      margin: 0 0 0 .3rem;
+    }
   }
 }

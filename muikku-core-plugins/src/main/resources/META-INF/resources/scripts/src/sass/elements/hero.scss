@@ -1,59 +1,60 @@
-@import "../base/breakpoints";
 @import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
 
+// Mobile styles
 .hero {
-  background: url("/gfx/of-site-header-background.png") no-repeat center center $color-hero-default-background;
+  background: url("/gfx/oo-branded-site-header-background-mobile.jpg") no-repeat center center $color-hero-default-background;
   background-size: cover;
-  display: block;
-  height: 520px;
-  width: 100%;
-
+  
+  &.hero--frontpage {
+    margin-top: $navbar-height;
+  }
+  
   .hero__wrapper {
     align-items: center;
     display: flex;
-    flex-flow: row nowrap;
-    height: 100%;
-    justify-content: center;
+    flex-flow: column nowrap;
     margin: 0 auto;
-    max-width: $breakpoint-max-usable-screen;
-    padding: 24px;
+    max-width: 64rem;
+    padding: 1.5rem 0 0;
     position: relative;
 
     .hero__wrapper__item {
-      align-items: center;
-      display: flex;
-      flex: 1 1 auto;
-      flex-direction: column;
-      justify-content: center;
-      position: relative;
+      padding: 0 1.5rem 1.5rem;
+      width: 100%;
+      
+      &:nth-child(2) {
+        order: -1;
+      }
     }
   }
-
-  @include breakpoint-down($breakpoint-landscape-pad) {
-    background-image: url("/gfx/of-site-header-background-mobile.jpg");
-    height: auto;
+  
+  // Pad styles
+  @include breakpoint($breakpoint-pad) {
+    background-image: url("/gfx/oo-branded-site-header-background.png");
+    background-size: auto;
 
     .hero__wrapper {
-      flex-direction: column;
-      padding: 24px 0 0;
+      flex-flow: row nowrap;
+      padding: 2.5rem .5rem;
 
       .hero__wrapper__item {
-        padding: 0 24px 24px;
-        width: 100%;
+        flex: 1 1 33%;
+        padding: 0;
+        
+        &:nth-child(2) {
+          order: initial;
+        }
       }
-    }
+    }  
   }
- 
-  //FRONPAGE
-  &.hero--frontpage {
-    margin-top: 70px;
-
-    @include breakpoint-down($breakpoint-landscape-pad) {
-      .hero__wrapper {
-      	.hero__wrapper__item:nth-child(2) {
-      	  order: -1
-      	}
-      }
+    
+  // Desktop styles
+  @include breakpoint($breakpoint-desktop) {
+  
+    .hero__wrapper {
+      padding: 4.5rem .5rem;
     }
   }
 }
