@@ -96,6 +96,7 @@
   .application-list__item-content-container--avatar {
     border-bottom: 1px solid #e8e8e9;
     display: flex;              
+    padding: 10px 0;
     
     &:not(:first-child) {
       margin-top: 10px;
