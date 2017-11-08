@@ -76,7 +76,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
 <header className="hero hero--frontpage">
   <div className="hero__wrapper">
     <div className="hero__wrapper__item">
-      <div className="bubble bubble--responsive">
+      <div className="bubble bubble--application">
         <div className="bubble__title">
           {this.props.i18n.text.get('plugin.header.studentApplicationBubble.title')}
         </div>
@@ -84,7 +84,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
           {this.props.i18n.text.get('plugin.header.studentApplicationBubble.description')}
         </div>
         <div className="bubble__button-container">
-          <a className="button button--frontpage-bubble button--warn">
+          <a className="button button--branded button--frontpage-bubble button--warn">
             {this.props.i18n.text.get('plugin.header.studentApplicationBubble.link')}
           </a>
         </div>
@@ -92,21 +92,21 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     </div>
     <div className="hero__wrapper__item">
       <div className="container container--muikku-logo">
-        <img className="logo logo--muikku-verkko" src="/gfx/of-site-logo.png"></img>
+        <img className="logo logo--muikku-verkko" src="/gfx/oo-branded-site-logo.png"></img>
         <div className="text">
-          <div className="text text--frontpage-muikku-author">{this.props.i18n.text.get('plugin.header.site.author')}</div>
-          <div className="text text--frontpage-muikku">MUIKKU</div>
-          <div className="text text--frontpage-verkko">VERKKO</div>
+          <div className="text text--branded text--frontpage-muikku-author">{this.props.i18n.text.get('plugin.header.site.author')}</div>
+          <div className="text text--branded text--frontpage-muikku">MUIKKU</div>
+          <div className="text text--branded text--frontpage-verkko">VERKKO</div>
         </div>
       </div>
-      <div className="text text--frontpage-muikku-description">{this.props.i18n.text.get('plugin.header.site.description')}</div>
+      <div className="text text--branded text--frontpage-muikku-description">{this.props.i18n.text.get('plugin.header.site.description')}</div>
     </div>
     <div className="hero__wrapper__item">
-      <div className="bubble bubble--responsive">
+      <div className="bubble bubble--goto-materials">
         <div className="bubble__title">{this.props.i18n.text.get('plugin.header.openMaterialsBubble.title')}</div>
         <div className="bubble__content">{this.props.i18n.text.get('plugin.header.openMaterialsBubble.description')}</div>
         <div className="bubble__button-container">
-          <a className="button button--frontpage-bubble button--warn">{this.props.i18n.text.get('plugin.header.openMaterialsBubble.link')}</a>
+          <a className="button button--branded button--frontpage-bubble button--warn">{this.props.i18n.text.get('plugin.header.openMaterialsBubble.link')}</a>
         </div>
       </div>
     </div>
@@ -119,49 +119,46 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
   <div className="screen-container__wrapper">
           
     <section id="studying" className="container container--frontpage-section">
-      <h2 className="text text--frontpage-title">{this.props.i18n.text.get('plugin.sectionTitle.studying')}</h2>
-      <div className="ordered-container ordered-container--row ordered-container--responsive ordered-container--frontpage-studying">
-        <div className="ordered-container__item">
-          <div className="card card--frontpage-studying">
-            <img className="card__image" src="/gfx/kuva_nettilukio.png" alt=""
-              title="" />
+      <h2 className="text text--branded text--frontpage-title">{this.props.i18n.text.get('plugin.sectionTitle.studying')}</h2>
+      <div className="ordered-container ordered-container--row ordered-container--frontpage-studying">
+        <div className="ordered-container__item ordered-container__item--upper-secondary-school">
+          <div className="card card--frontpage-upper-secondary-school">
+            <img className="card__image" src="/gfx/kuva_nettilukio.png" alt="" title="" />
             <div className="card__content">
               <div className="card__title">{this.props.i18n.text.get('plugin.studying.nettilukio.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.nettilukio.description')}</div>
             </div>
             <div className="card__footer">
               <a href="http://www.nettilukio.fi/nettilukio_esittely"
-                className="button button--frontpage-studying-readmore">
+                className="button button--branded button--frontpage-upper-secondary-school-readmore">
                 {this.props.i18n.text.get('plugin.studying.readMore.link')} </a>
             </div>
           </div>
         </div>
-        <div className="ordered-container__item">
-          <div className="card card--frontpage-school">
-            <img className="card__image" src="/gfx/kuva_nettiperuskoulu.png"
-              alt="" title="" />
+        <div className="ordered-container__item ordered-container__item--secondary-school">
+          <div className="card card--frontpage-secondary-school">
+            <img className="card__image" src="/gfx/kuva_nettiperuskoulu.png" alt="" title="" />
             <div className="card__content">
               <div className="card__title">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.description')}</div>
             </div>
             <div className="card__footer">
               <a href="http://www.nettilukio.fi/esittely_nettipk"
-                className="button button--frontpage-school-readmore">
+                className="button button--branded button--frontpage-secondary-school-readmore">
                 {this.props.i18n.text.get('plugin.studying.readMore.link')} </a>
             </div>
           </div>
         </div>
-        <div className="ordered-container__item">
-          <div className="card card--frontpage-courses">
-            <img className="card__image" src="/gfx/kuva_aineopiskelu.png"
-              alt="" title="" />
+        <div className="ordered-container__item ordered-container__item--open-materials">
+          <div className="card card--frontpage-open-materials">
+            <img className="card__image" src="/gfx/kuva_aineopiskelu.png" alt="" title="" />
             <div className="card__content">
               <div className="card__title">{this.props.i18n.text.get('plugin.studying.aineopiskelu.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.aineopiskelu.description')}</div>
             </div>
             <div className="card__footer">
               <a href="http://www.nettilukio.fi/esittely_nettipk"
-                className="button button--frontpage-courses-readmore">
+                className="button button--branded button--frontpage-open-materials-readmore">
                 {this.props.i18n.text.get('plugin.studying.readMore.link')} </a>
             </div>
           </div>
@@ -204,101 +201,91 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     </section>
 
     <section id="news" className="container container--frontpage-section">
+      <h2 className="text text--branded text--frontpage-title">{this.props.i18n.text.get('plugin.sectionTitle.news')}</h2>
+      <div className="ordered-container ordered-container--frontpage-news-and-events">
 
-      <h2 className="frontpage text frontpage-text-title">{this.props.i18n.text.get('plugin.sectionTitle.news')}</h2>
-
-      <div className="ordered-container ordered-container--frontpage-news">
-
-        <div className="ordered-container__item">
-          <div className="ordered-container ordered-container--row ordered-container--responsive ordered-container--frontpage-news-subcontainer">
-
-            <div className="ordered-container__item">
-              <div className="card">
-                <div className="card__content">
-                  <h2 className="card__title">{this.props.i18n.text.get('plugin.frontpageBoxTitle.events')}</h2>
-                  <div className="frontpage-events-container">
-                    <FrontpageFeed queryOptions={{numItems: 4, order: "ASCENDING"}} feedReadTarget="ooevents"></FrontpageFeed>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="ordered-container__item">
-              <div className="card">
-                <div className="card__content">
-                  <h2 className="card__title">{this.props.i18n.text.get('plugin.frontpageBoxTitle.news')}</h2>
-                  <div className="frontpage-news-container">
-                    <FrontpageFeed queryOptions={{numItems: 5}} feedReadTarget="oonews"></FrontpageFeed>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div className="ordered-container__item">
-          <div className="ordered-container ordered-container--row ordered-container--responsive ordered-container--frontpage-news-subcontainer">
-
-            <div className="ordered-container__item">
-              <div className="card">
-                <div className="carousel">
-                  <div className="carousel__item">
-                    <img className="card__image" src="/gfx/kuva1.jpg" alt="" title="" />
-                    <div className="card__content">
-                      <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image1')}</div>
-                    </div>
-                  </div>
-
-                  <div className="carousel__item" style={{display:"none"}}>
-                    <img className="card__image" src="/gfx/kuva2.jpg" alt=""
-                      title="" />
-                    <div className="card__content">
-                      <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image2')}</div>
-                    </div>
-                  </div>
-
-                  <div className="carousel__item" style={{display:"none"}}>
-                    <img className="card__image" src="/gfx/kuva3.jpg" alt="" title="" />
-                    <div className="card__content">
-                      <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image3')}</div>
-                    </div>
-                  </div>
-
-                  <div className="carousel__item" style={{display:"none"}}>
-                    <img className="card__image" src="/gfx/kuva4.jpg" alt=""
-                      title="" />
-                    <div className="card__content">
-                      <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image4')}</div>
-                    </div>
-                  </div>
-
-                  <div className="carousel__item" style={{display:"none"}}>
-                    <img className="card__image" src="/gfx/kuva5.jpg" alt=""
-                      title="" />
-                    <div className="card__content">
-                      <div className="card__text">
-                        {this.props.i18n.text.get('plugin.images.description.image5')}</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="carousel__controls"></div>
-              </div>
-            </div>
-
-            <div className="ordered-container__item">
-              <div className="card">
-                <div className="card__content">
-                  <h2 className="card__title">{this.props.i18n.text.get('plugin.frontpageBoxTitle.blogs')}</h2>
-                  <div className="frontpage-blogs-container">
-                    <FrontpageFeed queryOptions={{numItems: 6}}
-                     feedReadTarget="eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia"></FrontpageFeed>
-                  </div>
-                </div>
+        <div className="ordered-container__item ordered-container__item--frontpage-events">
+          <div className="card">
+            <div className="card__content">
+              <h2 className="card__title">{this.props.i18n.text.get('plugin.frontpageBoxTitle.events')}</h2>
+              <div className="frontpage-events-container">
+                <FrontpageFeed queryOptions={{numItems: 4, order: "ASCENDING"}} feedReadTarget="ooevents"></FrontpageFeed>
               </div>
             </div>
           </div>
         </div>
+
+        <div className="ordered-container__item ordered-container__item--frontpage-news">
+          <div className="card">
+            <div className="card__content">
+              <h2 className="card__title">{this.props.i18n.text.get('plugin.frontpageBoxTitle.news')}</h2>
+              <div className="frontpage-news-container">
+                <FrontpageFeed queryOptions={{numItems: 5}} feedReadTarget="oonews"></FrontpageFeed>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div className="ordered-container__item ordered-container__item--frontpage-images">
+          <div className="card">
+            <div className="carousel">
+              <div className="carousel__item">
+                <img className="card__image" src="/gfx/kuva1.jpg" alt="" title="" />
+                <div className="card__content">
+                  <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image1')}</div>
+                </div>
+              </div>
+
+              <div className="carousel__item" style={{display:"none"}}>
+                <img className="card__image" src="/gfx/kuva2.jpg" alt=""
+                  title="" />
+                <div className="card__content">
+                  <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image2')}</div>
+                </div>
+              </div>
+
+              <div className="carousel__item" style={{display:"none"}}>
+                <img className="card__image" src="/gfx/kuva3.jpg" alt="" title="" />
+                <div className="card__content">
+                  <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image3')}</div>
+                </div>
+              </div>
+
+              <div className="carousel__item" style={{display:"none"}}>
+                <img className="card__image" src="/gfx/kuva4.jpg" alt=""
+                  title="" />
+                <div className="card__content">
+                  <div className="card__text">{this.props.i18n.text.get('plugin.images.description.image4')}</div>
+                </div>
+              </div>
+
+              <div className="carousel__item" style={{display:"none"}}>
+                <img className="card__image" src="/gfx/kuva5.jpg" alt=""
+                  title="" />
+                <div className="card__content">
+                  <div className="card__text">
+                    {this.props.i18n.text.get('plugin.images.description.image5')}</div>
+                </div>
+              </div>
+            </div>
+            <div className="carousel__controls"></div>
+          </div>
+        </div>
+
+        <div className="ordered-container__item ordered-container__item--frontpage-blogs">
+          <div className="card">
+            <div className="card__content">
+              <h2 className="card__title">{this.props.i18n.text.get('plugin.frontpageBoxTitle.blogs')}</h2>
+              <div className="frontpage-blogs-container">
+                <FrontpageFeed queryOptions={{numItems: 6}}
+                 feedReadTarget="eoppimiskeskus,open,ebarometri,matskula,oppiminen,polkuja,reissuvihko,jalkia"></FrontpageFeed>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -307,10 +294,16 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       <div className="card card--frontpage-otavan-opisto">
 
         <div className="ordered-container ordered-container--frontpage-otavan-opisto-info">
+                  
+          <div className="ordered-container__item ordered-container__item--otavan-opisto-logo">
+            <div className="container container--otavan-opisto-logo">
+              <img src="/gfx/oo-branded-organization-logo.jpg" alt="logo" title="logo" />
+            </div>
+          </div>
+                  
           <div className="ordered-container__item ordered-container__item--otavan-opisto-social-media">
-
             <div className="container container--otavan-opisto-social-media">
-              <h2 className="text text--otavan-opisto-info-title">
+              <h2 className="text text--branded text--otavan-opisto-info-title">
                 {this.props.i18n.text.get('plugin.organization.some.title')}
               </h2>
               <a className="button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
@@ -319,24 +312,23 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
               <a className="button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
               <a className="button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
             </div>
-
+          </div>
+                
+          <div className="ordered-container__item ordered-container__item--otavan-opisto-description">
             <div className="container container--otavan-opisto-description">
-              <div className="text text--otavan-opisto-info-description"
+              <div className="text text--branded text--otavan-opisto-info-description"
                 dangerouslySetInnerHTML={{__html: this.props.i18n.text.get('plugin.organization.description')}}>
               </div>
-              <a href="http://www.otavanopisto.fi" target="top" className="button button--frontpage-website">
+              <a href="http://www.otavanopisto.fi" target="top" className="button button--branded button--frontpage-website">
                 www.otavanopisto.fi
               </a>
-              <br/>
-              <a href="http://www.otavanopisto.fi/uutiskirje" target="top" className="button button--frontpage-newsletter">
+              <a href="http://www.otavanopisto.fi/uutiskirje" target="top" className="button button--branded button--frontpage-newsletter">
                 {this.props.i18n.text.get('plugin.organization.newsletter.link')}
               </a>
             </div>
+            
           </div>
-
-          <div className="ordered-container__item ordered-container__item--frontpage-otavan-opisto-logo">
-            <img src="/gfx/of-organization-logo.jpg" alt="logo" title="logo" />
-          </div>
+             
         </div>
 
       </div>
@@ -347,18 +339,18 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
 <footer className="footer" id="contact">
   <div className="footer__container">
     <div className="footer__item footer__item--contact">
-      <h2 className="text text--contact-us">{this.props.i18n.text.get('plugin.footer.contact.title')}</h2>
-      <p className="text text--contact-us-information">
+      <h2 className="text text--branded text--contact-us">{this.props.i18n.text.get('plugin.footer.contact.title')}</h2>
+      <p className="text text--branded text--contact-us-information">
         <span className="text__icon icon-location"></span>
         <b>{this.props.i18n.text.get('plugin.footer.streetAddress.label')}</b>
         <span>Otavantie 2 B, 50670 Otava</span>
       </p>
-      <p className="text text--contact-us-information">
+      <p className="text text--branded text--contact-us-information">
         <span className="text-icon icon-phone"></span>
         <b>{this.props.i18n.text.get('plugin.footer.phoneNumber.label')}</b>
         <span>015 194 3552</span>
       </p>
-      <p className="text text--contact-us-information">
+      <p className="text text--branded text--contact-us-information">
         <span className="text-icon icon-envelope"></span>
         <b>{this.props.i18n.text.get('plugin.footer.emailAddress.label')}</b>
         <span>info@otavanopisto.fi</span>

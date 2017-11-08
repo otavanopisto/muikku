@@ -1,21 +1,13 @@
 @import "../base/breakpoints";
 @import "../base/colors";
 
-$footer-height: 320px;
-
 .footer {
-  align-items: center;
   background-color: $color-footer-default-background;
-  display: flex;
-  height: $footer-height;
-  justify-content: center;
   text-align: center;
   width: 100%;
 
   .footer__container {
-    align-items: center;
     display: flex;
-    height: $footer-height;
     justify-content: center;
     max-width: $breakpoint-max-usable-screen;
     position: relative;
@@ -23,40 +15,30 @@ $footer-height: 320px;
     
     .footer__item {
       flex: 1 0 auto;
-      height: $footer-height;
       padding: 40px;
       position: relative;
-    }
-  }
-
-  @include breakpoint-down($breakpoint-portrait-pad) {
-    height: auto;
-
-    .footer__container {
-      flex-direction: column;
-      height: auto;
-
-      .footer__item {
-        height: auto;
-      }
-    }
-  }
- 
-  //FRONTPAGE
-  .footer__container {
-  	.footer__item {
+  	
   	  &.footer__item--contact {
-	
-	  }
-	  &.footer__item--logos {
-	    align-items: flex-end;
-	    display: flex;
-	    flex-direction: column;
-	    justify-content: space-around;
-	
-	    @include breakpoint-down($breakpoint-portrait-pad){
-	      display: none;
+	      align-items: center;
+	      display: flex;
+	      flex-flow: column nowrap;
+	      
+	      @include breakpoint($breakpoint-pad){
+          align-items: flex-start;
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: space-around;
+        }
 	    }
+  	  &.footer__item--logos {
+  	    display: none;
+  	
+  	    @include breakpoint($breakpoint-pad){
+  	      align-items: flex-end;
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: space-around;
+  	    }
       }
   	}
   }
