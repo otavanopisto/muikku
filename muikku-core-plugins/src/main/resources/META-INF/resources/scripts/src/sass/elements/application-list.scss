@@ -37,13 +37,8 @@
       .application-list__item__footer {
         margin-bottom: 5px;
         padding: 20px 10px;
-        a {
-          text-decoration: underline;  
-          cursor: pointer;
-               
-          &:not(:first-child) {
-            margin-left: 20px;
-          } 
+        a, span {
+
         }
       }
     }
@@ -84,7 +79,7 @@
   }
 }
 
-&.application-list__items {
+.application-list__items {
   height: 100%;
   width: 100%;
   overflow-y: auto;
@@ -226,7 +221,7 @@
 
 // This needs to be reworked according to BEM, there are conflicting instances that should be solved by naming, not nesting.
 
-&.application-list--item-open {
+.application-list--item-open {
   height: 100%;
   overflow-y: auto;
   padding: 10px 15px 10px 27px;    
@@ -309,6 +304,7 @@
   }  
 
 } 
+
 
 
 

@@ -208,7 +208,12 @@ $main-function-link-icon-active-border-size: 5px;
   
   &.link--application-list-item-footer {
     color: $color-link-application-item-footer;
+    cursor: pointer;
     text-decoration: underline;
     text-transform: none;
+  
+      &:not(:first-child) {
+        margin-left: 20px;
+      }     
   }  
 }

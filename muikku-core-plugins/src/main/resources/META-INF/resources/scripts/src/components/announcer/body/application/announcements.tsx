@@ -43,8 +43,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
           </div>                  
           <div className="application-list__item__body">
             <div className="text text--announcer-body">
-              <article className="text text__item-article">
-                <header className="text text__item-article-header">Otsikko 1</header>
+              <article className="text text--item-article">
+                <header className="text text--item-article-header">Otsikko 1</header>
                 <p>Vivamus placerat lacus vel vehicula scelerisque, dui enim adipiscing lacus sit amet sagittis, libero enim vitae mi. In neque magna posuere, euismod ac tincidunt tempor est. Ut suscipit nisi eu purus. Proin ut pede mauris eget ipsum. Integer vel quam nunc commodo consequat. Integer ac eros eu tellus dignissim viverra. Maecenas erat aliquam erat volutpat. Ut venenatis ipsum quis turpis. Integer cursus scelerisque lorem. Sed nec mauris id quam blandit consequat. Cras nibh mi hendrerit vitae, dapibus et aliquam et magna. Nulla vitae elit. Mauris consectetuer odio vitae augue.</p>
             </article>
            </div>
@@ -66,8 +66,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
           </div>                  
           <div className="application-list__item__body">
             <div className="text text--announcer-body">
-              <article className="text text__item-article">
-                <header className="text text__item-article-header">Otsikko 1</header>
+              <article className="text text--item-article">
+                <header className="text text--item-article-header">Otsikko 1</header>
                 <p>Vivamus placerat lacus vel vehicula scelerisque, dui enim adipiscing lacus sit amet sagittis, libero enim vitae mi. In neque magna posuere, euismod ac tincidunt tempor est. Ut suscipit nisi eu purus. Proin ut pede mauris eget ipsum. Integer vel quam nunc commodo consequat. Integer ac eros eu tellus dignissim viverra. Maecenas erat aliquam erat volutpat. Ut venenatis ipsum quis turpis. Integer cursus scelerisque lorem. Sed nec mauris id quam blandit consequat. Cras nibh mi hendrerit vitae, dapibus et aliquam et magna. Nulla vitae elit. Mauris consectetuer odio vitae augue.</p>
             </article>
            </div>
