@@ -12,10 +12,10 @@
         keepalive : "true",
         credentials_url : "/rest/chat/credentials",
         auto_login : true,
-        muc_domain : 'conference.dev.muikkuverkko.fi',
+        muc_domain : 'conference.' + location.hostname,
         muc_nickname : result.mucNickName,
         hide_muc_server : true,
-        auto_join_rooms : ['muikku@conference.dev.muikkuverkko.fi'],
+        auto_join_rooms : ['muikku@conference.' + location.hostname],
         ping_interval: 45
       });
     }
