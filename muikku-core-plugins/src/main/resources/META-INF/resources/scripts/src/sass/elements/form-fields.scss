@@ -145,6 +145,16 @@ div.form-field-tag-input {
   }
 
 
+  &.form-field--new-discussion-area-name {
+    width: 100%;    
+  }
+
+  &.form-field--new-discussion-area-description {
+    width: 100%;
+    height: 100px;
+    margin-top: 20px;    
+  }
+
 }
 
 .form-field-tag-input.form-field-tag-input--new-message {
