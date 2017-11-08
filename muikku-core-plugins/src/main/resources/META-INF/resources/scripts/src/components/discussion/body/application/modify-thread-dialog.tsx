@@ -103,7 +103,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
         <span className="text text--for-checkbox-discussion">TODO translate Locked</span>
         <input type="checkbox" className="form-field" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
       </div>,
-      <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+      <CKEditor autofocus key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{

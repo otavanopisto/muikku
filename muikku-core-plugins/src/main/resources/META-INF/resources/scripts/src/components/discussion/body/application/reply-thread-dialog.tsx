@@ -14,7 +14,9 @@ interface ReplyThreadProps {
   children: React.ReactElement<any>,
   reply: DiscussionThreadType,
   message?: DiscussionThreadReplyType,
-  replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType
+  replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
+  quote?: string,
+  quoteAuthor?: string
 }
 
 interface ReplyThreadState {
@@ -47,6 +49,7 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.createReply = this.createReply.bind(this);
+    this.onDialogOpen = this.onDialogOpen.bind(this);
     
     this.state = {
       locked: false,
@@ -73,9 +76,16 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
       }
     });
   }
+  onDialogOpen(){
+    if (this.props.quote && this.state.text !== this.props.quote){
+      this.setState({
+        text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote>"
+      });
+    }
+  }
   render(){
     let content = (closeDialog: ()=>any) => [
-      <CKEditor key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+      <CKEditor autofocus key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
@@ -91,7 +101,7 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
       )
     }
     
-    return <JumboDialog modifier="new-message"
+    return <JumboDialog modifier="reply-thread" onOpen={this.onDialogOpen}
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
       content={content} footer={footer}>
       {this.props.children}

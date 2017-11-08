@@ -10,6 +10,7 @@ import ReplyThread from './reply-thread-dialog';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
+import { getName } from "~/util/modifiers";
 
 interface CurrentThreadProps {
   discussionThreads: DiscussionType,
@@ -57,7 +58,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <ReplyThread thread={this.props.discussionThreads.current}>
             <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
           </ReplyThread>
-          <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
+          <ReplyThread thread={this.props.discussionThreads.current}
+            quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
+            <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
+          </ReplyThread>
           {canEditThread ? <Link as="span" className="link link--discussion-item-action">TODO translate edit</Link> : null}
           {canRemoveThread ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
         </div>
@@ -76,7 +80,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                 <Link as="span" className="link link--discussion-item-action">TODO translate reply</Link>
               </ReplyThread>
-              <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
+              <ReplyThread thread={this.props.discussionThreads.current} reply={reply}
+                quote={reply.message} quoteAuthor={getName(user)}>
+                <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
+              </ReplyThread>
               {canEditMessage ? <Link as="span" className="link link--discussion-item-action">TODO translate edit</Link> : null}
               {canRemoveMessage ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
             </div>

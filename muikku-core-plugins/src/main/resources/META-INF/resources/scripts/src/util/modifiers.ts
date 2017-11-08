@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { UserType } from '~/reducers/main-function/user-index';
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -98,4 +99,11 @@ export function escapeHTML(str: string){
 export function unescapeHTML(str: string){
   const doc = new DOMParser().parseFromString(str, "text/html");
   return doc.documentElement.textContent;
+}
+
+export function getName(user: UserType){
+  if (!user){
+    return "";
+  }
+  return user.firstName + (user.lastName ? " " + user.lastName : "");
 }

@@ -3,9 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
-import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
@@ -115,7 +113,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     let content = (closeDialog: ()=>any) => [
       <div key="1" className="container container--new-discussion-options">
         <input className="form-field form-field--new-discussion-title" placeholder="TODO translate title"
-          value={this.state.title} onChange={this.onTitleChange}/>
+          value={this.state.title} onChange={this.onTitleChange} autoFocus/>
         <select className="form-field form-field--new-discussion-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
           {this.props.areas.map((area)=><option key={area.id} value={area.id}>
             {area.name}
