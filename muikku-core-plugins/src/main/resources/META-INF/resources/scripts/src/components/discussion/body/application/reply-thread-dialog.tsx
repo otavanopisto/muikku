@@ -79,7 +79,7 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
   onDialogOpen(){
     if (this.props.quote && this.state.text !== this.props.quote){
       this.setState({
-        text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote>"
+        text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>"
       });
     }
   }

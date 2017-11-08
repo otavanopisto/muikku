@@ -88,10 +88,14 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       this.props.onChange(data);
     });
     getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
-      getCKEDITOR().instances[this.name].setData(this.props.children);
+      let instance = getCKEDITOR().instances[this.name];
+      instance.setData(this.props.children);
       if (typeof this.props.width !== "undefined" || typeof this.props.height !== "undefined"){
         this.resize(this.props.width, this.props.height);
       }
+      
+      //TODO somehow, the freaking autofocus doesn't focus in the last row but in the first
+      //Ckeditor hasn't implemented the feature, it must be hacked in, somehow
     });
   }
   componentWillUnmount(){

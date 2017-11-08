@@ -6,6 +6,7 @@ import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
 import ReplyThread from './reply-thread-dialog';
+import ModifyThread from './modify-thread-dialog';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -62,7 +63,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
             <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
           </ReplyThread>
-          {canEditThread ? <Link as="span" className="link link--discussion-item-action">TODO translate edit</Link> : null}
+          {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--discussion-item-action">TODO translate edit</Link></ModifyThread> : null}
           {canRemoveThread ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
         </div>
       </div>

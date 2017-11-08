@@ -94,6 +94,20 @@ export default function discussionThreads(state: DiscussionType={
     return Object.assign({}, state, {
       currentTotalPages: action.payload
     });
+  } else if (action.type === "UPDATE_DISCUSSION_THREAD"){
+    let newCurrent = state.current;
+    if (newCurrent && newCurrent.id === action.payload.id){
+      newCurrent = action.payload;
+    }
+    return Object.assign({}, state, {
+      current: newCurrent,
+      threads: state.threads.map((thread: DiscussionThreadType)=>{
+        if (thread.id !== action.payload.id){
+          return thread;
+        }
+        return action.payload;
+      })
+    });
   }
   return state;
 }
