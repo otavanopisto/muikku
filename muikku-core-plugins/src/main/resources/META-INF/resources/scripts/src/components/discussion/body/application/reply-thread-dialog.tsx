@@ -12,8 +12,7 @@ import { replyToCurrentDiscussionThread, ReplyToCurrentDiscussionThreadTriggerTy
 interface ReplyThreadProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
-  reply: DiscussionThreadType,
-  message?: DiscussionThreadReplyType,
+  reply?: DiscussionThreadReplyType,
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
   quote?: string,
   quoteAuthor?: string

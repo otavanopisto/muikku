@@ -7,6 +7,7 @@ import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
 import ReplyThread from './reply-thread-dialog';
 import ModifyThread from './modify-thread-dialog';
+import DeleteThreadComponent from './delete-thread-component-dialog';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -69,8 +70,11 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
               </ReplyThread>
               {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--discussion-item-action">TODO translate edit</Link></ModifyThread> : null}
-              {canRemoveThread ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
-            </div>              
+              {canRemoveThread ? 
+                  <DeleteThreadComponent>
+                    <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link>
+                  </DeleteThreadComponent> : null}
+            </div>
           </div>
         </div>
       </div>
@@ -83,15 +87,23 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           let canRemoveMessage = this.props.userId === reply.creator || areaPermissions.removeThread;
           let canEditMessage = this.props.userId === reply.creator || areaPermissions.editMessages;
           
+          //TODO use this for a different design when the reply was deleted
+          let replyWasDeleted = reply.deleted;
+          
           return <div key={reply.id} className={`application-list__item--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
             <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
             <div className="application-list__item__footer">
               <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread>
-              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+              <ReplyThread thread={this.props.discussionThreads.current} reply={reply}
+               quote={reply.message} quoteAuthor={getName(user)}>
+                <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+              </ReplyThread>
               {canEditMessage ? <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link> : null}
-              {canRemoveMessage ? <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link> : null}
+              {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
+                <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+              </DeleteThreadComponent> : null}
             </div>
           </div>
         })

@@ -3,7 +3,7 @@ import { DiscussionAreaListType, DiscussionAreaType } from "~/reducers/main-func
 import promisify from "~/util/promisify";
 import notificationActions from '~/actions/base/notifications';
 import mApi from '~/lib/mApi';
-import {DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType, DiscussionThreadListType, DiscussionThreadReplyListType} from "~/reducers/main-function/discussion/discussion-threads";
+import {DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType, DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType} from "~/reducers/main-function/discussion/discussion-threads";
 import { loadUserIndex } from "~/actions/main-function/user-index";
 import {loadDiscussionAreas} from './discussion-areas';
 
@@ -48,6 +48,21 @@ export interface ReplyToCurrentDiscussionThreadTriggerType {
   (data:{
     message: string,
     replyId?: number,
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
+export interface DeleteCurrentDiscussionThreadTriggerType {
+  (data: {
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
+export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
+  (data: {
+    reply: DiscussionThreadReplyType
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -154,13 +169,14 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
       window.location.hash = newThread.forumAreaId + "/" + 
         (newThread.forumAreaId === discussion.areaId ? discussion.page : "1") + "/" + newThread.id + "/1";
       
+      //non-ready, also area count might change, so let's reload it
+      dispatch(loadDiscussionAreas());
+      
       //since we cannot be sure how the new tread affected whatever they are looking at now, and we can't just push first
       //because we might not have the last, lets make it so that when they go back the server is called in order
       //to retrieve the data properly
       
       //this will do it, since it will consider the discussion thread to be in a waiting state
-      //non-ready, also area count might change, so let's reload it
-      dispatch(loadDiscussionAreas());
       dispatch({
         type: "UPDATE_DISCUSSION_THREADS_STATE",
         payload: <DiscussionStateType>"WAIT"
@@ -308,5 +324,59 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
   }
 }
 
-export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread, modifyDiscussionThread}
-export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread, modifyDiscussionThread}
+let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = function deleteCurrentDiscussionThread(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let discussion:DiscussionType = state.discussionThreads
+    
+    try {
+      await promisify(mApi().forum.areas.threads.del(discussion.current.forumAreaId, discussion.current.id), 'callback')();
+      
+      //TODO same hacky method to trigger the goback event
+      if (history.replaceState){
+        let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+        if (canGoBack){
+          history.back();
+        } else {
+          let splitted = location.hash.split("/");
+          history.replaceState('', '', splitted[0] + "/" + splitted[1]);
+          window.dispatchEvent(new HashChangeEvent("hashchange"));
+        }
+      } else {
+        let splitted = location.hash.split("/");
+        location.hash = splitted[0] + "/" + splitted[1];
+      }
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurrentTriggerType = function deleteDiscussionThreadReplyFromCurrent(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let discussion:DiscussionType = state.discussionThreads
+    
+    try {
+      await promisify(mApi().forum.areas.threads.replies.del(discussion.current.forumAreaId, discussion.current.id, data.reply.id), 'callback')();
+      
+      dispatch(loadDiscussionThread({
+        areaId: discussion.current.forumAreaId,
+        threadId: discussion.current.id,
+        success: data.success,
+        fail: data.fail
+      }));
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread,
+  replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
+  deleteDiscussionThreadReplyFromCurrent}
+export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread,
+  replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
+  deleteDiscussionThreadReplyFromCurrent}
