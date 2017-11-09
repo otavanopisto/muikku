@@ -41,7 +41,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
   .menu__logo {
     background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
     display: inline-block;
-    height: 70px;
+    height: $navbar-height;
     width: 175px;
   }
 

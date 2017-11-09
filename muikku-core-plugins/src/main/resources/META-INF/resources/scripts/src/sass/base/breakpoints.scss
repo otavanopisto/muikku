@@ -19,7 +19,10 @@ $breakpoint-pad: 48em;
 // eq. 1024px and up - normal desktop and landscape mode for pads that exceeds 64em/1024px width
 $breakpoint-desktop: 64em; 
 
-$breakpoint-max-usable-screen: 1280px;
+// eq. 1200px and up - wide desktops that exceeds 75em/1200px width
+$breakpoint-desktop-xl: 75em; 
+
+$breakpoint-max-usable-screen: 80rem;
 
 @mixin breakpoint-only($breakpoint) {
   @if (nth($breakpoint, 1) == false){

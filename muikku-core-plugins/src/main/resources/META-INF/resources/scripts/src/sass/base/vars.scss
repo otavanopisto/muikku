@@ -1,6 +1,11 @@
 // Navbar
 $navbar-font: 'Exo 2', Arial, sans-serif;
 $navbar-height: 4.2rem;
+$navbar-item-width: 4.2rem;
+
+// Link
+$link-icon-font-size: 1.8rem;
+$main-function-link-icon-active-border-size: 3px;
 
 // Ordered Containers
 $frontpage-ordered-container-separation: .625rem;
@@ -38,3 +43,12 @@ $button-social-size: 2.5rem;
 
 // Cards - Used only in the branded front page
 $card-font-family: "Exo 2", Arial, sans-serif;
+
+// Label
+$label-font-family: "Exo 2", Arial, sans-serif;
+$label-small-height: 1.3125rem;
+$label-small-font-size: .75rem;
+$label-medium-height: 1.6875rem;
+$label-medium-font-size: .9375rem;
+$label-large-height: 2.0625rem;
+$label-large-font-size: 1.0625rem;

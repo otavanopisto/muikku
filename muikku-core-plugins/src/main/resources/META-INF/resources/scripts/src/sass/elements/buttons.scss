@@ -169,10 +169,6 @@
     &:active, &.active {
       background-color: darken($color-frontpage-button-login-background, 20%);
     }
-    
-    @include breakpoint-up($breakpoint-medium-mobile){
-      margin-right: 14px;
-    }
   }
 
   &.button--frontpage-upper-secondary-school-readmore {
@@ -405,7 +401,7 @@ $button-pill-floating-font-size: 25px;
   &.button-pill--current-language {
     background-color: $color-main-function-button-pill-language-background;
     color: $color-main-function-button-pill-language-text;
-    margin-right: 14px;
+    margin-right: 10px;
     
     &:hover, &.hover {
       background-color: darken($color-main-function-button-pill-language-background, 5%);
@@ -422,7 +418,8 @@ $button-pill-floating-font-size: 25px;
     @include breakpoint($breakpoint-pad){
       box-shadow: $color-button-pill-shadow;
       display: inline-flex;
-      margin-right: 10px;
+      margin-right: 15px;
+      
       .icon {
         color: $color-main-function-button-pill-icon-user;
       }
