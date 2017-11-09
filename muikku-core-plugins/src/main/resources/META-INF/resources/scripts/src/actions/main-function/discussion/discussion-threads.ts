@@ -17,6 +17,7 @@ export interface SET_CURRENT_DISCUSSION_THREAD extends SpecificActionType<"SET_C
 export interface SET_TOTAL_DISCUSSION_PAGES extends SpecificActionType<"SET_TOTAL_DISCUSSION_PAGES", number>{};
 export interface SET_TOTAL_DISCUSSION_THREAD_PAGES extends SpecificActionType<"SET_TOTAL_DISCUSSION_THREAD_PAGES", number>{};
 export interface UPDATE_DISCUSSION_THREAD extends SpecificActionType<"UPDATE_DISCUSSION_THREAD", DiscussionThreadType>{}
+export interface UPDATE_DISCUSSION_THREAD_REPLY extends SpecificActionType<"UPDATE_DISCUSSION_THREAD_REPLY", DiscussionThreadReplyType>{}
 
 export interface LoadDiscussionThreadsTriggerType {
   (data:{
@@ -63,6 +64,15 @@ export interface DeleteCurrentDiscussionThreadTriggerType {
 export interface DeleteDiscussionThreadReplyFromCurrentTriggerType {
   (data: {
     reply: DiscussionThreadReplyType
+    success?: ()=>any,
+    fail?: ()=>any
+  }):AnyActionType
+}
+
+export interface ModifyReplyFromCurrentThreadTriggerType {
+  (data: {
+    reply: DiscussionThreadReplyType,
+    message: string,
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -374,9 +384,31 @@ let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurren
   }
 }
 
+let modifyReplyFromCurrentThread:ModifyReplyFromCurrentThreadTriggerType = function modifyReplyFromCurrentThread(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let discussion:DiscussionType = state.discussionThreads
+    
+    try {
+      let newReply = <DiscussionThreadReplyType>await promisify(mApi().forum.areas.threads.replies.update(
+          discussion.current.forumAreaId, discussion.current.id, data.reply.id, Object.assign({}, data.reply, {message: data.message})), 'callback')();
+      
+      dispatch({
+        type: "UPDATE_DISCUSSION_THREAD_REPLY",
+        payload: newReply,
+      });
+      
+      data.success && data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
 export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread,
   replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent}
+  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread}
 export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread,
   replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent}
+  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread}

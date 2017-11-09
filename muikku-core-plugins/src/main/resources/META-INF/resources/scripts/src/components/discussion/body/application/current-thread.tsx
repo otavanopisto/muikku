@@ -8,6 +8,7 @@ import Link from "~/components/general/link";
 import ReplyThread from './reply-thread-dialog';
 import ModifyThread from './modify-thread-dialog';
 import DeleteThreadComponent from './delete-thread-component-dialog';
+import ModifyThreadReply from './modify-thread-reply-dialog';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -133,7 +134,9 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                    quote={reply.message} quoteAuthor={getName(user)}>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                   </ReplyThread>
-                  {canEditMessage ? <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link> : null}
+                  {canEditMessage ? <ModifyThreadReply reply={reply}>
+                      <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
+                  </ModifyThreadReply> : null}
                   {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
                     <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                   </DeleteThreadComponent> : null}
