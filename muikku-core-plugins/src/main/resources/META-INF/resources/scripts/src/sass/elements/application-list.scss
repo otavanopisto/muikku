@@ -12,71 +12,6 @@
       }
     }
   }
-
-  &.application-list--communicator-message-view {
-    padding: 10px 20px 10px 30px;
-    height: 100%;
-    width: 100%;
-
-    .application-list__item {  
-      margin: 0;
-      padding: 0 0 1px 0;
-      background-color: $color-communicator-application-list-item-open-background;
-      cursor: default;
-    
-      .application-list__item__header, .application-list__item__body, .application-list__item__footer {
-        padding:10px;
-      }   
-    
-      .application-list__item__body {     
-        header {
-          margin-bottom: 20px;
-        }
-      }
-
-      .application-list__item__footer {
-        margin-bottom: 5px;
-        padding: 20px 10px;
-        a, span {
-
-        }
-      }
-    }
-
-    .application-list__item:first-child {
-    
-      .application-list__item__body {
-        background-color: $color-communicator-application-list-item-open-content-background;
-     
-        header {
-          font-size: 20px;
-        }
-      }
-
-      .application-list__item__footer {
-        background-color: $color-communicator-application-list-item-open-content-background;
-      }
-    }
-  
-    .application-list__item:not(:first-child) {
-      .application-list__item__header{
-        background-color: $color-communicator-application-list-item-open-content-background;
-      }   
-    
-      .application-list__item__body {
-        background-color: $color-communicator-application-list-item-open-content-background;
-     
-        header {
-          font-weight: 600;
-          margin-bottom: 20px;
-        }
-      }    
-
-      .application-list__item__footer {
-        background-color: $color-communicator-application-list-item-open-content-background;
-      }
-    }
-  }
 }
 
 .application-list__items {
@@ -313,4 +248,69 @@
 
 .application-list__item--communicator-unread {
   border-left: solid 4px $color-communicator-application-list-item-unread-border;
+}
+
+.application-list--communicator-message-view {
+  padding: 10px 20px 10px 30px;
+  height: 100%;
+  width: 100%;
+
+  .application-list__item {  
+    margin: 0;
+    padding: 0 0 1px 0;
+    background-color: $color-communicator-application-list-item-open-background;
+    cursor: default;
+  
+    .application-list__item__header, .application-list__item__body, .application-list__item__footer {
+      padding:10px;
+    }   
+  
+    .application-list__item__body {     
+      header {
+        margin-bottom: 20px;
+      }
+    }
+
+    .application-list__item__footer {
+      margin-bottom: 5px;
+      padding: 20px 10px;
+      a, span {
+
+      }
+    }
+  }
+
+  .application-list__item:first-child {
+  
+    .application-list__item__body {
+      background-color: $color-communicator-application-list-item-open-content-background;
+   
+      header {
+        font-size: 20px;
+      }
+    }
+
+    .application-list__item__footer {
+      background-color: $color-communicator-application-list-item-open-content-background;
+    }
+  }
+
+  .application-list__item:not(:first-child) {
+    .application-list__item__header{
+      background-color: $color-communicator-application-list-item-open-content-background;
+    }   
+  
+    .application-list__item__body {
+      background-color: $color-communicator-application-list-item-open-content-background;
+   
+      header {
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+    }    
+
+    .application-list__item__footer {
+      background-color: $color-communicator-application-list-item-open-content-background;
+    }
+  }
 }
