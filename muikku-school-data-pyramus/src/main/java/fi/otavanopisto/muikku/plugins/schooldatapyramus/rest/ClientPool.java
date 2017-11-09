@@ -66,6 +66,18 @@ public class ClientPool {
 
     ClientBuilder clientBuilder = ClientBuilder.newBuilder();
     
+    if ("development".equals(System.getProperties().getProperty("system.environment"))) {
+      clientBuilder = trustSelfSignedCerts(clientBuilder);
+    }
+
+    ClientBuilder builder = clientBuilder
+        .register(new JacksonConfigurator())
+        .register(new BrowserCacheFeature());
+    
+    return builder.build();
+  }
+  
+  private ClientBuilder trustSelfSignedCerts(ClientBuilder clientBuilder) {
     TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
       public java.security.cert.X509Certificate[] getAcceptedIssuers() {
         return null;
@@ -93,15 +105,9 @@ public class ClientPool {
       }
     };
     
-    ClientBuilder builder = clientBuilder
-        .sslContext(sslContext)
-        .hostnameVerifier(fakeHostnameVerifier)
-        .register(new JacksonConfigurator())
-        .register(new BrowserCacheFeature());
-    
-    return builder.build();
+    return clientBuilder.sslContext(sslContext).hostnameVerifier(fakeHostnameVerifier);
   }
-  
+
   private List<Client> pooledClients;
 
   private class JacksonConfigurator implements ContextResolver<ObjectMapper> {
