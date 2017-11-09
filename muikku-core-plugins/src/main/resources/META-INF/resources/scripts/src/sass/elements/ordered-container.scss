@@ -7,179 +7,179 @@
   min-height: 25px;
   position: relative;
   width: 100%;
+}
 
-  .ordered-container__item {
+.ordered-container__item {
+  flex: 1 1 100%;
+  max-width: 100%;
+  min-height: 25px;
+  overflow: hidden;
+  position: relative;
+}
+ 
+@include breakpoint($breakpoint-pad) {
+  // Upper secondary school card (Nettilukio)
+  .ordered-container__item--upper-secondary-school {
+    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    margin: 0 $ordered-container-item-gutter 0 0;
+    order: 1;
+  }
+  
+  // Secondary school card (Nettiperuskoulu)
+  .ordered-container__item--secondary-school {
+    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    margin: 0 0 0 $ordered-container-item-gutter;
+    order: 2;
+  }
+  
+  // Open materials card (Aineopiskelu)
+  .ordered-container__item--open-materials {
     flex: 1 1 100%;
-    max-width: 100%;
-    min-height: 25px;
-    overflow: hidden;
-    position: relative;
+    order: 3;
   }
+  
+  // Events card
+  .ordered-container__item--frontpage-events {
+    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    margin: 0 $ordered-container-item-gutter 0 0;
+    order: 1;
+  }
+  
+  // News card
+  .ordered-container__item--frontpage-news {
+    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    margin: 0 0 0 $ordered-container-item-gutter;
+    order: 2;
+  }
+  
+  // Images card
+  .ordered-container__item--frontpage-images {
+    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    margin: 0 $ordered-container-item-gutter 0 0;
+    order: 3;
+  }
+  
+  // Blogs card
+  .ordered-container__item--frontpage-blogs {
+    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    margin: 0 0 0 $ordered-container-item-gutter;
+    order: 4;
+  }
+}
  
-  @include breakpoint($breakpoint-pad) {
-    // Upper secondary school card (Nettilukio)
-    .ordered-container__item.ordered-container__item--upper-secondary-school{
-      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
-      margin: 0 $orderred-container-item-gutter 0 0;
-      order: 1;
-    }
-    
-    // Secondary school card (Nettiperuskoulu)
-    .ordered-container__item.ordered-container__item--secondary-school {
-      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
-      margin: 0 0 0 $orderred-container-item-gutter;
-      order: 2;
-    }
-    
-    // Open materials card (Aineopiskelu)
-    .ordered-container__item.ordered-container__item--open-materials {
-      flex: 1 1 100%;
-      order: 3;
-    }
-    
-    // Events card
-    .ordered-container__item.ordered-container__item--frontpage-events {
-      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
-      margin: 0 $orderred-container-item-gutter 0 0;
-      order: 1;
-    }
-    
-    // News card
-    .ordered-container__item.ordered-container__item--frontpage-news {
-      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
-      margin: 0 0 0 $orderred-container-item-gutter;
-      order: 2;
-    }
-    
-    // Images card
-    .ordered-container__item.ordered-container__item--frontpage-images {
-      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
-      margin: 0 $orderred-container-item-gutter 0 0;
-      order: 3;
-    }
-    
-    // Blogs card
-    .ordered-container__item.ordered-container__item--frontpage-blogs {
-      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
-      margin: 0 0 0 $orderred-container-item-gutter;
-      order: 4;
-    }
-  }
- 
-  @include breakpoint($breakpoint-desktop) {
-    .ordered-container__item.ordered-container__item--upper-secondary-school {
-      flex: 1 1 calc(33% - #{$orderred-container-item-gutter});
-      margin: 0;
-    }
-    
-    .ordered-container__item.ordered-container__item--secondary-school {
-      flex: 1 1 calc(33% - #{$orderred-container-item-gutter});
-      margin: 0 $orderred-container-item-gutter;
-    }
-    
-    .ordered-container__item.ordered-container__item--open-materials {
-      flex: 1 1 calc(33% - #{$orderred-container-item-gutter});
-      margin: 0;
-    }
+@include breakpoint($breakpoint-desktop) {
+  .ordered-container__item--upper-secondary-school {
+    flex: 1 1 calc(33% - #{$ordered-container-item-gutter});
+    margin: 0;
   }
   
-  &.ordered-container--frontpage-studying,
-  &.ordered-container--frontpage-news-and-events {
-  
-    .ordered-container__item {
-      margin-bottom: calc(2 * #{$orderred-container-item-gutter});
-      
-      @include breakpoint($breakpoint-pad) {
-        margin-bottom: calc(2 * #{$orderred-container-item-gutter});
-      }
-    }
+  .ordered-container__item--secondary-school {
+    flex: 1 1 calc(33% - #{$ordered-container-item-gutter});
+    margin: 0 $ordered-container-item-gutter;
   }
-  &.ordered-container--frontpage-otavan-opisto-info {
-    justify-content: center;
   
-    .ordered-container__item.ordered-container__item--otavan-opisto-logo {
-      flex: 1 0 100%;
-      order: 1;
-    }
-    
-    .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-      flex: 1 0 100%;
-      order: 3;
-    }
+  .ordered-container__item--open-materials {
+    flex: 1 1 calc(33% - #{$ordered-container-item-gutter});
+    margin: 0;
+  }
+}
   
-    .ordered-container__item.ordered-container__item--otavan-opisto-description {
-      flex: 1 0 100%;
-      order: 2;
-    }
+.ordered-container--frontpage-studying,
+.ordered-container--frontpage-news-and-events {
+  
+  .ordered-container__item {
+    margin-bottom: calc(2 * #{$ordered-container-item-gutter});
+  }
+}
 
-    @include breakpoint($breakpoint-pad){
-      flex-flow: row wrap;
-    
-      .ordered-container__item.ordered-container__item--otavan-opisto-logo {
-        flex: 1 1 50%;
-        order: 1;
-      }
-      
-      .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-        flex: 1 1 50%;
-        order: 2;
-      }
-    
-      .ordered-container__item.ordered-container__item--otavan-opisto-description {
-        flex: 1 0 100%;
-        order: 3;
-      }
+.ordered-container--frontpage-otavan-opisto-info {
+  justify-content: center;
+
+  .ordered-container__item--otavan-opisto-logo {
+    flex: 1 0 100%;
+    order: 1;
+  }
+  
+  .ordered-container__item--otavan-opisto-social-media {
+    flex: 1 0 100%;
+    order: 3;
+  }
+
+  .ordered-container__item--otavan-opisto-description {
+    flex: 1 0 100%;
+    order: 2;
+  }
+
+  @include breakpoint($breakpoint-pad){
+    flex-flow: row wrap;
+  
+    .ordered-container__item--otavan-opisto-logo {
+      flex: 1 1 50%;
+      order: 1;
     }
     
-    @include breakpoint($breakpoint-desktop){
-      flex-flow: row wrap;
-      justify-content: flex-start;
-    
-      .ordered-container__item.ordered-container__item--otavan-opisto-logo {
-        flex: 0 1 30%;
-        order: 1;
-      }
-      
-      .ordered-container__item.ordered-container__item--otavan-opisto-social-media {
-        flex: 1 1 100%;
-        margin: 1.5rem 0 0 30%;
-        order: 3;
-      }
-    
-      .ordered-container__item.ordered-container__item--otavan-opisto-description {
-        flex: 1 1 70%;
-        order: 2;
-      }
+    .ordered-container__item--otavan-opisto-social-media {
+      flex: 1 1 50%;
+      order: 2;
+    }
+  
+    .ordered-container__item--otavan-opisto-description {
+      flex: 1 0 100%;
+      order: 3;
     }
   }
-  &.ordered-container--index-panels {
-    height: 100%;
-    padding: 80px 0 70px 0;
     
-    @include breakpoint-up($breakpoint-landscape-pad){
-      padding: 80px 10px 70px 10px;
-      
-      >.ordered-container__item {
-        overflow: visible;
-        padding: 0 10px 0 10px;
-      }
+  @include breakpoint($breakpoint-desktop){
+    flex-flow: row wrap;
+    justify-content: flex-start;
+  
+    .ordered-container__item--otavan-opisto-logo {
+      flex: 0 1 30%;
+      order: 1;
+    }
+    
+    .ordered-container__item--otavan-opisto-social-media {
+      flex: 1 1 100%;
+      margin: 1.5rem 0 0 30%;
+      order: 3;
+    }
+  
+    .ordered-container__item--otavan-opisto-description {
+      flex: 1 1 70%;
+      order: 2;
     }
   }
-  &.ordered-container--index-column {
-    height: 100%;
-    width: 100%;
-    overflow: visible;
+}
+
+// TODO: Try to flatten these
+.ordered-container--index-panels {
+  height: 100%;
+  padding: 80px 0 70px 0;
+  
+  @include breakpoint-up($breakpoint-landscape-pad){
+    padding: 80px 10px 70px 10px;
     
     >.ordered-container__item {
-      flex: 1 0 auto;
+      overflow: visible;
+      padding: 0 10px 0 10px;
     }
+  }
+}
+
+.ordered-container--index-column {
+  height: 100%;
+  width: 100%;
+  overflow: visible;
+  
+  >.ordered-container__item {
+    flex: 1 0 auto;
+  }
+  
+  @include breakpoint-up($breakpoint-landscape-pad){
     
-    @include breakpoint-up($breakpoint-landscape-pad){
-      
-      >.ordered-container__item {
-        overflow: visible;
-        padding: 0;
-      }
+    >.ordered-container__item {
+      overflow: visible;
+      padding: 0;
     }
   }
 }
