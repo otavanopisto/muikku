@@ -292,12 +292,10 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     <section id="organization" className="container container--frontpage-section">
 
       <div className="card card--frontpage-otavan-opisto">
-
         <div className="ordered-container ordered-container--frontpage-otavan-opisto-info">
-                  
           <div className="ordered-container__item ordered-container__item--otavan-opisto-logo">
             <div className="container container--otavan-opisto-logo">
-              <img src="/gfx/oo-branded-organization-logo.jpg" alt="logo" title="logo" />
+              <img className="logo logo--otavan-opisto" src="/gfx/oo-branded-organization-logo.jpg" alt="logo" title="logo" />
             </div>
           </div>
                   

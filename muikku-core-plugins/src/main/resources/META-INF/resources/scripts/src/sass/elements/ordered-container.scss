@@ -19,15 +19,15 @@
   @include breakpoint($breakpoint-pad) {
     // Upper secondary school card (Nettilukio)
     .ordered-container__item.ordered-container__item--upper-secondary-school{
-      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
-      margin: 0 $frontpage-ordered-container-separation 0 0;
+      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
+      margin: 0 $orderred-container-item-gutter 0 0;
       order: 1;
     }
     
     // Secondary school card (Nettiperuskoulu)
     .ordered-container__item.ordered-container__item--secondary-school {
-      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
-      margin: 0 0 0 $frontpage-ordered-container-separation;
+      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
+      margin: 0 0 0 $orderred-container-item-gutter;
       order: 2;
     }
     
@@ -39,46 +39,46 @@
     
     // Events card
     .ordered-container__item.ordered-container__item--frontpage-events {
-      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
-      margin: 0 $frontpage-ordered-container-separation 0 0;
+      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
+      margin: 0 $orderred-container-item-gutter 0 0;
       order: 1;
     }
     
     // News card
     .ordered-container__item.ordered-container__item--frontpage-news {
-      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
-      margin: 0 0 0 $frontpage-ordered-container-separation;
+      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
+      margin: 0 0 0 $orderred-container-item-gutter;
       order: 2;
     }
     
     // Images card
     .ordered-container__item.ordered-container__item--frontpage-images {
-      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
-      margin: 0 $frontpage-ordered-container-separation 0 0;
+      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
+      margin: 0 $orderred-container-item-gutter 0 0;
       order: 3;
     }
     
     // Blogs card
     .ordered-container__item.ordered-container__item--frontpage-blogs {
-      flex: 1 1 calc(50% - #{$frontpage-ordered-container-separation});
-      margin: 0 0 0 $frontpage-ordered-container-separation;
+      flex: 1 1 calc(50% - #{$orderred-container-item-gutter});
+      margin: 0 0 0 $orderred-container-item-gutter;
       order: 4;
     }
   }
  
   @include breakpoint($breakpoint-desktop) {
     .ordered-container__item.ordered-container__item--upper-secondary-school {
-      flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
+      flex: 1 1 calc(33% - #{$orderred-container-item-gutter});
       margin: 0;
     }
     
     .ordered-container__item.ordered-container__item--secondary-school {
-      flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
-      margin: 0 calc(2 * #{$frontpage-ordered-container-separation});
+      flex: 1 1 calc(33% - #{$orderred-container-item-gutter});
+      margin: 0 $orderred-container-item-gutter;
     }
     
     .ordered-container__item.ordered-container__item--open-materials {
-      flex: 1 1 calc(33% - #{$frontpage-ordered-container-separation});
+      flex: 1 1 calc(33% - #{$orderred-container-item-gutter});
       margin: 0;
     }
   }
@@ -87,10 +87,10 @@
   &.ordered-container--frontpage-news-and-events {
   
     .ordered-container__item {
-      margin-bottom: $frontpage-ordered-container-separation;
+      margin-bottom: calc(2 * #{$orderred-container-item-gutter});
       
       @include breakpoint($breakpoint-pad) {
-        margin-bottom: calc(2 * #{$frontpage-ordered-container-separation});
+        margin-bottom: calc(2 * #{$orderred-container-item-gutter});
       }
     }
   }

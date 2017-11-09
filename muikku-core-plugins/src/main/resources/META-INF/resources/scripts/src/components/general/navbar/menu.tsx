@@ -140,7 +140,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
                     {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--profile" href="/profile">
-                        <object className="container container--profile-image container--profile-image--in-menu"
+                        <object className="container container--profile-image container--profile-image-in-menu"
                           data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
                           type="image/jpeg">
                           <span className="icon icon-user"></span>
