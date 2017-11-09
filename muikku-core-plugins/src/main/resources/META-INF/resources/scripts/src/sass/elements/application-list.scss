@@ -2,9 +2,7 @@
 @import "../base/mixins";
 @import "../base/breakpoints";
 
-.application-list {
-
-  
+.application-list {  
   @include breakpoint-down($breakpoint-portrait-pad){
     &.application-list--select-mode {
       .application-list__item:not(.selected) {
@@ -13,6 +11,7 @@
     }
   }
 }
+
 
 .application-list__items {
   height: 100%;
@@ -26,58 +25,15 @@
   -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
 
-
-
-  .application-list__item-content-container--avatar {
-    border-bottom: 1px solid #e8e8e9;
-    display: flex;              
-    padding: 10px 0;
-    
-    &:not(:first-child) {
-      margin-top: 10px;
-    }
-  }   
-
-  .application-list__item-content--avatar-container {
-    flex: 0 0 70px;
-    
-    .application-list__item-content-avatar {
-      align-items: center;
-      background-color: skyblue;
-      border-radius: 50%;
-      color: #fff;
-      display: flex;
-      font-size: 20px;
-      height: 50px;
-      justify-content: center;
-      width: 50px;
-    }  
-  }
-
   .application-list__item-content--content-container {
     flex: 1 1 auto;            
   }    
-
-  .application-list__item__header, .application-list__item__body, .application-list__item__footer {
-    align-items: center;
-    display: flex;      
-  }
   
-  .application-list__item__header--discussion-item-header div:not(:first-child) {
+  .application-list__item-header--discussion-item-header div:not(:first-child) {
     margin-left: 10px;
   } 
 
-  .application-list__item__footer {
-    margin-bottom: 5px;
-    a {
-      text-decoration: underline;  
-      cursor: pointer;
-           
-      &:not(:first-child) {
-        margin-left: 20px;
-      } 
-    }
-  }      
+     
 }
 
 
@@ -124,7 +80,38 @@
   
 }
 
-.application-list__item__header {
+.application-list__item-content-container--avatar {
+  border-bottom: 1px solid #e8e8e9;
+  display: flex;              
+  padding: 10px 0;
+  
+  &:not(:first-child) {
+    margin-top: 10px;
+  }
+}   
+
+.application-list__item-content--avatar-container {
+  flex: 0 0 70px;
+  
+  .application-list__item-content-avatar {
+    align-items: center;
+    background-color: skyblue;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    font-size: 20px;
+    height: 50px;
+    justify-content: center;
+    width: 50px;
+  }  
+}
+
+.application-list__item-header, .application-list__item-footer {
+  display: flex;      
+  align-items: center;
+}
+
+.application-list__item-header {
   align-items: center;
 
   input {
@@ -155,6 +142,11 @@
 }
 
 
+.application-list__item-footer {
+  margin-bottom: 5px;
+} 
+
+
 // This needs to be reworked according to BEM, there are conflicting instances that should be solved by naming, not nesting.
 
 .application-list--item-open {
@@ -179,7 +171,7 @@
       border-left: solid 4px $color-communicator-application-list-item-unread-border;
     }
   
-    .application-list__item__header {
+    .application-list__item-header {
       align-items: center;
   
       input {
@@ -222,22 +214,7 @@
     
     
   }
-  .application-list__item__header, .application-list__item__body, .application-list__item__footer {
-    display: flex;      
-    align-items: center;
-  }
-  
-  .application-list__item__footer {
-    margin-bottom: 5px;
-    a {
-      text-decoration: underline;  
-      cursor: pointer;
-           
-      &:not(:first-child) {
-        margin-left: 20px;
-      } 
-    }
-  }  
+
 
 } 
 
@@ -261,28 +238,16 @@
     background-color: $color-communicator-application-list-item-open-background;
     cursor: default;
   
-    .application-list__item__header, .application-list__item__body, .application-list__item__footer {
-      padding:10px;
-    }   
-  
-    .application-list__item__body {     
+    .application-list__item-body {     
       header {
         margin-bottom: 20px;
-      }
-    }
-
-    .application-list__item__footer {
-      margin-bottom: 5px;
-      padding: 20px 10px;
-      a, span {
-
       }
     }
   }
 
   .application-list__item:first-child {
   
-    .application-list__item__body {
+    .application-list__item-body {
       background-color: $color-communicator-application-list-item-open-content-background;
    
       header {
@@ -290,17 +255,17 @@
       }
     }
 
-    .application-list__item__footer {
+    .application-list__item-footer {
       background-color: $color-communicator-application-list-item-open-content-background;
     }
   }
 
   .application-list__item:not(:first-child) {
-    .application-list__item__header{
+    .application-list__item-header{
       background-color: $color-communicator-application-list-item-open-content-background;
     }   
   
-    .application-list__item__body {
+    .application-list__item-body {
       background-color: $color-communicator-application-list-item-open-content-background;
    
       header {
@@ -309,7 +274,7 @@
       }
     }    
 
-    .application-list__item__footer {
+    .application-list__item-footer {
       background-color: $color-communicator-application-list-item-open-content-background;
     }
   }

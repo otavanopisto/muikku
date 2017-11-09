@@ -133,19 +133,23 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
           }));
           return (
             <div key={message.id} className="application-list__item">            
-              <div className="application-list__item__header">
-                <div className="container container--communicator-message-participants">
-                  <span className="text text--communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
-                  <span className="text text--communicator-message-recipients">
-                    {message.recipients.map((recipient) => {
-                        return (
-                          <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
-                            {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
-                          </span>
-                        )
-                    })}
-                  </span>
-                  <span className="text text--communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
+              <div className="application-list__item-header">
+                <div className="container container--communicator-message-meta">
+                  <div className="container container--communicator-message-participants">
+                    <span className="text text--communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
+                    <span className="text text--communicator-message-recipients">
+                      {message.recipients.map((recipient) => {
+                          return (
+                            <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
+                              {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
+                            </span>
+                          )
+                      })}
+                    </span>
+                  </div>  
+                  <div className="container container--communicator-message-time">
+                    <span className="text text--communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
+                  </div>
                 </div>
                 <div className="container container--communicator-message-labels">
                   {/* TODO: labels are outside of the message object
@@ -158,11 +162,11 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
                   */}                 
                 </div>  
               </div>                  
-              <div className="application-list__item__body">
+              <div className="application-list__item-body">
                 <header className="text text-communicator-message-caption">{message.caption}</header>
                 <section className="text text-communicator-message-content" dangerouslySetInnerHTML={{ __html: message.content}}></section>
               </div>                
-              <div className="application-list__item__footer">
+              <div className="application-list__item-footer">
                  <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
                  </NewMessage>

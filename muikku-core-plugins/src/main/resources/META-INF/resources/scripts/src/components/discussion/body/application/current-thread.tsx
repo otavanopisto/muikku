@@ -6,7 +6,6 @@ import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
 import ReplyThread from './reply-thread-dialog';
-import ModifyThread from './modify-thread-dialog';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -68,22 +67,19 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             <div className="application-list__item-content-avatar">{avatar}</div>
           </div>
           <div className="application-list__item-content--content-container">
-            <div className="application-list__item__header">
+            <div className="application-list__item-header">
               <h1 className="text">{this.props.discussionThreads.current.title}</h1>
             </div>    
-            <div className="application-list__item__body">
+            <div className="application-list__item-body">
               <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
             </div>
-            <div className="application-list__item__footer">
+            <div className="application-list__item-footer">
               <ReplyThread thread={this.props.discussionThreads.current}>
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread>
-              <ReplyThread thread={this.props.discussionThreads.current}
-               quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
-                <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
-              </ReplyThread>
-              {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--discussion-item-action">TODO translate edit</Link></ModifyThread> : null}
-              {canRemoveThread ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
+              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+              {canEditThread ? <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link> : null}
+              {canRemoveThread ? <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link> : null}
             </div>              
           </div>
         </div>
@@ -118,9 +114,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 <div className="application-list__item-content--avatar-container">
                   {avatar}
                 </div>            
-                <div className="application-list__item-content--content-container">                        
-                  <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
-                  <div className="application-list__item__footer">
+                <div className="application-list__item-content--content-container">          
+              
+                  <div className="application-list__item-body" dangerouslySetInnerHTML={{__html: reply.message}} />
+                  <div className="application-list__item-footer">
                     <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                       <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                     </ReplyThread>
