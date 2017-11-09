@@ -16,6 +16,7 @@ export interface PUSH_DISCUSSION_THREAD_FIRST extends SpecificActionType<"PUSH_D
 export interface SET_CURRENT_DISCUSSION_THREAD extends SpecificActionType<"SET_CURRENT_DISCUSSION_THREAD", DiscussionThreadType>{};
 export interface SET_TOTAL_DISCUSSION_PAGES extends SpecificActionType<"SET_TOTAL_DISCUSSION_PAGES", number>{};
 export interface SET_TOTAL_DISCUSSION_THREAD_PAGES extends SpecificActionType<"SET_TOTAL_DISCUSSION_THREAD_PAGES", number>{};
+export interface UPDATE_DISCUSSION_THREAD extends SpecificActionType<"UPDATE_DISCUSSION_THREAD", DiscussionThreadType>{}
 
 export interface LoadDiscussionThreadsTriggerType {
   (data:{
@@ -26,6 +27,10 @@ export interface LoadDiscussionThreadsTriggerType {
 
 export interface CreateDiscussionThreadTriggerType {
   (data:{forumAreaId: number, locked: boolean, message: string, sticky: boolean, title: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
+}
+
+export interface ModifyDiscussionThreadTriggerType {
+  (data:{thread: DiscussionThreadType, locked: boolean, message: string, sticky: boolean, title: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
 }
 
 export interface LoadDiscussionThreadTriggerType {
@@ -169,6 +174,30 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
   }
 }
 
+let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDiscussionThread(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      let payload:DiscussionThreadType = Object.assign({}, data.thread, {
+        title: data.title,
+        message: data.message,
+        sticky: data.sticky,
+        locked: data.locked
+      });
+      
+      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.update(data.thread.forumAreaId, data.thread.id, payload), 'callback')();
+      dispatch({
+        type: "UPDATE_DISCUSSION_THREAD",
+        payload: newThread
+      });
+      
+      data.success && data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
 let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussionThread(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let state = getState();
@@ -279,5 +308,5 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
   }
 }
 
-export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread}
-export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread}
+export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread, modifyDiscussionThread}
+export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread, replyToCurrentDiscussionThread, modifyDiscussionThread}

@@ -6,6 +6,7 @@ import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
 import ReplyThread from './reply-thread-dialog';
+import ModifyThread from './modify-thread-dialog';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -77,9 +78,12 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               <ReplyThread thread={this.props.discussionThreads.current}>
                 <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
               </ReplyThread>
-              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
-              {canEditThread ? <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link> : null}
-              {canRemoveThread ? <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link> : null}
+              <ReplyThread thread={this.props.discussionThreads.current}
+               quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
+                <Link as="span" className="link link--discussion-item-action">TODO translate quote</Link>
+              </ReplyThread>
+              {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--discussion-item-action">TODO translate edit</Link></ModifyThread> : null}
+              {canRemoveThread ? <Link as="span" className="link link--discussion-item-action">TODO translate poista</Link> : null}
             </div>              
           </div>
         </div>
