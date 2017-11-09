@@ -286,14 +286,14 @@
   }
   
   
-  &.text__item-article {  
+  &.text--item-article {  
     padding: 10px 0;
     font-weight: 300;
   }
   
     
 
-  &.text__item-article-header {
+  &.text--item-article-header {
     font-weight: 400;
     padding: 10px 0;
   }
@@ -489,7 +489,7 @@
   &.text--discussion-thread-item-body {
     font-style: italic;
     width: 100%;
-    padding: 10px 0;
+    padding: 25px 0;
   }
 
   &.text--discussion-thread-meta {

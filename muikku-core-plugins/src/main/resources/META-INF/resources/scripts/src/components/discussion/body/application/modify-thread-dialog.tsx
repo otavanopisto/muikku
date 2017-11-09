@@ -5,12 +5,11 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
 import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion/discussion-threads';
-import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
+import { createDiscussionThread, CreateDiscussionThreadTriggerType, modifyDiscussionThread, ModifyDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
 
 const ckEditorConfig = {
   toolbar: [
@@ -22,7 +21,7 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'discussion-new-message',
+  draftKey: 'discussion-modify-thread',
   resize_enabled: false
 }
 const extraPlugins = {
@@ -31,16 +30,16 @@ const extraPlugins = {
   'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js'
 }
 
-interface DicussionNewThreadProps {
+interface ModifyThreadProps {
   children: React.ReactElement<any>,
   areas: DiscussionAreaListType,
   i18n: i18nType,
   discussionThreads: DiscussionType,
-  createDiscussionThread: CreateDiscussionThreadTriggerType,
-  thread: DiscussionThreadType
+  thread: DiscussionThreadType,
+  modifyDiscussionThread: ModifyDiscussionThreadTriggerType
 }
 
-interface DicussionNewThreadState {
+interface ModifyThreadState {
   text: string,
   title: string,
   locked: boolean,
@@ -48,16 +47,16 @@ interface DicussionNewThreadState {
   threadLocked: boolean
 }
 
-class DicussionNewThread extends React.Component<DicussionNewThreadProps, DicussionNewThreadState> {
-  constructor(props: DicussionNewThreadProps){
+class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState> {
+  constructor(props: ModifyThreadProps){
     super(props);
     
     this.state = {
-      text: this.props.thread.message,
-      title: this.props.thread.title,
+      text: props.thread.message,
+      title: props.thread.title,
       locked: false,
-      threadPinned: this.props.thread.sticky,
-      threadLocked: this.props.thread.locked
+      threadPinned: props.thread.sticky,
+      threadLocked: props.thread.locked
     }
     
     this.togglePinned = this.togglePinned.bind(this);
@@ -70,7 +69,25 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     this.setState({text});
   }
   modifyThread(closeDialog: ()=>any){
+    if (this.state.locked){
+      return;
+    }
+    this.setState({locked: true});
     
+    this.props.modifyDiscussionThread({
+      thread: this.props.thread,
+      title: this.state.title,
+      message: this.state.text,
+      sticky: this.state.threadPinned,
+      locked: this.state.threadLocked,
+      success: ()=>{
+        this.setState({locked: false});
+        closeDialog();
+      },
+      fail: ()=>{
+        this.setState({locked: false});
+      }
+    });
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({title: e.target.value});
@@ -81,7 +98,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   toggleLocked(){
     this.setState({threadLocked: !this.state.threadLocked});
   }
-  componentWillReceiveProps(nextProps: DicussionNewThreadProps){
+  componentWillReceiveProps(nextProps: ModifyThreadProps){
     if (nextProps.thread.id !== this.props.thread.id){
       this.setState({
         text: nextProps.thread.message,
@@ -103,7 +120,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
         <span className="text text--for-checkbox-discussion">TODO translate Locked</span>
         <input type="checkbox" className="form-field" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
       </div>,
-      <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+      <CKEditor autofocus key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
@@ -136,10 +153,10 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({sendMessage, createDiscussionThread}, dispatch);
+  return bindActionCreators({modifyDiscussionThread}, dispatch);
 };
 
 export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
-)(DicussionNewThread);
+)(ModifyThread);
