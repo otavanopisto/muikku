@@ -36,7 +36,7 @@
 
   @include breakpoint($breakpoint-pad){
     margin-top: 4.375rem;
-    padding: 0 $container-default-gutter;
+    padding: 0 $container-desktop-gutter;
   }
 }
   
