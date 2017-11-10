@@ -69,18 +69,18 @@
  
 @include breakpoint($breakpoint-desktop) {
   .ordered-container__item--upper-secondary-school {
-    flex: 1 1 calc(33% - #{$ordered-container-item-gutter});
-    margin: 0;
+    flex: 1 1 calc(33% - 2 * #{$ordered-container-item-gutter});
+    margin: 0 $ordered-container-item-gutter 0 0;
   }
   
   .ordered-container__item--secondary-school {
-    flex: 1 1 calc(33% - #{$ordered-container-item-gutter});
+    flex: 1 1 calc(33% - 2 * #{$ordered-container-item-gutter});
     margin: 0 $ordered-container-item-gutter;
   }
   
   .ordered-container__item--open-materials {
-    flex: 1 1 calc(33% - #{$ordered-container-item-gutter});
-    margin: 0;
+    flex: 1 1 calc(33% - 2 * #{$ordered-container-item-gutter});
+    margin: 0 0 0 $ordered-container-item-gutter;
   }
 }
   
