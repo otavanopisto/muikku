@@ -6,6 +6,10 @@ import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
 import ReplyThread from './reply-thread-dialog';
+import ModifyThread from './modify-thread-dialog';
+import DeleteThreadComponent from './delete-thread-component-dialog';
+import ModifyThreadReply from './modify-thread-reply-dialog';
+
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
@@ -33,6 +37,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     window.location.hash = this.props.discussionThreads.current.forumAreaId + "/1" +
       "/" + this.props.discussionThreads.current.id + "/" + n;
   }
+  
   render(){
     if (!this.props.discussionThreads.current){
       return null;
@@ -61,29 +66,36 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
     
     return <div className="application-list__items">
-      <div className="application-list__item--open application-list__item--discussion-current-thread">
-        <div className="application-list__item-content-container--avatar">
-          <div className="application-list__item-content--avatar-container">
-            <div className="application-list__item-content-avatar">{avatar}</div>
+    <div className="application-list__item--open application-list__item--discussion-current-thread">
+      <div className="application-list__item-content-container--avatar">
+        <div className="application-list__item-content--avatar-container">
+          <div className="application-list__item-content-avatar">{avatar}</div>
+        </div>
+        <div className="application-list__item-content--content-container">
+          <div className="application-list__item-header">
+            <h1 className="text">{this.props.discussionThreads.current.title}</h1>
+          </div>    
+          <div className="application-list__item-body">
+            <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
           </div>
-          <div className="application-list__item-content--content-container">
-            <div className="application-list__item-header">
-              <h1 className="text">{this.props.discussionThreads.current.title}</h1>
-            </div>    
-            <div className="application-list__item-body">
-              <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
-            </div>
-            <div className="application-list__item-footer">
-              <ReplyThread thread={this.props.discussionThreads.current}>
-                <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
-              </ReplyThread>
+          <div className="application-list__item-footer">
+            <ReplyThread thread={this.props.discussionThreads.current}>
+              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
+            </ReplyThread>              
+            <ReplyThread thread={this.props.discussionThreads.current}
+             quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
               <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
-              {canEditThread ? <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link> : null}
-              {canRemoveThread ? <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link> : null}
-            </div>              
-          </div>
+            </ReplyThread>                
+            {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
+            {canRemoveThread ? 
+            <DeleteThreadComponent>
+              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>            
+            </DeleteThreadComponent> : null}
+          </div>              
         </div>
       </div>
+    </div>
+            
       {
         
         this.props.discussionThreads.currentReplies.map((reply: DiscussionThreadReplyType)=>{
@@ -106,29 +118,33 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
              </object>;
           }          
           
-          
           return ( 
-              
             <div key={reply.id} className={`application-list__item--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
-              <div className="application-list__item-content-container--avatar">            
-                <div className="application-list__item-content--avatar-container">
-                  {avatar}
-                </div>            
-                <div className="application-list__item-content--content-container">          
-              
-                  <div className="application-list__item-body" dangerouslySetInnerHTML={{__html: reply.message}} />
-                  <div className="application-list__item-footer">
+            <div className="application-list__item-content-container--avatar">            
+              <div className="application-list__item-content--avatar-container">
+                {avatar}
+              </div>            
+              <div className="application-list__item-content--content-container">                        
+                <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
+                  <div className="application-list__item__footer">
                     <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                       <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                     </ReplyThread>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
-                    {canEditMessage ? <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link> : null}
-                    {canRemoveMessage ? <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link> : null}
+                    <ReplyThread thread={this.props.discussionThreads.current} reply={reply}
+                     quote={reply.message} quoteAuthor={getName(user)}>
+                      <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+                    </ReplyThread>
+                    {canEditMessage ? <ModifyThreadReply reply={reply}>
+                        <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
+                    </ModifyThreadReply> : null}
+                    {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
+                      <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+                    </DeleteThreadComponent> : null}
                   </div>
-                </div>      
+                </div>
               </div>
-            </div>
-        )})
+            </div>                    
+          )})
       }
       <Pager onClick={this.getToPage} current={this.props.discussionThreads.currentPage} pages={this.props.discussionThreads.currentTotalPages}/>
     </div>
@@ -144,8 +160,6 @@ function mapStateToProps(state: any){
     permissions: state.status.permissions
   }
 };
-
-
 
 
 function mapDispatchToProps(dispatch: Dispatch<any>){

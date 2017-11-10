@@ -108,6 +108,16 @@ export default function discussionThreads(state: DiscussionType={
         return action.payload;
       })
     });
+  } else if (action.type === "UPDATE_DISCUSSION_THREAD_REPLY"){
+    let newCurrent = state.current;
+    return Object.assign({}, state, {
+      currentReplies: state.currentReplies.map((reply: DiscussionThreadReplyType)=>{
+        if (reply.id !== action.payload.id){
+          return reply;
+        }
+        return action.payload;
+      })
+    });
   }
   return state;
 }
