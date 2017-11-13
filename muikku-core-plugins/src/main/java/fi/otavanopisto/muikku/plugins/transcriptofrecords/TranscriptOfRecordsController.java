@@ -73,6 +73,11 @@ public class TranscriptOfRecordsController {
       return false;
     }
 
+    // RUB is part of old curriculum that is not supported in vops (new is RUB1)
+    if ("RUB".equals(code)) {
+      return false;
+    }
+    
     if ("MAA".equals(mathSyllabus) && "MAB".equals(code)) {
       return false;
     }
