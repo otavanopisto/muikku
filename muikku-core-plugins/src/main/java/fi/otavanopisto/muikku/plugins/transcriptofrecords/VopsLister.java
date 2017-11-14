@@ -96,6 +96,7 @@ public class VopsLister {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
         for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
           VopsRESTModel.VopsEntry entry = processCourse(subject, courseNumber);
+          entries.add(entry);
           if (!(entry instanceof VopsRESTModel.VopsPlaceholder)) {
             subjectHasCourses = true;
           }
