@@ -29,14 +29,8 @@
       window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
-  
-  $(window).load(function() {
-    if ($(window).data('initial-page')) {
-      scrollToPage($(window).data('initial-page'), true);
-    }
-  });
-
-  $(window).on('beforeunload', function() {
+   
+  function setLastWorkspace(){
     var tocItem = $('#materialsScrollableTOC').find('a.active'); 
     if (tocItem.length) {
       var url = window.location.href;
@@ -53,7 +47,15 @@
       }
       mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(lastWorkspace)});
     }
+  }
+  
+  $(window).load(function() {
+    if ($(window).data('initial-page')) {
+      scrollToPage($(window).data('initial-page'), true);
+    }
   });
+
+  $(window).on('beforeunload', setLastWorkspace);
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
     event.preventDefault();
@@ -102,6 +104,8 @@
           $(window).data('scrolling', true);
           Waypoint.refreshAll();
           $(window).data('scrolling', false);
+          
+          setLastWorkspace();
         }
       }, 
       offset: 150
