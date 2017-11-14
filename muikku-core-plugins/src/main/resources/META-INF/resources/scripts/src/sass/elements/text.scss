@@ -325,6 +325,17 @@
   &.text--communicator-title {
     color: $color-communicator-text-title;
   }
+    
+  &.text--communicator-message-caption {
+    font-weight: 600;  
+    margin-bottom: 10px;    
+    padding: 10px; 
+  }  
+  
+  &.text--communicator-message-content {
+    padding: 10px;  
+  }
+
   &.text--communicator-current-folder {
     width: 50%;
     overflow: hidden;
@@ -454,8 +465,6 @@
   }
 
   &.text--communicator-message-created {
-    float: right;
-    display: inline-block;
   }
   
   &.text--announcer-times {

@@ -98,6 +98,11 @@
       border: none;
     }
   }
+
+  &.container--communicator-message-meta {
+    display: flex;
+    padding: 10px;
+  }
   
   &.container--communicator-message-view {
     bottom: 0;
@@ -117,7 +122,10 @@
   	padding: 10px;
     width: 100%;
   }
-  
+  .container--communicator-message-links {
+    padding: 10px;
+  }
+    
   &.container--new-message-toolbar-container {
   	width: 250px;
   	height: 100%;

@@ -217,65 +217,69 @@
 
 
 } 
-
-
+.application-list__item-header-aside {
+  flex: 0 0 auto;
+  justify-content: right;
+}
+.application-list__item-header-main {
+  flex: 1 1 auto;
+  
+}
 
 
 // Communicator
-
-.application-list__item--communicator-unread {
-  border-left: solid 4px $color-communicator-application-list-item-unread-border;
-}
 
 .application-list--communicator-message-view {
   padding: 10px 20px 10px 30px;
   height: 100%;
   width: 100%;
+}
 
-  .application-list__item {  
-    margin: 0;
-    padding: 0 0 1px 0;
-    background-color: $color-communicator-application-list-item-open-background;
-    cursor: default;
+.application-list__item--communicator-message {  
+  border-bottom: 5px solid $color-communicator-application-list-item-open-border;
+  cursor: default;
+  margin: 0;
+  padding: 0 0 1px 0;
   
-    .application-list__item-body {     
-      header {
-        margin-bottom: 20px;
-      }
+}
+
+.application-list__item-header--communicator-message {
+  flex-direction: column;
+}
+
+
+// This is against the BEM, but convenient because of the pseudo classes
+
+
+.application-list__item--communicator-message:first-child {
+
+  .application-list__item-header {
+    background-color: $color-communicator-application-list-item-open-header-background;
+  }
+  
+  .application-list__item-body {
+    background-color: $color-communicator-application-list-item-open-content-background;
+ 
+    header {
+      font-size: 20px;
     }
   }
 
-  .application-list__item:first-child {
-  
-    .application-list__item-body {
-      background-color: $color-communicator-application-list-item-open-content-background;
-   
-      header {
-        font-size: 20px;
-      }
-    }
-
-    .application-list__item-footer {
-      background-color: $color-communicator-application-list-item-open-content-background;
-    }
+  .application-list__item-footer {
+    background-color: $color-communicator-application-list-item-open-content-background;
   }
+}
 
-  .application-list__item:not(:first-child) {
-    .application-list__item-header{
-      background-color: $color-communicator-application-list-item-open-content-background;
-    }   
-  
-    .application-list__item-body {
-      background-color: $color-communicator-application-list-item-open-content-background;
-   
-      header {
-        font-weight: 600;
-        margin-bottom: 20px;
-      }
-    }    
+.application-list__item--communicator-messate:not(:first-child) {
+  .application-list__item-header{
+    background-color: $color-communicator-application-list-item-open-content-background;
+  }   
 
-    .application-list__item-footer {
-      background-color: $color-communicator-application-list-item-open-content-background;
-    }
+  .application-list__item-body {
+    background-color: $color-communicator-application-list-item-open-content-background;
+  }    
+
+  .application-list__item-footer {
+    background-color: $color-communicator-application-list-item-open-content-background;
   }
 }
