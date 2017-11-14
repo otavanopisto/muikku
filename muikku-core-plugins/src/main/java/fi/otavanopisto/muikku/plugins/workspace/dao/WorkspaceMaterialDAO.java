@@ -1,23 +1,26 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial_;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialCorrectAnswersDisplay;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial_;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
 
 public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	
-	private static final long serialVersionUID = -1777382212388116832L;
+  private static final long serialVersionUID = -1777382212388116832L;
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String title, String urlName, Integer orderNumber,
       Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, WorkspaceMaterialCorrectAnswersDisplay correctAnswers) {
@@ -35,7 +38,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return persist(workspaceMaterial);
   }
 
-	public List<WorkspaceMaterial> listByParent(WorkspaceNode parent) {
+  public List<WorkspaceMaterial> listByParent(WorkspaceNode parent) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -49,7 +52,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<WorkspaceMaterial> listByHiddenAndAssignmentTypeAndParents(Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, List<WorkspaceNode> parents) {
+  public List<WorkspaceMaterial> listByHiddenAndAssignmentTypeAndParents(BooleanPredicate hidden, WorkspaceMaterialAssignmentType assignmentType, List<WorkspaceNode> parents) {
     if (parents == null || parents.isEmpty()) {
       return Collections.emptyList();
     }
@@ -60,14 +63,18 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     CriteriaQuery<WorkspaceMaterial> criteria = criteriaBuilder.createQuery(WorkspaceMaterial.class);
     Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
     criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden),
-        criteriaBuilder.equal(root.get(WorkspaceMaterial_.assignmentType), assignmentType),
-        root.get(WorkspaceMaterial_.parent).in(parents)
-      )
-    );
-   
+    
+    List<Predicate> predicates = new ArrayList<>();
+    
+    predicates.add(criteriaBuilder.equal(root.get(WorkspaceMaterial_.assignmentType), assignmentType));
+    predicates.add(root.get(WorkspaceMaterial_.parent).in(parents));
+
+    if (hidden != BooleanPredicate.IGNORE) {
+      predicates.add(criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden.asBoolean()));
+    }
+
+    criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+    
     return entityManager.createQuery(criteria).getResultList();
   }
   
@@ -91,7 +98,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getSingleResult();
   }
 
-	public WorkspaceMaterial findByFolderAndUrlName(WorkspaceNode parent, String urlName) {
+  public WorkspaceMaterial findByFolderAndUrlName(WorkspaceNode parent, String urlName) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -99,14 +106,14 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
     criteria.select(root);
     criteria.where(
-  		criteriaBuilder.and(
+      criteriaBuilder.and(
         criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent),
         criteriaBuilder.equal(root.get(WorkspaceMaterial_.urlName), urlName)
       )
     );
    
     return getSingleResult(entityManager.createQuery(criteria));
-	}
+  }
 
   public List<WorkspaceMaterial> listByMaterialId(long materialId) {
     EntityManager entityManager = getEntityManager();
@@ -159,8 +166,8 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return persist(workspaceMaterial);
   }
 
-	public void delete(WorkspaceMaterial workspaceMaterial) {
-	  super.delete(workspaceMaterial);
-	}
-	
+  public void delete(WorkspaceMaterial workspaceMaterial) {
+    super.delete(workspaceMaterial);
+  }
+
 }

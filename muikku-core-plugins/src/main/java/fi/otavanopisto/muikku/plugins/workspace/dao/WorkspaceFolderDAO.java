@@ -1,13 +1,16 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder_;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.plugins.CorePluginsDAO;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -47,20 +50,23 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<WorkspaceFolder> listByHiddenAndParentAndFolderType(Boolean hidden, WorkspaceNode parent, WorkspaceFolderType folderType) {
+  public List<WorkspaceFolder> listByHiddenAndParentAndFolderType(BooleanPredicate hidden, WorkspaceNode parent, WorkspaceFolderType folderType) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<WorkspaceFolder> criteria = criteriaBuilder.createQuery(WorkspaceFolder.class);
     Root<WorkspaceFolder> root = criteria.from(WorkspaceFolder.class);
     criteria.select(root);
-    criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(WorkspaceFolder_.hidden), hidden),
-            criteriaBuilder.equal(root.get(WorkspaceFolder_.parent), parent),
-            criteriaBuilder.equal(root.get(WorkspaceFolder_.folderType), folderType)
-         )
-    );
+    
+    List<Predicate> predicates = new ArrayList<>();
+    predicates.add(criteriaBuilder.equal(root.get(WorkspaceFolder_.parent), parent));
+    predicates.add(criteriaBuilder.equal(root.get(WorkspaceFolder_.folderType), folderType));
+
+    if (hidden != BooleanPredicate.IGNORE) {
+      predicates.add(criteriaBuilder.equal(root.get(WorkspaceFolder_.hidden), hidden.asBoolean()));
+    }
+    
+    criteria.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
     return entityManager.createQuery(criteria).getResultList();
   }

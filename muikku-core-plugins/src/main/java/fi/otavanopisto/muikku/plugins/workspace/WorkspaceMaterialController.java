@@ -37,6 +37,7 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.material.HtmlMaterialController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
@@ -736,13 +737,17 @@ public class WorkspaceMaterialController {
   /* Utility methods */
   
   public Long getMaterialCountByWorkspaceAndAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
-    List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
+    List<WorkspaceNode> folders = listWorkspaceFolders(workspaceEntity, BooleanPredicate.FALSE);
     return workspaceMaterialDAO.countByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
   }
-  
+
   public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
-    final List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
-    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
+    return listWorkspaceMaterialsByAssignmentType(workspaceEntity, assignmentType, BooleanPredicate.FALSE);
+  }
+  
+  public List<WorkspaceMaterial> listWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType, BooleanPredicate hidden) {
+    final List<WorkspaceNode> folders = listWorkspaceFolders(workspaceEntity, hidden);
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(hidden, assignmentType, folders);
     Collections.sort(workspaceMaterials, new Comparator<WorkspaceMaterial>() {
       @Override
       public int compare(WorkspaceMaterial o1, WorkspaceMaterial o2) {
@@ -758,7 +763,7 @@ public class WorkspaceMaterialController {
 
   public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByParentAndAssignmentType(WorkspaceNode parent, WorkspaceEntity workspaceEntity,
       WorkspaceMaterialAssignmentType assignmentType) {
-    return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, Arrays.asList(parent));
+    return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(BooleanPredicate.FALSE, assignmentType, Arrays.asList(parent));
   }
   
   public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
@@ -773,23 +778,23 @@ public class WorkspaceMaterialController {
     return result;
   }
 
-  private List<WorkspaceNode> listVisibleWorkspaceFolders(WorkspaceEntity workspaceEntity) {
+  private List<WorkspaceNode> listWorkspaceFolders(WorkspaceEntity workspaceEntity, BooleanPredicate hidden) {
     List<WorkspaceNode> result = new ArrayList<>();
 
     WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     result.add(rootFolder);
     
-    appendVisibleChildFolders(rootFolder, result);
+    appendChildFolders(rootFolder, result, hidden);
 
     return result;
   }
   
-  private void appendVisibleChildFolders(WorkspaceNode parent, List<WorkspaceNode> result) {
-    List<WorkspaceFolder> childFolders = workspaceFolderDAO.listByHiddenAndParentAndFolderType(Boolean.FALSE, parent, WorkspaceFolderType.DEFAULT);
+  private void appendChildFolders(WorkspaceNode parent, List<WorkspaceNode> result, BooleanPredicate hidden) {
+    List<WorkspaceFolder> childFolders = workspaceFolderDAO.listByHiddenAndParentAndFolderType(hidden, parent, WorkspaceFolderType.DEFAULT);
     result.addAll(childFolders);
     
     for (WorkspaceFolder childFolder : childFolders) {
-      appendVisibleChildFolders(childFolder, result);
+      appendChildFolders(childFolder, result, hidden);
     }
   }
 
