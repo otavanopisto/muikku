@@ -22,31 +22,33 @@ interface AnnouncementsPanelState {
 
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   render(){
-    return (<div className="ordered-container__item panel panel--index">
+    return (<div className="ordered-container__item">
         <div className="text text--for-panels-title text--for-panels-title--announcements">
-        <span className="icon icon-announcer"></span>
-        <span>{this.props.i18n.text.get('plugin.frontPage.announcements')}</span>
-      </div>
-      {this.props.announcements.length !== 0 ?
-        <div className="item-list item-list--panel-announcements">
-          {this.props.announcements.map((announcement: AnnouncementType)=>{
-            return <Link key={announcement.id} className={`item-list__item ${announcement.workspaces ? "item-list__item--has-workspaces" : ""}`}
-              href={`/announcements?announcementId=${announcement.id}`}>
-              <span className="icon icon-announcer"></span>
-              <span className="text item-list__text-body item-list__text-body--multiline">
-                {announcement.caption}
-                <span className="text text--announcements-date">
-                  {this.props.i18n.time.format(announcement.created)}
-                </span>
-              </span>
-            </Link>
-          })}
-        </div>  
-      :
-        <div className="text text--panel-nothing">
-         {this.props.i18n.text.get("plugin.announcer.empty.title")}
+          <span className="icon icon-announcer"></span>
+          <span>{this.props.i18n.text.get('plugin.frontPage.announcements')}</span>
         </div>
-      }
+        <div className="panel panel--index">
+          {this.props.announcements.length !== 0 ?
+            <div className="item-list item-list--panel-announcements">
+              {this.props.announcements.map((announcement: AnnouncementType)=>{
+                return <Link key={announcement.id} className={`item-list__item ${announcement.workspaces ? "item-list__item--has-workspaces" : ""}`}
+                  href={`/announcements?announcementId=${announcement.id}`}>
+                  <span className="icon icon-announcer"></span>
+                  <span className="text item-list__text-body item-list__text-body--multiline">
+                    {announcement.caption}
+                    <span className="text text--announcements-date">
+                      {this.props.i18n.time.format(announcement.created)}
+                    </span>
+                  </span>
+                </Link>
+              })}
+            </div>  
+          :
+            <div className="text text--panel-nothing">
+             {this.props.i18n.text.get("plugin.announcer.empty.title")}
+            </div>
+          }
+      </div>
     </div>);
   }
 }

@@ -199,15 +199,14 @@
     }
     
     span:not(.icon) {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: #{$index-text-icon-size + $index-text-mobile-padding-horizontal}px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
+      display: inline-block;
       height: #{$index-text-icon-size}px;
       line-height: #{$index-text-icon-size}px;
+      overflow: hidden;
+      padding: 0 0 0 10px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      
       
       @include breakpoint-down($breakpoint-portrait-pad){
         left: #{$index-text-icon-size + ($index-text-mobile-padding-horizontal*2)}px;

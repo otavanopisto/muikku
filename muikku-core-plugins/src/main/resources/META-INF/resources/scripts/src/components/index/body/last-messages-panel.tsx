@@ -15,29 +15,31 @@ interface LastMessagesPanelState {
 
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="ordered-container__item panel panel--index">
+    return (<div className="ordered-container__item">
       <div className="text text--for-panels-title text--for-panels-title--last-messages">
         <span className="icon icon-envelope"></span>
         <span>{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
-      {this.props.lastMessages ? (
-        <div className="item-list item-list--panel-last-messages">
-          {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
-            return (<Link key={message.id} className={`item-list__item ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
-                    href={`/communicator#inbox/${message.communicatorMessageId}`}>
-              <span className={`icon icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
-              <span className="text item-list__text-body item-list__text-body--multiline">
-                {message.caption}
-                <span className="text text--last-message-date">
-                  {this.props.i18n.time.format(message.created)}
+      <div className="panel panel--index">
+        {this.props.lastMessages ? (
+          <div className="item-list item-list--panel-last-messages">
+            {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
+              return (<Link key={message.id} className={`item-list__item ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
+                      href={`/communicator#inbox/${message.communicatorMessageId}`}>
+                <span className={`icon icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
+                <span className="text item-list__text-body item-list__text-body--multiline">
+                  {message.caption}
+                  <span className="text text--last-message-date">
+                    {this.props.i18n.time.format(message.created)}
+                  </span>
                 </span>
-              </span>
-            </Link>);
-          })}
-        </div>
-      ) : (
-        <div className="text text--panel-nothing">{this.props.i18n.text.get("plugin.frontPage.messages.noMessages")}</div>
-      )}
+              </Link>);
+            })}
+          </div>
+          ) : (
+            <div className="text text--panel-nothing">{this.props.i18n.text.get("plugin.frontPage.messages.noMessages")}</div>
+          )}
+      </div>
     </div>);
   }
 }

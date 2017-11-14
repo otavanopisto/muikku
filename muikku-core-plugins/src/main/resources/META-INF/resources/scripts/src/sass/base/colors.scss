@@ -219,7 +219,7 @@ $color-indicator-text: $color-fatal-contrast;
 
 // application panel
 $color-application-panel-box-background: $color-default;
-$color-application-panel-box-border: #ccc;
+$color-application-panel-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background-hover: #eee;

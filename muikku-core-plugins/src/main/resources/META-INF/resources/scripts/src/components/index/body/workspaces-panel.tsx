@@ -15,31 +15,33 @@ interface LastMessagesPanelState {
 
 class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="ordered-container__item panel panel--index">
+    return (<div className="ordered-container__item">   
       <div className="text text--for-panels-title text--for-panels-title--workspaces">
         <span className="icon icon-books"></span>
         <span>{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>
       </div>
-      {this.props.workspaces ? (
-        <div className="item-list item-list--panel-workspaces">
-          {this.props.workspaces.map((workspace: WorkspaceType)=>{
-            return <Link key={workspace.id} className="item-list__item" href={`/workspace/${workspace.urlName}`}>
-              <span className="icon icon-books"></span>
-              <span className="item-list__text-body text">
-                {`${workspace.name} ${workspace.nameExtension ? workspace.nameExtension : ""}`}
-              </span>
+      <div className="panel panel--index">        
+        {this.props.workspaces ? (
+          <div className="item-list item-list--panel-workspaces">
+            {this.props.workspaces.map((workspace: WorkspaceType)=>{
+              return <Link key={workspace.id} className="item-list__item" href={`/workspace/${workspace.urlName}`}>
+                <span className="icon icon-books"></span>
+                <span className="item-list__text-body text">
+                  {`${workspace.name} ${workspace.nameExtension ? workspace.nameExtension : ""}`}
+                </span>
+              </Link>
+            })}
+          </div>
+        ) : (
+          <div className="text text--panel-nothing">
+            {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part1')}
+            <Link href="/coursepicker">
+              {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.coursepicker')}
             </Link>
-          })}
-        </div>
-      ) : (
-        <div className="text text--panel-nothing">
-          {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part1')}
-          <Link href="/coursepicker">
-            {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.coursepicker')}
-          </Link>
-          {" "}{this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part2')}
-        </div>
-      )}
+            {" "}{this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part2')}
+          </div>
+        )}
+       </div>
      </div>);
   }
 }

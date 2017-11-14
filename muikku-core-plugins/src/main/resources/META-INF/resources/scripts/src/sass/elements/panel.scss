@@ -3,35 +3,26 @@
 @import "../base/mixins";
 
 .panel {
-  position: relative;
+  background-color: $color-panel-background;
+  border: solid 1px $color-panel-border;
+  bottom: 0;
+  content: " ";
+  display: block;
   padding: 20px;
+  position: relative;
   overflow: visible;
-  
-  &::before {
-    z-index: -1;
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: $color-panel-background;
-    border: solid 1px $color-panel-border;
-  }
+}
  
-  &.panel--index {
-    margin-top: 20px;
-    padding: 20px 0 20px 0;
-  
-    &::before {
-      @include breakpoint-down($breakpoint-portrait-pad){
-        border-left: none;
-        border-right: none;
-      }
-      @include breakpoint-up($breakpoint-landscape-pad){
-        top: 42px;
-      }
+.panel--index {
+  padding: 5px;
+
+  &::before {
+    @include breakpoint-down($breakpoint-portrait-pad){
+      border-left: none;
+      border-right: none;
+    }
+    @include breakpoint-up($breakpoint-landscape-pad){
+      top: 42px;
     }
   }
 }

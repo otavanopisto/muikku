@@ -154,14 +154,14 @@
 // TODO: Try to flatten these
 .ordered-container--index-panels {
   height: 100%;
-  padding: 80px 0 70px 0;
+  padding: calc(#{$navbar-height} * 1.2) 0 10px;
   
-  @include breakpoint-up($breakpoint-landscape-pad){
-    padding: 80px 10px 70px 10px;
+  @include breakpoint($breakpoint-pad){
+    padding: calc(#{$navbar-height} * 1.4) 10px 10px;
     
     >.ordered-container__item {
       overflow: visible;
-      padding: 0 10px 0 10px;
+      padding: 0 10px;
     }
   }
 }
