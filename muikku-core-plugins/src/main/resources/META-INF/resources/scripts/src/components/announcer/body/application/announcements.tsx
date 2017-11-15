@@ -26,7 +26,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
       <div className="application-list application-list__items"
        ref="list" >        
         <div key={1} className='application-list__item workspace-announcement'>
-          <div className="application-list__item__header">
+          <div className="application-list__item-header">
             <input type="checkbox"/>        
             <div className="text text--announcer-header-main">
               <span className="icon icon-clock"></span>
@@ -41,7 +41,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               </span>
             </div>                  
           </div>                  
-          <div className="application-list__item__body">
+          <div className="application-list__item-body">
             <div className="text text--announcer-body">
               <article className="text text--item-article">
                 <header className="text text--item-article-header">Otsikko 1</header>
@@ -49,13 +49,13 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
             </article>
            </div>
           </div>                
-          <div className="application-list__item__footer">                  
+          <div className="application-list__item-footer">                  
             <a className="link link--application-list-item-footer" href="">{this.props.i18n.text.get('plugin.announcer.link.edit')}</a>
             <a className="link link--application-list-item-footer" href="">{this.props.i18n.text.get('plugin.announcer.link.delete')}</a>
           </div>                      
         </div>      
         <div key={2} className='application-list__item environment-announcement'>
-          <div className="application-list__item__header">
+          <div className="application-list__item-header">
             <input type="checkbox"/>        
             <div className="text text--announcer-header-main">
               <span className="icon icon-clock"></span>
@@ -64,7 +64,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               </span>
             </div>                 
           </div>                  
-          <div className="application-list__item__body">
+          <div className="application-list__item-body">
             <div className="text text--announcer-body">
               <article className="text text--item-article">
                 <header className="text text--item-article-header">Otsikko 1</header>
@@ -72,7 +72,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
             </article>
            </div>
           </div>
-          <div className="application-list__item__footer">                  
+          <div className="application-list__item-footer">                  
             <a className="link link--application-list-item-footer" href="">Muokkaa</a>
             <a className="link link--application-list-item-footer" href="">Poista</a>
           </div>                      

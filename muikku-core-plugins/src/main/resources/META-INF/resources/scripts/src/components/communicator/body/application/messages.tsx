@@ -194,7 +194,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
           <div key={message.communicatorMessageId} className={`application-list__item ${message.unreadMessagesInThread ? "application-list__item--communicator-unread" : ""} ${isSelected ? "selected" : ""}`}
             onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)} onTouchMove={this.onTouchMoveMessage.bind(this, message)} 
             onClick={this.onMessageClick.bind(this, message)} onContextMenu={this.onContextMenu}>
-            <div className="application-list__item__header">
+            <div className="application-list__item-header">
             <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
             <div className="text text--communicator-usernames">
               <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
@@ -206,10 +206,10 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
               {this.props.i18n.time.format(message.threadLatestMessageDate)}
             </div>                
           </div>
-          <div className="application-list__item__body">
+          <div className="application-list__item-body">
             <span className="text text--communicator-body">{message.caption}</span>
           </div>
-          <div className="application-list__item__footer">
+          <div className="application-list__item-footer">
             <div className="text text--communicator-labels">{message.labels.map((label)=>{
               return <span className="text text--communicator-label" key={label.id}>
                 <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>

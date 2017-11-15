@@ -26,7 +26,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
       <div className="application-list  application-list--item-open"
        ref="list" > 
         <div key={1} className='application-list__item environment-announcement'>
-          <div className="application-list__item__header">   
+          <div className="application-list__item-header">   
             <div className="text text--announcer-header-main">
               <span className="icon icon-clock"></span>
               <span className="text text--announcer-times">
@@ -34,7 +34,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
               </span>
             </div>                 
           </div>                  
-          <div className="application-list__item__body">
+          <div className="application-list__item-body">
             <div className="text text--announcer-body">
               <article className="text text--item-article">
                 <header className="text text--item-article-header">Otsikko 1</header>

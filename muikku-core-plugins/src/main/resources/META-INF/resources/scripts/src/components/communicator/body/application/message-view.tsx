@@ -132,20 +132,24 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
             value: w
           }));
           return (
-            <div key={message.id} className="application-list__item">            
-              <div className="application-list__item__header">
-                <div className="container container--communicator-message-participants">
-                  <span className="text text--communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
-                  <span className="text text--communicator-message-recipients">
-                    {message.recipients.map((recipient) => {
-                        return (
-                          <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
-                            {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
-                          </span>
-                        )
-                    })}
-                  </span>
-                  <span className="text text--communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
+            <div key={message.id} className="application-list__item--communicator-message">            
+              <div className="application-list__item-header application-list__item-header--communicator-message">
+                <div className="container container--communicator-message-meta">
+                  <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
+                    <span className="text text--communicator-message-sender">{message.sender.firstName  ? message.sender.firstName +  " " : ""} {message.sender.lastName ? message.sender.lastName : ""}</span>
+                    <span className="text text--communicator-message-recipients">
+                      {message.recipients.map((recipient) => {
+                          return (
+                            <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
+                              {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
+                            </span>
+                          )
+                      })}
+                    </span>
+                  </div>  
+                  <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
+                    <span className="text text--communicator-message-created">{this.props.i18n.time.format(message.created)}</span>
+                  </div>
                 </div>
                 <div className="container container--communicator-message-labels">
                   {/* TODO: labels are outside of the message object
@@ -158,18 +162,20 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
                   */}                 
                 </div>  
               </div>                  
-              <div className="application-list__item__body">
-                <header className="text text-communicator-message-caption">{message.caption}</header>
-                <section className="text text-communicator-message-content" dangerouslySetInnerHTML={{ __html: message.content}}></section>
+              <div className="application-list__item-body--communicator-message">
+                <header className="text text--communicator-message-caption">{message.caption}</header>
+                <section className="text text--communicator-message-content" dangerouslySetInnerHTML={{ __html: message.content}}></section>
               </div>                
-              <div className="application-list__item__footer">
-                 <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
-                   <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
-                 </NewMessage>
-                 <NewMessage replyThreadId={message.communicatorMessageId}
-                   initialSelectedItems={[senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)}>
-                   <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
-                 </NewMessage>                   
+              <div className="application-list__item-footer">
+                <div className="container container--communicator-message-links">
+                  <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
+                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
+                  </NewMessage>
+                  <NewMessage replyThreadId={message.communicatorMessageId}
+                     initialSelectedItems={[senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)}>
+                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
+                  </NewMessage>    
+                </div>  
               </div>                
             </div>
           )

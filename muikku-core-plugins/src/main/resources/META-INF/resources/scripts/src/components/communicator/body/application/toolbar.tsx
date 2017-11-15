@@ -93,7 +93,8 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
             </Link>
-            <div className="text text--current-folder">
+          
+            <div className="text text--communicator-current-folder">
               <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               {"  " + currentLocation.text(this.props.i18n)}
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>

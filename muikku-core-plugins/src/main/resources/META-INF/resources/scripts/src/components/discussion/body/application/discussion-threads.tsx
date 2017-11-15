@@ -97,7 +97,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         //}
         //you can pick whatever information you want and use it to build the template eg.
         
-        //<div className="application-list__item__header application-list__item__header--discussion-item-header">
+        //<div className="application-list__item-header application-list__item-header--discussion-item-header">
         //  <div className="icon-lock"></div>
         
         //can be changed to {thread.locked ? <div className="icon-lock"></div> : null} so you only get the lock when
@@ -112,14 +112,14 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
               {avatar}
             </div>            
             <div className="application-list__item-content--content-container">
-              <div className="application-list__item__header application-list__item__header--discussion-item-header">
+              <div className="application-list__item-header application-list__item-header--discussion-item-header">
                 <div className="icon-lock"></div>
                 <div className="icon-pin"></div>
                 <div className="text text--discussion-thread-item-title">{thread.title}</div></div>
-              <div className="application-list__item__body">
+              <div className="application-list__item-body">
                 <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
               </div>
-              <div className="application-list__item__footer">
+              <div className="application-list__item-footer">
                 <div className="text text--discussion-thread-user">
                   <span>{user && user.firstName +  ' ' + user.lastName}</span> 
                   <span>{this.props.i18n.time.format()}</span>
