@@ -761,9 +761,9 @@ public class WorkspaceMaterialController {
     return workspaceMaterials;
   }
 
-  public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByParentAndAssignmentType(WorkspaceNode parent, WorkspaceEntity workspaceEntity,
-      WorkspaceMaterialAssignmentType assignmentType) {
-    return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(BooleanPredicate.FALSE, assignmentType, Arrays.asList(parent));
+  public List<WorkspaceMaterial> listWorkspaceMaterialsByParentAndAssignmentType(WorkspaceNode parent, WorkspaceEntity workspaceEntity,
+      WorkspaceMaterialAssignmentType assignmentType, BooleanPredicate hidden) {
+    return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(hidden, assignmentType, Arrays.asList(parent));
   }
   
   public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
