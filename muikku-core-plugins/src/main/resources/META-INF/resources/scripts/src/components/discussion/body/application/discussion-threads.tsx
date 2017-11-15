@@ -113,8 +113,12 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
             </div>            
             <div className="application-list__item-content--content-container">
               <div className="application-list__item-header application-list__item-header--discussion-item-header">
-                <div className="icon-lock"></div>
-                <div className="icon-pin"></div>
+                {thread.locked ? 
+                  <div className="icon-lock"></div> : null
+                }
+                {thread.sticky ? 
+                    <div className="icon-pin"></div> : null                
+                }                 
                 <div className="text text--discussion-thread-item-title">{thread.title}</div></div>
               <div className="application-list__item-body">
                 <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
@@ -122,14 +126,14 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
               <div className="application-list__item-footer">
                 <div className="text text--discussion-thread-user">
                   <span>{user && user.firstName +  ' ' + user.lastName}</span> 
-                  <span>{this.props.i18n.time.format()}</span>
-                </div>                
+                  <span>{this.props.i18n.time.format(thread.created)}</span>
+                </div>                                  
                 <div className="text text--discussion-thread-meta">
                   <div className="text text--item-counter">
-                    <span>15</span>
-                  </div>
+                    <span>{thread.numReplies}</span>
+                  </div>                    
                   <div className="text text--discussion-thread-meta-latest-reply">
-                    <span>TODO Viimeisin viesti: {this.props.i18n.time.format()}</span>
+                    <span>{this.props.i18n.text.get("plugin.discussion.titleText.lastMessage")} {this.props.i18n.time.format(thread.updated)}</span>
                   </div>
                 </div>  
               </div>  

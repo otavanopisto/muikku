@@ -112,7 +112,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <input className="form-field form-field--new-discussion-thread-title" placeholder="TODO translate title"
+         <input className="form-field form-field--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          <select className="form-field form-field--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
            {this.props.areas.map((area)=><option key={area.id} value={area.id}>
