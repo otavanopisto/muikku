@@ -4,7 +4,7 @@ import ScreenContainer from '../general/screen-container';
 import AnnouncementsPanel from './body/announcements-panel';
 import ContinueStudiesPanel from './body/continue-studies-panel';
 import ImportantPanel from './body/important-panel';
-import LastMessagesPanel from './body/last-messages-panel';
+import LastMessagesPanel from './body/latest-messages-panel';
 import WorkspacesPanel from './body/workspaces-panel';
 
 import * as React from 'react';

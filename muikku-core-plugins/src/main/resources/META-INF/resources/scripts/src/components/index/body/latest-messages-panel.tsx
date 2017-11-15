@@ -16,17 +16,17 @@ interface LastMessagesPanelState {
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
     return (<div className="ordered-container__item">
-      <div className="text text--for-panels-title text--for-panels-title--last-messages">
-        <span className="text__panel-icon text__panel-icon--last-messages icon-envelope"></span>
+      <div className="text text--for-panels-title text--for-panels-title--latest-messages">
+        <span className="text__panel-icon text__panel-icon--latest-messages icon-envelope"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
       <div className="panel panel--index">
         {this.props.lastMessages ? (
-          <div className="item-list item-list--panel-last-messages">
+          <div className="item-list item-list--panel-latest-messages">
             {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
-              return (<Link key={message.id} className={`item-list__item ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
+              return (<Link key={message.id} className={`item-list__item item-list__item--latest-messages ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
                       href={`/communicator#inbox/${message.communicatorMessageId}`}>
-                <span className={`item-list__icon icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
+                <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
                 <span className="text item-list__text-body item-list__text-body--multiline">
                   {message.caption}
                   <span className="text text--last-message-date">

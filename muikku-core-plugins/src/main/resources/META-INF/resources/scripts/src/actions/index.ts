@@ -20,7 +20,7 @@ import {UPDATE_COMMUNICATOR_NAVIGATION_LABELS, ADD_COMMUNICATOR_NAVIGATION_LABEL
   UPDATE_ONE_LABEL_FROM_ALL_MESSAGES, UPDATE_COMMUNICATOR_NAVIGATION_LABEL,
   DELETE_COMMUNICATOR_NAVIGATION_LABEL, REMOVE_ONE_LABEL_FROM_ALL_MESSAGES} from './main-function/communicator/communicator-navigation';
 import {UPDATE_ANNOUNCEMENTS} from './main-function/announcements';
-import {UPDATE_LAST_MESSAGES} from './main-function/last-messages';
+import {UPDATE_LAST_MESSAGES} from './main-function/latest-messages';
 import {UPDATE_MESSAGE_COUNT} from './main-function/message-count';
 import {UPDATE_LAST_WORKSPACE} from './main-function/last-workspace';
 import {UPDATE_WORKSPACES} from './main-function/workspaces';

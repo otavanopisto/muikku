@@ -33,7 +33,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
               {this.props.announcements.map((announcement: AnnouncementType)=>{
                 return <Link key={announcement.id} className={`item-list__item ${announcement.workspaces ? "item-list__item--has-workspaces" : ""}`}
                   href={`/announcements?announcementId=${announcement.id}`}>
-                  <span className="item-list__icon icon-announcer"></span>
+                  <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
                   <span className="text item-list__text-body item-list__text-body--multiline">
                     {announcement.caption}
                     <span className="text text--announcements-date">

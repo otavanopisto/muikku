@@ -28,10 +28,6 @@
   font-family: $text-branded-font-family;
 }
   
-.text__panel-link {
-  color: $color-text-link;
-}
-
 b {
   font-weight: 600;
 }
@@ -221,6 +217,10 @@ b {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.text__panel-link {
+  color: $color-text-link;
+}
   
 .text__panel-icon--continue-studies {
   background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
@@ -232,9 +232,9 @@ b {
   color: $color-index-text-for-panels-title-workspaces-icon-color;
 }
   
-.text__panel-icon--last-messages {
-  background-color: $color-index-text-for-panels-title-last-messages-icon-background;
-  color: $color-index-text-for-panels-title-last-messages-icon-color;
+.text__panel-icon--latest-messages {
+  background-color: $color-index-text-for-panels-title-latest-messages-icon-background;
+  color: $color-index-text-for-panels-title-latest-messages-icon-color;
 }
   
 .text__panel-icon--important {
@@ -248,7 +248,7 @@ b {
 }
 
 .text--panel-nothing {
-  padding: $index-text-padding;
+  padding: $index-text-padding calc(#{$index-text-padding} * 1.2);
 }
 
 .text--panel-continue-studies-workspace-name {
@@ -258,7 +258,7 @@ b {
 }
 
 .text--panel-continue-studies {
-  padding: $index-text-padding;
+  padding: $index-text-padding calc(#{$index-text-padding} * 1.2);
 }
 
 .text--item-article {  
@@ -283,12 +283,6 @@ b {
   width: 28px;
 }
   
-.text--last-message-date {
-  color: $color-index-text-panel-last-messages-date;
-  font-style: italic;
-  padding: 3px 0 0;
-}
-
 .text--announcements-date {
   color: $color-index-text-panel-announcements-date;
   font-style: italic;

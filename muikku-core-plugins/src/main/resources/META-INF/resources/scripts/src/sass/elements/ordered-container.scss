@@ -139,7 +139,7 @@
   flex: 1 0 100%;
   order: 2;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex: 1 0 100%;
     order: 3;
   }
