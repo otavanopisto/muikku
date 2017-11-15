@@ -51,8 +51,19 @@ let removeFromAnnouncementsSelected:AddToAnnouncementsSelectedTriggerType = func
   }
 }
 
-let updateAnnouncement:UpdateAnnouncementTriggerType = function(announcement, update){
-  return  (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    //TODO
+let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnouncement(announcement, update){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      await promisify(mApi().announcer.announcements.update(announcement.id, update), 'callback')();
+      dispatch({
+        type: "UPDATE_ONE_ANNOUNCEMENT",
+        payload: {
+          update,
+          announcement
+        }
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
   }
 }
