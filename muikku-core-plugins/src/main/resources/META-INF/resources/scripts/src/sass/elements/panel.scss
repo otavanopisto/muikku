@@ -5,10 +5,8 @@
 
 .panel {
   background-color: $color-panel-background;
-  border-bottom: solid 1px $color-panel-border;
-  border-left: none;
+  border: none;
   border-radius: $panel-border-radius;
-  border-right: none;
   border-top: solid 1px $color-panel-border;
   display: block;
   position: relative;

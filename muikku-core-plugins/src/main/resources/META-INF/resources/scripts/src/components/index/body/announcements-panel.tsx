@@ -24,8 +24,8 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
   render(){
     return (<div className="ordered-container__item">
         <div className="text text--for-panels-title text--for-panels-title--announcements">
-          <span className="icon icon-announcer"></span>
-          <span>{this.props.i18n.text.get('plugin.frontPage.announcements')}</span>
+          <span className="text__panel-icon text__panel-icon--announcements icon-announcer"></span>
+          <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.announcements')}</span>
         </div>
         <div className="panel panel--index">
           {this.props.announcements.length !== 0 ?

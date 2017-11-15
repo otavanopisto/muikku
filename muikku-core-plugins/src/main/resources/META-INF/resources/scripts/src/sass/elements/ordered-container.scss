@@ -95,11 +95,11 @@
 .ordered-container--frontpage-otavan-opisto-info {
   justify-content: center;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex-flow: row wrap;
   }
   
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     justify-content: flex-start;
   }
 }
@@ -108,7 +108,7 @@
   flex: 1 0 100%;
   order: 1;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex: 1 1 50%;
     order: 1;
   }
@@ -123,7 +123,7 @@
   flex: 1 0 100%;
   order: 3;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex: 1 1 50%;
     order: 2;
   }
@@ -158,7 +158,7 @@
   
   @include breakpoint($breakpoint-pad){
     flex-flow: row nowrap;
-    padding: calc(#{$navbar-height} * 1.4) 10px 10px;
+    padding: calc(#{$navbar-height} * 1.5) 10px 10px;
   }
 }
 

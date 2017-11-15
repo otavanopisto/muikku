@@ -17,8 +17,8 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
   render(){
     return (<div className="ordered-container__item">
       <div className="text text--for-panels-title text--for-panels-title--last-messages">
-        <span className="icon icon-envelope"></span>
-        <span>{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
+        <span className="text__panel-icon text__panel-icon--last-messages icon-envelope"></span>
+        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
       <div className="panel panel--index">
         {this.props.lastMessages ? (

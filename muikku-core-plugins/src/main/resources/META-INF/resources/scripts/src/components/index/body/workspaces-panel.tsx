@@ -17,8 +17,8 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
   render(){
     return (<div className="ordered-container__item">   
       <div className="text text--for-panels-title text--for-panels-title--workspaces">
-        <span className="icon icon-books"></span>
-        <span>{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>
+        <span className="text__panel-icon text__panel-icon--workspaces icon-books"></span>
+        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>
       </div>
       <div className="panel panel--index">        
         {this.props.workspaces ? (
