@@ -148,12 +148,9 @@
 
 // NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
 .navbar__default-options {
-  flex: 0 0 auto;
-}
-
-.navbar_options-container {
   align-items: center;
   display: flex;
+  flex: 0 0 auto;
   height: $navbar-height;
   justify-content: center;
 }

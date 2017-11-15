@@ -63,11 +63,9 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
                   </ul>
                   {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
                   <div className="navbar__default-options">
-                    <div className="navbar_options-container">
-                      {this.props.defaultOptions}
-                      <ProfileItem modifier={this.props.modifier}/>
-                      <LanguagePicker modifier={this.props.modifier} />
-                    </div>
+                    {this.props.defaultOptions}
+                    <ProfileItem modifier={this.props.modifier}/>
+                    <LanguagePicker modifier={this.props.modifier} />
                   </div>
                 </div>
               </nav>

@@ -94,92 +94,99 @@
 
 .ordered-container--frontpage-otavan-opisto-info {
   justify-content: center;
-
-  .ordered-container__item--otavan-opisto-logo {
-    flex: 1 0 100%;
-    order: 1;
-  }
   
-  .ordered-container__item--otavan-opisto-social-media {
-    flex: 1 0 100%;
-    order: 3;
-  }
-
-  .ordered-container__item--otavan-opisto-description {
-    flex: 1 0 100%;
-    order: 2;
-  }
-
   @include breakpoint($breakpoint-pad){
     flex-flow: row wrap;
-  
-    .ordered-container__item--otavan-opisto-logo {
-      flex: 1 1 50%;
-      order: 1;
-    }
-    
-    .ordered-container__item--otavan-opisto-social-media {
-      flex: 1 1 50%;
-      order: 2;
-    }
-  
-    .ordered-container__item--otavan-opisto-description {
-      flex: 1 0 100%;
-      order: 3;
-    }
   }
-    
+  
   @include breakpoint($breakpoint-desktop){
-    flex-flow: row wrap;
     justify-content: flex-start;
-  
-    .ordered-container__item--otavan-opisto-logo {
-      flex: 0 1 30%;
-      order: 1;
-    }
-    
-    .ordered-container__item--otavan-opisto-social-media {
-      flex: 1 1 100%;
-      margin: 1.5rem 0 0 30%;
-      order: 3;
-    }
-  
-    .ordered-container__item--otavan-opisto-description {
-      flex: 1 1 70%;
-      order: 2;
-    }
   }
 }
 
-// TODO: Try to flatten these
+.ordered-container__item--otavan-opisto-logo {
+  flex: 1 0 100%;
+  order: 1;
+  
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 50%;
+    order: 1;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex: 0 1 30%;
+    order: 1;
+  }
+}
+
+.ordered-container__item--otavan-opisto-social-media {
+  flex: 1 0 100%;
+  order: 3;
+  
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 50%;
+    order: 2;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex: 1 1 100%;
+    margin: 1.5rem 0 0 30%;
+    order: 3;
+  }
+}
+
+.ordered-container__item--otavan-opisto-description {
+  flex: 1 0 100%;
+  order: 2;
+
+  @include breakpoint($breakpoint-pad){
+    flex: 1 0 100%;
+    order: 3;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex: 1 1 70%;
+    order: 2;
+  }
+}
+
+
 .ordered-container--index-panels {
+  flex-flow: column nowrap;
   height: 100%;
   padding: calc(#{$navbar-height} * 1.2) 0 10px;
   
   @include breakpoint($breakpoint-pad){
+    flex-flow: row nowrap;
     padding: calc(#{$navbar-height} * 1.4) 10px 10px;
-    
-    >.ordered-container__item {
-      overflow: visible;
-      padding: 0 10px;
-    }
   }
 }
 
-.ordered-container--index-column {
-  height: 100%;
-  width: 100%;
-  overflow: visible;
-  
-  >.ordered-container__item {
-    flex: 1 0 auto;
+.ordered-container__item--studies {
+  display: flex;
+  flex: 1 1 auto;
+  flex-flow: column nowrap;
+
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(33% - 20px); 
+    padding: 0 10px;
   }
+}
+
+.ordered-container__item--messages {
+  flex: 1 1 auto;
   
-  @include breakpoint-up($breakpoint-landscape-pad){
-    
-    >.ordered-container__item {
-      overflow: visible;
-      padding: 0;
-    }
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(33% - 20px);
+    padding: 0 10px;
+  }
+}
+
+.ordered-container__item--announcements {
+  flex: 1 1 auto;
+  
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(33% - 20px);
+    padding: 0 10px;
   }
 }
