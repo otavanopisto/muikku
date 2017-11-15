@@ -72,6 +72,17 @@
                   }, this));
               }
             }, this));
+        },
+        'copy-files': function (callback) {
+          mApi().workspace.workspaces.workspacefilecopy
+            .create(this.options.workspaceEntityId, this._createdWorkspace.id)
+            .callback($.proxy(function (err, result) {
+              if (err) {
+                callback(err);
+              } else {
+                callback(null, result);
+              }
+            }, this));
         }
       },
       ckeditor: {
@@ -373,6 +384,10 @@
             this._addSummaryStep('copy-materials', linkMaterials ? 
               getLocaleText('plugin.workspacecopywizard.summarySteps.copyMaterialsLink') :
               getLocaleText('plugin.workspacecopywizard.summarySteps.copyMaterials'));
+          }
+          
+          if (this.element.find('input[name="copy-files"]').prop('checked')) {
+            this._addSummaryStep('copy-files', getLocaleText('plugin.workspacecopywizard.summarySteps.copyFiles'));
           }
           
         break;

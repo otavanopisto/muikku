@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -28,6 +29,10 @@ public class WorkspaceEntityFileController {
 
   public void deleteWorkspaceEntityFile(WorkspaceEntityFile workspaceEntityFile) {
     workspaceEntityFileDAO.delete(workspaceEntityFile);
+  }
+  
+  public List<WorkspaceEntityFile> listWorkspaceEntityFiles(WorkspaceEntity workspaceEntity) {
+    return workspaceEntityFileDAO.listByWorkspaceEntity(workspaceEntity);
   }
 
   public boolean getHasCustomImage(WorkspaceEntity workspaceEntity) {

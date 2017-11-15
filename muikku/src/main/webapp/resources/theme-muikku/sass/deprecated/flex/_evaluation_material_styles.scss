@@ -117,6 +117,25 @@ div.muikku-text-field {
   vertical-align: middle;
 }
 
+// MEMOFIELD WORD COUNT
+.word-count-container {
+  font-size: 13px;
+  line-height: 1;
+  text-align: right;
+  
+  .word-count-title {
+    display: inline-block;
+    padding: 2px;
+  }
+  
+  .word-count {
+    background: #f3faff;
+    display: inline-block;
+    padding: 2px;
+  }
+  
+}
+
 // CHECKBOX & RADIOBUTTON
 input[type="checkbox"],
 input[type="radio"] {

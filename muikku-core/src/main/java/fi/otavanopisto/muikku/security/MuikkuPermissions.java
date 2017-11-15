@@ -178,7 +178,7 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String LIST_WORKSPACE_STUDENTS = "LIST_WORKSPACE_STUDENTS";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_WORKSPACE_MEMBERS = "LIST_WORKSPACE_MEMBERS";
 
@@ -200,7 +200,7 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public static final String ACCESS_WORKSPACE_JOURNAL = "ACCESS_WORKSPACE_JOURNAL";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.STUDY_GUIDER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_ALL_JOURNAL_ENTRIES = "LIST_ALL_JOURNAL_ENTRIES";
 
