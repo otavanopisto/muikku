@@ -380,7 +380,17 @@
           return;
         }
         
-        callback(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : null, jqXHR);
+        //TODO we got to get rid of this at some point and have an actual mApi written in ts
+        //this is for backwards compatibility, this bug has been here all the time where the error returned
+        //is not an error but a string, somehow the system was built around this, but in our
+        //newer version we need to take errors as it expects an instance of an error, if no such instace is
+        //returned error messages are then empty, hence by passing this override we are able to trigger giving
+        //an error only in the newer screens
+        if (window.MAPI_OVERRIDE_RETURN_ACTUAL_ERRORS){
+          callback(new Error(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : "undefined error"), jqXHR);
+        } else {
+          callback(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : null, jqXHR);
+        }
       });
       
       return this;
