@@ -156,6 +156,10 @@ public class CoursePickerRESTService extends PluginRESTService {
       for (Curriculum curriculum : curriculums)
         restCurriculums.add(new CoursePickerCurriculum(curriculum.getIdentifier().toId(), curriculum.getName()));
       
+      restCurriculums.sort((CoursePickerCurriculum a, CoursePickerCurriculum b)->{
+        return b.getName().compareTo(a.getName());
+        
+      });
       return Response.ok(restCurriculums).build();
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
