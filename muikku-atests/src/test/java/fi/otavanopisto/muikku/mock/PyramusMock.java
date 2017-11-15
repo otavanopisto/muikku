@@ -660,7 +660,7 @@ public class PyramusMock {
       
       public Builder mockCourseStaffMemberRoles() throws JsonProcessingException {
         
-        CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 8, "Opettaja");
+        CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 7, "Opettaja");
         CourseStaffMemberRole[] cRoleArray = { teacherRole };
 
         stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))

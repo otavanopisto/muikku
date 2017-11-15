@@ -40,8 +40,8 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.xml.bind.DatatypeConverter;
 import javax.ws.rs.core.StreamingOutput;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -2458,6 +2458,42 @@ public class WorkspaceRESTService extends PluginRESTService {
     } catch (IOException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
+  }
+  
+  @POST
+  @Path("/workspaces/{FROMWORKSPACEID}/workspacefilecopy/{TOWORKSPACEID}")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response createWorkspaceFile(
+      @PathParam("FROMWORKSPACEID") Long sourceWorkspaceId, 
+      @PathParam("TOWORKSPACEID") Long destinationWorkspaceId) {
+    if (Objects.equals(sourceWorkspaceId, destinationWorkspaceId))
+      return Response.status(Status.BAD_REQUEST).build();
+    
+    WorkspaceEntity sourceWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(sourceWorkspaceId);
+    WorkspaceEntity destinationWorkspaceEntity = workspaceEntityController.findWorkspaceEntityById(destinationWorkspaceId);
+    if (sourceWorkspaceEntity == null || destinationWorkspaceEntity == null)
+      return Response.status(Status.BAD_REQUEST).build();
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, sourceWorkspaceEntity) ||
+        !sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE, destinationWorkspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    try {
+      List<WorkspaceEntityFile> workspaceEntityFiles = workspaceEntityFileController.listWorkspaceEntityFiles(sourceWorkspaceEntity);
+      for (WorkspaceEntityFile workspaceEntityFile : workspaceEntityFiles) {
+        String diskName = fileController.copyFile("workspace", workspaceEntityFile.getDiskName());
+        workspaceEntityFileController.createWorkspaceEntityFile(
+            destinationWorkspaceEntity, workspaceEntityFile.getFileIdentifier(), diskName, workspaceEntityFile.getContentType(), new Date());
+      }
+    } catch (IOException e) {
+      logger.log(Level.SEVERE, String.format("Copying workspace file failed while copying workspace %s", sourceWorkspaceId), e); 
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response
+        .noContent()
+        .build();
   }
   
   @GET
