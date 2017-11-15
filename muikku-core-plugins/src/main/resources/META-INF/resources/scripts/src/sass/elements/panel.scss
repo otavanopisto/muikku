@@ -1,11 +1,13 @@
 @import "../base/colors";
-@import "../base/breakpoints";
+@import "../base/vars";
 @import "../base/mixins";
+@import "../base/breakpoints";
 
 .panel {
   background-color: $color-panel-background;
   border-bottom: solid 1px $color-panel-border;
   border-left: none;
+  border-radius: $panel-border-radius;
   border-right: none;
   border-top: solid 1px $color-panel-border;
   display: block;
