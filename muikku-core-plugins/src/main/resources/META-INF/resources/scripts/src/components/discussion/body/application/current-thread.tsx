@@ -12,6 +12,7 @@ import ModifyThreadReply from './modify-thread-reply-dialog';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
+import '~/sass/elements/message.scss';
 import { getName } from "~/util/modifiers";
 
 interface CurrentThreadProps {
@@ -59,20 +60,22 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
        </object>;
     }    
     
-    
     let canRemoveThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.removeThread;
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
     
     return <div className="application-list__items">
         <div className="application-list__item--open application-list__item--discussion-current-thread">
-          <div className="application-list__item-content-container--avatar">
+          <div className="application-list__item-header">
+            <h1 className="text">{this.props.discussionThreads.current.title}</h1>
+          </div>              
+          <div className="application-list__item-content-container--avatar message message--thread-op ">
             <div className="application-list__item-content--avatar-container">
               <div className="application-list__item-content-avatar">{avatar}</div>
             </div>
             <div className="application-list__item-content--content-container">
-              <div className="application-list__item-header">
-                <h1 className="text">{this.props.discussionThreads.current.title}</h1>
-              </div>    
+              <div className="application-list__item-header">              
+                <h1 className="text">{getName(userCreator)}</h1>
+              </div>                        
               <div className="application-list__item-body">
                 <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
               </div>
@@ -118,12 +121,17 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           
           return ( 
             <div key={reply.id} className={`application-list__item--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
-            <div className="application-list__item-content-container--avatar">            
-              <div className="application-list__item-content--avatar-container">
-                {avatar}
-              </div>            
-              <div className="application-list__item-content--content-container">                        
-                <div className="application-list__item__body" dangerouslySetInnerHTML={{__html: reply.message}} />
+              <div className="application-list__item-content-container--avatar message message--thread-reply">            
+                <div className="application-list__item-content--avatar-container">
+                  {avatar}
+                </div>            
+                <div className="application-list__item-content--content-container">                        
+                  <div className="application-list__item-header">              
+                    <h1 className="text">{getName(user)}</h1> 
+                  </div>                   
+                  <div className="application-list__item__body">
+                    <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
+                  </div>  
                   <div className="application-list__item__footer">
                     <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                       <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
@@ -133,12 +141,12 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                       <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                     </ReplyThread>
                     {canEditMessage ? <ModifyThreadReply reply={reply}>
-                        <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
+                        <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
                     </ModifyThreadReply> : null}
                     {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
-                      <Link as="span" className="link application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+                      <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                     </DeleteThreadComponent> : null}
-                  </div>
+                  </div>                  
                 </div>
               </div>
             </div>                    
@@ -158,7 +166,6 @@ function mapStateToProps(state: any){
     permissions: state.status.permissions
   }
 };
-
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};

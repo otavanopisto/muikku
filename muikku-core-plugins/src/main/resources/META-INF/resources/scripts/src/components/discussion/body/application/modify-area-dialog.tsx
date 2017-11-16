@@ -95,7 +95,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
       (
        <div className="container container--new-discussion-area-description">          
          <textarea key="2" className="form-field form-field--new-discussion-area-description"
-        onChange={this.onDescriptionChange} value={this.state.description}/>)
+        onChange={this.onDescriptionChange} value={this.state.description}/>
        </div>
     )]
        
