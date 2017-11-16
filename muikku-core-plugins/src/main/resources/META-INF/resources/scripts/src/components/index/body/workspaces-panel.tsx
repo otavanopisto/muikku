@@ -15,7 +15,7 @@ interface LastMessagesPanelState {
 
 class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
-    return (<div className="ordered-container__item">   
+    return (<div className="ordered-container__item ordered-container__item--index-panel-container">   
       <div className="text text--for-panels-title text--for-panels-title--workspaces">
         <span className="text__panel-icon text__panel-icon--workspaces icon-books"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>

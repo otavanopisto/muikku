@@ -22,7 +22,7 @@ interface AnnouncementsPanelState {
 
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   render(){
-    return (<div className="ordered-container__item">
+    return (<div className="ordered-container__item ordered-container__item--index-panel-container">
         <div className="text text--for-panels-title text--for-panels-title--announcements">
           <span className="text__panel-icon text__panel-icon--announcements icon-announcer"></span>
           <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.announcements')}</span>

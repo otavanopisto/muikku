@@ -1,6 +1,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+// Ordered containers
 .ordered-container {
   display: flex;
   flex-flow: row wrap;
@@ -9,6 +10,38 @@
   width: 100%;
 }
 
+.ordered-container--frontpage-studying,
+.ordered-container--frontpage-news-and-events {
+  
+  .ordered-container__item {
+    margin-bottom: calc(2 * #{$ordered-container-item-gutter});
+  }
+}
+
+.ordered-container--frontpage-otavan-opisto-info {
+  justify-content: center;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+  }
+}
+
+.ordered-container--index-panels {
+  flex-flow: column nowrap;
+  height: 100%;
+  padding: calc(#{$navbar-height} * 1.2) 0 10px;
+  
+  @include breakpoint($breakpoint-pad){
+    flex-flow: row nowrap;
+    padding: calc(#{$navbar-height} * 1.5) 10px 10px;
+  }
+}
+
+// Ordered container items
 .ordered-container__item {
   flex: 1 1 100%;
   max-width: 100%;
@@ -83,26 +116,6 @@
   }
 }
   
-.ordered-container--frontpage-studying,
-.ordered-container--frontpage-news-and-events {
-  
-  .ordered-container__item {
-    margin-bottom: calc(2 * #{$ordered-container-item-gutter});
-  }
-}
-
-.ordered-container--frontpage-otavan-opisto-info {
-  justify-content: center;
-  
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-  
-  @include breakpoint($breakpoint-desktop) {
-    justify-content: flex-start;
-  }
-}
-
 .ordered-container__item--otavan-opisto-logo {
   flex: 1 0 100%;
   order: 1;
@@ -149,18 +162,6 @@
   }
 }
 
-
-.ordered-container--index-panels {
-  flex-flow: column nowrap;
-  height: 100%;
-  padding: calc(#{$navbar-height} * 1.2) 0 10px;
-  
-  @include breakpoint($breakpoint-pad){
-    flex-flow: row nowrap;
-    padding: calc(#{$navbar-height} * 1.5) 10px 10px;
-  }
-}
-
 .ordered-container__item--studies {
   display: flex;
   flex: 1 1 auto;
@@ -187,5 +188,13 @@
   @include breakpoint($breakpoint-pad){
     flex: 1 1 calc(33% - 20px);
     padding: 0 10px;
+  }
+}
+
+.ordered-container__item--index-panel-container {
+  margin: 0 0 1rem;
+  
+  @include breakpoint($breakpoint-pad){
+    margin: 0 0 1.5rem;
   }
 }

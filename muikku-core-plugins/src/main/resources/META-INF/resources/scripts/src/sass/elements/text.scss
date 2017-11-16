@@ -186,18 +186,20 @@ b {
 }
  
 .text--for-panels-title {
+  background-color: $color-panel-background;
   color: $color-index-text-for-panels-title;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 300;
-  padding: 0 1px .3125rem;
+  padding: 10px 0 0;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.5rem;
-    padding: 0 6px .625rem;
+    background: none;
+    font-size: 1.4rem;
+    padding: 0 5px .4rem;
   }
 }
   
@@ -205,11 +207,12 @@ b {
   display: none;
   
   @include breakpoint($breakpoint-pad) {
+    border: 2px solid $color-default;
     border-radius: 100%;
     display: inline-block;
     flex: 0 0 auto;
     font-size: 1.25rem;
-    padding: .45rem;
+    padding: .35rem;
     text-align: center;
     vertical-align: middle;
   }
