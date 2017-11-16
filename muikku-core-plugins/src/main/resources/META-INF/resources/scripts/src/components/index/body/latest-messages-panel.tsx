@@ -16,7 +16,7 @@ interface LastMessagesPanelState {
 class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
     return (<div className="ordered-container__item ordered-container__item--index-panel-container">
-      <div className="text text--for-panels-title text--for-panels-title--latest-messages">
+      <div className="text text--for-panels-title">
         <span className="text__panel-icon text__panel-icon--latest-messages icon-envelope"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
