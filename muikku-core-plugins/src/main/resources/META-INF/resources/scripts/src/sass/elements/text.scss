@@ -21,7 +21,12 @@
   color: $color-text-default;
   display: block;
   font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
   font-weight: 400;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
   
 .text--branded {
@@ -185,10 +190,15 @@ b {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 300;
-  padding: 0 1px $index-text-padding;
+  padding: 0 1px .3125rem;
   text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.5rem;
+    padding: 0 6px .625rem;
+  }
 }
   
 .text__panel-icon {
@@ -198,22 +208,18 @@ b {
     border-radius: 100%;
     display: inline-block;
     flex: 0 0 auto;
-    font-size: 20px;
-    height: #{$index-text-icon-size}px;
-    line-height: #{$index-text-icon-size}px;
+    font-size: 1.25rem;
+    padding: .45rem;
     text-align: center;
     vertical-align: middle;
-    width: #{$index-text-icon-size}px;
   }
 }
 
 .text__panel-title {
   display: inline-block;
   flex: 1 1 auto;
-  height: #{$index-text-icon-size}px;
-  line-height: #{$index-text-icon-size}px;
   overflow: hidden;
-  padding: 0 0 0 10px;
+  padding: 0 0 0 .625rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -248,17 +254,17 @@ b {
 }
 
 .text--panel-nothing {
-  padding: $index-text-padding calc(#{$index-text-padding} * 1.2);
+  padding: .3125rem .625rem;
 }
 
 .text--panel-continue-studies-workspace-name {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 300;
-  padding: $index-text-padding;
+  padding: .625rem;
 }
 
 .text--panel-continue-studies {
-  padding: $index-text-padding calc(#{$index-text-padding} * 1.2);
+  padding: .3125rem .625rem;
 }
 
 .text--item-article {  

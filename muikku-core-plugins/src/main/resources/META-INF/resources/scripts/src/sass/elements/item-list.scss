@@ -28,13 +28,18 @@ $item-list-item-min-height: 32px;
   }
 } 
 
-.item-list__item--latest-messages {
+.item-list__item--latest-messages,
+.item-list__item--latest-announcements {
   border-bottom: solid 1px $color-index-item-list-item-panel-latest-messages-border;
-  padding: calc(1.2 * #{$item-list-padding}) $item-list-padding;
+  padding: $item-list-padding calc(#{$item-list-padding} / 1.4 );
   
   &:last-child {
     border: 0;
   }
+}
+
+.item-list__item--workspaces {
+  padding: $item-list-padding calc(#{$item-list-padding} / 1.4 );
 }
 
 .item-list__item--bordered {
@@ -67,7 +72,7 @@ $item-list-item-min-height: 32px;
   font-size: $item-list-item-min-size;
   height: $item-list-item-min-size;
   line-height: $item-list-item-min-size;
-  margin: 0 10px 0 2px;
+  margin: 0 .625rem 0 2px;
   text-align: center;
   vertical-align: middle;
   width: $item-list-item-min-size;
@@ -105,14 +110,20 @@ $item-list-item-min-height: 32px;
 }
   
 .item-list__text-body--multiline {
-  white-space: auto;
+  white-space: initial;
 }
 
 // List item dates
-.item-list__last-message-date {
+.item-list__latest-message-date {
   color: $color-index-text-panel-latest-messages-date;
+  font-size: calc(#{$text-mobile-font-size} / 1.1);
   font-style: italic;
   padding: 3px 0 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: calc(#{$text-desktop-font-size} / 1.1);
+    padding: 5px 0 0;
+  }
 }
 
 // List items in main-functions

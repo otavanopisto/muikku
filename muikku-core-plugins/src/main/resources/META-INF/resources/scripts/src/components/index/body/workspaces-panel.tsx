@@ -24,7 +24,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
         {this.props.workspaces ? (
           <div className="item-list item-list--panel-workspaces">
             {this.props.workspaces.map((workspace: WorkspaceType)=>{
-              return <Link key={workspace.id} className="item-list__item" href={`/workspace/${workspace.urlName}`}>
+              return <Link key={workspace.id} className="item-list__item item-list__item--workspaces" href={`/workspace/${workspace.urlName}`}>
                 <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
                 <span className="item-list__text-body text">
                   {`${workspace.name} ${workspace.nameExtension ? workspace.nameExtension : ""}`}

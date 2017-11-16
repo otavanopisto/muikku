@@ -15,8 +15,6 @@ $ordered-container-item-gutter: $container-desktop-gutter / 2;
 // Text
 $text-branded-font-family: "Exo 2", Arial, sans-serif;
 $text-font-family: "Open Sans", Arial, sans-serif;
-$index-text-padding: 10px;
-$index-text-icon-size: 35;
 
 // Basic Paragraph Text
 $text-mobile-font-size: .875rem;
@@ -58,6 +56,6 @@ $label-large-font-size: 1.0625rem;
 // Panels
 $panel-border-radius: 3px;
 
-// Item list icons
+// Item lists
 $item-list-item-min-size: 1.125rem;
-$item-list-padding: $index-text-padding;
+$item-list-padding: .625rem;
