@@ -13,8 +13,7 @@ $item-list-item-min-height: 32px;
 .item-list__item {
   cursor: pointer;
   display: flex;
-  min-height: $item-list-item-min-size;
-  padding: $item-list-padding;
+  padding: 10px;
   position: relative;
   transition: background-color 0.3s;
 
@@ -63,13 +62,10 @@ $item-list-item-min-height: 32px;
 .item-list__icon {
   display: block;
   flex: 0 0 auto;
-  font-size: $item-list-item-min-size;
-  height: $item-list-item-min-size;
-  line-height: $item-list-item-min-size;
+  font-size: $item-list-icon-font-size;
   margin: 0 .625rem 0 2px;
   text-align: center;
   vertical-align: middle;
-  width: $item-list-item-min-size;
 }
 
 .item-list__icon--workspaces {
