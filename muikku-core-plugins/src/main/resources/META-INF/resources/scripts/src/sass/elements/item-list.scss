@@ -31,17 +31,11 @@ $item-list-item-min-height: 32px;
 .item-list__item--latest-messages,
 .item-list__item--latest-announcements {
   border-bottom: solid 1px $color-index-item-list-item-panel-latest-messages-border;
-  padding: $item-list-padding calc(#{$item-list-padding} / 1.4 );
   
   &:last-child {
     border: 0;
   }
 }
-
-.item-list__item--workspaces {
-  padding: $item-list-padding calc(#{$item-list-padding} / 1.4 );
-}
-
 .item-list__item--bordered {
   border-left: solid 4px; 
 }
