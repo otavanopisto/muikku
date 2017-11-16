@@ -102,7 +102,7 @@ public class PyramusMock {
         pmock.studyProgrammes.add(new StudyProgramme(1l, "test", "Test Study Programme", 1l, false));
         
         pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 1, "Nonstop", false));
-        
+        pmock.courseTypes.add(new fi.otavanopisto.pyramus.rest.model.CourseType((long) 2, "Ryhmäkurssi", false));        
       }
 
       public Builder addStudents(List<MockStudent> students) {
@@ -267,6 +267,11 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder addCourseType(CourseType courseType) throws JsonProcessingException {
+        pmock.courseTypes.add(courseType);
+        return this;
+      }
+      
       public Builder mockCourseStudents() throws JsonProcessingException {
         for (Long courseId : pmock.courseStudents.keySet()) {
           logger.log(Level.FINE, String.format("Mocking students for course %d", courseId));
@@ -355,6 +360,12 @@ public class PyramusMock {
             .withHeader("Content-Type", "application/json")
             .withBody(pmock.objectMapper.writeValueAsString(pmock.courseTypes))
             .withStatus(200)));
+        
+        stubFor(get(urlEqualTo("/1/courses/courseTypes"))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(pmock.objectMapper.writeValueAsString(pmock.courseTypes))
+              .withStatus(200)));
         
         for (CourseType courseType : pmock.courseTypes) {
           stubFor(get(urlEqualTo(String.format("/1/courses/courseTypes/%d", courseType.getId())))
@@ -649,7 +660,7 @@ public class PyramusMock {
       
       public Builder mockCourseStaffMemberRoles() throws JsonProcessingException {
         
-        CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 8, "Opettaja");
+        CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 7, "Opettaja");
         CourseStaffMemberRole[] cRoleArray = { teacherRole };
 
         stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))

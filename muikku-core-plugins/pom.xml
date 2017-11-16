@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fi.otavanopisto.muikku</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1.85-SNAPSHOT</version>
+		<version>1.1.89-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -182,6 +182,11 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>forum-plugin-rest-model</artifactId>
     </dependency>
+
+		<dependency>
+		  <groupId>fi.otavanopisto.muikku</groupId>
+		  <artifactId>openfire-rest-client</artifactId>
+		</dependency>
 
 		<!-- Test -->
 

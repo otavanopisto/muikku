@@ -1,4 +1,5 @@
-sudo: false
+sudo: required
+dist: trusty
 language: java
 branches:
   only:
@@ -26,6 +27,7 @@ before_install:
 install:
 - . travis-install.sh
 before_script:
+- export _JAVA_OPTIONS="-Xmx2048m -Xms512m -Djava.net.preferIPv4Addresses=true -Djava.net.preferIPv4Stack=true"
 - . travis-before-script.sh
 script:
 - . travis-script.sh
@@ -68,6 +70,7 @@ env:
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/discussions
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/materials
+  - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/management
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/picker
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/journal
   - goals=verify suite=full it_profile=travis findbugs_skip=true use_sc=true browser="chrome" browser_version="47" browser_resolution="1280x1024" platform="Windows 10" package=course/users
@@ -87,6 +90,7 @@ env:
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course
 #  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/discussions
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/materials
+  - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/management
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/picker
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/journal
   - goals=verify suite=phantom it_profile=ui-it findbugs_skip=true use_sc=false browser="phantomjs" browser_resolution="" platform="Linux" package=course/users
@@ -108,14 +112,6 @@ after_failure:
 - pushd .;
 - cat muikku-atests/target/cargo/configurations/wildfly10x/log/server.log;
 notifications:
-  irc:
-    channels:
-    - chat.freenode.net#otavanopisto-muikku
-    use_notice: true
-    skip_join: true
-    template:
-    - '%{repository} (%{commit}) : %{message} %{foo} '
-    - 'Build details: %{build_url}'
   webhooks:
     urls:
     - http://build.staging.fi/travis.php

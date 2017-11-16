@@ -33,7 +33,9 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
+import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
@@ -53,6 +55,9 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private UserController userController;
 
   @Context
   private HttpServletRequest request;
@@ -136,10 +141,16 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
     }
     
+    User user = userController.findUserByIdentifier(identifier);
+    
+    if (user == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user doesn't exist").build();
+    }
+    
     if (enabledUsers.contains(identifier.toId())) {
-      return Response.ok(new StatusRESTModel(true)).build();
+      return Response.ok(new StatusRESTModel(true, user.getDisplayName())).build();
     } else {
-      return Response.ok(new StatusRESTModel(false)).build();
+      return Response.ok(new StatusRESTModel(false, null)).build();
     }
   }
 

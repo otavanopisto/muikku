@@ -197,9 +197,9 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".assignment-wrapper .muikku-text-field", "field value");
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
-        waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
+        getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
+        sendKeys(".cke_contents_ltr", "Test evaluation.");
+        getWebDriver().switchTo().defaultContent();
         
         selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
   
@@ -375,9 +375,10 @@ public class NewEvaluationTestsBase extends AbstractUITest {
         waitAndClick(".assignment-evaluate-button");
         waitUntilAnimationIsDone("#evaluationAssignmentEvaluateContainer");
         waitForElementToBeClickable("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
-        getWebDriver().switchTo().activeElement().sendKeys("Test evaluation.");
-        
+//        click("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_contents");
+        getWebDriver().switchTo().frame(findElementByCssSelector("#evaluationAssignmentEvaluateContainer .evaluation-modal-evaluate-form #cke_assignmentEvaluateFormLiteralEvaluation .cke_wysiwyg_frame"));
+        sendKeys(".cke_contents_ltr", "Test evaluation.");
+        getWebDriver().switchTo().defaultContent();
         selectOption("#workspaceGrade", "PYRAMUS-1@PYRAMUS-1");
   
         waitAndClick("#assignmentSaveButton");
