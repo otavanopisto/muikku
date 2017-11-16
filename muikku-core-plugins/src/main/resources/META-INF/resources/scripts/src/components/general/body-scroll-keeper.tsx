@@ -27,6 +27,6 @@ export default class BodyScrollKeeper extends React.Component<BodyScrollKeeperPr
     }
   }
   render(){
-    return <div style={{display: (this.props.hidden ? "none" : null)}}>{this.props.children}</div>
+    return <div style={{display: (this.props.hidden ? "none" : null), width: "100%"}}>{this.props.children}</div>
   }
 }
