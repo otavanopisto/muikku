@@ -26,6 +26,7 @@
               this.element.html(text);
               this.element.find("select").on('change', $.proxy(function() {
                 this._setVisibility(event.target.value);
+                location.reload();
               }, this));
             }, this));
           }, this));
@@ -34,7 +35,8 @@
     },
     
     _setVisibility: function(visibility) {
-      mApi().chat.settings.update({visibility: visibility});
+      var userIdentifier = MUIKKU_LOGGED_USER;
+      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier});
     }
   });
   

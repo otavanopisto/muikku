@@ -13,6 +13,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class UserChatSettings {
+  public UserChatSettings() {
+    
+  }
+  
   public UserChatSettings(String userIdentifier, UserChatVisibility visibility) {
     super();
     this.userIdentifier = userIdentifier;

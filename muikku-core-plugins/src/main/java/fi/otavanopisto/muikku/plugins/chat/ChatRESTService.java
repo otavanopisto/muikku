@@ -187,6 +187,12 @@ public class ChatRESTService extends PluginRESTService {
     if (identifier == null) {
       return Response.status(Status.BAD_REQUEST).entity("Ill-formed identifier").build();
     }
+    // TODO check that the user identifier is correct
+    SchoolDataIdentifier checkIdentity = sessionController.getLoggedUser();
+    if (!identifier.equals(checkIdentity)) {
+      return Response.status(Status.FORBIDDEN).entity("Identifier doesn't correspond to logged in user").build();
+    }
+    
     UserChatSettings settings = chatController.findUserChatSettings(identifier);
 
     if (settings == null) {
