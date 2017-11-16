@@ -1,4 +1,5 @@
 /* global moment */
+/* global MUIKKU_LOGGED_USER */
 
 (function() {
   
