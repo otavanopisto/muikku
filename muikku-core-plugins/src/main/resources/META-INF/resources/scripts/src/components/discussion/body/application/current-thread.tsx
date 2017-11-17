@@ -73,13 +73,18 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               <div className="application-list__item-content-avatar">{avatar}</div>
             </div>
             <div className="application-list__item-content--content-container">
-              <div className="application-list__item-header">              
-                <h1 className="text">{getName(userCreator)}</h1>
+              <div className="application-list__item-header">    
+                <div className="application-list__item-header-main">
+                  <span className="text text__discussion-message-creator">{getName(userCreator)}</span> 
+                </div>                  
+                <div className="application-list__item-header-aside">
+                  <span className="text">{this.props.i18n.time.format(this.props.discussionThreads.current.created)}</span>
+                </div>              
               </div>                        
               <div className="application-list__item-body">
                 <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
               </div>
-              <div className="application-list__item-footer">
+              <div className="application-list__item-footer container container--message-actions">
                 <ReplyThread thread={this.props.discussionThreads.current}>
                   <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                 </ReplyThread>              
@@ -126,13 +131,18 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                   {avatar}
                 </div>            
                 <div className="application-list__item-content--content-container">                        
-                  <div className="application-list__item-header">              
-                    <h1 className="text">{getName(user)}</h1> 
+                  <div className="application-list__item-header">       
+                    <div className="application-list__item-header-main">
+                      <span className="text text__discussion-message-creator">{getName(user)}</span> 
+                    </div>
+                    <div className="application-list__item-header-aside">
+                      <span className="text">{this.props.i18n.time.format(reply.created)}</span>
+                    </div>
                   </div>                   
                   <div className="application-list__item__body">
                     <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
                   </div>  
-                  <div className="application-list__item__footer">
+                  <div className="application-list__item__footer container container--message-actions">
                     <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
                       <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                     </ReplyThread>

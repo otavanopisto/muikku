@@ -145,10 +145,18 @@
     color: $color-communicator-application-list-item-checkbox-checked-mark;
   }
 }
+.application-list__item-header-main {
+  flex: 1 1 auto;
+}
+
+.application-list__item-header-aside {
+  display: flex;
+  justify-content: flex-end;
+}
 
 
 .application-list__item-footer {
-  margin-bottom: 5px;
+
 } 
 
 
