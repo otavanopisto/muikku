@@ -2,16 +2,17 @@
   width: 100%;
   overflow: hidden;
   position: relative;
-  
-  .touch-pager__prev-page, .touch-pager__next-page {
-  	background-color: white;
-    border-left: solid 1px #ccc;
-  	border-right: solid 1px #ccc;
-  	width: 100%;
-  }
- 
-  .touch-pager__current-page {
-  	width: 100%;
-  	background-color: white;
-  }
+}
+
+.touch-pager__prev-page, .touch-pager__next-page {
+  background-color: white;
+  border-left: solid 1px #ccc;
+  border-right: solid 1px #ccc;
+  width: 100%;
+}
+
+.touch-pager__current-page {
+  width: 100%;
+  background-color: white;
+  padding: 10px 15px 0 25px;
 }
