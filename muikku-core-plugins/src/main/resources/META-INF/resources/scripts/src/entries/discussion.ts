@@ -3,7 +3,7 @@ import reducer from '~/reducers/discussion';
 import runApp from '~/run';
 import {Action} from 'redux';
 
-import mainFunctionDefault from './util/base-main-function';
+import mainFunctionDefault from '~/util/base-main-function';
 
 import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
