@@ -24,9 +24,9 @@ export default class AnnouncerToolbar extends React.Component<AnnouncerToolbarPr
 
 
   render(){
-      let viewToolbar = false;
+      let announcementsViewToolbar = false;
       
-      if (viewToolbar) {
+      if (announcementsViewToolbar) {
         return ( 
           <div className="application-panel__toolbar">
             <div className="application-panel__toolbar-actions-main">          
