@@ -189,26 +189,20 @@ $application-panel-internal-navigation-padding: 10px;
     }
   }
  
-  .application-panel__toolbar {
-    display: flex;
-    width: 100%;
-  }
- 
-  &.application-panel--communicator {
+}
+
+
+.application-panel__toolbar {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
   
-    .application-panel__communicator-actions {
-      user-select: none;
-      display: flex;
-      justify-content: flex-start;
-      width: 100%;
-    
-      .application-panel__communicator-actions__main {
-        flex: 1 1 auto;
-      }
-      .application-panel__communicator-actions__aside {
-        display: flex;
-        justify-content: flex-end;
-      }
-    }
-  }
+.application-panel__toolbar-actions-main {
+  flex: 1 1 auto;
+}
+
+.application-panel__toolbar-actions-aside {
+  display: flex;
+  justify-content: flex-end;
 }

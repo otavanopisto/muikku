@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 
 import ApplicationPanel from '~/components/general/application-panel';
-import Announcements from './application/announcements';
+import Announcements from './application/announcement-view';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
@@ -42,7 +42,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
         let primaryOption = <a className="button button--primary-function">
         {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
-        let toolbar = <Toolbar/>
+        let toolbar = <Toolbar />
  
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
         return (<div className="container container--full">
