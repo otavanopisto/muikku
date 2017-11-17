@@ -66,8 +66,8 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
     let content = (closeDialog: ()=>any) => <div className="text text--delete-area">
       {
         this.props.reply ? 
-        this.props.i18n.text.get('TODO are you sure you want to delete reply') :
-        this.props.i18n.text.get('TODO are you sure you want to delete thread')
+        this.props.i18n.text.get('plugin.discussion.removeReply.text') :
+        this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.text')
       }
     </div>
        
@@ -75,10 +75,10 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
       return (          
          <div>
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
-            {this.props.i18n.text.get('TODO cancel delete')}
+            {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.cancelButton')}
           </Link>
           <Link className="button button--standard-ok" onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('TODO ok delete')}
+            {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.confirmButton')}
           </Link>
         </div>
       )
@@ -87,8 +87,8 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
     return <Dialog modifier="delete-area"
       title={
         this.props.reply ? 
-        this.props.i18n.text.get('TODO delete reply title') :
-        this.props.i18n.text.get('TODO delete thread title')
+        this.props.i18n.text.get('plugin.discussion.removeReply') :
+        this.props.i18n.text.get('plugin.discussion.removeThread')
       }
       content={content} footer={footer}>
       {this.props.children}

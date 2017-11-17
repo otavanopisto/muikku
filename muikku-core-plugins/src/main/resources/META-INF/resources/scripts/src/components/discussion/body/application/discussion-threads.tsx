@@ -10,6 +10,8 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
+import '~/sass/elements/message.scss';
+
 
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
 import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
@@ -107,14 +109,18 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         //you can pick the timee from the thread, as thread.lastModified or thread.created, depends on which one you need there
         
         return (
-          <div key={thread.id} className="application-list__item-content-container--avatar" onClick={this.getToThread.bind(this, thread)}>            
+          <div key={thread.id} className="application-list__item-content-container--avatar message" onClick={this.getToThread.bind(this, thread)}>            
             <div className="application-list__item-content--avatar-container">
               {avatar}
             </div>            
             <div className="application-list__item-content--content-container">
               <div className="application-list__item-header application-list__item-header--discussion-item-header">
-                <div className="icon-lock"></div>
-                <div className="icon-pin"></div>
+                {thread.locked ? 
+                  <div className="icon-lock"></div> : null
+                }
+                {thread.sticky ? 
+                    <div className="icon-pin"></div> : null                
+                }                 
                 <div className="text text--discussion-thread-item-title">{thread.title}</div></div>
               <div className="application-list__item-body">
                 <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
@@ -122,14 +128,14 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
               <div className="application-list__item-footer">
                 <div className="text text--discussion-thread-user">
                   <span>{user && user.firstName +  ' ' + user.lastName}</span> 
-                  <span>{this.props.i18n.time.format()}</span>
-                </div>                
+                  <span>{this.props.i18n.time.format(thread.created)}</span>
+                </div>                                  
                 <div className="text text--discussion-thread-meta">
                   <div className="text text--item-counter">
-                    <span>15</span>
-                  </div>
+                    <span>{thread.numReplies}</span>
+                  </div>                    
                   <div className="text text--discussion-thread-meta-latest-reply">
-                    <span>TODO Viimeisin viesti: {this.props.i18n.time.format()}</span>
+                    <span>{this.props.i18n.text.get("plugin.discussion.titleText.lastMessage")} {this.props.i18n.time.format(thread.updated)}</span>
                   </div>
                 </div>  
               </div>  

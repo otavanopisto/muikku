@@ -22,16 +22,45 @@ interface AnnouncerToolbarState {
 export default class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerToolbarState> {
 
 
+
   render(){
-      return ( 
-        <div className="application-panel__announcer-actions">
-          <div className="application-panel__announcer-actions__main">          
+      let announcementsViewToolbar = false;
+      
+      if (announcementsViewToolbar) {
+        return ( 
+          <div className="application-panel__toolbar">
+            <div className="application-panel__toolbar-actions-main">          
+              <Link className="button-pill button-pill--go-back">
+                <span className="icon icon-goback"></span>
+              </Link>
+              <Link className="button-pill button-pill--delete disabled">
+                <span className="icon icon-delete"></span>          
+              </Link>
+            </div>
+          </div> 
+        )
+      }else {
+        return (
+        <div className="application-panel__toolbar">        
+          <div className="application-panel__toolbar-actions-main">  
+            <Link className="button-pill button-pill--go-back">
+              <span className="icon icon-goback"></span>
+            </Link>            
             <Link className="button-pill button-pill--delete disabled">
               <span className="icon icon-delete"></span>          
             </Link>
           </div>
+          <div className="application-panel__toolbar-actions-aside">
+            <Link className="button-pill button-pill--prev-page">
+              <span className="icon icon-arrow-left"></span>
+            </Link>                        
+            <Link className="button-pill button-pill--next-page">
+              <span className="icon icon-arrow-right"></span>
+            </Link>
+          </div>          
         </div>
-      )
+        )      
+      }
     }
   
   }

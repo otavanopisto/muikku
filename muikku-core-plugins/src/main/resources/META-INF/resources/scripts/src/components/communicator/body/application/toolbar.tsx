@@ -88,8 +88,8 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
     if (this.props.communicatorMessages.current){
       return ( 
-        <div className="application-panel__communicator-actions">
-          <div className="application-panel__communicator-actions__main">          
+        <div className="application-panel__toolbar">
+          <div className="application-panel__toolbar-actions-main">          
             <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
             </Link>
@@ -127,7 +127,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               </Link>
             </Dropdown>
           </div>
-          <div className="application-panel__communicator-actions__aside">
+          <div className="application-panel__toolbar-actions-aside">
             <Link className="button-pill button-pill--prev-page"
               disabled={this.props.communicatorMessages.current.olderThreadId === null}
               onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>

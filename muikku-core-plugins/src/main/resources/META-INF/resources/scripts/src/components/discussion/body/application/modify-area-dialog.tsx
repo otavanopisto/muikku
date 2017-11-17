@@ -79,14 +79,25 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
     if (!this.area){
       return this.props.children;
     }
+
+    
     
     let content = (closeDialog: ()=>any) => [
-      (<input key="1" type="text" className="form-field form-field--discussion-area-name"
+      (
+      <div className="container container--new-discussion-area-title">          
+        <input key="1" type="text" className="form-field form-field--new-discussion-area-name"
         placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
-        value={this.state.name} onChange={this.onNameChange} autoFocus/>),
-      (<textarea key="2" className="form-field form-field--discussion-area-description"
-        onChange={this.onDescriptionChange} value={this.state.description}/>)
-    ]
+        value={this.state.name} onChange={this.onNameChange} autoFocus/>
+      </div>    
+      
+      ),
+
+      (
+       <div className="container container--new-discussion-area-description">          
+         <textarea key="2" className="form-field form-field--new-discussion-area-description"
+        onChange={this.onDescriptionChange} value={this.state.description}/>
+       </div>
+    )]
        
     let footer = (closeDialog: ()=>any)=>{
       return (          

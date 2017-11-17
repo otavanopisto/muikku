@@ -4,12 +4,16 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
   public statePropertyLocation:string;
   public hasMorePropertyLocation:string;
   public loadMoreTriggerFunctionLocation:string;
+  public cancellingLoadingPropertyLocation: string;
   constructor(props: T){
     super(props);
     
     this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
   }
   checkCanLoadMore(){
+    if (this.cancellingLoadingPropertyLocation && (this.props as any)[this.cancellingLoadingPropertyLocation]){
+      return;
+    }
     if ((this.props as any)[this.statePropertyLocation] as string === "READY" &&
         (this.props as any)[this.hasMorePropertyLocation] as boolean){
       let scrollBottomRemaining = (document.body.scrollHeight || document.documentElement.scrollHeight) -
@@ -21,6 +25,9 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     }
   }
   componentDidUpdate(){
+    if (this.cancellingLoadingPropertyLocation && (this.props as any)[this.cancellingLoadingPropertyLocation]){
+      return;
+    }
     if ((this.props as any)[this.statePropertyLocation] as string === "READY" && 
         (this.props as any)[this.hasMorePropertyLocation] as boolean){
       let doesNotHaveScrollBar = (document.body.scrollHeight || document.documentElement.scrollHeight) === 

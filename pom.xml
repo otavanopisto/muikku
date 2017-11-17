@@ -4,7 +4,7 @@
 
 	<groupId>fi.otavanopisto.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.1.85-SNAPSHOT</version>
+	<version>1.1.89-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -47,6 +47,7 @@
 	</developers>
 
 	<modules>
+    <module>muikku-openfire-rest-client</module>
 		<module>muikku-bom</module>
 		<module>muikku-core</module>
     <module>muikku-debug</module>
@@ -95,7 +96,7 @@
 			<dependency>
 				<groupId>fi.otavanopisto.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.1.85-SNAPSHOT</version>
+				<version>1.1.89-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>

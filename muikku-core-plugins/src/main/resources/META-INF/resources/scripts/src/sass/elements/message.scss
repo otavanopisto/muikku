@@ -1,0 +1,15 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.message {
+  border-bottom: 1px solid $color-message-border;  
+}
+
+.message--thread-op {
+  border-bottom: 5px solid $color-message-border;  
+}
+
+.message--thread-reply {
+  border-bottom: none;  
+}

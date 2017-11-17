@@ -5,10 +5,6 @@
   'use strict';
   
   /* global converse */
-  /* global CURRENT_USER_AUTHENTICATED */
-  /* global CURRENT_USER_FIRST_NAME */
-  /* global CURRENT_USER_LAST_NAME */
-
   
   mApi().chat.status.read().callback(function(err, result) {
     if (result && result.enabled) {
@@ -19,9 +15,10 @@
         keepalive : "true",
         credentials_url : "/rest/chat/credentials",
         auto_login : true,
-        muc_domain : 'conference.dev.muikkuverkko.fi',
+        muc_domain : 'conference.' + location.hostname,
+        muc_nickname : result.mucNickName,
         hide_muc_server : true,
-        auto_join_rooms : ['muikku@conference.dev.muikkuverkko.fi'],
+        auto_join_rooms : ['muikku@conference.' + location.hostname],
         ping_interval: 45
       });
     }

@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -52,6 +53,20 @@ public class WorkspaceEntityFileDAO extends CorePluginsDAO<WorkspaceEntityFile> 
 
   public void delete(WorkspaceEntityFile workspaceEntityFile) {
     super.delete(workspaceEntityFile);
+  }
+
+  public List<WorkspaceEntityFile> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceEntityFile> criteria = criteriaBuilder.createQuery(WorkspaceEntityFile.class);
+    Root<WorkspaceEntityFile> root = criteria.from(WorkspaceEntityFile.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(WorkspaceEntityFile_.workspaceEntity), workspaceEntity.getId())
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
   }
 
 }

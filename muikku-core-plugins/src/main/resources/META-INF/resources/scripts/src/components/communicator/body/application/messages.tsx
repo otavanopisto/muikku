@@ -8,7 +8,7 @@ import equals = require("deep-equal");
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
 import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
-import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
+import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType, CommunicatorCurrentThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
@@ -16,6 +16,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
+import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 
 
 interface CommunicatorMessagesProps {
@@ -24,6 +25,7 @@ interface CommunicatorMessagesProps {
   communicatorMessagesState: CommunicatorStateType,
   communicatorMessagesSelectedIds: Array<number>,
   communicatorMessagesMessages: CommunicatorMessageListType,
+  communicatorMessagesCurrent: CommunicatorCurrentThreadType,
   loadMoreMessages: LoadMoreMessagesTriggerType,
   removeFromCommunicatorSelectedMessages: RemoveFromCommunicatorSelectedMessagesTriggerType,
   addToCommunicatorSelectedMessages: AddToCommunicatorSelectedMessagesTriggerType,
@@ -72,9 +74,14 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     this.cancelSelection = false;
     this.initialTime = null;
     
+    //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "communicatorMessagesState";
+    //it will only call the function if this is true
     this.hasMorePropertyLocation = "communicatorMessagesHasMore";
+    //this is the function that will be called
     this.loadMoreTriggerFunctionLocation = "loadMoreMessages";
+    //abort if this is true (in this case it causes the current element to be invisible)
+    this.cancellingLoadingPropertyLocation = "communicatorMessagesCurrent";
   }
   
   getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
@@ -187,7 +194,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <div className={`application-list application-list__items ${this.state.touchMode ? "application-list--select-mode" : ""}`}>{
+    return <BodyScrollKeeper hidden={!!this.props.communicatorMessagesCurrent}><div className={`application-list application-list__items ${this.state.touchMode ? "application-list--select-mode" : ""}`}>{
       this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
         let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
         return (
@@ -223,7 +230,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     }{
       this.props.communicatorMessagesState === "LOADING_MORE" ? 
         <div className="application-list__item loader-empty"/>
-    : null}</div>
+    : null}</div></BodyScrollKeeper>
   }
 }
 
@@ -234,6 +241,7 @@ function mapStateToProps(state: any){
     communicatorMessagesState: state.communicatorMessages.state,
     communicatorMessagesSelected: state.communicatorMessages.selected,
     communicatorMessagesSelectedIds: state.communicatorMessages.selectedIds,
+    communicatorMessagesCurrent: state.communicatorMessages.current,
     i18n: state.i18n,
     userId: state.status.userId
   }
