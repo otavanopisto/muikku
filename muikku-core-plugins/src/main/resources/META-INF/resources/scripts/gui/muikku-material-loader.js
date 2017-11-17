@@ -533,6 +533,14 @@
       });
       if (data.fieldlessMode) {
         $(object).replaceWith(memoFieldElement);
+        
+        var wordCountContainer = $('<div class="word-count-container">')
+          .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
+          .append('<span class="word-count">');
+        memoFieldElement.after(wordCountContainer);
+
+        var text = data.value || "";
+        $(wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
       }
       else {
         if (data.meta.richedit == true) {

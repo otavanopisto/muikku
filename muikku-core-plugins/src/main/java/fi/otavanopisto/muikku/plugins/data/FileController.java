@@ -47,6 +47,26 @@ public class FileController {
   }
   
   /**
+   * Makes a copy of a file with given name and returns the filename 
+   * of the created copy.
+   * 
+   * @param module module/directory
+   * @param fileName name of the file to copy
+   * @return disk name of the copied file
+   * @throws IOException if I/O exception occurs while copying the file.
+   */
+  public String copyFile(String module, String fileName) throws IOException {
+    String copyFileName = UUID.randomUUID().toString();
+    
+    File src = Paths.get(getFilePath(module), fileName).toFile();
+    File dest = Paths.get(getFilePath(module), copyFileName).toFile();
+    
+    FileUtils.copyFile(src, dest);
+    
+    return copyFileName;
+  }
+
+  /**
    * Updates a file with specified content. The path is defined
    * by system setting, module and file name combination.
    * 
