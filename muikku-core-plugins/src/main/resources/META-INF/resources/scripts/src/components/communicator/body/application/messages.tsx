@@ -74,9 +74,14 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     this.cancelSelection = false;
     this.initialTime = null;
     
+    //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "communicatorMessagesState";
+    //it will only call the function if this is true
     this.hasMorePropertyLocation = "communicatorMessagesHasMore";
+    //this is the function that will be called
     this.loadMoreTriggerFunctionLocation = "loadMoreMessages";
+    //abort if this is true (in this case it causes the current element to be invisible)
+    this.cancellingLoadingPropertyLocation = "communicatorMessagesCurrent";
   }
   
   getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
