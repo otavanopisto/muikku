@@ -36,6 +36,12 @@
   padding: calc(#{$navbar-height} * 1.2) 0 10px;
   
   @include breakpoint($breakpoint-pad){
+    flex-flow: row wrap;
+    height: auto;
+    padding: calc(#{$navbar-height} * 1.5) 0 10px;
+  }
+  
+  @include breakpoint($breakpoint-desktop){
     flex-flow: row nowrap;
     padding: calc(#{$navbar-height} * 1.5) 10px 10px;
   }
@@ -162,35 +168,107 @@
   }
 }
 
+// Index panels - Studies
 .ordered-container__item--studies {
   display: flex;
   flex: 1 1 auto;
   flex-flow: column nowrap;
 
   @include breakpoint($breakpoint-pad){
+    flex: 1 1 100%; 
+    flex-flow: row nowrap;
+    padding: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop){
     flex: 1 1 calc(33% - 20px); 
+    flex-flow: column nowrap;
     padding: 0 10px;
   }
 }
 
+// Index panels - Continues Studies
+.ordered-container__item--continue-studies {
+  // Inherit everything for mobile from ordered-container_item
+
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(50% - 20px); 
+    flex-flow: row nowrap;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop){
+    flex: 1 1 calc(100% - 20px); 
+    flex-flow: column nowrap;
+    padding: 0 10px;
+  }
+}
+
+// Index panels - Workspaces
+.ordered-container__item--workspaces {
+  // Inherit everything for mobile from ordered-container_item
+  
+  @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(50% - 20px); 
+    flex-flow: row nowrap;
+    padding: 0 10px;
+  }
+
+  @include breakpoint($breakpoint-desktop){
+    flex: 1 1 calc(100% - 20px); 
+    flex-flow: column nowrap;
+    padding: 0 10px;
+  }
+}
+
+// Index panels - Messages
 .ordered-container__item--messages {
   flex: 1 1 auto;
   
   @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(50% - 20px);
+    padding: 0 10px;
+  }
+  
+  @include breakpoint($breakpoint-desktop){
     flex: 1 1 calc(33% - 20px);
     padding: 0 10px;
   }
 }
 
+// Index panels - Latest Messages
+.ordered-container__item--latest-messages {
+  // Reserved for the future enhancements (Perhaps separate latest messages and important messages)
+}
+
+// Index panels - Announcements
 .ordered-container__item--announcements {
   flex: 1 1 auto;
   
   @include breakpoint($breakpoint-pad){
+    flex: 1 1 calc(50% - 20px);
+    padding: 0 10px;
+  }
+  
+  @include breakpoint($breakpoint-desktop){
     flex: 1 1 calc(33% - 20px);
     padding: 0 10px;
   }
 }
 
+// Index panels - Basic Announcements
+.ordered-container__item--basic-announcements {
+  // Reserved for the future enhancements.
+  // We need a feature to separate normal and important announcements
+}
+
+// Index panels - Important Announcements
+.ordered-container__item--important-announcements {
+  // Reserved for the future enhancements.
+  // We need a feature to separate normal and important announcements
+}
+
+// Index panels - Container for all 5 panels to adjust bottom maregin
 .ordered-container__item--index-panel-container {
   margin: 0 0 1rem;
   

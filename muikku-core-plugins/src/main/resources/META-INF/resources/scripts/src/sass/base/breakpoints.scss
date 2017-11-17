@@ -22,7 +22,7 @@ $breakpoint-desktop: 64em;
 // eq. 1200px and up - wide desktops that exceeds 75em/1200px width
 $breakpoint-desktop-xl: 75em; 
 
-$breakpoint-max-usable-screen: 80rem;
+$breakpoint-max-usable-screen: 80em;
 
 @mixin breakpoint-only($breakpoint) {
   @if (nth($breakpoint, 1) == false){

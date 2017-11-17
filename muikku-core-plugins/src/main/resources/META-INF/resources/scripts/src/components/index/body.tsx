@@ -27,11 +27,11 @@ export default class IndexBody extends React.Component<{},{}> {
           <div className="ordered-container__item ordered-container__item--messages">
             <div className="ordered-container">
               <LastMessagesPanel/>
-              <ImportantPanel/>
             </div>
           </div>
           <div className="ordered-container__item ordered-container__item--announcements">
             <div className="ordered-container">
+              <ImportantPanel/>
               <AnnouncementsPanel/>
             </div>
           </div>

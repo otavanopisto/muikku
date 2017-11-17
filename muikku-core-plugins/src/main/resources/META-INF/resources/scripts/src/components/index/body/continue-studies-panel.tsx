@@ -30,7 +30,7 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
     } else if (!this.props.lastWorkspace){
       return null;
     }
-    return (<div className="ordered-container__item ordered-container__item--index-panel-container">
+    return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
       <div className="text text--for-panels-title">
         <span className="text__panel-icon text__panel-icon--continue-studies icon-revert"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.lastWorkspace.continueStudiesLink')}</span>
