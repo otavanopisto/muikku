@@ -191,7 +191,7 @@
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
-
+    
     <dependency>
       <groupId>fi.otavanopisto.muikku</groupId>
       <artifactId>rest</artifactId>
