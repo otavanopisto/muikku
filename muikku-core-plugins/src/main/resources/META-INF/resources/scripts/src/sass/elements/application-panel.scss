@@ -199,6 +199,7 @@ $application-panel-internal-navigation-padding: 10px;
 }
   
 .application-panel__toolbar-actions-main {
+  display: flex;
   flex: 1 1 auto;
 }
 
