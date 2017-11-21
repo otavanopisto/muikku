@@ -8,7 +8,7 @@ import messageCount from './main-function/message-count';
 
 import announcements from './main-function/index/announcements';
 import lastWorkspace from './main-function/index/last-workspace';
-import lastMessages from './main-function/index/last-messages';
+import lastMessages from './main-function/index/latest-messages';
 import workspaces from './main-function/index/workspaces';
 
 import {combineReducers} from 'redux';

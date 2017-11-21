@@ -1,154 +1,136 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 	
-// Mobile styles
 .container {
   width: 100%;
-  
-  &.container--full {
-    height: 100%;
-  	position: relative;
-  	width: 100%;
-  }
-  
-  &.container--profile-image {
-    
-    &.container--profile-image--in-menu {
-      border-radius: 100%;
-      flex: 0;
-      height: 35px;
-      margin-right: 5px;
-      width: 35px;
-    }
-  }
-  
-  &.container--muikku-logo {
-   align-items: center;
-   display: flex;
-   flex-direction: row;
-   flex-flow: nowrap;
-   justify-content: center;
-    
-    @include breakpoint($breakpoint-pad) {
-      flex-direction: column;
-    }
-  }
-  
-  &.container--frontpage-section {
-    margin-top: 1.5rem;
-    padding: 0 .625rem;
-
-    @include breakpoint($breakpoint-pad){
-      margin-top: 4.375rem;
-    }
-  }
-  
-  &.container--otavan-opisto-logo {
-    text-align: center;
-    
-    @include breakpoint($breakpoint-desktop) {
-      text-align: left;
-    }
-    
-    img {
-      height: $logo-text-mobile-size;
-      
-      @include breakpoint($breakpoint-pad) {
-        height: $logo-text-pad-size;
-      }
-      
-      @include breakpoint($breakpoint-desktop) {
-        height: $logo-text-desktop-size;
-      }
-    }
-  }
-  
-  &.container--otavan-opisto-social-media {
-    margin-top: 1.5rem;
-    text-align: center;
-
-    @include breakpoint($breakpoint-pad) {
-      margin-top: 0;
-    }
-
-    @include breakpoint($breakpoint-desktop) {
-      text-align: left;
-    }
-  }
-  
-  &.container--otavan-opisto-description {
-    margin-top: 1.5rem;
-    text-align: center;
-    
-    @include breakpoint($breakpoint-desktop) {
-      margin-top: 0;
-      text-align: left;
-    }
-  }
-  
-  &.container--communicator-message {
-    background-color: white;
-    border-left: solid 1px #ccc;
-  	border-right: solid 1px #ccc;
-    height: 100%;
-  	position: absolute;
-  	width: 100%;
-  	
-  	&.container--communicator-message--center {
-      border: none;
-    }
-  }
-
-  &.container--communicator-message-meta {
-    display: flex;
-    padding: 10px;
-  }
-  
-  &.container--communicator-message-view {
-    bottom: 0;
-  	left: 0;
-    overflow: hidden;
-    position: absolute;
-  	right: 0;
-  	top: 0;
-
-  }
-  
-  &.container--communicator-signature {
-    background-color: white;
-    display: block;
-  	height: auto;
-  	margin-top: 10px;
-  	padding: 10px;
-    width: 100%;
-  }
-  .container--communicator-message-links {
-    padding: 10px;
-  }
-    
-  &.container--new-message-toolbar-container {
-  	width: 250px;
-  	height: 100%;
-  	display: inline-block;
-  	vertical-align: top;
-  	margin-right: 10px;
-  	
-  	@include breakpoint-down($breakpoint-portrait-pad){
-      display: none;
-    }
-  }
-  
-  &.container--new-discussion-options {
-    display: flex;
-    
-  }
-  
-  &.container--new-discussion-thread-states {
-    background-color: #fff;
-    display: flex;
-    margin: 20px 0;
-    padding: 10px;
-    align-items: center;
-  }
-   
 }
+  
+.container--full {
+  height: 100%;
+	position: relative;
+	width: 100%;
+}
+
+.container--profile-image-in-menu {
+  border-radius: 100%;
+  height: 35px;
+  margin-right: 5px;
+  width: 35px;
+}
+  
+.container--muikku-logo {
+ align-items: center;
+ display: flex;
+ flex-direction: row;
+ flex-flow: nowrap;
+ justify-content: center;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: column;
+  }
+}
+  
+.container--frontpage-section {
+  margin-top: 1.5rem;
+  padding: 0 $container-mobile-gutter;
+
+  @include breakpoint($breakpoint-pad){
+    margin-top: 4.375rem;
+    padding: 0 $container-desktop-gutter;
+  }
+}
+  
+.container--otavan-opisto-logo {
+  text-align: center;
+  
+  @include breakpoint($breakpoint-desktop) {
+    text-align: left;
+  }
+}
+
+.container--otavan-opisto-social-media {
+  margin-top: 1.5rem;
+  text-align: center;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 0;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    text-align: left;
+  }
+}
+
+.container--otavan-opisto-description {
+  margin-top: 1.5rem;
+  text-align: center;
+  
+  @include breakpoint($breakpoint-desktop) {
+    margin-top: 0;
+    text-align: left;
+  }
+}
+  
+.container--communicator-message {
+  background-color: white;
+  border-left: solid 1px #ccc;
+  border-right: solid 1px #ccc;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+	
+  &.container--communicator-message--center {
+    border: none;
+  }
+}
+
+.container--communicator-message-meta {
+  display: flex;
+  padding: 10px;
+}
+  
+.container--communicator-message-view {
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+  
+.container--communicator-message-links {
+  padding: 10px;
+}
+  
+.container--communicator-signature {
+  background-color: white;
+  display: block;
+  height: auto;
+  margin-top: 10px;
+  padding: 10px;
+  width: 100%;
+}
+  
+.container--new-message-toolbar-container {
+  display: none;
+	
+  @include breakpoint-down($breakpoint-portrait-pad){
+    display: inline-block;
+    height: 100%;
+    margin-right: 10px;
+    vertical-align: top;
+    width: 250px;
+  }
+}
+  
+.container--new-discussion-options {
+  display: flex;
+}
+
+.container--new-discussion-thread-states {
+  background-color: #fff;
+  display: flex;
+  margin: 20px 0;
+  padding: 10px;
+  align-items: center;
+} 

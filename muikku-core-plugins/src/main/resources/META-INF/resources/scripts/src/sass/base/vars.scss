@@ -1,15 +1,20 @@
 // Navbar
 $navbar-font: 'Exo 2', Arial, sans-serif;
 $navbar-height: 4.2rem;
+$navbar-item-width: 4.2rem;
 
-// Ordered Containers
-$frontpage-ordered-container-separation: .625rem;
+// Link
+$link-icon-font-size: 1.8rem;
+$main-function-link-icon-active-border-size: 3px;
+
+// Containers
+$container-mobile-gutter: 10px;
+$container-desktop-gutter: 20px;
+$ordered-container-item-gutter: $container-desktop-gutter / 2;
 
 // Text
 $text-branded-font-family: "Exo 2", Arial, sans-serif;
 $text-font-family: "Open Sans", Arial, sans-serif;
-$index-text-mobile-padding-horizontal: 10;
-$index-text-icon-size: 35;
 
 // Basic Paragraph Text
 $text-mobile-font-size: .875rem;
@@ -35,6 +40,26 @@ $button-font-family: "Open Sans", Arial, sans-serif;
 $button-default-height: 2rem;
 $button-default-font-size: 0.875rem;
 $button-social-size: 2.5rem;
+$button-pill-size: 2.5rem;
+$button-pill-font-size: 1rem;
+$button-pill-floating-size: 3.125rem;
+$button-pill-floating-font-size: 1.5rem;
 
 // Cards - Used only in the branded front page
 $card-font-family: "Exo 2", Arial, sans-serif;
+
+// Label
+$label-font-family: "Exo 2", Arial, sans-serif;
+$label-small-height: 1.3125rem;
+$label-small-font-size: .75rem;
+$label-medium-height: 1.6875rem;
+$label-medium-font-size: .9375rem;
+$label-large-height: 2.0625rem;
+$label-large-font-size: 1.0625rem;
+
+// Panels
+$panel-border-radius: 3px;
+
+// Item lists
+$item-list-icon-font-size: 1.125rem;
+$item-list-item-min-size: $item-list-icon-font-size
