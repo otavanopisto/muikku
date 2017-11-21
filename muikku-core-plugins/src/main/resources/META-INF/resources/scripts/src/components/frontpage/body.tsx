@@ -120,7 +120,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
           
     <section id="studying" className="container container--frontpage-section">
       <h2 className="text text--branded text--frontpage-title">{this.props.i18n.text.get('plugin.sectionTitle.studying')}</h2>
-      <div className="ordered-container ordered-container--row ordered-container--frontpage-studying">
+      <div className="ordered-container ordered-container--frontpage-studying">
         <div className="ordered-container__item ordered-container__item--upper-secondary-school">
           <div className="card">
             <img className="card__image" src="/gfx/kuva_nettilukio.png" alt="" title="" />
