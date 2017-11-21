@@ -71,7 +71,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
   }
   render(){
     return (
-    <div className={`application-panel application-panel--${this.props.modifier} ${this.state.sticky ? "application-panel--sticky" : ''}`}>
+    <div className={`application-panel application-panel--${this.props.modifier}`}>
       <div className="application-panel__container">                
         <div className="application-panel__header">
           <div className="application-panel__header__wrapper">
@@ -80,10 +80,10 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
           </div>
         </div>
         <div className="application-panel__body">
-          <div className="application-panel__actions" ref="scrollReference">
+          <div className="application-panel__actions" ref="sticky">
             <div className="application-panel__actions__wrapper">
               {this.props.primaryOption ? <div className="application-panel__helper-container">{this.props.primaryOption}</div> : null}
-              <div className="application-panel__main-container ">{this.props.toolbar}</div>
+              <div className="application-panel__main-container">{this.props.toolbar}</div>
             </div>
           </div>
           <div ref="damn" className="application-panel__content">
