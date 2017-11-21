@@ -10,10 +10,11 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+import { AnnouncementsType } from '~/reducers/main-function/announcer/announcements';
 
 interface AnnouncementsProps {
   i18n: i18nType,
-  userId: number
+  announcements: AnnouncementsType
 }
 
 interface AnnouncementsState {
@@ -23,8 +24,7 @@ interface AnnouncementsState {
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
   render(){
     return ( 
-      <div className="application-list application-list__items"
-       ref="list" >        
+      <div className="application-list application-list__items" ref="list" >        
         <div key={1} className='application-list__item workspace-announcement'>
           <div className="application-list__item-header">
             <input type="checkbox"/>        
@@ -83,7 +83,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
 
 function mapStateToProps(state: any){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    announcements: state.announcements
   }
 };
 
