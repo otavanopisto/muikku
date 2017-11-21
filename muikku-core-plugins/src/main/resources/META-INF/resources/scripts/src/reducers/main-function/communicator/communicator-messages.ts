@@ -26,6 +26,11 @@ export interface CommunicatorMessageLabelPatchType {
   userEntityId?: number
 }
 export interface CommunicatorMessageLabelListType extends Array<CommunicatorMessageLabelType> {};
+export interface CommunicatorMessageThreadType {
+  labels: CommunicatorMessageLabelListType,
+  newerThreadId?: number,
+  olderThreadId?: number
+}
 export interface CommunicatorMessageType {
   caption: string,
   categoryName: "message",
@@ -99,7 +104,6 @@ export interface CommunicatorMessagesType {
   messages: CommunicatorMessageListType,
   selected: CommunicatorMessageListType,
   selectedIds: Array<number>,
-  pages: number,
   hasMore: boolean,
   location: string,
   toolbarLock: boolean,
@@ -112,7 +116,6 @@ export interface CommunicatorMessagesPatchType {
   messages?: CommunicatorMessageListType,
   selected?: CommunicatorMessageListType,
   selectedIds?: Array<number>,
-  pages?: number,
   hasMore?: boolean,
   location?: string,
   toolbarLock?: boolean,
@@ -143,7 +146,6 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
   messages: [],
   selected: [],
   selectedIds: [],
-  pages: 1,
   hasMore: false,
   location: "",
   toolbarLock: false,

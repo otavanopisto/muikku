@@ -10,8 +10,10 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {CommunicatorCurrentThreadType, CommunicatorStateType,
   CommunicatorMessagesPatchType, CommunicatorMessageLabelType, CommunicatorMessageType,
   CommunicatorMessageUpdateType, CommunicatorSignatureType, CommunicatorMessageListType,
-  CommunicatorMessageItemRecepientType, CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
+  CommunicatorMessageItemRecepientType, CommunicatorMessagesType, CommunicatorMessageRecepientType,
+  CommunicatorMessageThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
+import { StatusType } from "~/reducers/base/status";
 
 //////////////////////////////////////// INTERFACES FOR ACTIONS
 export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", CommunicatorCurrentThreadType>{}
@@ -129,31 +131,32 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
   
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
-      let result;
+      let result:CommunicatorMessageType;
       if (message.replyThreadId){
-        result = await promisify(mApi().communicator.messages.create(message.replyThreadId, data), 'callback')();
+        result = <CommunicatorMessageType>await promisify(mApi().communicator.messages.create(message.replyThreadId, data), 'callback')();
       } else {
-        result = await promisify(mApi().communicator.messages.create(data), 'callback')();
+        result = <CommunicatorMessageType>await promisify(mApi().communicator.messages.create(data), 'callback')();
       }
       
       mApi().communicator.sentitems.cacheClear();
       message.success && message.success();
       
-      let communicatorMessages:CommunicatorMessagesType = getState().communicatorMessages;
-      if (communicatorMessages.location === "sent"){
-        let params = {
-            firstResult: 0,
-            maxResults: 1
-        }
-        try {
-          let messages:CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator.sentitems.read(params), 'callback')();
-          if (messages[0]){
+      let resultThread: CommunicatorMessageThreadType;
+      
+      resultThread = <CommunicatorMessageThreadType>await promisify(mApi().communicator.messages.read(result.communicatorMessageId), 'callback')();
+
+      result.labels = resultThread.labels;
+      
+      let state= getState();
+      let status:StatusType = state.status;
+      
+      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      if (communicatorMessages.location === "sent" || (communicatorMessages.location === "inbox" && result.recipients.find((recipient:CommunicatorMessageRecepientType)=>{return recipient.userId === status.userId }))){
+       
             dispatch({
               type: "PUSH_ONE_MESSAGE_FIRST",
-              payload: messages[0]
+              payload: result
             });
-          }
-        } catch (err){}
       }
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
