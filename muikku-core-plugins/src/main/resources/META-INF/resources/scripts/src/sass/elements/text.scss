@@ -313,15 +313,18 @@ b {
 }
 
 .text--communicator-current-folder {
-  width: 50%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: none;
+  flex: 1 1 auto;
   height: 34px;
   line-height: 34px;
-  position: relative;
+  overflow: hidden;
   padding-right: 45px;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  @include breakpoint($breakpoint-pad){
+    display: none;
+  }
 }
 
 .text--communicator-usernames {
