@@ -122,10 +122,10 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       <h2 className="text text--branded text--frontpage-title">{this.props.i18n.text.get('plugin.sectionTitle.studying')}</h2>
       <div className="ordered-container ordered-container--row ordered-container--frontpage-studying">
         <div className="ordered-container__item ordered-container__item--upper-secondary-school">
-          <div className="card card--frontpage-upper-secondary-school">
+          <div className="card">
             <img className="card__image" src="/gfx/kuva_nettilukio.png" alt="" title="" />
             <div className="card__content">
-              <div className="card__title">{this.props.i18n.text.get('plugin.studying.nettilukio.title')}</div>
+              <div className="card__title card__title--frontpage-upper-secondary-school">{this.props.i18n.text.get('plugin.studying.nettilukio.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.nettilukio.description')}</div>
             </div>
             <div className="card__footer">
@@ -136,10 +136,10 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
           </div>
         </div>
         <div className="ordered-container__item ordered-container__item--secondary-school">
-          <div className="card card--frontpage-secondary-school">
+          <div className="card">
             <img className="card__image" src="/gfx/kuva_nettiperuskoulu.png" alt="" title="" />
             <div className="card__content">
-              <div className="card__title">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.title')}</div>
+              <div className="card__title card__title--frontpage-secondary-school">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.nettiperuskoulu.description')}</div>
             </div>
             <div className="card__footer">
@@ -149,11 +149,11 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
             </div>
           </div>
         </div>
-        <div className="ordered-container__item ordered-container--open-materials">
-          <div className="card card--frontpage-open-materials">
+        <div className="ordered-container__item ordered-container__item--open-materials">
+          <div className="card">
             <img className="card__image" src="/gfx/kuva_aineopiskelu.png" alt="" title="" />
             <div className="card__content">
-              <div className="card__title">{this.props.i18n.text.get('plugin.studying.aineopiskelu.title')}</div>
+              <div className="card__title card__title--frontpage-open-materials">{this.props.i18n.text.get('plugin.studying.aineopiskelu.title')}</div>
               <div className="card__text">{this.props.i18n.text.get('plugin.studying.aineopiskelu.description')}</div>
             </div>
             <div className="card__footer">
@@ -292,12 +292,10 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
     <section id="organization" className="container container--frontpage-section">
 
       <div className="card card--frontpage-otavan-opisto">
-
         <div className="ordered-container ordered-container--frontpage-otavan-opisto-info">
-                  
           <div className="ordered-container__item ordered-container__item--otavan-opisto-logo">
             <div className="container container--otavan-opisto-logo">
-              <img src="/gfx/oo-branded-organization-logo.jpg" alt="logo" title="logo" />
+              <img className="logo logo--otavan-opisto" src="/gfx/oo-branded-organization-logo.jpg" alt="logo" title="logo" />
             </div>
           </div>
                   

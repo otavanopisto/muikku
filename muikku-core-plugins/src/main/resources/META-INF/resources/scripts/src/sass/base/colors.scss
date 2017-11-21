@@ -117,12 +117,12 @@ $color-label-loading: $color-loading;
 $color-label-secondary: $color-secondary;
 $color-label-inverse: $color-default;
 
-//Text
+// Text
 $color-text-default: $color-inverse;
 $color-text-link: $color-primary;
 
 
-//Separator
+// Separator
 $color-separator-background: $color-inverse;
 
 // Navbar
@@ -206,7 +206,8 @@ $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 
 // panel
 $color-panel-background: $color-default;
-$color-panel-border: #ccc;
+$color-panel-border: #e2e3e3;
+$color-panel-shadow: rgba(0,0,0,0.05);
 
 // item list
 $color-item-list-item-font-color-active: #fff;
@@ -219,7 +220,7 @@ $color-indicator-text: $color-fatal-contrast;
 
 // application panel
 $color-application-panel-box-background: $color-default;
-$color-application-panel-box-border: #ccc;
+$color-application-panel-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background-hover: #eee;

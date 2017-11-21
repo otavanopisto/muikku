@@ -1,118 +1,133 @@
 @import "../base/colors";
 @import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
 
 $item-list-item-min-height: 32px;
 
 .item-list {
   
-  .item-list__item {
-    min-height: $item-list-item-min-height;
-    transition: background-color 0.3s;
-    cursor: pointer;
-    display: flex;
-    
-    
-    
-    &:active, &.active {
-      background-color: $color-item-list-item-background-active;
-      color: $color-item-list-item-font-color-active;
-    
-      .text {
-        color: $color-item-list-item-font-color-active;            
-      }
-    }
-    
-   &:hover, &.hover {
-   }
-    
-    
-    &.item-list__item--bordered {
-      border-left: solid 4px; 
-    }
-    .icon {
-      flex: 0 0 auto;
-      display: block;
-      height: $item-list-item-min-height;
-      width: $item-list-item-min-height;
-      vertical-align: middle;
-      font-size: 18px;
-      text-align: center;
-      line-height: $item-list-item-min-height;
-      margin-left: 4px;
-    }
-    
-    .item-list__text-body {
-      flex: 1 2 auto;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding-top: 7px;
-      max-width: 157px;
-    }
-    
-    .item-list__text-body.item-list__text-body--multiline {
-      white-space: auto;
-    }
-  }
+}
   
+// List items
+.item-list__item {
+  cursor: pointer;
+  display: flex;
+  padding: 10px;
+  position: relative;
+  transition: background-color 0.3s;
+
+  &:active, &.active {
+    background-color: $color-item-list-item-background-active;
+    color: $color-item-list-item-font-color-active;
   
-  &.item-list--panel-workspaces {
-    .icon {
-      color: $color-index-item-list-item-panel-workspaces-icon;
+    .text {
+      color: $color-item-list-item-font-color-active;            
     }
   }
-  &.item-list--panel-last-messages {
-    .item-list__item {
-      &:after {
-        content:''; 
-        left: 6px;
-        right: 6px;
-        height: 1px;
-        position: absolute; 
-        bottom: 0;
-        border-bottom: solid 1px $color-index-item-list-item-panel-last-messages-border;
-      }
-    }
-    .icon {
-      color: $color-index-item-list-item-panel-last-messages-icon;
-    }
-    .item-list__item--unread .icon {
-      color: $color-index-item-list-item-panel-last-messages-unread-icon;
-    }
-  }
-  &.item-list--panel-announcements {
-    .item-list__item {
-      &:after {
-        content:''; 
-        left: 6px;
-        right: 6px;
-        height: 1px;
-        position: absolute; 
-        bottom: 0;
-        border-bottom: solid 1px $color-index-item-list-item-panel-announcements-border;
-      }
-    }
-    .icon {
-      color: $color-index-item-list-item-panel-announcements-icon;
-    }
-    .item-list__item--has-workspaces .icon {
-      color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
-    }
-  }
- 
-  &.item-list--aside-navigation {
-  	width: 100%;
-  	padding-top: 10px;
-  	padding-bottom: 10px;
-  	
-  	.item-list-item {
-      padding-right: 10px;
-  	}    
-  }
+} 
+
+.item-list__item--latest-messages,
+.item-list__item--latest-announcements {
+  border-bottom: solid 1px $color-index-item-list-item-panel-latest-messages-border;
   
-  .menu &.item-list--aside-navigation {
-  	width: 100%;
-    padding: 0 0 10px 0;
+  &:last-child {
+    border: 0;
   }
+}
+.item-list__item--bordered {
+  border-left: solid 4px; 
+}
+
+// Unread list items in index page (icons and texts)
+.item-list--panel-latest-messages {
+
+  .item-list__item--unread .item-list__icon {
+    color: $color-index-item-list-item-panel-latest-messages-unread-icon;
+  }
+}
+
+.item-list--panel-announcements {
+
+  .item-list__item--unread .item-list__icon {
+    color: $color-index-item-list-item-panel-announcements-unread-icon;
+  }
+}
+
+.item-list__item--unread .item-list__text-body {
+  font-weight: 600;
+}
+  
+// List item icons
+.item-list__icon {
+  display: block;
+  flex: 0 0 auto;
+  font-size: $item-list-icon-font-size;
+  margin: 0 .625rem 0 2px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.item-list__icon--workspaces {
+  color: $color-index-item-list-item-panel-workspaces-icon;
+}
+
+.item-list__icon--latest-messages {
+  color: $color-index-item-list-item-panel-latest-messages-icon;
+}
+
+.item-list__icon---announcements {
+  color: $color-index-item-list-item-panel-announcements-icon;
+}
+
+.item-list__item--has-workspaces .item-list__icon {
+  color: $color-index-item-list-item-panel-announcements-has-workspaces-icon;
+}
+    
+// List item texts
+.item-list__text-body {
+  flex: 1 2 auto;
+  font-size: $text-mobile-font-size;
+  line-height: $item-list-item-min-size;
+  max-width: calc(100% - 36px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+  
+.item-list__text-body--multiline {
+  white-space: initial;
+}
+
+// List item dates
+.item-list__latest-message-date {
+  color: $color-index-text-panel-latest-messages-date;
+  font-size: calc(#{$text-mobile-font-size} / 1.1);
+  font-style: italic;
+  padding: 3px 0 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: calc(#{$text-desktop-font-size} / 1.1);
+    padding: 5px 0 0;
+  }
+}
+
+// List items in main-functions
+.item-list--aside-navigation {
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	
+	.item-list-item {
+    padding-right: 10px;
+	}    
+}
+  
+.item-list--aside-navigation {
+	width: 100%;
+  padding: 0 0 10px 0;
 }

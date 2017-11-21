@@ -16,28 +16,28 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.inbox")}
+    text(i18n: i18nType):string {return i18n.text.get("TODO translate active")}
   },
   {
     location: "past",
     id: "past",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.unread")}
+    text(i18n: i18nType):string {return i18n.text.get("TODO translate past")}
   },
   {
     location: "mine",
     id: "mine",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.sent")}
+    text(i18n: i18nType):string {return i18n.text.get("TOOD translate mine")}
   },
   {
     location: "archived",
     id: "archived",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("plugin.communicator.category.title.trash")}
+    text(i18n: i18nType):string {return i18n.text.get("TOOD translate archived")}
   }
 ]
 
-export default function communicatorNavigation(state:AnnouncerNavigationItemListType=defaultNavigation, action: ActionType): AnnouncerNavigationItemListType {
+export default function announcerNavigation(state:AnnouncerNavigationItemListType=defaultNavigation, action: ActionType): AnnouncerNavigationItemListType {
   return state;
 }

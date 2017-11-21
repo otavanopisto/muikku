@@ -1,7 +1,6 @@
 @import "../base/colors";
 @import "../base/mixins";
-
-$main-function-link-icon-active-border-size: 5px;
+@import "../base/vars";
 
 .link {
   @include prefix(transition, moz ms webkit o, background-color 0.3s);
@@ -21,7 +20,7 @@ $main-function-link-icon-active-border-size: 5px;
   &.link--icon {
     @include prefix(font-smoothing, webkit moz o ms, antialiased);
     font-family: muikku;
-    font-size: 26px;
+    font-size: $link-icon-font-size;
     font-style: normal;
     font-variant: none;
     font-weight: normal;

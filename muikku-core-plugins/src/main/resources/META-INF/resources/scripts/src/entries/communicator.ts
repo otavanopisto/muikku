@@ -3,7 +3,7 @@ import reducer from '~/reducers/communicator';
 import runApp from '~/run';
 import mApi from '~/lib/mApi';
 
-import mainFunctionDefault from './util/base-main-function';
+import mainFunctionDefault from '~/util/base-main-function';
 
 import actions from '~/actions/main-function';
 import communicatorActions from '~/actions/main-function/communicator';

@@ -21,577 +21,514 @@
   color: $color-text-default;
   display: block;
   font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
   font-weight: 400;
   
-  &.text--branded {
-    font-family: $text-branded-font-family;
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
+}
   
-  a {
-    color: $color-text-link;
-  }
+.text--branded {
+  font-family: $text-branded-font-family;
+}
+  
+b {
+  font-weight: 600;
+}
+ 
+.text--one-liner {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+ 
+.text--application-title {
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+ 
+.text--frontpage-muikku-description {
+  color: $color-frontpage-text-muikku-description;
+  line-height: 1.2rem;
+  margin: 1rem auto 0;
+  max-width: 100%;
+  font-size: 0.925rem;
+  font-weight: 300;
+  text-align: center;
+  text-shadow: 0 5px 10px $color-frontpage-text-description-text-shadow;
+  text-transform: uppercase;
 
-  b {
-    font-weight: 600;
+  @include breakpoint($breakpoint-pad) {
+    max-width: 20em;
   }
- 
-  &.text--one-liner {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
- 
-  &.text--application-title {
+}
+  
+.text--frontpage-muikku-author {
+  color: $color-frontpage-text-muikku-author;
+  font-size: 1.15rem;
+  font-weight: 300;
+  line-height: 1;
+  text-align: left;
+  text-shadow: 0 5px 10px $color-frontpage-text-author-text-shadow;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
     font-size: 1.5rem;
-    font-weight: 300;
-    text-transform: uppercase;
-    
-    @media (max-width: $breakpoint-max-usable-screen){
-      padding-left: 10px;
-    }
-  }
- 
-  &.text--frontpage-muikku-description {
-    color: $color-frontpage-text-muikku-description;
-    line-height: 1.3;
-    margin: 1rem auto 0;
-    max-width: 100%;
-    font-size: 0.925rem;
-    font-weight: 300;
     text-align: center;
-    text-shadow: 0 5px 10px $color-frontpage-text-description-text-shadow;
-    text-transform: uppercase;
+  }
+}
 
-    @include breakpoint($breakpoint-pad) {
-      max-width: 20em;
-    }
-  }
-  &.text--frontpage-muikku-author {
-    color: $color-frontpage-text-muikku-author;
-    font-size: 1.15rem;
-    font-weight: 300;
-    line-height: 1;
-    text-align: left;
-    text-shadow: 0 5px 10px $color-frontpage-text-author-text-shadow;
-    text-transform: uppercase;
-    
-    @include breakpoint($breakpoint-pad) {
-      font-size: 1.5rem;
-      text-align: center;
-    }
-  }
-  &.text--frontpage-muikku {
-    color: $color-frontpage-text-muikku;
-    font-size: 2rem;
-    font-weight: 900;
-    line-height: 0.9;
-    text-align: left;
-    text-shadow: 0 5px 10px $color-frontpage-text-muikku-text-shadow;
-    
-    @include breakpoint($breakpoint-pad) {
-      font-size: 3rem;
-      text-align: center;
-    }
-  }
-  &.text--frontpage-verkko {
-    color: $color-frontpage-text-verkko;
-    font-size: 2rem;
-    letter-spacing: 3px;
-    font-weight: 300;
-    line-height: 0.9;
-    text-align: left;
-    text-shadow: 0 5px 10px $color-frontpage-text-verkko-text-shadow;
-    
-    @include breakpoint($breakpoint-pad) {
-      font-size: 3rem;
-      letter-spacing: 5px;
-      text-align: center;
-      text-indent: 7px;
-    }
-  }
-  &.text--frontpage-title {
-    color: $color-frontpage-text-title;
-    font-size: 1.7rem;
-    text-align: left;
-    font-weight: 300;
-    margin-bottom: 20px;
-    
-    @include breakpoint($breakpoint-mobile-xl){
-      font-size: 1.8rem;
-    }
-    
-    @include breakpoint($breakpoint-pad){
-      font-size: 2rem;
-      font-weight: 200;
-    }
-    
-    @include breakpoint($breakpoint-desktop){
-      font-size: 2.375rem;
-    }
-  }
-  &.text--otavan-opisto-info-title {
-    color: $color-frontpage-text-otavan-opisto-info-title;
-    font-size: $text-mobile-font-size;
-    font-weight: 600;
-    margin: 0 0 .625rem;
-    text-transform: uppercase;
-    
-    @include breakpoint($breakpoint-pad){
-      font-size: $text-desktop-font-size;
-    }
-  }
-  &.text--otavan-opisto-info-description {
-    color: $color-frontpage-text-otavan-opisto-description;
-    font-size: $text-mobile-font-size;
-    font-weight: 400;
-    line-height: 1.3;
-    
-    @include breakpoint($breakpoint-pad){
-      font-size: $text-desktop-font-size;
-    }
-   
-    p {
-      margin: 0 0 1.15rem;
-    }
-  }
-  &.text--contact-us {
-    color: $color-frontpage-text-contact-us;
-    font-size: 1.6rem;
-    font-weight: 300;
-    margin-bottom: 1.5rem;
-    
-    @include breakpoint($breakpoint-pad){
-      font-size: 2.5rem;
-    }
-  }
-  &.text--contact-us-information {
-    color: $color-frontpage-text-contact-us-information;
-    font-size: $text-mobile-font-size;
-    margin-top: .875rem;
-    margin-bottom: .875rem;
-    
-    @include breakpoint($breakpoint-pad){
-      font-size: $text-desktop-font-size;
-    }
-
-    * {
-      margin-right: .625rem;
-    }
-  }
- 
-  &.text--for-panels-title {
-    font-size: 1.5rem;
-    color: $color-index-text-for-panels-title;
-    padding-bottom: #{$index-text-mobile-padding-horizontal}px;
-    font-weight: 300;
-    text-transform: uppercase;
-    
-    @include breakpoint-up($breakpoint-landscape-pad){
-      padding-bottom: 6px;
-    }
-    
-    @include breakpoint-down($breakpoint-portrait-pad){
-      padding: 0 #{$index-text-mobile-padding-horizontal}px 10px #{$index-text-mobile-padding-horizontal}px;
-    }
-    
-    span {
-      vertical-align: middle;
-    }
-    
-    span:not(.icon) {
-      position: absolute;
-      top: 0;
-      right: 0;
-      left: #{$index-text-icon-size + $index-text-mobile-padding-horizontal}px;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-      height: #{$index-text-icon-size}px;
-      line-height: #{$index-text-icon-size}px;
-      
-      @include breakpoint-down($breakpoint-portrait-pad){
-        left: #{$index-text-icon-size + ($index-text-mobile-padding-horizontal*2)}px;
-        right: #{$index-text-mobile-padding-horizontal}px;
-        top: 20px;
-      }
-    }
-    
-    .icon {
-      width: #{$index-text-icon-size}px;
-      height: #{$index-text-icon-size}px;
-      border-radius: 100%;
-      font-size: 20px;
-      line-height: #{$index-text-icon-size}px;
-      vertical-align: middle;
-      text-align: center;
-      display: inline-block;
-    }
-    
-    &.text--for-panels-title--continue-studies {
-      .icon {
-        background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
-        color: $color-index-text-for-panels-title-continue-studies-icon-color;
-      }
-    }
-    
-    &.text--for-panels-title--workspaces {
-      .icon {
-        background-color: $color-index-text-for-panels-title-workspaces-icon-background;
-        color: $color-index-text-for-panels-title-workspaces-icon-color;
-      }
-    }
-    
-    &.text--for-panels-title--last-messages {
-      .icon {
-        background-color: $color-index-text-for-panels-title-last-messages-icon-background;
-        color: $color-index-text-for-panels-title-last-messages-icon-color;
-      }
-    }
-    
-    &.text--for-panels-title--important {
-      .icon {
-        background-color: $color-index-text-for-panels-title-important-icon-background;
-        color: $color-index-text-for-panels-title-important-icon-color;
-      }
-    }
-    
-    &.text--for-panels-title--announcements {
-      .icon {
-        background-color: $color-index-text-for-panels-title-announcements-icon-background;
-        color: $color-index-text-for-panels-title-announcements-icon-color;
-      }
-    }
-  }
+.text--frontpage-muikku {
+  color: $color-frontpage-text-muikku;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 0.9;
+  text-align: left;
+  text-shadow: 0 5px 10px $color-frontpage-text-muikku-text-shadow;
   
-  &.text--panel-nothing {
-    padding: 0 #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
-    
-    @include breakpoint-up($breakpoint-landscape-pad){
-      padding-top: #{$index-text-mobile-padding-horizontal}px;
-    }
-  }
-  
-  &.text--panel-continue-studies-workspace-name {
-    font-size: 32px;
-    font-weight: 300;
-    padding: 0 #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
-    
-    @include breakpoint-up($breakpoint-landscape-pad){
-      padding-top: #{$index-text-mobile-padding-horizontal/2}px;
-    }
-  }
-  
-  &.text--panel-continue-studies {
-    padding: 4px #{$index-text-mobile-padding-horizontal}px 0 #{$index-text-mobile-padding-horizontal}px;
-  }
-  
-  
-  &.text--item-article {  
-    padding: 10px 0;
-    font-weight: 300;
-  }
-  
-    
-
-  &.text--item-article-header {
-    font-weight: 400;
-    padding: 10px 0;
-  }
-
-  &.text--item-counter {
-    align-items: center;
-    border-radius: 50%;
-    background-color: #FFF6AE;
-    display: flex;
-    font-size: 18px;
-    height: 28px;
-    justify-content: center;
-    padding: 0px 15px;
-    width: 28px;
-  }
-    
-  &.text--last-message-date {
-    color: $color-index-text-panel-last-messages-date;
-    font-style: italic;
-    padding-bottom: 7px;
-  }
-  
-  &.text--announcements-date {
-    color: $color-index-text-panel-announcements-date;
-    font-style: italic;
-    padding-bottom: 7px;
-  }
- 
-  &.text--communicator-title {
-    color: $color-communicator-text-title;
-  }
-    
-  &.text--communicator-message-caption {
-    font-weight: 600;  
-    margin-bottom: 10px;    
-    padding: 10px; 
-  }  
-  
-  &.text--communicator-message-content {
-    padding: 10px;  
-  }
-
-  &.text--communicator-current-folder {
-    width: 50%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: none;
-    height: 34px;
-    line-height: 34px;
-    position: relative;
-    padding-right: 45px;
-    
-    @include breakpoint-down($breakpoint-portrait-pad){
-      display: inline-block;
-    }
-  }
-
-
-  &.text--communicator-usernames {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 1;    
-  }
-  
-  &.text--communicator-username {
-    white-space: nowrap;
-    
-    .application-list__item--unread & {
-      font-weight: 600;
-    }
-  }
-  
-
-  
-  &.text--communicator-date {
-    opacity: 0.75;
-    font-style: italic;
-    width: 130px;
-    text-align: right;
-  }
-  
-  &.text--communicator-body {
-    display: inline-block;
-    font-weight: 300;
-    @include breakpoint-up($breakpoint-landscape-pad){
-      padding-left: 30px;
-    }
-  }
-
-  &.text--communicator-labels {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 1;
-    padding: 10px 0 0;
-  }  
-  
-  &.text--communicator-label {
-    font-weight: 300;
-    display: flex;
-    align-items: end; 
-   
-    .icon {
-      padding-left: 32px;
-      
-      &::before {
-        display: inline-block;
-        margin-right: 5px;
-      }
-    }
-  }
-  &.text--communicator-label-update-dialog-icon {
-    display: block;
-    width: 100%;
-    min-width: 350px;
-    height: 112px;
+  @include breakpoint($breakpoint-pad) {
+    font-size: 3rem;
     text-align: center;
-    font-size: 92px;
+  }
+}
+  
+.text--frontpage-verkko {
+  color: $color-frontpage-text-verkko;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  font-weight: 300;
+  line-height: 0.9;
+  text-align: left;
+  text-shadow: 0 5px 10px $color-frontpage-text-verkko-text-shadow;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 3rem;
+    letter-spacing: 5px;
+    text-align: center;
+    text-indent: 7px;
+  }
+}
+  
+.text--frontpage-title {
+  color: $color-frontpage-text-title;
+  font-size: 1.7rem;
+  text-align: left;
+  font-weight: 300;
+  margin-bottom: 20px;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 1.8rem;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2rem;
+    font-weight: 200;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 2.375rem;
+  }
+}
+
+.text--otavan-opisto-info-title {
+  color: $color-frontpage-text-otavan-opisto-info-title;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  margin: 0 0 .625rem;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+  
+.text--otavan-opisto-info-description {
+  color: $color-frontpage-text-otavan-opisto-description;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  line-height: 1.375rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
  
-  &.text--recepient-tag {
-  	.icon {
-      display: inline-block;
-  	  margin-right: 5px;
-  	}
-    i {
-      opacity: 0.6;
-    }
+  p {
+    margin: 0 0 1.15rem;
   }
- 
-  &.text--recepient-autocomplete {
-  	.icon {
-      display: inline-block;
-  	  margin-right: 5px;
-  	}
-    i {
-      opacity: 0.6;
-    }
+}
+
+.text--contact-us {
+  color: $color-frontpage-text-contact-us;
+  font-size: 1.6rem;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2.5rem;
   }
+}
+
+.text--contact-us-information {
+  color: $color-frontpage-text-contact-us-information;
+  font-size: $text-mobile-font-size;
+  margin-top: .875rem;
+  margin-bottom: .875rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+
+  * {
+    margin-right: .625rem;
+  }
+}
  
-  &.text--communicator-message-sender {
+.text--for-panels-title {
+  background-color: $color-panel-background;
+  color: $color-index-text-for-panels-title;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 300;
+  padding: 10px 0 0;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-size: 1.4rem;
+    padding: 0 5px .4rem;
+  }
+}
+  
+.text__panel-icon {
+  display: none;
+  
+  @include breakpoint($breakpoint-pad) {
+    border: 2px solid $color-default;
+    border-radius: 100%;
+    display: inline-block;
+    flex: 0 0 auto;
+    font-size: 1.25rem;
+    padding: .35rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+}
+
+.text__panel-title {
+  display: inline-block;
+  flex: 1 1 auto;
+  overflow: hidden;
+  padding: 0 0 0 .625rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text__panel-link {
+  color: $color-text-link;
+}
+  
+.text__panel-icon--continue-studies {
+  background-color: $color-index-text-for-panels-title-continue-studies-icon-background;
+  color: $color-index-text-for-panels-title-continue-studies-icon-color;
+}
+  
+.text__panel-icon--workspaces {
+  background-color: $color-index-text-for-panels-title-workspaces-icon-background;
+  color: $color-index-text-for-panels-title-workspaces-icon-color;
+}
+  
+.text__panel-icon--latest-messages {
+  background-color: $color-index-text-for-panels-title-latest-messages-icon-background;
+  color: $color-index-text-for-panels-title-latest-messages-icon-color;
+}
+  
+.text__panel-icon--important {
+  background-color: $color-index-text-for-panels-title-important-icon-background;
+  color: $color-index-text-for-panels-title-important-icon-color;
+}
+  
+.text__panel-icon--announcements {
+  background-color: $color-index-text-for-panels-title-announcements-icon-background;
+  color: $color-index-text-for-panels-title-announcements-icon-color;
+}
+
+.text--panel-nothing {
+  padding: 10px;
+}
+
+.text--panel-continue-studies-workspace-name {
+  font-size: 2rem;
+  font-weight: 300;
+  padding: 10px;
+}
+
+.text--panel-continue-studies {
+  padding: 10px;
+}
+
+.text--item-article {  
+  padding: 10px 0;
+  font-weight: 300;
+}
+
+.text--item-article-header {
+  font-weight: 400;
+  padding: 10px 0;
+}
+
+.text--item-counter {
+  align-items: center;
+  border-radius: 50%;
+  background-color: #FFF6AE;
+  display: flex;
+  font-size: 18px;
+  height: 28px;
+  justify-content: center;
+  padding: 0px 15px;
+  width: 28px;
+}
+  
+.text--announcements-date {
+  color: $color-index-text-panel-announcements-date;
+  font-style: italic;
+  padding-bottom: 7px;
+}
+
+.text--communicator-title {
+  color: $color-communicator-text-title;
+}
+  
+.text--communicator-message-caption {
+  font-weight: 600;  
+  margin-bottom: 10px;    
+  padding: 10px; 
+}  
+
+.text--communicator-message-content {
+  padding: 10px;  
+}
+
+.text--communicator-current-folder {
+  width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: none;
+  height: 34px;
+  line-height: 34px;
+  position: relative;
+  padding-right: 45px;
+}
+
+.text--communicator-usernames {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;    
+}
+
+.text--communicator-username {
+  white-space: nowrap;
+  
+  .application-list__item--unread {
     font-weight: 600;
-    display: inline-block;
-        
-    &::after {
-      content: ">";
-      margin: 0 10px;
-    }
   }
+}
+
+.text--communicator-date {
+  opacity: 0.75;
+  font-style: italic;
+  width: 130px;
+  text-align: right;
+}
+  
+.text--communicator-body {
+  display: inline-block;
+  font-weight: 300;
+}
+
+.text--communicator-labels {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 1;
+  padding: 10px 0 0;
+}  
+  
+.text--communicator-label {
+  font-weight: 300;
+  display: flex;
+  align-items: end; 
  
-  &.text--communicator-message-recipients {
-    display: inline-block;
-  }
-
-  &.text--communicator-message-recipient {        
-    margin-left: 5px;
-    display: inline-block;
-        
-    &:not(:last-child):after {
-      content: ",";
-    }
-  }
-
-  &.text--communicator-message-label {
-    margin-left: 5px;
-    display: inline-block;
-  }
-
-  &.text--communicator-message-created {
-  }
-  
-  &.text--announcer-times {
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 15px;
-  }
-  
-  &.text--announcer-header-main {
-    align-items: center;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    flex: 0 2 auto;
-  }
-  
-  &.text--announcer-header-aside {
-    opacity: 0.75;
-    flex: 1 1 auto;
-    display: flex;
-    justify-content: end;
-    align-items: center;
-  }
-
-  &.text--announcer-workspace {
-    color: #000;
-    font-size: 15px;
-    margin-left: 5px;
-  }
-
-  &.text--discussion-thread-item-body {
-    font-style: italic;
-    width: 100%;
-    padding: 25px 0;
-  }
-
-  &.text--discussion-thread-meta {
-    display: flex;
-    flex: 1 1 auto;
-    justify-content: flex-end;
-  }
-
-  &.text--discussion-thread-user {
-    span:not(:first-child) {
-      margin-left: 10px;    
-    }
-  }
-
-  &.text--discussion-thread-meta-latest-reply {
-    width: 250px;
-    text-align: right;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-  
-  &.text--discussion-thread-item-title {
-    border-left: 5px solid skyblue;
-    padding-left: 5px;
+  .icon {
+    padding-left: 32px;
     
-  }
-
-  &.text--discussion-current-thread {
-    display: flex;
-    align-items: center;    
-    span:not(:first-child) {
-      margin-left: 10px;    
+    &::before {
+      display: inline-block;
+      margin-right: 5px;
     }
   }
+}
 
-  &.text__discussion-breadcrumb-item {
-    padding-left: 5px;
-    
-    &:not(:first-child){
-      margin-left: 10px;
-    }
-       
-    &:not(:last-child)::after {
-      content: '>';
-      margin-left: 5px;
-    }
-  }
-
-  &.text__discussion-breadcrumb-item--area {
-    border-left: 5px solid skyblue;
-  }
-
-  &.text--new-discussion-create-state{
-    margin-right: 10px;
-    &:not(:first-child) {
-      margin-left: 20px;
-    
-    }
-    
-  }
-
-
-  //TODO REMOVE ALL THESE
-  &.text-icon, .text-icon {
-    font-family: muikku;
-    speak: none;
-  }
-
-  &.text-multiparagraph {
-    p {
-      margin: 17px 0;
-    }
-  }
-
-  &.text-inline {
-    display: inline;
-  }
-
-  &.text-inline-block {
+.text--communicator-label-update-dialog-icon {
+  display: block;
+  width: 100%;
+  min-width: 350px;
+  height: 112px;
+  text-align: center;
+  font-size: 92px;
+}
+ 
+.text--recepient-tag {
+  
+	.icon {
     display: inline-block;
+	  margin-right: 5px;
+	}
+	
+  i {
+    opacity: 0.6;
   }
-
-  &.text-uppercase {
-    text-transform: uppercase;
+}
+ 
+.text--recepient-autocomplete {
+  
+	.icon {
+    display: inline-block;
+	  margin-right: 5px;
+	}
+	
+  i {
+    opacity: 0.6;
   }
-
-  &.text-lowercase {
-    text-transform: lowercase;
+}
+ 
+.text--communicator-message-sender {
+  font-weight: 600;
+  display: inline-block;
+      
+  &::after {
+    content: ">";
+    margin: 0 10px;
   }
+}
+ 
+.text--communicator-message-recipients {
+  display: inline-block;
+}
 
-  &.text-full {
-    width: 100%;
+.text--communicator-message-recipient {        
+  margin-left: 5px;
+  display: inline-block;
+      
+  &:not(:last-child):after {
+    content: ",";
+  }
+}
+
+.text--communicator-message-label {
+  margin-left: 5px;
+  display: inline-block;
+}
+
+.text--communicator-message-created {
+}
+
+.text--announcer-times {
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 15px;
+}
+
+.text--announcer-header-main {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  flex: 0 2 auto;
+}
+
+.text--announcer-header-aside {
+  opacity: 0.75;
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.text--announcer-workspace {
+  color: #000;
+  font-size: 15px;
+  margin-left: 5px;
+}
+
+.text--discussion-thread-item-body {
+  font-style: italic;
+  width: 100%;
+  padding: 25px 0;
+}
+
+.text--discussion-thread-meta {
+  display: flex;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+.text--discussion-thread-user {
+  
+  span:not(:first-child) {
+    margin-left: 10px;    
+  }
+}
+
+.text--discussion-thread-meta-latest-reply {
+  width: 250px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.text--discussion-thread-item-title {
+  border-left: 5px solid skyblue;
+  padding-left: 5px; 
+}
+
+.text--discussion-current-thread {
+  display: flex;
+  align-items: center;  
+    
+  span:not(:first-child) {
+    margin-left: 10px;    
+  }
+}
+
+.text__discussion-breadcrumb-item {
+  padding-left: 5px;
+  
+  &:not(:first-child) {
+    margin-left: 10px;
+  }
+     
+  &:not(:last-child)::after {
+    content: '>';
+    margin-left: 5px;
+  }
+}
+
+.text__discussion-breadcrumb-item--area {
+  border-left: 5px solid skyblue;
+}
+
+.text--new-discussion-create-state{
+  margin-right: 10px;
+  
+  &:not(:first-child) {
+    margin-left: 20px;
   }
 }
 

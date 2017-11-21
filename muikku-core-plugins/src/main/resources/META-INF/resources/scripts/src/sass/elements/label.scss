@@ -11,19 +11,10 @@
 //
 
 @import "../base/colors";
-@import "../base/breakpoints";
+@import "../base/vars";
 @import "../base/mixins";
+@import "../base/breakpoints";
 
-$label-font-family: "Exo 2", Arial, sans-serif;
-
-$label-small-height: 21px;
-$label-small-font-size: 12px;
-
-$label-medium-height: 27px;
-$label-medium-font-size: 15px;
-
-$label-large-height: 33px;
-$label-large-font-size: 17px;
 
 .label {
   @include prefix(transition, moz o ms webkit, color 0.3s);
@@ -86,10 +77,6 @@ $label-large-font-size: 17px;
     line-height: $label-large-height;
     padding: 0 $label-large-font-size;
   }
-
-//  &.label-medium {
-//  }
-
   &.label--small {
     font-size: $label-small-font-size;
     height: $label-small-height;
@@ -131,8 +118,6 @@ $label-large-font-size: 17px;
       line-height: $label-small-font-size;
       padding: #{$label-small-font-size / 2} $label-small-font-size;
     }
-//    &.label-medium {
-//    }
     &.label--large {
       line-height: $label-large-font-size;
       padding: #{$label-large-font-size / 2} $label-large-font-size;
@@ -146,13 +131,9 @@ $label-large-font-size: 17px;
   &.label--right {
     text-align: right;
   }
-
-//  &.label-left {
-//  }
-
-  //FRONTPAGE
   &.label--forgot-password {
     color: $color-frontpage-label-forgot-password;
+    font-size: .875rem;
     height: auto;
     width: auto;
     cursor: pointer;
@@ -161,9 +142,6 @@ $label-large-font-size: 17px;
 
     >span {
       display: table-caption;
-    }
-    @include breakpoint-up($breakpoint-medium-mobile){
-      margin-right: 15px;
     }
   }
 }

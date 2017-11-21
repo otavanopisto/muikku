@@ -14,18 +14,19 @@
   justify-content: center;
   width: 100%;
   overflow: visible;
+}
 
-  .screen-container__wrapper {
-    max-width: $breakpoint-max-usable-screen;
-    width: 100%;
-    overflow: visible;
-  }
+.screen-container__wrapper {
+  height: 100%;
+  max-width: $breakpoint-max-usable-screen;
+  width: 100%;
+  overflow: visible;
+}
+
+.screen-container--full-height {
+  height: auto;
   
-  &.screen-container--full-height {
-    height: 100%;
-    
-    >.screen-container__wrapper {
-      height: 100%;
-    }
+  @include breakpoint($breakpoint-pad) {
+     height: 100%;
   }
 }

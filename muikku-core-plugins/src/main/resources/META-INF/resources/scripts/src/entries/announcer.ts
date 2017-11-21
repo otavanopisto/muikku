@@ -4,7 +4,7 @@ import runApp from '~/run';
 
 import titleActions from '~/actions/base/title';
 
-import mainFunctionDefault from './util/base-main-function';
+import mainFunctionDefault from '~/util/base-main-function';
 import { loadAnnouncements } from '~/actions/main-function/announcer/announcements';
 import { Action } from 'redux';
 

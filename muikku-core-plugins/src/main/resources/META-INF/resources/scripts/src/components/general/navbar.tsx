@@ -46,31 +46,26 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
               <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`}>
                 <div className="navbar__wrapper">
                   <div className="navbar__logo"></div>
-            
-                  <div className="navbar__wrapper__items">
-                    <ul className="navbar__wrapper__items__container">
-                      <li className={`navbar__item navbar__item--menu-button`}>
-                        <a className="link link--icon link--full" onClick={this.openMenu}>
-                          <span className="icon icon-navicon"></span>
-                        </a>
-                      </li>
-                      {this.props.navbarItems.map((item, index)=>{
-                        if (!item){
-                          return null;
-                        }
-                        return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`}>
-                          {item.item}
-                        </li>);
-                      }).filter(item=>!!item)}
-                    </ul>
-                  </div>
+                  <ul className="navbar__items">
+                    <li className={`navbar__item navbar__item--menu-button`}>
+                      <a className="link link--icon link--full" onClick={this.openMenu}>
+                        <span className="icon icon-navicon"></span>
+                      </a>
+                    </li>
+                    {this.props.navbarItems.map((item, index)=>{
+                      if (!item){
+                        return null;
+                      }
+                      return (<li key={index} className={`navbar__item navbar__item--${item.modifier}`}>
+                        {item.item}
+                      </li>);
+                    }).filter(item=>!!item)}
+                  </ul>
                   {this.props.mobileTitle ? <div className="navbar__mobile-title">{this.props.mobileTitle}</div> : null}
                   <div className="navbar__default-options">
-                    <div className="navbar__default-options__container">
-                      {this.props.defaultOptions}
-                      <ProfileItem modifier={this.props.modifier}/>
-                      <LanguagePicker modifier={this.props.modifier} />
-                    </div>
+                    {this.props.defaultOptions}
+                    <ProfileItem modifier={this.props.modifier}/>
+                    <LanguagePicker modifier={this.props.modifier} />
                   </div>
                 </div>
               </nav>
