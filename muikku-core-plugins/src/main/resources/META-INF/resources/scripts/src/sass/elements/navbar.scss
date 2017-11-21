@@ -112,7 +112,7 @@
   @include breakpoint-down($breakpoint-portrait-pad){
     .navbar__item.navbar__item--studying,
     .navbar__item.navbar__item--contact,
-    .navbar__item.navbar__item--open-materials  {
+    .navbar__item.navbar--open-materials  {
       display: none;
     }
   }

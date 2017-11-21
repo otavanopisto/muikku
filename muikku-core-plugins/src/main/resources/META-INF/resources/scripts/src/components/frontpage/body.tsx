@@ -149,7 +149,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
             </div>
           </div>
         </div>
-        <div className="ordered-container__item ordered-container__item--open-materials">
+        <div className="ordered-container__item ordered-container--open-materials">
           <div className="card card--frontpage-open-materials">
             <img className="card__image" src="/gfx/kuva_aineopiskelu.png" alt="" title="" />
             <div className="card__content">

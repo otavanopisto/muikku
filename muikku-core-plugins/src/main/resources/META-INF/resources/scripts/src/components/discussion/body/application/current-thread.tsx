@@ -64,7 +64,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
     
     return <div className="application-list__items">
-        <div className="application-list__item--open application-list__item--discussion-current-thread">
+        <div className="application-list--open application-list__item--discussion-current-thread">
           <div className="application-list__item-header">
             <h1 className="text">{this.props.discussionThreads.current.title}</h1>
           </div>              
@@ -125,7 +125,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           }          
           
           return ( 
-            <div key={reply.id} className={`application-list__item--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
+            <div key={reply.id} className={`application-list--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
               <div className="application-list__item-content-container--avatar message message--thread-reply">            
                 <div className="application-list__item-content--avatar-container">
                   {avatar}
