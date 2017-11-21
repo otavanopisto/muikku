@@ -12,7 +12,8 @@ import titleActions from '~/actions/base/title';
 import {Action} from 'redux';
 
 let store = runApp(reducer, App);
-mainFunctionDefault(store);
+mainFunctionDefault(store)
+  .addEventListener("Communicator:newmessagereceived", communicatorActions.communicatorMessages.loadNewlyReceivedMessage);
 
 let currentLocation = window.location.hash.replace("#","").split("/");
 function loadLocation(location: string[]){

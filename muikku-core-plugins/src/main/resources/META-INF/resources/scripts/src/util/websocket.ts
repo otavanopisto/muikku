@@ -71,7 +71,24 @@ export default class MuikkuWebsocket {
       this.messagesPending.push(message);
     }
   }
-  
+  addEventListener(event: string, action: Function){
+    let evtListeners = this.listeners[event] || {
+      actions: [],
+      callbacks: []
+    };
+    evtListeners.actions.push(action);
+    this.listeners[event] = evtListeners;
+    return this;
+  }
+  addEventCallback(event: string, action: Function){
+    let evtListeners = this.listeners[event] || {
+      actions: [],
+      callbacks: []
+    };
+    evtListeners.callbacks.push(action);
+    this.listeners[event] = evtListeners;
+    return this;
+  }
   trigger(event: any, data: any=null){
     this.store.dispatch({
       'type': 'WEBSOCKET_EVENT',
@@ -84,9 +101,6 @@ export default class MuikkuWebsocket {
     if (this.listeners[event]){
       let listeners = this.listeners[event].actions;
       if (listeners){
-        if (typeof listeners === "function"){
-          listeners = listeners(data);
-        }
         for (let action of listeners){
           if (typeof action === "function"){
             this.store.dispatch(action());

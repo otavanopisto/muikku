@@ -13,190 +13,167 @@ $application-panel-internal-navigation-padding: 10px;
   @include breakpoint-down($breakpoint-portrait-pad){
     padding-bottom: 0;
   }
-  
-  .application-panel__helper-container{
-    width: 220px;  
-    margin-left: 15px;
-    padding: 10px 0;
-    flex: 0 0 220px;
-    
-    @include breakpoint-down($breakpoint-portrait-pad){
-      display: none;
-    }
-  }
-  
-  .application-panel__main-container {
-  	display: flex;
-    flex: 1  1 auto;
-    margin: 0 15px 0 25px;
-    padding: 10px 0;
-    flex-direction: row;
-    position: relative;
-  }
-  
-  .application-panel__container {
-    max-width: $breakpoint-max-usable-screen;
-    overflow: visible;
-    flex-direction: column;
-    display: flex;
-    width:100%;
-    
-    .application-panel__header {
-      display: flex;
-      align-items: center;
-      flex: 0 0 auto;
-      justify-content: center;
-      position: relative;//it can change to fixed, but it doesn't I leave this just in case,
-      //need to add z-index and other stuff for it to work well
-      background-color: $color-default-body;
-      left: 0;
-      right: 0;
-      
-      @include breakpoint-down($breakpoint-portrait-pad){
-        display: none;
-      }
-      
-      .application-panel__header__wrapper {
-      	max-width: $breakpoint-max-usable-screen;
-      	width: 100%;
-      	height: 100%;
-      	display: flex;
-        align-items: center;
-        flex: 0 0 auto;
-        justify-content: space-between;
-      }
-     
-      .application-panel__main-container {
-        display: flex;
-        justify-content: flex-end;
-        margin-right: 0;
-      }
-    }  
-  }
-  
-  .application-panel__body {
-    background-color: $color-application-panel-box-background;
-    border: solid 1px $color-application-panel-box-border;
-    display: flex;
-    flex-direction: column;
-    
-    @media screen and (max-width: $breakpoint-max-usable-screen){
-      border-left: 0;
-      border-right: 0;
-    }
-    
-    .application-panel__actions {
-      display: flex;
-      align-items: center;
-      flex: 0 0 auto;
-      justify-content: center;
-      position: relative; //it changes to fixed
-      z-index: 8;
-      left: 0;
-      right: 0;
-      
-      @include breakpoint-down($breakpoint-portrait-pad){
-        position: fixed;
-      	top: 70px;
-      }
-      
-      @at-root .application-panel--sticky#{&} {
-      	position: fixed;
-      	top: 70px;
-      }
-      
-      .application-panel__actions__wrapper {
-      	max-width: calc(#{$breakpoint-max-usable-screen} - 4px);
-      	width: calc(100% - 2px);
-      	height: 100%;
-      	display: flex;
-        align-items: center;
-        flex: 0 0 auto;
-        justify-content: space-between;
-        background-color: white;
-      }
-      
-      .application-panel__helper-container {
-        border-bottom: 1px solid $color-communicator-application-panel-actions-border;
-      }
-      
-      .application-panel__main-container {
-        border-bottom: 1px solid $color-communicator-application-panel-actions-border;  
-      }
-    }
-
-    .application-panel__content {
-      display: flex;
-      flex-direction: row;
-      
-      @include breakpoint-down($breakpoint-portrait-pad){
-        padding-top: 55px;
-      }
-      
-      @at-root .application-panel--sticky#{&} {
-      	padding-top: 55px;
-      }
-
-      .application-panel__helper-container{
-        padding: 0;
-        overflow: auto;
-        z-index: 1;
-        
-        @at-root .application-panel--sticky#{&} {
-      	  position: fixed;
-      	  top: 125px;
-      	  bottom: 0;
-        }
-        
-        &::-webkit-scrollbar { 
-          display: none; 
-        }
-       
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-        overflow: -moz-scrollbars-none;
-      }
-     
-      .application-panel__main-container {
-      	padding: 0;
-      	margin: 0;
-      	
-      	&::-webkit-scrollbar { 
-          display: none; 
-        }
-        -ms-overflow-style: -ms-autohiding-scrollbar;
-        overflow: -moz-scrollbars-none;
-      }
-
-      .application-panel__main-container--full {
-
-        @include breakpoint-up($breakpoint-landscape-pad){
-          @at-root .application-panel--sticky#{&} {
-            //width of side panel           
-            padding-left: 0;
-          }
-        }
-      } 
-      
-      .application-panel__main-container--aside {
-        
-        @include breakpoint-up($breakpoint-landscape-pad){
-          @at-root .application-panel--sticky#{&} {
-            //width of side panel 
-            padding-left: 235px;
-          }
-        }        
-      }      
-    }
-  }
  
 }
 
 
-.application-panel__toolbar {
+.application-panel__container {
+  max-width: $breakpoint-max-usable-screen;
+  overflow: visible;
+  flex-direction: column;
   display: flex;
-  justify-content: flex-start;
-  width: 100%;
+  width:100%;
 }
+
+.application-panel__body {
+  background-color: $color-application-panel-box-background;
+  border: solid 1px $color-application-panel-box-border;
+  display: flex;
+  flex-direction: column;
+  
+  @media screen and (max-width: $breakpoint-max-usable-screen){
+    border-left: 0;
+    border-right: 0;
+  }
+ 
+  .application-panel__content {
+    display: flex;
+    flex-direction: row;
+    
+    @include breakpoint-down($breakpoint-portrait-pad){
+      padding-top: 55px;
+    }
+    
+    @at-root .application-panel--sticky#{&} {
+      padding-top: 55px;
+    }
+
+    .application-panel__helper-container{
+      padding: 0;
+      overflow: auto;
+      z-index: 1;
+      
+      @at-root .application-panel--sticky#{&} {
+        position: fixed;
+        top: 125px;
+        bottom: 0;
+      }
+      
+      &::-webkit-scrollbar { 
+        display: none; 
+      }
+     
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+      overflow: -moz-scrollbars-none;
+    }
+   
+    .application-panel__main-container {
+      padding: 0;
+      margin: 0;
+      
+      &::-webkit-scrollbar { 
+        display: none; 
+      }
+      -ms-overflow-style: -ms-autohiding-scrollbar;
+      overflow: -moz-scrollbars-none;
+    }
+
+    .application-panel__main-container--full {
+
+      @include breakpoint-up($breakpoint-landscape-pad){
+        @at-root .application-panel--sticky#{&} {
+          //width of side panel           
+          padding-left: 0;
+        }
+      }
+    } 
+    
+    .application-panel__main-container--aside {
+      
+      @include breakpoint-up($breakpoint-landscape-pad){
+        @at-root .application-panel--sticky#{&} {
+          //width of side panel 
+          padding-left: 235px;
+        }
+      }        
+    }      
+  }
+}
+
+
+
+.application-panel__header {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  justify-content: center;
+  position: relative;//it can change to fixed, but it doesn't I leave this just in case,
+  //need to add z-index and other stuff for it to work well
+  background-color: $color-default-body;
+  left: 0;
+  right: 0;
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    display: none;
+  }
+  
+  .application-panel__header__wrapper {
+    max-width: $breakpoint-max-usable-screen;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    justify-content: space-between;
+  }
+ 
+  .application-panel__main-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 0;
+  }
+}  
+
+.application-panel__actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  justify-content: center;
+  position: relative; //it changes to fixed
+  z-index: 8;
+  left: 0;
+  right: 0;
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    position: fixed;
+    top: 70px;
+  }
+  
+  @at-root .application-panel--sticky#{&} {
+    position: fixed;
+    top: 70px;
+  }
+  
+  .application-panel__actions__wrapper {
+    max-width: calc(#{$breakpoint-max-usable-screen} - 4px);
+    width: calc(100% - 2px);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    justify-content: space-between;
+    background-color: white;
+  }
+  
+  .application-panel__helper-container {
+    border-bottom: 1px solid $color-communicator-application-panel-actions-border;
+  }
+  
+  .application-panel__main-container {
+    border-bottom: 1px solid $color-communicator-application-panel-actions-border;  
+  }
+}
+
   
 .application-panel__toolbar-actions-main {
   display: flex;
@@ -207,3 +184,31 @@ $application-panel-internal-navigation-padding: 10px;
   display: flex;
   justify-content: flex-end;
 }
+
+// TODO sort out other helper-containers with this
+
+.application-panel__helper-container {
+  flex: 0 0 220px;
+  margin-left: 15px;
+  padding: 10px 0;
+  width: 220px;  
+
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    display: none;
+  }
+}
+
+.application-panel__main-container {
+  display: flex;
+  flex: 1  1 auto;
+  margin: 0 15px 0 25px;
+  padding: 10px 0;
+  flex-direction: row;
+  position: relative;
+}
+
+
+
+
+

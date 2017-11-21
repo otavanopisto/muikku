@@ -9,7 +9,8 @@ import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
 
 let store = runApp(reducer, App);
-mainFunctionDefault(store);
+mainFunctionDefault(store)
+  .addEventListener("Communicator:newmessagereceived", actions.lastMessages.updateLastMessages.bind(null,6));
 
 store.dispatch(<Action>actions.announcements.updateAnnouncements());
 store.dispatch(<Action>actions.lastWorkspace.updateLastWorkspace());

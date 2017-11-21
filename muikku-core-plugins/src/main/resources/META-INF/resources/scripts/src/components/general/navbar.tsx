@@ -43,7 +43,7 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
   render(){
     return (
             <div>
-              <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`}>
+              <nav className={`navbar ${this.props.modifier ? 'navbar--' + this.props.modifier : ''}`} id="stick">
                 <div className="navbar__wrapper">
                   <div className="navbar__logo"></div>
                   <ul className="navbar__items">
