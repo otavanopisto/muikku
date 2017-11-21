@@ -17,6 +17,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
+import SelectableList from '~/components/general/selectable-list';
 
 
 interface CommunicatorMessagesProps {
@@ -34,45 +35,14 @@ interface CommunicatorMessagesProps {
 }
 
 interface CommunicatorMessagesState {
-  touchMode: boolean
 }
 
 class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, CommunicatorMessagesState> {
-  private touchModeTimeout: NodeJS.Timer;
-  private firstWasJustSelected: boolean;
-  private initialXPos: number;
-  private initialYPos: number;
-  private lastXPos: number;
-  private lastYPos: number;
-  private cancelSelection: boolean;
-  private initialTime: number;
-  
   constructor(props: CommunicatorMessagesProps){
     super(props);
     
-    this.touchModeTimeout = null;
-    this.firstWasJustSelected = false;
-    this.state = {
-      touchMode: false
-    }
-    
-    this.toggleMessageSelection = this.toggleMessageSelection.bind(this);
-    this.onTouchStartMessage = this.onTouchStartMessage.bind(this);
-    this.onTouchEndMessage = this.onTouchEndMessage.bind(this);
-    this.onTouchMoveMessage = this.onTouchMoveMessage.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
-    this.onContextMenu = this.onContextMenu.bind(this);
+    this.getMessageUserNames = this.getMessageUserNames.bind(this);
     this.setCurrentMessage = this.setCurrentMessage.bind(this);
-    this.onCheckBoxChange = this.onCheckBoxChange.bind(this);
-    this.onCheckBoxClick = this.onCheckBoxClick.bind(this);
-    
-    this.initialXPos = null;
-    this.initialYPos = null;
-    this.lastXPos = null;
-    this.lastYPos = null;
-    this.cancelSelection = false;
-    this.initialTime = null;
     
     //once this is in state READY only then a loading more event can be triggered
     this.statePropertyLocation = "communicatorMessagesState";
@@ -83,11 +53,9 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     //abort if this is true (in this case it causes the current element to be invisible)
     this.cancellingLoadingPropertyLocation = "communicatorMessagesCurrent";
   }
-  
   getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
     if (message.senderId !== userId || !message.recipients){
       if (message.senderId === userId){
-        //TODO Ukkonen translate this
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
       return (message.sender.firstName ? message.sender.firstName + " " : "")+(message.sender.lastName ? message.sender.lastName : "");
@@ -95,93 +63,13 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     
     return message.recipients.map((recipient: CommunicatorMessageRecepientType)=>{
       if (recipient.userId === userId){
-        //TODO Ukkonen translate this
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
       return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
     }).join(", ");
-  }  
-  onMessageClick(message: CommunicatorMessageType){
-    if (this.props.communicatorMessagesSelected.length === 0){
-      this.setCurrentMessage(message);
-    }
   }
   setCurrentMessage(message: CommunicatorMessageType){
     window.location.hash = window.location.hash.split("/")[0] + "/" + message.communicatorMessageId;
-  }
-  onCheckBoxChange(message: CommunicatorMessageType, e: React.MouseEvent<any>){
-    this.toggleMessageSelection(message);
-  }
-  onCheckBoxClick(e: React.MouseEvent<any>){
-    e.stopPropagation();
-  }
-  onTouchStartMessage(message: CommunicatorMessageType, e: React.TouchEvent<any>){
-    if (!this.state.touchMode){
-      this.touchModeTimeout = setTimeout(()=>{
-        this.toggleMessageSelection(message);
-        this.firstWasJustSelected = true;
-        this.setState({
-          touchMode: true
-        });
-      }, 600);
-    }
-    this.cancelSelection = false;
-    this.initialXPos = e.touches[0].pageX;
-    this.initialYPos = e.touches[0].pageY;
-    this.initialTime = (new Date()).getTime();
-  }
-  onTouchMoveMessage(message: CommunicatorMessageType, e: React.TouchEvent<any>){
-    this.lastXPos = e.touches[0].pageX;
-    this.lastYPos = e.touches[0].pageY;
-    
-    if (Math.abs(this.initialXPos - this.lastXPos) >= 5 || Math.abs(this.initialYPos - this.lastYPos) >= 5){
-      clearTimeout(this.touchModeTimeout);
-      this.cancelSelection = true;
-    }
-  }
-  onTouchEndMessage(message: CommunicatorMessageType, e: React.TouchEvent<any>){
-    clearTimeout(this.touchModeTimeout);
-    
-    if (this.cancelSelection){
-      return;
-    }
-    
-    let currentTime = (new Date()).getTime();
-    if (currentTime - this.initialTime <= 300 && !this.state.touchMode){
-      this.setCurrentMessage(message);
-      return;
-    }
-    
-    if (this.state.touchMode && !this.firstWasJustSelected){
-      let isSelected = this.toggleMessageSelection(message);
-      if (isSelected && this.props.communicatorMessagesSelectedIds.length === 1){
-        this.setState({
-          touchMode: false
-        });
-      }
-    } else if (this.firstWasJustSelected){
-      this.firstWasJustSelected = false;
-    }
-  }
-  onContextMenu(e: React.MouseEvent<any>){
-    e.preventDefault();
-    e.stopPropagation();
-  }
-  toggleMessageSelection(message: CommunicatorMessageType){
-    let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
-    if (isSelected){
-      this.props.removeFromCommunicatorSelectedMessages(message)
-    } else {
-      this.props.addToCommunicatorSelectedMessages(message);
-    }
-    return isSelected;
-  }
-  componentWillReceiveProps(nextProps: CommunicatorMessagesProps){
-    if (nextProps.communicatorMessagesState === "LOADING"){
-      this.setState({
-        touchMode: false
-      });
-    }
   }
   render(){
     if (this.props.communicatorMessagesState === "LOADING"){
@@ -194,43 +82,54 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
-    return <BodyScrollKeeper hidden={!!this.props.communicatorMessagesCurrent}><div className={`application-list application-list__items ${this.state.touchMode ? "application-list--select-mode" : ""}`}>{
-      this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
-        let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
-        return (
-          <div key={message.communicatorMessageId} className={`application-list__item ${message.unreadMessagesInThread ? "application-list__item--communicator-unread" : ""} ${isSelected ? "selected" : ""}`}
-            onTouchStart={this.onTouchStartMessage.bind(this, message)} onTouchEnd={this.onTouchEndMessage.bind(this, message)} onTouchMove={this.onTouchMoveMessage.bind(this, message)} 
-            onClick={this.onMessageClick.bind(this, message)} onContextMenu={this.onContextMenu}>
-            <div className="application-list__item-header">
-            <input type="checkbox" checked={isSelected} onChange={this.onCheckBoxChange.bind(this, message)} onClick={this.onCheckBoxClick}/>
-            <div className="text text--communicator-usernames">
-              <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
-            </div>
-            {message.messageCountInThread > 1 ? <div className="text text--item-counter">
-              {message.messageCountInThread}
-            </div> : null}
-            <div className="text text--communicator-date">
-              {this.props.i18n.time.format(message.threadLatestMessageDate)}
-            </div>                
-          </div>
-          <div className="application-list__item-body">
-            <span className="text text--communicator-body">{message.caption}</span>
-          </div>
-          <div className="application-list__item-footer">
-            <div className="text text--communicator-labels">{message.labels.map((label)=>{
-              return <span className="text text--communicator-label" key={label.id}>
-                <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                <span>{label.labelName}</span>
-              </span>
-            })}</div>            
-          </div>                      
-        </div>
-       )
-      })
-    }{
-      this.props.communicatorMessagesState === "LOADING_MORE" ? 
-        <div className="application-list__item loader-empty"/>
-    : null}</div></BodyScrollKeeper>
+    //DO NOT DELETE
+    //VERY CRITICAL CODE
+    //REMOVAL WILL CAUSE EXPLOSION
+    return <BodyScrollKeeper hidden={!!this.props.communicatorMessagesCurrent}>
+      <SelectableList className="application-list application-list__items" selectModeClassAddition="application-list--select-mode"
+        extra={this.props.communicatorMessagesState === "LOADING_MORE" ?
+          <div className="application-list__item loader-empty"/>
+         : null} dataState={this.props.communicatorMessagesState}>
+        {this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
+          let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
+          return {
+            className: `application-list__item ${message.unreadMessagesInThread ? "application-list__item--communicator-unread" : ""}`,
+            onSelect: this.props.addToCommunicatorSelectedMessages.bind(null, message),
+            onDeselect: this.props.removeFromCommunicatorSelectedMessages.bind(null, message),
+            onEnter: this.setCurrentMessage.bind(this, message),
+            isSelected,
+            key: message.communicatorMessageId,
+            contents: (checkbox: React.ReactElement<any>)=>{
+              return <div>
+                  <div className="application-list__item-header">
+                    {checkbox}
+                    <div className="text text--communicator-usernames">
+                      <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
+                    </div>
+                    {message.messageCountInThread > 1 ? <div className="text text--item-counter">
+                    {message.messageCountInThread}
+                    </div> : null}
+                    <div className="text text--communicator-date">
+                      {this.props.i18n.time.format(message.threadLatestMessageDate)}
+                    </div>                
+                  </div>
+                  <div className="application-list__item-body">
+                    <span className="text text--communicator-body">{message.caption}</span>
+                  </div>
+                  <div className="application-list__item-footer">
+                    <div className="text text--communicator-labels">{message.labels.map((label)=>{
+                      return <span className="text text--communicator-label" key={label.id}>
+                        <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                        <span>{label.labelName}</span>
+                      </span>
+                    })}</div>            
+                  </div>                      
+                </div>
+              }
+            }
+          })
+        }
+      </SelectableList></BodyScrollKeeper>
   }
 }
 

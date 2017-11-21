@@ -10,10 +10,11 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+import { AnnouncementsType } from '~/reducers/main-function/announcer/announcements';
 
 interface AnnouncementsProps {
   i18n: i18nType,
-  userId: number
+  announcements: AnnouncementsType
 }
 
 interface AnnouncementsState {
@@ -23,9 +24,8 @@ interface AnnouncementsState {
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
   render(){
     return ( 
-      <div className="application-list application-list__items"
-       ref="list" >        
-        <div key={1} className='application-list__item workspace-announcement'>
+      <div className="application-list application-list__items" ref="list" >        
+        <div key={1} className='application-list__item application-list_item--workspace-announcement'>
           <div className="application-list__item-header">
             <input type="checkbox"/>        
             <div className="text text--announcer-header-main">
@@ -54,7 +54,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
             <a className="link link--application-list-item-footer" href="">{this.props.i18n.text.get('plugin.announcer.link.delete')}</a>
           </div>                      
         </div>      
-        <div key={2} className='application-list__item environment-announcement'>
+        <div key={2} className='application-list__item application-list_item--environment-announcement'>
           <div className="application-list__item-header">
             <input type="checkbox"/>        
             <div className="text text--announcer-header-main">
@@ -83,7 +83,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
 
 function mapStateToProps(state: any){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    announcements: state.announcements
   }
 };
 
