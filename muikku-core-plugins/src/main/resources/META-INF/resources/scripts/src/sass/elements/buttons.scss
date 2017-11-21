@@ -263,22 +263,21 @@
 }
  
 .button--primary-function {
-  width:100%;
-  height: 34px;
-  
-  @include breakpoint-down($breakpoint-portrait-pad){
-    display: none;
-  }
-  
-  color: $color-communicator-button-new-message-text;
-  background-color: $color-communicator-button-new-message-background;
-  
+  display: none;
+
   &:hover, &.hover {
     background-color: darken($color-communicator-button-new-message-background, 10%);
   }
 
   &:active, &.active {
     background-color: darken($color-communicator-button-new-message-background, 20%);
+  }
+  
+  @include breakpoint($breakpoint-pad){
+    background-color: $color-communicator-button-new-message-background;
+    color: $color-communicator-button-new-message-text;
+    height: 34px;
+    width:100%;
   }
 }
   
