@@ -79,10 +79,8 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     });
   }
   
-  //Generate the api query, our first result in the pages that we have loaded multiplied by how many result we get
-  let firstResult = initial ? 0 : communicatorMessages.pages*MAX_LOADED_AT_ONCE;
-  //The pages that we will have loaded will be the first one for initial or otherwise the current one plus 1
-  let pages = initial ? 1 : communicatorMessages.pages + 1;
+  //Generate the api query, our first result in the messages that we have loaded
+  let firstResult = initial ? 0 : communicatorMessages.messages.length+1;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   
@@ -135,7 +133,6 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     let payload:CommunicatorMessagesPatchType = {
       state: "READY",
       messages: (concat ? communicatorMessages.messages.concat(actualMessages) : actualMessages),
-      pages: pages,
       hasMore,
       location: properLocation
     }

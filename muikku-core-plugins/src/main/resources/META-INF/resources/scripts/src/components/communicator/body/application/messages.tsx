@@ -8,7 +8,7 @@ import equals = require("deep-equal");
 import actions from '~/actions/main-function/communicator/communicator-messages';
 
 import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
-import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType, CommunicatorCurrentThreadType} from '~/reducers/main-function/communicator/communicator-messages';
+import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType, CommunicatorThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
@@ -26,7 +26,7 @@ interface CommunicatorMessagesProps {
   communicatorMessagesState: CommunicatorStateType,
   communicatorMessagesSelectedIds: Array<number>,
   communicatorMessagesMessages: CommunicatorMessageListType,
-  communicatorMessagesCurrent: CommunicatorCurrentThreadType,
+  communicatorMessagesCurrent: CommunicatorThreadType,
   loadMoreMessages: LoadMoreMessagesTriggerType,
   removeFromCommunicatorSelectedMessages: RemoveFromCommunicatorSelectedMessagesTriggerType,
   addToCommunicatorSelectedMessages: AddToCommunicatorSelectedMessagesTriggerType,

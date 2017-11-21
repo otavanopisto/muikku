@@ -26,6 +26,7 @@ export interface CommunicatorMessageLabelPatchType {
   userEntityId?: number
 }
 export interface CommunicatorMessageLabelListType extends Array<CommunicatorMessageLabelType> {};
+
 export interface CommunicatorMessageType {
   caption: string,
   categoryName: "message",
@@ -57,9 +58,9 @@ export interface CommunicatorMessageUpdateType {
   messageCountInThread?: number,
   labels?: CommunicatorMessageLabelListType
 }
-export interface CommunicatorCurrentThreadType {
-  olderThreadId?: number | null,
-  newerThreadId?: number | null,
+export interface CommunicatorThreadType {
+  olderThreadId?: number,
+  newerThreadId?: number,
   messages: Array<CommunicatorMessageInThreadType>,
   labels: CommunicatorMessageLabelListType
 }
@@ -99,11 +100,10 @@ export interface CommunicatorMessagesType {
   messages: CommunicatorMessageListType,
   selected: CommunicatorMessageListType,
   selectedIds: Array<number>,
-  pages: number,
   hasMore: boolean,
   location: string,
   toolbarLock: boolean,
-  current: CommunicatorCurrentThreadType | null,
+  current: CommunicatorThreadType | null,
   signature: CommunicatorSignatureType | null
 }
 
@@ -112,11 +112,10 @@ export interface CommunicatorMessagesPatchType {
   messages?: CommunicatorMessageListType,
   selected?: CommunicatorMessageListType,
   selectedIds?: Array<number>,
-  pages?: number,
   hasMore?: boolean,
   location?: string,
   toolbarLock?: boolean,
-  current?: CommunicatorCurrentThreadType | null,
+  current?: CommunicatorThreadType | null,
   signature?: CommunicatorSignatureType | null
 }
 
@@ -143,7 +142,6 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
   messages: [],
   selected: [],
   selectedIds: [],
-  pages: 1,
   hasMore: false,
   location: "",
   toolbarLock: false,
@@ -247,7 +245,7 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
       return message.communicatorMessageId !== action.payload.communicatorMessageId
     }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.communicatorMessageId})});
   } else if (action.type === "SET_CURRENT_MESSAGE_THREAD"){
-    return Object.assign({}, state, {current: <CommunicatorCurrentThreadType>action.payload});
+    return Object.assign({}, state, {current: <CommunicatorThreadType>action.payload});
   } else if (action.type === "UPDATE_ONE_LABEL_FROM_ALL_MESSAGES"){
     let update: CommunicatorMessageLabelPatchType = action.payload.update;
     return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
