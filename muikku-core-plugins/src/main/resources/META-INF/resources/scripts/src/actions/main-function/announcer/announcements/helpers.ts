@@ -16,8 +16,8 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
   });
   
   let state = getState();
-  let navigation:AnnouncerNavigationItemListType = state.communicatorNavigation
-  let announcements:AnnouncementsType = state.communicatorMessages;
+  let navigation:AnnouncerNavigationItemListType = state.announcerNavigation;
+  let announcements:AnnouncementsType = state.announcements;
   let status:StatusType = state.status;
   let actualLocation:string = location || announcements.location;
   
@@ -45,7 +45,7 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
   
   let params:any = {
     onlyEditable: true,
-    hideEnvironmentAnnouncements: !state.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT,
+    hideEnvironmentAnnouncements: !status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT,
   }
   if (workspaceId){
     params.workspaceEntityId = workspaceId;

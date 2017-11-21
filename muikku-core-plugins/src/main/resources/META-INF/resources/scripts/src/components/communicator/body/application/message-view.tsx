@@ -8,11 +8,11 @@ import NewMessage from './new-message';
 import {CommunicatorCurrentThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {StatusType} from '~/reducers/base/status';
 import {i18nType} from '~/reducers/base/i18n';
+import TouchPager from '~/components/general/touch-pager';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
-import TouchPager from '~/components/general/touch-pager';
 
 interface MessageViewProps {
   i18n: i18nType,

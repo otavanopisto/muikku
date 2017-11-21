@@ -9,6 +9,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     super(props);
     
     this.checkCanLoadMore = this.checkCanLoadMore.bind(this);
+    this.onScroll = this.onScroll.bind(this);
   }
   checkCanLoadMore(){
     if (this.cancellingLoadingPropertyLocation && (this.props as any)[this.cancellingLoadingPropertyLocation]){
