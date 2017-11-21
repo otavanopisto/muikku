@@ -7,16 +7,15 @@ import mApi from '~/lib/mApi';
 
 import {getApiId, loadMessagesHelper, setLabelStatusCurrentMessage, setLabelStatusSelectedMessages} from './communicator-messages/helpers';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {CommunicatorCurrentThreadType, CommunicatorStateType,
+import {CommunicatorThreadType, CommunicatorStateType,
   CommunicatorMessagesPatchType, CommunicatorMessageLabelType, CommunicatorMessageType,
   CommunicatorMessageUpdateType, CommunicatorSignatureType, CommunicatorMessageListType,
-  CommunicatorMessageItemRecepientType, CommunicatorMessagesType, CommunicatorMessageRecepientType,
-  CommunicatorMessageThreadType} from '~/reducers/main-function/communicator/communicator-messages';
+  CommunicatorMessageItemRecepientType, CommunicatorMessagesType, CommunicatorMessageRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import { StatusType } from "~/reducers/base/status";
 
 //////////////////////////////////////// INTERFACES FOR ACTIONS
-export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", CommunicatorCurrentThreadType>{}
+export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", CommunicatorThreadType>{}
 export interface UPDATE_MESSAGES_STATE extends SpecificActionType<"UPDATE_MESSAGES_STATE", CommunicatorStateType>{}
 export interface UPDATE_MESSAGES_ALL_PROPERTIES extends SpecificActionType<"UPDATE_MESSAGES_ALL_PROPERTIES", CommunicatorMessagesPatchType>{}
 export interface UPDATE_MESSAGE_ADD_LABEL extends SpecificActionType<"UPDATE_MESSAGE_ADD_LABEL", {
@@ -141,9 +140,9 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
       mApi().communicator.sentitems.cacheClear();
       message.success && message.success();
       
-      let resultThread: CommunicatorMessageThreadType;
+      let resultThread: CommunicatorThreadType;
       
-      resultThread = <CommunicatorMessageThreadType>await promisify(mApi().communicator.messages.read(result.communicatorMessageId), 'callback')();
+      resultThread = <CommunicatorThreadType>await promisify(mApi().communicator.messages.read(result.communicatorMessageId), 'callback')();
 
       result.labels = resultThread.labels;
       
@@ -395,9 +394,9 @@ let loadMessage:LoadMessageTriggerType = function loadMessage(location, messageI
       return;
     }
     
-    let currentThread:CommunicatorCurrentThreadType;
+    let currentThread:CommunicatorThreadType;
     try {
-      currentThread = <CommunicatorCurrentThreadType>await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
+      currentThread = <CommunicatorThreadType>await promisify(mApi().communicator[getApiId(item, true)].read(messageId), 'callback')();
       dispatch({
         type: "UPDATE_MESSAGES_ALL_PROPERTIES",
         payload: {

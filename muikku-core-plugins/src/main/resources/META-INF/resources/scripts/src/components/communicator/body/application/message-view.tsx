@@ -5,7 +5,7 @@ import equals = require("deep-equal");
 
 import Link from '~/components/general/link';
 import NewMessage from './new-message';
-import {CommunicatorCurrentThreadType} from '~/reducers/main-function/communicator/communicator-messages';
+import {CommunicatorThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {StatusType} from '~/reducers/base/status';
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -15,7 +15,7 @@ import '~/sass/elements/application-list.scss';
 
 interface MessageViewProps {
   i18n: i18nType,
-  communicatorMessagesCurrent: CommunicatorCurrentThreadType,
+  communicatorMessagesCurrent: CommunicatorThreadType,
   status: StatusType
 }
 
