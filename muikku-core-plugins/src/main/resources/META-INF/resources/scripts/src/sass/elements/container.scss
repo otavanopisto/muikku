@@ -78,10 +78,10 @@
   height: 100%;
   position: absolute;
   width: 100%;
-	
-  &.container--communicator-message--center {
-    border: none;
-  }
+}
+
+.container--communicator-message--center {
+  border: none;
 }
 
 .container--communicator-message-meta {
@@ -110,19 +110,7 @@
   padding: 10px;
   width: 100%;
 }
-  
-.container--new-message-toolbar-container {
-  display: none;
-	
-  @include breakpoint-down($breakpoint-portrait-pad){
-    display: inline-block;
-    height: 100%;
-    margin-right: 10px;
-    vertical-align: top;
-    width: 250px;
-  }
-}
-  
+
 .container--new-discussion-options {
   display: flex;
 }
