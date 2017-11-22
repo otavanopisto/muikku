@@ -140,22 +140,33 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
       mApi().communicator.sentitems.cacheClear();
       message.success && message.success();
       
-      let resultThread: CommunicatorThreadType;
-      
-      resultThread = <CommunicatorThreadType>await promisify(mApi().communicator.messages.read(result.communicatorMessageId), 'callback')();
-
-      result.labels = resultThread.labels;
-      
       let state= getState();
       let status:StatusType = state.status;
-      
+      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
       let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
-      if (communicatorMessages.location === "sent" || (communicatorMessages.location === "inbox" && result.recipients.find((recipient:CommunicatorMessageRecepientType)=>{return recipient.userId === status.userId }))){
-       
-            dispatch({
-              type: "PUSH_ONE_MESSAGE_FIRST",
-              payload: result
+      
+      const isInboxOrUnread = communicatorMessages.location === "inbox" || communicatorMessages.location === "unread"
+      if (communicatorMessages.location === "sent" || (isInboxOrUnread && result.recipients.find((recipient:CommunicatorMessageRecepientType)=>{return recipient.userId === status.userId }))){
+          let item = communicatorNavigation.find((item)=>{
+              return item.location === communicatorMessages.location;
             });
+            if (!item){
+              return;
+            }
+            let params = {
+                firstResult: 0,
+                maxResults: 1,
+            }
+            
+            try {
+              let messages:CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+              if (messages[0]){
+                dispatch({
+                  type: "PUSH_ONE_MESSAGE_FIRST",
+                  payload: messages[0]
+                });
+              }
+            } catch (err){}
       }
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
