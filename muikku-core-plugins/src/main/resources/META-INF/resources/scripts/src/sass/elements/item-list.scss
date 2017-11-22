@@ -11,6 +11,7 @@ $item-list-item-min-height: 32px;
   
 // List items
 .item-list__item {
+  align-items: center;
   cursor: pointer;
   display: flex;
   padding: 10px;
@@ -29,6 +30,7 @@ $item-list-item-min-height: 32px;
 
 .item-list__item--latest-messages,
 .item-list__item--latest-announcements {
+  align-items: flex-start;
   border-bottom: solid 1px $color-index-item-list-item-panel-latest-messages-border;
   
   &:last-child {
