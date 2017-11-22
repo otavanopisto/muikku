@@ -25,7 +25,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
   render(){
     return ( 
       <div className="application-list application-list__items" ref="list" >        
-        <div key={1} className='application-list__item application-list_item--workspace-announcement'>
+        <div key={1} className='application-list__item application-list__item--workspace-announcement'>
           <div className="application-list__item-header">
             <input type="checkbox"/>        
             <div className="text text--announcer-header-main">
@@ -54,7 +54,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
             <a className="link link--application-list-item-footer" href="">{this.props.i18n.text.get('plugin.announcer.link.delete')}</a>
           </div>                      
         </div>      
-        <div key={2} className='application-list__item application-list_item--environment-announcement'>
+        <div key={2} className='application-list__item application-list__item--environment-announcement'>
           <div className="application-list__item-header">
             <input type="checkbox"/>        
             <div className="text text--announcer-header-main">
