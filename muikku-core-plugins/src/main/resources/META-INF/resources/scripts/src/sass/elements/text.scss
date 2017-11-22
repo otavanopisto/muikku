@@ -353,19 +353,23 @@ b {
 
 .text--communicator-labels {
   display: flex;
+  flex: 1;
   flex-direction: row;
   flex-wrap: wrap;
-  flex: 1;
-  padding: 10px 0 0;
+  padding: 10px 0 0;  
 }  
   
 .text--communicator-label {
-  font-weight: 300;
-  display: flex;
   align-items: end; 
+  display: flex;
+  font-weight: 300;
+
+  &:not(:first-child) {
+    margin-left: 32px;
+  }
  
   .icon {
-    padding-left: 32px;
+    padding-left: 0;
     
     &::before {
       display: inline-block;
