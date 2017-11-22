@@ -325,10 +325,13 @@ b {
 }
 
 .text--communicator-usernames {
+  align-items: center;
   display: flex;
+  flex: 1;    
   flex-direction: row;
   flex-wrap: wrap;
-  flex: 1;    
+  min-height: 30px;
+  
 }
 
 .text--communicator-username {
@@ -349,6 +352,7 @@ b {
 .text--communicator-body {
   display: inline-block;
   font-weight: 300;
+  padding: 10px 0;
 }
 
 .text--communicator-labels {

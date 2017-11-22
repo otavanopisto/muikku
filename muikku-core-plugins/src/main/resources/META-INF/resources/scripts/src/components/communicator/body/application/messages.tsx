@@ -102,7 +102,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             isSelected,
             key: message.communicatorMessageId,
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <div className="application-list__item-content-container--message">
+              return <div className="application-list__item-content-container--message message">
                   <div className="application-list__item-content--aside message__content-aside--communicator">
                     <div className="message__select-container">
                       {checkbox}
