@@ -153,18 +153,7 @@ $application-panel-internal-navigation-padding: 10px;
     position: fixed;
     top: 70px;
   }
-  
-  .application-panel__actions__wrapper {
-    max-width: calc(#{$breakpoint-max-usable-screen} - 4px);
-    width: calc(100% - 2px);
-    height: 100%;
-    display: flex;
-    align-items: center;
-    flex: 0 0 auto;
-    justify-content: space-between;
-    background-color: white;
-  }
-  
+   
   .application-panel__helper-container {
     border-bottom: 1px solid $color-communicator-application-panel-actions-border;
   }
@@ -174,6 +163,22 @@ $application-panel-internal-navigation-padding: 10px;
   }
 }
 
+
+.application-panel__actions__wrapper {
+  max-width: calc(#{$breakpoint-max-usable-screen} - 4px);
+  width: calc(100% - 2px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  background-color: white;
+}
+  
+.application-panel__toolbar {
+  width: 100%;
+  display: flex;
+}  
   
 .application-panel__toolbar-actions-main {
   flex: 1 1 auto;
