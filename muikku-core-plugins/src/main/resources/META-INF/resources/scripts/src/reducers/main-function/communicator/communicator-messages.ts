@@ -281,9 +281,16 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
       labels: state.current.labels.filter(label=>label.labelId !== action.payload.labelId)
     }) : state.current)});
   } else if (action.type === "PUSH_ONE_MESSAGE_FIRST"){
-    return Object.assign({}, state, {messages: [<CommunicatorMessageType>action.payload].concat(state.messages)});
+      let newMessages: CommunicatorMessageListType = state.messages.filter(m=>m.communicatorMessageId !==action.payload.communicatorMessageId);
+      
+    return Object.assign({}, state, {messages: [<CommunicatorMessageType>action.payload].concat(newMessages)});
   } else if (action.type === "UPDATE_SIGNATURE"){
     return Object.assign({}, state, {signature: <CommunicatorSignatureType>action.payload});
-  }
+  } else if (action.type === "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD"){
+      if (!state.current){
+          return state;
+      }
+      return Object.assign({}, state, {current: Object.assign({}, state.current,{messages: state.current.messages.concat([<CommunicatorMessageInThreadType>action.payload])})});
+      }
   return state;
 }

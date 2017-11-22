@@ -10,7 +10,7 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {CommunicatorThreadType, CommunicatorStateType,
   CommunicatorMessagesPatchType, CommunicatorMessageLabelType, CommunicatorMessageType,
   CommunicatorMessageUpdateType, CommunicatorSignatureType, CommunicatorMessageListType,
-  CommunicatorMessageItemRecepientType, CommunicatorMessagesType, CommunicatorMessageRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
+  CommunicatorMessageItemRecepientType, CommunicatorMessagesType, CommunicatorMessageRecepientType, CommunicatorMessageInThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import { StatusType } from "~/reducers/base/status";
 
@@ -38,6 +38,7 @@ export interface DELETE_MESSAGE extends SpecificActionType<"DELETE_MESSAGE", Com
 export interface UPDATE_SELECTED_MESSAGES extends SpecificActionType<"UPDATE_SELECTED_MESSAGES", CommunicatorMessageListType>{}
 export interface ADD_TO_COMMUNICATOR_SELECTED_MESSAGES extends SpecificActionType<"ADD_TO_COMMUNICATOR_SELECTED_MESSAGES", CommunicatorMessageType>{}
 export interface REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES extends SpecificActionType<"REMOVE_FROM_COMMUNICATOR_SELECTED_MESSAGES", CommunicatorMessageType>{}
+export interface PUSH_MESSAGE_LAST_IN_CURRENT_THREAD extends SpecificActionType <"PUSH_MESSAGE_LAST_IN_CURRENT_THREAD", CommunicatorMessageInThreadType>{}
 
 //////////////////////////////////// INTERFACES
 export interface SendMessageTriggerType {
@@ -130,11 +131,11 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
   
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
-      let result:CommunicatorMessageType;
+      let result:CommunicatorMessageInThreadType;
       if (message.replyThreadId){
-        result = <CommunicatorMessageType>await promisify(mApi().communicator.messages.create(message.replyThreadId, data), 'callback')();
+        result = <CommunicatorMessageInThreadType>await promisify(mApi().communicator.messages.create(message.replyThreadId, data), 'callback')();
       } else {
-        result = <CommunicatorMessageType>await promisify(mApi().communicator.messages.create(data), 'callback')();
+        result = <CommunicatorMessageInThreadType>await promisify(mApi().communicator.messages.create(data), 'callback')();
       }
       
       mApi().communicator.sentitems.cacheClear();
@@ -144,6 +145,15 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
       let status:StatusType = state.status;
       let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
       let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
+      
+      if(communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId===result.communicatorMessageId){
+      dispatch({
+          type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+          payload: result
+      });
+      }
+
+
       
       const isInboxOrUnread = communicatorMessages.location === "inbox" || communicatorMessages.location === "unread"
       if (communicatorMessages.location === "sent" || (isInboxOrUnread && result.recipients.find((recipient:CommunicatorMessageRecepientType)=>{return recipient.userId === status.userId }))){
