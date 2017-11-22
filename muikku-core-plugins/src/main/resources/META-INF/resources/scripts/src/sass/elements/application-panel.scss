@@ -1,21 +1,18 @@
 @import "../base/colors";
 @import "../base/mixins";
+@import "../base/vars";
 @import "../base/breakpoints";
-
-$application-panel-internal-navigation-padding: 10px;
 
 .application-panel {
   align-items: center;
   display: flex;
   justify-content: center;
-  padding: 70px 0 20px 0;
+  padding: calc(#{$navbar-height} * 1.2) 0 10px;
   
-  @include breakpoint-down($breakpoint-portrait-pad){
-    padding-bottom: 0;
+  @include breakpoint($breakpoint-pad){
+    padding: calc(#{$navbar-height} * 1.2) 10px 10px;
   }
- 
 }
-
 
 .application-panel__container {
   max-width: $breakpoint-max-usable-screen;
@@ -27,13 +24,13 @@ $application-panel-internal-navigation-padding: 10px;
 
 .application-panel__body {
   background-color: $color-application-panel-box-background;
-  border: solid 1px $color-application-panel-box-border;
+  box-shadow: 0 2px 3px $color-panel-shadow;
   display: flex;
   flex-direction: column;
   
-  @media screen and (max-width: $breakpoint-max-usable-screen){
-    border-left: 0;
-    border-right: 0;
+  @include breakpoint($breakpoint-pad){
+    border: solid 1px $color-application-panel-box-border;
+    box-shadow: none;
   }
  
   .application-panel__content {
