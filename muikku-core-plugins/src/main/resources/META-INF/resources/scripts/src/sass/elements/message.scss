@@ -13,3 +13,18 @@
 .message--thread-reply {
   border-bottom: none;  
 }
+
+.message__select-container {
+  align-items: center;
+  display: flex;
+  height: 28px;
+}
+
+.message__content-aside--communicator {
+   flex: 0 0 38px; 
+}
+
+.message__content-aside--discussion {
+  flex: 0 0 70px;  
+  
+}

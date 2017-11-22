@@ -109,11 +109,11 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         //you can pick the timee from the thread, as thread.lastModified or thread.created, depends on which one you need there
         
         return (
-          <div key={thread.id} className="application-list__item-content-container--avatar message" onClick={this.getToThread.bind(this, thread)}>            
-            <div className="application-list__item-content--avatar-container">
+          <div key={thread.id} className="application-list__item-content-container--message message" onClick={this.getToThread.bind(this, thread)}>            
+            <div className="application-list__item-content--aside message__content-aside--discussion">
               {avatar}
             </div>            
-            <div className="application-list__item-content--content-container">
+            <div className="application-list__item-content--main">
               <div className="application-list__item-header application-list__item-header--discussion-item-header">
                 {thread.locked ? 
                   <div className="icon-lock"></div> : null

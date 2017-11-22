@@ -13,6 +13,7 @@ import TouchPager from '~/components/general/touch-pager';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/message.scss';
 
 interface MessageViewProps {
   i18n: i18nType,

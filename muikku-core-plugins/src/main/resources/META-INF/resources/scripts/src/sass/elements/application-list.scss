@@ -59,7 +59,7 @@
   
 }
 
-.application-list__item-content-container--avatar {
+.application-list__item-content-container--message {
   display: flex;              
   padding: 10px 0;
   
@@ -68,8 +68,12 @@
   }
 }   
 
-.application-list__item-content--avatar-container {
-  flex: 0 0 70px;
+.application-list__item-content--aside {
+  flex: 0 0 auto;
+}
+
+.application-list__item-content--main {
+  flex: 1 1 auto;            
 }
 
 .application-list__item-content-avatar {
@@ -154,9 +158,7 @@
   
 }
 
-.application-list__item-content--content-container {
-  flex: 1 1 auto;            
-}
+
 
 // Discussion 
 
@@ -234,7 +236,7 @@
   }
 }
 
-.application-list__item--communicator-messate:not(:first-child) {
+.application-list__item--communicator-message:not(:first-child) {
   .application-list__item-header{
     background-color: $color-communicator-application-list-item-open-content-background;
   }   
