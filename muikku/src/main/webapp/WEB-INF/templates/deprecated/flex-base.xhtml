@@ -101,6 +101,12 @@
         <script>
           window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
           ga('create', '#{environmentBackingBean.googleAnalyticsTrackingId}', 'auto');
+          if(MUIKKU_LOGGEDIN){
+        	  ga('set', 'cd1', 'loggedIn');
+          }
+          else{
+        	  ga('set', 'cd1', 'anonymous');
+          }
           ga('send', 'pageview');
         </script>
         <script async="async" src='https://www.google-analytics.com/analytics.js'></script>
