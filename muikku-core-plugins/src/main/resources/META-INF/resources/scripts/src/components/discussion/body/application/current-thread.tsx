@@ -68,11 +68,11 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <div className="application-list__item-header">
             <h1 className="text">{this.props.discussionThreads.current.title}</h1>
           </div>              
-          <div className="application-list__item-content-container--avatar message message--thread-op ">
-            <div className="application-list__item-content--avatar-container">
+          <div className="application-list__item-content-container--message message message--thread-op ">
+            <div className="application-list__item-content--aside">
               <div className="application-list__item-content-avatar">{avatar}</div>
             </div>
-            <div className="application-list__item-content--content-container">
+            <div className="application-list__item-content--main">
               <div className="application-list__item-header">    
                 <div className="application-list__item-header-main">
                   <span className="text text__discussion-message-creator">{getName(userCreator)}</span> 
@@ -126,11 +126,11 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           
           return ( 
             <div key={reply.id} className={`application-list--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
-              <div className="application-list__item-content-container--avatar message message--thread-reply">            
-                <div className="application-list__item-content--avatar-container">
+              <div className="application-list__item-content-container--message message message--thread-reply">            
+                <div className="application-list__item-content--aside">
                   {avatar}
                 </div>            
-                <div className="application-list__item-content--content-container">                        
+                <div className="application-list__item-content--main">                        
                   <div className="application-list__item-header">       
                     <div className="application-list__item-header-main">
                       <span className="text text__discussion-message-creator">{getName(user)}</span> 
