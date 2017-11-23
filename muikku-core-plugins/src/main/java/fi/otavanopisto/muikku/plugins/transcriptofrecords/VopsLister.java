@@ -94,7 +94,7 @@ public class VopsLister {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
-        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+        for (int courseNumber=1; courseNumber<=MAX_COURSE_NUMBER; courseNumber++) {
           VopsRESTModel.VopsEntry entry = processCourse(subject, courseNumber);
           entries.add(entry);
           if (!(entry instanceof VopsRESTModel.VopsPlaceholder)) {

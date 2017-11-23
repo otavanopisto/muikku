@@ -14,6 +14,9 @@ dust.onLoad = function(name, callback) {
     mdust.loading[name] = true;
     
     $.ajax(CONTEXTPATH + '/resources/dust/' + name, {
+      //Fixes Firefox complains about XML #3330
+      mimeType: "text/plain",
+      
       success : function(data, textStatus, jqXHR) {
         delete mdust.loading[name];
         callback(false, data);
