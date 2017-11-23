@@ -104,7 +104,7 @@
   align-items: center;
   flex: 0 0 auto;
   justify-content: center;
-  position: relative;//it can change to fixed, but it doesn't I leave this just in case,
+  position: relative; //it can change to fixed, but it doesn't I leave this just in case,
   //need to add z-index and other stuff for it to work well
   background-color: $color-default-body;
   left: 0;
