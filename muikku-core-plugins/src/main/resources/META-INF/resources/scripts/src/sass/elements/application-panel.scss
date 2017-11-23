@@ -34,8 +34,6 @@
   }
 }
 
-
-
 .application-panel__header {
   display: flex;
   align-items: center;
@@ -62,7 +60,6 @@
   justify-content: space-between;
 }
 
-
 .application-panel__actions {
   align-items: center;
   display: flex;
@@ -84,7 +81,6 @@
   }
    
 }
-
 
 .application-panel__actions__wrapper {
   max-width: calc(#{$breakpoint-max-usable-screen} - 4px);
@@ -125,7 +121,6 @@
   }
 }
 
-
 // TODO sort out other helper-containers with this
 
 .application-panel__helper-container {
@@ -140,12 +135,9 @@
   }
 }
 
-
-
 .application-panel__helper-container--header {
   border-bottom: 1px solid $color-communicator-application-panel-actions-border;
 }
-
 
 // Panel-content
 
@@ -189,12 +181,9 @@
   border-bottom: 1px solid $color-communicator-application-panel-actions-border;  
 }
 
-
-
 .application-panel__main-container--header {
   justify-content: flex-end;
 }
-
 
 .application-panel__main-container--content-full {
 
@@ -215,5 +204,3 @@
     }
   }        
 }  
-
-
