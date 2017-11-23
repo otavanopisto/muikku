@@ -15,6 +15,8 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/message.scss';
+
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
@@ -100,30 +102,36 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             isSelected,
             key: message.communicatorMessageId,
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <div>
-                  <div className="application-list__item-header">
-                    {checkbox}
-                    <div className="text text--communicator-usernames">
-                      <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
+              return <div className="application-list__item-content-container--message message">
+                  <div className="application-list__item-content--aside message__content-aside--communicator">
+                    <div className="message__select-container">
+                      {checkbox}
                     </div>
-                    {message.messageCountInThread > 1 ? <div className="text text--item-counter">
-                    {message.messageCountInThread}
-                    </div> : null}
-                    <div className="text text--communicator-date">
-                      {this.props.i18n.time.format(message.threadLatestMessageDate)}
-                    </div>                
                   </div>
-                  <div className="application-list__item-body">
-                    <span className="text text--communicator-body">{message.caption}</span>
-                  </div>
-                  <div className="application-list__item-footer">
-                    <div className="text text--communicator-labels">{message.labels.map((label)=>{
-                      return <span className="text text--communicator-label" key={label.id}>
-                        <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                        <span>{label.labelName}</span>
-                      </span>
-                    })}</div>            
-                  </div>                      
+                  <div className="application-list__item-content--main">
+                    <div className="application-list__item-header">
+                      <div className="text text--communicator-usernames">
+                        <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
+                      </div>
+                      {message.messageCountInThread > 1 ? <div className="text text--item-counter">
+                      {message.messageCountInThread}
+                      </div> : null}
+                      <div className="text text--communicator-date">
+                        {this.props.i18n.time.format(message.threadLatestMessageDate)}
+                      </div>                
+                    </div>
+                    <div className="application-list__item-body">
+                      <span className="text text--communicator-body">{message.caption}</span>
+                    </div>
+                    <div className="application-list__item-footer">
+                      <div className="text text--communicator-labels">{message.labels.map((label)=>{
+                        return <span className="text text--communicator-label" key={label.id}>
+                          <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                          <span>{label.labelName}</span>
+                        </span>
+                      })}</div>            
+                    </div>
+                  </div>    
                 </div>
               }
             }
