@@ -49,6 +49,7 @@ export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 export interface AnnouncementsType {
   state: AnnouncementsStateType,
   announcements: AnnouncementListType,
+  current: any, //TODO
   selected: AnnouncementListType,
   selectedIds: Array<number>,
   location: string,
@@ -67,6 +68,7 @@ export interface AnnouncementsPatchType {
 export default function announcements(state: AnnouncementsType={
     state: "LOADING",
     announcements: [],
+    current: null,
     selected: [],
     selectedIds: [],
     location: "",

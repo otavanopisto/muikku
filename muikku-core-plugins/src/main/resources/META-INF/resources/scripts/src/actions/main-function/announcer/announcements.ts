@@ -55,7 +55,7 @@ let addToAnnouncementsSelected:AddToAnnouncementsSelectedTriggerType = function 
   }
 }
 
-let removeFromAnnouncementsSelected:AddToAnnouncementsSelectedTriggerType = function removeFromAnnouncementsSelected(announcement){
+let removeFromAnnouncementsSelected:RemoveFromAnnouncementsSelectedTriggerType = function removeFromAnnouncementsSelected(announcement){
   return {
     type: "REMOVE_FROM_ANNOUNCEMENTS_SELECTED",
     payload: announcement
