@@ -94,7 +94,6 @@
 }
 
 .application-list__item-header {
-  align-items: center;
 
   input {
     -webkit-appearance: none;
@@ -134,10 +133,8 @@
 }
 
 .application-list--open {
-  height: 100%;
   overflow-y: auto;
   padding: 10px 15px 10px 27px;    
-  width: 100%;
   
   &::-webkit-scrollbar { 
     display: none; 
@@ -161,6 +158,10 @@
 
 // Discussion 
 
+.application-list__item-header--discussion-current-thread-title{
+  font-size: 2 rem;
+  
+}  
   
 .application-list__item-header--discussion-item-header div:not(:first-child) {
   margin-left: 10px;
@@ -168,6 +169,10 @@
 
 
 // Announcer
+
+.application-list__item--workspace-announcement, .application-list__item--environment-announcement {
+  padding: 10px;
+}
 
 .application-list__item--workspace-announcement {
   border-left: 5px solid $color-announcement-workspace-border;
