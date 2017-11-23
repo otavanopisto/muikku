@@ -172,10 +172,6 @@ public class VopsLister {
           workspaceUserExists = true;
         }
       }
-
-      if (!canSignUp) {
-        return new VopsRESTModel.VopsPlaceholder();
-      }
       
       for (VopsWorkspace workspace : workspaces) {
         name = workspace.getName();
@@ -240,6 +236,10 @@ public class VopsLister {
           
           break;
         }
+      }
+      
+      if (state == CourseCompletionState.NOT_ENROLLED && !canSignUp) {
+        return new VopsRESTModel.VopsPlaceholder();
       }
       
       StudiesViewCourseChoice courseChoice = studiesViewCourseChoiceController.find(
