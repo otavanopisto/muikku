@@ -32,69 +32,6 @@
     border: solid 1px $color-application-panel-box-border;
     box-shadow: none;
   }
- 
-  .application-panel__content {
-    display: flex;
-    flex-direction: row;
-    
-    @include breakpoint-down($breakpoint-portrait-pad){
-      padding-top: 55px;
-    }
-    
-    @at-root .application-panel--sticky#{&} {
-      padding-top: 55px;
-    }
-
-    .application-panel__helper-container{
-      padding: 0;
-      overflow: auto;
-      z-index: 1;
-      
-      @at-root .application-panel--sticky#{&} {
-        position: fixed;
-        top: 125px;
-        bottom: 0;
-      }
-      
-      &::-webkit-scrollbar { 
-        display: none; 
-      }
-     
-      -ms-overflow-style: -ms-autohiding-scrollbar;
-      overflow: -moz-scrollbars-none;
-    }
-   
-    .application-panel__main-container {
-      padding: 0;
-      margin: 0;
-      
-      &::-webkit-scrollbar { 
-        display: none; 
-      }
-      -ms-overflow-style: -ms-autohiding-scrollbar;
-      overflow: -moz-scrollbars-none;
-    }
-
-    .application-panel__main-container--full {
-
-      @include breakpoint-up($breakpoint-landscape-pad){
-        @at-root .application-panel--sticky#{&} {
-          //width of side panel           
-          padding-left: 0;
-        }
-      }
-    } 
-    
-    .application-panel__main-container--aside {
-      
-      @include breakpoint-up($breakpoint-landscape-pad){
-        @at-root .application-panel--sticky#{&} {
-          //width of side panel 
-          padding-left: 235px;
-        }
-      }        
-    }      
-  }
 }
 
 
@@ -113,33 +50,28 @@
   @include breakpoint-down($breakpoint-portrait-pad){
     display: none;
   }
-  
-  .application-panel__header__wrapper {
-    max-width: $breakpoint-max-usable-screen;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    flex: 0 0 auto;
-    justify-content: space-between;
-  }
- 
-  .application-panel__main-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 0;
-  }
 }  
 
-.application-panel__actions {
+.application-panel__header-wrapper {
+  max-width: $breakpoint-max-usable-screen;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   flex: 0 0 auto;
+  justify-content: space-between;
+}
+
+
+.application-panel__actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
   justify-content: center;
-  position: relative; //it changes to fixed
-  z-index: 8;
   left: 0;
+  position: relative; //it changes to fixed
   right: 0;
+  z-index: 8;
   
   @include breakpoint-down($breakpoint-portrait-pad){
     position: fixed;
@@ -151,13 +83,6 @@
     top: 70px;
   }
    
-  .application-panel__helper-container {
-    border-bottom: 1px solid $color-communicator-application-panel-actions-border;
-  }
-  
-  .application-panel__main-container {
-    border-bottom: 1px solid $color-communicator-application-panel-actions-border;  
-  }
 }
 
 
@@ -187,6 +112,20 @@
   justify-content: flex-end;
 }
 
+.application-panel__content {
+  display: flex;
+  flex-direction: row;
+  
+  @include breakpoint-down($breakpoint-portrait-pad){
+    padding-top: 55px;
+  }
+  
+  @at-root .application-panel--sticky#{&} {
+    padding-top: 55px;
+  }
+}
+
+
 // TODO sort out other helper-containers with this
 
 .application-panel__helper-container {
@@ -201,16 +140,80 @@
   }
 }
 
+
+
+.application-panel__helper-container--header {
+  border-bottom: 1px solid $color-communicator-application-panel-actions-border;
+}
+
+
+// Panel-content
+
+.application-panel__helper-container--content{
+  padding: 0;
+  overflow: auto;
+  z-index: 1;
+  
+  @at-root .application-panel--sticky#{&} {
+    position: fixed;
+    top: 125px;
+    bottom: 0;
+  }
+  
+  &::-webkit-scrollbar { 
+    display: none; 
+  }
+ 
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: -moz-scrollbars-none;
+}
+
 .application-panel__main-container {
   display: flex;
   flex: 1  1 auto;
+  padding: 0;
+  margin: 0;
+  
+  &::-webkit-scrollbar { 
+    display: none; 
+  }
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: -moz-scrollbars-none;
+}
+
+.application-panel__main-container--actions {
   margin: 0 15px 0 25px;
   padding: 10px 0;
   flex-direction: row;
   position: relative;
+  border-bottom: 1px solid $color-communicator-application-panel-actions-border;  
 }
 
 
 
+.application-panel__main-container--header {
+  justify-content: flex-end;
+}
+
+
+.application-panel__main-container--content-full {
+
+  @include breakpoint-up($breakpoint-landscape-pad){
+    @at-root .application-panel--sticky#{&} {
+      //width of side panel           
+      padding-left: 0;
+    }
+  }
+} 
+
+.application-panel__main-container--content-aside {
+  
+  @include breakpoint-up($breakpoint-landscape-pad){
+    @at-root .application-panel--sticky#{&} {
+      //width of side panel 
+      padding-left: 235px;
+    }
+  }        
+}  
 
 

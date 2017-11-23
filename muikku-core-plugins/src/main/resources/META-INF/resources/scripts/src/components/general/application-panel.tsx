@@ -75,13 +75,13 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
 //    this.setRemainingHeight();
   }
   render(){
-    return (
+    return (        
     <div className={`application-panel application-panel--${this.props.modifier}`} ref="top-reference">
       <div className="application-panel__container">                
         <div className="application-panel__header">
-          <div className="application-panel__header__wrapper">
-            <div className="application-panel__helper-container">{this.props.title}</div>
-            <div className="application-panel__main-container">{this.props.icon}</div>
+          <div className="application-panel__header-wrapper">
+            <div className="application-panel__helper-container application-panel_helper-container--header">{this.props.title}</div>
+            <div className="application-panel__main-container application-panel__main-container--header">{this.props.icon}</div>
           </div>
         </div>
         <div className="application-panel__body">
@@ -89,12 +89,12 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
           <div className="application-panel__actions" ref="sticky">
             <div className="application-panel__actions__wrapper">
               {this.props.primaryOption ? <div className="application-panel__helper-container">{this.props.primaryOption}</div> : null}
-              <div className="application-panel__main-container">{this.props.toolbar}</div>
+              <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div>
             </div>
-          </div>
+          </div>              
           <div ref="damn" className="application-panel__content">
-            {this.props.aside ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
-            <div className={`application-panel__main-container ${this.props.aside ? "application-panel__main-container--aside" : 'application-panel__main-container--full'} loader-empty`}>{this.props.children}</div>
+            {this.props.aside ? <div className="application-panel__helper-container application-panel__helper-container--content" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
+            <div className={`application-panel__main-container ${this.props.aside ? "application-panel__main-container--content-aside" : 'application-panel__main-container--content-full'} loader-empty`}>{this.props.children}</div>
           </div>
         </div>
       </div>
