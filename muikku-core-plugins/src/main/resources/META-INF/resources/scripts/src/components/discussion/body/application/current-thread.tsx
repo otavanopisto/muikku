@@ -62,14 +62,14 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     
     let canRemoveThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.removeThread;
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
-    
+        
     return <div className="application-list__items">
         <div className="application-list--open application-list__item--discussion-current-thread">
           <div className="application-list__item-header">
-            <h1 className="text">{this.props.discussionThreads.current.title}</h1>
+            <h1 className="text text--discussion-current-thread-title">{this.props.discussionThreads.current.title}</h1>
           </div>              
           <div className="application-list__item-content-container--message message message--thread-op ">
-            <div className="application-list__item-content--aside">
+            <div className="application-list__item-content--aside message__content-aside--discussion">
               <div className="application-list__item-content-avatar">{avatar}</div>
             </div>
             <div className="application-list__item-content--main">
@@ -127,7 +127,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           return ( 
             <div key={reply.id} className={`application-list--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
               <div className="application-list__item-content-container--message message message--thread-reply">            
-                <div className="application-list__item-content--aside">
+                <div className="application-list__item-content--aside message__content-aside--discussion">
                   {avatar}
                 </div>            
                 <div className="application-list__item-content--main">                        

@@ -298,6 +298,9 @@ b {
   padding-bottom: 7px;
 }
 
+// Communicator
+
+
 .text--communicator-title {
   color: $color-communicator-text-title;
 }
@@ -474,6 +477,9 @@ b {
   margin-left: 5px;
 }
 
+// Discussion
+
+
 .text--discussion-thread-item-body {
   font-style: italic;
   width: 100%;
@@ -543,3 +549,10 @@ b {
 .text__discussion-message-creator {
   font-size: 1.6rem;
 }
+
+.text--discussion-current-thread-title {
+  font-size: 1.6rem;  
+  font-weight: 600;  
+}
+
+
