@@ -201,13 +201,13 @@ public class VopsLister {
         state = CourseCompletionState.ENROLLED;
       }
       for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-        if (!workspaceAssessment.getPassing()) {
+        if (!Boolean.TRUE.equals(workspaceAssessment.getPassing())) {
           state = CourseCompletionState.FAILED;
           break;
         }
       }
       for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-        if (workspaceAssessment.getPassing()) {
+        if (Boolean.TRUE.equals(workspaceAssessment.getPassing())) {
           state = CourseCompletionState.ASSESSED;
           numCourses++;
           if (mandatority == Mandatority.MANDATORY) {
