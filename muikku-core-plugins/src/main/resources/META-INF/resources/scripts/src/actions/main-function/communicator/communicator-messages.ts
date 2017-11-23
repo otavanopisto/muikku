@@ -146,37 +146,37 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
       let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
       let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
       
-      if(communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId===result.communicatorMessageId){
-      dispatch({
+      if (communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === result.communicatorMessageId) {
+        dispatch({
           type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
           payload: result
-      });
+        });
       }
- 
+
       const isInboxOrUnread = communicatorMessages.location === "inbox" || communicatorMessages.location === "unread"
-      if (communicatorMessages.location === "sent" || (isInboxOrUnread && result.recipients.find((recipient:CommunicatorMessageRecepientType)=>{return recipient.userId === status.userId }))){
-          let item = communicatorNavigation.find((item)=>{
-              return item.location === communicatorMessages.location;
+      if (communicatorMessages.location === "sent" || (isInboxOrUnread && result.recipients.find((recipient: CommunicatorMessageRecepientType) => { return recipient.userId === status.userId }))) {
+        let item = communicatorNavigation.find((item) => {
+          return item.location === communicatorMessages.location;
+        });
+        if (!item) {
+          return;
+        }
+        let params = {
+          firstResult: 0,
+          maxResults: 1,
+        }
+
+        try {
+          let messages: CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+          if (messages[0]) {
+            dispatch({
+              type: "PUSH_ONE_MESSAGE_FIRST",
+              payload: messages[0]
             });
-            if (!item){
-              return;
-            }
-            let params = {
-                firstResult: 0,
-                maxResults: 1,
-            }
-            
-            try {
-              let messages:CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
-              if (messages[0]){
-                dispatch({
-                  type: "PUSH_ONE_MESSAGE_FIRST",
-                  payload: messages[0]
-                });
-              }
-            } catch (err){}
+          }
+        } catch (err) { }
       }
-    } catch (err){
+    } catch (err) {
       dispatch(notificationActions.displayNotification(err.message, 'error'));
       message.fail && message.fail();
     }
@@ -443,45 +443,45 @@ let loadMessage:LoadMessageTriggerType = function loadMessage(location, messageI
   }
 }
 
-let loadNewlyReceivedMessage:LoadNewlyReceivedMessageTriggerType = function loadNewlyReceivedMessage() {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
+let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loadNewlyReceivedMessage() {
+  return async (dispatch: (arg: AnyActionType) => any, getState: () => any) => {
+
     let state = getState();
-    let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
-    let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
-    
-    
-    
-    if (communicatorMessages.location === "unread" || communicatorMessages.location === "inbox"){
-      let item = communicatorNavigation.find((item)=>{
+    let communicatorNavigation: CommunicatorNavigationItemListType = state.communicatorNavigation;
+    let communicatorMessages: CommunicatorMessagesType = state.communicatorMessages;
+
+    if (communicatorMessages.location === "unread" || communicatorMessages.location === "inbox") {
+      let item = communicatorNavigation.find((item) => {
         return item.location === communicatorMessages.location;
       });
-      if (!item){
+      
+      if (!item) {
         return;
       }
-      let params = {
-          firstResult: 0,
-          maxResults: 1,
-          onlyUnread: true
-      }
       
-      try {
-          let messages: CommunicatorMessageListType = <CommunicatorMessageListType>await promisify( mApi().communicator[getApiId( item )].read( params ), 'callback' )();
-          if ( messages[0] ) {
-              let result: CommunicatorMessageInThreadType = <CommunicatorMessageInThreadType>await promisify(mApi().communicator.communicatormessages.read( messages[0].id, params ), 'callback' )();
+      let params = {
+        firstResult: 0,
+        maxResults: 1,
+        onlyUnread: true
+      }
 
-              if ( communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === messages[0].communicatorMessageId ) {
-                  dispatch( {
-                      type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-                      payload: result
-                  } );
-              }
-              dispatch({
+      try {
+        let messages: CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
+        if (messages[0]) {
+          let result: CommunicatorMessageInThreadType = <CommunicatorMessageInThreadType>await promisify(mApi().communicator.communicatormessages.read(messages[0].id, params), 'callback')();
+
+          if (communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === messages[0].communicatorMessageId) {
+            dispatch({
+              type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+              payload: result
+            });
+          }
+          dispatch({
             type: "PUSH_ONE_MESSAGE_FIRST",
             payload: messages[0]
           });
         }
-      } catch (err){}
+      } catch (err) { }
     }
   }
 }
