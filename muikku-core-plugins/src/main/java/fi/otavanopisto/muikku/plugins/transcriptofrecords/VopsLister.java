@@ -94,7 +94,7 @@ public class VopsLister {
       boolean subjectHasCourses = false;
       if (vopsController.subjectAppliesToStudent(student, subject)) {
         List<VopsRESTModel.VopsEntry> entries = new ArrayList<>();
-        for (int courseNumber=1; courseNumber<MAX_COURSE_NUMBER; courseNumber++) {
+        for (int courseNumber=1; courseNumber<=MAX_COURSE_NUMBER; courseNumber++) {
           VopsRESTModel.VopsEntry entry = processCourse(subject, courseNumber);
           entries.add(entry);
           if (!(entry instanceof VopsRESTModel.VopsPlaceholder)) {
@@ -172,10 +172,6 @@ public class VopsLister {
           workspaceUserExists = true;
         }
       }
-
-      if (!canSignUp) {
-        return new VopsRESTModel.VopsPlaceholder();
-      }
       
       for (VopsWorkspace workspace : workspaces) {
         name = workspace.getName();
@@ -205,13 +201,13 @@ public class VopsLister {
         state = CourseCompletionState.ENROLLED;
       }
       for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-        if (!workspaceAssessment.getPassing()) {
+        if (!Boolean.TRUE.equals(workspaceAssessment.getPassing())) {
           state = CourseCompletionState.FAILED;
           break;
         }
       }
       for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-        if (workspaceAssessment.getPassing()) {
+        if (Boolean.TRUE.equals(workspaceAssessment.getPassing())) {
           state = CourseCompletionState.ASSESSED;
           numCourses++;
           if (mandatority == Mandatority.MANDATORY) {
@@ -240,6 +236,10 @@ public class VopsLister {
           
           break;
         }
+      }
+      
+      if (state == CourseCompletionState.NOT_ENROLLED && !canSignUp) {
+        return new VopsRESTModel.VopsPlaceholder();
       }
       
       StudiesViewCourseChoice courseChoice = studiesViewCourseChoiceController.find(
