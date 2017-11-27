@@ -19,8 +19,9 @@ export interface UPDATE_ONE_ANNOUNCEMENT extends SpecificActionType<"UPDATE_ONE_
 }>{}
 export interface DELETE_ANNOUNCEMENT extends SpecificActionType<"DELETE_ANNOUNCEMENT", AnnouncementType>{}
 
+//TODO notOverrideCurrent should go once the missing data in the current announcement is fixed
 export interface LoadAnnouncementsTriggerType {
-  (location:string, workspaceId?:number):AnyActionType
+  (location:string, workspaceId?:number, notOverrideCurrent?: boolean):AnyActionType
 }
 
 export interface LoadAnnouncementTriggerType {
@@ -39,8 +40,8 @@ export interface UpdateAnnouncementTriggerType {
   (announcement: AnnouncementType, update: AnnouncementUpdateType):AnyActionType
 }
 
-let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId){
-  return loadAnnouncementsHelper.bind(this, location, workspaceId);
+let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent){
+  return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent);
 }
   
 let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId){
@@ -52,7 +53,10 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
     let announcement:AnnouncementType = state.announcements.announcements.find((a:AnnouncementType)=>a.id === announcementId);
     try {
       if (!announcement){
-        announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')(); 
+        announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')();
+        //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
+        //and remove the unnecessary code
+        dispatch(loadAnnouncements(location, null, false));
       }
       
       dispatch({

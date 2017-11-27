@@ -11,7 +11,7 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { AnnouncementsType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 
 interface AnnouncerToolbarProps {
   i18n: i18nType,
@@ -23,12 +23,57 @@ interface AnnouncerToolbarState {
 }
 
 class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerToolbarState> {
+  constructor(props: AnnouncerToolbarProps){
+    super(props);
+    
+    this.go = this.go.bind(this);
+    this.onGoBackClick = this.onGoBackClick.bind(this);
+  }
+  go(announcement:AnnouncementType){
+    if (!announcement){
+      return;
+    }
+    
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState){
+      history.replaceState('', '', location.hash.split("/")[0] + "/" + announcement.id);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    } else {
+      location.hash = location.hash.split("/")[0] + "/" + announcement.id;
+    }
+  }
+  onGoBackClick(e: Event){
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState){
+      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      if (canGoBack){
+        history.back();
+      } else {
+        history.replaceState('', '', location.hash.split("/")[0]);
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      location.hash = location.hash.split("/")[0];
+    }
+  }
   render(){
     if (this.props.announcements.current) {
+      //TODO this should be done more efficiently but the information is not included in the announcement
+      let currentIndex:number = this.props.announcements.announcements.findIndex((a:AnnouncementType)=>a.id === this.props.announcements.current.id);
+      let next:AnnouncementType = null;
+      let prev:AnnouncementType = null;
+      
+      if (currentIndex !== -1){
+        next = this.props.announcements.announcements[currentIndex + 1];
+        prev = this.props.announcements.announcements[currentIndex - 1];
+      }
+      
       return ( 
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">          
-            <Link className="button-pill button-pill--go-back">
+            <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
             </Link>
             <Link className="button-pill button-pill--delete">
@@ -36,10 +81,10 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             </Link>
           </div>
           <div className="application-panel__toolbar-actions-aside">
-            <Link className="button-pill button-pill--prev-page">
+            <Link className="button-pill button-pill--prev-page" disabled={!prev} onClick={this.go.bind(this, prev)}>
               <span className="icon icon-arrow-left"></span>
             </Link>                       
-            <Link className="button-pill button-pill--next-page">
+            <Link className="button-pill button-pill--next-page" disabled={!next} onClick={this.go.bind(this, next)}>
               <span className="icon icon-arrow-right"></span>
             </Link>
           </div>

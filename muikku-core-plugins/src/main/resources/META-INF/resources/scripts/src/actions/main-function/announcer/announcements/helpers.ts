@@ -8,12 +8,14 @@ import notificationActions from '~/actions/base/notifications';
 
 const MAX_LOADED_AT_ONCE = 30;
 
-export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
-  //Remove the current messsage
-  dispatch({
-    type: "SET_CURRENT_MESSAGE_THREAD",
-    payload: null
-  });
+export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, notOverrideCurrent: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+  if (!notOverrideCurrent){
+    //Remove the current announcement
+    dispatch({
+      type: "SET_CURRENT_ANNOUNCEMENT",
+      payload: null
+    });
+  }
   
   let state = getState();
   let navigation:AnnouncerNavigationItemListType = state.announcerNavigation;
