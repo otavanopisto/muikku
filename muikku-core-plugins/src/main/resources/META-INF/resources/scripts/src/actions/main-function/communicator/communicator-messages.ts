@@ -1,5 +1,6 @@
 import notificationActions from '~/actions/base/notifications';
 import messageCountActions from '~/actions/main-function/message-count';
+import actions from '~/actions/main-function';
 
 import {hexToColorInt} from '~/util/modifiers';
 import promisify from '~/util/promisify';
@@ -117,19 +118,19 @@ export interface UpdateSignatureTriggerType {
 }
 
 /////////////////// ACTUAL DEFINITIONS
-let sendMessage:SendMessageTriggerType = function sendMessage(message){
-  let recepientWorkspaces = message.to.filter(x=>x.type === "workspace").map(x=>x.value.id)
+let sendMessage: SendMessageTriggerType = function sendMessage(message) {
+  let recepientWorkspaces = message.to.filter(x => x.type === "workspace").map(x => x.value.id)
   let data = {
-    caption: message.subject,  
+    caption: message.subject,
     content: message.text,
     categoryName: "message",
-    recipientIds: message.to.filter(x=>x.type === "user").map(x=>x.value.id),
-    recipientGroupIds: message.to.filter(x=>x.type === "usergroup").map(x=>x.value.id),
+    recipientIds: message.to.filter(x => x.type === "user").map(x => x.value.id),
+    recipientGroupIds: message.to.filter(x => x.type === "usergroup").map(x => x.value.id),
     recipientStudentsWorkspaceIds: recepientWorkspaces,
     recipientTeachersWorkspaceIds: recepientWorkspaces
   };
-  
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+
+  return async (dispatch:(arg: AnyActionType)=>any, getState:()=>any)=>{
     try {
       let result:CommunicatorMessageInThreadType;
       if (message.replyThreadId){
@@ -137,21 +138,15 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
       } else {
         result = <CommunicatorMessageInThreadType>await promisify(mApi().communicator.messages.create(data), 'callback')();
       }
-      
+
       mApi().communicator.sentitems.cacheClear();
       message.success && message.success();
-      
-      let state= getState();
-      let status:StatusType = state.status;
-      let communicatorNavigation:CommunicatorNavigationItemListType = state.communicatorNavigation;
-      let communicatorMessages:CommunicatorMessagesType = state.communicatorMessages;
-      
-      if (communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === result.communicatorMessageId) {
-        dispatch({
-          type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-          payload: result
-        });
-      }
+
+      let state = getState();
+      let status: StatusType = state.status;
+      let communicatorNavigation: CommunicatorNavigationItemListType = state.communicatorNavigation;
+      let communicatorMessages: CommunicatorMessagesType = state.communicatorMessages;
+      let messageCount: number = state.messageCount;
 
       const isInboxOrUnread = communicatorMessages.location === "inbox" || communicatorMessages.location === "unread"
       if (communicatorMessages.location === "sent" || (isInboxOrUnread && result.recipients.find((recipient: CommunicatorMessageRecepientType) => { return recipient.userId === status.userId }))) {
@@ -173,6 +168,20 @@ let sendMessage:SendMessageTriggerType = function sendMessage(message){
               type: "PUSH_ONE_MESSAGE_FIRST",
               payload: messages[0]
             });
+            if (communicatorMessages.location !== "sent") {
+              dispatch(messageCountActions.updateMessageCount(messageCount + 1));
+            }
+
+            if (communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === result.communicatorMessageId) {
+              dispatch({
+                type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
+                payload: result
+              });
+              if (communicatorMessages.location !== "sent") {
+                dispatch(toggleMessagesReadStatus(messages[0]));
+              }
+            }
+
           }
         } catch (err) { }
       }
@@ -454,11 +463,11 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
       let item = communicatorNavigation.find((item) => {
         return item.location === communicatorMessages.location;
       });
-      
+
       if (!item) {
         return;
       }
-      
+
       let params = {
         firstResult: 0,
         maxResults: 1,
@@ -469,17 +478,17 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
         let messages: CommunicatorMessageListType = <CommunicatorMessageListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback')();
         if (messages[0]) {
           let result: CommunicatorMessageInThreadType = <CommunicatorMessageInThreadType>await promisify(mApi().communicator.communicatormessages.read(messages[0].id, params), 'callback')();
-
+          dispatch({
+            type: "PUSH_ONE_MESSAGE_FIRST",
+            payload: messages[0]
+          });
           if (communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === messages[0].communicatorMessageId) {
             dispatch({
               type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
               payload: result
             });
+            dispatch(toggleMessagesReadStatus(messages[0]));
           }
-          dispatch({
-            type: "PUSH_ONE_MESSAGE_FIRST",
-            payload: messages[0]
-          });
         }
       } catch (err) { }
     }
