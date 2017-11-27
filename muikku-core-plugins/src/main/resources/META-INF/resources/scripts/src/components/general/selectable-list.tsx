@@ -8,7 +8,9 @@ interface SelectableItem {
   isSelected: boolean,
   checkboxClassName?: string,
   key: any,
-  contents: (checkbox: React.ReactElement<any>)=>any
+  contents: (checkbox: React.ReactElement<any>)=>any,
+  notSelectable?: boolean,
+  notSelectableModifier?: string
 }
 
 interface SelectableListProps {
@@ -77,7 +79,7 @@ export default class SelectableList extends React.Component<SelectableListProps,
         });
       }, 600);
     }
-    this.cancelSelection = false;
+    this.cancelSelection = item.notSelectable;
     this.initialXPos = e.touches[0].pageX;
     this.initialYPos = e.touches[0].pageY;
     this.initialTime = (new Date()).getTime();
@@ -141,11 +143,12 @@ export default class SelectableList extends React.Component<SelectableListProps,
   render(){
     return <div className={`${this.props.className} ${this.state.touchMode ? this.props.selectModeClassAddition : ""}`}>
       {this.props.children.map((child: SelectableItem)=>{
-        return <div key={child.key} className={`${child.className} ${child.isSelected ? "selected" : ""}`}
+        return <div key={child.key}
+        className={`${child.className} ${child.isSelected ? "selected" : ""} ${child.notSelectable ? (child.className + "--" + child.notSelectableModifier) : ""}`}
         onTouchStart={this.onTouchStartItem.bind(this, child)} onTouchEnd={this.onTouchEndItem.bind(this, child)}
         onTouchMove={this.onTouchMoveItem.bind(this, child)} 
         onClick={this.onItemClick.bind(this, child)} onContextMenu={this.onContextMenu}>
-          {child.contents(<input type="checkbox" className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
+          {child.contents(child.notSelectable ? null : <input type="checkbox" className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
         </div>
       })}
     </div>

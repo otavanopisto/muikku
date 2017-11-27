@@ -40,7 +40,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
           </Link>
         </Dropdown>
         let primaryOption = <a className="button button--primary-function">
-        {this.props.i18n.text.get('plugin.announcer.button.create')}
+          {this.props.i18n.text.get('plugin.announcer.button.create')}
         </a>
         let toolbar = <Toolbar />
  

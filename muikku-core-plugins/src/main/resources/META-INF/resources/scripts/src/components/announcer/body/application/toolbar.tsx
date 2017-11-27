@@ -13,6 +13,8 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 
+import DeleteAnnouncementDialog from '../delete-announcement-dialog';
+
 interface AnnouncerToolbarProps {
   i18n: i18nType,
   announcements: AnnouncementsType
@@ -76,9 +78,9 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
             </Link>
-            <Link className="button-pill button-pill--delete">
+            <DeleteAnnouncementDialog current><Link className="button-pill button-pill--delete">
               <span className="icon icon-delete"></span> 
-            </Link>
+            </Link></DeleteAnnouncementDialog>
           </div>
           <div className="application-panel__toolbar-actions-aside">
             <Link className="button-pill button-pill--prev-page" disabled={!prev} onClick={this.go.bind(this, prev)}>
@@ -93,10 +95,12 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
     } else {
       return (
         <div className="application-panel__toolbar">        
-          <div className="application-panel__toolbar-actions-main">       
-            <Link className="button-pill button-pill--delete" disabled={this.props.announcements.selected.length === 0}>
-              <span className="icon icon-delete"></span>          
-            </Link>
+          <div className="application-panel__toolbar-actions-main">
+            <DeleteAnnouncementDialog>
+              <Link className="button-pill button-pill--delete" disabled={this.props.announcements.selected.length === 0}>
+                <span className="icon icon-delete"></span>          
+              </Link>
+            </DeleteAnnouncementDialog>
           </div>     
         </div>
       )      

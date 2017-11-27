@@ -40,6 +40,20 @@ export interface UpdateAnnouncementTriggerType {
   (announcement: AnnouncementType, update: AnnouncementUpdateType):AnyActionType
 }
 
+export interface DeleteCurrentAnnouncementTriggerType {
+  (data: {
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
+export interface DeleteSelectedAnnouncementsTriggerType {
+  (data: {
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
 let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent){
   return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent);
 }
@@ -103,5 +117,19 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
   }
 }
 
-export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected, updateAnnouncement, loadAnnouncement}
-export default {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected, updateAnnouncement, loadAnnouncement}
+let deleteCurrentAnnouncement:DeleteCurrentAnnouncementTriggerType = function deleteCurrentAnnouncement(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    data.success();
+  }
+}
+
+let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = function deleteSelectedAnnouncements(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    data.success();
+  }
+}
+
+export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
+  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteCurrentAnnouncement}
+export default {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
+  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteCurrentAnnouncement}
