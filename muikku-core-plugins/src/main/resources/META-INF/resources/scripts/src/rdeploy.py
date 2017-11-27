@@ -20,8 +20,6 @@ class GUI:
 		self.statusLabel.pack()
 
 		self.getValue()
-		self.run()
-		exit()
 
 		#wildFlyStatusLabel = Label(main, text="Wildfly Status", font=("Ubuntu", 18))
                 #wildFlyStatusLabel.pack()
