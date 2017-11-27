@@ -16,25 +16,25 @@ const defaultNavigation: AnnouncerNavigationItemListType = [
     location: "active",
     id: "active",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("TODO translate active")}
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.active")}
   },
   {
     location: "past",
     id: "past",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("TODO translate past")}
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.past")}
   },
   {
     location: "mine",
     id: "mine",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("TOOD translate mine")}
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.mine")}
   },
   {
     location: "archived",
     id: "archived",
     icon: "new-section",
-    text(i18n: i18nType):string {return i18n.text.get("TOOD translate archived")}
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.archived")}
   }
 ]
 
