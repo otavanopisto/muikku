@@ -3,11 +3,11 @@ import {connect, Dispatch} from 'react-redux';
 
 import ApplicationPanel from '~/components/general/application-panel';
 import Announcements from './application/announcements';
+import AnnouncementView from './application/announcement-view';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
-{/*import NewAnnouncement from './application/new-announcement';*/}
 
 
 import {i18nType} from '~/reducers/base/i18n';
@@ -47,7 +47,8 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
         return (<div className="container container--full">
           <ApplicationPanel modifier="announcer" toolbar={toolbar} title={title} icon={icon} primaryOption={primaryOption} aside={this.props.aside}>
-            <Announcements />
+            <Announcements/>
+            <AnnouncementView/>
           </ApplicationPanel>
         </div>);
   }

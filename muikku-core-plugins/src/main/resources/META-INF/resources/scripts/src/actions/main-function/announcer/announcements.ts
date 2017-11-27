@@ -3,8 +3,9 @@ import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {AnnouncementsStateType, AnnouncementsPatchType,
-  AnnouncementListType, AnnouncementType, AnnouncementUpdateType} from '~/reducers/main-function/announcer/announcements';
+  AnnouncementListType, AnnouncementType, AnnouncementUpdateType, AnnouncementsType} from '~/reducers/main-function/announcer/announcements';
 import { loadAnnouncementsHelper } from './announcements/helpers';
+import { AnnouncerNavigationItemListType } from '~/reducers/main-function/announcer/announcer-navigation';
 
 export interface UPDATE_ANNOUNCEMENTS_STATE extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_STATE", AnnouncementsStateType>{}
 export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES", AnnouncementsPatchType>{}
@@ -44,7 +45,26 @@ let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(
   
 let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let navigation:AnnouncerNavigationItemListType = state.announcerNavigation;
+    let announcements:AnnouncementsType = state.announcements;
     
+    let announcement:AnnouncementType = state.announcements.announcements.find((a:AnnouncementType)=>a.id === announcementId);
+    try {
+      if (!announcement){
+        announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')(); 
+      }
+      
+      dispatch({
+        type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
+        payload: {
+          location,
+          current: announcement
+        }
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
   }
 }
 

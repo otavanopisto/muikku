@@ -49,7 +49,7 @@ export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 export interface AnnouncementsType {
   state: AnnouncementsStateType,
   announcements: AnnouncementListType,
-  current: any, //TODO
+  current: AnnouncementType,
   selected: AnnouncementListType,
   selectedIds: Array<number>,
   location: string,

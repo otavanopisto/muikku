@@ -30,7 +30,7 @@ interface AnnouncementsState {
 
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
   setCurrentAnnouncement(announcement: AnnouncementType){
-    
+    window.location.hash = window.location.hash.split("/")[0] + "/" + announcement.id;
   }
   render(){
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>

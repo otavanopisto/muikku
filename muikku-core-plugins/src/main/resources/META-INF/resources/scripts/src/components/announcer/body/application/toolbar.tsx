@@ -31,8 +31,16 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <Link className="button-pill button-pill--go-back">
               <span className="icon icon-goback"></span>
             </Link>
-            <Link className="button-pill button-pill--delete disabled">
-              <span className="icon icon-delete"></span>          
+            <Link className="button-pill button-pill--delete">
+              <span className="icon icon-delete"></span> 
+            </Link>
+          </div>
+          <div className="application-panel__toolbar-actions-aside">
+            <Link className="button-pill button-pill--prev-page">
+              <span className="icon icon-arrow-left"></span>
+            </Link>                       
+            <Link className="button-pill button-pill--next-page">
+              <span className="icon icon-arrow-right"></span>
             </Link>
           </div>
         </div> 
