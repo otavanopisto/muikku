@@ -29,7 +29,7 @@ interface AnnouncementsState {
 }
 
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
-  setCurrentAnnouncement(){
+  setCurrentAnnouncement(announcement: AnnouncementType){
     
   }
   render(){
