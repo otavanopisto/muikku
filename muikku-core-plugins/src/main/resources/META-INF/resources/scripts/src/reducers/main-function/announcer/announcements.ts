@@ -49,7 +49,7 @@ export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 export interface AnnouncementsType {
   state: AnnouncementsStateType,
   announcements: AnnouncementListType,
-  current: any, //TODO
+  current: AnnouncementType,
   selected: AnnouncementListType,
   selectedIds: Array<number>,
   location: string,
@@ -62,7 +62,8 @@ export interface AnnouncementsPatchType {
   selected?: AnnouncementListType,
   selectedIds?: Array<number>,
   location?: string,
-  toolbarLock?: boolean
+  toolbarLock?: boolean,
+  current?: AnnouncementType
 }
 
 export default function announcements(state: AnnouncementsType={
@@ -118,6 +119,8 @@ export default function announcements(state: AnnouncementsType={
     }), announcements: state.announcements.filter((announcement: AnnouncementType)=>{
       return announcement.id !== action.payload.id
     }), selectedIds: state.selectedIds.filter((id: number)=>{return id !== action.payload.id})});
+  } else if (action.type === "SET_CURRENT_ANNOUNCEMENT"){
+    return Object.assign({}, state,{current: action.payload});
   }
   return state;
 }

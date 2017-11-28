@@ -90,11 +90,12 @@
   flex: 1 2 auto;
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
+  margin-left: 0.5 rem;
   max-width: calc(100% - 36px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  
+  margin-left: 5px;
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }

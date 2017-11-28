@@ -30,7 +30,7 @@ interface AnnouncementsState {
 
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
   setCurrentAnnouncement(announcement: AnnouncementType){
-    
+    window.location.hash = window.location.hash.split("/")[0] + "/" + announcement.id;
   }
   render(){
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>
@@ -47,6 +47,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               onEnter: this.setCurrentAnnouncement.bind(this, announcement),
               isSelected: this.props.announcements.selectedIds.includes(announcement.id),
               key: announcement.id,
+              notSelectable: announcement.archived,
+              notSelectableModifier: "archived",
               contents: (checkbox: React.ReactElement<any>)=>{
                 return <div>
                   <div className="application-list__item-header">

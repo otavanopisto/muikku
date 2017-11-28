@@ -330,7 +330,6 @@ b {
   flex-direction: row;
   flex-wrap: wrap;
   min-height: 30px;
-  
 }
 
 .text--communicator-username {
@@ -445,6 +444,7 @@ b {
   font-size: .75rem;
 }
 
+// Announcer
 .text--announcer-times {
   display: inline-block;
   margin-left: 5px;
@@ -474,8 +474,6 @@ b {
 }
 
 // Discussion
-
-
 .text--discussion-thread-item-body {
   font-style: italic;
   width: 100%;

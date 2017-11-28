@@ -3,8 +3,9 @@ import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {AnnouncementsStateType, AnnouncementsPatchType,
-  AnnouncementListType, AnnouncementType, AnnouncementUpdateType} from '~/reducers/main-function/announcer/announcements';
+  AnnouncementListType, AnnouncementType, AnnouncementUpdateType, AnnouncementsType} from '~/reducers/main-function/announcer/announcements';
 import { loadAnnouncementsHelper } from './announcements/helpers';
+import { AnnouncerNavigationItemListType } from '~/reducers/main-function/announcer/announcer-navigation';
 
 export interface UPDATE_ANNOUNCEMENTS_STATE extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_STATE", AnnouncementsStateType>{}
 export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES", AnnouncementsPatchType>{}
@@ -18,8 +19,9 @@ export interface UPDATE_ONE_ANNOUNCEMENT extends SpecificActionType<"UPDATE_ONE_
 }>{}
 export interface DELETE_ANNOUNCEMENT extends SpecificActionType<"DELETE_ANNOUNCEMENT", AnnouncementType>{}
 
+//TODO notOverrideCurrent should go once the missing data in the current announcement is fixed
 export interface LoadAnnouncementsTriggerType {
-  (location:string, workspaceId?:number):AnyActionType
+  (location:string, workspaceId?:number, notOverrideCurrent?: boolean):AnyActionType
 }
 
 export interface LoadAnnouncementTriggerType {
@@ -38,13 +40,49 @@ export interface UpdateAnnouncementTriggerType {
   (announcement: AnnouncementType, update: AnnouncementUpdateType):AnyActionType
 }
 
-let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId){
-  return loadAnnouncementsHelper.bind(this, location, workspaceId);
+export interface DeleteCurrentAnnouncementTriggerType {
+  (data: {
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
+export interface DeleteSelectedAnnouncementsTriggerType {
+  (data: {
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
+let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent){
+  return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent);
 }
   
 let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let navigation:AnnouncerNavigationItemListType = state.announcerNavigation;
+    let announcements:AnnouncementsType = state.announcements;
     
+    let announcement:AnnouncementType = state.announcements.announcements.find((a:AnnouncementType)=>a.id === announcementId);
+    try {
+      if (!announcement){
+        announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')();
+        //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
+        //and remove the unnecessary code
+        dispatch(loadAnnouncements(location, null, false));
+      }
+      
+      dispatch({
+        type: "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES",
+        payload: {
+          location,
+          current: announcement
+        }
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
   }
 }
 
@@ -79,5 +117,19 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
   }
 }
 
-export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected, updateAnnouncement, loadAnnouncement}
-export default {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected, updateAnnouncement, loadAnnouncement}
+let deleteCurrentAnnouncement:DeleteCurrentAnnouncementTriggerType = function deleteCurrentAnnouncement(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    data.success();
+  }
+}
+
+let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = function deleteSelectedAnnouncements(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    data.success();
+  }
+}
+
+export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
+  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteCurrentAnnouncement}
+export default {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
+  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteCurrentAnnouncement}
