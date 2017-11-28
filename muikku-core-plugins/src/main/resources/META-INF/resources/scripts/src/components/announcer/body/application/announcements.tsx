@@ -16,6 +16,7 @@ import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
 import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcer/announcements';
+import DeleteAnnouncementDialog from '../delete-announcement-dialog';
 
 interface AnnouncementsProps {
   i18n: i18nType,
@@ -80,7 +81,9 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                   </div>                
                   <div className="application-list__item-footer">                  
                     <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
-                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
+                    <DeleteAnnouncementDialog announcement={announcement}>
+                      <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
+                    </DeleteAnnouncementDialog>
                   </div>
                </div>
              }
