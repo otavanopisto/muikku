@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.otavanopisto.muikku.i18n.LocaleController;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -239,8 +240,8 @@ public class Evaluation2RESTService {
     
     // Workspace materials...
     
-    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
-    workspaceMaterials.addAll(workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE));
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED, BooleanPredicate.IGNORE);
+    workspaceMaterials.addAll(workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EXERCISE, BooleanPredicate.IGNORE));
     
     // ...to RestAssignments
     
@@ -256,6 +257,7 @@ public class Evaluation2RESTService {
       Date evaluated = null;
       String grade = null;
       String literalEvaluation = null;
+      
       if (userEntity != null) {
         WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
         if (workspaceMaterialReply != null) {
@@ -266,7 +268,11 @@ public class Evaluation2RESTService {
               replyState == WorkspaceMaterialReplyState.INCOMPLETE) {
             submitted = workspaceMaterialReply.getLastModified();
           }
+        } else if (workspaceMaterial.getHidden()) {
+          // Skip hidden material which has no reply
+          continue;
         }
+        
         WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
         if (workspaceMaterialEvaluation != null) {
           workspaceMaterialEvaluationId = workspaceMaterialEvaluation.getId();
@@ -293,7 +299,10 @@ public class Evaluation2RESTService {
           }
         }
       }
-      assignments.add(new RestAssignment(workspaceMaterialEvaluationId, workspaceMaterialId, materialId, path, title, evaluable, submitted, evaluated, grade, literalEvaluation));
+      
+      if (!(workspaceMaterial.getHidden() && submitted == null)) {
+        assignments.add(new RestAssignment(workspaceMaterialEvaluationId, workspaceMaterialId, materialId, path, title, evaluable, submitted, evaluated, grade, literalEvaluation));
+      }
     }
     return Response.ok(assignments).build();
   }
