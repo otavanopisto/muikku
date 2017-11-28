@@ -40,18 +40,16 @@ export interface UpdateAnnouncementTriggerType {
   (announcement: AnnouncementType, update: AnnouncementUpdateType):AnyActionType
 }
 
-export interface DeleteCurrentAnnouncementTriggerType {
+export interface DeleteAnnouncementTriggerType {
   (data: {
+    announcement: AnnouncementType,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
 }
 
 export interface DeleteSelectedAnnouncementsTriggerType {
-  (data: {
-    success: ()=>any,
-    fail: ()=>any
-  }):AnyActionType
+  ():AnyActionType
 }
 
 let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent){
@@ -117,19 +115,44 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
   }
 }
 
-let deleteCurrentAnnouncement:DeleteCurrentAnnouncementTriggerType = function deleteCurrentAnnouncement(data){
+let deleteAnnouncement:DeleteAnnouncementTriggerType = function deleteAnnouncement(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    data.success();
+    let state = getState();
+    let announcements:AnnouncementsType = state.announcements;
+    
+    try {
+      await promisify(mApi().announcer.announcements.del(data.announcement.id), 'callback')();
+      dispatch({
+        type: "DELETE_ANNOUNCEMENT",
+        payload: data.announcement
+      });
+      data.success();
+    } catch (err){
+      data.fail();
+    }
   }
 }
 
-let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = function deleteSelectedAnnouncements(data){
+let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = function deleteSelectedAnnouncements(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    data.success();
+    let state = getState();
+    let announcements:AnnouncementsType = state.announcements;
+    
+    await Promise.all(announcements.selected.map(async (announcement)=>{
+      try {
+        await promisify(mApi().announcer.announcements.del(announcement.id), 'callback')();
+        dispatch({
+          type: "DELETE_ANNOUNCEMENT",
+          payload: announcement
+        });
+      } catch(err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
+    }));
   }
 }
 
 export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
-  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteCurrentAnnouncement}
+  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteAnnouncement}
 export default {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
-  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteCurrentAnnouncement}
+  updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteAnnouncement}

@@ -315,7 +315,7 @@ let deleteSelectedMessages:DeleteSelectedMessagesTriggerType = function deleteSe
     
     await Promise.all(selected.map(async (message)=>{
       try {
-        promisify(mApi().communicator[getApiId(item)].del(message.communicatorMessageId), 'callback')();
+        await promisify(mApi().communicator[getApiId(item)].del(message.communicatorMessageId), 'callback')();
         if (message.unreadMessagesInThread){
           messageCount--;
         }

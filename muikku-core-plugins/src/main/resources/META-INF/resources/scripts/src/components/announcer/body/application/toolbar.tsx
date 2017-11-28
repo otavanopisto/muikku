@@ -78,9 +78,11 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="icon icon-goback"></span>
             </Link>
-            <DeleteAnnouncementDialog current><Link className="button-pill button-pill--delete">
-              <span className="icon icon-delete"></span> 
-            </Link></DeleteAnnouncementDialog>
+            <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
+              <Link className="button-pill button-pill--delete">
+                <span className="icon icon-delete"></span> 
+              </Link>
+            </DeleteAnnouncementDialog>
           </div>
           <div className="application-panel__toolbar-actions-aside">
             <Link className="button-pill button-pill--prev-page" disabled={!prev} onClick={this.go.bind(this, prev)}>
