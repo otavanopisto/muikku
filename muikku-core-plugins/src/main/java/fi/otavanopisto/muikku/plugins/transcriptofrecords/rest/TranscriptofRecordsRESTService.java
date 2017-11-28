@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -111,9 +110,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
   @Inject
   private GradingController gradingController;
   
-  @Inject
-  private Logger logger;
-  
   @GET
   @Path("/files/{ID}/content")
   @RESTPermit(handling = Handling.INLINE)
@@ -188,9 +184,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     List<TransferCredit> transferCredits = new ArrayList<>(gradingController.listStudentTransferCredits(studentIdentifier));
 
     List<Subject> subjects = courseMetaController.listSubjects();
-    List<VopsRESTModel.VopsRow> rows = new ArrayList<>();
-    int numCourses = 0;
-    int numMandatoryCourses = 0;
     Map<SchoolDataIdentifier, WorkspaceAssessment> studentAssessments = vopsController.listStudentAssessments(studentIdentifier);
     
     

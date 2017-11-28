@@ -125,20 +125,12 @@ public class VopsLister {
     
     List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
     
-    boolean correctCurriculum = false;
-    
-    if (curriculumIdentifier == null) {
-      correctCurriculum = true;
-    } else {
-      for (VopsWorkspace workspace : workspaces) {
-        if (workspace.getCurriculumIdentifiers().contains(curriculumIdentifier)) {
-          correctCurriculum = true;
-          break;
-        }
-      }
+    if (curriculumIdentifier != null) {
+      workspaces.removeIf((VopsWorkspace workspace) ->
+        !workspace.getCurriculumIdentifiers().contains(curriculumIdentifier));
     }
 
-    if (!workspaces.isEmpty() && correctCurriculum) {
+    if (!workspaces.isEmpty()) {
       SchoolDataIdentifier educationSubtypeIdentifier = null;
       boolean workspaceUserExists = false;
       String name = "";
