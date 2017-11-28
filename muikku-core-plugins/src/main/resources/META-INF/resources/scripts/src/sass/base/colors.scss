@@ -1,6 +1,6 @@
 // Generic
 $color-default: #fff;
-$color-default-contrast: #343333;
+$color-default-contrast: #4a4a4a;
 
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
@@ -211,8 +211,8 @@ $color-panel-shadow: rgba(0,0,0,0.05);
 
 // item list
 $color-item-list-item-font-color-active: #fff;
-$color-item-list-item-background-active: rgb(98,174,193);
-$color-item-list-item-background-hover: rgba(0, 0, 0, 0.1);
+$color-item-list-item-background: rgb(247, 247, 247);
+$color-item-list-item-background-active: rgb(98, 174, 193);
 
 // indicator
 $color-indicator-background: $color-fatal;

@@ -22,7 +22,8 @@ $breakpoint-desktop: 64em;
 // eq. 1200px and up - wide desktops that exceeds 75em/1200px width
 $breakpoint-desktop-xl: 75em; 
 
-$breakpoint-max-usable-screen: 80em;
+// This has to be set in absolute pixel value so our max screen width doesn't increase when user increases browser's font size 
+$breakpoint-max-usable-screen: 1280px;
 
 @mixin breakpoint-only($breakpoint) {
   @if (nth($breakpoint, 1) == false){

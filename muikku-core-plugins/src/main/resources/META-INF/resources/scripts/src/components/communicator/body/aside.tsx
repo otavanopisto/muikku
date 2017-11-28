@@ -29,13 +29,13 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         }
         
         return <Link key={item.id} className={`item-list__item ${this.props.communicatorMessages.location === item.location ? "active" : ""}`} href={`#${item.location}`}>
-          <span className={`icon icon-${item.icon}`} style={style}></span>
+          <span className={`item-list__icon icon-${item.icon}`} style={style}></span>
           <span className="item-list__text-body text">
             {item.text(this.props.i18n)}
           </span>
           {item.type === "label" ? <LabelUpdateDialog label={item}>
             <Link disablePropagation as="span" className="button-pill button-pill--navigation-edit-label">
-              <span className="icon icon-edit"/>
+              <span className="item-list__icon icon-edit"/>
             </Link>
           </LabelUpdateDialog> : null}
         </Link>

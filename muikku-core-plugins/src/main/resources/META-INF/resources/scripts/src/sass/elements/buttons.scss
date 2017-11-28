@@ -13,7 +13,7 @@
   border-radius: 2px;
   cursor: pointer;
   color: $color-button-default-text;
-  display : flex;
+  display: flex;
   font-family: $button-font-family;
   font-size: $button-default-font-size;
   height: $button-default-height;
@@ -27,22 +27,9 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
 }
-  
+
 .button--branded {
   font-family: $button-branded-font-family;
-}
-  
-.button--primary {
-  background-color: $color-button-primary-background;
-  color: $color-button-primary-text;
-  
-  &:hover, &.hover {
-    background-color: darken($color-button-primary-background, 10%);
-  }
-  
-  &:active, &.active {
-    background-color: darken($color-button-primary-background, 20%);
-  }
 }
   
 .button--warn {
@@ -228,7 +215,7 @@
     background-color: darken($color-frontpage-button-website-background, 20%);
   }
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     margin: 0 .6rem 0 0;
   }
 }
@@ -247,7 +234,7 @@
     background-color: darken($color-frontpage-button-newsletter-background, 20%);
   }
   
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     margin: 0 0 0 0;
   }
 }
@@ -265,19 +252,18 @@
 .button--primary-function {
   display: none;
 
-  @include breakpoint($breakpoint-pad){
-    background-color: $color-communicator-button-new-message-background;
-    color: $color-communicator-button-new-message-text;
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-button-primary-background;
+    color: $color-button-primary-text;
     display: inline-flex;
-    height: 34px;
-    width:100%;
+    width: 100%;
     
     &:hover, &.hover {
-      background-color: darken($color-communicator-button-new-message-background, 10%);
+      background-color: darken($color-button-primary-background, 10%);
     }
   
     &:active, &.active {
-      background-color: darken($color-communicator-button-new-message-background, 20%);
+      background-color: darken($color-button-primary-background, 20%);
     }
   }
 }
@@ -347,7 +333,7 @@
     box-shadow: 0 0 0 rgba(0,0,0,.25);
   }
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     display: none;
   }
 }
@@ -355,7 +341,10 @@
 .button-pill--current-language {
   background-color: $color-main-function-button-pill-language-background;
   color: $color-main-function-button-pill-language-text;
+  font-size: $button-pill-navbar-font-size;
+  height: $button-pill-navbar-size;
   margin-right: 10px;
+  width: $button-pill-navbar-size;
   
   &:hover, &.hover {
     background-color: darken($color-main-function-button-pill-language-background, 5%);
@@ -369,10 +358,13 @@
 .button-pill--profile {
   display: none;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     box-shadow: $color-button-pill-shadow;
     display: inline-flex;
+    font-size: $button-pill-navbar-font-size;
+    height: $button-pill-navbar-size;
     margin-right: 15px;
+    width: $button-pill-navbar-size;
     
     // TODO: Needs fixing
     .icon {
@@ -392,6 +384,7 @@
 .button-pill--settings {
   background-color: $color-communicator-button-pill-settings-background;
   color: $color-communicator-button-pill-settings-text;
+  font-size: $button-pill-settings-font-size;
   vertical-align: top;
   
   &:hover, &.hover {
@@ -411,7 +404,8 @@
 .button-pill--delete {
   background-color: $color-communicator-button-pill-delete-background;
   color: $color-communicator-button-pill-delete-text;
-  margin-right: 10px;
+  flex: 0 0 auto;
+  margin: 0 0 0 10px;
   vertical-align: top;
    
   &:hover, &.hover {
@@ -426,9 +420,12 @@
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
 }
-  
-  
+
 .button-pill--discussion-toolbar {
   background-color: $color-button-pill-edit-background;
   color: $color-button-pill-edit-text;
@@ -452,7 +449,8 @@
 .button-pill--label {
   background-color: $color-communicator-button-pill-label-background;
   color: $color-communicator-button-pill-label-text;
-   margin-right: 10px;
+  flex: 0 0 auto;
+  margin: 0 0 0 10px;
   vertical-align: top;
   
   &:hover, &.hover {
@@ -467,12 +465,17 @@
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
 }
   
 .button-pill--toggle-read {
   background-color: $color-communicator-button-pill-toggle-read-background;
   color: $color-communicator-button-pill-toggle-read-text;
-  margin-right: 10px;
+  flex: 0 0 auto;
+   margin: 0 0 0 10px;
   vertical-align: top;
   
   &:hover, &.hover {
@@ -487,11 +490,16 @@
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
 }
   
 .button-pill--go-back {
   background-color: $color-communicator-button-pill-go-back-background;
   color: $color-communicator-button-pill-go-back-text;
+  flex: 0 0 auto;
   margin-right: 20px;
   border-radius: 5px;
   vertical-align: top;
@@ -509,32 +517,37 @@
     color: $color-button-pill-text-disabled;
   }
 }
-  
+
 .button-pill--prev-page {
-  background-color: $color-communicator-button-pill-prev-page-background;
-  color: $color-communicator-button-pill-prev-page-text;
-  margin-left: 10px;
-  border-radius: 5px;
-  vertical-align: top;
+  display: none;
   
-  &:hover, &.hover {
-    background-color: darken($color-communicator-button-pill-prev-page-background, 10%);
-  }
-  
-  &:active, &.active {
-    background-color: darken($color-communicator-button-pill-prev-page-background, 20%);
-  }
-  
-  &.disabled, &:disabled {
-    background-color: $color-button-pill-background-disabled;
-    color: $color-button-pill-text-disabled;
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-communicator-button-pill-prev-page-background;
+    color: $color-communicator-button-pill-prev-page-text;
+    display: inline-flex;
+    margin-left: 10px;
+    border-radius: 5px;
+    vertical-align: top;
+    
+    &:hover, &.hover {
+      background-color: darken($color-communicator-button-pill-prev-page-background, 10%);
+    }
+    
+    &:active, &.active {
+      background-color: darken($color-communicator-button-pill-prev-page-background, 20%);
+    }
+    
+    &.disabled, &:disabled {
+      background-color: $color-button-pill-background-disabled;
+      color: $color-button-pill-text-disabled;
+    }
   }
 }
   
 .button-pill--next-page {
   display: none;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     background-color: $color-communicator-button-pill-next-page-background;
     color: $color-communicator-button-pill-next-page-text;
     display: inline-flex;
@@ -571,35 +584,27 @@
 }
   
 .button-pill--toolbar-edit-label {
-	display: none;
+	background-color: $color-communicator-button-pill-toolbar-edit-label-background;
+  color: $color-communicator-button-pill-toolbar-edit-label-text;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
 
-  @include breakpoint($breakpoint-pad){
-    background-color: $color-communicator-button-pill-toolbar-edit-label-background;
-    color: $color-communicator-button-pill-toolbar-edit-label-text;
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    
-    &:hover, &.hover {
-      background-color: $color-communicator-button-pill-toolbar-edit-label-background-hover;
-    }
-    
-    &:active, &.active {
-      background-color: $color-communicator-button-pill-toolbar-edit-label-background-active;
-    }
+  @include breakpoint($breakpoint-pad) {
+    display: none;
   }
 }
   
 .button-pill--navigation-edit-label {
   display: none;
 
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     background-color: $color-communicator-button-pill-navigation-edit-label-background;
     color: $color-communicator-button-pill-navigation-edit-label-text;
     display: block;
-    height: 15px;
-    width: 15px;
+    height: 1rem;
+    width: 1rem;
     
     &:hover, &.hover {
       background-color: $color-communicator-button-pill-navigation-edit-label-background-hover;
@@ -639,7 +644,7 @@
     color: $color-button-social-highlight-text;
   }
   
-  @include breakpoint($breakpoint-desktop){ 
+  @include breakpoint($breakpoint-desktop) {
   
     &:first-of-type {
       margin: 0 .3rem 0 0;

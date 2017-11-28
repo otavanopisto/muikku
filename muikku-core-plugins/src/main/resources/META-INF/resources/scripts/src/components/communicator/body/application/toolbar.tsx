@@ -99,7 +99,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
               {"  " + currentLocation.text(this.props.i18n)}
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
                 <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
-              </LabelUpdateDialog> : null} {" / " + this.props.communicatorMessages.current.messages[0].caption}
+              </LabelUpdateDialog> : null}
             </div>                
             <Link className="button-pill button-pill--delete" onClick={this.props.deleteCurrentMessage}>
               <span className="icon icon-delete"></span>

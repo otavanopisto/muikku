@@ -12,8 +12,8 @@
   display: block;
   height: 50px;
   width: 100%;
-  
-  &.separator--frontpage {
-    background-color: $color-frontpage-separator-background;
-  }
+}
+
+.separator--frontpage {
+  background-color: $color-frontpage-separator-background;
 }
