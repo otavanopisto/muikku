@@ -3,8 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-$item-list-item-min-height: 32px;
-
 .item-list {
   
 }
@@ -12,11 +10,12 @@ $item-list-item-min-height: 32px;
 // List items
 .item-list__item {
   align-items: center;
+  background-color: $color-item-list-item-background;
   cursor: pointer;
   display: flex;
-  padding: 10px;
+  margin: 0 0 5px;
+  padding: 8px;
   position: relative;
-  transition: background-color 0.3s;
 
   &:active, &.active {
     background-color: $color-item-list-item-background-active;
@@ -65,7 +64,7 @@ $item-list-item-min-height: 32px;
   display: block;
   flex: 0 0 auto;
   font-size: $item-list-icon-font-size;
-  margin: 0 .625rem 0 2px;
+  margin: 0 10px 0 2px;
   text-align: center;
   vertical-align: middle;
 }

@@ -79,16 +79,14 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     <div className={`application-panel application-panel--${this.props.modifier}`} ref="top-reference">
       <div className="application-panel__container">                
         <div className="application-panel__header">
-          <div className="application-panel__header-wrapper">
-            <div className="application-panel__helper-container application-panel_helper-container--header">{this.props.title}</div>
-            <div className="application-panel__main-container application-panel__main-container--header">{this.props.icon}</div>
-          </div>
+          <div className="application-panel__header-title">{this.props.title}</div>
+          <div className="application-panel__header-actions">{this.props.icon}</div>
         </div>
         <div className="application-panel__body">
           <div style={{display: this.state.sticky ? "block" : "none"}}></div>
           <div className="application-panel__actions" ref="sticky">
-            <div className="application-panel__actions__wrapper">
-              {this.props.primaryOption ? <div className="application-panel__helper-container">{this.props.primaryOption}</div> : null}
+            <div className="application-panel__actions-wrapper">
+              {this.props.primaryOption ? <div className="application-panel__helper-container application-panel__helper-container--main-action">{this.props.primaryOption}</div> : null}
               <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div>
             </div>
           </div>              

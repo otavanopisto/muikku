@@ -1,6 +1,7 @@
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
+@import "../base/breakpoints";
 
 .link {
   @include prefix(transition, moz ms webkit o, background-color 0.3s);
@@ -8,14 +9,19 @@
   color: $color-link-default-text;
   cursor: pointer;
   display: inline-block;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
   font-weight: 400;
+  vertical-align: middle;
+  position: relative;
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
-  vertical-align: middle;
-  position: relative;
   white-space: nowrap;
-  font-family: "Exo 2", Arial, sans-serif;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 
   &.link--icon {
     @include prefix(font-smoothing, webkit moz o ms, antialiased);
