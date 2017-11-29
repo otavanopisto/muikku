@@ -1,6 +1,12 @@
 (function() {
   'use strict';
   
+   var timeout = null;
+   //this allows that when one user is scrolling really fast only if a section stays active for more than half
+   //a second it'll be saved, this should be enough so that if the user decides to immediatly close, he/she'll probably
+   //take longer
+   var timeOneSectionMustBeOnViewUntilItIsSavedForTheContinueStudiesView = 500;
+  
    function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 90;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -105,7 +111,8 @@
           Waypoint.refreshAll();
           $(window).data('scrolling', false);
           
-          setLastWorkspace();
+          clearTimeout(timeout);
+          timeout = setTimeout(setLastWorkspace, timeOneSectionMustBeOnViewUntilItIsSavedForTheContinueStudiesView);
         }
       }, 
       offset: 150
