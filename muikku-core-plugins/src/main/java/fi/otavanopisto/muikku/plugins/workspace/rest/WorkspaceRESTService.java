@@ -48,6 +48,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
 import fi.otavanopisto.muikku.files.TempFileUtils;
+import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -1380,14 +1381,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
 
       if (assignmentType != null) {
-        // TODO: support for invisible materials
-        workspaceMaterials = workspaceMaterialController.listVisibleWorkspaceMaterialsByParentAndAssignmentType(parent, workspaceEntity, workspaceAssignmentType);
+        workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParentAndAssignmentType(parent, workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
+        workspaceMaterials.removeIf(material -> isHiddenMaterial(material));
       } else {
         workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
       }
     } else {
-      // TODO: support for invisible materials
-      workspaceMaterials = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, workspaceAssignmentType);
+      workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByAssignmentType(workspaceEntity, workspaceAssignmentType, BooleanPredicate.IGNORE);
+      workspaceMaterials.removeIf(material -> isHiddenMaterial(material));
     }
     
     if (workspaceMaterials.isEmpty()) {
@@ -1396,6 +1397,28 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
   } 
+
+  private boolean isHiddenMaterial(WorkspaceMaterial workspaceMaterial) {
+    if (workspaceMaterial.getHidden()) {
+      UserEntity userEntity = sessionController.getLoggedUserEntity();
+      if (userEntity != null) {
+        fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+        if (workspaceMaterialReply != null) {
+          WorkspaceMaterialReplyState replyState = workspaceMaterialReply.getState();
+          if (replyState == WorkspaceMaterialReplyState.SUBMITTED ||
+              replyState == WorkspaceMaterialReplyState.PASSED ||
+              replyState == WorkspaceMaterialReplyState.FAILED ||
+              replyState == WorkspaceMaterialReplyState.INCOMPLETE) {
+            return false;
+          }
+        }
+      }
+      
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
