@@ -8,16 +8,17 @@ import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
 import Link from '~/components/general/link';
 import Dialog from '~/components/general/dialog';
-import { deleteSelectedAnnouncements, deleteCurrentAnnouncement,
-  DeleteSelectedAnnouncementsTriggerType, DeleteCurrentAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
+import { deleteSelectedAnnouncements, deleteAnnouncement,
+  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
 import { AnnouncementType } from 'reducers/main-function/announcer/announcements';
 
 interface DeleteAnnouncementDialogProps {
   i18n: i18nType,
-  current?: boolean
+  announcement?: AnnouncementType
   children: React.ReactElement<any>,
   deleteSelectedAnnouncements: DeleteSelectedAnnouncementsTriggerType,
-  deleteCurrentAnnouncement: DeleteCurrentAnnouncementTriggerType
+  deleteAnnouncement: DeleteAnnouncementTriggerType,
+  onDeleteAnnouncementSuccess?: ()=>any
 }
 
 interface DeleteAnnouncementDialogState {
@@ -36,10 +37,12 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
   }
   deleteAnnouncement(closeDialog: ()=>any){
     this.setState({locked: true});
-    if (!this.props.current){
-      this.props.deleteCurrentAnnouncement({
+    if (this.props.announcement){
+      this.props.deleteAnnouncement({
+        announcement: this.props.announcement,
         success: ()=>{
           this.setState({locked: false});
+          this.props.onDeleteAnnouncementSuccess && this.props.onDeleteAnnouncementSuccess();
           closeDialog();
         },
         fail: ()=>{
@@ -47,20 +50,16 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
         }
       });
     } else {
-      this.props.deleteSelectedAnnouncements({
-        success: ()=>{
-          this.setState({locked: false});
-          closeDialog();
-        },
-        fail: ()=>{
-          this.setState({locked: false});
-        }
-      });
+      this.props.deleteSelectedAnnouncements();
+      this.setState({locked: false});
+      closeDialog();
     }
   }
   render(){
     let content = (closeDialog: ()=>any) => <div className="text text--delete-announcement">
-      {this.props.i18n.text.get('TODO remove announcement messsage')}
+      {this.props.announcement ?
+       this.props.i18n.text.get('TODO remove announcement messsage') :
+       this.props.i18n.text.get('TODO remove selected announcements messsage')}
     </div>
        
     let footer = (closeDialog: ()=>any)=>{
@@ -69,7 +68,8 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('TODO cancel remove announcement')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Link className="button button--standard-ok"
+            onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('TODO confirm remove announcement')}
           </Link>
         </div>
@@ -93,7 +93,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({deleteSelectedAnnouncements, deleteCurrentAnnouncement}, dispatch);
+  return bindActionCreators({deleteSelectedAnnouncements, deleteAnnouncement}, dispatch);
 };
 
 export default (connect as any)(

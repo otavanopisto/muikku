@@ -1,6 +1,6 @@
 import {ActionType} from '~/actions';
 import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/index/workspaces';
-import { UserType } from '~/reducers/main-function/user-index';
+import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 
 export type CommunicatorStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface CommunicatorSignatureType {
@@ -119,23 +119,7 @@ export interface CommunicatorMessagesPatchType {
   signature?: CommunicatorSignatureType | null
 }
 
-//TODO fix these anies
-export interface CommunicatorMessageWorkspaceRecepientType {
-  type: "workspace",
-  value: WorkspaceType
-}
-
-export interface CommunicatorMessageUserRecepientType {
-  type: "user",
-  value: any        //TODO fix user and usergoup type
-}
-
-export interface CommunicatorMessageUserGroupRecepientType {
-  type: "usergroup",
-  value: any
-}
-
-export type CommunicatorMessageItemRecepientType = CommunicatorMessageWorkspaceRecepientType | CommunicatorMessageUserRecepientType  | CommunicatorMessageUserGroupRecepientType
+export type CommunicatorMessageItemRecepientType = WorkspaceRecepientType | UserRecepientType  | UserGroupRecepientType
 
 export default function communicatorMessages(state: CommunicatorMessagesType={
   state: "LOADING",

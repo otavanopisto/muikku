@@ -8,8 +8,8 @@ import JumboDialog from '~/components/general/jumbo-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import {CommunicatorMessageWorkspaceRecepientType,
-  CommunicatorMessageUserRecepientType, CommunicatorMessageUserGroupRecepientType, CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
+import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
+import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -37,7 +37,7 @@ const extraPlugins = {
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
 
-type SelectedItemListType = Array<CommunicatorMessageWorkspaceRecepientType | CommunicatorMessageUserRecepientType | CommunicatorMessageUserGroupRecepientType>;
+type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | UserGroupRecepientType>;
 
 interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
