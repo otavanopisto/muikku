@@ -4,9 +4,9 @@ import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
-import {CommunicatorMessageItemRecepientType, CommunicatorMessageUserGroupRecepientType,
-  CommunicatorMessageWorkspaceRecepientType, CommunicatorMessageUserRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
+import {CommunicatorMessageItemRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
 import {WorkspaceType} from '~/reducers/main-function/index/workspaces';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 
 export interface InputContactsAutofillProps {
   placeholder?: string,
@@ -91,9 +91,9 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       
       //TODO fix anies
       
-      let userItems:CommunicatorMessageItemRecepientType[] = (searchResults[0] as any[]).map((item: any)=>({type: "user", value: item} as CommunicatorMessageUserRecepientType));
-      let userGroupItems:CommunicatorMessageItemRecepientType[] = (searchResults[1] as any[]).map((item: any)=>({type: "usergroup", value: item} as CommunicatorMessageUserGroupRecepientType));
-      let workspaceItems:CommunicatorMessageItemRecepientType[] = (searchResults[2] as WorkspaceType[]).map((item: WorkspaceType)=>({type: "workspace", value: item} as CommunicatorMessageWorkspaceRecepientType))
+      let userItems:CommunicatorMessageItemRecepientType[] = (searchResults[0] as any[]).map((item: any)=>({type: "user", value: item} as UserRecepientType));
+      let userGroupItems:CommunicatorMessageItemRecepientType[] = (searchResults[1] as any[]).map((item: any)=>({type: "usergroup", value: item} as UserGroupRecepientType));
+      let workspaceItems:CommunicatorMessageItemRecepientType[] = (searchResults[2] as WorkspaceType[]).map((item: WorkspaceType)=>({type: "workspace", value: item} as WorkspaceRecepientType))
       let allItems:CommunicatorMessageItemRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems);
       this.setState({
         autocompleteSearchItems: allItems
