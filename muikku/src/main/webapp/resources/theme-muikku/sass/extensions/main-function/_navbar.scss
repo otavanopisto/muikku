@@ -3,7 +3,7 @@
 @import "../../base/breakpoints";
 
 .main-function.navbar {
-  background-color: $color-main-function-navbar-background;
+  background-color: $color-environment-navbar-background;
   
   .navbar-logo {
     @include breakpoint-up($breakpoint-wide-screen) {
@@ -28,6 +28,6 @@
   }
   
   .navbar-mobile-title {
-    color: $color-main-function-navbar-title;
+    color: $color-environment-navbar-title;
   }
 }

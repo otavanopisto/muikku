@@ -50,28 +50,28 @@
  
   &.dropdown--language-picker {
     .dropdown__container {
-      background-color: $color-main-function-dropdown-language-picker-background;
-      color: $color-main-function-dropdown-language-picker-text;
-      box-shadow: 0 10px 20px $color-main-function-dropdown-language-picker-shadow;
+      background-color: $color-environment-dropdown-language-picker-background;
+      color: $color-environment-dropdown-language-picker-text;
+      box-shadow: 0 10px 20px $color-environment-dropdown-language-picker-shadow;
     }
     .dropdown__arrow {
-      border-bottom-color: $color-main-function-dropdown-language-picker-background;
+      border-bottom-color: $color-environment-dropdown-language-picker-background;
     }
   }
  
   &.dropdown--profile {
     .dropdown__container {
-      background-color: $color-main-function-dropdown-profile-menu-background;
-      color: $color-main-function-dropdown-profile-menu-text;
-      box-shadow: 0 10px 20px $color-main-function-dropdown-profile-menu-shadow;
+      background-color: $color-environment-dropdown-profile-menu-background;
+      color: $color-environment-dropdown-profile-menu-text;
+      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
       padding: 5px;
     
       .dropdown__item:first-child {
-        border-bottom: solid 1px darken($color-main-function-dropdown-profile-menu-background, 8);
+        border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 8);
       }
     
       .dropdown__item {
-        border-bottom: solid 1px darken($color-main-function-dropdown-profile-menu-background, 3);
+        border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 3);
         height: 42px;
       }
     
@@ -80,14 +80,14 @@
       }
     }
     .dropdown__arrow {
-      border-bottom-color: $color-main-function-dropdown-profile-menu-background;
+      border-bottom-color: $color-environment-dropdown-profile-menu-background;
     }
   }
  
   &.dropdown--communicator-labels .dropdown__container {
     padding: 5px;
-    background-color: $color-communicator-dropdown-labels-background;
-    border: solid 1px $color-communicator-dropdown-labels-border;
+    background-color: $color-main-function-dropdown-labels-background;
+    border: solid 1px $color-main-function-dropdown-labels-border;
     
     .embbed {
       padding-top: 12px;
@@ -107,7 +107,7 @@
    
   &.dropdown--communicator-settings .dropdown__container {
     padding: 5px;
-    background-color: $color-communicator-dropdown-settings-background;
-    border: solid 1px $color-communicator-dropdown-settings-border;
+    background-color: $color-main-function-dropdown-settings-background;
+    border: solid 1px $color-main-function-dropdown-settings-border;
   }
 }

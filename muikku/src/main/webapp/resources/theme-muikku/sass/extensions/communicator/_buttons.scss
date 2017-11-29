@@ -4,16 +4,16 @@
 
 .communicator.button-pill {
   &.communicator-button-pill-settings {
-    background-color: $color-communicator-button-pill-settings-background;
+    background-color: $color-main-function-button-pill-settings-background;
     color: $color-communicator-button-pill-settings-text;
     vertical-align: top;
     
     &:hover, &.hover {
-      background-color: $color-communicator-button-pill-settings-background-hover;
+      background-color: $color-main-function-button-pill-settings-background-hover;
     }
     
     &:active, &.active {
-      background-color: $color-communicator-button-pill-settings-background-active;
+      background-color: $color-main-function-button-pill-settings-background-active;
     }
     
     &.disabled, &:disabled {

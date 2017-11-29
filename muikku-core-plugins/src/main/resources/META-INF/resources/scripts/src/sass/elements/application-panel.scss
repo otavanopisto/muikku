@@ -128,7 +128,7 @@
 }
 
 .application-panel__helper-container--main-action {
-  border-bottom: 1px solid $color-communicator-application-panel-actions-border;
+  border-bottom: 1px solid $color-main-function-application-panel-actions-border;
 }
 
 .application-panel__helper-container--content {
@@ -162,7 +162,7 @@
   padding: 12px 0;
   flex-direction: row;
   position: relative;
-  border-bottom: 1px solid $color-communicator-application-panel-actions-border; 
+  border-bottom: 1px solid $color-main-function-application-panel-actions-border; 
   
   @include breakpoint($breakpoint-pad) {
     margin: 0 12px 0 20px;

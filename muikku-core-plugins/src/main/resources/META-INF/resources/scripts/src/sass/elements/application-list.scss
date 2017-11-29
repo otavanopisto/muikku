@@ -100,7 +100,7 @@
     appearance: none;
     width: 20px;
     height: 20px;
-    border: solid 1px $color-communicator-application-list-item-checkbox-border;
+    border: solid 1px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
     margin-right: 8px;
   
@@ -110,11 +110,11 @@
   }
 
   input:checked {
-    background-color: $color-communicator-application-list-item-checkbox-checked-background;
+    background-color: $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
-    color: $color-communicator-application-list-item-checkbox-checked-mark;
+    color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
     font-family: muikku;
     font-size: 18px;
@@ -200,7 +200,7 @@
 }
 
 .application-list__item--communicator-message {  
-  border-bottom: 5px solid $color-communicator-application-list-item-open-border;
+  border-bottom: 5px solid $color-main-function-application-list-item-open-border;
   cursor: default;
   margin: 0;
   padding: 0 0 1px 0;
@@ -212,7 +212,7 @@
 }
 
 .application-list__item--communicator-unread {
-  border-left: solid 4px $color-communicator-application-list-item-unread-border;
+  border-left: solid 4px $color-message-unread-border;
 }
 
 
@@ -221,34 +221,7 @@
 
 
 .application-list__item--communicator-message:first-child {
-
   .application-list__item-header {
-    background-color: $color-communicator-application-list-item-open-header-background;
-  }
-  
-  .application-list__item-body {
-    background-color: $color-communicator-application-list-item-open-content-background;
- 
-    header {
-      font-size: 20px;
-    }
-  }
-
-  .application-list__item-footer {
-    background-color: $color-communicator-application-list-item-open-content-background;
-  }
-}
-
-.application-list__item--communicator-message:not(:first-child) {
-  .application-list__item-header{
-    background-color: $color-communicator-application-list-item-open-content-background;
-  }   
-
-  .application-list__item-body {
-    background-color: $color-communicator-application-list-item-open-content-background;
-  }    
-
-  .application-list__item-footer {
-    background-color: $color-communicator-application-list-item-open-content-background;
+    background-color: $color-message-open-header-background;
   }
 }
