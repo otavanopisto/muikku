@@ -20,7 +20,7 @@
 
 
 .tr-content-main {
-
+  background-color: #fff;
   &.loading {
     height: 200px;
 
@@ -34,7 +34,7 @@
 
 .tr-study-information {
   background-color: $environment-background-color;
-  margin: 0 0 20px;
+  margin: 0 0 10px;
   padding: 5px 15px;
 }
 
@@ -412,6 +412,7 @@
   h3 {
     color: $environment-item-subheader-font-color;
     font-weight: 700;
+    padding: 10px 0 0 10px;
   }
 }
 
