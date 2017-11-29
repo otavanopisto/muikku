@@ -329,7 +329,6 @@ b {
   flex: 1;    
   flex-direction: row;
   flex-wrap: wrap;
-  min-height: 30px;
 }
 
 .text--communicator-username {
@@ -349,34 +348,30 @@ b {
 .text--communicator-body {
   display: inline-block;
   font-weight: 300;
-  padding: 10px 0;
 }
 
 .text--communicator-labels {
   display: flex;
   flex: 1;
   flex-direction: row;
-  flex-wrap: wrap;
-  padding: 10px 0 0;  
+  flex-wrap: wrap; 
 }  
   
 .text--communicator-label {
-  align-items: end; 
+  align-items: center; 
   display: flex;
   font-weight: 300;
+  margin: 0 15px 0 0;
+}
 
-  &:not(:first-child) {
-    margin-left: 32px;
-  }
- 
-  .icon {
-    padding-left: 0;
-    
-    &::before {
-      display: inline-block;
-      margin-right: 5px;
-    }
-  }
+.text__icon {
+  align-items: center;
+  display: flex;
+  padding-left: 0;
+}
+
+.text__icon--communicator-label {
+  padding: 0 5px 0 0;
 }
 
 .text--communicator-label-update-dialog-icon {
@@ -548,5 +543,3 @@ b {
   font-size: 1.6rem;  
   font-weight: 600;  
 }
-
-

@@ -39,9 +39,11 @@ $color-communicator-application-list-item-open-header-background: #f8f8f8;
 $color-communicator-application-list-item-open-border: #f8f8f8;
 $color-communicator-application-list-item-open-content-background: $color-default;
 $color-communicator-application-list-item-unread-border: #E30086;
-$color-communicator-application-list-item-checkbox-border: #aaa;
-$color-communicator-application-list-item-checkbox-checked-mark: $color-success;
-$color-communicator-application-list-item-checkbox-checked-background: rgba(255, 255, 255, 0.8);
+$color-communicator-application-list-item-checkbox-border: #c7c7c7;
+
+$color-communicator-application-list-item-checkbox-checked-border: $color-application-list-item-background-selected;
+$color-communicator-application-list-item-checkbox-checked-mark: #fff;
+$color-communicator-application-list-item-checkbox-checked-background: $color-application-list-item-background-selected;
 
 $color-communicator-button-pill-new-message-background: $color-communicator-button-new-message-background;
 $color-communicator-button-pill-new-message-text: $color-communicator-button-new-message-text;

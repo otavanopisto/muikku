@@ -73,7 +73,7 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
             value: w
           }));
           return (
-            <div key={message.id} className="application-list__item--communicator-message">            
+            <div key={message.id} className="application-list__item application-list__item--communicator-message">            
               <div className="application-list__item-header application-list__item-header--communicator-message">
                 <div className="container container--communicator-message-meta">
                   <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">

@@ -147,7 +147,7 @@
 .application-panel__main-container {
   display: flex;
   flex: 1  1 auto;
-  padding: 0;
+  padding: 12px 0;
   margin: 0;
   
   &::-webkit-scrollbar { 
@@ -165,7 +165,7 @@
   border-bottom: 1px solid $color-communicator-application-panel-actions-border; 
   
   @include breakpoint($breakpoint-pad) {
-    margin: 0 12px 0 20px;
+    margin: 0 12px 0 25px;
   } 
 }
 
@@ -184,6 +184,6 @@
   margin: 0 12px;
   
   @include breakpoint($breakpoint-pad) {
-    margin: 0 12px 0 20px;
+    margin: 0 12px 0 25px;
   } 
 }  

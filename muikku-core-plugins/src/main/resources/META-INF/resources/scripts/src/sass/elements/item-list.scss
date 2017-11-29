@@ -61,12 +61,9 @@
   
 // List item icons
 .item-list__icon {
-  display: block;
+  display: flex;
   flex: 0 0 auto;
   font-size: $item-list-icon-font-size;
-  margin: 0 10px 0 2px;
-  text-align: center;
-  vertical-align: middle;
 }
 
 .item-list__icon--workspaces {
@@ -87,15 +84,15 @@
     
 // List item texts
 .item-list__text-body {
-  flex: 1 2 auto;
+  flex: 1 1 auto;
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
-  margin-left: 0.5 rem;
+  margin-left: 5px;
   max-width: calc(100% - 36px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-left: 5px;
+  
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }

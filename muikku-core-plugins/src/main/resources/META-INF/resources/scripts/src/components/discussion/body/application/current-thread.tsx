@@ -63,7 +63,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canRemoveThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.removeThread;
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
         
-    return <div className="application-list__items">
+    return <div className="application-list">
         <div className="application-list--open application-list__item--discussion-current-thread">
           <div className="application-list__item-header">
             <h1 className="text text--discussion-current-thread-title">{this.props.discussionThreads.current.title}</h1>

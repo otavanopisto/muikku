@@ -57,17 +57,15 @@
 // NAVBAR TITLE FOR MOBILE
 .navbar__mobile-title {
   color: $color-main-function-navbar-title;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 200;
   height: $navbar-height;
-  left: 70px;
+  left: 55px;
   line-height: $navbar-height;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
-  text-transform: uppercase;
   top: 0;
-  width: 50%;
 }
 
 // NAVBAR ITEMS CONTAINER
