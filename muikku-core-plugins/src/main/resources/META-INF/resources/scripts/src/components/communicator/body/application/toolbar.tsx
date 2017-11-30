@@ -171,7 +171,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         [
           <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-          <span className="link link--full link--communicator-new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+          <span className="link link--full" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </span>
         ].concat(this.props.communicatorNavigation.filter((item)=>{

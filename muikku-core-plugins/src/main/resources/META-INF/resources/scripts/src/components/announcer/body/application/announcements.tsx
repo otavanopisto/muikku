@@ -105,7 +105,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({
     addToAnnouncementsSelected,
     removeFromAnnouncementsSelected
-  }, dispatch);;
+  }, dispatch);
 };
 
 export default (connect as any)(

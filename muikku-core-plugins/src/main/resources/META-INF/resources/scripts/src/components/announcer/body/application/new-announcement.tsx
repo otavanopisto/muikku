@@ -9,6 +9,8 @@ import { UserRecepientType, UserGroupRecepientType } from '~/reducers/main-funct
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 import { AnyActionType } from '~/actions';
+import DatePicker from 'react-datepicker';
+import '~/sass/elements/datepicker/datepicker.scss';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -49,7 +51,9 @@ interface NewAnnouncementState {
   text: string,
   currentTarget: TargetItemsListType,
   subject: string,
-  locked: boolean
+  locked: boolean,
+  startDate: any,
+  endDate: any
 }
 
 class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncementState> {
@@ -59,12 +63,15 @@ class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncem
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setTargetItems = this.setTargetItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
+    this.handleDateChange = this.handleDateChange.bind(this);
     
     this.state = {
-      text: this.props.announcement ? this.props.announcement.content : "",
+      text: props.announcement ? props.announcement.content : "",
       currentTarget: props.target || [],
-      subject: this.props.announcement ? this.props.announcement.caption : "",
-      locked: false
+      subject: props.announcement ? props.announcement.caption : "",
+      locked: false,
+      startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
+      endDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate) : props.i18n.time.getLocalizedMoment().add(1, "day"),
     }
   }
   componentWillReceiveProps(nextProps: NewAnnouncementProps){
@@ -93,14 +100,26 @@ class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncem
   createOrModifyAnnouncement(closeDialog: ()=>any){
     closeDialog();
   }
+  handleDateChange(stateLocation: string, newDate: any){
+    let nState:any = {};
+    nState[stateLocation] = newDate;
+    (this.setState as any)(stateLocation)
+  }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill modifier="new-announcement" key="1" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
+      (<div key="1">
+         <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+           locale={this.props.i18n.time.getLocale()}/>
+         <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
+           locale={this.props.i18n.time.getLocale()}/>
+      </div>),
+      (<InputContactsAutofill modifier="new-announcement" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.target}></InputContactsAutofill>),
-      (<input key="2" type="text" className="form-field form-field--new-announcement-subject"
+      (<input key="3" type="text" className="form-field form-field--new-announcement-subject"
         placeholder={this.props.i18n.text.get('TODO create message title')}
         value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.target}/>),
-      (<CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+      (<CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
     ]
        
