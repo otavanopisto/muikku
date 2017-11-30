@@ -3,11 +3,38 @@
 @import "../base/breakpoints";
 
 .message {
-  border-bottom: 1px solid $color-message-border;  
+  border-left: solid 3px $color-default;
+  margin: 0 0 20px 0;
+  padding: 0 6px;
+  
+  &::after {
+    border-bottom: 1px solid $color-message-border;
+    content: " ";
+    display: block;
+    position: relative;
+    top: 10px;
+  }
+  
+  &:last-child {
+    margin: 0;
+    
+    &::after {
+      border: 0;
+    }
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+  
+}
+
+.message--unread {
+  border-left: solid 3px $color-message-unread-border;
 }
 
 .message--thread-op {
-  border-bottom: 5px solid $color-message-border;  
+  border-bottom: 5px solid $color-message-border;
 }
 
 .message--thread-reply {
@@ -17,14 +44,5 @@
 .message__select-container {
   align-items: center;
   display: flex;
-  height: 30px;
-}
-
-.message__content-aside--communicator {
-   flex: 0 0 38px; 
-}
-
-.message__content-aside--discussion {
-  flex: 0 0 70px;  
-  
+  padding: 2px 8px;
 }

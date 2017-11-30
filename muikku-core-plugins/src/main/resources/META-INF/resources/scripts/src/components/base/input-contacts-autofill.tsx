@@ -13,7 +13,9 @@ export interface InputContactsAutofillProps {
   onChange: (newValue: CommunicatorMessageItemRecepientType[])=>any,
   modifier: string,
   selectedItems: CommunicatorMessageItemRecepientType[],
-  hasGroupMessagingPermission: boolean,
+  hasGroupMessagingPermission?: boolean,
+  hasUserMessagingPermission?: boolean,
+  hasWorkspaceMessagingPermission?: boolean,
   autofocus?: boolean
 }
 
@@ -24,6 +26,10 @@ export interface InputContactsAutofillState {
   autocompleteOpened: boolean,
   fieldHeight?: number,
   isFocused: boolean
+}
+
+function checkHasPermission(which: boolean){
+  return (which === true || typeof which === "undefined");
 }
 
 export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
@@ -75,17 +81,17 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     if (textInput){
       let searchResults = await Promise.all(
         [
-          promisify(mApi().user.users.read({
+          checkHasPermission(this.props.hasUserMessagingPermission) ? promisify(mApi().user.users.read({
             searchString: textInput,
             onlyDefaultUsers: true
-          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]),
-          this.props.hasGroupMessagingPermission ? promisify(mApi().usergroup.groups.read({
+          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : null,
+          checkHasPermission(this.props.hasGroupMessagingPermission) ? promisify(mApi().usergroup.groups.read({
             searchString: textInput
           }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-          promisify(mApi().coursepicker.workspaces.read({
+          checkHasPermission(this.props.hasWorkspaceMessagingPermission) ? promisify(mApi().coursepicker.workspaces.read({
             search: textInput,
             myWorkspaces: true,
-          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]),
+          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
         ]
       );
       

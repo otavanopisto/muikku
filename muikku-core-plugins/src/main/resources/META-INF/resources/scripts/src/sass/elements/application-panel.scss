@@ -59,10 +59,12 @@
 }
 
 .application-panel__actions {
+  background: $color-default;
   left: 0;
   position: fixed;
   right: 0;
   top: $navbar-height;
+  z-index: 8;
   
   @include breakpoint($breakpoint-pad) {
     align-items: center;
@@ -73,19 +75,7 @@
     position: relative;
     right: 0;
     top: 0;
-    z-index: 8;
   }
-}
-
-.application-panel__actions-wrapper {
-  align-items: center;
-  background-color: white;
-  display: flex;
-  flex: 0 0 auto;
-  height: 100%;
-  justify-content: space-between;
-  max-width: calc(#{$breakpoint-max-usable-screen} - 2px);
-  width: calc(100% - 2px);
 }
   
 .application-panel__toolbar {
@@ -105,7 +95,7 @@
 }
 
 .application-panel__content {
-  padding: 50px 0 0;
+  padding: 2.5rem 0 0;
   
   @include breakpoint($breakpoint-pad) {
     display: flex;
@@ -121,7 +111,7 @@
   @include breakpoint($breakpoint-pad) {
     flex: 0 0 220px;
     display: flex;
-    margin-left: 12px;
+    margin: 0 12px;
     padding: 12px 0;
     width: 220px; 
   }
@@ -132,10 +122,9 @@
 }
 
 .application-panel__helper-container--content {
-  padding: 12px 0 0;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: auto;
   z-index: 1;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
   
   &::-webkit-scrollbar { 
@@ -145,27 +134,32 @@
 
 // Main containers
 .application-panel__main-container {
+  -ms-overflow-style: -ms-autohiding-scrollbar;
   display: flex;
   flex: 1  1 auto;
-  padding: 0;
+  padding: 10px 8px 10px 4px;
   margin: 0;
+  overflow: -moz-scrollbars-none;
   
   &::-webkit-scrollbar { 
     display: none; 
   }
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow: -moz-scrollbars-none;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 12px;
+    padding: 12px 0;
+  } 
 }
 
 .application-panel__main-container--actions {
-  margin: 0 12px;
-  padding: 12px 0;
-  flex-direction: row;
-  position: relative;
   border-bottom: 1px solid $color-main-function-application-panel-actions-border; 
-  
+  flex-direction: row;
+  margin: 0;
+  padding: 10px;
+  position: relative;
   @include breakpoint($breakpoint-pad) {
-    margin: 0 12px 0 20px;
+    margin: 0 12px;
+    padding: 12px 0;
   } 
 }
 
@@ -179,11 +173,3 @@
     padding-left: 0;
   }
 } 
-
-.application-panel__main-container--content-aside {
-  margin: 0 12px;
-  
-  @include breakpoint($breakpoint-pad) {
-    margin: 0 12px 0 20px;
-  } 
-}  

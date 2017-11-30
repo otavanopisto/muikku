@@ -1,18 +1,27 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
 .touch-pager {
-  width: 100%;
+  min-height: calc(100vh - 155px);
   overflow: hidden;
   position: relative;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-desktop) {
+    min-height: 0;
+  }
 }
 
 .touch-pager__prev-page, .touch-pager__next-page {
-  background-color: white;
-  border-left: solid 1px #ccc;
-  border-right: solid 1px #ccc;
+  background-color: $color-panel-background;
+  border-left: solid 1px $color-panel-border;
+  border-right: solid 1px $color-panel-border;
+  opacity: 0.95;
   width: 100%;
 }
 
 .touch-pager__current-page {
   width: 100%;
-  background-color: white;
-  padding: 10px 15px 0 25px;
 }

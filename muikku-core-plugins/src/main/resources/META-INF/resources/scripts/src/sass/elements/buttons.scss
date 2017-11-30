@@ -500,7 +500,7 @@
   background-color: $color-main-function-button-pill-go-back-background;
   color: $color-main-function-button-pill-go-back-text;
   flex: 0 0 auto;
-  margin-right: 20px;
+  margin-right: 10px;
   border-radius: 5px;
   vertical-align: top;
   
@@ -515,6 +515,10 @@
   &.disabled, &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    margin-right: 20px;
   }
 }
 

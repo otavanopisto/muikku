@@ -28,7 +28,7 @@ class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAside
         {this.props.announcerNavigation.map((item: AnnouncerNavigationItemType)=>{
           return <Link key={item.id} className={`item-list__item ${this.props.announcements.location === item.location ? "active" : ""}`}
             href={`#${item.location}`}>
-            <span className={`icon icon-${item.icon}`}></span>
+            <span className={`item-list__icon icon-${item.icon}`}></span>
             <span className="item-list__text-body text">
               {item.text(this.props.i18n)}
             </span>

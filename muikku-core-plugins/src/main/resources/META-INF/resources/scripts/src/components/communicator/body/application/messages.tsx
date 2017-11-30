@@ -88,27 +88,27 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     //VERY CRITICAL CODE
     //REMOVAL WILL CAUSE EXPLOSION
     return <BodyScrollKeeper hidden={!!this.props.communicatorMessagesCurrent}>
-      <SelectableList className="application-list application-list__items" selectModeClassAddition="application-list--select-mode"
+      <SelectableList className="application-list" selectModeClassAddition="application-list--select-mode"
         extra={this.props.communicatorMessagesState === "LOADING_MORE" ?
           <div className="application-list__item loader-empty"/>
          : null} dataState={this.props.communicatorMessagesState}>
         {this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
           let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
           return {
-            className: `application-list__item ${message.unreadMessagesInThread ? "application-list__item--communicator-unread" : ""}`,
+            className: `application-list__item message ${message.unreadMessagesInThread ? "message--unread" : ""}`,
             onSelect: this.props.addToCommunicatorSelectedMessages.bind(null, message),
             onDeselect: this.props.removeFromCommunicatorSelectedMessages.bind(null, message),
             onEnter: this.setCurrentMessage.bind(this, message),
             isSelected,
             key: message.communicatorMessageId,
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <div className="application-list__item-content-container--message message">
-                  <div className="application-list__item-content--aside message__content-aside--communicator">
+              return <div className="application-list__item-content-wrapper message__content">
+                  <div className="application-list__item-content application-list__item-content--aside message__content-aside--communicator">
                     <div className="message__select-container">
                       {checkbox}
                     </div>
                   </div>
-                  <div className="application-list__item-content--main">
+                  <div className="application-list__item-content application-list__item-content--main">
                     <div className="application-list__item-header">
                       <div className="text text--communicator-usernames">
                         <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
@@ -123,14 +123,14 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                     <div className="application-list__item-body">
                       <span className="text text--communicator-body">{message.caption}</span>
                     </div>
-                    <div className="application-list__item-footer">
+                    {message.labels ? <div className="application-list__item-footer">
                       <div className="text text--communicator-labels">{message.labels.map((label)=>{
                         return <span className="text text--communicator-label" key={label.id}>
-                          <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                          <span className="text__icon text__icon--communicator-label icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                           <span>{label.labelName}</span>
                         </span>
-                      })}</div>            
-                    </div>
+                      })}</div>
+                    </div> : null}
                   </div>    
                 </div>
               }

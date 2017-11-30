@@ -95,7 +95,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             </Link>
           
             <div className="text text--communicator-current-folder">
-              <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+              <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               {"  " + currentLocation.text(this.props.i18n)}
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
                 <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
@@ -155,7 +155,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     
     return <div className="application-panel__toolbar">
       <div className="text text--communicator-current-folder">
-        <span className={`icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+        <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         {"  " + currentLocation.text(this.props.i18n)}
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
           <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
