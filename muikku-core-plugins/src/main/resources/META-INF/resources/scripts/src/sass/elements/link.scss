@@ -92,19 +92,19 @@
  
   &.link--language {
     font-size: 14px;
-    background-color: $color-main-function-link-language-background;
-    color: $color-main-function-link-language-text;
+    background-color: $color-environment-link-language-background;
+    color: $color-environment-link-language-text;
 
     &:hover,
     &.hover {
-      background-color: opacify($color-main-function-link-language-hover-background, 0.6);
-      color: $color-main-function-link-language-text;
+      background-color: opacify($color-environment-link-language-hover-background, 0.6);
+      color: $color-environment-link-language-text;
     }
 
     &:active,
     &.active {
-      background-color: opacify($color-main-function-link-language-hover-background, 0.6);
-      color: $color-main-function-link-language-text;
+      background-color: opacify($color-environment-link-language-hover-background, 0.6);
+      color: $color-environment-link-language-text;
     }
   }
  
@@ -112,8 +112,8 @@
   	overflow: hidden;
   	
   	.icon {
-      background-color: $color-main-function-link-menu-icon-background;
-      color: $color-main-function-link-menu-icon-color;
+      background-color: $color-environment-link-menu-icon-background;
+      color: $color-environment-link-menu-icon-color;
       width: 35px;
       height: 35px;
       border-radius: 100%;
@@ -131,70 +131,70 @@
     &.link--menu--profile {
       .icon {
         margin-right: 0;
-        background: $color-main-function-link-menu-profile-icon-background;
-        color: $color-main-function-link-menu-profile-icon-color;
+        background: $color-environment-link-menu-profile-icon-background;
+        color: $color-environment-link-menu-profile-icon-color;
       }
     }
     
     &.link--menu--instructions {
       .icon {
-        background: $color-main-function-link-menu-instructions-icon-background;
-        color: $color-main-function-link-menu-instructions-icon-color;
+        background: $color-environment-link-menu-instructions-icon-background;
+        color: $color-environment-link-menu-instructions-icon-color;
       }
     }
     
     &.link--menu--helpdesk {
       .icon {
-        background: $color-main-function-link-menu-heldesk-icon-background;
-        color: $color-main-function-link-menu-helpdesk-icon-color;
+        background: $color-environment-link-menu-heldesk-icon-background;
+        color: $color-environment-link-menu-helpdesk-icon-color;
       }
     }
     &.link--menu--logout {
       .icon {
-        background: $color-main-function-link-menu-logout-icon-background;
-        color: $color-main-function-link-menu-logout-icon-color;
+        background: $color-environment-link-menu-logout-icon-background;
+        color: $color-environment-link-menu-logout-icon-color;
       }
     }
   }
   
   &.link--main-function-navbar {
   	&.link--icon {
-      color: $color-main-function-link-icon-color;
+      color: $color-environment-link-icon-color;
     
       &:hover, &.hover {
-        color: $color-main-function-link-icon-color-hover;
+        color: $color-environment-link-icon-color-hover;
       }
       &:active, &.active {
         &::before {
           content: " ";
           height: $main-function-link-icon-active-border-size;
-          background-color: $color-main-function-link-icon-border-top-color-active;
+          background-color: $color-environment-link-icon-border-top-color-active;
           position: absolute;
           top: 0;
           width: 100%;
           left: 0;
         }
-        color: $color-main-function-link-icon-color-active;
+        color: $color-environment-link-icon-color-active;
       }
     }
   }
  
   &.link--profile {
     font-size: 14px;
-    background-color: $color-main-function-link-profile-menu-background;
-    color: $color-main-function-link-profile-menu-text;
+    background-color: $color-environment-link-profile-menu-background;
+    color: $color-environment-link-profile-menu-text;
     justify-content: flex-start;
 
     &:hover,
     &.hover {
-      background-color: $color-main-function-link-profile-menu-hover-background;
-      color: $color-main-function-link-profile-menu-text;
+      background-color: $color-environment-link-profile-menu-hover-background;
+      color: $color-environment-link-profile-menu-text;
     }
 
     &:active,
     &.active {
-      background-color: $color-main-function-link-profile-menu-hover-background;
-      color: $color-main-function-link-profile-menu-text;
+      background-color: $color-environment-link-profile-menu-hover-background;
+      color: $color-environment-link-profile-menu-text;
     }
   }
  
@@ -203,11 +203,11 @@
     text-transform: none;
     
     &.selected {
-      background-color: $color-communicator-link-label-active-background;
+      background-color: $color-main-function-label-link-active-background;
     }
     
     &.semi-selected {
-      background-color: lighten($color-communicator-link-label-active-background, 50%);
+      background-color: lighten($color-main-function-label-link-active-background, 50%);
     }
   }
   

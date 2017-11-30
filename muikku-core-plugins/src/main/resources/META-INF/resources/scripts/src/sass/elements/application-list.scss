@@ -59,7 +59,7 @@
     -moz-appearance: none;
     align-items: center;
     appearance: none;
-    border: solid 1px $color-communicator-application-list-item-checkbox-border;
+    border: solid 1px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
     display: flex;
     height: 1rem;
@@ -68,12 +68,12 @@
   }
 
   input:checked {
-    background-color: $color-communicator-application-list-item-checkbox-checked-background;
-    border: 1px solid $color-communicator-application-list-item-checkbox-checked-border;
+    background-color: $color-main-function-application-list-item-checkbox-checked-background;
+    border: solid 1px $color-main-function-application-list-item-checkbox-border;
   }
 
   input:checked::after {
-    color: $color-communicator-application-list-item-checkbox-checked-mark;
+    color: $color-main-function-application-list-item-checkbox-checked-mark;
     content: "\e639";
     font-family: muikku;
     font-size: .875rem;
@@ -185,7 +185,7 @@
 }
 
 .application-list__item--communicator-message {  
-  border-bottom: 5px solid $color-communicator-application-list-item-open-border;
+  border-bottom: 5px solid $color-main-function-application-list-item-open-border;
   cursor: default;
   margin: 0;
   padding: 0 0 1px 0;
@@ -199,36 +199,15 @@
   flex-direction: column;
 }
 
-// This is against the BEM, but convenient because of the pseudo classes
-.application-list__item--communicator-message:first-child {
 
-  .application-list__item-header {
-    background-color: $color-communicator-application-list-item-open-header-background;
-  }
-  
-  .application-list__item-body {
-    background-color: $color-communicator-application-list-item-open-content-background;
- 
-    header {
-      font-size: 20px;
-    }
-  }
 
-  .application-list__item-footer {
-    background-color: $color-communicator-application-list-item-open-content-background;
-  }
+.application-list__item--communicator-unread {
+  border-left: solid 4px $color-message-unread-border;
 }
 
-.application-list__item--communicator-message:not(:first-child) {
-  .application-list__item-header{
-    background-color: $color-communicator-application-list-item-open-content-background;
-  }   
-
-  .application-list__item-body {
-    background-color: $color-communicator-application-list-item-open-content-background;
-  }    
-
-  .application-list__item-footer {
-    background-color: $color-communicator-application-list-item-open-content-background;
+// This is against the BEM, but convenient because of the pseudo classes
+.application-list__item--communicator-message:first-child {
+  .application-list__item-header {
+    background-color: $color-message-open-header-background;
   }
 }

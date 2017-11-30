@@ -56,7 +56,7 @@
 
 // NAVBAR TITLE FOR MOBILE
 .navbar__mobile-title {
-  color: $color-main-function-navbar-title;
+  color: $color-environment-navbar-title;
   font-size: 1.5rem;
   font-weight: 200;
   height: $navbar-height;
@@ -137,10 +137,10 @@
   
 // NAVBAR IN MAIN-FUNCTIONS
 .navbar--main-function {
-  background-color: $color-main-function-navbar-background;
+  background-color: $color-environment-navbar-background;
  
  .navbar__item--menu-button .link {
-    color: $color-main-function-navbar-item-menu-button;
+    color: $color-environment-navbar-item-menu-button;
   }  
 }
 

@@ -8,7 +8,7 @@ import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
-
+import NewAnnouncement from './application/new-announcement';
 
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/text.scss';
@@ -39,9 +39,9 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
             <span className="icon icon-settings"></span>
           </Link>
         </Dropdown>
-        let primaryOption = <a className="button button--primary-function">
+        let primaryOption = <NewAnnouncement><Link className="button button--primary-function">
           {this.props.i18n.text.get('plugin.announcer.button.create')}
-        </a>
+        </Link></NewAnnouncement>
         let toolbar = <Toolbar />
  
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server

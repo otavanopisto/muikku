@@ -229,14 +229,14 @@ $dialog-button-close-height: 45px;
   
     .jumbo-dialog__wrapper {
       height: 520px;
-      background-color: $color-communicator-jumbo-dialog-background-color;
+      background-color: $color-application-dialog-background-color;
     
       @include breakpoint-down($breakpoint-landscape-pad) {
         height: auto;
       }
     
       .jumbo-dialog__header {
-        background-color: $color-communicator-jumbo-dialog-header-background-color;
+        background-color: $color-application-dialog-header-background-color;
       }
     }
   }
