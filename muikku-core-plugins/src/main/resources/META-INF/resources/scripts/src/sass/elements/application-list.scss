@@ -16,11 +16,6 @@
 
 .application-list__item-content-wrapper {
   display: flex;
-/*   padding: 2px 8px 2px 0; */
-  
-  @include breakpoint($breakpoint-pad) {
-/*     padding: 2px 10px 2px 0; */
-  }
 }
 
 .application-list__item {
