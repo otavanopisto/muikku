@@ -320,14 +320,16 @@
 }
   
 .button-pill--floating {
+  background-color: $color-primary;
+  bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,.25);
+  color: $color-default;
   font-size: $button-pill-floating-font-size;
   height: $button-pill-floating-size;
-  width: $button-pill-floating-size;
   position: fixed;
-  bottom: 10px;
   right: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,.25);
   transition: box-shadow 0.3s;
+  width: $button-pill-floating-size;
   
   &:active {
     box-shadow: 0 0 0 rgba(0,0,0,.25);
@@ -578,10 +580,7 @@
 .button-pill--toolbar-edit-label {
 	background-color: $color-main-function-button-pill-toolbar-edit-label-background;
   color: $color-main-function-button-pill-toolbar-edit-label-text;
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
+  display: inline-flex;
 
   @include breakpoint($breakpoint-pad) {
     display: none;
