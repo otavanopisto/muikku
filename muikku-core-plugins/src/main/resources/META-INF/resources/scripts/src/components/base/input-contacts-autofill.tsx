@@ -84,7 +84,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
           checkHasPermission(this.props.hasUserMessagingPermission) ? promisify(mApi().user.users.read({
             searchString: textInput,
             onlyDefaultUsers: true
-          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : null,
+          }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
           checkHasPermission(this.props.hasGroupMessagingPermission) ? promisify(mApi().usergroup.groups.read({
             searchString: textInput
           }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
