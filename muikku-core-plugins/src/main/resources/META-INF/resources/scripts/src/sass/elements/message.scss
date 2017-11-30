@@ -3,8 +3,9 @@
 @import "../base/breakpoints";
 
 .message {
-  border-left: solid 4px $color-default;
+  border-left: solid 3px $color-default;
   margin: 0 0 20px 0;
+  padding: 0 6px;
   
   &::after {
     border-bottom: 1px solid $color-message-border;
@@ -21,10 +22,15 @@
       border: 0;
     }
   }
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+  
 }
 
 .message--unread {
-  border-left: solid 4px $color-communicator-application-list-item-unread-border;
+  border-left: solid 3px $color-communicator-application-list-item-unread-border;
 }
 
 .message--thread-op {

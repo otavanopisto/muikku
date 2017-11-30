@@ -312,7 +312,11 @@ b {
 }
 
 .text--communicator-current-folder {
+  align-items: center;
   flex: 1 1 auto;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 300;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
@@ -364,16 +368,6 @@ b {
   margin: 0 15px 0 0;
 }
 
-.text__icon {
-  align-items: center;
-  display: flex;
-  padding-left: 0;
-}
-
-.text__icon--communicator-label {
-  padding: 0 5px 0 0;
-}
-
 .text--communicator-label-update-dialog-icon {
   display: block;
   width: 100%;
@@ -422,7 +416,6 @@ b {
 }
 
 .text--communicator-message-recipient {        
-  margin-left: 5px;
   display: inline-block;
       
   &:not(:last-child):after {
@@ -527,7 +520,7 @@ b {
   border-left: 5px solid skyblue;
 }
 
-.text--new-discussion-create-state{
+.text--new-discussion-create-state {
   margin-right: 10px;
   
   &:not(:first-child) {
@@ -542,4 +535,18 @@ b {
 .text--discussion-current-thread-title {
   font-size: 1.6rem;  
   font-weight: 600;  
+}
+
+// Text icon
+.text__icon {
+  align-items: center;
+  display: flex;
+}
+
+.text__icon--communicator-label {
+  padding: 0 5px 0 0;
+}
+
+.text__icon--current-folder {
+  padding: 0 5px 0 0;
 }

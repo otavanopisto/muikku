@@ -6,6 +6,15 @@
 .item-list {
   
 }
+
+.item-list--aside-navigation {
+  padding: 0 0 10px 0;
+  width: 100%;
+  
+  .item-list__item {
+    background-color: $color-item-list-item-aside-background;
+  }    
+}
   
 // List items
 .item-list__item {
@@ -25,7 +34,7 @@
       color: $color-item-list-item-font-color-active;            
     }
   }
-} 
+}
 
 .item-list__item--latest-messages,
 .item-list__item--latest-announcements {
@@ -107,26 +116,9 @@
   color: $color-index-text-panel-latest-messages-date;
   font-size: calc(#{$text-mobile-font-size} / 1.1);
   font-style: italic;
-  padding: 3px 0 0;
+  padding: 6px 0 0;
   
   @include breakpoint($breakpoint-pad) {
     font-size: calc(#{$text-desktop-font-size} / 1.1);
-    padding: 5px 0 0;
   }
-}
-
-// List items in main-functions
-.item-list--aside-navigation {
-	width: 100%;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	
-	.item-list-item {
-    padding-right: 10px;
-	}    
-}
-  
-.item-list--aside-navigation {
-	width: 100%;
-  padding: 0 0 10px 0;
 }

@@ -14,13 +14,13 @@
   } 
 }
 
-.application-list--select-mode {
-
-}
-
 .application-list__item-content-wrapper {
   display: flex;
-  padding: 2px 10px 2px 0;
+/*   padding: 2px 8px 2px 0; */
+  
+  @include breakpoint($breakpoint-pad) {
+/*     padding: 2px 10px 2px 0; */
+  }
 }
 
 .application-list__item {
@@ -194,6 +194,10 @@
   cursor: default;
   margin: 0;
   padding: 0 0 1px 0;
+  
+  &:last-child {
+    border: 0;
+  }
 }
 
 .application-list__item-header--communicator-message {

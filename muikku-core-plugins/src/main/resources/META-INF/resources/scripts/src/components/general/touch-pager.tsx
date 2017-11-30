@@ -101,7 +101,9 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
   }
   render(){
     return <div className={`touch-pager ${this.props.modifier ? 'touch-pager--' + this.props.modifier : ''}`}
-     style={{minHeight: this.state.minHeight}} ref="main"
+     ref="main"
+//   Do we really need to calculate ?
+//   style={{minHeight: this.state.minHeight}} 
      onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
       <div className="touch-pager__prev-page" style={{position: "absolute", top: 0, height: "100%", right: "100%", width: "100%", transform: `translateX(${this.state.drag}px)`}}>{this.props.prev}</div>
       <div className="touch-pager__current-page" ref="centerContainer">{this.props.children}</div>
