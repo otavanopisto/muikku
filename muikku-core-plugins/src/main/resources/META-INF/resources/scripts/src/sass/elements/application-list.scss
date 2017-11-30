@@ -69,7 +69,7 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 1px $color-main-function-application-list-item-checkbox-border;
+    border: solid 1px $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
@@ -198,8 +198,6 @@
 .application-list__item-header--communicator-message {
   flex-direction: column;
 }
-
-
 
 .application-list__item--communicator-unread {
   border-left: solid 4px $color-message-unread-border;
