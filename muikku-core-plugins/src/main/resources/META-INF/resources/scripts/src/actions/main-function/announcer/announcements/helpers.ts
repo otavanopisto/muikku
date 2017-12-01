@@ -8,7 +8,7 @@ import notificationActions from '~/actions/base/notifications';
 
 const MAX_LOADED_AT_ONCE = 30;
 
-export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, notOverrideCurrent: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, notOverrideCurrent: boolean, force: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
   if (!notOverrideCurrent){
     //Remove the current announcement
     dispatch({
@@ -23,8 +23,11 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
   let status:StatusType = state.status;
   let actualLocation:string = location || announcements.location;
   
+  let isForceDefined = typeof force === "boolean";
+  let isForceEnforced = force;
+  
   //Avoid loading announcements if it's the same location
-  if (actualLocation === announcements.location && announcements.state === "READY"){
+  if ((!isForceDefined || !isForceEnforced) && (actualLocation === announcements.location && announcements.state === "READY")){
     return;
   }
   
