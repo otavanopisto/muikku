@@ -5,12 +5,14 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import { UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 import { AnyActionType } from '~/actions';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
+import { WorkspaceType } from '~/reducers/main-function/index/workspaces';
+import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/main-function/user-index';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -38,13 +40,13 @@ const extraPlugins = {
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
 
-type TargetItemsListType = Array<UserRecepientType | UserGroupRecepientType>;
+type TargetItemsListType = Array<WorkspaceRecepientType | UserGroupRecepientType>;
 
 interface NewEditAnnouncementProps {
   children: React.ReactElement<any>,
-  target: TargetItemsListType,
   i18n: i18nType,
-  announcement?: AnnouncementType
+  announcement?: AnnouncementType,
+  loadUserGroupIndex: LoadUserGroupIndexTriggerType
 }
 
 interface NewEditAnnouncementState {
@@ -56,6 +58,7 @@ interface NewEditAnnouncementState {
   endDate: any
 }
 
+
 class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewEditAnnouncementState> {
   constructor(props: NewEditAnnouncementProps){
     super(props);
@@ -64,15 +67,29 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
     this.setTargetItems = this.setTargetItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
+    this.loadUserGroups = this.loadUserGroups.bind(this);
     
     this.state = {
       text: props.announcement ? props.announcement.content : "",
-      currentTarget: props.target || [],
+      currentTarget: props.announcement ? props.announcement.workspaces.map(w=>{
+        //NOTE this workspace type is incomplete, but should do the job regardless
+        return {
+          type: "workspace",
+          value: w
+        } as WorkspaceRecepientType
+      }) : [],
       subject: props.announcement ? props.announcement.caption : "",
       locked: false,
       startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
       endDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate) : props.i18n.time.getLocalizedMoment().add(1, "day"),
     }
+    
+    if (props.announcement){
+      this.loadUserGroups(props.announcement);
+    }
+  }
+  loadUserGroups(announcement: AnnouncementType){
+    announcement.userGroupEntityIds.forEach(this.props.loadUserGroupIndex);
   }
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
@@ -80,11 +97,25 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
       this.setState({
         subject: nextProps.announcement.caption,
         text: nextProps.announcement.content,
+        currentTarget: nextProps.announcement.workspaces.map(w=>{
+          //NOTE this workspace type is incomplete, but should do the job regardless
+          return {
+            type: "workspace",
+            value: w
+          } as WorkspaceRecepientType
+        }),
+        startDate: nextProps.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
+        endDate: nextProps.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
       });
+      
+      this.loadUserGroups(nextProps.announcement);
     } else if (this.props.announcement && !nextProps.announcement){
       this.setState({
         subject: "",
         text: "",
+        currentTarget: [],
+        startDate: nextProps.i18n.time.getLocalizedMoment(),
+        endDate: nextProps.i18n.time.getLocalizedMoment().add(1, "day"),
       });
     }
   }
@@ -115,10 +146,10 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
            locale={this.props.i18n.time.getLocale()}/>
       </div>),
       (<InputContactsAutofill modifier="new-edit-announcement" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
-        selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.target}></InputContactsAutofill>),
+        selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
       (<input key="3" type="text" className="form-field form-field--new-announcement-subject"
         placeholder={this.props.i18n.text.get('TODO create message title')}
-        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.target}/>),
+        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>),
       (<CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
     ]
@@ -153,7 +184,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({loadUserGroupIndex}, dispatch);
 };
 
 export default (connect as any)(

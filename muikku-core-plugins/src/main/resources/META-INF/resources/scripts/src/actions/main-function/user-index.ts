@@ -49,6 +49,24 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId) {
 
 let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIndex(groupId) { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let currentGroupInfo = state.userIndex.groups[groupId];
+    if (currentGroupInfo || fetchingStateUser[groupId]){
+      return;
+    }
+    
+    fetchingStateUser[groupId] = true;
+    
+    try {
+      dispatch({
+        type: "SET_USER_GROUP_INDEX",
+        payload: {
+          index: groupId,
+          value: (await (promisify(mApi().usergroup.groups.read(groupId), 'callback')()) || 0)
+        }
+      });
+    } catch(err){
+    }
   }
 }
 
