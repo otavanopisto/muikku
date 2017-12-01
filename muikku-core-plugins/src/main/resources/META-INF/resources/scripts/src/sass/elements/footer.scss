@@ -4,43 +4,43 @@
 .footer {
   background-color: $color-footer-default-background;
   text-align: center;
-  width: 100%;
+  width: 100%;  
+}
 
-  .footer__container {
-    display: flex;
-    justify-content: center;
-    max-width: $breakpoint-max-usable-screen;
-    position: relative;
-    width: 100%;
-    
-    .footer__item {
-      flex: 1 0 auto;
-      padding: 40px;
-      position: relative;
-  	
-  	  &.footer__item--contact {
-	      align-items: center;
-	      display: flex;
-	      flex-flow: column nowrap;
-	      
-	      @include breakpoint($breakpoint-pad){
-          align-items: flex-start;
-          display: flex;
-          flex-flow: column nowrap;
-          justify-content: space-around;
-        }
-	    }
-  	  &.footer__item--logos {
-  	    display: none;
-  	
-  	    @include breakpoint($breakpoint-pad){
-  	      align-items: flex-end;
-          display: flex;
-          flex-flow: column nowrap;
-          justify-content: space-around;
-  	    }
-      }
-  	}
-  }
+.footer__container {
+  display: flex;
+  justify-content: center;
+  max-width: $breakpoint-max-usable-screen;
+  position: relative;
+  width: 100%;
+}
+
+.footer__item {
+  flex: 1 0 auto;
+  padding: 40px;
+  position: relative;
+}
+
+.footer__item--contact {
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
   
+  @include breakpoint($breakpoint-pad){
+    align-items: flex-start;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+  }
+}
+
+.footer__item--logos {
+  display: none;
+
+  @include breakpoint($breakpoint-pad){
+    align-items: flex-end;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+  }
 }

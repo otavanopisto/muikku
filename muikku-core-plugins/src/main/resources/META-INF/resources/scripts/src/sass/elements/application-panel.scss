@@ -109,27 +109,24 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
     flex: 0 0 220px;
     display: flex;
     margin: 0 12px;
+    overflow: auto;
+    overflow: -moz-scrollbars-none;
     padding: 12px 0;
     width: 220px; 
+    z-index: 1;
+    
+    &::-webkit-scrollbar { 
+      display: none; 
+    }
   }
 }
 
 .application-panel__helper-container--main-action {
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
-}
-
-.application-panel__helper-container--content {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow: auto;
-  z-index: 1;
-  overflow: -moz-scrollbars-none;
-  
-  &::-webkit-scrollbar { 
-    display: none; 
-  }
 }
 
 // Main containers
