@@ -62,7 +62,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         
         //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
         //round so put something as a placeholder in order to be efficient and make short rendering cycles
-        let user:UserType = this.props.userIndex[thread.creator];
+        let user:UserType = this.props.userIndex.users[thread.creator];
         
       
         //UKKONEN hint

@@ -23,7 +23,7 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'announcer-new-announcement',
+  draftKey: 'announcer-new-edit-announcement',
   resize_enabled: false
 }
 const extraPlugins = {
@@ -40,14 +40,14 @@ const extraPlugins = {
 
 type TargetItemsListType = Array<UserRecepientType | UserGroupRecepientType>;
 
-interface NewAnnouncementProps {
+interface NewEditAnnouncementProps {
   children: React.ReactElement<any>,
   target: TargetItemsListType,
   i18n: i18nType,
   announcement?: AnnouncementType
 }
 
-interface NewAnnouncementState {
+interface NewEditAnnouncementState {
   text: string,
   currentTarget: TargetItemsListType,
   subject: string,
@@ -56,8 +56,8 @@ interface NewAnnouncementState {
   endDate: any
 }
 
-class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncementState> {
-  constructor(props: NewAnnouncementProps){
+class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewEditAnnouncementState> {
+  constructor(props: NewEditAnnouncementProps){
     super(props);
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
@@ -74,7 +74,7 @@ class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncem
       endDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate) : props.i18n.time.getLocalizedMoment().add(1, "day"),
     }
   }
-  componentWillReceiveProps(nextProps: NewAnnouncementProps){
+  componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
         (!this.props.announcement && nextProps.announcement)){
       this.setState({
@@ -114,7 +114,7 @@ class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncem
          <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
       </div>),
-      (<InputContactsAutofill modifier="new-announcement" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-edit-announcement" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.target}></InputContactsAutofill>),
       (<input key="3" type="text" className="form-field form-field--new-announcement-subject"
         placeholder={this.props.i18n.text.get('TODO create message title')}
@@ -136,8 +136,10 @@ class NewAnnouncement extends React.Component<NewAnnouncementProps, NewAnnouncem
       )
     }
     
-    return <JumboDialog modifier="new-announcement"
-      title={this.props.i18n.text.get('TODO announcement new create')}
+    return <JumboDialog modifier="new-edit-announcement"
+      title={this.props.announcement ?
+        this.props.i18n.text.get('TODO announcement modify') :
+        this.props.i18n.text.get('TODO announcement new create')}
       content={content} footer={footer}>
       {this.props.children}
     </JumboDialog>
@@ -157,4 +159,4 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
 export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
-)(NewAnnouncement);
+)(NewEditAnnouncement);

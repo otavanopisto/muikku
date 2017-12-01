@@ -7,22 +7,32 @@ export interface LoadUserIndexTriggerType {
   (userId: number):AnyActionType
 }
 
+export interface LoadUserGroupIndexTriggerType {
+  (groupId: number):AnyActionType
+}
+
 export interface SET_USER_INDEX extends SpecificActionType<"SET_USER_INDEX", {
   index: number,
   value: UserType
 }>{}
 
-let fetchingState:{[index: number]: boolean} = {};
+export interface SET_USER_GROUP_INDEX extends SpecificActionType<"SET_USER_GROUP_INDEX", {
+  index: number,
+  value: any      //TODO fix these user groups
+}>{}
+
+let fetchingStateUser:{[index: number]: boolean} = {};
+let fetchingStateUserGroup:{[index: number]: boolean} = {};
 
 let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId) { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let state = getState();
-    let currentUserInfo = state.userIndex[userId];
-    if (currentUserInfo || fetchingState[userId]){
+    let currentUserInfo = state.userIndex.users[userId];
+    if (currentUserInfo || fetchingStateUser[userId]){
       return;
     }
     
-    fetchingState[userId] = true;
+    fetchingStateUser[userId] = true;
     
     try {
       dispatch({
@@ -37,5 +47,10 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId) {
   }
 }
 
-export default {loadUserIndex}
-export {loadUserIndex}
+let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIndex(groupId) { 
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  }
+}
+
+export default {loadUserIndex, loadUserGroupIndex}
+export {loadUserIndex, loadUserGroupIndex}
