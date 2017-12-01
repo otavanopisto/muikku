@@ -112,10 +112,12 @@ export default class InputContactsAutofill extends React.Component<InputContacts
   }
   onDelete(item: CommunicatorMessageItemRecepientType){
     clearTimeout(this.blurTimeout);
+    let nfilteredValue = this.state.selectedItems.filter(selectedItem=>selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
     this.setState({
-      selectedItems: this.state.selectedItems.filter(selectedItem=>selectedItem.type !== item.type || selectedItem.value.id !== item.value.id),
+      selectedItems: nfilteredValue,
       isFocused: true
     }, this.setHeight);
+    this.props.onChange(nfilteredValue);
   }
   onAutocompleteItemClick(item: CommunicatorMessageItemRecepientType, selected: boolean){
     clearTimeout(this.blurTimeout);

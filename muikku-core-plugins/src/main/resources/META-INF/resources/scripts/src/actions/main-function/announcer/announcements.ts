@@ -6,6 +6,7 @@ import {AnnouncementsStateType, AnnouncementsPatchType,
   AnnouncementListType, AnnouncementType, AnnouncementUpdateType, AnnouncementsType} from '~/reducers/main-function/announcer/announcements';
 import { loadAnnouncementsHelper } from './announcements/helpers';
 import { AnnouncerNavigationItemListType } from '~/reducers/main-function/announcer/announcer-navigation';
+import moment from '~/lib/moment';
 
 export interface UPDATE_ANNOUNCEMENTS_STATE extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_STATE", AnnouncementsStateType>{}
 export interface UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES extends SpecificActionType<"UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES", AnnouncementsPatchType>{}
@@ -37,7 +38,12 @@ export interface RemoveFromAnnouncementsSelectedTriggerType {
 }
 
 export interface UpdateAnnouncementTriggerType {
-  (announcement: AnnouncementType, update: AnnouncementUpdateType):AnyActionType
+  (data:{
+    announcement: AnnouncementType,
+    update: AnnouncementUpdateType,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
 }
 
 export interface DeleteAnnouncementTriggerType {
@@ -54,14 +60,6 @@ export interface DeleteSelectedAnnouncementsTriggerType {
 
 export interface CreateAnnouncementTriggerType {
   (data: {
-    success: ()=>any,
-    fail: ()=>any
-  }):AnyActionType
-}
-
-export interface ModifyAnnouncementTriggerType {
-  (data: {
-    announcement: AnnouncementType,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -113,19 +111,32 @@ let removeFromAnnouncementsSelected:RemoveFromAnnouncementsSelectedTriggerType =
   }
 }
 
-let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnouncement(announcement, update){
+let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnouncement(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let announcements:AnnouncementsType = state.announcements;
+    
     try {
-      await promisify(mApi().announcer.announcements.update(announcement.id, update), 'callback')();
-      dispatch({
-        type: "UPDATE_ONE_ANNOUNCEMENT",
-        payload: {
-          update,
-          announcement
-        }
-      });
+      await promisify(mApi().announcer.announcements.update(data.announcement.id, data.update), 'callback')();
+      
+      let diff = moment(data.update.endDate).diff(moment(), 'days');
+      if (announcements.location !== "active" && diff >= 0){
+        location.hash = "#active";
+      } else if (announcements.location !== "past" && diff < 0){
+        location.hash = "#past";
+      } else {
+        dispatch({
+          type: "UPDATE_ONE_ANNOUNCEMENT",
+          payload: {
+            update: <AnnouncementUpdateType>await promisify(mApi().announcer.announcements.read(data.announcement.id), 'callback')(),
+            announcement: data.announcement
+          }
+        });
+      }
+      data.success();
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail();
     }
   }
 }
@@ -172,16 +183,9 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
     
   }
 }
-
-let modifyAnnouncement:ModifyAnnouncementTriggerType = function modifyAnnouncement(){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
-  }
-}
-
 export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
   updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteAnnouncement,
-  createAnnouncement, modifyAnnouncement}
+  createAnnouncement}
 export default {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,
   updateAnnouncement, loadAnnouncement, deleteSelectedAnnouncements, deleteAnnouncement,
-  createAnnouncement, modifyAnnouncement}
+  createAnnouncement}
