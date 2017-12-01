@@ -5,7 +5,7 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
+import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 import { AnyActionType } from '~/actions';
@@ -13,6 +13,8 @@ import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { WorkspaceType } from '~/reducers/main-function/index/workspaces';
 import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/main-function/user-index';
+import { createAnnouncement, CreateAnnouncementTriggerType,
+  modifyAnnouncement, ModifyAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -46,7 +48,10 @@ interface NewEditAnnouncementProps {
   children: React.ReactElement<any>,
   i18n: i18nType,
   announcement?: AnnouncementType,
-  loadUserGroupIndex: LoadUserGroupIndexTriggerType
+  loadUserGroupIndex: LoadUserGroupIndexTriggerType,
+  userIndex: UserIndexType,
+  createAnnouncement: CreateAnnouncementTriggerType,
+  modifyAnnouncement: ModifyAnnouncementTriggerType
 }
 
 interface NewEditAnnouncementState {
@@ -60,6 +65,7 @@ interface NewEditAnnouncementState {
 
 
 class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewEditAnnouncementState> {
+  private baseAnnouncementCurrentTarget: TargetItemsListType;
   constructor(props: NewEditAnnouncementProps){
     super(props);
     
@@ -69,15 +75,17 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
     this.handleDateChange = this.handleDateChange.bind(this);
     this.loadUserGroups = this.loadUserGroups.bind(this);
     
+    this.baseAnnouncementCurrentTarget = props.announcement && props.announcement.workspaces.map(w=>{
+      //NOTE this workspace type is incomplete, but should do the job regardless
+      return {
+        type: "workspace",
+        value: w
+      } as WorkspaceRecepientType
+    });
+    
     this.state = {
       text: props.announcement ? props.announcement.content : "",
-      currentTarget: props.announcement ? props.announcement.workspaces.map(w=>{
-        //NOTE this workspace type is incomplete, but should do the job regardless
-        return {
-          type: "workspace",
-          value: w
-        } as WorkspaceRecepientType
-      }) : [],
+      currentTarget: props.announcement ? this.baseAnnouncementCurrentTarget : [],
       subject: props.announcement ? props.announcement.caption : "",
       locked: false,
       startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
@@ -94,28 +102,44 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
         (!this.props.announcement && nextProps.announcement)){
+      
+      this.baseAnnouncementCurrentTarget = nextProps.announcement.workspaces.map(w=>{
+        //NOTE this workspace type is incomplete, but should do the job regardless
+        return {
+          type: "workspace",
+          value: w
+        } as WorkspaceRecepientType
+      })
+      
       this.setState({
         subject: nextProps.announcement.caption,
         text: nextProps.announcement.content,
-        currentTarget: nextProps.announcement.workspaces.map(w=>{
-          //NOTE this workspace type is incomplete, but should do the job regardless
-          return {
-            type: "workspace",
-            value: w
-          } as WorkspaceRecepientType
-        }),
+        currentTarget: this.baseAnnouncementCurrentTarget,
         startDate: nextProps.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
         endDate: nextProps.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
       });
       
       this.loadUserGroups(nextProps.announcement);
     } else if (this.props.announcement && !nextProps.announcement){
+      this.baseAnnouncementCurrentTarget = null;
+      
       this.setState({
         subject: "",
         text: "",
         currentTarget: [],
         startDate: nextProps.i18n.time.getLocalizedMoment(),
         endDate: nextProps.i18n.time.getLocalizedMoment().add(1, "day"),
+      });
+    }
+    
+    if (nextProps.userIndex.groups !== this.props.userIndex.groups){
+      this.setState({
+        currentTarget: this.baseAnnouncementCurrentTarget.concat(nextProps.announcement.userGroupEntityIds.map((groupId: number)=>{
+          return {
+            type: "usergroup",
+            value: this.props.userIndex.groups[groupId]
+          } as UserGroupRecepientType 
+        }).filter(w=>!!w))
       });
     }
   }
@@ -129,7 +153,29 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
     this.setState({subject: e.target.value});
   }
   createOrModifyAnnouncement(closeDialog: ()=>any){
-    closeDialog();
+    this.setState({locked: true});
+    if (this.props.announcement){
+      this.props.modifyAnnouncement({
+        announcement: this.props.announcement,
+        success: ()=>{
+          this.setState({locked: false});
+          closeDialog();
+        },
+        fail: ()=>{
+          this.setState({locked: false});
+        }
+      });
+    } else {
+      this.props.createAnnouncement({
+        success: ()=>{
+          this.setState({locked: false});
+          closeDialog();
+        },
+        fail: ()=>{
+          this.setState({locked: false});
+        }
+      });
+    }
   }
   handleDateChange(stateLocation: string, newDate: any){
     let nState:any = {};
@@ -179,12 +225,13 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
 
 function mapStateToProps(state: any){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    userIndex: state.userIndex
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({loadUserGroupIndex}, dispatch);
+  return bindActionCreators({loadUserGroupIndex, createAnnouncement, modifyAnnouncement}, dispatch);
 };
 
 export default (connect as any)(
