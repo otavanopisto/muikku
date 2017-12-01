@@ -13,6 +13,19 @@
   
   .item-list__item {
     background-color: $color-item-list-item-aside-background;
+    
+    &:hover, &.hover {
+      background-color: darken($color-item-list-item-background, 10%);
+    }
+  
+    &:active, &.active {
+      background-color: $color-item-list-item-background-active;
+      color: $color-item-list-item-font-color-active;
+    
+      .text {
+        color: $color-item-list-item-font-color-active;            
+      }
+    }
   }    
 }
   
@@ -26,25 +39,13 @@
   padding: 8px;
   position: relative;
   transition: background-color 0.2s ease-in-out;
-  
-  &:hover, &.hover {
-    background-color: darken($color-item-list-item-background, 10%);
-  }
-
-  &:active, &.active {
-    background-color: $color-item-list-item-background-active;
-    color: $color-item-list-item-font-color-active;
-  
-    .text {
-      color: $color-item-list-item-font-color-active;            
-    }
-  }
 }
 
 .item-list__item--latest-messages,
 .item-list__item--latest-announcements {
   align-items: flex-start;
   border-bottom: solid 1px $color-index-item-list-item-panel-latest-messages-border;
+  margin: 0;
   
   &:last-child {
     border: 0;
