@@ -72,6 +72,11 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
             type: "usergroup",
             value: w
           }));
+          let replytarget = [senderObject];
+          if(senderObject.value.id===this.props.status.userId){
+            replytarget = [senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any);
+          }
+          let replyalltarget = [senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any).filter((t)=> {t.value.id === senderObject.value.id}).concat(senderObject as any);
           return (
             <div key={message.id} className="application-list__item application-list__item--communicator-message">            
               <div className="application-list__item-header application-list__item-header--communicator-message">
@@ -109,11 +114,12 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
               </div>                
               <div className="application-list__item-footer">
                 <div className="container container--communicator-message-links">
-                  <NewMessage replyThreadId={message.communicatorMessageId} initialSelectedItems={[senderObject]}>
+                  <NewMessage replyThreadId={message.communicatorMessageId}
+                    initialSelectedItems={replytarget}>
                     <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
                   </NewMessage>
                   <NewMessage replyThreadId={message.communicatorMessageId}
-                     initialSelectedItems={[senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)}>
+                    initialSelectedItems={replyalltarget}>
                     <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
                   </NewMessage>    
                 </div>  
