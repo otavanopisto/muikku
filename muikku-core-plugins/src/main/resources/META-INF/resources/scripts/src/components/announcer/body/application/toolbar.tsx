@@ -4,7 +4,6 @@ import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import NewAnnouncement from './new-announcement';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';

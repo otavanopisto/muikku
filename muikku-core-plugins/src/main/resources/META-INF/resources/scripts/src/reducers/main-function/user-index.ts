@@ -12,7 +12,7 @@ export interface UserType {
   curriculumIdentifier?: string | number | null;
 }
 
-export interface UserIndexType {
+export interface UserBaseIndexType {
   [index: number]: UserType
 }
 
@@ -29,14 +29,30 @@ export interface UserRecepientType {
 
 export interface UserGroupRecepientType {
   type: "usergroup",
-  value: any
+  value: any      //TODO fix here too
 }
 
-export default function userIndex(state={}, action: ActionType){
+export interface UserGroupBaseIndexType {
+  [index: number]: any    //TODO and fix here
+}
+
+export interface UserIndexType {
+  users: UserBaseIndexType,
+  groups: UserGroupBaseIndexType
+}
+
+export default function userIndex(state:UserIndexType={
+  users: {},
+  groups: {}
+}, action: ActionType):UserIndexType{
   if (action.type === "SET_USER_INDEX"){
     let prop:{[index: number]: UserType} = {};
     prop[action.payload.index] = action.payload.value;
-    return Object.assign({}, state, prop);
+    return Object.assign({}, state, {users: Object.assign({}, state.users, prop)});
+  } else if (action.type === "SET_USER_GROUP_INDEX"){
+    let prop:{[index: number]: any} = {};
+    prop[action.payload.index] = action.payload.value;
+    return Object.assign({}, state, {groups: Object.assign({}, state.groups, prop)});
   }
   return state;
 }
