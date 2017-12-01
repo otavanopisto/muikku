@@ -328,7 +328,6 @@
   height: $button-pill-floating-size;
   position: fixed;
   right: 10px;
-  transition: box-shadow 0.3s;
   width: $button-pill-floating-size;
   
   &:active {
@@ -576,17 +575,26 @@
   }
 }
   
-  
 .button-pill--toolbar-edit-label {
 	background-color: $color-main-function-button-pill-toolbar-edit-label-background;
   color: $color-main-function-button-pill-toolbar-edit-label-text;
   display: inline-flex;
+  
+    &:hover, &.hover {
+      background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+      color: $color-main-function-button-pill-toolbar-edit-label-text-hover;
+    }
+    
+    &:active, &.active {
+      background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+      color: $color-main-function-button-pill-toolbar-edit-label-text-active;
+    }
 
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
 }
-  
+ 
 .button-pill--navigation-edit-label {
   display: none;
 
@@ -598,10 +606,12 @@
     width: 1rem;
     
     &:hover, &.hover {
+      background-color: $color-main-function-button-pill-navigation-edit-label-background;
       color: $color-main-function-button-pill-navigation-edit-label-text-hover;
     }
     
     &:active, &.active {
+      background-color: $color-main-function-button-pill-navigation-edit-label-background;
       color: $color-main-function-button-pill-navigation-edit-label-text-active;
     }
   }

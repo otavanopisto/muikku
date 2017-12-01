@@ -25,6 +25,11 @@
   margin: 0 0 5px;
   padding: 8px;
   position: relative;
+  transition: background-color 0.2s ease-in-out;
+  
+  &:hover, &.hover {
+    background-color: darken($color-item-list-item-background, 10%);
+  }
 
   &:active, &.active {
     background-color: $color-item-list-item-background-active;
