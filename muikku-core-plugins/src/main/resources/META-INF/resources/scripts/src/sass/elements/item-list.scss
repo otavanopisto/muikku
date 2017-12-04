@@ -44,10 +44,10 @@
 .item-list__item--latest-messages,
 .item-list__item--latest-announcements {
   align-items: flex-start;
-  border-bottom: solid 1px $color-index-item-list-item-panel-latest-messages-border;
+  border-top: solid 1px $color-index-item-list-item-panel-latest-messages-border;
   margin: 0;
   
-  &:last-child {
+  &:first-child {
     border: 0;
   }
 }

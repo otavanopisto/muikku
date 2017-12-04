@@ -3,10 +3,14 @@
 @import "../base/breakpoints";
 
 .message {
-  border-bottom: 1px solid $color-message-border;
+  border-top: 1px solid $color-message-border;
   padding: 10px 12px 10px 4px;
   
-  &:last-child {
+  &.selected {
+    border-top: 1px solid $color-default;
+  }
+  
+  &:first-child {
     border: 0;
   }
 }
