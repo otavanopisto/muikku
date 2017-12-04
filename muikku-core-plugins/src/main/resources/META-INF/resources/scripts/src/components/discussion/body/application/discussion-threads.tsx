@@ -63,8 +63,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
         //round so put something as a placeholder in order to be efficient and make short rendering cycles
         let user:UserType = this.props.userIndex.users[thread.creator];
-        
-      
+              
         //UKKONEN hint
         let avatar;
         if (!user){
@@ -120,8 +119,8 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
                 }
                 {thread.sticky ? 
                     <div className="icon-pin"></div> : null                
-                }                 
-                <div className="text text--discussion-thread-item-title">{thread.title}</div></div>
+                }                                 
+                <div className={`text message__title message__title--category-${thread.forumAreaId}`}>{thread.title}</div></div>
               <div className="application-list__item-body">
                 <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
               </div>

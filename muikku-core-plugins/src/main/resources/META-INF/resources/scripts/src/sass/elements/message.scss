@@ -40,3 +40,48 @@
   display: flex;
   padding: 2px 8px 2px 2px;
 }
+
+.message__title {
+  padding-left: 5px;   
+}
+
+.message__title--category-1 {
+  border-left: 5px solid $color-message-area-category-1;  
+}
+
+
+.message__title--category-2 {
+  border-left: 5px solid $color-message-area-category-2;  
+}
+
+.message__title--category-3 {
+  border-left: 5px solid $color-message-area-category-3;  
+}
+
+.message__title--category-4 {
+  border-left: 5px solid $color-message-area-category-4;  
+}
+
+.message__title--category-5 {
+   border-left: 5px solid $color-message-area-category-5; 
+}
+
+.message__title--category-6 {
+  border-left: 5px solid $color-message-area-category-6;  
+}
+
+.message__title--category-7 {
+  border-left: 5px solid $color-message-area-category-7;    
+}
+
+.message__title--category-8 {
+  border-left: 5px solid $color-message-area-category-8;    
+}
+
+.message__title--category-9 {
+  border-left: 5px solid $color-message-area-category-9;  
+}
+
+.message__title--category-10 {
+  border-left: 5px solid $color-message-area-category-10;  
+}
