@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import '~/sass/elements/container.scss';
 
-interface CoursepickerrBodyProps {
+interface CoursepickerBodyProps {
   
 }
 
@@ -14,7 +14,7 @@ interface CoursepickerBodyState {
   
 }
 
-export default class CommunicatorBody extends React.Component<CourseppickerBodyProps,CoursepickerBodyState> {
+export default class CommunicatorBody extends React.Component<CoursepickerBodyProps, CoursepickerBodyState> {
   render(){
     let aside = <Aside />
     return (<div className="container container--full">

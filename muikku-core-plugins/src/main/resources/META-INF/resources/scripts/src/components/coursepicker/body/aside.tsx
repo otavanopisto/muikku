@@ -19,14 +19,13 @@ interface NavigationState {
 class Navigation extends React.Component<NavigationProps, NavigationState> {
   render(){
     return <div className="item-list item-list--aside-navigation">
-        return <Link key="1" className={`item-list__item`} href="">
-          <span className={`item-list__icon icon-`}></span>
-          <span className="item-list__text-body text">
-            Text
-          </span>
-        </Link>
-      })}
-    </div>
+      <Link key="1" className={`item-list__item`} href="">
+        <span className={`item-list__icon icon-`}></span>
+        <span className="item-list__text-body text">
+          Text
+        </span>
+      </Link>
+   </div>
   }
 }
 
