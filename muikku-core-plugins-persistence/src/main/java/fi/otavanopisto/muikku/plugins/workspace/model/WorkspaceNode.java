@@ -23,25 +23,25 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class WorkspaceNode {
 	
-	public Long getId() {
-		return id;
-	}
-	
-	public void setUrlName(String urlName) {
-		this.urlName = urlName;
-	}
-	
-	public String getUrlName() {
-		return urlName;
-	}
-	
-	public WorkspaceNode getParent() {
-		return parent;
-	}
-	
-	public void setParent(WorkspaceNode parent) {
-		this.parent = parent;
-	}
+  public Long getId() {
+    return id;
+  }
+
+  public void setUrlName(String urlName) {
+    this.urlName = urlName;
+  }
+
+  public String getUrlName() {
+    return urlName;
+  }
+
+  public WorkspaceNode getParent() {
+    return parent;
+  }
+
+  public void setParent(WorkspaceNode parent) {
+    this.parent = parent;
+  }
 
   @Transient
   public WorkspaceNodeType getType() {
@@ -50,20 +50,20 @@ public class WorkspaceNode {
   
   @Transient
   public String getPath() {
-  	if (getParent() != null) {
-  		StringBuilder result = new StringBuilder();
-  		String parentPath = getParent().getPath();
-  		
-  		if ((parentPath != null) && (!"".equals(parentPath.trim()))) {
-  			result.append(getParent().getPath());
-  			result.append('/');
-  		}
-  		
-  		result.append(getUrlName());
-  		return result.toString();
-  	} else {
-  		return getUrlName();
-  	}
+    if (getParent() != null) {
+      StringBuilder result = new StringBuilder();
+      String parentPath = getParent().getPath();
+
+      if ((parentPath != null) && (!"".equals(parentPath.trim()))) {
+        result.append(getParent().getPath());
+        result.append('/');
+      }
+
+      result.append(getUrlName());
+      return result.toString();
+    } else {
+      return getUrlName();
+    }
   }
 
   public Integer getOrderNumber() {
