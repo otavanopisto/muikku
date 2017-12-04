@@ -27,7 +27,6 @@ export interface AnnouncementUpdateType {
   content?: string,
   created?: string,
   endDate?: string,
-  id?: number,
   publiclyVisible?: boolean,
   publisherUserEntityId?: number,
   startDate?: string,

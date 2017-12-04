@@ -22,7 +22,7 @@ export interface DELETE_ANNOUNCEMENT extends SpecificActionType<"DELETE_ANNOUNCE
 
 //TODO notOverrideCurrent should go once the missing data in the current announcement is fixed
 export interface LoadAnnouncementsTriggerType {
-  (location:string, workspaceId?:number, notOverrideCurrent?: boolean):AnyActionType
+  (location:string, workspaceId?:number, notOverrideCurrent?: boolean, force?: boolean):AnyActionType
 }
 
 export interface LoadAnnouncementTriggerType {
@@ -60,13 +60,22 @@ export interface DeleteSelectedAnnouncementsTriggerType {
 
 export interface CreateAnnouncementTriggerType {
   (data: {
+    announcement: {
+      caption: string,
+      content: string,
+      endDate: string,
+      publiclyVisible: boolean,
+      startDate: string,
+      userGroupEntityIds: Array<number>,
+      workspaceEntityIds: Array<number>
+    },
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
 }
 
-let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent){
-  return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent);
+let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent, force){
+  return loadAnnouncementsHelper.bind(this, location, workspaceId, notOverrideCurrent, force);
 }
   
 let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(location, announcementId){
@@ -81,7 +90,7 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
         announcement = <AnnouncementType>await promisify(mApi().announcer.announcements.read(announcementId), 'callback')();
         //TODO we should be able to get the information of wheter there is an announcement later or not, trace all this
         //and remove the unnecessary code
-        dispatch(loadAnnouncements(location, null, false));
+        dispatch(loadAnnouncements(location, null, false, false));
       }
       
       dispatch({
@@ -178,9 +187,29 @@ let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = functio
   }
 }
 
-let createAnnouncement:CreateAnnouncementTriggerType = function createAnnouncement(){
+let createAnnouncement:CreateAnnouncementTriggerType = function createAnnouncement(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let state = getState();
+    let announcements:AnnouncementsType = state.announcements;
     
+    try {
+      await promisify(mApi().announcer.announcements.create(data.announcement), 'callback')();
+      
+      let diff = moment(data.announcement.endDate).diff(moment(), 'days');
+      if (announcements.location !== "active" && diff >= 0){
+        location.hash = "#active";
+      } else if (announcements.location !== "past" && diff < 0){
+        location.hash = "#past";
+      } else {
+        //TODO why in the world the request to create the announcement does not return the created object?
+        //I am forced to reload all the announcements due to being unable to know what was created
+        dispatch(loadAnnouncements(announcements.location, null, true, true));
+      }
+      data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail();
+    }
   }
 }
 export {loadAnnouncements, addToAnnouncementsSelected, removeFromAnnouncementsSelected,

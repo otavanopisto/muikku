@@ -175,8 +175,20 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
       });
     } else {
       this.props.createAnnouncement({
+        announcement: {
+          caption: this.state.subject,
+          content: this.state.text,
+          publiclyVisible: false,
+          endDate: this.state.endDate.format("YYYY-MM-DD"),
+          startDate: this.state.startDate.format("YYYY-MM-DD"),
+          userGroupEntityIds: this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id),
+          workspaceEntityIds: this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id),
+        },
         success: ()=>{
-          this.setState({locked: false});
+          this.setState({locked: false, subject: "", text: "",
+            startDate: this.props.i18n.time.getLocalizedMoment(),
+            endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
+            currentTarget: []});
           closeDialog();
         },
         fail: ()=>{
