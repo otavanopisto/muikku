@@ -19,27 +19,27 @@
 }
 
 .application-list__item {
+  background-color: $color-application-list-item-background;
   cursor: pointer;
   user-select: none;
+  transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
- 
-/*   &:hover, &.hover { */
-/*     background-color: $color-application-list-item-background-hover; */
-/*   } */
   
-/*   &:active, &.active { */
-/*     background-color: $color-application-list-item-background-active; */
-/*   } */
+  &:hover, &.hover {
+    background-color: darken($color-application-list-item-background, 5%);
+  }
+
+  &:active, &.active {
+    background-color: darken($color-application-list-item-background, 10%);
+  }
   
   &.selected {
     background-color: $color-application-list-item-background-selected;
-    border-radius: 3px;
     
     @include breakpoint($breakpoint-pad) {
-      background: none;
+      border-radius: 3px;
     }
-    
   }
 }
 
@@ -69,7 +69,7 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 1px $color-main-function-application-list-item-checkbox-border;
+    border: solid 1px $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
@@ -197,12 +197,6 @@
 
 .application-list__item-header--communicator-message {
   flex-direction: column;
-}
-
-
-
-.application-list__item--communicator-unread {
-  border-left: solid 4px $color-message-unread-border;
 }
 
 // This is against the BEM, but convenient because of the pseudo classes

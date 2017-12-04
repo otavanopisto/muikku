@@ -10,7 +10,9 @@ export interface i18nType {
     format(date?: Date | string, format?: string):string,
     fromNow(date?: Date | string):string,
     subtract(date?: Date | string, input?: number, value?: string):string,
-    add(date?: Date | string, input?: number, value?: string):string
+    add(date?: Date | string, input?: number, value?: string):string,
+    getLocalizedMoment(...args: any[]):any,
+    getLocale():string
   }
 }
 
@@ -39,6 +41,12 @@ export default function i18n(state={
     },
     add(date=new Date(), input=1, value="days"){
       return moment(new Date(date)).add(input, value).calendar();
+    },
+    getLocalizedMoment(...args:any[]){
+      return moment(...args).locale((window as any)._MUIKKU_LOCALE.toLowerCase());
+    },
+    getLocale(){
+      return (window as any)._MUIKKU_LOCALE.toLowerCase();
     }
   }
 }, action: ActionType): i18nType {

@@ -45,7 +45,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussionThreads.current.forumAreaId] || {};
     
     //Again note that the user might not be ready
-    let userCreator = this.props.userIndex[this.props.discussionThreads.current.creator];
+    let userCreator = this.props.userIndex.users[this.props.discussionThreads.current.creator];
 
     let avatar;
     if (!userCreator){
@@ -106,7 +106,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
         
         this.props.discussionThreads.currentReplies.map((reply: DiscussionThreadReplyType)=>{
           //Again note that the user might not be ready
-          let user = this.props.userIndex[reply.creator];
+          let user = this.props.userIndex.users[reply.creator];
           
           let canRemoveMessage = this.props.userId === reply.creator || areaPermissions.removeThread;
           let canEditMessage = this.props.userId === reply.creator || areaPermissions.editMessages;

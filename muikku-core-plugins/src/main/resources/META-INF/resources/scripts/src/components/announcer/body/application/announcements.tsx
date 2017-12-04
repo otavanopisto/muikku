@@ -3,6 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
+import NewEditAnnouncement from './new-edit-announcement';
 
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -80,7 +81,9 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     </div>
                   </div>                
                   <div className="application-list__item-footer">                  
-                    <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
+                    <NewEditAnnouncement announcement={announcement}>
+                      <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
+                    </NewEditAnnouncement>
                     <DeleteAnnouncementDialog announcement={announcement}>
                       <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
                     </DeleteAnnouncementDialog>
@@ -105,7 +108,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({
     addToAnnouncementsSelected,
     removeFromAnnouncementsSelected
-  }, dispatch);;
+  }, dispatch);
 };
 
 export default (connect as any)(

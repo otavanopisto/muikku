@@ -10,6 +10,7 @@ import announcements from './main-function/announcer/announcements';
 import announcerNavigation from './main-function/announcer/announcer-navigation';
 
 import {combineReducers} from 'redux';
+import userIndex from './main-function/user-index';
 
 export default combineReducers({
   notifications,
@@ -20,5 +21,6 @@ export default combineReducers({
   messageCount,
   title,
   announcements,
-  announcerNavigation
+  announcerNavigation,
+  userIndex
 });

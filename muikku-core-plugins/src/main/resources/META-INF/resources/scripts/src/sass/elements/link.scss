@@ -23,7 +23,7 @@
     font-size: $text-desktop-font-size;
   }
 
-// .icon classes need some revamping
+// .icon classes needs serious revamping
   
   .icon {
     display: inline-block;
@@ -33,16 +33,14 @@
     margin-right: 10px;
   }
  
-
-
-  &:hover:not(.disabled):not(:disabled),
-  &.hover:not(.disabled):not(:disabled) {
+  &:hover,
+  &.hover {
     background-color: $color-link-hover-background;
     color: $color-link-hover-text;
   }
 
-  &:active:not(.disabled):not(:disabled),
-  &.active:not(.disabled):not(:disabled) {
+  &:active,
+  &.active {
     background-color: $color-link-active-background;
     color: $color-link-active-text;
   }
@@ -136,6 +134,7 @@
 }
 
 .link--menu--instructions {
+  
   .icon {
     background: $color-environment-link-menu-instructions-icon-background;
     color: $color-environment-link-menu-instructions-icon-color;
@@ -143,6 +142,7 @@
 }
 
 .link--menu--helpdesk {
+  
   .icon {
     background: $color-environment-link-menu-heldesk-icon-background;
     color: $color-environment-link-menu-helpdesk-icon-color;
@@ -150,6 +150,7 @@
 }
 
 .link--menu--logout {
+  
   .icon {
     background: $color-environment-link-menu-logout-icon-background;
     color: $color-environment-link-menu-logout-icon-color;
@@ -157,24 +158,29 @@
 }
 
 .link--main-function-navbar {
-  &.link--icon {
-    color: $color-environment-link-icon-color;
   
-    &:hover, &.hover {
-      color: $color-environment-link-icon-color-hover;
+  
+}
+
+.link--icon {
+  color: $color-environment-link-icon-color;
+
+  &:hover, &.hover {
+    color: $color-environment-link-icon-color-hover;
+  }
+  
+  &:active, &.active {
+    &::before {
+      content: " ";
+      height: $main-function-link-icon-active-border-size;
+      background-color: $color-environment-link-icon-border-top-color-active;
+      position: absolute;
+      top: 0;
+      width: 100%;
+      left: 0;
     }
-    &:active, &.active {
-      &::before {
-        content: " ";
-        height: $main-function-link-icon-active-border-size;
-        background-color: $color-environment-link-icon-border-top-color-active;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        left: 0;
-      }
-      color: $color-environment-link-icon-color-active;
-    }
+    
+    color: $color-environment-link-icon-color-active;
   }
 }
 
@@ -216,8 +222,8 @@
   text-decoration: underline;
   text-transform: none;
 
-    &:not(:first-child) {
-      margin-left: 20px;
-    }     
+  &:not(:first-child) {
+    margin-left: 20px;
+  }     
 }  
 
