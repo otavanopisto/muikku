@@ -122,7 +122,7 @@ public class AssessmentRequestController {
       if (latestAssessment == null) {
         return WorkspaceAssessmentState.PENDING;
       }
-      else if (latestAssessment.getPassing()) {
+      else if (Boolean.TRUE.equals(latestAssessment.getPassing())) {
         return WorkspaceAssessmentState.PENDING_PASS;
       }
       else {

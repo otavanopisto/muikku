@@ -125,20 +125,12 @@ public class VopsLister {
     
     List<WorkspaceAssessment> workspaceAssessments = new ArrayList<>();
     
-    boolean correctCurriculum = false;
-    
-    if (curriculumIdentifier == null) {
-      correctCurriculum = true;
-    } else {
-      for (VopsWorkspace workspace : workspaces) {
-        if (workspace.getCurriculumIdentifiers().contains(curriculumIdentifier)) {
-          correctCurriculum = true;
-          break;
-        }
-      }
+    if (curriculumIdentifier != null) {
+      workspaces.removeIf((VopsWorkspace workspace) ->
+        !workspace.getCurriculumIdentifiers().contains(curriculumIdentifier));
     }
 
-    if (!workspaces.isEmpty() && correctCurriculum) {
+    if (!workspaces.isEmpty()) {
       SchoolDataIdentifier educationSubtypeIdentifier = null;
       boolean workspaceUserExists = false;
       String name = "";
@@ -201,13 +193,13 @@ public class VopsLister {
         state = CourseCompletionState.ENROLLED;
       }
       for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-        if (!workspaceAssessment.getPassing()) {
+        if (!Boolean.TRUE.equals(workspaceAssessment.getPassing())) {
           state = CourseCompletionState.FAILED;
           break;
         }
       }
       for (WorkspaceAssessment workspaceAssessment : workspaceAssessments) {
-        if (workspaceAssessment.getPassing()) {
+        if (Boolean.TRUE.equals(workspaceAssessment.getPassing())) {
           state = CourseCompletionState.ASSESSED;
           numCourses++;
           if (mandatority == Mandatority.MANDATORY) {

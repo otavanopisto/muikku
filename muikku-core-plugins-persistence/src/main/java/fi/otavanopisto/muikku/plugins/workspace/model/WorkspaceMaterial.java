@@ -13,12 +13,12 @@ import javax.validation.constraints.NotNull;
 public class WorkspaceMaterial extends WorkspaceNode {
 
   public Long getMaterialId() {
-		return materialId;
-	}
+    return materialId;
+  }
   
   public void setMaterialId(Long materialId) {
-		this.materialId = materialId;
-	}
+    this.materialId = materialId;
+  }
 
   @Transient
   public WorkspaceNodeType getType() {
