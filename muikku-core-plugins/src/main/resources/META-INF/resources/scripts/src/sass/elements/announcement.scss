@@ -1,0 +1,36 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.announcement {
+  border-top: 1px solid $color-message-border;
+  padding: 10px 12px 10px 4px;
+  
+  &.selected {
+    border-top: 1px solid $color-default;
+  }
+  
+  &:first-child {
+    border: 0;
+  }
+}
+
+.announcement__content {
+  padding: 0 0 0 9px;
+}
+
+.announcement--environment {
+  
+  .announcement__content {
+    border-left: solid 3px $color-message-unread-border;
+    padding: 0 0 0 6px;
+  }
+}
+
+.announcement--workspace {
+  
+  .announcement__content {
+    border-left: solid 3px$color-announcement-environment-border;
+    padding: 0 0 0 6px;
+  }
+}

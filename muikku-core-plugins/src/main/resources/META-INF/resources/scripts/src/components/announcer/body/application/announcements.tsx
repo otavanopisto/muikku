@@ -3,6 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
+
 import NewEditAnnouncement from './new-edit-announcement';
 
 import {i18nType} from '~/reducers/base/i18n';
@@ -11,6 +12,8 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/announcement.scss';
+
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
@@ -40,8 +43,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
           selectModeClassAddition="application-list--select-mode" dataState={this.props.announcements.state}>
           {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
             let className = announcement.workspaces.length ? 
-                'application-list__item application-list__item--workspace-announcement' :
-                'application-list__item application-list__item--environment-announcement';
+                'application-list__item announcement--workspace' :
+                'application-list__item announcement--environment';
             return {
               className,
               onSelect: this.props.addToAnnouncementsSelected.bind(null, announcement),
@@ -52,11 +55,11 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               notSelectable: announcement.archived,
               notSelectableModifier: "archived",
               contents: (checkbox: React.ReactElement<any>)=>{
-                return <div>
+                return <div className="application-list__item-content-wrapper announcement__content">
                   <div className="application-list__item-header">
                     {checkbox}        
                     <div className="text text--announcer-header-main">
-                      <span className="icon icon-clock"></span>
+                      <span className="text__icon icon-clock"></span>
                       <span className="text text--announcer-times">
                         {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                       </span>
@@ -64,7 +67,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     <div className="text text--announcer-header-aside">
                       {announcement.workspaces.map((workspace)=>{
                         return <span key={workspace.id}>
-                          <span className="icon icon-books"></span>
+                          <span className="text__icon icon-books"></span>
                           <span className="text text--announcer-workspace">
                             {workspace.name}
                           </span>
