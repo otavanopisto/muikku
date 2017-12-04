@@ -200,7 +200,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
   handleDateChange(stateLocation: string, newDate: any){
     let nState:any = {};
     nState[stateLocation] = newDate;
-    (this.setState as any)(stateLocation)
+    (this.setState as any)(nState);
   }
   render(){
     let content = (closeDialog: ()=>any) => [
