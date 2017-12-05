@@ -39,12 +39,12 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
   }
   render(){
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>
-        <SelectableList className="application-list application-list__items"
+        <SelectableList className="application-list"
           selectModeClassAddition="application-list--select-mode" dataState={this.props.announcements.state}>
           {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
             let className = announcement.workspaces.length ? 
-                'application-list__item announcement--workspace' :
-                'application-list__item announcement--environment';
+                'application-list__item announcement announcement--workspace' :
+                'application-list__item announcement announcement--environment';
             return {
               className,
               onSelect: this.props.addToAnnouncementsSelected.bind(null, announcement),
@@ -56,42 +56,48 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               notSelectableModifier: "archived",
               contents: (checkbox: React.ReactElement<any>)=>{
                 return <div className="application-list__item-content-wrapper announcement__content">
-                  <div className="application-list__item-header">
-                    {checkbox}        
-                    <div className="text text--announcer-header-main">
-                      <span className="text__icon icon-clock"></span>
-                      <span className="text text--announcer-times">
-                        {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
-                      </span>
-                    </div> 
-                    <div className="text text--announcer-header-aside">
-                      {announcement.workspaces.map((workspace)=>{
-                        return <span key={workspace.id}>
-                          <span className="text__icon icon-books"></span>
-                          <span className="text text--announcer-workspace">
-                            {workspace.name}
-                          </span>
+                  <div className="application-list__item-content application-list__item-content--aside">
+                    <div className="announcement__select-container">
+                      {checkbox}
+                    </div>
+                  </div>
+                  <div className="application-list__item-content application-list__item-content--main">
+                    <div className="application-list__item-header">
+                      <div className="text text--announcer-announcement-header">
+                        <span className="text__icon icon-clock"></span>
+                        <span className="text text--announcer-times">
+                          {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                         </span>
+                      </div> 
+                      {announcement.workspaces.map((workspace)=>{
+                        return <div className="text text--announcer-announcement-workspace"> 
+                          <span key={workspace.id}>
+                            <span className="text__icon icon-books"></span>
+                            <span className="text text--announcer-workspace">
+                              {workspace.name}
+                            </span>
+                          </span>
+                        </div>
                       })}
                     </div>                  
-                  </div>                  
-                  <div className="application-list__item-body">
-                    <div className="text text--announcer-body">
-                      <article className="text text--item-article">
-                        <header className="text text--item-article-header">{announcement.caption}</header>
-                        <p dangerouslySetInnerHTML={{__html:announcement.content}}></p>
-                      </article>
+                    <div className="application-list__item-body">
+                      <div className="text text--announcer-body">
+                        <article className="text text--item-article">
+                          <header className="text text--item-article-header">{announcement.caption}</header>
+                          <p dangerouslySetInnerHTML={{__html:announcement.content}}></p>
+                        </article>
+                      </div>
+                    </div>                
+                    <div className="application-list__item-footer">                  
+                      <NewEditAnnouncement announcement={announcement}>
+                        <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
+                      </NewEditAnnouncement>
+                      <DeleteAnnouncementDialog announcement={announcement}>
+                        <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
+                      </DeleteAnnouncementDialog>
                     </div>
-                  </div>                
-                  <div className="application-list__item-footer">                  
-                    <NewEditAnnouncement announcement={announcement}>
-                      <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
-                    </NewEditAnnouncement>
-                    <DeleteAnnouncementDialog announcement={announcement}>
-                      <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
-                    </DeleteAnnouncementDialog>
                   </div>
-               </div>
+                </div>
              }
             }
           })}

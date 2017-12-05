@@ -16,13 +16,14 @@
 }
 
 .announcement__content {
+  flex-flow: row nowrap;
   padding: 0 0 0 9px;
 }
 
 .announcement--environment {
   
   .announcement__content {
-    border-left: solid 3px $color-message-unread-border;
+    border-left: solid 3px $color-announcement-environment-border;
     padding: 0 0 0 6px;
   }
 }
@@ -30,7 +31,13 @@
 .announcement--workspace {
   
   .announcement__content {
-    border-left: solid 3px$color-announcement-environment-border;
+    border-left: solid 3px $color-announcement-workspace-border;
     padding: 0 0 0 6px;
   }
+}
+
+.announcement__select-container {
+  align-items: center;
+  display: flex;
+  padding: 2px 8px 2px 2px;
 }

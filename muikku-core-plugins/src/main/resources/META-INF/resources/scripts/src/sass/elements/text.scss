@@ -429,15 +429,15 @@ b {
   font-size: 15px;
 }
 
-.text--announcer-header-main {
+.text--announcer-announcement-header {
   align-items: center;
   display: flex;
+  flex: 1;    
   flex-direction: row;
   flex-wrap: wrap;
-  flex: 0 2 auto;
 }
 
-.text--announcer-header-aside {
+.text--announcer-announcement-workspace {
   opacity: 0.75;
   flex: 1 1 auto;
   display: flex;
