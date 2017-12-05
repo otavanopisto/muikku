@@ -36,7 +36,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                 {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
               </span>
             </div>                 
-          </div>                  
+          </div>
           <div className="application-list__item-body">
             <div className="text text--announcer-body">
               <article className="text text--item-article">
