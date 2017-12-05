@@ -6,6 +6,8 @@ import title from './base/title';
 import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 
+import coursepickerFilters from './main-function/coursepicker/coursepicker-filters';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -15,5 +17,6 @@ export default combineReducers({
   status,
   websocket,
   messageCount,
-  title
+  title,
+  coursepickerFilters
 });
