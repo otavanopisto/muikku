@@ -64,20 +64,22 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         //round so put something as a placeholder in order to be efficient and make short rendering cycles
         let user:UserType = this.props.userIndex.users[thread.creator];
               
-        //UKKONEN hint
-        let avatar;
-        if (!user){
-          //This is what it shows when the user is not ready
-          avatar = <div className="application-list__item-content-avatar"></div>;
-        } else {
-          //This is what it shows when the user is ready
-          avatar = <object className="container container--profile-image"
-            data={`/rest/user/files/user/${user.id}/identifier/profile-image-96`}
-            type="image/jpeg">
-              <div className="application-list__item-content-avatar">{user.firstName[0]}</div>
-           </object>;
-        }
-        
+      let userCategory = thread.creator > 10 ? thread.creator % 10 + 1 : thread.creator;
+      let avatar;
+      if (!user){
+        //This is what it shows when the user is not ready
+        avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+      } else {
+        //This is what it shows when the user is ready
+        avatar = <object className="container container--profile-image"
+          data={`/rest/user/files/user/${user.id}/identifier/profile-image-96`}
+          type="image/jpeg">
+            <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{user.firstName[0]}</div>
+         </object>;
+      }    
+            
+      
+
         //UKKONEN hint
         //if you want to know what information you have avaliable, you can ctrl+click on some element, it should take
         //you to the description file, for example, "thread", in this.props.discussionThreads.threads.map((thread: DiscussionThreadType, index: number)

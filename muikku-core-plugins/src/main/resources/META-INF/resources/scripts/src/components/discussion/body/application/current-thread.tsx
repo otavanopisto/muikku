@@ -41,27 +41,27 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     if (!this.props.discussionThreads.current){
       return null;
     }
-    
     let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussionThreads.current.forumAreaId] || {};
     
     //Again note that the user might not be ready
     let userCreator = this.props.userIndex.users[this.props.discussionThreads.current.creator];
-
+    let userCategory = this.props.discussionThreads.current.creator > 10 ? this.props.discussionThreads.current.creator % 10 + 1 : this.props.discussionThreads.current.creator;
     let avatar;
     if (!userCreator){
       //This is what it shows when the user is not ready
-      avatar = <div className="application-list__item-content-avatar"></div>;
+      avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
       avatar = <object className="container container--profile-image"
         data={`/rest/user/files/user/${userCreator.id}/identifier/profile-image-96`}
         type="image/jpeg">
-          <div className="application-list__item-content-avatar">{userCreator.firstName[0]}</div>
+          <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
        </object>;
     }    
     
     let canRemoveThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.removeThread;
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
+
         
     return <div className="application-list">
         <div className="application-list--open application-list__item--discussion-current-thread">
@@ -70,7 +70,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           </div>              
           <div className="application-list__item-content-container--message message message--thread-op ">
             <div className="application-list__item-content--aside message__content-aside--discussion">
-              <div className="application-list__item-content-avatar">{avatar}</div>
+              <div className="application-list__item-content-avatar application-list_item-content-avatar--category">{avatar}</div>
             </div>
             <div className="application-list__item-content--main">
               <div className="application-list__item-header">    
