@@ -70,12 +70,10 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                         </span>
                       </div> 
                       {announcement.workspaces.map((workspace)=>{
-                        return <div className="text text--announcer-announcement-workspace"> 
-                          <span key={workspace.id}>
-                            <span className="text__icon icon-books"></span>
-                            <span className="text text--announcer-workspace">
-                              {workspace.name}
-                            </span>
+                        return <div className="text text--announcer-announcement-workspace" key={workspace.id}> 
+                          <span className="text__icon icon-books"></span>
+                          <span className="text text--announcer-workspace">
+                            {workspace.name}
                           </span>
                         </div>
                       })}
