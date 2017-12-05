@@ -26,6 +26,10 @@
     border-left: solid 3px $color-message-unread-border;
     padding: 0 0 0 6px;
   }
+  
+  .text--communicator-username {
+    font-weight: 600;
+  }
 }
 
 .message--thread-op {

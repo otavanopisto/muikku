@@ -26,13 +26,13 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   
-  &:hover, &.hover {
-    background-color: darken($color-application-list-item-background, 5%);
-  }
+/*   &:hover, &.hover { */
+/*     background-color: darken($color-application-list-item-background, 5%); */
+/*   } */
 
-  &:active, &.active {
-    background-color: darken($color-application-list-item-background, 10%);
-  }
+/*   &:active, &.active { */
+/*     background-color: darken($color-application-list-item-background, 10%); */
+/*   } */
   
   &.selected {
     background-color: $color-application-list-item-background-selected;
@@ -159,11 +159,11 @@
 // Announcer
 .application-list__item--workspace-announcement, 
 .application-list__item--environment-announcement {
-  padding: 0 0 0 9px;
+  padding: 0 0 0 6px;
 }
 
 .application-list__item--workspace-announcement {
-  border-left: 3px solid $color-announcement-workspace-border;
+/*   border-left: 3px solid $color-announcement-workspace-border; */
     
   .text__icon::before {
     color: $color-announcement-workspace-icon;
@@ -171,7 +171,7 @@
 }
 
 .application-list__item--environment-announcement { 
-   border-left: 3px solid $color-announcement-environment-border;  
+/*    border-left: 3px solid $color-announcement-environment-border;   */
    
   .text__icon::before {
     color: $color-announcement-environment-icon;
