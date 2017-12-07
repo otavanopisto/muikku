@@ -29,21 +29,27 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
     return (
       <div className="application-list application-list--open">
         <div className={`application-list__item ${this.props.announcements.current.workspaces.length ? "application-list__item--workspace-announcement" : "application-list__item--environment-announcement"}`}>
-          <div className="application-list__item-header">
-            <div className="text text--announcer-announcement-header">
-              <span className="text__icon icon-clock"></span>
-              <span className="text text--announcer-times">
-                {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
-              </span>
+          <div className="application-list__item-header  application-list__item-header--announcer-announcement">
+            <div className="container container--announcer-announcement-meta">
+              <div className="application-list__item-header-main application-list__item-header-main--announcer-announcement-dates">
+                <div className="text text--announcer-announcement-header">
+                  <span className="text__icon icon-clock"></span>
+                  <span className="text text--announcer-times">
+                    {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
+                  </span>
+                </div>
+              </div>
+              <div className="application-list__item-header-aside application-list__item-header-aside--announcer-announcement-workspace">
+                <div className="text text--announcer-announcement-workspace">
+                  <span className="text__icon icon-books"></span>
+                  <span className="text text--announcer-workspace"></span>
+                </div>
+              </div>
             </div>
           </div>
           <div className="application-list__item-body">
-            <div className="text text--announcer-body">
-              <article className="text text--item-article">
-                <header className="text text--item-article-header">{this.props.announcements.current.caption}</header>
-                <p dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></p>                                
-             </article>
-           </div>
+            <header className="text text--announcer-announcement-caption">{this.props.announcements.current.caption}</header>
+            <section className="text text--announcer-announcement-content" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>                    
         </div>                 
       </div>

@@ -25,15 +25,7 @@
   transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  
-/*   &:hover, &.hover { */
-/*     background-color: darken($color-application-list-item-background, 5%); */
-/*   } */
 
-/*   &:active, &.active { */
-/*     background-color: darken($color-application-list-item-background, 10%); */
-/*   } */
-  
   &.selected {
     background-color: $color-application-list-item-background-selected;
     
@@ -131,7 +123,6 @@
   -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
   overflow-y: auto;
-  padding: 10px 4px;
   
    &::-webkit-scrollbar { 
     display: none; 
@@ -157,13 +148,7 @@
 } 
 
 // Announcer
-.application-list__item--workspace-announcement, 
-.application-list__item--environment-announcement {
-  padding: 0 0 0 6px;
-}
-
 .application-list__item--workspace-announcement {
-/*   border-left: 3px solid $color-announcement-workspace-border; */
     
   .text__icon::before {
     color: $color-announcement-workspace-icon;
@@ -171,10 +156,21 @@
 }
 
 .application-list__item--environment-announcement { 
-/*    border-left: 3px solid $color-announcement-environment-border;   */
    
   .text__icon::before {
     color: $color-announcement-environment-icon;
+  }
+}
+
+.application-list__item-header--announcer-announcement {
+  flex-direction: column;
+}
+
+.application-list__item--workspace-announcement:first-child,
+.application-list__item--environment-announcement:first-child {
+  
+  .application-list__item-header {
+    background-color: $color-announcement-open-header-background;
   }
 }
 
@@ -200,8 +196,8 @@
   flex-direction: column;
 }
 
-// This is against the BEM, but convenient because of the pseudo classes
 .application-list__item--communicator-message:first-child {
+  
   .application-list__item-header {
     background-color: $color-message-open-header-background;
   }

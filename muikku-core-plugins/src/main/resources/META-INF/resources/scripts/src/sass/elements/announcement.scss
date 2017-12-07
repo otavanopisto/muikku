@@ -3,7 +3,7 @@
 @import "../base/breakpoints";
 
 .announcement {
-  border-top: 1px solid $color-message-border;
+  border-top: 1px solid $color-announcement-border;
   padding: 10px 12px 10px 4px;
   
   &.selected {
@@ -26,6 +26,10 @@
     border-left: solid 3px $color-announcement-environment-border;
     padding: 0 0 0 6px;
   }
+  
+  .text__icon {
+    color: $color-announcement-environment;
+  }
 }
 
 .announcement--workspace {
@@ -33,6 +37,10 @@
   .announcement__content {
     border-left: solid 3px $color-announcement-workspace-border;
     padding: 0 0 0 6px;
+  }
+  
+  .text__icon {
+    color: $color-announcement-workspace;
   }
 }
 
