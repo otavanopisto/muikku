@@ -9,6 +9,7 @@ import messageCount from './main-function/message-count';
 import coursepickerFilters from './main-function/coursepicker/coursepicker-filters';
 
 import {combineReducers} from 'redux';
+import userIndex from './main-function/user-index';
 
 export default combineReducers({
   notifications,
@@ -18,5 +19,6 @@ export default combineReducers({
   websocket,
   messageCount,
   title,
-  coursepickerFilters
+  coursepickerFilters,
+  userIndex
 });
