@@ -15,8 +15,16 @@
   }
 }
 
+.message--discussion {
+  padding: 25px 12px 25px 4px;
+}
+
 .message__content {
   padding: 0 0 0 9px;
+}
+
+.message__content-aside--discussion {
+  padding-right: 20px;
 }
 
 .message--unread {
@@ -29,6 +37,8 @@
 
 .message--thread-op {
   border-bottom: 5px solid $color-message-border;
+  padding: 25px 0;
+  border-top: 0;
 }
 
 .message--thread-reply {
