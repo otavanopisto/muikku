@@ -5,21 +5,25 @@ export interface EducationFilterType {
   name: string
 }
 
+export interface EducationFilterListType extends Array<EducationFilterType> {};
+
 export interface CurriculumFilterType {
   identifier: string,
   name: string
 }
 
+export interface CurriculumFilterListType extends Array<CurriculumFilterType> {};
+
 export interface CoursepickerFilters {
-  educationTypes: Array<EducationFilterType>,
-  curriculums: Array<CurriculumFilterType>
+  educationTypes: EducationFilterListType,
+  curriculums: CurriculumFilterListType
 }
 
 export default function areas(state: CoursepickerFilters={
   educationTypes: [],
   curriculums: []
 }, action: ActionType): CoursepickerFilters {
-  if (action.type === "UPDATE_COURSEPICKER_FILTERS_EDUCATION_TYES"){
+  if (action.type === "UPDATE_COURSEPICKER_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
       educationTypes: action.payload
     });
