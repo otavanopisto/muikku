@@ -4,12 +4,14 @@ import runApp from '~/run';
 import {Action} from 'redux';
 import mainFunctionDefault from '~/util/base-main-function';
 
-import queryString from 'query-string';
+import * as queryString from 'query-string';
 
 import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
 import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
 import { updateEducationFilters, updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
+import { CousePickerCoursesFilterType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import { loadCourses } from '~/actions/main-function/coursepicker/coursepicker-courses';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -19,11 +21,12 @@ store.dispatch(<Action>updateEducationFilters());
 store.dispatch(<Action>updateCurriculumFilters());
 
 function loadLocation(originalData: any){
-  let actualDataToUse = {
-    "educationFilters": originalData.e.map((n: string)=>parseInt(n)),
-    "curriculumFilters": originalData.c.map((n: string)=>parseInt(n))
+  let filters:CousePickerCoursesFilterType = {
+    "educationFilters": originalData.e,
+    "curriculumFilters": originalData.c,
+    "query": originalData.q
   }
-  //TODO trigger the action here to update the filters
+  store.dispatch(<Action>loadCourses(filters));
 }
 
 window.addEventListener("hashchange", ()=>{
