@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -56,9 +57,41 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private ChatPrebindParameters chatPrebindCredentials;
 
   @Context
   private HttpServletRequest request;
+  
+  @GET
+  @Path("/prebind")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response fetchPrebindIdentifiers() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+    }
+
+    PrivateKey privateKey = getPrivateKey();
+    if (privateKey == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Private key not set").build();
+    }
+    Instant now = Instant.now();
+    
+    SchoolDataIdentifier loggedUserIdentifier = sessionController.getLoggedUser();
+    if (loggedUserIdentifier == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Logged user identifier not found").build();
+    }
+    String userIdentifierString = loggedUserIdentifier.toId();
+    try {
+      XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
+      return Response.ok(credentials).build();
+    } catch ( InvalidKeyException
+            | SignatureException
+            | NoSuchAlgorithmException ex) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
+    }
+  }
    
   @GET
   @Path("/credentials")
@@ -80,41 +113,11 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Logged user identifier not found").build();
     }
     String userIdentifierString = loggedUserIdentifier.toId();
-    String tokenString = now.getEpochSecond() + "," + userIdentifierString;
-    byte[] hash = DigestUtils.sha256(tokenString);
-    
-    byte[] signature;
-   
     try {
-      Signature sig = Signature.getInstance("SHA1withRSA");
-      sig.initSign(privateKey);
-      sig.update(hash);
-      signature = sig.sign();
+      XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
+      return Response.ok(credentials).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException ex) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
-    }
-    
-    String serverName = request.getServerName();
-    String jid = userIdentifierString + "@" + serverName;
-    
-    String password = tokenString + "," + Base64.encodeBase64String(signature);
-    return Response.ok(new CredentialsRESTModel(jid, password)).build();
-  }
-  
-  private PrivateKey getPrivateKey() {
-    String setting = pluginSettingsController.getPluginSetting("chat", "privateKey");
-    if (setting == null) {
-      return null;
-    }
-    
-    byte[] keyBytes = Base64.decodeBase64(setting);
-    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
-    try {
-      KeyFactory kf = KeyFactory.getInstance("RSA");
-      return kf.generatePrivate(spec);
-    } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-      logger.log(Level.SEVERE, "Couldn't construct private key", e);
-      return null;
     }
   }
 
@@ -149,4 +152,45 @@ public class ChatRESTService extends PluginRESTService {
       return Response.ok(new StatusRESTModel(false, null)).build();
     }
   }
+
+  private XmppCredentials computeXmppCredentials(
+      PrivateKey privateKey,
+      Instant now,
+      String userIdentifierString
+  ) throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
+    String tokenString = now.getEpochSecond() + "," + userIdentifierString;
+    byte[] hash = DigestUtils.sha256(tokenString);
+    
+    byte[] signature;
+   
+    Signature sig = Signature.getInstance("SHA1withRSA");
+    sig.initSign(privateKey);
+    sig.update(hash);
+    signature = sig.sign();
+    
+    String serverName = request.getServerName();
+    String jid = userIdentifierString + "@" + serverName;
+    
+    String password = tokenString + "," + Base64.encodeBase64String(signature);
+    XmppCredentials credentials = new XmppCredentials(userIdentifierString, jid, password);
+    return credentials;
+  }
+  
+  private PrivateKey getPrivateKey() {
+    String setting = pluginSettingsController.getPluginSetting("chat", "privateKey");
+    if (setting == null) {
+      return null;
+    }
+    
+    byte[] keyBytes = Base64.decodeBase64(setting);
+    PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+    try {
+      KeyFactory kf = KeyFactory.getInstance("RSA");
+      return kf.generatePrivate(spec);
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+      logger.log(Level.SEVERE, "Couldn't construct private key", e);
+      return null;
+    }
+  }
+
 }
