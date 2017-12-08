@@ -277,7 +277,7 @@ b {
 
 .text--item-article-header {
   font-weight: 600;
-  padding: 0 0 10px 0;
+  padding: 0 0 10px;
 }
 
 .text--item-counter {
@@ -432,9 +432,9 @@ b {
 }
 
 .text--announcer-announcement-workspace {
-   align-items: center;
-  flex: 0 0 auto;
+  align-items: center;
   display: flex;
+  flex: 0 0 auto;
   justify-content: end;
   margin: 0 0 0 20px;
 }
