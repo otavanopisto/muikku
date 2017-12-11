@@ -492,6 +492,17 @@
                   }, $.proxy(function(text) {
                     this._clear();
                     this.element.append(text);
+                    if ((typeof MathJax) != 'undefined') {
+                      MathJax.Hub.Config({
+                        "HTML-CSS": {
+                          scale: 90
+                        },
+                        NativeMML: {
+                          scale: 90
+                        }
+                      });
+                      MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                    }
                   }, this));
                 }
               }, this));
@@ -567,6 +578,20 @@
     var replyState = $(data.pageElement).attr('data-reply-state');
     if (replyState != '') {
       $(data.pageElement).muikkuMaterialPage('checkExercises', true);
+    }
+    
+    if ((typeof MathJax) != 'undefined') {
+      
+      MathJax.Hub.Config({
+        "HTML-CSS": {
+          scale: 90
+        },
+        NativeMML: {
+          scale: 90
+        }
+      });
+      
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(data.pageElement)[0]]);
     }
   });
 
