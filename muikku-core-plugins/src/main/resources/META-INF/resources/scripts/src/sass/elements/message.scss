@@ -4,7 +4,7 @@
 
 .message {
   border-top: 1px solid $color-message-border;
-  padding: 5px 12px 5px 4px;
+  padding: 14px 12px 14px 4px;
   
   &.selected {
     border-top: 1px solid $color-default;
@@ -20,6 +20,7 @@
 }
 
 .message__content {
+  flex-flow: row nowrap;
   padding: 0 0 0 9px;
 }
 
@@ -32,6 +33,10 @@
   .message__content {
     border-left: solid 3px $color-message-unread-border;
     padding: 0 0 0 6px;
+  }
+  
+  .text--communicator-username {
+    font-weight: 600;
   }
 }
 

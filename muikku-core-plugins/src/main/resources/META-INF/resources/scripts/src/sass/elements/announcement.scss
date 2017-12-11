@@ -1,0 +1,51 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.announcement {
+  border-top: 1px solid $color-announcement-border;
+  padding: 14px 12px 14px 4px;
+  
+  &.selected {
+    border-top: 1px solid $color-default;
+  }
+  
+  &:first-child {
+    border: 0;
+  }
+}
+
+.announcement__content {
+  flex-flow: row nowrap;
+  padding: 0 0 0 9px;
+}
+
+.announcement--environment {
+  
+  .announcement__content {
+    border-left: solid 3px $color-announcement-environment-border;
+    padding: 0 0 0 6px;
+  }
+  
+  .text__icon {
+    color: $color-announcement-environment;
+  }
+}
+
+.announcement--workspace {
+  
+  .announcement__content {
+    border-left: solid 3px $color-announcement-workspace-border;
+    padding: 0 0 0 6px;
+  }
+  
+  .text__icon {
+    color: $color-announcement-workspace;
+  }
+}
+
+.announcement__select-container {
+  align-items: center;
+  display: flex;
+  padding: 2px 8px 2px 2px;
+}

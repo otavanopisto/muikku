@@ -108,7 +108,7 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
                   */}                 
                 </div>  
               </div>                  
-              <div className="application-list__item-body--communicator-message">
+              <div className="application-list__item-body application-list__item-body--communicator-message">
                 <header className="text text--communicator-message-caption">{message.caption}</header>
                 <section className="text text--communicator-message-content" dangerouslySetInnerHTML={{ __html: message.content}}></section>
               </div>                
