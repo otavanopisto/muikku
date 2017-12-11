@@ -24,7 +24,8 @@ function loadLocation(originalData: any){
   let filters:CousePickerCoursesFilterType = {
     "educationFilters": originalData.e || [],
     "curriculumFilters": originalData.c || [],
-    "query": originalData.q || null
+    "query": originalData.q || null,
+    "baseFilter": originalData.b || "ALL_COURSES"
   }
   store.dispatch(<Action>loadCourses(filters));
 }

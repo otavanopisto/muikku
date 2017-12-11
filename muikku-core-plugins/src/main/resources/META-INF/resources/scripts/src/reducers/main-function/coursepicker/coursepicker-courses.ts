@@ -1,10 +1,12 @@
 import {ActionType} from '~/actions';
+import { CoursePickerBaseFilterType } from '~/reducers/main-function/coursepicker/coursepicker-filters';
 
 export type CoursePickerCoursesStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface CousePickerCoursesFilterType {
   educationFilters: Array<string>,
   curriculumFilters: Array<string>,
-  query: string
+  query: string,
+  baseFilter: CoursePickerBaseFilterType
 }
 export interface CoursePickerCourseType {
   id: number,
@@ -43,7 +45,8 @@ export default function coursepickerCourses(state: CoursePickerCoursesType={
   filters: {
     educationFilters: [],
     curriculumFilters: [],
-    query: ""
+    query: "",
+    baseFilter: "ALL_COURSES"
   },
   courses: [],
   hasMore: false,

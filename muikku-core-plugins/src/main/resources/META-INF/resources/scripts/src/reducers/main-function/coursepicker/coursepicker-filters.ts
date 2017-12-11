@@ -1,5 +1,7 @@
 import { ActionType } from "~/actions";
 
+export type CoursePickerBaseFilterType = "ALL_COURSES" | "MY_COURSES" | "AS_TEACHER";
+
 export interface EducationFilterType {
   identifier: string,
   name: string
@@ -14,14 +16,18 @@ export interface CurriculumFilterType {
 
 export interface CurriculumFilterListType extends Array<CurriculumFilterType> {};
 
+export type CoursePickerBaseFilterListType = Array<CoursePickerBaseFilterType>;
+
 export interface CoursepickerFiltersType {
   educationTypes: EducationFilterListType,
-  curriculums: CurriculumFilterListType
+  curriculums: CurriculumFilterListType,
+  baseFilters: CoursePickerBaseFilterListType
 }
 
 export default function areas(state: CoursepickerFiltersType={
   educationTypes: [],
-  curriculums: []
+  curriculums: [],
+  baseFilters: ["ALL_COURSES", "MY_COURSES", "AS_TEACHER"]
 }, action: ActionType): CoursepickerFiltersType {
   if (action.type === "UPDATE_COURSEPICKER_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
