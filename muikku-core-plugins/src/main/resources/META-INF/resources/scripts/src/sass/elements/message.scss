@@ -4,7 +4,7 @@
 
 .message {
   border-top: 1px solid $color-message-border;
-  padding: 10px 12px 10px 4px;
+  padding: 5px 12px 5px 4px;
   
   &.selected {
     border-top: 1px solid $color-default;
@@ -16,7 +16,7 @@
 }
 
 .message--discussion {
-  padding: 25px 12px 25px 4px;
+  padding: 15px 12px 15px 4px;
 }
 
 .message__content {
