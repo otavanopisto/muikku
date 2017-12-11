@@ -509,9 +509,47 @@ b {
   }
 }
 
-.text__discussion-breadcrumb-item--area {
-  border-left: 5px solid skyblue;
+
+.text__discussion-breadcrumb-item--area-1 {
+  border-left: 5px solid $color-message-area-category-1;
 }
+
+.text__discussion-breadcrumb-item--area-2 {
+  border-left: 5px solid $color-message-area-category-2;
+}
+
+.text__discussion-breadcrumb-item--area-3 {
+  border-left: 5px solid $color-message-area-category-3;
+}
+
+.text__discussion-breadcrumb-item--area-4 {
+  border-left: 5px solid $color-message-area-category-4;
+}
+
+.text__discussion-breadcrumb-item--area-5 {
+  border-left: 5px solid $color-message-area-category-5;
+}
+
+.text__discussion-breadcrumb-item--area-6 {
+  border-left: 5px solid $color-message-area-category-6;
+}
+
+.text__discussion-breadcrumb-item--area-7 {
+  border-left: 5px solid $color-message-area-category-7;
+}
+
+.text__discussion-breadcrumb-item--area-8 {
+  border-left: 5px solid $color-message-area-category-8;
+}
+
+.text__discussion-breadcrumb-item--area-9 {
+  border-left: 5px solid $color-message-area-category-9;
+}
+
+.text__discussion-breadcrumb-item--area-10 {
+  border-left: 5px solid $color-message-area-category-10;
+}
+
 
 .text--new-discussion-create-state {
   margin-right: 10px;

@@ -61,7 +61,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
           <span className="icon icon-goback"></span>
         </Link>
         <div className="text text--discussion-current-thread">
-          <div className="text text__discussion-breadcrumb-item text__discussion-breadcrumb-item--area">
+          <div className={`text text__discussion-breadcrumb-item text__discussion-breadcrumb-item--area-${currentArea.id}`}>
             {currentArea.name}
           </div>
           <div className="text text__discussion-breadcrumb-item">
