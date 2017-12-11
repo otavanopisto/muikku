@@ -63,7 +63,7 @@ public class VopsLister {
   private List<VopsRow> rows = new ArrayList<VopsRow>();
   private int numCourses = 0;
   private int numMandatoryCourses = 0;
-  private boolean optedIn = false;
+  private boolean optedIn = true;
   
   public VopsLister(List<Subject> subjects, TranscriptOfRecordsController vopsController, User student,
       List<TransferCredit> transferCredits, SchoolDataIdentifier curriculumIdentifier,
