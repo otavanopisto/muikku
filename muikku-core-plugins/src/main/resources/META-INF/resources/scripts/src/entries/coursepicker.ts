@@ -22,14 +22,14 @@ store.dispatch(<Action>updateCurriculumFilters());
 
 function loadLocation(originalData: any){
   let filters:CousePickerCoursesFilterType = {
-    "educationFilters": originalData.e,
-    "curriculumFilters": originalData.c,
-    "query": originalData.q
+    "educationFilters": originalData.e || [],
+    "curriculumFilters": originalData.c || [],
+    "query": originalData.q || null
   }
   store.dispatch(<Action>loadCourses(filters));
 }
 
 window.addEventListener("hashchange", ()=>{
-  loadLocation(queryString.parse(window.location.hash));
+  loadLocation(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));
 }, false);
-loadLocation(queryString.parse(window.location.hash));
+loadLocation(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));

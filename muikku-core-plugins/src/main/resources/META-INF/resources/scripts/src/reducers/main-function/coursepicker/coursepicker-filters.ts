@@ -14,15 +14,15 @@ export interface CurriculumFilterType {
 
 export interface CurriculumFilterListType extends Array<CurriculumFilterType> {};
 
-export interface CoursepickerFilters {
+export interface CoursepickerFiltersType {
   educationTypes: EducationFilterListType,
   curriculums: CurriculumFilterListType
 }
 
-export default function areas(state: CoursepickerFilters={
+export default function areas(state: CoursepickerFiltersType={
   educationTypes: [],
   curriculums: []
-}, action: ActionType): CoursepickerFilters {
+}, action: ActionType): CoursepickerFiltersType {
   if (action.type === "UPDATE_COURSEPICKER_FILTERS_EDUCATION_TYPES"){
     return Object.assign({}, state, {
       educationTypes: action.payload

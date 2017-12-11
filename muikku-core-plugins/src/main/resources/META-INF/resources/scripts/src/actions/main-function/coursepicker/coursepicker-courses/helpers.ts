@@ -53,6 +53,10 @@ export async function loadCoursesHelper(filters:CousePickerCoursesFilterType | n
   
   try {
     let courses:CoursePickerCourseListType = <CoursePickerCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+  
+    //TODO why in the world does the server return nothing rather than an empty array?
+    //remove this hack fix the server side
+    courses = courses || [];
     let hasMore:boolean = courses.length === MAX_LOADED_AT_ONCE + 1;
     
     //This is because of the array is actually a reference to a cached array
