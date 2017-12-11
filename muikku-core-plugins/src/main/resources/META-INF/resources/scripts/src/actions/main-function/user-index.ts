@@ -4,11 +4,11 @@ import mApi from '~/lib/mApi';
 import {UserType} from '~/reducers/main-function/user-index';
 
 export interface LoadUserIndexTriggerType {
-  (userId: number):AnyActionType
+  (userId: number, callback?: (user:UserType)=>any):AnyActionType
 }
 
 export interface LoadUserIndexBySchoolDataTriggerType {
-  (userId: string):AnyActionType
+  (userId: string, callback?: (user:UserType)=>any):AnyActionType
 }
 
 export interface LoadUserGroupIndexTriggerType {
@@ -34,7 +34,7 @@ let fetchingStateUser:{[index: number]: boolean} = {};
 let fetchingStateUserBySchoolData:{[index: string]: boolean} = {};
 let fetchingStateUserGroup:{[index: number]: boolean} = {};
 
-let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId) { 
+let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, callback) { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let state = getState();
     let currentUserInfo = state.userIndex.users[userId];
@@ -45,19 +45,21 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId) {
     fetchingStateUser[userId] = true;
     
     try {
+      let user:UserType = <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0);
       dispatch({
         type: "SET_USER_INDEX",
         payload: {
           index: userId,
-          value: <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0)
+          value: user
         }
       });
+      callback(user);
     } catch(err){
     }
   }
 }
 
-let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function loadUserIndexBySchoolData(userId) { 
+let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function loadUserIndexBySchoolData(userId, callback) { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let state = getState();
     let currentUserInfo = state.userIndex.users[userId];
@@ -68,13 +70,15 @@ let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function l
     fetchingStateUserBySchoolData[userId] = true;
     
     try {
+      let user:UserType = <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0);
       dispatch({
         type: "SET_USER_BY_SCHOOL_DATA_INDEX",
         payload: {
           index: userId,
-          value: <UserType>(await (promisify(mApi().user.users.basicinfo.read(userId), 'callback')()) || 0)
+          value: user
         }
       });
+      callback(user);
     } catch(err){
     }
   }

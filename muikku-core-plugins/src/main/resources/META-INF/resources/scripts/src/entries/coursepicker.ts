@@ -12,11 +12,11 @@ import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
 import { updateEducationFilters, updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
 import { CousePickerCoursesFilterType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
 import { loadCourses } from '~/actions/main-function/coursepicker/coursepicker-courses';
+import { UserType } from 'reducers/main-function/user-index';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('TODO coursepicker title')));
-store.dispatch(<Action>loadUserIndexBySchoolData(store.getState().status.userSchoolDataIdentifier));
 store.dispatch(<Action>updateEducationFilters());
 store.dispatch(<Action>updateCurriculumFilters());
 
@@ -32,4 +32,19 @@ function loadLocation(originalData: any){
 window.addEventListener("hashchange", ()=>{
   loadLocation(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));
 }, false);
-loadLocation(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));
+
+let currentLocationData = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+let currentLocationHasData = Object.keys(currentLocationData).length;
+if (currentLocationHasData){
+  loadLocation(currentLocationData);
+}
+
+store.dispatch(<Action>loadUserIndexBySchoolData(store.getState().status.userSchoolDataIdentifier, (user:UserType)=>{
+  if (!currentLocationHasData && user.curriculumIdentifier){
+    location.hash = "#?" + queryString.stringify({
+      c: user.curriculumIdentifier
+    }, {arrayFormat: 'bracket'});
+  } else if (!currentLocationHasData){
+    loadLocation(currentLocationData);
+  }
+}));
