@@ -126,7 +126,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
              <div className="menu__container" ref="menuContainer" style={{left: this.state.drag}}>
                 <div className="menu__header">
                   <div className="menu__logo"></div>
-                  <Link className="menu__header__button--close icon icon-arrow-left"></Link>
+                  <Link className="menu__header__button--close icon-arrow-left"></Link>
                 </div>
                 <div className="menu__body">
                   {this.props.navigation ? <div className="menu__extras">{this.props.navigation}</div> : null}
@@ -143,26 +143,26 @@ class Menu extends React.Component<MenuProps, MenuState> {
                         <object className="container container--profile-image container--profile-image-in-menu"
                           data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
                           type="image/jpeg">
-                          <span className="icon icon-user"></span>
+                          <span className="link__icon icon-user"></span>
                         </object>
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.profile.profile')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--instructions">
-                        <span className="icon icon-forgotpassword"/>
+                        <span className="link__icon icon-forgotpassword"/>
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.footer.instructions')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--helpdesk">
-                        <span className="icon icon-helpdesk"></span>
+                        <span className="link__icon icon-helpdesk"></span>
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.home.helpdesk')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
-                        <span className="icon icon-signout"></span>
+                        <span className="link__icon icon-signout"></span>
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.logout.logout')}</span>
                       </Link>
                     </li> : null}

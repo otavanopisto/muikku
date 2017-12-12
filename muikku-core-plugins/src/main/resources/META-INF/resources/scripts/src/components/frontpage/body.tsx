@@ -304,11 +304,11 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
               <h2 className="text text--branded text--otavan-opisto-info-title">
                 {this.props.i18n.text.get('plugin.organization.some.title')}
               </h2>
-              <a className="button-social icon icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
-              <a className="button-social icon icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
-              <a className="button-social icon icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
-              <a className="button-social icon icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
-              <a className="button-social icon icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
+              <a className="button-social icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"></a>
+              <a className="button-social icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"></a>
+              <a className="button-social icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"></a>
+              <a className="button-social icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"></a>
+              <a className="button-social icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"></a>
             </div>
           </div>
                 

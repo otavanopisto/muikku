@@ -300,22 +300,6 @@ b {
   padding: 10px;  
 }
 
-.text--communicator-current-folder {
-  align-items: center;
-  flex: 1 1 auto;
-  display: flex;
-  font-size: 1rem;
-  font-weight: 300;
-  overflow: hidden;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  
-  @include breakpoint($breakpoint-pad){
-    display: none;
-  }
-}
-
 .text--communicator-usernames {
   align-items: center;
   display: flex;
@@ -580,4 +564,21 @@ b {
 
 .text__icon--current-folder {
   padding: 0 5px 0 0;
+}
+
+// Generic Main function 
+.text--main-function-current-folder {
+  align-items: center;
+  flex: 1 1 auto;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 300;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  @include breakpoint($breakpoint-pad){
+    display: none;
+  }
 }

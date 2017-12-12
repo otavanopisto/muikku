@@ -58,7 +58,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       let currentArea = this.props.areas.find((area)=>area.id === this.props.discussionThreads.current.forumAreaId);
       return <div className="application-panel__toolbar">
         <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-          <span className="icon icon-goback"></span>
+          <span className="button-pill__icon icon-goback"></span>
         </Link>
         <div className="text text--discussion-current-thread">
           <div className={`text text__discussion-breadcrumb-item text__discussion-breadcrumb-item--area-${currentArea.id}`}>
@@ -79,13 +79,13 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
         </option>)}
       </select>
       {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ? <NewArea><Link className="button-pill button-pill--discussion-toolbar">
-        <span className="icon icon-add"></span>
+        <span className="button-pill__icon icon-add"></span>
       </Link></NewArea> : null}
       {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ? <ModifyArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
-        <span className="icon icon-edit"></span>
+        <span className="button-pill__icon icon-edit"></span>
       </Link></ModifyArea> : null}
       {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? <DeleteArea><Link className="button-pill button-pill--discussion-toolbar" disabled={!this.props.discussionThreads.areaId}>
-        <span className="icon icon-delete"></span>
+        <span className="button-pill__icon icon-delete"></span>
       </Link></DeleteArea> : null}
     </div>
   }

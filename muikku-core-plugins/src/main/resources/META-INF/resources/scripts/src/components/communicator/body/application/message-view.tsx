@@ -101,7 +101,7 @@ class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
                   {/* TODO: labels are outside of the message object
                   {message.labels.map((label)=>{
                     return <span className="communicator text communicator-text-tag" key={label.id}>
-                      <span className="icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                      <span className="text__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                       {label.labelName}
                     </span>
                   })} 
