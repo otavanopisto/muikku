@@ -71,6 +71,24 @@
   }
 }
 
+
+.container--new-announcement-options {
+  display: flex;
+  margin-bottom: 20px;
+
+  div:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.container--new-announcement-recipients {
+  margin-bottom: 20px;    
+}
+
+.container--new-announcement-topic {
+  margin-bottom: 20px;    
+}
+
 .container--communicator-message-meta {
   display: flex;
   padding: 10px;
@@ -83,6 +101,9 @@
 .container--new-discussion-options {
   display: flex;
 }
+
+
+
 
 .container--new-discussion-thread-states {
   background-color: #fff;
