@@ -69,24 +69,25 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                           {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                         </span>
                       </div> 
-                      {announcement.workspaces.map((workspace)=>{
-                        return <div className="text text--announcer-announcement-workspace" key={workspace.id}> 
-                          <span className="text__icon icon-books"></span>
-                          <span className="text text--announcer-workspace">
-                            {workspace.name}
-                          </span>
-                        </div>
-                      })}
                     </div>                  
                     <div className="application-list__item-body">
-                      <div className="text text--announcer-body">
-                        <article className="text text--item-article">
-                          <header className="text text--item-article-header">{announcement.caption}</header>
-                          <p dangerouslySetInnerHTML={{__html:announcement.content}}></p>
-                        </article>
+                      <article className="text text--item-article">
+                        <header className="text text--item-article-header">{announcement.caption}</header>
+                        <p dangerouslySetInnerHTML={{__html:announcement.content}}></p>
+                      </article>
+                    </div>
+                    {/* This should be shown only if announcement has workspaces set */}    
+                    {announcement.workspaces ? <div className="application-list__item-meta">
+                      {announcement.workspaces.map((workspace)=>{
+                      return <div className="text text--announcement-workspace" key={workspace.id}> 
+                        <span className="text__icon text__icon--announcement-workspace icon-books"></span>
+                        <span className="text text--announcement-workspace-name">
+                          {workspace.name}
+                        </span>
                       </div>
-                    </div>                
-                    <div className="application-list__item-footer">                  
+                      })}    
+                    </div> : null}
+                    <div className="application-list__item-footer">  
                       <NewEditAnnouncement announcement={announcement}>
                         <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
                       </NewEditAnnouncement>

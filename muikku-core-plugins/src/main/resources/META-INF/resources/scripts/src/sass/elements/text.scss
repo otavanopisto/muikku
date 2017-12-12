@@ -415,17 +415,8 @@ b {
   flex-wrap: wrap; 
 }
 
-.text--announcer-announcement-workspace {
-  align-items: center;
-  display: flex;
-  flex: 0 0 auto;
-  justify-content: end;
-  margin: 0 0 0 20px;
-}
-
 .text--announcer-announcement-caption {
   font-weight: 600;  
-  
   padding: 10px; 
 }  
 
@@ -433,9 +424,15 @@ b {
   padding: 10px;  
 }
 
-.text--announcer-workspace {
-  color: #000;
-  margin-left: 5px;
+.text--announcer-announcement-workspaces {
+  padding: 10px; 
+}
+
+.text--announcement-workspace {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin: 0 20px 0 0;
 }
 
 // Discussion
@@ -558,7 +555,8 @@ b {
   display: flex;
 }
 
-.text__icon--communicator-label {
+.text__icon--communicator-label,
+.text__icon--announcement-workspace {
   padding: 0 5px 0 0;
 }
 
