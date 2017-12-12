@@ -17,7 +17,8 @@
         hide_muc_server : true,
         auto_join_rooms : ['muikku@conference.' + location.hostname],
         ping_interval: 45,
-        auto_minimize: true
+        auto_minimize: true,
+        i18n: getLocale() === "fi" ? "fi" : "en"
       });
     }
   });
