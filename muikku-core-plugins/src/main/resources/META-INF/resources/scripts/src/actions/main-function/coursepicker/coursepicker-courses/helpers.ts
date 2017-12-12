@@ -42,13 +42,25 @@ export async function loadCoursesHelper(filters:CousePickerCoursesFilterType | n
   let maxResults = MAX_LOADED_AT_ONCE + 1;
   let search = actualFilters.query;
   
+  
+  let myWorkspaces = false;
+  let includeUnpublished = false;
+  
+  if (filters.baseFilter === "MY_COURSES"){
+    myWorkspaces = true;
+  } else if (filters.baseFilter === "AS_TEACHER"){
+    myWorkspaces = true;
+    includeUnpublished = true;
+  }
+  
   let params = {
     firstResult,
     maxResults,
     orderBy: "alphabet",
-    myWorkspaces: false,
+    myWorkspaces,
     educationTypes: actualFilters.educationFilters,
-    curriculums: actualFilters.curriculumFilters
+    curriculums: actualFilters.curriculumFilters,
+    includeUnpublished
   }
   
   try {
