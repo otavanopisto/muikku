@@ -42,7 +42,7 @@
 }
 
 .item-list__item--latest-messages,
-.item-list__item--latest-announcements {
+.item-list__item--announcements {
   align-items: flex-start;
   border-top: solid 1px $color-index-item-list-item-panel-latest-messages-border;
   margin: 0;
@@ -118,8 +118,9 @@
 }
 
 // List item dates
-.item-list__latest-message-date {
-  color: $color-index-text-panel-latest-messages-date;
+.item-list__latest-message-date,
+.item-list__announcement-date {
+  color: $color-index-text-panels-date-color;
   font-size: calc(#{$text-mobile-font-size} / 1.1);
   font-style: italic;
   padding: 6px 0 0;
@@ -128,3 +129,4 @@
     font-size: calc(#{$text-desktop-font-size} / 1.1);
   }
 }
+

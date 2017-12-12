@@ -71,6 +71,10 @@
   }
 }
 
+.container--announcer-announcement-meta {
+  display: flex;
+  padding: 10px;
+}
 
 .container--new-announcement-options {
   display: flex;
@@ -101,9 +105,6 @@
 .container--new-discussion-options {
   display: flex;
 }
-
-
-
 
 .container--new-discussion-thread-states {
   background-color: #fff;

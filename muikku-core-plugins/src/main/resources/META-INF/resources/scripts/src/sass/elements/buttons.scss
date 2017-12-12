@@ -367,8 +367,7 @@
     margin-right: 15px;
     width: $button-pill-navbar-size;
     
-    // TODO: Needs fixing
-    .icon {
+    .button-pill__icon {
       color: $color-environment-button-pill-icon-user;
     }
   }
@@ -376,8 +375,7 @@
   
 .button-pill--search {
 
-  // TODO: Needs fixing
-  .icon {
+  .button-pill__icon {
     color: $color-environment-button-pill-icon-search;
   }
 }

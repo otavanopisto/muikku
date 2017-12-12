@@ -139,7 +139,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       if (item.type === "user"){
         return {
           node: <span className="text text--recepient-tag">
-            <span className="icon icon-user"/>
+            <span className="text__icon icon-user"/>
             {
               (item.value.firstName + " " || "") + (item.value.lastName || "")
             } <i>{item.value.email}</i>
@@ -149,14 +149,14 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       } else if (item.type === "usergroup"){
         return {
           node: <span className="text text--recepient-tag">
-            <span className="icon icon-members"/>{item.value.name}
+            <span className="text__icon icon-members"/>{item.value.name}
           </span>,
           value: item
         };
       } else {
         return {
           node: <span className="text text--recepient-tag">
-            <span className="icon icon-books"/>{item.value.name}
+            <span className="text__icon icon-books"/>{item.value.name}
           </span>,
           value: item
         };
@@ -168,19 +168,19 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       let node;
       if (item.type === "user"){
         node = <div className="text text--recepient-autocomplete">
-          <span className="icon icon-user"></span>
+          <span className="text__icon icon-user"></span>
           {
             filterHighlight((item.value.firstName + " " || "") + (item.value.lastName || ""), this.state.textInput)
           } <i>{item.value.email}</i>
         </div>;
       } else if (item.type === "usergroup"){
         node = <div className="text text--recepient-autocomplete">
-          <span className="icon icon-members"></span>
+          <span className="text__icon icon-members"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
       } else {
         node = <div className="text text--recepient-autocomplete">
-          <span className="icon icon-books"></span>
+          <span className="text__icon icon-books"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
       }

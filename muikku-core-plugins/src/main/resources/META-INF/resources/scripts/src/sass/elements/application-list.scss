@@ -25,15 +25,7 @@
   transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
-  
-  &:hover, &.hover {
-    background-color: darken($color-application-list-item-background, 5%);
-  }
 
-  &:active, &.active {
-    background-color: darken($color-application-list-item-background, 10%);
-  }
-  
   &.selected {
     background-color: $color-application-list-item-background-selected;
     
@@ -141,9 +133,6 @@
   background-color: $color-main-function-category-10;
 }
 
-
-
-
 .application-list__item-header {
   align-items: center;
   display: flex;      
@@ -151,6 +140,10 @@
 
 .application-list__item-body {
   padding: 5px 0 0;
+}
+
+.application-list__item-meta {
+  padding: 5px 0 10px;
 }
 
 .application-list__item-footer {
@@ -170,10 +163,9 @@
 }
 
 .application-list--open {
-  overflow-y: auto;
-  padding: 5px 15px 5px 5px;    
   -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;
+  overflow-y: auto;
   
    &::-webkit-scrollbar { 
     display: none; 
@@ -199,23 +191,29 @@
 } 
 
 // Announcer
-.application-list__item--workspace-announcement, .application-list__item--environment-announcement {
-  padding: 10px;
-}
-
 .application-list__item--workspace-announcement {
-  border-left: 5px solid $color-announcement-workspace-border;
     
-  .icon::before {
+  .text__icon::before {
     color: $color-announcement-workspace-icon;
   }
 }
 
 .application-list__item--environment-announcement { 
-   border-left: 5px solid $color-announcement-environment-border;  
    
-  .icon::before {
+  .text__icon::before {
     color: $color-announcement-environment-icon;
+  }
+}
+
+.application-list__item-header--announcer-announcement {
+  flex-direction: column;
+}
+
+.application-list__item--workspace-announcement:first-child,
+.application-list__item--environment-announcement:first-child {
+  
+  .application-list__item-header {
+    background-color: $color-announcement-open-header-background;
   }
 }
 
@@ -229,8 +227,8 @@
 .application-list__item--communicator-message {  
   border-bottom: 5px solid $color-main-function-application-list-item-open-border;
   cursor: default;
-  margin: 0;
-  padding: 0 0 1px 0;
+  margin: 0 0 5px;
+  padding: 0 0 10px;
   
   &:last-child {
     border: 0;
@@ -241,8 +239,8 @@
   flex-direction: column;
 }
 
-// This is against the BEM, but convenient because of the pseudo classes
 .application-list__item--communicator-message:first-child {
+  
   .application-list__item-header {
     background-color: $color-message-open-header-background;
   }

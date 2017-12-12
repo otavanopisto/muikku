@@ -65,7 +65,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       <div className="dialog__header">
         <div className="dialog__title">
             {this.props.title}
-            <span className="dialog__close icon icon-close" onClick={closePortal}></span>
+            <span className="dialog__close icon-close" onClick={closePortal}></span>
         </div>
       </div>
       <div className="dialog__content">

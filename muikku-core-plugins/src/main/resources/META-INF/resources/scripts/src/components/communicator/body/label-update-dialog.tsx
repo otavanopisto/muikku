@@ -106,7 +106,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="text text--communicator-label-update-dialog-icon">
-            <span className={`icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+            <span className={`text__icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
           </div>
           <input value={this.state.name}
             className="form-field form-field--communicator-label-name"

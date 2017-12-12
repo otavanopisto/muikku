@@ -276,8 +276,8 @@ b {
 }
 
 .text--item-article-header {
-  font-weight: 400;
-  padding: 10px 0;
+  font-weight: 600;
+  padding: 0 0 10px;
 }
 
 .text--item-counter {
@@ -285,42 +285,19 @@ b {
   border-radius: 50%;
   background-color: #FFF6AE;
   display: flex;
-  font-size: .75rem;
   height: 22px;
   justify-content: center;
   width: 22px;
 }
   
-.text--announcements-date {
-  color: $color-index-text-panel-announcements-date;
-  font-size: .75rem;
-  padding-bottom: 7px;
-}
-  
 .text--communicator-message-caption {
   font-weight: 600;  
-  margin-bottom: 10px;    
+
   padding: 10px; 
 }  
 
 .text--communicator-message-content {
   padding: 10px;  
-}
-
-.text--communicator-current-folder {
-  align-items: center;
-  flex: 1 1 auto;
-  display: flex;
-  font-size: 1rem;
-  font-weight: 300;
-  overflow: hidden;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  
-  @include breakpoint($breakpoint-pad){
-    display: none;
-  }
 }
 
 .text--communicator-usernames {
@@ -340,9 +317,8 @@ b {
 }
 
 .text--communicator-date {
-  font-size: .75rem;
-  width: 5rem; // This needs to grow if user increases browser's font size
   text-align: right;
+  width: 5.2rem; // This needs to grow if user increases browser's font size
 }
   
 .text--communicator-body {
@@ -424,15 +400,11 @@ b {
   display: inline-block;
 }
 
-.text--communicator-message-created {
-  font-size: .75rem;
-}
-
 // Announcer
 .text--announcer-times {
   display: inline-block;
   margin-left: 5px;
-  font-size: 15px;
+  font-weight: 600;
 }
 
 .text--announcer-times-decor {
@@ -441,26 +413,31 @@ b {
   vertical-align: middle;
 }
 
-.text--announcer-header-main {
+.text--announcer-announcement-header {
   align-items: center;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
-  flex: 0 2 auto;
+  flex-wrap: wrap; 
 }
 
-.text--announcer-header-aside {
-  opacity: 0.75;
-  flex: 1 1 auto;
-  display: flex;
-  justify-content: end;
+.text--announcer-announcement-caption {
+  font-weight: 600;  
+  padding: 10px; 
+}  
+
+.text--announcer-announcement-content {
+  padding: 10px;  
+}
+
+.text--announcer-announcement-workspaces {
+  padding: 10px; 
+}
+
+.text--announcement-workspace {
   align-items: center;
-}
-
-.text--announcer-workspace {
-  color: #000;
-  font-size: 15px;
-  margin-left: 5px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  margin: 0 20px 0 0;
 }
 
 // Discussion
@@ -583,10 +560,28 @@ b {
   display: flex;
 }
 
-.text__icon--communicator-label {
+.text__icon--communicator-label,
+.text__icon--announcement-workspace {
   padding: 0 5px 0 0;
 }
 
 .text__icon--current-folder {
   padding: 0 5px 0 0;
+}
+
+// Generic Main function 
+.text--main-function-current-folder {
+  align-items: center;
+  flex: 1 1 auto;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 300;
+  overflow: hidden;
+  position: relative;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  @include breakpoint($breakpoint-pad){
+    display: none;
+  }
 }

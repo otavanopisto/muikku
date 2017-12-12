@@ -21,7 +21,7 @@ export default class HoverButton extends React.Component<HoverButtonProps, Hover
   render(){
     return (<Link href={this.props.href} onClick={this.props.onClick}
        className={`button-pill button-pill--floating button-pill--${this.props.modifier}`}>
-      <span className={`icon icon-${this.props.icon}`}></span>
+      <span className={`button-pill__icon icon-${this.props.icon}`}></span>
     </Link>);
   }
 }
