@@ -63,6 +63,10 @@ export async function loadCoursesHelper(filters:CousePickerCoursesFilterType | n
     includeUnpublished
   }
   
+  if (filters.query){
+    (params as any).search = filters.query;
+  }
+  
   try {
     let courses:CoursePickerCourseListType = <CoursePickerCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
   
