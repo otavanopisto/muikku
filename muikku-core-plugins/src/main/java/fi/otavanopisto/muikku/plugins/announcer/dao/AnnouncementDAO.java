@@ -85,7 +85,7 @@ public class AnnouncementDAO extends CorePluginsDAO<Announcement> {
         predicates.add(criteriaBuilder.greaterThan(root.get(Announcement_.startDate), currentDate));
       break;
       case EXPIRED:
-        predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(Announcement_.endDate), currentDate));
+        predicates.add(criteriaBuilder.lessThan(root.get(Announcement_.endDate), currentDate));
       break;
     }
     
