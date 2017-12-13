@@ -1,5 +1,9 @@
-@import "../base/breakpoints";
 @import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// TODO: Refactoring needed for every form-field element
 	
 div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
   height: 34px;
@@ -161,4 +165,32 @@ div.form-field-tag-input {
   &.form-field-tag-input__new-message-recepients {
     margin-bottom: 5px;
   }
+}
+
+label {
+  display: block;
+  font-family: $text-font-family;
+  font-weight: 600;
+  padding: 0 0 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+input {
+  border: 2px solid $color-form-field-border;
+  border-radius: 3px;
+  display: inline-block;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  padding: 8px;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+// Used in forgotpassword dialog
+.text-field--forgotpassword-email {
+  width: 100%;
+  font-size: $text-forgotpassword-font-size;
 }

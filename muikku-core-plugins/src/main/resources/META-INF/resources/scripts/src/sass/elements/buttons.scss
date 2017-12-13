@@ -96,6 +96,19 @@
     background-color: darken($color-button-success-background, 20%);
   }
 }
+
+.button--cancel {
+  background-color: $color-button-cancel-background;
+  color: $color-button-success-text;
+  
+  &:hover, &.hover {
+    background-color: darken($color-button-cancel-background, 10%);
+  }
+  
+  &:active, &.active {
+    background-color: darken($color-button-cancel-background, 20%);
+  }
+}
   
 .button--loading {
   background-color: $color-button-loading-background;
@@ -137,13 +150,15 @@
 }
  
 // FRONTPAGE
-.button--forgotpassword-dialog {
+.button--forgotpassword-dialog-submit {
 	display: inline-flex;
+	font-weight: 400; // This element is actually <label> so we need to reset font-weight
+	margin: 0 0 0 10px;
 }
 
 .button--forgotpassword-dialog-cancel {
 	display: inline-flex;
-	float: left;
+	margin: 0 0 0 10px;
 }
  
 .button--login {

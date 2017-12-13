@@ -1,9 +1,7 @@
 @import "../base/colors";
 @import "../base/mixins";
+@import "../base/vars";
 @import "../base/breakpoints";
-
-$dialog-font-family: "Exo 2", Arial, sans-serif;
-$dialog-button-close-height: 45px;
 
 .dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
@@ -18,87 +16,100 @@ $dialog-button-close-height: 45px;
   right: 0;
   top: 0;
   z-index: 10;
-  
+}
 
-  > .dialog__window {
-    background-color: $color-dialog-default-background;
-    border: solid 1px $color-dialog-default-border;
-    border-radius: 3px;
-    font-family: $dialog-font-family;
+.dialog--visible {
+  opacity: 1;
+}
+  
+.dialog__window {
+  background-color: $color-dialog-default-background;
+  bottom: 0;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 100%; 
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    border-radius: 5px;
+    bottom: auto;
+    font-size: $text-desktop-font-size;
+    left: auto;
     max-width: 450px;
     overflow: hidden;
-    padding: 20px;
     position: relative;
-    
+    right: auto;
+    top: auto;
+  }   
 
-    @include breakpoint-down($breakpoint-medium-mobile) {
-      border: 0;
-      border-radius: 0;
-      height: 100%;
-      max-width: none;
-      width: 100%;
-    }
-
-    .dialog__header {
-      border-bottom: solid 1px $color-dialog-default-border;
-      color: $color-dialog-default-title-text;
-      margin-bottom: 20px;
-      padding-bottom: 20px;
-      position: relative;
-      width: 100%;
-
-      .dialog__title {
-        font-weight: 500;
-        position: relative;
-        text-align: center;
-        width: 100%;
-      }
-    }
-
-    .dialog__close {
-      @include prefix(transition, moz ms o webkit, background-color 0.3s);
-      border-radius: $dialog-button-close-height;
-      cursor: pointer;
-      font-size: 18px;
-      height: $dialog-button-close-height;
-      line-height: $dialog-button-close-height;
-      margin-top: -#{$dialog-button-close-height / 2};
-      position: absolute;
-      right: 8px;
-      text-align: center;
-      top: 50%;
-      vertical-align: center;
-      width: $dialog-button-close-height;
-
-      &:active {
-        background-color: $color-dialog-default-border;
-      }
-    }
-
-    .dialog__footer {
-      display: flex;
-      flex-direction: row-reverse;
-      position: relative;
-      width: 100%;
-      
-      @include breakpoint-down($breakpoint-medium-mobile) {
-        bottom: 0;
-        left: 0;
-        padding: inherit;
-        position: absolute;
-      }
-    }
-
-    .dialog__content {
-      padding-bottom: 20px;
-      position: relative;
-      text-align: justify;
-      width: 100%;
-    }
+  @include breakpoint($breakpoint-pad) {
+    box-shadow: 0 0 80px $color-dialog-default-shadow;
   }
+}
 
-  &.dialog--visible {
-    opacity: 1;
+.dialog__header {
+  background-color: $color-dialog-default-background;
+  color: $color-dialog-default-text;
+  padding: 15px 20px;
+  position: relative;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    background-color: $color-dialog-default-title-background;
+    color: $color-dialog-default-title-text;
+    font-size: 1.1rem;
+  }
+}
+
+.dialog__title {
+  font-size: 1rem;
+  font-weight: 300;
+  position: relative;
+  text-transform: uppercase;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    font-size: 1.1rem;
+  }
+}
+
+.dialog__close {
+  @include prefix(transition, moz ms o webkit, background-color 0.3s);
+  border-radius: $dialog-button-close-height;
+  cursor: pointer;
+  font-size: 18px;
+  height: $dialog-button-close-height;
+  line-height: $dialog-button-close-height;
+  margin-top: -#{$dialog-button-close-height / 2};
+  position: absolute;
+  right: 10px;
+  text-align: center;
+  top: 50%;
+  vertical-align: center;
+  width: $dialog-button-close-height;
+}
+
+.dialog__content {
+  padding: 20px;
+  position: relative;
+  width: 100%;
+}
+
+.dialog__footer {
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    position: relative;
+    width: 100%;
   }
 }
 
@@ -146,7 +157,7 @@ $dialog-button-close-height: 45px;
     
     .jumbo-dialog__window {
       max-width: $breakpoint-max-usable-screen;
-      font-family: $dialog-font-family;
+      font-family: $text-font-family;
       height: 100%;
       width: 100%;
       position: relative;
@@ -184,7 +195,6 @@ $dialog-button-close-height: 45px;
       }       
       
       .jumbo-dialog__header {
-        border-bottom: solid 1px $color-dialog-default-border;
         color: $color-dialog-default-title-text;
         margin-bottom: 20px;
         padding: 15px;
@@ -217,10 +227,6 @@ $dialog-button-close-height: 45px;
         top: 50%;
         vertical-align: center;
         width: $dialog-button-close-height;
-  
-        &:active {
-          background-color: $color-dialog-default-border;
-        }
       }
     }
   }
