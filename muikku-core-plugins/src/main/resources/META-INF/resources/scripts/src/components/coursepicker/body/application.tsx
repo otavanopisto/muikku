@@ -57,7 +57,7 @@ class CommunicatorApplication extends React.Component<CoursepickerApplicationPro
       
     return (<div className="container container--full">
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} aside={this.props.aside} primaryOption={primaryOption}>
-  
+        <CoursepickerWorkspaces/>
       </ApplicationPanel>
     </div>);
   }
