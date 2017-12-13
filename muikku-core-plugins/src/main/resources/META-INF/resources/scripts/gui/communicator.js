@@ -489,7 +489,7 @@
             this.element
               .html(text)
               .removeClass('loading');
-            
+  
             if (hasMore) {
               this.element.find('.cm-page-link-load-more').removeClass('disabled');
             } else {
@@ -1644,6 +1644,19 @@
               mApi().communicator.cacheClear();
               $(document).trigger("Communicator:messageread");
             });    
+            
+            if ((typeof MathJax) != 'undefined') {
+              MathJax.Hub.Config({
+                "HTML-CSS": {
+                  scale: 90
+                },
+                NativeMML: {
+                  scale: 90
+                }
+              });
+              MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+            }
+            
           }, this));
         }         
       }, this));
