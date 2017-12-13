@@ -3,8 +3,10 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// TODO: Refactoring needed for every form-field element
-	
+// TODO: Refactoring needed for form-field elements
+// Not sure about the naming used here as we should not need classes like form-field-tag-input__field etc.
+// Some class names are against BEM also.
+
 div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
   height: 34px;
   padding: 3px 10px;
