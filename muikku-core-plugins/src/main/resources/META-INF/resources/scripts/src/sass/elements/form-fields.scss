@@ -173,8 +173,8 @@ label {
   display: block;
   font-family: $text-font-family;
   font-weight: 600;
-  padding: 0 0 5px;
   overflow: hidden;
+  padding: 0 0 5px;
   text-overflow: ellipsis;
 }
 
@@ -193,6 +193,6 @@ input {
 
 // Used in forgotpassword dialog
 .text-field--forgotpassword-email {
-  width: 100%;
   font-size: $text-forgotpassword-font-size;
+  width: 100%;
 }
