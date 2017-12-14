@@ -654,17 +654,17 @@
   color: $color-main-function-button-pill-toolbar-edit-label-text;
   display: inline-flex;
   
-    &:hover, 
-    &.hover {
-      background-color: $color-main-function-button-pill-toolbar-edit-label-background;
-      color: $color-main-function-button-pill-toolbar-edit-label-text-hover;
-    }
-    
-    &:active, 
-    &.active {
-      background-color: $color-main-function-button-pill-toolbar-edit-label-background;
-      color: $color-main-function-button-pill-toolbar-edit-label-text-active;
-    }
+  &:hover, 
+  &.hover {
+    background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+    color: $color-main-function-button-pill-toolbar-edit-label-text-hover;
+  }
+  
+  &:active, 
+  &.active {
+    background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+    color: $color-main-function-button-pill-toolbar-edit-label-text-active;
+  }
 
   @include breakpoint($breakpoint-pad) {
     display: none;
