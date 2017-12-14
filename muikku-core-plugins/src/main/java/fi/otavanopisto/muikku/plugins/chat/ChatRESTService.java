@@ -1,6 +1,5 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -37,6 +36,10 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
+import rocks.xmpp.core.XmppException;
+import rocks.xmpp.core.session.XmppClient;
+import rocks.xmpp.extensions.httpbind.BoshConnection;
+import rocks.xmpp.extensions.httpbind.BoshConnectionConfiguration;
 
 @Path("/chat")
 @RequestScoped
@@ -57,9 +60,6 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
-  
-  @Inject
-  private ChatPrebindParameters chatPrebindCredentials;
 
   @Context
   private HttpServletRequest request;
@@ -83,12 +83,34 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("Logged user identifier not found").build();
     }
     String userIdentifierString = loggedUserIdentifier.toId();
+    
+    // Do we ever need to resume an existing session? Re-using ChatPrebindParameters and incrementing rid doesn't work.
+    
     try {
       XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
-      return Response.ok(credentials).build();
-    } catch ( InvalidKeyException
-            | SignatureException
-            | NoSuchAlgorithmException ex) {
+      BoshConnectionConfiguration config = BoshConnectionConfiguration
+          .builder()
+          .secure(true)
+          .hostname(request.getServerName())
+          .port(443)
+          .path("/http-bind/")
+          .build();
+      try (XmppClient xmppClient = XmppClient.create(request.getServerName(), config)) {
+        xmppClient.connect();
+        xmppClient.login(credentials.getUsername(), credentials.getPassword());
+        BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
+        String sessionId = boshConnection.getSessionId();
+        long rid = boshConnection.detach();
+
+        ChatPrebindParameters chatPrebindParameters = new ChatPrebindParameters();
+        chatPrebindParameters.setBound(true);
+        chatPrebindParameters.setBindEpochMilli(Instant.now().toEpochMilli());
+        chatPrebindParameters.setJid(credentials.getJid());
+        chatPrebindParameters.setSid(sessionId);
+        chatPrebindParameters.setRid(rid);
+        return Response.ok(chatPrebindParameters).build();
+      }
+    } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
     }
   }
@@ -97,7 +119,6 @@ public class ChatRESTService extends PluginRESTService {
   @Path("/credentials")
   @RESTPermit(handling = Handling.INLINE)
   public Response fetchCredentials() {
-    
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }

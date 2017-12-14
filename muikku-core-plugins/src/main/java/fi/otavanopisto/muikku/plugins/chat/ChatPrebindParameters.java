@@ -1,14 +1,8 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
-import javax.enterprise.context.SessionScoped;
-
-@SessionScoped
 public class ChatPrebindParameters {
   public ChatPrebindParameters() {
     super();
-    this.sid = 0;
-    this.rid = 0;
-    this.bound = false;
   }
   
   public boolean isBound() {
@@ -19,11 +13,27 @@ public class ChatPrebindParameters {
     this.bound = bound;
   }
 
-  public long getSid() {
+  public long getBindEpochMilli() {
+    return bindEpochMilli;
+  }
+
+  public void setBindEpochMilli(long bindTime) {
+    this.bindEpochMilli = bindTime;
+  }
+
+  public String getJid() {
+    return jid;
+  }
+
+  public void setJid(String jid) {
+    this.jid = jid;
+  }
+
+  public String getSid() {
     return sid;
   }
 
-  public void setSid(long sid) {
+  public void setSid(String sid) {
     this.sid = sid;
   }
 
@@ -36,6 +46,8 @@ public class ChatPrebindParameters {
   }
 
   private boolean bound;
-  private long sid;
+  private long bindEpochMilli;
+  private String jid;
+  private String sid;
   private long rid;
 }

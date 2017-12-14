@@ -236,13 +236,18 @@
 			<groupId>com.rometools</groupId>
 			<artifactId>rome</artifactId>
 		</dependency>
+		
+		<!-- XMPP (for prebind) -->
+		<!-- TODO versions in BOM -->
+        <dependency>
+            <groupId>rocks.xmpp</groupId>
+            <artifactId>xmpp-core-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>rocks.xmpp</groupId>
+            <artifactId>xmpp-extensions-client</artifactId>
+      </dependency>
 
-		<dependency>
-			<groupId>org.igniterealtime.jbosh</groupId>
-			<artifactId>jbosh</artifactId>
-			<!-- TODO: put version into BOM -->
-			<version>0.9.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
