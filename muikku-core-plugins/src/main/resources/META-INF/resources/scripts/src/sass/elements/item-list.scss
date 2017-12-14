@@ -24,12 +24,12 @@
   
   &:hover, 
   &.hover {
-    background-color: darken($color-item-list-item-background, 5%);
+    background-color: $color-item-list-item-background-hover;
   }
 
   &:active, 
   &.active {
-    background-color: darken($color-item-list-item-background, 10%);
+    background-color: $color-item-list-item-background-active;
   }
 }
 
@@ -66,12 +66,12 @@
   
   &:hover, 
   &.hover {
-    background-color: darken($color-item-list-item-background, 10%);
+    background-color: $color-item-list-item-aside-background-hover;
   }
 
   &:active, 
   &.active {
-    background-color: $color-item-list-item-background-active;
+    background-color: $color-item-list-item-aside-background-active;
     color: $color-item-list-item-font-color-active;
   
     .text {

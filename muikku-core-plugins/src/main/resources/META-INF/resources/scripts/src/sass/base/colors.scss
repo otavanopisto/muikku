@@ -212,8 +212,11 @@ $color-panel-shadow: rgba(0,0,0,0.05);
 // item list
 $color-item-list-item-font-color-active: #fff;
 $color-item-list-item-background: #fff;
+$color-item-list-item-background-hover: rgba(208,255,249,0.5);
+$color-item-list-item-background-active: rgba(208,255,249,1);
 $color-item-list-item-aside-background: #f7f7f7;
-$color-item-list-item-background-active: rgb(98, 174, 193);
+$color-item-list-item-aside-background-hover: rgba(208,255,249,0.5);
+$color-item-list-item-aside-background-active: rgb(98, 174, 193);
 
 // indicator
 $color-indicator-background: $color-fatal;
