@@ -1,14 +1,11 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {colorIntToHex} from '~/util/modifiers';
-import equals = require("deep-equal");
 
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
-import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 
@@ -16,7 +13,7 @@ import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
 import {CoursePickerCoursesType, CoursePickerCoursesStateType, CoursePickerCourseListType, CoursePickerCourseType} from '~/reducers/main-function/coursepicker/coursepicker-courses';
 import { loadMoreCourses, LoadMoreCoursesTriggerType } from '~/actions/main-function/coursepicker/coursepicker-courses';
-
+import Course from './courses/course';
 
 interface CoursepickerWorkspacesProps {
   i18n: i18nType,
@@ -54,15 +51,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     
     return (<div>
       {this.props.coursepickerCoursesCourses.map((course: CoursePickerCourseType)=>{
-        //Please fix this markup I have no idea which standard to use, this is more or less like communicator
-        return <div key={course.id} className="application-list__item">
-          <div className="application-list__item-header">
-            {course.name}
-            {course.nameExtension}
-          </div>
-         <div className="application-list__item-body">
-         </div>
-        </div>
+        return <Course key={course.id} course={course}/>
       })}
       {this.props.coursepickerCoursesState === "LOADING_MORE" ? <div className="application-list__item loader-empty"/> : null}
     </div>)
