@@ -17,8 +17,11 @@ $color-fatal-contrast: $color-default;
 $color-error: #ff6600;
 $color-error-contrast: $color-default;
 
-$color-success: #49af4e;
+$color-success: #27b91c; 
 $color-success-contrast: $color-default;
+
+$color-cancel: #7391a7; 
+$color-cancel-contrast: $color-default;
 
 $color-loading: $color-inverse;
 $color-loading-contrast: $color-default;
@@ -31,7 +34,7 @@ $color-secondary-contrast: $color-default;
 
 // General
 $color-default-body: #f5f5f5;
-$color-overlay-background: rgba(0, 0, 0, 0.65);
+$color-overlay-background: rgba(0, 0, 0, 0.5);
 
 // Notification queue
 $color-notification-queue-item-container-background: #666;
@@ -88,6 +91,9 @@ $color-button-error-text: $color-error-contrast;
 
 $color-button-success-background: $color-success;
 $color-button-success-text: $color-success-contrast;
+
+$color-button-cancel-background: $color-cancel;
+$color-button-cancel-text: $color-cancel-contrast;
 
 $color-button-loading-background: $color-loading;
 $color-button-loading-text: $color-loading-contrast;
@@ -174,9 +180,10 @@ $color-card-default-text: $color-inverse;
 
 // dialog
 $color-dialog-default-background: $color-default;
-$color-dialog-default-border: #e2e3e3;
 $color-dialog-default-text: $color-inverse;
-$color-dialog-default-title-text: $color-inverse;
+$color-dialog-default-title-background: $color-primary;
+$color-dialog-default-title-text: $color-default;
+$color-dialog-default-shadow: rgba(0, 0, 0, 0.6);
 
 // Background
 $color-background-container-default-background: #f5f5f5;
@@ -240,6 +247,12 @@ $color-form-field-border: #dcdcdc;
 $color-form-field-border-focus: #707070;
 $color-form-field-glow: $color-primary;
 
+// form field input tag
+$color-form-field-tag-input-tag-background: $color-default;
+$color-form-field-tag-input-tag-border: #b1e8fe;
+$color-form-field-tag-input-tag-text: $color-default-contrast;
+$color-form-field-tag-input-tag-delete-background-active: rgba(0, 0, 0, 0.2);
+
 // autocomplete
 $color-autocomplete-list-border: #dcdcdc;
 $color-autocomplete-list-background-color: $color-default;
@@ -247,16 +260,7 @@ $color-autocomplete-list-item-hover: #eee;
 $color-autocomplete-list-item-active: #ddd;
 $color-autocomplete-list-item-selected: #29B0C4;
 
-// form field input tag
-$color-form-field-tag-input-tag-background: $color-default;
-$color-form-field-tag-input-tag-border: #dcdcdc;
-$color-form-field-tag-input-tag-text: $color-default-contrast;
-$color-form-field-tag-input-tag-delete-background-active: rgba(0, 0, 0, 0.2);
-
-
-
 // Transferred from main-functions.scss
-
 
 // NAVBAR
 $color-environment-navbar-background: #009FE3;

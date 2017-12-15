@@ -36,11 +36,13 @@
   background-color: $color-button-warn-background;
   color: $color-button-warn-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-warn-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-warn-background, 20%);
   }
 }
@@ -49,11 +51,13 @@
   background-color: $color-button-info-background;
   color: $color-button-info-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-info-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-info-background, 20%);
   }
 }
@@ -62,11 +66,13 @@
   background-color: $color-button-fatal-background;
   color: $color-button-fatal-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-fatal-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-fatal-background, 20%);
   }
 }
@@ -75,11 +81,13 @@
   background-color: $color-button-error-background;
   color: $color-button-error-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-error-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-error-background, 20%);
   }
 }
@@ -88,12 +96,29 @@
   background-color: $color-button-success-background;
   color: $color-button-success-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-success-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-success-background, 20%);
+  }
+}
+
+.button--cancel {
+  background-color: $color-button-cancel-background;
+  color: $color-button-success-text;
+  
+  &:hover, 
+  &.hover {
+    background-color: darken($color-button-cancel-background, 10%);
+  }
+  
+  &:active, 
+  &.active {
+    background-color: darken($color-button-cancel-background, 20%);
   }
 }
   
@@ -101,11 +126,13 @@
   background-color: $color-button-loading-background;
   color: $color-button-loading-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-loading-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-loading-background, 20%);
   }
 }
@@ -114,11 +141,13 @@
   background-color: $color-button-secondary-background;
   color: $color-button-secondary-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-secondary-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-secondary-background, 20%);
   }
 }
@@ -127,34 +156,40 @@
   background-color: $color-button-inverse-background;
   color: $color-button-inverse-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-inverse-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-inverse-background, 20%);
   }
 }
  
 // FRONTPAGE
-.button--forgotpassword-dialog {
-	display: inline-flex;
+.button--forgotpassword-dialog-submit {
+  display: inline-flex;
+  font-weight: 400; // This element is actually <label> so we need to reset font-weight
+  margin: 0 0 0 10px;
 }
 
 .button--forgotpassword-dialog-cancel {
-	display: inline-flex;
-	float: left;
+  display: inline-flex;
+  margin: 0 0 0 10px;
 }
  
 .button--login {
   background-color: $color-frontpage-button-login-background;
   color: $color-frontpage-button-login-text;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-frontpage-button-login-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-frontpage-button-login-background, 20%);
   }
 }
@@ -164,11 +199,13 @@
   color: $color-frontpage-button-upper-secondary-school-readmore-text;
   display: inline-flex;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-frontpage-button-upper-secondary-school-readmore-background, 20%);
   }
 }
@@ -178,11 +215,13 @@
   color: $color-frontpage-button-secondary-school-readmore-text;
   display: inline-flex;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-frontpage-button-secondary-school-readmore-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-frontpage-button-secondary-school-readmore-background, 20%);
   }
 }
@@ -192,11 +231,13 @@
   color: $color-frontpage-button-open-materials-readmore-text;
   display: inline-flex;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-frontpage-button-open-materials-readmore-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-frontpage-button-open-materials-readmore-background, 20%);
   }
 }
@@ -207,11 +248,13 @@
   display: inline-flex;
   margin: .3rem;
  
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-frontpage-button-website-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-frontpage-button-website-background, 20%);
   }
 
@@ -226,11 +269,13 @@
   display: inline-flex;
   margin: 0.3rem;
    
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-frontpage-button-newsletter-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-frontpage-button-newsletter-background, 20%);
   }
   
@@ -258,11 +303,13 @@
     display: inline-flex;
     width: 100%;
     
-    &:hover, &.hover {
+    &:hover, 
+    &.hover {
       background-color: darken($color-button-primary-background, 10%);
     }
   
-    &:active, &.active {
+    &:active, 
+    &.active {
       background-color: darken($color-button-primary-background, 20%);
     }
   }
@@ -304,15 +351,18 @@
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-button-pill-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-button-pill-background, 20%);
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
     cursor: default;
@@ -347,11 +397,13 @@
   margin-right: 10px;
   width: $button-pill-navbar-size;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-environment-button-pill-language-background, 5%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-environment-button-pill-language-background, 10%);
   }
 }
@@ -386,15 +438,18 @@
   font-size: $button-pill-settings-font-size;
   vertical-align: top;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: $color-main-function-button-pill-settings-background-hover;
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: $color-main-function-button-pill-settings-background-active;
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
@@ -407,15 +462,18 @@
   margin: 0 0 0 10px;
   vertical-align: top;
    
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-main-function-button-pill-delete-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-main-function-button-pill-delete-background, 20%);
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
@@ -431,15 +489,18 @@
   margin-right: 10px;
   vertical-align: top;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-main-function-button-pill-edit-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-main-function-button-pill-edit-background, 20%);
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
@@ -452,15 +513,18 @@
   margin: 0 0 0 10px;
   vertical-align: top;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-main-function-button-pill-label-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-main-function-button-pill-label-background, 20%);
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
@@ -477,15 +541,18 @@
    margin: 0 0 0 10px;
   vertical-align: top;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-main-function-button-pill-toggle-read-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-main-function-button-pill-toggle-read-background, 20%);
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
@@ -503,15 +570,18 @@
   border-radius: 5px;
   vertical-align: top;
   
-  &:hover, &.hover {
+  &:hover, 
+  &.hover {
     background-color: darken($color-main-function-button-pill-go-back-background, 10%);
   }
   
-  &:active, &.active {
+  &:active, 
+  &.active {
     background-color: darken($color-main-function-button-pill-go-back-background, 20%);
   }
   
-  &.disabled, &:disabled {
+  &.disabled, 
+  &:disabled {
     background-color: $color-button-pill-background-disabled;
     color: $color-button-pill-text-disabled;
   }
@@ -532,15 +602,18 @@
     border-radius: 5px;
     vertical-align: top;
     
-    &:hover, &.hover {
+    &:hover, 
+    &.hover {
       background-color: darken($color-main-function-button-pill-prev-page-background, 10%);
     }
     
-    &:active, &.active {
+    &:active, 
+    &.active {
       background-color: darken($color-main-function-button-pill-prev-page-background, 20%);
     }
     
-    &.disabled, &:disabled {
+    &.disabled, 
+    &:disabled {
       background-color: $color-button-pill-background-disabled;
       color: $color-button-pill-text-disabled;
     }
@@ -558,15 +631,18 @@
     border-radius: 5px;
     vertical-align: top;
     
-    &:hover, &.hover {
+    &:hover, 
+    &.hover {
     background-color: darken($color-main-function-button-pill-next-page-background, 10%);
     }
     
-    &:active, &.active {
+    &:active, 
+    &.active {
       background-color: darken($color-main-function-button-pill-next-page-background, 20%);
     }
     
-    &.disabled, &:disabled {
+    &.disabled, 
+    &:disabled {
       background-color: $color-button-pill-background-disabled;
       color: $color-button-pill-text-disabled;
     }
@@ -578,15 +654,17 @@
   color: $color-main-function-button-pill-toolbar-edit-label-text;
   display: inline-flex;
   
-    &:hover, &.hover {
-      background-color: $color-main-function-button-pill-toolbar-edit-label-background;
-      color: $color-main-function-button-pill-toolbar-edit-label-text-hover;
-    }
-    
-    &:active, &.active {
-      background-color: $color-main-function-button-pill-toolbar-edit-label-background;
-      color: $color-main-function-button-pill-toolbar-edit-label-text-active;
-    }
+  &:hover, 
+  &.hover {
+    background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+    color: $color-main-function-button-pill-toolbar-edit-label-text-hover;
+  }
+  
+  &:active, 
+  &.active {
+    background-color: $color-main-function-button-pill-toolbar-edit-label-background;
+    color: $color-main-function-button-pill-toolbar-edit-label-text-active;
+  }
 
   @include breakpoint($breakpoint-pad) {
     display: none;
@@ -604,12 +682,14 @@
     margin: 0 0 0 5px;
     width: 1rem;
     
-    &:hover, &.hover {
+    &:hover, 
+    &.hover {
       background-color: $color-main-function-button-pill-navigation-edit-label-background;
       color: $color-main-function-button-pill-navigation-edit-label-text-hover;
     }
     
-    &:active, &.active {
+    &:active, 
+    &.active {
       background-color: $color-main-function-button-pill-navigation-edit-label-background;
       color: $color-main-function-button-pill-navigation-edit-label-text-active;
     }
