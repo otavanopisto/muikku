@@ -20,20 +20,23 @@ export async function loadCoursesHelper(filters:CousePickerCoursesFilterType | n
   
   let actualFilters = filters || coursepickerCourses.filters;
   
+  let coursepickerNextState:CoursePickerCoursesStateType;
   //If it's for the first time
   if (initial){
     //We set this state to loading
-    dispatch({
-      type: "UPDATE_COURSEPICKER_COURSES_STATE",
-      payload: <CoursePickerCoursesStateType>"LOADING"
-    });
+    coursepickerNextState = "LOADING";
   } else {
     //Otherwise we are loading more
-    dispatch({
-      type: "UPDATE_COURSEPICKER_COURSES_STATE",
-      payload: <CoursePickerCoursesStateType>"LOADING_MORE"
-    });
+    coursepickerNextState = "LOADING_MORE";
   }
+  
+  dispatch({
+    type: "UPDATE_COURSEPICKER_COURSES_ALL_PROPS",
+    payload: {
+      state: coursepickerNextState,
+      filters: actualFilters
+    }
+  });
   
   //Generate the api query, our first result in the messages that we have loaded
   let firstResult = initial ? 0 : coursepickerCourses.courses.length + 1;
@@ -41,7 +44,6 @@ export async function loadCoursesHelper(filters:CousePickerCoursesFilterType | n
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
   let search = actualFilters.query;
-  
   
   let myWorkspaces = false;
   let includeUnpublished = false;
@@ -87,8 +89,7 @@ export async function loadCoursesHelper(filters:CousePickerCoursesFilterType | n
     let payload:CoursePickerCoursesPatchType = {
       state: "READY",
       courses: (concat ? coursepickerCourses.courses.concat(actualCourses) : actualCourses),
-      hasMore,
-      filters: actualFilters
+      hasMore
     }
     
     //And there it goes
