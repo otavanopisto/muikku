@@ -17,6 +17,7 @@
         hide_muc_server : true,
         ping_interval: 45,
         auto_minimize: true,
+        i18n: getLocale() === "fi" ? "fi" : "en",
         hide_occupants:true
       });
     }
