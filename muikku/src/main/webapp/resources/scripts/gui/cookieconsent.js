@@ -27,7 +27,7 @@
       }
       else
         {
-      windows.alert("Cookie has not been set. Check your browser.");  
+      alert("Cookie has not been set. Check your browser.");  
       }
     };
     block.appendChild(button);
