@@ -65,6 +65,8 @@
     
     <!-- ROME -->
     <rome.version>1.7.1</rome.version>
+    
+    <xmpp.rocks.version>0.7.4</xmpp.rocks.version>
 	</properties>
 
 	<dependencyManagement>
@@ -293,7 +295,7 @@
 
 			<dependency>
 				<groupId>fi.otavanopisto</groupId>
-				<artifactId>webapp-permission</artifactId>
+			<artifactId>webapp-permission</artifactId>
 				<version>${webapp-permission.version}</version>
 			</dependency>
 
@@ -344,6 +346,17 @@
             <groupId>com.rometools</groupId>
             <artifactId>rome</artifactId>
             <version>${rome.version}</version>
+          </dependency>
+
+          <dependency>
+              <groupId>rocks.xmpp</groupId>
+              <artifactId>xmpp-core-client</artifactId>
+              <version>${xmpp.rocks.version}</version>
+          </dependency>
+          <dependency>
+              <groupId>rocks.xmpp</groupId>
+              <artifactId>xmpp-extensions-client</artifactId>
+            <version>${xmpp.rocks.version}</version>
           </dependency>
         </dependencies>
 	</dependencyManagement>
