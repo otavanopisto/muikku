@@ -60,22 +60,22 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-{(closePortal: ()=>any)=>{return <div className={`dialog dialog--${this.props.modifier} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-  <div className="dialog__window">
-      <div className="dialog__header">
-        <div className="dialog__title">
-            {this.props.title}
-            <span className="dialog__close icon-close" onClick={closePortal}></span>
-        </div>
-      </div>
-      <div className="dialog__content">
-        {this.props.content(closePortal)}
-      </div>
-      <div className="dialog__footer">
-        {this.props.footer && this.props.footer(closePortal)}
-      </div>
-  </div>
-</div>}}
-        </Portal>);
+        {(closePortal: ()=>any)=>{return <div className={`dialog dialog--${this.props.modifier} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+          <div className="dialog__window">
+              <div className="dialog__header">
+                <div className="dialog__title">
+                    {this.props.title}
+                </div>
+                <div className="dialog__close icon-close" onClick={closePortal}></div>
+              </div>
+              <div className="dialog__content">
+                {this.props.content(closePortal)}
+              </div>
+              <div className="dialog__footer">
+                {this.props.footer && this.props.footer(closePortal)}
+              </div>
+          </div>
+        </div>}}
+    </Portal>);
   }
 }
