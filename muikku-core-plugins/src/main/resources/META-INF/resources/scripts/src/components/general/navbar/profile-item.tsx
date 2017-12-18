@@ -51,7 +51,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         return (closeDropdown: ()=>any)=>{return <Link href={item.href}
          className={`link link--full link--profile`}
          onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
-          <span className={`icon icon-${item.icon}`}></span>
+          <span className={`link__icon icon-${item.icon}`}></span>
           <span>{this.props.i18n.text.get(item.text)}</span>
         </Link>}
       })}>
@@ -59,7 +59,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         <object className="container container--profile-image"
          data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
          type="image/jpeg">
-          <span className="icon icon-user"></span>
+          <span className="button-pill__icon icon-user"></span>
         </object>
       </Link>
     </Dropdown>

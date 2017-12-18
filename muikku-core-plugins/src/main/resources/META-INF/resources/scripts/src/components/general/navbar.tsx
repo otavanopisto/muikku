@@ -49,7 +49,7 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
                   <ul className="navbar__items">
                     <li className={`navbar__item navbar__item--menu-button`}>
                       <a className="link link--icon link--full" onClick={this.openMenu}>
-                        <span className="icon icon-navicon"></span>
+                        <span className="link__icon icon-navicon"></span>
                       </a>
                     </li>
                     {this.props.navbarItems.map((item, index)=>{

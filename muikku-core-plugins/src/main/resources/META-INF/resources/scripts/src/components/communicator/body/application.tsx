@@ -56,7 +56,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
       </Link>
     ]}>
       <Link className="button-pill button-pill--settings">
-        <span className="icon icon-settings"></span>
+        <span className="button-pill__icon icon-settings"></span>
       </Link>
     </Dropdown>
     let primaryOption = <NewMessage><a className="button button--primary-function">

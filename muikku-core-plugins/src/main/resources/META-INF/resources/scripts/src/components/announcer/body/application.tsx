@@ -36,7 +36,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
           </Link>
         ]}>
           <Link className="button-pill button-pill--settings">
-            <span className="icon icon-settings"></span>
+            <span className="button-pill__icon icon-settings"></span>
           </Link>
         </Dropdown>
         let primaryOption = <NewEditAnnouncement><Link className="button button--primary-function">

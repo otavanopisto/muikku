@@ -1,7 +1,7 @@
 //<!-- Discuss with Nina about implementation of these -->
 //                <div class="ordered-container-item index panel">
-//                  <div class="index text index-text-for-panels-title index-text-for-panels-title-important">
-//                    <span class="icon icon-star"></span>
+//                  <div class="text text-for-panels-title">
+//                    <span class="text__panel-icon icon-star"></span>
 //                    <span>#{i18n.text['plugin.frontPage.important']}</span>
 //                  </div>
 //                  <div data-controller-widget="panel-important">

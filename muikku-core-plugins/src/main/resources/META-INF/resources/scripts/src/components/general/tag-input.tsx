@@ -62,12 +62,12 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
     this.props.onDelete(tag.value);
   }
   render(){
-    return <div className={`form-field-tag-input form-field-tag-input--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
+    return <div className={`container container--${this.props.modifier} form-field-tag-input form-field-tag-input--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
       <div className="form-field-tag-input__field" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
         {this.props.tags.map((tag, index)=>{
           return <span key={index} className="form-field-tag-input__tag">
             <span className="form-field-tag-input__tag__text">{tag.node}</span>
-            <span className="form-field-tag-input__tag__delete icon icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
+            <span className="form-field-tag-input__tag__delete icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
           </span>
         })}
         <input className="form-field-tag-input__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}

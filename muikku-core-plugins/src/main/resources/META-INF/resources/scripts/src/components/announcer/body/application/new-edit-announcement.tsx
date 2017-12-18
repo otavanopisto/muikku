@@ -200,35 +200,36 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
   handleDateChange(stateLocation: string, newDate: any){
     let nState:any = {};
     nState[stateLocation] = newDate;
-    (this.setState as any)(stateLocation)
+    (this.setState as any)(nState);
   }
   render(){
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
-      (<div key="1">
+      (<div className="container container--new-announcement-options" key="1">
          <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
            locale={this.props.i18n.time.getLocale()}/>
+         <div className="text text--announcer-times-decor">-</div>                   
          <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
       </div>),
-      (<InputContactsAutofill modifier="new-edit-announcement" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
-      (<input key="3" type="text" className="form-field form-field--new-announcement-subject"
-        placeholder={this.props.i18n.text.get('TODO create message title')}
+      (<input key="3" type="text" className="container container--new-announcement-topic form-field form-field--new-announcement-topic"
+        placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}
         value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>),
       (<CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
     ]
-       
+      
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="jumbo-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('TODO announcer cancel')}
+            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
           </Link>
           <Link className="button button--standard-ok" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
-            {this.props.i18n.text.get('TODO announcer okay')}
-          </Link>
+            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.send')}
+          </Link> 
         </div>
       )
     }
@@ -236,8 +237,8 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
     return <JumboDialog modifier="new-edit-announcement"
       onOpen={this.props.announcement ? this.loadUserGroups.bind(this, this.props.announcement) : null}
       title={this.props.announcement ?
-        this.props.i18n.text.get('TODO announcement modify') :
-        this.props.i18n.text.get('TODO announcement new create')}
+        this.props.i18n.text.get('plugin.announcer.editannouncement.topic') :
+        this.props.i18n.text.get('plugin.announcer.createannouncement.topic')}
       content={content} footer={footer}>
       {this.props.children}
     </JumboDialog>

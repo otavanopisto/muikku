@@ -5,6 +5,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/form.scss';
+import '~/sass/elements/form-fields.scss';
 import '~/sass/elements/buttons.scss';
 
 interface ForgotPasswordDialogProps {
@@ -26,19 +27,19 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
         <form className="form">
           <div className="form__row">
             <label htmlFor="forgotpassword-email">{this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.email')}</label>
-              <input type="text" name="email"/>
-              <input type="submit" className="form__hidden" id="form-reset-password-submit"/>
+            <input type="text" name="email" className="text-field--forgotpassword-email"/>
+            <input type="submit" className="form__hidden" id="form-reset-password-submit"/>
           </div>
         </form>
       </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div>
-        <label htmlFor="form-reset-password-submit" className="button button--forgotpassword-dialog">
-          {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel')}
-        </label>
-        <Link className="button button--forgotpassword-dialog-cancel button--warn" onClick={closeDialog}>
+        <Link className="button button--forgotpassword-dialog-cancel button--cancel" onClick={closeDialog}>
           {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.cancelButtonLabel')}
         </Link>
+        <label htmlFor="form-reset-password-submit" className="button button--forgotpassword-dialog-submit button--success">
+          {this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.sendButtonLabel')}
+        </label>
       </div>
     }
     return <Dialog title={this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.title')}
