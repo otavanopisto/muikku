@@ -8,7 +8,7 @@
       converse.initialize({
         bosh_service_url : '/http-bind/',
         authentication : "prebind",
-        keepalive : true,
+        keepalive : false,
         prebind_url : "/rest/chat/prebind",
         auto_login : true,
         muc_domain : 'conference.' + location.hostname,
