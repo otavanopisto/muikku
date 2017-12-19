@@ -14,7 +14,7 @@ export default class JumboDialog extends Dialog {
                <div className="jumbo-dialog__window">
                   <div className="jumbo-dialog__header">
                     {this.props.title}
-                    <span className="jumbo-dialog__close icon icon-close" onClick={closePortal}></span>
+                    <span className="jumbo-dialog__close icon-close" onClick={closePortal}></span>
                   </div>
                   <div className="jumbo-dialog__body">
                     {this.props.content(closePortal)}

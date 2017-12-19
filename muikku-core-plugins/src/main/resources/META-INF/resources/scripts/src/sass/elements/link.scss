@@ -23,13 +23,11 @@
     font-size: $text-desktop-font-size;
   }
 
-// .icon classes needs serious revamping
-  
-  .icon {
+  .link__icon {
     display: inline-block;
   }
   
-  &:not(.link--icon) .icon {
+  &:not(.link--icon) .link__icon {
     margin-right: 10px;
   }
  
@@ -50,7 +48,6 @@
     opacity: 0.5;
   }
 }
-
 
 .link--icon {
   @include prefix(font-smoothing, webkit moz o ms, antialiased);
@@ -115,7 +112,7 @@
 .link--menu {
   overflow: hidden;
   
-  .icon {
+  .link__icon {
     background-color: $color-environment-link-menu-icon-background;
     color: $color-environment-link-menu-icon-color;
     width: 35px;
@@ -135,7 +132,7 @@
 
 .link--menu--instructions {
   
-  .icon {
+  .link__icon {
     background: $color-environment-link-menu-instructions-icon-background;
     color: $color-environment-link-menu-instructions-icon-color;
   }
@@ -143,7 +140,7 @@
 
 .link--menu--helpdesk {
   
-  .icon {
+  .link__icon {
     background: $color-environment-link-menu-heldesk-icon-background;
     color: $color-environment-link-menu-helpdesk-icon-color;
   }
@@ -151,15 +148,10 @@
 
 .link--menu--logout {
   
-  .icon {
+  .link__icon {
     background: $color-environment-link-menu-logout-icon-background;
     color: $color-environment-link-menu-logout-icon-color;
   }
-}
-
-.link--main-function-navbar {
-  
-  
 }
 
 .link--icon {
@@ -170,6 +162,8 @@
   }
   
   &:active, &.active {
+    color: $color-environment-link-icon-color-active;
+  
     &::before {
       content: " ";
       height: $main-function-link-icon-active-border-size;
@@ -179,8 +173,6 @@
       width: 100%;
       left: 0;
     }
-    
-    color: $color-environment-link-icon-color-active;
   }
 }
 
@@ -226,4 +218,3 @@
     margin-left: 20px;
   }     
 }  
-

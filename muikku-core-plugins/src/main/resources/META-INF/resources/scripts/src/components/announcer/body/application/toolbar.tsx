@@ -75,20 +75,25 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">          
             <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-              <span className="icon icon-goback"></span>
+              <span className="button-pill__icon icon-goback"></span>
             </Link>
+              
+            <div className="text text--main-function-current-folder">
+
+            </div>    
+              
             <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
               <Link className="button-pill button-pill--delete">
-                <span className="icon icon-delete"></span> 
+                <span className="button-pill__icon icon-delete"></span> 
               </Link>
             </DeleteAnnouncementDialog>
           </div>
           <div className="application-panel__toolbar-actions-aside">
             <Link className="button-pill button-pill--prev-page" disabled={!prev} onClick={this.go.bind(this, prev)}>
-              <span className="icon icon-arrow-left"></span>
+              <span className="button-pill__icon icon-arrow-left"></span>
             </Link>                       
             <Link className="button-pill button-pill--next-page" disabled={!next} onClick={this.go.bind(this, next)}>
-              <span className="icon icon-arrow-right"></span>
+              <span className="button-pill__icon icon-arrow-right"></span>
             </Link>
           </div>
         </div> 
@@ -97,9 +102,12 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       return (
         <div className="application-panel__toolbar">        
           <div className="application-panel__toolbar-actions-main">
+            <div className="text text--main-function-current-folder">
+
+            </div>
             <DeleteAnnouncementDialog>
               <Link className="button-pill button-pill--delete" disabled={this.props.announcements.selected.length === 0}>
-                <span className="icon icon-delete"></span>          
+                <span className="button-pill__icon icon-delete"></span>          
               </Link>
             </DeleteAnnouncementDialog>
           </div>     

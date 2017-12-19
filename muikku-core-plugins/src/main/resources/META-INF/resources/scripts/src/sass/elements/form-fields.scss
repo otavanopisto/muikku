@@ -1,6 +1,12 @@
-@import "../base/breakpoints";
 @import "../base/colors";
-	
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// TODO: Refactoring needed for form-field elements
+// Not sure about the naming used here as we should not need classes like form-field-tag-input__field etc.
+// Some class names are against BEM also.
+
 div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
   height: 34px;
   padding: 3px 10px;
@@ -161,4 +167,32 @@ div.form-field-tag-input {
   &.form-field-tag-input__new-message-recepients {
     margin-bottom: 5px;
   }
+}
+
+label {
+  display: block;
+  font-family: $text-font-family;
+  font-weight: 600;
+  overflow: hidden;
+  padding: 0 0 5px;
+  text-overflow: ellipsis;
+}
+
+input {
+  border: 2px solid $color-form-field-border;
+  border-radius: 3px;
+  display: inline-block;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  padding: 8px;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
+
+// Used in forgotpassword dialog
+.text-field--forgotpassword-email {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
 }
