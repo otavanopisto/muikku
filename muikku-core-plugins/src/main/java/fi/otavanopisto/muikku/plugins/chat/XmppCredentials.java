@@ -1,8 +1,9 @@
 package fi.otavanopisto.muikku.plugins.chat;
 
-public class CredentialsRESTModel {
+public class XmppCredentials {
   
-  public CredentialsRESTModel(String jid, String password) {
+  public XmppCredentials(String username, String jid, String password) {
+    this.username = username;
     this.jid = jid;
     this.password = password;
   }
@@ -10,10 +11,16 @@ public class CredentialsRESTModel {
   public String getJid() {
     return jid;
   }
+
   public String getPassword() {
     return password;
   }
 
+  public String getUsername() {
+    return username;
+  }
+
+  private final String username;
   private final String jid;
   private final String password;
 }
