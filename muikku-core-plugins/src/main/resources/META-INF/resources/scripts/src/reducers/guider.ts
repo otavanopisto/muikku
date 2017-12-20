@@ -6,6 +6,9 @@ import title from './base/title';
 import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 
+import guiderFilters from './main-function/guider/guider-filters';
+import guiderStudents from './main-function/guider/guider-students';
+
 import {combineReducers} from 'redux';
 import userIndex from './main-function/user-index';
 
@@ -17,5 +20,7 @@ export default combineReducers({
   websocket,
   messageCount,
   title,
-  userIndex
+  userIndex,
+  guiderFilters,
+  guiderStudents
 });

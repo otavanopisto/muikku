@@ -1,10 +1,9 @@
 import {ActionType} from '~/actions';
 
-//TODO remove anies
 export interface WorkspaceType {
   access: string,
   archived: boolean,
-  curriculumIdentifiers: Array<any>,
+  curriculumIdentifiers: Array<string>,
   description: string,
   hasCustomImage: boolean,
   id: number,

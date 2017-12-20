@@ -4,12 +4,31 @@ import { WorkspaceType } from "~/reducers/main-function/index/workspaces";
 export interface UserType {
   id: Number,
   firstName: string,
-  lastName?: string | null,
-  nickName?: string | null,
-  studyProgrammeName?: string | null,
+  lastName?: string,
+  nickName?: string,
+  studyProgrammeName?: string,
   hasImage: boolean,
   hasEvaluationFees: false,
-  curriculumIdentifier?: string | number | null;
+  curriculumIdentifier?: string;
+}
+
+export interface UserWithSchoolDataType {
+  curriculumIdentifier?: string,
+  email: string,
+  firstName: string,
+  hasImage: boolean,
+  id: string,
+  language?: string,
+  lastName?: string,
+  municipality?: string,
+  nationality?: string,
+  nickName?: string,
+  school?: string,
+  studyEndDate?: string,
+  studyProgrammeName?: string,
+  studyStartDate?: string,
+  studyTimeEnd?: string,
+  updatedByStudent: boolean
 }
 
 export interface UserBaseIndexType {
