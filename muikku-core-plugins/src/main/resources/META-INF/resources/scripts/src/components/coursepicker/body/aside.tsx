@@ -25,7 +25,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   render(){
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     return <div className="item-list item-list--aside-navigation">
-      <span>TODO FIRST FILTERS LABEL</span>
+      <span>{this.props.i18n.text.get('plugin.coursepicker.filters.degree')}</span>
       {this.props.coursepickerFilters.educationTypes.map((educationType: EducationFilterType)=>{
         let isActive = this.props.coursepickerCourses.filters.educationFilters.includes(educationType.identifier);
         let hash = isActive ? 
@@ -37,7 +37,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
           </span>
         </Link>
       })}
-      <span>TODO FIRST FILTERS LABEL</span>
+      <span>{this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}</span>
       {this.props.coursepickerFilters.curriculums.map((curriculum: CurriculumFilterType)=>{
         let isActive = this.props.coursepickerCourses.filters.curriculumFilters.includes(curriculum.identifier);
         let hash = isActive ?

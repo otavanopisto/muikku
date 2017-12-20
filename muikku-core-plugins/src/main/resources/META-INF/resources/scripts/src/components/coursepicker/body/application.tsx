@@ -42,19 +42,19 @@ class CommunicatorApplication extends React.Component<CoursepickerApplicationPro
   
   render(){
     let filterTranslationString = {
-      "ALL_COURSES": "TODO trans ALL_COURSES",
-      "MY_COURSES": "TODO trans MY_COURSES",
-      "AS_TEACHER": "TODO trans AS_TEACHER",
+      "ALL_COURSES": "plugin.coursepicker.allcourses",
+      "MY_COURSES": "plugin.coursepicker.owncourses",
+      "AS_TEACHER": "plugin.coursepicker.teachercourses"
     }
     
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
-    let primaryOption = <select value={this.props.coursepickerCourses.filters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+    let primaryOption = <select className="form-field__select form-field__select--primary-function" value={this.props.coursepickerCourses.filters.baseFilter} onChange={this.onCoursepickerFilterChange}>
       {this.props.coursepickerFilters.baseFilters.map((filter: CoursePickerBaseFilterType)=>{
         return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
       })} 
     </select>
-      
+    
     return (<div className="container container--full">
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} aside={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>

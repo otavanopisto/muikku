@@ -64,7 +64,8 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
       return ( 
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">
-            <input className="form-field" value={this.state.searchquery} onChange={this.setSearchQuery}/>
+            <input className="form-field__input form-field__input--main-function-search icon-search" value={this.state.searchquery} onChange={this.setSearchQuery}/>
+            <div className="form-field__input-decoration--main-function-search icon-search"></div>
           </div>
         </div>
       )
