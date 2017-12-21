@@ -109,7 +109,7 @@ $color-button-pill-background: $color-primary;
 $color-button-pill-text: $color-default-contrast;
 $color-button-pill-background-disabled: #ccc;
 $color-button-pill-text-disabled: $color-default;
-$color-button-pill-shadow: 0 0 5px rgba(255,255,255,0.4);
+$color-button-pill-shadow: rgba(255, 255, 255, 0.4);
 
 // Label theme
 $color-label-default: $color-inverse;
@@ -219,8 +219,11 @@ $color-panel-shadow: rgba(0,0,0,0.05);
 // item list
 $color-item-list-item-font-color-active: #fff;
 $color-item-list-item-background: #fff;
+$color-item-list-item-background-hover: rgba(208, 255, 249, 0.5);
+$color-item-list-item-background-active: rgba(208, 255, 249, 1);
 $color-item-list-item-aside-background: #f7f7f7;
-$color-item-list-item-background-active: rgb(98, 174, 193);
+$color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
+$color-item-list-item-aside-background-active: rgb(98, 174, 193);
 
 // indicator
 $color-indicator-background: $color-fatal;
@@ -232,6 +235,8 @@ $color-application-panel-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background: #fff;
+$color-application-list-item-background-hover: $color-item-list-item-background-hover;
+$color-application-list-item-background-active: $color-item-list-item-background-active;
 $color-application-list-item-background-selected: #bff3fb;
 $color-application-list-item-checkmark-selected: #29b0c4;
 
@@ -268,7 +273,7 @@ $color-environment-navbar-item-menu-button: $color-default;
 $color-environment-link-icon-color: $color-default;
 $color-environment-link-icon-color-hover: $color-default;
 $color-environment-link-icon-color-active: $color-default;
-$color-environment-link-icon-border-top-color-active: rgba(255,255,255,0.6);
+$color-environment-link-icon-border-top-color-active: rgba(255, 255, 255, 0.6);
 
 // DEFAULT LINKS
 $color-environment-link-language-background: $color-link-inverse-background;
