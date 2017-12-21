@@ -17,15 +17,14 @@ interface NavigationProps {
   coursepickerCourses: CoursePickerCoursesType
 }
 
-interface NavigationState {
-  
+interface NavigationState { 
 }
 
 class Navigation extends React.Component<NavigationProps, NavigationState> {
   render(){
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     return <div className="item-list item-list--aside-navigation">
-      <span>{this.props.i18n.text.get('plugin.coursepicker.filters.degree')}</span>
+      <span className="text item-list__topic">{this.props.i18n.text.get('plugin.coursepicker.filters.degree')}</span>
       {this.props.coursepickerFilters.educationTypes.map((educationType: EducationFilterType)=>{
         let isActive = this.props.coursepickerCourses.filters.educationFilters.includes(educationType.identifier);
         let hash = isActive ? 
@@ -36,8 +35,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             {educationType.name}
           </span>
         </Link>
-      })}
-      <span>{this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}</span>
+      })}      
+      <span className="text item-list__topic">{this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}</span>
       {this.props.coursepickerFilters.curriculums.map((curriculum: CurriculumFilterType)=>{
         let isActive = this.props.coursepickerCourses.filters.curriculumFilters.includes(curriculum.identifier);
         let hash = isActive ?

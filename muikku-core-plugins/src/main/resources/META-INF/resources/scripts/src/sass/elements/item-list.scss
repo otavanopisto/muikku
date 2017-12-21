@@ -30,6 +30,18 @@
 }
   
 // List items
+
+.item-list__topic {  
+  font-weight: 600;
+  padding: 15px 0 15px;
+  font-size: 1.05rem;
+  
+  &:first-child {
+    padding: 0 0 15px;
+  } 
+}
+
+
 .item-list__item {
   align-items: center;
   background-color: $color-item-list-item-background;
