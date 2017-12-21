@@ -1,0 +1,26 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/breakpoints";
+
+.course {
+  border-top: 1px solid $color-message-border;
+  padding: 14px 12px 14px 4px;
+  
+  &.selected {
+    border-top: 1px solid $color-default;
+  }
+  
+  &:first-child {
+    border: 0;
+  }
+}
+
+
+.course__content {
+  flex-flow: row nowrap;
+  padding: 0 0 0 9px;
+}
+
+.course__title {
+  padding-left: 5px;   
+}
