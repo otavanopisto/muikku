@@ -6,6 +6,9 @@ import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import { i18nType } from 'reducers/base/i18n';
 
+import Students from './application/students';
+import Toolbar from './application/toolbar';
+
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType
@@ -20,7 +23,13 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
   }
   
   render(){
-    return <div/>;
+    let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.guider.guider')}</h2>
+    let toolbar = <Toolbar/>
+    return (<div className="container container--full">
+      <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} aside={this.props.aside}>
+        <Students/>
+      </ApplicationPanel>
+    </div>);
   }
 }
 

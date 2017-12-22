@@ -49,12 +49,12 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
     firstResult,
     maxResults,
     includeHidden: true,
-    flags: filters.labelFilters,
-    workspaceIds: filters.workspaceFilters
+    flags: actualFilters.labelFilters,
+    workspaceIds: actualFilters.workspaceFilters
   }
   
-  if (filters.query){
-    (params as any).searchString = filters.query;
+  if (actualFilters.query){
+    (params as any).searchString = actualFilters.query;
   }
   
   try {

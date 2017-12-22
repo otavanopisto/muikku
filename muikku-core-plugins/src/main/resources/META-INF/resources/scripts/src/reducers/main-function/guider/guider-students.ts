@@ -15,7 +15,10 @@ export interface GuiderStudentsType {
   filters: GuiderStudentsFilterType,
   students: GuiderStudentListType,
   hasMore: boolean,
-  toolbarLock: boolean
+  toolbarLock: boolean,
+  current: any,
+  selected: GuiderStudentListType,
+  selectedIds: Array<string>
 }
 
 export interface GuiderStudentsPatchType {
@@ -23,7 +26,10 @@ export interface GuiderStudentsPatchType {
   filters?: GuiderStudentsFilterType,
   students?: GuiderStudentListType,
   hasMore?: boolean,
-  toolbarLock?: boolean
+  toolbarLock?: boolean,
+  current?: any,
+  selected?: GuiderStudentListType,
+  selectedIds?: Array<string>
 }
 
 export default function coursepickerCourses(state: GuiderStudentsType={
@@ -35,7 +41,10 @@ export default function coursepickerCourses(state: GuiderStudentsType={
   },
   students: [],
   hasMore: false,
-  toolbarLock: false
+  toolbarLock: false,
+  selected: [],
+  selectedIds: [],
+  current: null
 }, action: ActionType): GuiderStudentsType {
   if (action.type === "UPDATE_GUIDER_STUDENTS_FILTERS"){
     return Object.assign({}, state, {
