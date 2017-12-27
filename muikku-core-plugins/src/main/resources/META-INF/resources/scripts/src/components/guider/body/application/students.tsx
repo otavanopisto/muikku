@@ -14,8 +14,8 @@ import SelectableList from '~/components/general/selectable-list';
 import { LoadMoreStudentsTriggerType, loadMoreStudents } from '~/actions/main-function/guider/guider-students';
 import { GuiderStudentListType, GuiderStudentsStateType, GuiderStudentType } from '~/reducers/main-function/guider/guider-students';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
+import Student from './students/student';
 import { UserType } from '~/reducers/main-function/user-index';
-import { getName } from '~/util/modifiers';
 
 interface GuiderStudentsProps {
   i18n: i18nType,
@@ -61,25 +61,14 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
       {this.props.guiderStudentsStudents.map((student: GuiderStudentType, index: number)=>{
         let isSelected = this.props.guiderStudentsSelectedIds.includes(student.id);
         return {
-          className: "application-list__item",
-          onSelect: ()=>{},//this.props.addToGuiderSelectedStudents.bind(null, student),
-          onDeselect: ()=>{},//this.props.removeFromGuiderSelectedStudents.bind(null, student),
-          onEnter: ()=>{},//this.setCurrentGuiderStudent.bind(this, student),
-          isSelected,
-          key: student.id,
-          contents: (checkbox: React.ReactElement<any>)=>{
-            return <div className="application-list__item-content-wrapper message__content">
-                <div className="application-list__item-content application-list__item-content--aside">
-                  <div className="message__select-container">
-                    {checkbox}
-                  </div>
-                </div>
-                <div className="application-list__item-content application-list__item-content--main">
-                  <div className="application-list__item-header">
-                    {getName(student as any as UserType)}
-                  </div>
-                </div>    
-              </div>
+            className: "application-list__item",
+            onSelect: ()=>{},//this.props.addToGuiderSelectedStudents.bind(null, student),
+            onDeselect: ()=>{},//this.props.removeFromGuiderSelectedStudents.bind(null, student),
+            onEnter: ()=>{},//this.setCurrentGuiderStudent.bind(this, student),
+            isSelected,
+            key: student.id,
+            contents: (checkbox: React.ReactElement<any>)=>{
+              return <Student checkbox={checkbox} student={student as any as UserType}/>
             }
           }
         })
