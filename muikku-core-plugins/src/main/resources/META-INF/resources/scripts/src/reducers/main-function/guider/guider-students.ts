@@ -1,5 +1,5 @@
 import {ActionType} from '~/actions';
-import { UserWithSchoolDataType } from 'reducers/main-function/user-index';
+import { UserWithSchoolDataType, UserGroupList } from 'reducers/main-function/user-index';
 
 export type GuiderStudentsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface GuiderStudentsFilterType {
@@ -30,6 +30,35 @@ export interface GuiderStudentsPatchType {
   current?: any,
   selected?: GuiderStudentListType,
   selectedIds?: Array<string>
+}
+
+export interface GuiderStudentUserProfileLabel {
+  id: number,
+  flagId: number,
+  studentIdentifier: string
+}
+
+export interface GuiderStudentUserProfileEmail {
+  studentIdentifier: string,
+  type: string,
+  address: string,
+  defaultAddress: boolean
+}
+
+export interface GuiderStudentUserProfilePhone {
+  studentIdentifier: string,
+  type: string,
+  number: string,
+  defaultNumber: boolean
+}
+
+export interface GuiderStudentUserProfile {
+  labels: Array<GuiderStudentUserProfileLabel>,
+  emails: Array<GuiderStudentUserProfileEmail>,
+  phoneNumbers: Array<GuiderStudentUserProfilePhone>,
+  user: GuiderStudentType,
+  usergroups: UserGroupList,
+  
 }
 
 export default function coursepickerCourses(state: GuiderStudentsType={
