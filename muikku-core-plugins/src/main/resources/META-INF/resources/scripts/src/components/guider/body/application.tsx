@@ -8,6 +8,7 @@ import { i18nType } from 'reducers/base/i18n';
 
 import Students from './application/students';
 import Toolbar from './application/toolbar';
+import CurrentStudent from './application/current-student';
 
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,
@@ -28,6 +29,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
     return (<div className="container container--full">
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} aside={this.props.aside}>
         <Students/>
+        <CurrentStudent/>
       </ApplicationPanel>
     </div>);
   }
