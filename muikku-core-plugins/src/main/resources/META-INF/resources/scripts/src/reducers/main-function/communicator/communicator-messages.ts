@@ -1,6 +1,6 @@
 import {ActionType} from '~/actions';
 import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/index/workspaces';
-import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupList } from '~/reducers/main-function/user-index';
+import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/main-function/user-index';
 
 export type CommunicatorStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export interface CommunicatorSignatureType {
@@ -42,7 +42,7 @@ export interface CommunicatorMessageType {
   tags: any,
   threadLatestMessageDate: string,
   unreadMessagesInThread: boolean,
-  userGroupRecipients?: UserGroupList,
+  userGroupRecipients?: UserGroupListType,
   workspaceRecipients?: WorkspaceListType
 }
 export interface CommunicatorMessageUpdateType {
@@ -76,7 +76,7 @@ export interface CommunicatorMessageInThreadType {
   sender: UserType,
   senderId: number,
   tags: any,
-  userGroupRecipients: UserGroupList,
+  userGroupRecipients: UserGroupListType,
   workspaceRecipients: WorkspaceListType
 }
 export interface CommunicatorMessageRecepientType {

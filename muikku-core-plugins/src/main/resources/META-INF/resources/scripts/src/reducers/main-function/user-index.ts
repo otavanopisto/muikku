@@ -31,13 +31,13 @@ export interface UserWithSchoolDataType {
   updatedByStudent: boolean
 }
 
-export interface UserGroup {
+export interface UserGroupType {
   id: number,
   name: string,
   userCount: number
 }
 
-export interface UserGroupList extends Array<UserGroup> {}
+export interface UserGroupListType extends Array<UserGroupType> {}
 
 export interface UserBaseIndexType {
   [index: number]: UserType

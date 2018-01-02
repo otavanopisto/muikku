@@ -9,7 +9,7 @@ import mainFunctionDefault from '~/util/base-main-function';
 import { Action } from 'redux';
 import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider/guider-filters';
 import { GuiderStudentsFilterType } from '~/reducers/main-function/guider/guider-students';
-import { loadStudents } from '~/actions/main-function/guider/guider-students';
+import { loadStudents, loadStudent } from '~/actions/main-function/guider/guider-students';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -19,12 +19,18 @@ store.dispatch(<Action>updateWorkspaceFilters());
 
 function loadCurrentLocation(){
   let originalData:any = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
-  let filters:GuiderStudentsFilterType = {
-    "workspaceFilters": (originalData.w || []).map(parseInt),
-    "labelFilters": (originalData.l || []).map(parseInt),
-    "query": originalData.q || null
+
+  if (!originalData.c){
+    let filters:GuiderStudentsFilterType = {
+      "workspaceFilters": (originalData.w || []).map(parseInt),
+      "labelFilters": (originalData.l || []).map(parseInt),
+      "query": originalData.q || null
+    }
+    store.dispatch(<Action>loadStudents(filters));
+    return;
   }
-  store.dispatch(<Action>loadStudents(filters));
+
+  store.dispatch(<Action>loadStudent(originalData.c))
 }
 
 window.addEventListener("hashchange", ()=>{

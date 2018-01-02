@@ -67,16 +67,16 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
     
     //This is because of the array is actually a reference to a cached array
     //so we rather make a copy otherwise you'll mess up the cache :/
-    let actualCourses = students.concat([]);
+    let actualStudents = students.concat([]);
     if (hasMore){
       //we got to get rid of that extra loaded message
-      students.pop();
+      actualStudents.pop();
     }
     
     //Create the payload for updating all the communicator properties
     let payload:GuiderStudentsPatchType = {
       state: "READY",
-      students: (concat ? guiderStudents.students.concat(actualCourses) : actualCourses),
+      students: (concat ? guiderStudents.students.concat(actualStudents) : actualStudents),
       hasMore
     }
     
