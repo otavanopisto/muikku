@@ -1,6 +1,12 @@
 (function() {
   'use strict';
   
+   var timeout = null;
+   //this allows that when one user is scrolling really fast only if a section stays active for more than half
+   //a second it'll be saved, this should be enough so that if the user decides to immediatly close, he/she'll probably
+   //take longer
+   var timeOneSectionMustBeOnViewUntilItIsSavedForTheContinueStudiesView = 500;
+  
    function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 90;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -29,14 +35,8 @@
       window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
-  
-  $(window).load(function() {
-    if ($(window).data('initial-page')) {
-      scrollToPage($(window).data('initial-page'), true);
-    }
-  });
-
-  $(window).on('beforeunload', function() {
+   
+  function setLastWorkspace(){
     var tocItem = $('#materialsScrollableTOC').find('a.active'); 
     if (tocItem.length) {
       var url = window.location.href;
@@ -53,7 +53,15 @@
       }
       mApi().user.property.create({key: 'last-workspace', value: JSON.stringify(lastWorkspace)});
     }
+  }
+  
+  $(window).load(function() {
+    if ($(window).data('initial-page')) {
+      scrollToPage($(window).data('initial-page'), true);
+    }
   });
+
+  $(window).on('beforeunload', setLastWorkspace);
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
     event.preventDefault();
@@ -102,6 +110,9 @@
           $(window).data('scrolling', true);
           Waypoint.refreshAll();
           $(window).data('scrolling', false);
+          
+          clearTimeout(timeout);
+          timeout = setTimeout(setLastWorkspace, timeOneSectionMustBeOnViewUntilItIsSavedForTheContinueStudiesView);
         }
       }, 
       offset: 150

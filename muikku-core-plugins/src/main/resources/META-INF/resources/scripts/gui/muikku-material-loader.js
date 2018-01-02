@@ -220,10 +220,6 @@
         break;
       }
     },
-
-    
-    
-    
     loadMaterials: function(pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
         mApi({async: false}).workspace.workspaces.compositeReplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, replies) {
