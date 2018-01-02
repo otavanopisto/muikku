@@ -156,21 +156,22 @@ div.form-field-tag-input {
 
 
 .form-field-tag-input__tag__delete {
+  background-position: center center;
+  background-repeat: no-repeat;
+  border-radius: 32px;  
   cursor: pointer;
   display: inline-block;
+  height: 32px;
   position: absolute;
   top: 0;
   right: 0;
-  height: 32px;
   width: 32px;
-  border-radius: 32px;
-  background-position: center center;
-  background-repeat: no-repeat;
+
   
   &::before {
     position: absolute;
-    top: 9px;
     left: 9px;
+    top: 9px;
   }
   
   &.active, &:active {
