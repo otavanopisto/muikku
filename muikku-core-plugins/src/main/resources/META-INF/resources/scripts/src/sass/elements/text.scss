@@ -556,7 +556,7 @@ b {
 
 
 .text--coursepicker-course-icon {
-  color: #43CD80;
+  color: $color-course-icon;
   font-size: 1.3rem;
   margin-right: 10px;
 }
@@ -570,12 +570,8 @@ b {
 }
 
 .text--coursepicker-course-description {
-  padding: 20px 0;
   font-size: 1rem;
-}
-
-.text--coursepicker-course-meta {
-
+  padding: 20px 0;
 }
 
 // Text icon
