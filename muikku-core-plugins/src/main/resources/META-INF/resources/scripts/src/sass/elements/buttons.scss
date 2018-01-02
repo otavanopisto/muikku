@@ -315,6 +315,24 @@
   }
 }
   
+.button--primary-function-content {
+  display: none;
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  display: inline-flex;
+    
+  &:hover, 
+  &.hover {
+    background-color: darken($color-button-primary-background, 10%);
+  }
+
+  &:active, 
+  &.active {
+    background-color: darken($color-button-primary-background, 20%);
+  }
+}  
+  
+  
 .button--remove-label {
 	float: left;
 	margin-top: 48px;
