@@ -49,7 +49,8 @@ div.form-field-tag-input {
 
 .form-field__input--main-function-search {
   background-color: transparent;
-  border: 2px solid skyblue;
+  border: 2px solid $color-main-function-input-field-border;
+  border-right: 0;
   font-size: 1.05rem;  
   font-style: italic;  
   padding: 5px;
@@ -61,7 +62,7 @@ div.form-field-tag-input {
 // This does not mostly belong here, mostly
 
 .form-field__input-decoration--main-function-search {
-  background-color: skyblue;
+  background-color: $color-main-function-input-field-decoration-background;
   
   &::before {
     align-items: center;
@@ -82,7 +83,7 @@ div.form-field-tag-input {
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
   background-color: transparent;
-  border: 2px solid skyblue;
+  border: 2px solid $color-main-function-primary-function-dropdown-border;
   min-width: 200px;
   height: 35px;
   padding: 5px 25px 5px 5px;
