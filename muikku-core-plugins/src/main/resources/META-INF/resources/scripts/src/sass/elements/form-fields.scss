@@ -81,8 +81,8 @@ div.form-field-tag-input {
 
 
 .form-field__select--primary-function {    
-  -webkit-appearance: none;
   -moz-appearance: none;
+  -webkit-appearance: none;
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
   background-color: transparent;
@@ -106,8 +106,8 @@ div.form-field-tag-input {
   font-size: 14px;
   height: auto;
   overflow: hidden;
-  position: relative;
   padding: 0;
+  position: relative;
 }
 
 .form-field-tag-input__input {
