@@ -10,15 +10,15 @@
 
 
 div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
-  height: 34px;
-  padding: 3px 10px;
+  -webkit-appearance: none;  
   border-radius: 3px;
-  font-size: 14px;
-  transition: box-shadow 0.3, border 0.3;
-  -webkit-appearance: none;
-  outline: none;
   border: solid 1px $color-form-field-border;
+  font-size: 14px;
+  height: 34px;
+  outline: none;
+  padding: 3px 10px;
   resize: none;
+  transition: box-shadow 0.3, border 0.3;
   
   &:focus, &.focus {
     border: solid 1px $color-form-field-border-focus;
