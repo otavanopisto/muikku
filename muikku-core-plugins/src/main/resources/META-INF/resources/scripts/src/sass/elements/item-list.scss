@@ -14,11 +14,13 @@
   .item-list__item {
     background-color: $color-item-list-item-aside-background;
     
-    &:hover, &.hover {
+    &:hover, 
+    &.hover {
       background-color: darken($color-item-list-item-background, 10%);
     }
   
-    &:active, &.active {
+    &:active, 
+    &.active {
       background-color: $color-item-list-item-background-active;
       color: $color-item-list-item-font-color-active;
     
@@ -33,8 +35,8 @@
 
 .item-list__topic {  
   font-weight: 600;
-  padding: 15px 0 15px;
   font-size: 1.05rem;
+  padding: 15px 0 15px;
   
   &:first-child {
     padding: 0 0 15px;

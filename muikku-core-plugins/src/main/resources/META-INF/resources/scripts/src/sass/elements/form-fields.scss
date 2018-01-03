@@ -98,7 +98,7 @@ div.form-field-tag-input {
 .form-field-tag-input__field {
   -moz-appearance: textfield;
   -webkit-appearance: textfield;
-  background-color: white;
+  background-color: $color-form-field-tag-input-tag-background;
   background-color: -moz-field;
   font: -moz-field;
   font: -webkit-small-control;
@@ -108,21 +108,19 @@ div.form-field-tag-input {
   padding: 0;
   height: auto;
   overflow: hidden;
-
-
 }
 
 .form-field-tag-input__input {
-  flex: 1 0 200px;
-  padding: 3px 10px;
-  box-shadow: none;
   background: none;
-  border: none;
+  border: 0;
+  box-shadow: none;
+  flex: 1 0 200px;
   height: 34px;
   outline: none;
+  padding: 3px 10px;
 
   &:focus {
-    border: none;
+    border: 0;
     box-shadow: none;
   }
 }
@@ -132,15 +130,14 @@ div.form-field-tag-input {
   background-color: $color-form-field-tag-input-tag-background;
   border: solid 1px $color-form-field-tag-input-tag-border;
   border-radius: 3px;
-  color: white;
+  color: $color-form-field-tag-input-tag-text;
   display: inline-block;
   margin-right: 8px;
   height: 34px;
-  white-space: nowrap;
-  position: relative;
-  color: $color-form-field-tag-input-tag-text;
   padding: 8.5px;
   padding-right: 40px;
+  position: relative;
+  white-space: nowrap;
 }
 
 
