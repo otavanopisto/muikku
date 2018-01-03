@@ -74,7 +74,9 @@ body {
   .eval-nav-item {
     color: $evaluation-navigation-item-font-color;
     cursor: pointer;
-    flex: 0 0 26px;
+    flex-basis: 26px;
+    flex-grow: 0;
+    flex-shrink: 0;
     margin: 4px;
     text-align: center;
     
@@ -113,7 +115,9 @@ body {
   }
   
   .eval-search-wrapper {
-    flex: 1 1 auto;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 4px;
     padding: 7px 8px;
     text-align: right;
@@ -151,7 +155,12 @@ body {
       box-sizing: border-box;
       color: $environment-font-color;
       display: inline;
-      flex: 0 1 300px;
+      flex-basis: 300px;
+      flex-grow: 0;
+      flex-shrink: 1;
+      flex-basis: 300px;
+      flex-grow: 0;
+      flex-shrink: 1;
       font-size: 16px;
       font-weight: 300;
       padding: 9px 26px 9px 9px;
@@ -190,7 +199,8 @@ body {
       color: $forms-button-font-color;
       cursor: pointer;
       display: inline;
-      flex: 0 0;
+      flex-grow: 0;
+      flex-shrink: 0;
 
       &.icon-search::before {
         font-size: 20px;

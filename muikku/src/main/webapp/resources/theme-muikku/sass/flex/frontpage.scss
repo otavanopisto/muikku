@@ -77,24 +77,30 @@ nav.of-navigation {
   .of-site-logo {
     background: url('/gfx/of-site-logo-text.png') no-repeat center center;
     box-sizing: border-box;
-    flex: 0 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
     height: 70px;
     width: 175px;
   }
   
   .of-site-links {
-    flex: 1 0 auto;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 0;
     height: 100%;
   }
   
   .of-site-alternate-links {
-    flex: 0 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
   }
   
   .of-site-alternate-links-container {
     align-items: center;
     @include flexbox;
-    min-height: 70px;
+    height: 70px;
   }
   
   ul, li {
@@ -158,7 +164,9 @@ nav.of-navigation {
   }
   
   .of-site-login {
-    flex: 0 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
     margin: 0;
   
     .login {
@@ -290,7 +298,9 @@ header.of-header {
   .of-header-site-info-wrapper,
   .of-header-open-materials-bubble-wrapper {
     box-sizing: border-box;
-    flex: 1 1 calc(33.3333%);
+    flex-basis: 33.3333%;
+    flex-grow: 1;
+    flex-shrink: 1;
   }
   
   .of-header-application-bubble,
@@ -453,7 +463,9 @@ main.of-content {
 h2.frontpage-section-title {
   box-sizing: border-box;
   color: $of-frontpage-section-title-color;
-  flex: 1 1 calc(100% - 20px);
+  flex-basis: calc(100% - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 38px;
   font-weight: 200;
   margin: 0 10px 20px;
@@ -474,15 +486,21 @@ h2.frontpage-section-title {
 .frontpage-studying {
   
   &.studying-left-box {
-    flex: 1 1 calc(33% - 20px);
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
   } 
   
   &.studying-center-box {
-    flex: 1 1 calc(33% - 20px);
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
   }
   
   &.studying-right-box {
-    flex: 1 1 calc(33% - 20px);
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
   }
   
   .studying-image {
@@ -569,7 +587,9 @@ h2.frontpage-section-title {
 
 .frontpage-videos {
   border-radius: 3px;
-  flex: 1 1 calc(100% - 20px);
+  flex-basis: calc(100% - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
   max-width: calc(100% - 20px);
   overflow: hidden;
 }
@@ -577,22 +597,30 @@ h2.frontpage-section-title {
 // NEWS SECTION
 
 .frontpage-news {
-  flex: 0 1 calc(50% - 20px);
+  flex-basis: calc(50% - 20px);
+  flex-grow: 0;
+  flex-shrink: 1;
   max-width: calc(50% - 20px);
 }
 
 .frontpage-events {
-  flex: 0 1 calc(50% - 20px);
+  flex-basis: calc(50% - 20px);
+  flex-grow: 0;
+  flex-shrink: 1;
   max-width: calc(50% - 20px);
 }
 
 .frontpage-images {
-  flex: 0 1 calc(50% - 20px);
+  flex-basis: calc(50% - 20px);
+  flex-grow: 0;
+  flex-shrink: 1;
   max-width: calc(50% - 20px);
 }
 
 .frontpage-posts {
-  flex: 0 1 calc(50% - 20px);
+  flex-basis: calc(50% - 20px);
+  flex-grow: 0;
+  flex-shrink: 1;
   max-width: calc(50% - 20px);
 }
 
@@ -654,7 +682,9 @@ ul.blogs-content-wrapper {
 // ORGANIZATION SECTION
 
 .frontpage-organization {
-  flex: 1 1 calc(100% - 20px);
+  flex-basis: calc(100% - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
   max-width: calc(100% - 20px);
   padding: 30px;
 }
@@ -665,7 +695,9 @@ ul.blogs-content-wrapper {
 }
 
 .organization-some-box {
-  flex: 1 1 calc(33.3333% - 30px);
+  flex-basis: calc(33.3333% - 30px);
+  flex-grow: 1;
+  flex-shrink: 1;
   
   .organization-some-title {
     font-size: 16px;
@@ -701,8 +733,9 @@ ul.blogs-content-wrapper {
 }
 
 .organization-description-box {
-  flex: 1 1 calc(66.6666% - 30px);
-  
+  flex-basis: calc(66.6666% - 30px);
+  flex-grow: 1;
+  flex-shrink: 1;
   
   .organization-description {
     font-size: 17px;
@@ -738,7 +771,9 @@ ul.blogs-content-wrapper {
 }
 
 .organization-logo-box {
-  flex: 1 1 calc(33.3333% - 30px);
+  flex-basis: calc(33.3333% - 30px);
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 // FOOTER
@@ -751,14 +786,16 @@ footer.of-footer {
   @include flexbox;
   align-items: stretch;
   box-sizing: border-box;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   margin: 0 auto;
   max-width: 1260px;
 }
 
 .contact-info-container {
   box-sizing: border-box;
-  flex: 1 1 calc(50% - 20px);
+  flex-basis: calc(50% - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
   margin: 10px;
   padding: 0 30px 30px;
   
@@ -812,7 +849,9 @@ footer.of-footer {
 
 .logo-container {
   box-sizing: border-box;
-  flex: 1 1 calc(50% - 20px);
+  flex-basis: calc(50% - 20px);
+  flex-grow: 1;
+  flex-shrink: 1;
   margin: 10px;
   padding: 0 30px;
   text-align: right;
