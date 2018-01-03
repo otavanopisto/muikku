@@ -282,8 +282,8 @@ b {
 
 .text--item-counter {
   align-items: center;
+  background-color: $color-application-list-item-counter-background;
   border-radius: 50%;
-  background-color: #FFF6AE;
   display: flex;
   height: 22px;
   justify-content: center;
