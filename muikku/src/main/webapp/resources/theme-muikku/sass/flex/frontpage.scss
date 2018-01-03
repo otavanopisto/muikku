@@ -388,11 +388,20 @@ header.of-header {
     font-size:48px;
     line-height: 0.9;
     margin: 0 auto;
+    position: relative;
     width: 195px;
   
     .site-info-name-firstpart {
       font-weight: 900;
       text-shadow: 0 5px 10px $of-header-site-info-text-shadow-color;
+    }
+    
+    .site-info-name-hyphen {
+      line-height: 35px;
+      position: absolute;
+      right: -5px; 
+      text-shadow: none;
+      top: 0;
     }
     
     .site-info-name-secondpart {
