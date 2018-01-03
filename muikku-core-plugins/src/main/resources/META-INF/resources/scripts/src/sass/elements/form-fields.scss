@@ -67,7 +67,7 @@ div.form-field-tag-input {
   
   &::before {
     align-items: center;
-    color: #fff;
+    color: $color-main-function-search-icon;
     display: flex;
     height: 35px;
     justify-content: center;
@@ -100,14 +100,14 @@ div.form-field-tag-input {
   -webkit-appearance: textfield;
   background-color: $color-form-field-tag-input-tag-background;
   background-color: -moz-field;
+  display: flex;
   font: -moz-field;
   font: -webkit-small-control;
   font-size: 14px;
-  position: relative;
-  display: flex;
-  padding: 0;
   height: auto;
   overflow: hidden;
+  position: relative;
+  padding: 0;
 }
 
 .form-field-tag-input__input {
@@ -132,8 +132,8 @@ div.form-field-tag-input {
   border-radius: 3px;
   color: $color-form-field-tag-input-tag-text;
   display: inline-block;
-  margin-right: 8px;
   height: 34px;
+  margin-right: 8px;
   padding: 8.5px;
   padding-right: 40px;
   position: relative;
