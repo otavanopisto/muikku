@@ -169,9 +169,9 @@ div.form-field-tag-input {
 
   
   &::before {
-    position: absolute;
     left: 9px;
     top: 9px;
+    position: absolute;    
   }
   
   &.active, 
