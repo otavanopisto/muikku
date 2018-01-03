@@ -81,17 +81,17 @@ div.form-field-tag-input {
 
 
 .form-field__select--primary-function {    
+  -webkit-appearance: none;
+  -moz-appearance: none;
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
   background-color: transparent;
   border: 2px solid $color-main-function-primary-function-dropdown-border;
-  min-width: 200px;
+  font-size: 1.05rem;
   height: 35px;
+  min-width: 200px;
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
-  font-size: 1.05rem;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 
