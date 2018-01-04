@@ -27,10 +27,14 @@
         always: $.proxy(this._onFileUploadAlways, this),
         progress : $.proxy(this._onFileUploadProgress, this)
       });
-      
+
       $('<span>')
         .addClass('muikku-file-input-field-description')
         .html(getLocaleText('plugin.workspace.fileField.fieldHint'))
+        .appendTo(this._uploaderContainer);
+
+      this._filesContainer = $('<div>')
+        .addClass('muikku-file-input-field-file-files-container')
         .appendTo(this._uploaderContainer);
       
       var fileCount = this.element.attr('data-file-count')||0;
@@ -42,25 +46,19 @@
         this._updateFileLabel(i, fileName, fileId);
         this._updateFileProgress(i, 100);
       }
-      //could be changed to work also somewhere else with other parent elements 
-      var pElem = this.element.closest("div[data-workspace-material-id]")[0];
-      if (pElem !=null){
-      var fieldName = this.element.data('field-name');
-      var materialId = this.element.data('material-id');
-      var workspaceMaterialId = pElem.getAttribute("data-workspace-material-id");
-      var embedId = this.element.data('embed-id');
-      if (embedId == null){
-        embedId="";
-      }
-      var userId = document.getElementsByClassName("eval-modal-student-container")[0].getAttribute('data-user-entity-id');
-      
-      $('<a>')
-        .attr({
-          'href': '/rest/workspace/allfileanswers/?fieldName=' + fieldName + '&materialId=' + materialId + '&workspaceMaterialId=' + workspaceMaterialId + "&embedId=" + embedId + '&userId=' + userId
-        })
-        .html("Download All")
-        .insertAfter(this._uploaderContainer);
-      }
+
+      $('<div>')
+        .addClass('muikku-file-input-field-download-all')
+        .text(getLocaleText('plugin.workspace.fileField.downloadAllLink'))
+        .appendTo(this._uploaderContainer)
+        .toggle(fileCount > 1)
+        .on('click', $.proxy(function() {
+          var files = this.files();
+          if (files && files.length > 0) {
+            window.location = '/rest/workspace/allfileanswers/' + files[0].fileId + '?archiveName=' + getLocaleText('plugin.workspace.fileField.zipFileName');
+          }
+        }, this));
+
       this._fileIndex = fileCount;
       
       this.element.closest('form').submit($.proxy(this._onFormSubmit, this));
@@ -69,7 +67,7 @@
     },
     
     files: function () {
-      return $.map(this._uploaderContainer.find('.muikku-file-input-field-file'), $.proxy(function (fileElement) {
+      return $.map(this._filesContainer.find('.muikku-file-input-field-file'), $.proxy(function (fileElement) {
         var fileIndex = $(fileElement).attr('data-file-index');
         var fieldPrefix = this._fieldName + '.' + fileIndex;
         var fileId = $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val();
@@ -90,12 +88,12 @@
     },
     
     reset: function () {
-      this._uploaderContainer.find('.muikku-file-input-field-file').remove();
+      this._filesContainer.find('.muikku-file-input-field-file').remove();
       this.element.trigger("change");
     },
     
     _findFileElementByIndex: function (index) {
-      return this._uploaderContainer.find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
+      return this._filesContainer.find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
     },
     
     _createFileElement: function (index) {
@@ -120,14 +118,14 @@
           .click($.proxy(this._onFileRemoveClick, this))
           .addClass('muikku-file-input-field-file-remove')
         )
-        .appendTo(this._uploaderContainer);
+        .appendTo(this._filesContainer);
     },
     
     _updateFileMeta: function (fileIndex, fileId, fileName, contentType) {
       var fileElement = this._findFileElementByIndex(fileIndex);
       var fieldPrefix = this._fieldName + '.' + fileIndex;
       
-      var fileIdElement = this._uploaderContainer.find('input[name="' + fieldPrefix + '-file-id"]');
+      var fileIdElement = this._filesContainer.find('input[name="' + fieldPrefix + '-file-id"]');
       if (fileIdElement.length == 0) {
         $('<input>').attr({
           type : 'hidden',
@@ -155,7 +153,7 @@
     },
     
     _updateFileProgress: function (index, progress, loaded, total) {
-      var postfix = (loaded && total) ? Math.round((loaded / 1024)) + ' kB / ' + Math.round((total / 1024)) + ' kB' : '';
+      var postfix = loaded == total ? '' : (loaded && total) ? Math.round((loaded / 1024)) + ' kB / ' + Math.round((total / 1024)) + ' kB' : '';
       this._findFileElementByIndex(index).find('.muikku-file-input-field-file-progress').progressbar("value", progress);
       this._findFileElementByIndex(index).find('.muikku-file-input-field-file-progress-literal').text(postfix);
     },
@@ -174,6 +172,7 @@
       if (file) {
         $(file).remove();
         this.element.trigger("change");
+        this._uploaderContainer.find('.muikku-file-input-field-download-all').toggle(this.files().length > 1);
       }
     },
 
@@ -247,6 +246,8 @@
       });
       
       this.element.trigger("change");
+      
+      this._uploaderContainer.find('.muikku-file-input-field-download-all').toggle(this.files().length > 1);
     },
     
     _onFileUploadAlways: function () {
