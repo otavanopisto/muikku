@@ -1,18 +1,22 @@
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderStudentUserFileType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderStudentUserFileType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType } from '~/reducers/main-function/guider/guider-students';
 import { loadStudentsHelper } from './guider-students/helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 
-export interface UPDATE_GUIDER_STUDENTS_FILTERS extends 
-  SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>{}
-export interface UPDATE_GUIDER_STUDENTS_ALL_PROPS extends 
-  SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>{}
-export interface UPDATE_GUIDER_STUDENTS_STATE extends 
-  SpecificActionType<"UPDATE_GUIDER_STUDENTS_STATE", GuiderStudentsStateType>{}
-  
+export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
+export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
+export type UPDATE_GUIDER_STUDENTS_STATE = SpecificActionType<"UPDATE_GUIDER_STUDENTS_STATE", GuiderStudentsStateType>
+export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<"ADD_TO_GUIDER_SELECTED_STUDENTS", GuiderStudentType>
+export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<"REMOVE_FROM_GUIDER_SELECTED_STUDENTS", GuiderStudentType>
+
+export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT", GuiderStudentUserProfileType>
+export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
+export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", {property: string, value: any}>
+export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
+
 export interface LoadStudentsTriggerType {
   (filters: GuiderStudentsFilterType): AnyActionType
 }
@@ -24,6 +28,14 @@ export interface LoadStudentTriggerType {
   (id: string): AnyActionType
 }
 
+export interface AddToGuiderSelectedStudentsTriggerType {
+  (student: GuiderStudentType): AnyActionType
+}
+
+export interface RemoveFromGuiderSelectedStudentsTriggerType {
+  (student: GuiderStudentType): AnyActionType
+}
+
 let loadStudents:LoadStudentsTriggerType = function loadStudents(filters){
   return loadStudentsHelper.bind(this, filters, true);
 }
@@ -32,52 +44,83 @@ let loadMoreStudents:LoadMoreStudentsTriggerType = function loadMoreStudents(){
   return loadStudentsHelper.bind(this, null, false);
 }
 
+let addToGuiderSelectedStudents:AddToGuiderSelectedStudentsTriggerType = function addToGuiderSelectedStudents(student){
+  return {
+    type: "ADD_TO_GUIDER_SELECTED_STUDENTS",
+    payload: student
+  }
+}
+
+let removeFromGuiderSelectedStudents:RemoveFromGuiderSelectedStudentsTriggerType = function addToGuiderSelectedStudents(student){
+  return {
+    type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
+    payload: student
+  }
+}
+
 let loadStudent:LoadStudentTriggerType = function loadStudent(id){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
       
       dispatch({
-        type: "UPDATE_GUIDER_STUDENTS_ALL_PROPS",
-        payload: {
-          currentState: "LOADING"
-        }
+        type: "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
+        payload: null
       });
       
-      let basic:GuiderStudentType = <GuiderStudentType>await promisify(mApi().user.students.read(id), 'callback')();
-      let usergroups:UserGroupListType = <UserGroupListType>await promisify(mApi().usergroup.groups.read({userIdentifier: id}), 'callback')();
-      let labels:Array<GuiderStudentUserProfileLabelType> = <Array<GuiderStudentUserProfileLabelType>>await promisify(mApi().user.students.read(id).flags.read({
-        ownerIdentifier: currentUserSchoolDataIdentifier
-      }), 'callback')();
-      let phoneNumbers:Array<GuiderStudentUserProfilePhoneType> = <Array<GuiderStudentUserProfilePhoneType>>await promisify(mApi().user.students.read(id).phoneNumbers, 'callback')();
-      let emails:Array<GuiderStudentUserProfileEmailType> = <Array<GuiderStudentUserProfileEmailType>>await promisify(mApi().user.students.read(id).emails, 'callback')();
-      let addresses:Array<GuiderStudentUserAddressType> = <Array<GuiderStudentUserAddressType>>await promisify(mApi().user.students.read(id).addresses, 'callback')();
-      let files:Array<GuiderStudentUserFileType> = <Array<GuiderStudentUserFileType>>await promisify(mApi().user.students.read(id).files, 'callback')();
-      let vops:GuiderVOPSDataType = <GuiderVOPSDataType>await promisify(mApi().user.students.read(id).vops, 'callback')();
-      let hops:GuiderHOPSDataType = <GuiderHOPSDataType>await promisify(mApi().user.students.read(id).hops, 'callback')();
-      let lastLogin:GuiderLastLoginStudentDataType = (<Array<GuiderLastLoginStudentDataType>>await promisify(mApi().user.students.read(id).logins.read({maxResults:1}), 'callback')())[0];
-      let notifications:GuiderNotificationStudentsDataType = <GuiderNotificationStudentsDataType>await promisify(mApi().user.students.read(id).latestNotifications, 'callback')();
+      await Promise.all([
+        promisify(mApi().user.students.read(id), 'callback')()
+          .then((basic:GuiderStudentType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "basic", value: basic}})
+          }),
+        promisify(mApi().usergroup.groups.read({userIdentifier: id}), 'callback')()
+          .then((usergroups:UserGroupListType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "usergroups", value: usergroups}})
+          }),
+        promisify(mApi().user.students.flags.read(id, {
+            ownerIdentifier: currentUserSchoolDataIdentifier
+          }), 'callback')()
+          .then((labels:Array<GuiderStudentUserProfileLabelType>)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "labels", value: labels}})
+          }),
+        promisify(mApi().user.students.phoneNumbers.read(id), 'callback')()
+          .then((phoneNumbers:Array<GuiderStudentUserProfilePhoneType>)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "phoneNumbers", value: phoneNumbers}})
+          }),
+        promisify(mApi().user.students.emails.read(id), 'callback')()
+          .then((emails:Array<GuiderStudentUserProfileEmailType>)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "emails", value: emails}})
+          }),
+        promisify(mApi().user.students.addresses.read(id), 'callback')()
+          .then((addresses:Array<GuiderStudentUserAddressType>)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "addresses", value: addresses}})
+          }),
+        promisify(mApi().guider.users.files.read(id), 'callback')()
+          .then((files:Array<GuiderStudentUserFileType>)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
+          }),
+        promisify(mApi().records.vops.read(id), 'callback')()
+          .then((vops:GuiderVOPSDataType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
+          }),
+        promisify(mApi().records.hops.read(id), 'callback')()
+          .then((hops:GuiderHOPSDataType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})
+          }),
+        promisify(mApi().user.students.logins.read(id, {maxResults:1}), 'callback')()
+          .then((lastLoginData:Array<GuiderLastLoginStudentDataType>)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "lastLogin", value: lastLoginData[0]}})
+          }),
+        promisify(mApi().guider.users.latestNotifications.read(id), 'callback')()
+          .then((notifications:GuiderNotificationStudentsDataType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "notifications", value: notifications}})
+          })
+      ]);
       
       dispatch({
-        type: "UPDATE_GUIDER_STUDENTS_ALL_PROPS",
-        payload: {
-          currentState: "READY",
-          current: {
-            basic,
-            usergroups,
-            labels,
-            phoneNumbers,
-            emails,
-            addresses,
-            files,
-            vops,
-            hops,
-            lastLogin,
-            notifications
-          }
-        }
+        type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
+        payload: <GuiderCurrentStudentStateType>"READY"
       });
-      
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
       dispatch({
@@ -86,9 +129,11 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
           currentState: "ERROR"
         }
       });
-    }
+     }
   }
 }
 
-export {loadStudents, loadMoreStudents, loadStudent};
-export default {loadStudents, loadMoreStudents, loadStudent};
+export {loadStudents, loadMoreStudents, loadStudent,
+  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents};
+export default {loadStudents, loadMoreStudents, loadStudent,
+  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents};

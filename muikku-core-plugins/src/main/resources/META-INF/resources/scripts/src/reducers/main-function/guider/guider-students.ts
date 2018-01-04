@@ -156,7 +156,7 @@ export interface GuiderStudentUserProfileType {
   notifications: GuiderNotificationStudentsDataType
 }
 
-export default function coursepickerCourses(state: GuiderStudentsType={
+export default function guiderStudents(state: GuiderStudentsType={
   state: "LOADING",
   currentState: "READY",
   filters: {
@@ -180,6 +180,37 @@ export default function coursepickerCourses(state: GuiderStudentsType={
   } else if (action.type === "UPDATE_GUIDER_STUDENTS_STATE"){
     return Object.assign({}, state, {
       state: action.payload
+    });
+  } else if (action.type === "ADD_TO_GUIDER_SELECTED_STUDENTS"){
+    let student:GuiderStudentType = action.payload;
+    return Object.assign({}, state, {
+      selected: state.selected.concat([student]),
+      selectedIds: state.selectedIds.concat([student.id])
+    });
+  } else if (action.type === "REMOVE_FROM_GUIDER_SELECTED_STUDENTS"){
+    let student:GuiderStudentType = action.payload;
+    return Object.assign({}, state, {
+      selected: state.selected.filter(s=>s.id!==student.id),
+      selectedIds: state.selectedIds.filter(id=>id!==student.id)
+    });
+  } else if (action.type === "SET_CURRENT_GUIDER_STUDENT"){
+    return Object.assign({}, state, {
+      current: action.payload
+    });
+  } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD"){
+    return Object.assign({}, state, {
+      current: {},
+      currentState: "LOADING"
+    });
+  } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP"){
+    let obj:any = {};
+    obj[action.payload.property] = action.payload.value;
+    return Object.assign({}, state, {
+      current: Object.assign({}, state.current, obj)
+    });
+  } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE"){
+    return Object.assign({}, state, {
+      currentState: action.payload
     });
   }
   return state;

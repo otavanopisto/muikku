@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import * as queryString from 'query-string';
 
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -11,7 +12,7 @@ import '~/sass/elements/message.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
-import { LoadMoreStudentsTriggerType, loadMoreStudents } from '~/actions/main-function/guider/guider-students';
+import { LoadMoreStudentsTriggerType, loadMoreStudents, addToGuiderSelectedStudents, removeFromGuiderSelectedStudents, AddToGuiderSelectedStudentsTriggerType, RemoveFromGuiderSelectedStudentsTriggerType } from '~/actions/main-function/guider/guider-students';
 import { GuiderStudentListType, GuiderStudentsStateType, GuiderStudentType } from '~/reducers/main-function/guider/guider-students';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Student from './students/student';
@@ -24,7 +25,9 @@ interface GuiderStudentsProps {
   loadMoreStudents: LoadMoreStudentsTriggerType,
   guiderStudentsStudents: GuiderStudentListType,
   guiderStudentsCurrent: boolean,
-  guiderStudentsSelectedIds: Array<string>
+  guiderStudentsSelectedIds: Array<string>,
+  addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType,
+  removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType
 }
 
 interface GuiderStudentsState {
@@ -40,6 +43,14 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
     this.hasMorePropertyLocation = "guiderStudentsHasMore";
     //this is the function that will be called
     this.loadMoreTriggerFunctionLocation = "loadMoreStudents";
+    
+    this.onStudentClick = this.onStudentClick.bind(this);
+  }
+  
+  onStudentClick(student: GuiderStudentType){
+    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+    locationData.c = student.id;
+    window.location.hash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
   }
 
   render(){
@@ -62,9 +73,9 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
         let isSelected = this.props.guiderStudentsSelectedIds.includes(student.id);
         return {
             className: "application-list__item",
-            onSelect: ()=>{},//this.props.addToGuiderSelectedStudents.bind(null, student),
-            onDeselect: ()=>{},//this.props.removeFromGuiderSelectedStudents.bind(null, student),
-            onEnter: ()=>{},//this.setCurrentGuiderStudent.bind(this, student),
+            onSelect: this.props.addToGuiderSelectedStudents.bind(null, student),
+            onDeselect: this.props.removeFromGuiderSelectedStudents.bind(null, student),
+            onEnter: this.onStudentClick.bind(this, student),
             isSelected,
             key: student.id,
             contents: (checkbox: React.ReactElement<any>)=>{
@@ -89,7 +100,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({loadMoreStudents}, dispatch);
+  return bindActionCreators({loadMoreStudents, addToGuiderSelectedStudents, removeFromGuiderSelectedStudents}, dispatch);
 };
 
 export default (connect as any)(

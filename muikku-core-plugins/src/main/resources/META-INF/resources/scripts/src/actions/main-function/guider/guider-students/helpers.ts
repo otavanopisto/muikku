@@ -10,6 +10,11 @@ import { GuiderStudentsType, GuiderStudentsFilterType, GuiderStudentsStateType, 
 const MAX_LOADED_AT_ONCE = 25;
 
 export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+  dispatch({
+    type: "SET_CURRENT_GUIDER_STUDENT",
+    payload: null
+  });
+  
   let state = getState();
   let guiderStudents:GuiderStudentsType = state.guiderStudents;
   
