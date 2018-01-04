@@ -13,7 +13,7 @@ import '~/sass/elements/message.scss';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
 import { LoadMoreStudentsTriggerType, loadMoreStudents, addToGuiderSelectedStudents, removeFromGuiderSelectedStudents, AddToGuiderSelectedStudentsTriggerType, RemoveFromGuiderSelectedStudentsTriggerType } from '~/actions/main-function/guider/guider-students';
-import { GuiderStudentListType, GuiderStudentsStateType, GuiderStudentType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderStudentListType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileType } from '~/reducers/main-function/guider/guider-students';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Student from './students/student';
 import { UserType } from '~/reducers/main-function/user-index';
@@ -24,7 +24,7 @@ interface GuiderStudentsProps {
   guiderStudentsHasMore: boolean,
   loadMoreStudents: LoadMoreStudentsTriggerType,
   guiderStudentsStudents: GuiderStudentListType,
-  guiderStudentsCurrent: boolean,
+  guiderStudentsCurrent: GuiderStudentUserProfileType,
   guiderStudentsSelectedIds: Array<string>,
   addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType,
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType
@@ -43,6 +43,8 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
     this.hasMorePropertyLocation = "guiderStudentsHasMore";
     //this is the function that will be called
     this.loadMoreTriggerFunctionLocation = "loadMoreStudents";
+    //Cancel loading more if that property exists
+    this.cancellingLoadingPropertyLocation = "guiderStudentsCurrent";
     
     this.onStudentClick = this.onStudentClick.bind(this);
   }

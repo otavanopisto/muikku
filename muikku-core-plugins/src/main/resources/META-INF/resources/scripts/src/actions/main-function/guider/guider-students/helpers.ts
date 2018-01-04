@@ -1,4 +1,5 @@
 import notificationActions from '~/actions/base/notifications';
+import equals = require("deep-equal");
 
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
@@ -19,7 +20,7 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
   let guiderStudents:GuiderStudentsType = state.guiderStudents;
   
   //Avoid loading courses again for the first time if it's the same location
-  if (initial && filters === guiderStudents.filters && guiderStudents.state === "READY"){
+  if (initial && equals(filters, guiderStudents.filters) && guiderStudents.state === "READY"){
     return;
   }
   
