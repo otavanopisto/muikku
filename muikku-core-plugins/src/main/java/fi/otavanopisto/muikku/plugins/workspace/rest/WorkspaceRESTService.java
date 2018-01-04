@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -44,6 +48,7 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
@@ -61,9 +66,11 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
+import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
+import fi.otavanopisto.muikku.plugins.material.model.QueryField;
 import fi.otavanopisto.muikku.plugins.search.UserIndexer;
 import fi.otavanopisto.muikku.plugins.search.WorkspaceIndexer;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceEntityFileController;
@@ -83,6 +90,7 @@ import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialAudioFieldAnswerClip;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReplyState;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
@@ -211,6 +219,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+  
+  @Inject
+  private QueryFieldController queryFieldController;
   
   @GET
   @Path("/workspaceTypes")
@@ -1604,6 +1615,81 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.status(Status.NOT_FOUND).build();
   }
 
+  @GET
+  @Produces("application/zip")
+  @Path("/allfileanswers/")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response getAllfileAnswers(@QueryParam("fieldName") String fieldName,
+      @QueryParam("materialId") Long materialId, @QueryParam("workspaceMaterialId") Long workspaceMaterialId,
+      @QueryParam("embedId") String embedId, @QueryParam("userId") Long userId) {
+
+    if (fieldName == null || materialId == null || workspaceMaterialId == null || userId == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
+    Material material = materialController.findMaterialById(materialId);
+    if (material == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("material not found")).build();
+    }
+    QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, fieldName);
+    if (queryField == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("queryField not found")).build();
+    }
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("workspaceMaterial not found")).build();
+    }
+    WorkspaceMaterialField field = workspaceMaterialFieldController
+        .findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, "");
+    if (field == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("field not found")).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userId);
+    if (userEntity == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("userEntity not found")).build();
+    }
+    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController
+        .findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+    if (reply == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("reply not found")).build();
+    }
+    WorkspaceMaterialFileFieldAnswer answer = workspaceMaterialFieldAnswerController
+        .findWorkspaceMaterialFileFieldAnswerByFieldAndReply(field, reply);
+    if (answer == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("answer not found")).build();
+    }
+    List<WorkspaceMaterialFileFieldAnswerFile> answerFiles = workspaceMaterialFieldAnswerController
+        .listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(answer);
+    if (answerFiles == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("answerFiles not found")).build();
+    }
+
+    try {
+      StreamingOutput output = new StreamingOutput() {
+        @Override
+        public void write(OutputStream out) throws IOException {
+          ZipOutputStream zout = new ZipOutputStream(out);
+          for (WorkspaceMaterialFileFieldAnswerFile file : answerFiles) {
+            ZipEntry ze = new ZipEntry(file.getFileName());
+            zout.putNextEntry(ze);
+            InputStream inputStream = new ByteArrayInputStream(file.getContent());
+            IOUtils.copy(inputStream, zout);
+            zout.closeEntry();
+          }
+          zout.flush();
+          zout.close();
+        }
+      };
+      return Response.ok(output).header("Content-Disposition", "attachment; filename=\"vastaukset.zip\"").build();
+    } catch (Exception e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+  }
+  
   @GET
   @Path("/audioanswer/{CLIPID}")
   @RESTPermit (handling = Handling.INLINE)

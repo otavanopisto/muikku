@@ -42,7 +42,25 @@
         this._updateFileLabel(i, fileName, fileId);
         this._updateFileProgress(i, 100);
       }
+      //could be changed to work also somewhere else with other parent elements 
+      var pElem = this.element.closest("div[data-workspace-material-id]")[0];
+      if (pElem !=null){
+      var fieldName = this.element.data('field-name');
+      var materialId = this.element.data('material-id');
+      var workspaceMaterialId = pElem.getAttribute("data-workspace-material-id");
+      var embedId = this.element.data('embed-id');
+      if (embedId == null){
+        embedId="";
+      }
+      var userId = document.getElementsByClassName("eval-modal-student-container")[0].getAttribute('data-user-entity-id');
       
+      $('<a>')
+        .attr({
+          'href': '/rest/workspace/allfileanswers/?fieldName=' + fieldName + '&materialId=' + materialId + '&workspaceMaterialId=' + workspaceMaterialId + "&embedId=" + embedId + '&userId=' + userId
+        })
+        .html("Download All")
+        .insertAfter(this._uploaderContainer);
+      }
       this._fileIndex = fileCount;
       
       this.element.closest('form').submit($.proxy(this._onFormSubmit, this));
