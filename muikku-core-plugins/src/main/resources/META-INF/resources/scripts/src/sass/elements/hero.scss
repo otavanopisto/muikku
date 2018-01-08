@@ -37,7 +37,9 @@
   width: 100%;
   
   @include breakpoint($breakpoint-pad) {
-    flex: 1 1 33%;
+    flex-basis: 33%;
+    flex-grow: 1;
+    flex-shrink: 1;
     padding: 0;
   }
   

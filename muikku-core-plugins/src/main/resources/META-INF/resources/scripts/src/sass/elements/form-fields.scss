@@ -60,7 +60,9 @@ div.form-field-tag-input {
     overflow: hidden;
     
     .form-field-tag-input__input {
-      flex: 1 0 200px;
+      flex-basis: 200px;
+      flex-grow: 1;
+      flex-shrink: 0;
       padding: 3px 10px;
       box-shadow: none;
       background: none;
@@ -142,11 +144,15 @@ div.form-field-tag-input {
 
   &.form-field--new-discussion-thread-title {
     margin-right: 20px;
-    flex: 4 1 auto;
+    flex-basis: auto;
+    flex-grow: 4;
+    flex-shrink: 1;
   }
 
   &.form-field--new-discussion-thread-area {
-    flex: 1 1 auto;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
     min-width: 200px;   
   }
 

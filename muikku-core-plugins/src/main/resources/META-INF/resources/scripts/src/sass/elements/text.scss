@@ -210,7 +210,9 @@ b {
     border: 2px solid $color-default;
     border-radius: 100%;
     display: inline-block;
-    flex: 0 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
     font-size: 1.25rem;
     padding: .35rem;
     text-align: center;
@@ -220,7 +222,9 @@ b {
 
 .text__panel-title {
   display: inline-block;
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   overflow: hidden;
   padding: 0 0 0 .625rem;
   text-overflow: ellipsis;
@@ -304,7 +308,9 @@ b {
 .text--communicator-usernames {
   align-items: center;
   display: flex;
-  flex: 1;    
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   flex-direction: row;
   flex-wrap: wrap;
 }
@@ -329,7 +335,9 @@ b {
 
 .text--communicator-labels {
   display: flex;
-  flex: 1;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
   flex-direction: row;
   flex-wrap: wrap; 
 }  
@@ -437,7 +445,9 @@ b {
 .text--announcement-workspace {
   align-items: center;
   display: inline-flex;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 20px 0 0;
 }
 
@@ -450,7 +460,9 @@ b {
 
 .text--discussion-thread-meta {
   display: flex;
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   justify-content: flex-end;
 }
 
@@ -573,7 +585,9 @@ b {
 // Generic Main function 
 .text--main-function-current-folder {
   align-items: center;
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   display: flex;
   font-size: 1rem;
   font-weight: 300;
