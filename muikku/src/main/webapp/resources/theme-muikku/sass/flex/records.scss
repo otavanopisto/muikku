@@ -140,7 +140,9 @@
 
 
 .tr-vops-item-name {
-  flex: 0 0 50px;
+  flex-basis: 50px;
+  flex-grow: 0;
+  flex-shrink: 0;
   min-width: 50px;
   text-align: center;
 }
@@ -149,7 +151,9 @@
   align-items: center;
   color: $environment-button-disabled-font-color;
   display: flex;
-  flex: 0 0 30px;
+  flex-basis: 30px;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 30px;
   justify-content: center;
   margin-left: 10px;
@@ -215,7 +219,9 @@
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
-  flex: 0 0 30px;
+  flex-basis: 30px;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 30px;
   justify-content: center;
   margin-left: 10px;
@@ -395,7 +401,9 @@
 }
 
 .tr-vops-legend-item-grid {
-  flex: 0 0 20px;
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: 20px;
   margin-right: 10px;
   min-width: 20px;
