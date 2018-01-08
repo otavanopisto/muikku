@@ -136,3 +136,17 @@
 .muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
   text-decoration: line-through;
 }
+
+.muikku-file-input-field-download-all {
+  color: $link;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0 auto;
+  padding: 0 6px;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  width: 150px;
+  z-index: 9;
+}
