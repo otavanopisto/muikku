@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
+import GuiderToolbarLabels from './toolbar/labels';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -36,6 +37,29 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     this.searchTimer = null;
   }
   
+  getBackByHash(): string{
+    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+    delete locationData.c;
+    let newHash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
+    return newHash;
+  }
+  
+  onGoBackClick(e: Event){
+    //TODO this is a retarded way to do things if we ever update to a SPA
+    //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
+    if (history.replaceState){
+      let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
+      if (canGoBack){
+        history.back();
+      } else {
+        history.replaceState('', '', this.getBackByHash());
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+      }
+    } else {
+      location.hash = this.getBackByHash();
+    }
+  }
+  
   updateSearchWithQuery(query: string){
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     locationData.q = query;
@@ -64,7 +88,12 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       return ( 
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">
-            <input className="form-field" value={this.state.searchquery} onChange={this.setSearchQuery}/>
+            {this.props.guiderStudents.current ? null : 
+              <input className="form-field" value={this.state.searchquery} onChange={this.setSearchQuery}/>}
+            {this.props.guiderStudents.current ? <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
+               <span className="button-pill__icon icon-goback"></span>
+             </Link> : null}
+            <GuiderToolbarLabels/>
           </div>
         </div>
       )

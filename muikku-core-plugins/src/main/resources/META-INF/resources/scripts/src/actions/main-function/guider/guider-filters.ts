@@ -15,6 +15,10 @@ export interface UpdateWorkspaceFiltersTriggerType {
   ():AnyActionType
 }
 
+export interface CreateGuiderFilterLabel {
+  (name: string):AnyActionType
+}
+
 let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilters(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let currentUser = getState().status.userSchoolDataIdentifier;
@@ -49,5 +53,11 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
   }
 }
 
-export {updateLabelFilters, updateWorkspaceFilters}
-export default {updateLabelFilters, updateWorkspaceFilters}
+let createGuiderFilterLabel:CreateGuiderFilterLabel = function createGuiderFilterLabel(name){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+export {updateLabelFilters, updateWorkspaceFilters, createGuiderFilterLabel}
+export default {updateLabelFilters, updateWorkspaceFilters, createGuiderFilterLabel}

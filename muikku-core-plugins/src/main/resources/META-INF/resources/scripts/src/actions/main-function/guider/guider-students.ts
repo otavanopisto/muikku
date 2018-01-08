@@ -5,6 +5,7 @@ import { loadStudentsHelper } from './guider-students/helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
+import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 
 export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
 export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
@@ -34,6 +35,22 @@ export interface AddToGuiderSelectedStudentsTriggerType {
 
 export interface RemoveFromGuiderSelectedStudentsTriggerType {
   (student: GuiderStudentType): AnyActionType
+}
+
+export interface AddGuiderLabelToCurrentUserTriggerType {
+  (label: GuiderUserLabelType): AnyActionType
+}
+
+export interface RemoveGuiderLabelFromCurrentUserTriggerType {
+  (label: GuiderUserLabelType): AnyActionType
+}
+
+export interface AddGuiderLabelToSelectedUsersTriggerType {
+  (label: GuiderUserLabelType): AnyActionType
+}
+
+export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
+  (label: GuiderUserLabelType): AnyActionType
 }
 
 let loadStudents:LoadStudentsTriggerType = function loadStudents(filters){
@@ -133,7 +150,34 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
   }
 }
 
+let addGuiderLabelToCurrentUser:AddGuiderLabelToCurrentUserTriggerType = function addGuiderLabelToCurrentUser(label){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+let removeGuiderLabelFromCurrentUser:RemoveGuiderLabelFromCurrentUserTriggerType = function removeGuiderLabelFromCurrentUser(label){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = function addGuiderLabelToSelectedUsers(label){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTriggerType = function removeGuiderLabelFromSelectedUsers(label){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
 export {loadStudents, loadMoreStudents, loadStudent,
-  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents};
+  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
+  addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
+  addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers};
 export default {loadStudents, loadMoreStudents, loadStudent,
-  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents};
+  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
+  addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser};
