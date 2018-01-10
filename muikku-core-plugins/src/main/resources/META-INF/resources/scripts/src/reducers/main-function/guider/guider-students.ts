@@ -8,7 +8,9 @@ export interface GuiderStudentsFilterType {
   labelFilters: Array<number>,
   query: string
 }
-export type GuiderStudentType = UserWithSchoolDataType;
+export interface GuiderStudentType extends UserWithSchoolDataType {
+  flags: Array<GuiderStudentUserProfileLabelType>
+};
 export type GuiderStudentListType = Array<GuiderStudentType>;
 
 export interface GuiderStudentsType {
@@ -38,6 +40,8 @@ export interface GuiderStudentsPatchType {
 export interface GuiderStudentUserProfileLabelType {
   id: number,
   flagId: number,
+  flagName: string,
+  flagColor: string,
   studentIdentifier: string
 }
 

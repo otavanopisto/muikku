@@ -7,7 +7,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { GuiderFilterType } from "~/reducers/main-function/guider/guider-filters";
 import { GuiderStudentsType, GuiderStudentType } from "~/reducers/main-function/guider/guider-students";
 import { createGuiderFilterLabel, CreateGuiderFilterLabel } from "~/actions/main-function/guider/guider-filters";
-import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType } from "~/actions/main-function/guider/guider-students";
+import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType, removeGuiderLabelFromSelectedUsers } from "~/actions/main-function/guider/guider-students";
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
@@ -73,12 +73,10 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
     let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.guiderStudents.selected.length >= 1;
     
-    //TODO this is supposed to work but the labels are not being given with the user but only when it's current
-    //please fix backend side
     if (isAtLeastOneSelected){
-      let partialIds:Array<Array<string>> = [[]] //this.props.guiderStudents.selected.map((student: GuiderStudentType)=>{
-      //  return student.labels.map(l=>l.id)}
-      //);
+      let partialIds = this.props.guiderStudents.selected.map((student: GuiderStudentType)=>{
+        return student.flags.map(l=>l.id)}
+      );
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(...partialIds);
     }
@@ -95,17 +93,19 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
       }).map((label)=>{
         let isSelected = allInCommon.includes(label.id as number);
         let isPartiallySelected = onlyInSome.includes(label.id as number);
-    return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
-      onClick={!isSelected || isPartiallySelected ? this.props.addGuiderLabelToSelectedUsers.bind(null, label) : this.props.removeGuiderLabelFromSelectedUsers.bind(null, label)}>
-      <span className="link__icon icon-tag" style={{color: label.color}}></span>
-      <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
-    </Link>);
-  }))
-}>
-  <Link className="button-pill button-pill--label">
-    <span className="button-pill__icon icon-tag"></span>
-  </Link>
-</Dropdown>;
+        return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+          onClick={!isSelected || isPartiallySelected ? 
+            this.props.addGuiderLabelToSelectedUsers.bind(null, label) :
+            this.props.removeGuiderLabelFromSelectedUsers.bind(null, label)}>
+           <span className="link__icon icon-tag" style={{color: label.color}}></span>
+           <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
+        </Link>);
+      }))
+    }>
+      <Link className="button-pill button-pill--label">
+        <span className="button-pill__icon icon-tag"></span>
+      </Link>
+    </Dropdown>;
   }
 }
 
@@ -121,7 +121,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {createGuiderFilterLabel,
     addGuiderLabelToCurrentUser,
     removeGuiderLabelFromCurrentUser,
-    addGuiderLabelToSelectedUsers};
+    addGuiderLabelToSelectedUsers,
+    removeGuiderLabelFromSelectedUsers};
 };
 
 export default (connect as any)(
