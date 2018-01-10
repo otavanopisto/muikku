@@ -56,7 +56,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           return filterMatch(item.name, this.state.labelFilter);
         }).map((label)=>{
           let isSelected = (this.props.guiderStudents.current.labels || []).find(l=>l.id === label.id);
-          return (<Link className={`link link--full link--label ${isSelected ? "selected" : ""}`}
+          return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""}`}
             onClick={!isSelected ? this.props.addGuiderLabelToCurrentUser.bind(null, label) : this.props.removeGuiderLabelFromCurrentUser.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
