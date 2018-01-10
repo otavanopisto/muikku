@@ -18,6 +18,7 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
   
   let state = getState();
   let guiderStudents:GuiderStudentsType = state.guiderStudents;
+  let flagOwnerIdentifier:string = state.status.userSchoolDataIdentifier;
   
   //Avoid loading courses again for the first time if it's the same location
   if (initial && equals(filters, guiderStudents.filters) && guiderStudents.state === "READY"){
@@ -56,7 +57,8 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
     maxResults,
     includeHidden: true,
     flags: actualFilters.labelFilters,
-    workspaceIds: actualFilters.workspaceFilters
+    workspaceIds: actualFilters.workspaceFilters,
+    flagOwnerIdentifier
   }
   
   if (actualFilters.query){

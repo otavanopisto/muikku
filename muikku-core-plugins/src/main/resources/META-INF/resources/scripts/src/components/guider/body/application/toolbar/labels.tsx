@@ -9,6 +9,10 @@ import { GuiderStudentsType, GuiderStudentType } from "~/reducers/main-function/
 import { createGuiderFilterLabel, CreateGuiderFilterLabel } from "~/actions/main-function/guider/guider-filters";
 import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType } from "~/actions/main-function/guider/guider-students";
 
+import '~/sass/elements/link.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/form-fields.scss';
+
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
   guiderFilters: GuiderFilterType,
@@ -69,10 +73,10 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
     let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.guiderStudents.selected.length >= 1;
     
-    //TODO this is supposed to work but the labels are not beign given with the user but only when it's current
+    //TODO this is supposed to work but the labels are not being given with the user but only when it's current
     //please fix backend side
     if (isAtLeastOneSelected){
-      let partialIds:Array<string> = [] //this.props.guiderStudents.selected.map((student: GuiderStudentType)=>{
+      let partialIds:Array<Array<string>> = [[]] //this.props.guiderStudents.selected.map((student: GuiderStudentType)=>{
       //  return student.labels.map(l=>l.id)}
       //);
       allInCommon = intersect(...partialIds);

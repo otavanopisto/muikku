@@ -22,8 +22,8 @@ function loadCurrentLocation(){
 
   if (!originalData.c){
     let filters:GuiderStudentsFilterType = {
-      "workspaceFilters": (originalData.w || []).map(parseInt),
-      "labelFilters": (originalData.l || []).map(parseInt),
+      "workspaceFilters": (originalData.w || []).map((num:string)=>parseInt(num)),
+      "labelFilters": (originalData.l || []).map((num:string)=>parseInt(num)),
       "query": originalData.q || null
     }
     store.dispatch(<Action>loadStudents(filters));
