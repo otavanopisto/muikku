@@ -19,12 +19,12 @@ export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GU
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
 
 export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_USER", {
-  student: GuiderStudentType,
+  studentId: string,
   label: GuiderStudentUserProfileLabelType
 }>
 
 export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LABEL_FROM_USER", {
-  student: GuiderStudentType,
+  studentId: string,
   label: GuiderStudentUserProfileLabelType
 }>
 
@@ -163,7 +163,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
 
 let addGuiderLabelToCurrentUser:AddGuiderLabelToCurrentUserTriggerType = function addGuiderLabelToCurrentUser(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
+
   }
 }
 
@@ -188,7 +188,7 @@ let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = fun
           dispatch({
             type: "ADD_GUIDER_LABEL_TO_USER",
             payload: {
-              student,
+              studentId: student.id,
               label: createdLabelRelation
             }
           });
@@ -211,7 +211,7 @@ let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTrigger
           dispatch({
             type: "REMOVE_GUIDER_LABEL_FROM_USER",
             payload: {
-              student,
+              studentId: student.id,
               label: relationLabel
             }
           });
