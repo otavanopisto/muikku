@@ -216,6 +216,46 @@ export default function guiderStudents(state: GuiderStudentsType={
     return Object.assign({}, state, {
       currentState: action.payload
     });
+  } else if (action.type === "ADD_GUIDER_LABEL_TO_USER" || action.type === "REMOVE_GUIDER_LABEL_FROM_USER"){
+    let newStudentVersion:GuiderStudentType;
+    let newCurrent:GuiderStudentUserProfileType;
+  
+    if (action.type === "ADD_GUIDER_LABEL_TO_USER") {
+      newStudentVersion = Object.assign({}, action.payload.student, {
+        flags: action.payload.student.flags.concat([action.payload.label])
+      });
+      newCurrent = state.current && Object.assign({}, state.current);
+      if (newCurrent && newCurrent.labels){
+        newCurrent.labels = newCurrent.labels.concat([action.payload.label]);
+      }
+    } else {
+      newStudentVersion = Object.assign({}, action.payload.student, {
+        flags: action.payload.student.flags.filter((label)=>{
+          return label.id !== action.payload.label.id;
+        })
+      });
+      newCurrent = state.current && Object.assign({}, state.current);
+      if (newCurrent && newCurrent.labels){
+        newCurrent.labels = newCurrent.labels.filter((label)=>{
+          return label.id !== action.payload.label.id;
+        })
+      }
+    }
+    return Object.assign({}, state, {
+      students: state.students.map((student)=>{
+        if (student.id === newStudentVersion.id){
+          return newStudentVersion;
+        }
+        return student;
+      }),
+      selected: state.selected.map((student)=>{
+        if (student.id === newStudentVersion.id){
+          return newStudentVersion;
+        }
+        return student;
+      }),
+      current: newCurrent
+    });
   }
   return state;
 }

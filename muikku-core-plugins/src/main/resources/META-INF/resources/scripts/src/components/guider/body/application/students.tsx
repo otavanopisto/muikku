@@ -81,7 +81,7 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
             isSelected,
             key: student.id,
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <Student checkbox={checkbox} student={student as any as UserType}/>
+              return <Student checkbox={checkbox} student={student}/>
             }
           }
         })

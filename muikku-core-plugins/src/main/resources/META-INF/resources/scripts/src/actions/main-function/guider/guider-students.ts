@@ -1,6 +1,6 @@
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderStudentUserFileType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderStudentUserFileType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
 import { loadStudentsHelper } from './guider-students/helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType } from 'reducers/main-function/user-index';
@@ -17,6 +17,17 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_
 export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", {property: string, value: any}>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
+
+export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_USER", {
+  student: GuiderStudentType,
+  label: GuiderStudentUserProfileLabelType
+}>
+
+export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LABEL_FROM_USER", {
+  student: GuiderStudentType,
+  label: GuiderStudentUserProfileLabelType
+}>
+
 
 export interface LoadStudentsTriggerType {
   (filters: GuiderStudentsFilterType): AnyActionType
@@ -165,12 +176,50 @@ let removeGuiderLabelFromCurrentUser:RemoveGuiderLabelFromCurrentUserTriggerType
 let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = function addGuiderLabelToSelectedUsers(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     
+    let students:GuiderStudentsType = getState().guiderStudents;
+    students.selected.forEach(async (student:GuiderStudentType)=>{
+      try {
+        let relationLabel:GuiderStudentUserProfileLabelType = student.flags.find((flag)=>flag.flagId === label.id);
+        if (!relationLabel){
+          let createdLabelRelation:GuiderStudentUserProfileLabelType = <GuiderStudentUserProfileLabelType>await promisify(mApi().user.students.flags.create(student.id, {
+            flagId: label.id,
+            studentIdentifier: student.id
+          }), 'callback')();
+          dispatch({
+            type: "ADD_GUIDER_LABEL_TO_USER",
+            payload: {
+              student,
+              label: createdLabelRelation
+            }
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
+    });
   }
 }
 
 let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTriggerType = function removeGuiderLabelFromSelectedUsers(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
+    let students:GuiderStudentsType = getState().guiderStudents;
+    students.selected.forEach(async (student:GuiderStudentType)=>{
+      try {
+        let relationLabel:GuiderStudentUserProfileLabelType = student.flags.find((flag)=>flag.flagId === label.id);
+        if (relationLabel){
+          await promisify(mApi().user.students.flags.del(student.id, relationLabel.id), 'callback')();
+          dispatch({
+            type: "REMOVE_GUIDER_LABEL_FROM_USER",
+            payload: {
+              student,
+              label: relationLabel
+            }
+          });
+        }
+      } catch (err){
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
+      }
+    });
   }
 }
 

@@ -12,6 +12,7 @@ import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuide
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/form-fields.scss';
+import { bindActionCreators } from "redux";
 
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
@@ -55,7 +56,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         ].concat(this.props.guiderFilters.labels.filter((item)=>{
           return filterMatch(item.name, this.state.labelFilter);
         }).map((label)=>{
-          let isSelected = (this.props.guiderStudents.current.labels || []).find(l=>l.id === label.id);
+          let isSelected = (this.props.guiderStudents.current.labels || []).find(l=>l.flagId === label.id);
           return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""}`}
             onClick={!isSelected ? this.props.addGuiderLabelToCurrentUser.bind(null, label) : this.props.removeGuiderLabelFromCurrentUser.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
@@ -75,7 +76,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
     
     if (isAtLeastOneSelected){
       let partialIds = this.props.guiderStudents.selected.map((student: GuiderStudentType)=>{
-        return student.flags.map(l=>l.id)}
+        return student.flags.map(l=>l.flagId)}
       );
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(...partialIds);
@@ -93,7 +94,8 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
       }).map((label)=>{
         let isSelected = allInCommon.includes(label.id as number);
         let isPartiallySelected = onlyInSome.includes(label.id as number);
-        return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+        return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""}`}
+          disabled={!isAtLeastOneSelected}
           onClick={!isSelected || isPartiallySelected ? 
             this.props.addGuiderLabelToSelectedUsers.bind(null, label) :
             this.props.removeGuiderLabelFromSelectedUsers.bind(null, label)}>
@@ -118,11 +120,11 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {createGuiderFilterLabel,
+  return bindActionCreators({createGuiderFilterLabel,
     addGuiderLabelToCurrentUser,
     removeGuiderLabelFromCurrentUser,
     addGuiderLabelToSelectedUsers,
-    removeGuiderLabelFromSelectedUsers};
+    removeGuiderLabelFromSelectedUsers}, dispatch);
 };
 
 export default (connect as any)(
