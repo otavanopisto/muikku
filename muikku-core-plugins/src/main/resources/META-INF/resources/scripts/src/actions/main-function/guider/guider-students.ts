@@ -161,41 +161,66 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
   }
 }
 
+async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any){
+  try {
+    let relationLabel:GuiderStudentUserProfileLabelType = flags.find((flag)=>flag.flagId === label.id);
+    if (relationLabel){
+      await promisify(mApi().user.students.flags.del(student.id, relationLabel.id), 'callback')();
+      dispatch({
+        type: "REMOVE_GUIDER_LABEL_FROM_USER",
+        payload: {
+          studentId: student.id,
+          label: relationLabel
+        }
+      });
+    }
+  } catch (err){
+    dispatch(notificationActions.displayNotification(err.message, 'error'));
+  }
+}
+
+async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any){
+  try {
+    let relationLabel:GuiderStudentUserProfileLabelType = flags.find((flag)=>flag.flagId === label.id);
+    if (!relationLabel){
+      let createdLabelRelation:GuiderStudentUserProfileLabelType = <GuiderStudentUserProfileLabelType>await promisify(mApi().user.students.flags.create(student.id, {
+        flagId: label.id,
+        studentIdentifier: student.id
+      }), 'callback')();
+      dispatch({
+        type: "ADD_GUIDER_LABEL_TO_USER",
+        payload: {
+          studentId: student.id,
+          label: createdLabelRelation
+        }
+      });
+    }
+  } catch (err){
+    dispatch(notificationActions.displayNotification(err.message, 'error'));
+  }
+}
+
 let addGuiderLabelToCurrentUser:AddGuiderLabelToCurrentUserTriggerType = function addGuiderLabelToCurrentUser(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-
+    let students:GuiderStudentsType = getState().guiderStudents;
+    let student = students.current;
+    addLabelToUserUtil(student.basic, student.labels, label, dispatch);
   }
 }
 
 let removeGuiderLabelFromCurrentUser:RemoveGuiderLabelFromCurrentUserTriggerType = function removeGuiderLabelFromCurrentUser(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
+    let students:GuiderStudentsType = getState().guiderStudents;
+    let student = students.current;
+    removeLabelFromUserUtil(student.basic, student.labels, label, dispatch);
   }
 }
 
 let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = function addGuiderLabelToSelectedUsers(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
     let students:GuiderStudentsType = getState().guiderStudents;
-    students.selected.forEach(async (student:GuiderStudentType)=>{
-      try {
-        let relationLabel:GuiderStudentUserProfileLabelType = student.flags.find((flag)=>flag.flagId === label.id);
-        if (!relationLabel){
-          let createdLabelRelation:GuiderStudentUserProfileLabelType = <GuiderStudentUserProfileLabelType>await promisify(mApi().user.students.flags.create(student.id, {
-            flagId: label.id,
-            studentIdentifier: student.id
-          }), 'callback')();
-          dispatch({
-            type: "ADD_GUIDER_LABEL_TO_USER",
-            payload: {
-              studentId: student.id,
-              label: createdLabelRelation
-            }
-          });
-        }
-      } catch (err){
-        dispatch(notificationActions.displayNotification(err.message, 'error'));
-      }
+    students.selected.forEach((student:GuiderStudentType)=>{
+      addLabelToUserUtil(student, student.flags, label, dispatch);
     });
   }
 }
@@ -203,22 +228,8 @@ let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = fun
 let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTriggerType = function removeGuiderLabelFromSelectedUsers(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let students:GuiderStudentsType = getState().guiderStudents;
-    students.selected.forEach(async (student:GuiderStudentType)=>{
-      try {
-        let relationLabel:GuiderStudentUserProfileLabelType = student.flags.find((flag)=>flag.flagId === label.id);
-        if (relationLabel){
-          await promisify(mApi().user.students.flags.del(student.id, relationLabel.id), 'callback')();
-          dispatch({
-            type: "REMOVE_GUIDER_LABEL_FROM_USER",
-            payload: {
-              studentId: student.id,
-              label: relationLabel
-            }
-          });
-        }
-      } catch (err){
-        dispatch(notificationActions.displayNotification(err.message, 'error'));
-      }
+    students.selected.forEach((student:GuiderStudentType)=>{
+      removeLabelFromUserUtil(student, student.flags, label, dispatch);
     });
   }
 }

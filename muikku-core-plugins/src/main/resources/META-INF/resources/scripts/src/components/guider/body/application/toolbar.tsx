@@ -33,6 +33,8 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     
     this.setSearchQuery = this.setSearchQuery.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
+    this.onGoBackClick = this.onGoBackClick.bind(this);
+    this.getBackByHash = this.getBackByHash.bind(this);
     
     this.searchTimer = null;
   }
