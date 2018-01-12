@@ -289,7 +289,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     super.delete(workspaceUserEntity);
   }
 
-  public WorkspaceUserEntity findByIdentifier(String identifier) {
+  public List<WorkspaceUserEntity> findByIdentifier(String identifier) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -301,7 +301,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
       criteriaBuilder.equal(root.get(WorkspaceUserEntity_.identifier), identifier)
     );
     
-    return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
   }
 
   public WorkspaceUserEntity findByIdentifierAndArchived(String identifier, Boolean archived) {
