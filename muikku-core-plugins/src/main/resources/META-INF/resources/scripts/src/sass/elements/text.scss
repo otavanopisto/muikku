@@ -294,7 +294,8 @@ b {
   justify-content: center;
   width: 24px;
 }
-  
+
+// Communicator
 .text--communicator-message-caption {
   font-weight: 600;  
 
@@ -508,7 +509,6 @@ b {
   }
 }
 
-
 .text__discussion-breadcrumb-item--area-1 {
   border-left: 5px solid $color-message-area-category-1;
 }
@@ -549,7 +549,6 @@ b {
   border-left: 5px solid $color-message-area-category-10;
 }
 
-
 .text--new-discussion-create-state {
   margin-right: 10px;
   
@@ -567,7 +566,7 @@ b {
   font-weight: 600;  
 }
 
-
+// Coursepicker
 .text--coursepicker-course-icon {
   color: $color-course-icon;
   font-size: 1.3rem;
@@ -575,7 +574,7 @@ b {
 }
 
 .text--coursepicker-course-name {
-  font-size: 1.05rem;
+
 }
 
 .text--coursepicker-course-name-extension {
