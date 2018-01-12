@@ -429,7 +429,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
-    box-shadow: $color-button-pill-shadow;
+    box-shadow: 0 0 5px $color-button-pill-shadow;
     display: inline-flex;
     font-size: $button-pill-navbar-font-size;
     height: $button-pill-navbar-size;
@@ -704,6 +704,7 @@
     color: $color-main-function-button-pill-navigation-edit-label-text;
     display: block;
     height: 1rem;
+    margin: 0 0 0 5px;
     width: 1rem;
     
     &:hover, 

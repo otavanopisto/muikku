@@ -7,8 +7,6 @@
 // Not sure about the naming used here as we should not need classes like form-field-tag-input__field etc.
 // Some class names are against BEM also.
 
-
-
 div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
   -webkit-appearance: none;  
   border-radius: 3px;
@@ -61,7 +59,6 @@ div.form-field-tag-input {
 }
 
 // This does not mostly belong here, mostly
-
 .form-field__input-decoration--main-function-search {
   background-color: $color-main-function-input-field-decoration-background;
   
@@ -89,7 +86,6 @@ div.form-field-tag-input {
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
 }
-
 
 .form-field-tag-input__field {
   -moz-appearance: textfield;
@@ -121,7 +117,6 @@ div.form-field-tag-input {
   }
 }
 
-
 .form-field-tag-input__tag {
   background-color: $color-form-field-tag-input-tag-background;
   border: solid 1px $color-form-field-tag-input-tag-border;
@@ -136,18 +131,12 @@ div.form-field-tag-input {
   white-space: nowrap;
 }
 
-
-
-
-
 // Naming is wrong
-
 .form-field-tag-input__tag__text {
   vertical-align: top;
 }
 
 // Naming is wrong
-
 .form-field-tag-input__tag__delete {
   background-position: center center;
   background-repeat: no-repeat;
@@ -159,7 +148,6 @@ div.form-field-tag-input {
   right: 0;
   top: 0;
   width: 32px;
-
   
   &::before {
     left: 9px;
@@ -173,7 +161,6 @@ div.form-field-tag-input {
   }
 }
 
-<<<<<<< HEAD
 .form-field--communicator-new-message-subject {
   margin-bottom: 5px;
 }
@@ -183,21 +170,6 @@ div.form-field-tag-input {
   margin-bottom: 24px;
   text-align: center;
 }
-=======
-  &.form-field--new-discussion-thread-title {
-    margin-right: 20px;
-    flex-basis: auto;
-    flex-grow: 4;
-    flex-shrink: 1;
-  }
-
-  &.form-field--new-discussion-thread-area {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    min-width: 200px;   
-  }
->>>>>>> origin/FTR-3062_redesign-of-muikku
 
 .form-field--toolbar-selector {
   display: inline-block;
@@ -206,7 +178,6 @@ div.form-field-tag-input {
   max-width: 250px;
   vertical-align: top;
   width: 100%;
-
   
   @include breakpoint-down($breakpoint-medium-mobile) {
     max-width: 150px;
@@ -222,7 +193,6 @@ div.form-field-tag-input {
   flex: 1 1 auto;
   min-width: 200px;   
 }
-
 
 .form-field--new-discussion-area-name {
   width: 100%;    

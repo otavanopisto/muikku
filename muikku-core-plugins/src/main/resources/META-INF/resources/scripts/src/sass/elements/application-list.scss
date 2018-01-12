@@ -14,10 +14,6 @@
   } 
 }
 
-.application-list_item-wrapper {
-  width: 100%;
-}
-
 .application-list__item-content-wrapper {
   display: flex;
 }
@@ -29,6 +25,16 @@
   transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  
+  &:hover, 
+  &.hover {
+    background-color: $color-application-list-item-background-hover;
+  }
+
+  &:active, 
+  &.active {
+    background-color: $color-application-list-item-background-active;
+  }
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
