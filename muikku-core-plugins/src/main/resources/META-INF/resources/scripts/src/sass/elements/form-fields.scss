@@ -173,6 +173,7 @@ div.form-field-tag-input {
   }
 }
 
+<<<<<<< HEAD
 .form-field--communicator-new-message-subject {
   margin-bottom: 5px;
 }
@@ -182,6 +183,21 @@ div.form-field-tag-input {
   margin-bottom: 24px;
   text-align: center;
 }
+=======
+  &.form-field--new-discussion-thread-title {
+    margin-right: 20px;
+    flex-basis: auto;
+    flex-grow: 4;
+    flex-shrink: 1;
+  }
+
+  &.form-field--new-discussion-thread-area {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 200px;   
+  }
+>>>>>>> origin/FTR-3062_redesign-of-muikku
 
 .form-field--toolbar-selector {
   display: inline-block;

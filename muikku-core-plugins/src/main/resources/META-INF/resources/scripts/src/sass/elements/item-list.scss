@@ -91,7 +91,9 @@
 // List item icons
 .item-list__icon {
   display: flex;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-size: $item-list-icon-font-size;
 }
 
@@ -113,7 +115,9 @@
     
 // List item texts
 .item-list__text-body {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
   margin: 0 0 0 10px;

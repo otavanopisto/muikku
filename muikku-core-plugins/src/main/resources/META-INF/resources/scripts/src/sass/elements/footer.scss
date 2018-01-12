@@ -16,7 +16,9 @@
 }
 
 .footer__item {
-  flex: 1 0 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
   padding: 40px;
   position: relative;
 }
