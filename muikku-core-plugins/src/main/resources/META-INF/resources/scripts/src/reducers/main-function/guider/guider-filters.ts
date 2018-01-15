@@ -35,6 +35,15 @@ export default function areas(state: GuiderFilterType={
     return Object.assign({}, state, {
       labels: state.labels.concat([action.payload])
     });
+  } else if (action.type === "UPDATE_GUIDER_FILTER_LABEL"){
+    return Object.assign({}, state, {
+      labels: state.labels.map((label)=>{
+        if (label.id === action.payload.labelId){
+          return Object.assign({}, label, action.payload.update)
+        }
+        return label;
+      })
+    });
   }
   return state;
 }

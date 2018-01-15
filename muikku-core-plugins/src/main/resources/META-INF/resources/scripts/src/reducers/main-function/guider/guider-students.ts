@@ -255,6 +255,31 @@ export default function guiderStudents(state: GuiderStudentsType={
       selected: state.selected.map(mapFn),
       current: newCurrent
     });
+  } else if (action.type === "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS"){
+    let mapFnStudentLabel = function(label:GuiderStudentUserProfileLabelType){
+      if (label.flagId === action.payload.labelId){
+        return Object.assign({}, label, action.payload.update);
+      }
+      return label;
+    }
+    let mapFn = function(student:GuiderStudentType){
+      return Object.assign({}, student, {
+        flags: student.flags.map(mapFnStudentLabel)
+      });
+    }
+    
+    let newCurrent = state.current;
+    if (newCurrent){
+      newCurrent = Object.assign({}, state.current, {
+        labels: state.current.labels.map(mapFnStudentLabel)
+      });
+    }
+    
+    return Object.assign({}, state, {
+      students: state.students.map(mapFn),
+      selected: state.selected.map(mapFn),
+      current: newCurrent
+    });
   }
   return state;
 }

@@ -5,9 +5,24 @@ import notificationActions from '~/actions/base/notifications';
 import { GuiderWorkspaceListType, GuiderUserLabelListType, GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { colorIntToHex } from '~/util/modifiers';
 
-export interface UPDATE_GUIDER_FILTERS_LABELS extends SpecificActionType<"UPDATE_GUIDER_FILTERS_LABELS", GuiderUserLabelListType>{}
-export interface UPDATE_GUIDER_FILTERS_WORKSPACES extends SpecificActionType<"UPDATE_GUIDER_FILTERS_WORKSPACES", GuiderWorkspaceListType>{}
-export interface UPDATE_GUIDER_FILTERS_ADD_LABEL extends SpecificActionType<"UPDATE_GUIDER_FILTERS_ADD_LABEL", GuiderUserLabelType>{}
+export type UPDATE_GUIDER_FILTERS_LABELS = SpecificActionType<"UPDATE_GUIDER_FILTERS_LABELS", GuiderUserLabelListType>
+export type UPDATE_GUIDER_FILTERS_WORKSPACES = SpecificActionType<"UPDATE_GUIDER_FILTERS_WORKSPACES", GuiderWorkspaceListType>
+export type UPDATE_GUIDER_FILTERS_ADD_LABEL = SpecificActionType<"UPDATE_GUIDER_FILTERS_ADD_LABEL", GuiderUserLabelType>
+export type UPDATE_GUIDER_FILTER_LABEL = SpecificActionType<"UPDATE_GUIDER_FILTER_LABEL", {
+  labelId: number,
+  update: {
+    name: string,
+    description: string,
+    color: string
+  }
+}>
+export type UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS", {
+  labelId: number,
+  update: {
+    flagName: string,
+    flagColor: string
+  }
+}>
 
 export interface UpdateLabelFiltersTriggerType {
   ():AnyActionType
@@ -89,7 +104,38 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
 
 let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(label, name, description, color){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
+    let newLabel:GuiderUserLabelType = Object.assign({}, label, {
+      name,
+      description,
+      color
+    });
+  
+    try {
+      await promisify(mApi().user.flags.update(label.id, newLabel), 'callback')();
+      dispatch({
+        type: "UPDATE_GUIDER_FILTER_LABEL",
+        payload: {
+          labelId: newLabel.id,
+          update: {
+            name,
+            description,
+            color
+          }
+        }
+      });
+      dispatch({
+        type: "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
+        payload: {
+          labelId: newLabel.id,
+          update: {
+            flagName: name,
+            flagColor: color
+          }
+        }
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
   }
 }
 
