@@ -7,6 +7,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import { CoursePickerCourseType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
 
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
 
 import { StatusType } from '~/reducers/base/status';

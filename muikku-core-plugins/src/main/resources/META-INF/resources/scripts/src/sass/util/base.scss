@@ -38,3 +38,28 @@ a {
   text-decoration: none;
   font-family: "Exo 2", Arial, sans-serif;
 }
+
+// Webkit (Chrome, Opera, Safari)
+::-webkit-input-placeholder { 
+  font-style: italic;
+}
+
+// > FF19
+::-moz-placeholder {
+  font-style: italic;
+}
+
+// > IE10
+:-ms-input-placeholder {
+  font-style: italic;
+}
+
+// < FF18-
+:-moz-placeholder {
+  font-style: italic;
+}
+
+// Standard
+::placeholder { 
+  font-style: italic;
+}

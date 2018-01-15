@@ -51,10 +51,9 @@ div.form-field-tag-input {
   border: 2px solid $color-main-function-input-field-border;
   border-radius: 2px;
   border-right: 0;
-  font-size: 1.05rem;  
-  font-style: italic;  
-  height: 35px;
-  padding: 5px;
+  font-size: .925rem;  
+  height: 40px;
+  padding: 5px 10px;
   width: 100%;
 }
 
@@ -66,9 +65,9 @@ div.form-field-tag-input {
     align-items: center;
     color: $color-main-function-search-icon;
     display: flex;
-    height: 35px;
+    height: 40px;
     justify-content: center;
-    width: 35px;
+    width: 40px;
   }
 }
 
@@ -82,12 +81,13 @@ div.form-field-tag-input {
   border: 2px solid $color-main-function-primary-function-dropdown-border;
   border-radius: 2px;
   font-family: $text-font-family;
-  font-size: 1.05rem;
+  font-size: .925rem;
   font-weight: 200;
-  height: 36px;
+  height: 40px;
   min-width: 200px;
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
+  width: 100%;
 }
 
 .form-field-tag-input__field {
