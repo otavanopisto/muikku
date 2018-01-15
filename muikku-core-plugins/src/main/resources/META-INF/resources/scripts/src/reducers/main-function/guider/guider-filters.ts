@@ -31,6 +31,10 @@ export default function areas(state: GuiderFilterType={
     return Object.assign({}, state, {
       workspaces: action.payload
     });
+  } else if (action.type === "UPDATE_GUIDER_FILTERS_ADD_LABEL"){
+    return Object.assign({}, state, {
+      labels: state.labels.concat([action.payload])
+    });
   }
   return state;
 }
