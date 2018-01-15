@@ -280,6 +280,28 @@ export default function guiderStudents(state: GuiderStudentsType={
       selected: state.selected.map(mapFn),
       current: newCurrent
     });
+  } else if (action.type === "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS"){
+    let filterFnStudentLabel = function(label:GuiderStudentUserProfileLabelType){
+      return (label.flagId !== action.payload);
+    }
+    let mapFn = function(student:GuiderStudentType){
+      return Object.assign({}, student, {
+        flags: student.flags.filter(filterFnStudentLabel)
+      });
+    }
+    
+    let newCurrent = state.current;
+    if (newCurrent){
+      newCurrent = Object.assign({}, state.current, {
+        labels: state.current.labels.filter(filterFnStudentLabel)
+      });
+    }
+    
+    return Object.assign({}, state, {
+      students: state.students.map(mapFn),
+      selected: state.selected.map(mapFn),
+      current: newCurrent
+    });
   }
   return state;
 }

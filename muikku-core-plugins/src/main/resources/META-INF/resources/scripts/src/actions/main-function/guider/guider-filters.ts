@@ -23,6 +23,8 @@ export type UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"UPDA
     flagColor: string
   }
 }>
+export type DELETE_GUIDER_FILTER_LABEL = SpecificActionType<"DELETE_GUIDER_FILTER_LABEL", number>
+export type DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS", number>
 
 export interface UpdateLabelFiltersTriggerType {
   ():AnyActionType
@@ -141,7 +143,19 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
 
 let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(label){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    
+    try {
+      await promisify(mApi().user.flags.del(label.id), 'callback')();
+      dispatch({
+        type: "DELETE_GUIDER_FILTER_LABEL",
+        payload: label.id
+      });
+      dispatch({
+        type: "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
+        payload: label.id
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
   }
 }
 

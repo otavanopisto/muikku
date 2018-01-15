@@ -44,6 +44,12 @@ export default function areas(state: GuiderFilterType={
         return label;
       })
     });
+  } else if (action.type === "DELETE_GUIDER_FILTER_LABEL"){
+    return Object.assign({}, state, {
+      labels: state.labels.filter((label)=>{
+        return (label.id !== action.payload);
+      })
+    });
   }
   return state;
 }
