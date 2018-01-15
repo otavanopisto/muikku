@@ -6,7 +6,7 @@ import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { GuiderFilterType } from "~/reducers/main-function/guider/guider-filters";
 import { GuiderStudentsType, GuiderStudentType } from "~/reducers/main-function/guider/guider-students";
-import { createGuiderFilterLabel, CreateGuiderFilterLabel } from "~/actions/main-function/guider/guider-filters";
+import { createGuiderFilterLabel, CreateGuiderFilterLabelTriggerType } from "~/actions/main-function/guider/guider-filters";
 import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType, removeGuiderLabelFromSelectedUsers } from "~/actions/main-function/guider/guider-students";
 
 import '~/sass/elements/link.scss';
@@ -19,7 +19,7 @@ interface GuiderToolbarLabelsProps {
   guiderFilters: GuiderFilterType,
   guiderStudents: GuiderStudentsType,
   
-  createGuiderFilterLabel: CreateGuiderFilterLabel,
+  createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType,
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType,
   removeGuiderLabelFromCurrentUser: RemoveGuiderLabelFromCurrentUserTriggerType,
   addGuiderLabelToSelectedUsers: AddGuiderLabelToSelectedUsersTriggerType,

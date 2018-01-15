@@ -8,6 +8,7 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import { GuiderFilterType, GuiderUserLabelListType, GuiderUserLabelType, GuiderWorkspaceType } from '~/reducers/main-function/guider/guider-filters';
 import { GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
+import LabelUpdateDialog from './application/label-update-dialog';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -36,6 +37,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
           <span className="item-list__text-body text">
             {label.name}
           </span>
+          <LabelUpdateDialog label={label}>
+            <Link disablePropagation as="span" className="button-pill button-pill--navigation-edit-label">
+              <span className="item-list__icon icon-edit"/>
+            </Link>
+          </LabelUpdateDialog>
         </Link>
       })}
       <span>TODO WORKSPACES</span>

@@ -17,8 +17,16 @@ export interface UpdateWorkspaceFiltersTriggerType {
   ():AnyActionType
 }
 
-export interface CreateGuiderFilterLabel {
+export interface CreateGuiderFilterLabelTriggerType {
   (name: string):AnyActionType
+}
+
+export interface UpdateGuiderFilterLabelTriggerType {
+  (label: GuiderUserLabelType, name: string, description: string, color: string):AnyActionType
+}
+
+export interface RemoveGuiderFilterLabelTriggerType {
+  (label: GuiderUserLabelType):AnyActionType
 }
 
 let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilters(){
@@ -55,7 +63,7 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
   }
 }
 
-let createGuiderFilterLabel:CreateGuiderFilterLabel = function createGuiderFilterLabel(name){
+let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
     
@@ -79,5 +87,19 @@ let createGuiderFilterLabel:CreateGuiderFilterLabel = function createGuiderFilte
   }
 }
 
-export {updateLabelFilters, updateWorkspaceFilters, createGuiderFilterLabel}
-export default {updateLabelFilters, updateWorkspaceFilters, createGuiderFilterLabel}
+let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(label, name, description, color){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(label){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    
+  }
+}
+
+export {updateLabelFilters, updateWorkspaceFilters, createGuiderFilterLabel,
+  updateGuiderFilterLabel, removeGuiderFilterLabel}
+export default {updateLabelFilters, updateWorkspaceFilters, createGuiderFilterLabel,
+  updateGuiderFilterLabel, removeGuiderFilterLabel}
