@@ -2,6 +2,8 @@ package fi.otavanopisto.muikku.plugins.workspace.rest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -44,6 +48,8 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.messaging.MessagingWidget;
@@ -61,6 +67,7 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
+import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
@@ -211,6 +218,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+  
+  @Inject
+  private QueryFieldController queryFieldController;
   
   @GET
   @Path("/workspaceTypes")
@@ -1560,48 +1570,162 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     WorkspaceMaterialFileFieldAnswerFile answerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(fileId);
-    if (answerFile != null) {
-      fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
-      if (workspaceMaterialReply == null) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity(String.format("Could not find reply from answer file %d", answerFile.getId()))
-          .build();
-      }
-      
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialReply.getWorkspaceMaterial();
-      if (workspaceMaterial == null) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity(String.format("Could not find workspace material from reply %d", workspaceMaterialReply.getId()))
-          .build();
-      }
+    if (answerFile == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
 
-      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
-      if (workspaceRootFolder == null) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity(String.format("Could not find workspace root folder for material %d", workspaceMaterial.getId()))
-          .build();
-      }
-      
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
-      if (workspaceEntity == null) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR)
-          .entity(String.format("Could not find workspace entity for root folder %d", workspaceRootFolder.getId()))
-          .build();
-      }
-      
-      if (!workspaceMaterialReply.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
-        if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
-          return Response.status(Status.FORBIDDEN).build();
-        }
-      }
-      
-      return Response.ok(answerFile.getContent())
-        .type(answerFile.getContentType())
-        .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
+    if (workspaceMaterialReply == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find reply from answer file %d", answerFile.getId()))
         .build();
     }
     
-    return Response.status(Status.NOT_FOUND).build();
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialReply.getWorkspaceMaterial();
+    if (workspaceMaterial == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find workspace material from reply %d", workspaceMaterialReply.getId()))
+        .build();
+    }
+
+    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    if (workspaceRootFolder == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find workspace root folder for material %d", workspaceMaterial.getId()))
+        .build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+    if (workspaceEntity == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find workspace entity for root folder %d", workspaceRootFolder.getId()))
+        .build();
+    }
+    
+    if (!workspaceMaterialReply.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    return Response.ok(answerFile.getContent())
+      .type(answerFile.getContentType())
+      .header("Content-Disposition", "attachment; filename=\"" + answerFile.getFileName().replaceAll("\"", "\\\"") + "\"")
+      .build();
+  }
+
+  @GET
+  @Produces("application/zip")
+  @Path("/allfileanswers/{FILEID}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response getAllFileAnswers(@PathParam("FILEID") String fileId, @QueryParam("archiveName") String archiveName) {
+    
+    // User has to be logged in
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    // Find the initial file
+    
+    WorkspaceMaterialFileFieldAnswerFile answerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(fileId);
+    if (answerFile == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    // Access check
+
+    fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = answerFile.getFieldAnswer().getReply();
+    if (workspaceMaterialReply == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find reply from answer file %d", answerFile.getId()))
+        .build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialReply.getWorkspaceMaterial();
+    if (workspaceMaterial == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find workspace material from reply %d", workspaceMaterialReply.getId()))
+        .build();
+    }
+
+    WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    if (workspaceRootFolder == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find workspace root folder for material %d", workspaceMaterial.getId()))
+        .build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceRootFolder.getWorkspaceEntityId());
+    if (workspaceEntity == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR)
+        .entity(String.format("Could not find workspace entity for root folder %d", workspaceRootFolder.getId()))
+        .build();
+    }
+    
+    if (!workspaceMaterialReply.getUserEntityId().equals(sessionController.getLoggedUserEntity().getId())) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.ACCESS_STUDENT_ANSWERS, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    // Fetch all files belonging to the same answer as the initial file
+    
+    List<WorkspaceMaterialFileFieldAnswerFile> answerFiles = workspaceMaterialFieldAnswerController
+        .listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(answerFile.getFieldAnswer());
+    if (CollectionUtils.isEmpty(answerFiles)) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("answerFiles not found")).build();
+    }
+
+    // Create and serve the archive
+    
+    try {
+      Set<String> fileNames = new HashSet<String>(); 
+      StreamingOutput output = new StreamingOutput() {
+        @Override
+        public void write(OutputStream out) throws IOException {
+          ZipOutputStream zout = new ZipOutputStream(out);
+          for (WorkspaceMaterialFileFieldAnswerFile file : answerFiles) {
+            
+            // Prevent duplicate file names
+            
+            String fileName = file.getFileName();
+            if (fileNames.contains(fileName)) {
+              int counter = 1;
+              String name = file.getFileName();
+              String prefix = "";
+              if (StringUtils.contains(name, ".")) {
+                prefix = StringUtils.substringAfterLast(name, ".");
+                name = StringUtils.substringBeforeLast(name, ".");
+              }
+              if (!StringUtils.isEmpty(prefix)) {
+                prefix = String.format(".%s", prefix); 
+              }
+              while (fileNames.contains(fileName)) {
+                fileName = String.format("%s (%s)%s", name, counter++, prefix);
+              }
+            }
+            fileNames.add(fileName);
+            
+            // Zip file
+            
+            ZipEntry ze = new ZipEntry(fileName);
+            zout.putNextEntry(ze);
+            InputStream inputStream = new ByteArrayInputStream(file.getContent());
+            IOUtils.copy(inputStream, zout);
+            zout.closeEntry();
+          }
+          zout.flush();
+          zout.close();
+        }
+      };
+      archiveName = StringUtils.defaultIfEmpty(archiveName, "files.zip");
+      return Response.ok(output)
+          .header("Content-Disposition", "attachment; filename=\"" + archiveName.replaceAll("\"", "\\\"") + "\"")
+          .build();
+    } catch (Exception e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
   }
 
   @GET
@@ -1658,25 +1782,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
-  // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies")
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermitUnimplemented
-  public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-    // TODO: Security!
-
-    if (userEntityId == null) {
-      return Response.status(Status.NOT_IMPLEMENTED).entity("Currently listing must be filtered by userEntityId").build(); 
-    }
-    
+  public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     if (loggedUser == null) {
       return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build(); 
     }
 
-    if (!userEntityId.equals(loggedUser.getId())) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not permitted to list another user's replies").build(); 
-    }
-    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build(); 

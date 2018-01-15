@@ -90,7 +90,9 @@
 
   .profile-vacation-date {
     box-sizing: border-box;
-    flex: 1 1 50%;
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
 
     &:first-child {
       padding: 0 5px 0 0;
