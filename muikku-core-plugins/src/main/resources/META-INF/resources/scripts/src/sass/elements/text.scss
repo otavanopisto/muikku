@@ -569,16 +569,37 @@ b {
 // Coursepicker
 .text--coursepicker-course-icon {
   color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-size: 1.3rem;
   margin-right: 10px;
 }
 
 .text--coursepicker-course-name {
-
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
 }
 
 .text--coursepicker-course-name-extension {
-  font-size: 1.05rem;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.text--coursepicker-course-type-name {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: .825rem;
+  justify-content: flex-end;
+  text-transform: uppercase;
 }
 
 .text--coursepicker-course-description {
