@@ -49,7 +49,7 @@ div.form-field-tag-input {
 .form-field__input--main-function-search {
   background-color: transparent;
   border: 2px solid $color-main-function-input-field-border;
-  border-radius: 0;
+  border-radius: 2px;
   border-right: 0;
   font-size: 1.05rem;  
   font-style: italic;  
@@ -80,8 +80,11 @@ div.form-field-tag-input {
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
   background-color: transparent;
   border: 2px solid $color-main-function-primary-function-dropdown-border;
+  border-radius: 2px;
+  font-family: $text-font-family;
   font-size: 1.05rem;
-  height: 35px;
+  font-weight: 200;
+  height: 36px;
   min-width: 200px;
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
