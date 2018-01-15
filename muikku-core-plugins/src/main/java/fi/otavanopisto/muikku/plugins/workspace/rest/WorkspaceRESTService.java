@@ -1782,25 +1782,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @GET
-  // @Path ("/workspaces/{WORKSPACEENTITYID:[0-9]*}/materials/{WORKSPACEMATERIALID:[0-9]*}/replies")
   @Path ("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   @RESTPermitUnimplemented
-  public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
-    // TODO: Security!
-
-    if (userEntityId == null) {
-      return Response.status(Status.NOT_IMPLEMENTED).entity("Currently listing must be filtered by userEntityId").build(); 
-    }
-    
+  public Response listWorkspaceMaterialReplies(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     UserEntity loggedUser = sessionController.getLoggedUserEntity();
     if (loggedUser == null) {
       return Response.status(Status.UNAUTHORIZED).entity("Unauthorized").build(); 
     }
 
-    if (!userEntityId.equals(loggedUser.getId())) {
-      return Response.status(Status.UNAUTHORIZED).entity("Not permitted to list another user's replies").build(); 
-    }
-    
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("Could not find workspace entity").build(); 
