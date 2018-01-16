@@ -39,7 +39,7 @@ class Course extends React.Component<CourseProps, CourseState>{
     //Please fix this markup I have no idea which standard to use, this is more or less like communicator
     //you can move the toggle expanded function wherever you want that you need the action to be triggered
     return <div className={`application-list__item course ${this.state.expanded ? "course--open" : ""}`}>
-      <div className="application-list__item-header" onClick={this.toggleExpanded}>
+      <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="text text--coursepicker-course-icon icon-books"></span>
         <span className="text text--coursepicker-course-name">{this.props.course.name}</span>
         {this.props.course.nameExtension ? 
@@ -49,10 +49,10 @@ class Course extends React.Component<CourseProps, CourseState>{
       </div>
       {this.state.expanded ?
         <div>             
-          <div className="application-list__item-body">
+          <div className="application-list__item-body application-list__item-body--course">
             <article className="text text--coursepicker-course-description" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </div>
-          <div className="application-list__item-footer">
+          <div className="application-list__item-footer application-list__item-footer--course">
             <Link className="button button--primary-function-content" href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
               {this.props.course.isCourseMember ?
                this.props.i18n.text.get("plugin.coursepicker.course.goto") :
