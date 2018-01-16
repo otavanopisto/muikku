@@ -3,23 +3,40 @@
 @import "../base/breakpoints";
 
 .course {
+  border-radius: 2px;
   border-top: 1px solid $color-message-border;
   margin: 0 0 1px;
-  padding: 14px 12px;
+  
+  &:first-child {
+    border-top: 1px solid $color-default;
+  }
   
   &.course-open {
     background: $color-default;
     border: solid 3px $color-application-list-item-course-border-selected;
-    padding: 12px 9px;
   }
   
   &.course-open:hover {
     background: $color-default;
   }
-  
-  &:first-child {
-    border: 0;
-  }
+}
+
+.course .application-list__item-header {
+  padding: 14px 12px;
+}
+
+.course .application-list__item-body,
+.course .application-list__item-footer {
+  padding: 12px 9px;
+}
+
+.course-open .application-list__item-header {
+  padding: 12px 9px;
+}
+
+.course-open .text--coursepicker-course-name,
+.course-open .text--coursepicker-course-name-extension {
+  font-weight: 600;  
 }
 
 .course__content {

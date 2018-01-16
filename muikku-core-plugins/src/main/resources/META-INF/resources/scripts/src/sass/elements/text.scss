@@ -585,11 +585,6 @@ b {
   padding: 0 10px 0 0;
 }
 
-.course-open .text--coursepicker-course-name,
-.course-open .text--coursepicker-course-name-extension {
-  font-weight: 600;  
-}
-
 .text--coursepicker-course-name-extension {
   display: inline-flex;
   flex-basis: auto;
@@ -605,10 +600,6 @@ b {
   font-size: .825rem;
   justify-content: flex-end;
   text-transform: uppercase;
-}
-
-.text--coursepicker-course-description {
-  padding: 15px 0;
 }
 
 // Text icon

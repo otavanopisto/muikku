@@ -6,7 +6,15 @@
   
   p {
     margin: 10px 0;
-    padding: initial;
+    
+    &:first-child {
+      margin-top: 0;
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
   }
   
   
