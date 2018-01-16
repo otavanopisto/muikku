@@ -13,7 +13,7 @@
   padding: 1px;
   position: relative;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     border: solid 1px $color-panel-border;
     box-shadow: none;
   }

@@ -4,7 +4,12 @@ import $ from '~/lib/jquery';
 import '~/sass/elements/link.scss';
 
 function scrollToSection(anchor: string) {
-  if (!$(anchor).size()){
+  try {
+    if (!$(anchor).size()){
+      window.location.href = anchor;
+      return;
+    }
+  } catch (err){
     window.location.href = anchor;
     return;
   }
@@ -25,7 +30,6 @@ function scrollToSection(anchor: string) {
 }
 
 interface LinkProps {
-  active?: boolean,
   disablePropagation?: boolean,
   disabled?: boolean,
   as?: string,

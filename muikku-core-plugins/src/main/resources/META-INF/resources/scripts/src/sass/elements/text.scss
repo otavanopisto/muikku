@@ -294,7 +294,8 @@ b {
   justify-content: center;
   width: 24px;
 }
-  
+
+// Communicator
 .text--communicator-message-caption {
   font-weight: 600;  
 
@@ -482,7 +483,7 @@ b {
 }
 
 .text--discussion-thread-item-title {
-  border-left: 5px solid skyblue;
+  border-left: 5px solid $color-message-item-title-border;
   padding-left: 5px; 
 }
 
@@ -507,7 +508,6 @@ b {
     margin-left: 5px;
   }
 }
-
 
 .text__discussion-breadcrumb-item--area-1 {
   border-left: 5px solid $color-message-area-category-1;
@@ -549,7 +549,6 @@ b {
   border-left: 5px solid $color-message-area-category-10;
 }
 
-
 .text--new-discussion-create-state {
   margin-right: 10px;
   
@@ -565,6 +564,42 @@ b {
 .text--discussion-current-thread-title {
   font-size: 1.6rem;  
   font-weight: 600;  
+}
+
+// Coursepicker
+.text--coursepicker-course-icon {
+  color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  margin-right: 10px;
+}
+
+.text--coursepicker-course-name {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+.text--coursepicker-course-name-extension {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.text--coursepicker-course-type-name {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: .825rem;
+  justify-content: flex-end;
+  text-transform: uppercase;
 }
 
 // Text icon
