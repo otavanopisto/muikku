@@ -585,6 +585,11 @@ b {
   padding: 0 10px 0 0;
 }
 
+.course-open .text--coursepicker-course-name,
+.course-open .text--coursepicker-course-name-extension {
+  font-weight: 600;  
+}
+
 .text--coursepicker-course-name-extension {
   display: inline-flex;
   flex-basis: auto;
