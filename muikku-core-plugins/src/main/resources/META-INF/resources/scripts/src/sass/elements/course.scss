@@ -12,12 +12,12 @@
     border-top: 1px solid $color-default;
   }
   
-  &.course-open {
+  &.course--open {
     background: $color-default;
     border: solid 3px $color-application-list-item-course-border-selected;
   }
   
-  &.course-open:hover {
+  &.course---open:hover {
     background: $color-default;
   }
 }
@@ -31,12 +31,12 @@
   padding: 12px 9px;
 }
 
-.course-open .application-list__item-header {
+.course--open .application-list__item-header {
   padding: 12px 9px;
 }
 
-.course-open .text--coursepicker-course-name,
-.course-open .text--coursepicker-course-name-extension {
+.course--open .text--coursepicker-course-name,
+.course--open .text--coursepicker-course-name-extension {
   font-weight: 600;  
 }
 

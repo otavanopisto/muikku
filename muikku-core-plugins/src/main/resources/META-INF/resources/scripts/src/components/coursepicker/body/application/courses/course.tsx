@@ -38,7 +38,7 @@ class Course extends React.Component<CourseProps, CourseState>{
   render(){
     //Please fix this markup I have no idea which standard to use, this is more or less like communicator
     //you can move the toggle expanded function wherever you want that you need the action to be triggered
-    return <div className={`application-list__item course ${this.state.expanded ? "course-open" : ""}`}>
+    return <div className={`application-list__item course ${this.state.expanded ? "course--open" : ""}`}>
       <div className="application-list__item-header" onClick={this.toggleExpanded}>
         <span className="text text--coursepicker-course-icon icon-books"></span>
         <span className="text text--coursepicker-course-name">{this.props.course.name}</span>
