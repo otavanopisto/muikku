@@ -1,5 +1,6 @@
-@import "../base/mixins";
 @import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
 
 @import url('https://fonts.googleapis.com/css?family=Exo+2:200,300,400,600,900');
 
@@ -36,7 +37,7 @@ li {
 a {
   color: $color-default-contrast;
   text-decoration: none;
-  font-family: "Exo 2", Arial, sans-serif;
+  font-family: $text-font-family;
 }
 
 // Webkit (Chrome, Opera, Safari)
