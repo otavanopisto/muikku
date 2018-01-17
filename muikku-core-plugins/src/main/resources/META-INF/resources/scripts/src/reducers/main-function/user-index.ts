@@ -12,6 +12,16 @@ export interface UserType {
   curriculumIdentifier?: string;
 }
 
+export interface ExtendedUserType extends UserType {
+  email: string,
+  language?: string,
+  municipality?: string,
+  nationality?: string,
+  school?: string,
+  studyStartDate?: string,
+  studyTimeEnd?: string
+}
+
 export interface UserWithSchoolDataType {
   curriculumIdentifier?: string,
   email: string,
@@ -37,13 +47,23 @@ export interface UserGroupType {
   userCount: number
 }
 
+export interface UserStaffType {
+  id: string,
+  email: string,
+  firstName: string,
+  lastName: string,
+  properties: any,
+  userEntityId: number
+}
+
 export interface UserGroupListType extends Array<UserGroupType> {}
 
 export interface UserBaseIndexType {
   [index: number]: UserType
 }
 
-//TODO fix these anies
+export type ContactRecepientType = WorkspaceRecepientType | UserRecepientType  | UserGroupRecepientType | StaffRecepientType;
+
 export interface WorkspaceRecepientType {
   type: "workspace",
   value: WorkspaceType
@@ -51,16 +71,21 @@ export interface WorkspaceRecepientType {
 
 export interface UserRecepientType {
   type: "user",
-  value: any        //TODO fix user and usergoup type
+  value: ExtendedUserType
 }
 
 export interface UserGroupRecepientType {
   type: "usergroup",
-  value: any      //TODO fix here too
+  value: UserGroupType 
+}
+
+export interface StaffRecepientType {
+  type: "staff",
+  value: UserStaffType
 }
 
 export interface UserGroupBaseIndexType {
-  [index: number]: any    //TODO and fix here
+  [index: number]: UserGroupType
 }
 
 export interface UsersBySchoolDataType {

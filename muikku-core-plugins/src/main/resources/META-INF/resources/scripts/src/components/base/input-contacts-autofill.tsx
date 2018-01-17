@@ -4,32 +4,38 @@ import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
-import {CommunicatorMessageItemRecepientType} from '~/reducers/main-function/communicator/communicator-messages';
 import {WorkspaceType} from '~/reducers/main-function/index/workspaces';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
+import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, ExtendedUserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
 
 export interface InputContactsAutofillProps {
   placeholder?: string,
-  onChange: (newValue: CommunicatorMessageItemRecepientType[])=>any,
+  onChange: (newValue: ContactRecepientType[])=>any,
   modifier: string,
-  selectedItems: CommunicatorMessageItemRecepientType[],
-  hasGroupMessagingPermission?: boolean,
-  hasUserMessagingPermission?: boolean,
-  hasWorkspaceMessagingPermission?: boolean,
+  selectedItems: ContactRecepientType[],
+  hasGroupPermission?: boolean,
+  hasUserPermission?: boolean,
+  hasWorkspacePermission?: boolean,
+  hasStaffPermission?: boolean,
+  userPermissionIsOnlyDefaultUsers?: boolean,
+  workspacePermissionIsOnlyMyWorkspaces?: boolean,
+  showEmails?: boolean,
   autofocus?: boolean
 }
 
 export interface InputContactsAutofillState {
-  autocompleteSearchItems: CommunicatorMessageItemRecepientType[],
-  selectedItems: CommunicatorMessageItemRecepientType[],
+  autocompleteSearchItems: ContactRecepientType[],
+  selectedItems: ContactRecepientType[],
   textInput: string,
   autocompleteOpened: boolean,
   fieldHeight?: number,
   isFocused: boolean
 }
 
-function checkHasPermission(which: boolean){
-  return (which === true || typeof which === "undefined");
+function checkHasPermission(which: boolean, defaultValue?: boolean){
+  if (typeof which === "undefined"){
+    return typeof defaultValue === "undefined" ? true : defaultValue;
+  }
+  return which;
 }
 
 export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
@@ -81,26 +87,28 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     if (textInput){
       let searchResults = await Promise.all(
         [
-          checkHasPermission(this.props.hasUserMessagingPermission) ? promisify(mApi().user.users.read({
+          checkHasPermission(this.props.hasUserPermission) ? promisify(mApi().user.users.read({
             searchString: textInput,
-            onlyDefaultUsers: true
+            onlyDefaultUsers: checkHasPermission(this.props.userPermissionIsOnlyDefaultUsers)
           }), 'callback')().then((result: any[]):any[] =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasGroupMessagingPermission) ? promisify(mApi().usergroup.groups.read({
+          checkHasPermission(this.props.hasGroupPermission) ? promisify(mApi().usergroup.groups.read({
             searchString: textInput
           }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[]=>[]) : [],
-          checkHasPermission(this.props.hasWorkspaceMessagingPermission) ? promisify(mApi().coursepicker.workspaces.read({
+          checkHasPermission(this.props.hasWorkspacePermission) ? promisify(mApi().coursepicker.workspaces.read({
             search: textInput,
-            myWorkspaces: true,
+            myWorkspaces: checkHasPermission(this.props.workspacePermissionIsOnlyMyWorkspaces),
+          }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
+          checkHasPermission(this.props.hasStaffPermission, false) ? promisify(mApi().user.staffMembers.read({
+            searchString: textInput
           }), 'callback')().then((result: any[]) =>result || []).catch((err:any):any[] =>[]) : [],
         ]
       );
       
-      //TODO fix anies
-      
-      let userItems:CommunicatorMessageItemRecepientType[] = (searchResults[0] as any[]).map((item: any)=>({type: "user", value: item} as UserRecepientType));
-      let userGroupItems:CommunicatorMessageItemRecepientType[] = (searchResults[1] as any[]).map((item: any)=>({type: "usergroup", value: item} as UserGroupRecepientType));
-      let workspaceItems:CommunicatorMessageItemRecepientType[] = (searchResults[2] as WorkspaceType[]).map((item: WorkspaceType)=>({type: "workspace", value: item} as WorkspaceRecepientType))
-      let allItems:CommunicatorMessageItemRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems);
+      let userItems:ContactRecepientType[] = searchResults[0].map((item: ExtendedUserType)=>({type: "user", value: item} as any as UserRecepientType));
+      let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
+      let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
+      let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))
+      let allItems:ContactRecepientType[]  = userItems.concat(userGroupItems).concat(workspaceItems).concat(staffItems);
       this.setState({
         autocompleteSearchItems: allItems
       });
@@ -110,7 +118,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       });
     }
   }
-  onDelete(item: CommunicatorMessageItemRecepientType){
+  onDelete(item: ContactRecepientType){
     clearTimeout(this.blurTimeout);
     let nfilteredValue = this.state.selectedItems.filter(selectedItem=>selectedItem.type !== item.type || selectedItem.value.id !== item.value.id);
     this.setState({
@@ -119,7 +127,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     }, this.setHeight);
     this.props.onChange(nfilteredValue);
   }
-  onAutocompleteItemClick(item: CommunicatorMessageItemRecepientType, selected: boolean){
+  onAutocompleteItemClick(item: ContactRecepientType, selected: boolean){
     clearTimeout(this.blurTimeout);
     if (!selected){
       let nvalue = this.state.selectedItems.concat([item]);
@@ -136,7 +144,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
   }
   render(){
     let selectedItems = this.state.selectedItems.map((item)=>{
-      if (item.type === "user"){
+      if (item.type === "user" || item.type === "staff"){
         return {
           node: <span className="text text--recepient-tag">
             <span className="text__icon icon-user"/>
@@ -153,7 +161,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
           </span>,
           value: item
         };
-      } else {
+      } else if (item.type === "workspace"){
         return {
           node: <span className="text text--recepient-tag">
             <span className="text__icon icon-books"/>{item.value.name}
@@ -166,19 +174,19 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     
     let autocompleteItems = this.state.autocompleteSearchItems.map((item)=>{
       let node;
-      if (item.type === "user"){
+      if (item.type === "user" || item.type === "staff"){
         node = <div className="text text--recepient-autocomplete">
           <span className="text__icon icon-user"></span>
           {
             filterHighlight((item.value.firstName + " " || "") + (item.value.lastName || ""), this.state.textInput)
-          } <i>{item.value.email}</i>
+          } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
         </div>;
       } else if (item.type === "usergroup"){
         node = <div className="text text--recepient-autocomplete">
           <span className="text__icon icon-members"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
-      } else {
+      } else if (item.type === "workspace"){
         node = <div className="text text--recepient-autocomplete">
           <span className="text__icon icon-books"></span>
           {filterHighlight(item.value.name, this.state.textInput)}

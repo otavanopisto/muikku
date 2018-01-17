@@ -8,13 +8,13 @@ import {ColorResult} from 'react-color';
 const SliderPicker:any = require('react-color').SliderPicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
-import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
+import GuiderLabelShareDialog from './label-share-dialog';
 
 const KEYCODES = {
   ENTER: 13
@@ -134,22 +134,20 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
           <Link className="button button--fatal button--guider-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
             {this.state.removed ? "TODO Label Removed" : "TODO Remove Label"}
           </Link>
-          <Link className="button button--success button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
+          <GuiderLabelShareDialog label={this.props.label}><Link className="button button--success button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
             {"TODO Share Label"}
-          </Link>
+          </Link></GuiderLabelShareDialog>
         </div>
       )
     }
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="communicator" 
-     title={this.props.i18n.text.get('plugin.communicator.label.edit.caption')}
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
+     title={this.props.i18n.text.get('TODO EDIT LABEL')}
      content={content} footer={footer}>{this.props.children}</Dialog>
-  }
+  } 
 }
 
 function mapStateToProps(state: any){
   return {
-    communicatorNavigation: state.communicatorNavigation,
-    communicatorMessages: state.communicatorMessages,
     i18n: state.i18n
   }
 };

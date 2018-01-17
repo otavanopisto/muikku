@@ -113,8 +113,6 @@ export interface CommunicatorMessagesPatchType {
   signature?: CommunicatorSignatureType | null
 }
 
-export type CommunicatorMessageItemRecepientType = WorkspaceRecepientType | UserRecepientType  | UserGroupRecepientType
-
 export default function communicatorMessages(state: CommunicatorMessagesType={
   state: "LOADING",
   messages: [],
