@@ -351,7 +351,7 @@
                 </configuration>
                 
                 <executions>
-                   <execution>
+<!--                    <execution>
                        <id>install node and npm</id>
                        <goals>
                           <goal>install-node-and-npm</goal>
@@ -366,15 +366,7 @@
                        <goals>
                            <goal>npm</goal>
                        </goals>
-                   </execution>
-                   <execution>
-    <id>webpack build</id>
-    <goals>
-        <goal>webpack</goal>
-    </goals>
-
-    <phase>generate-resources</phase>
-</execution>
+                   </execution> -->
                 </executions>
             </plugin>
 
