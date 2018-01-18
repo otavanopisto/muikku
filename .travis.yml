@@ -19,6 +19,9 @@ addons:
   apt:
     packages:
     - daemon
+    - chromium-chromedriver
+    - libxi6
+    - libgconf-2-4
 before_install:
 - openssl aes-256-cbc -K $encrypted_7ee9c890e4a1_key -iv $encrypted_7ee9c890e4a1_iv
   -in travis-encrypted.tar.enc -out travis-encrypted.tar -d

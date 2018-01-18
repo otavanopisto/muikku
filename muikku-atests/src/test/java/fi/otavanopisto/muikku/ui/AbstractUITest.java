@@ -341,6 +341,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected WebDriver createChromeHeadlessDriver() {
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.addArguments("--headless");
+    chromeOptions.addArguments("--disable-gpu");
 
     WebDriver driver = new ChromeDriver(chromeOptions);
     if(getBrowserDimensions() != null) {
