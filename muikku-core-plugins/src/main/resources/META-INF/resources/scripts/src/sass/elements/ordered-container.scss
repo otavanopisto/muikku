@@ -49,7 +49,9 @@
 
 // Ordered container items
 .ordered-container__item {
-  flex: 1 1 100%;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   max-width: 100%;
   min-height: 25px;
   position: relative;
@@ -58,34 +60,44 @@
 @include breakpoint($breakpoint-pad) {
   // Upper secondary school card (Nettilukio)
   .ordered-container__item--upper-secondary-school {
-    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter 0 0;
     order: 1;
   }
   
   // Secondary school card (Nettiperuskoulu)
   .ordered-container__item--secondary-school {
-    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 0 0 $ordered-container-item-gutter;
     order: 2;
   }
   
   // Open materials card (Aineopiskelu)
   .ordered-container__item--open-materials {
-    flex: 1 1 100%;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     order: 3;
   }
   
   // Events card
   .ordered-container__item--frontpage-events {
-    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter 0 0;
     order: 1;
   }
   
   // News card
   .ordered-container__item--frontpage-news {
-    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 0 0 $ordered-container-item-gutter;
     order: 2;
   }
@@ -93,7 +105,9 @@
   // Images card
   .ordered-container__item--frontpage-images {
     align-self: flex-start;
-    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter 0 0;
     order: 3;
     overflow: hidden; // This prevents slick carousel to reserve 100% fill entire container some reason!
@@ -101,7 +115,9 @@
   
   // Blogs card
   .ordered-container__item--frontpage-blogs {
-    flex: 1 1 calc(50% - #{$ordered-container-item-gutter});
+    flex-basis: calc(50% - #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 0 0 $ordered-container-item-gutter;
     order: 4;
   }
@@ -109,63 +125,87 @@
  
 @include breakpoint($breakpoint-desktop) {
   .ordered-container__item--upper-secondary-school {
-    flex: 1 1 calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter 0 0;
   }
   
   .ordered-container__item--secondary-school {
-    flex: 1 1 calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 $ordered-container-item-gutter;
   }
   
   .ordered-container__item--open-materials {
-    flex: 1 1 calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-basis: calc(33% - 2 * #{$ordered-container-item-gutter});
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 0 0 0 $ordered-container-item-gutter;
   }
 }
 
 .ordered-container__item--otavan-opisto-logo {
-  flex: 1 0 100%;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
   order: 1;
   
   @include breakpoint($breakpoint-pad) {
-    flex: 1 1 50%;
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
     order: 1;
   }
   
   @include breakpoint($breakpoint-desktop) {
-    flex: 0 1 30%;
+    flex-basis: 30%;
+    flex-grow: 0;
+    flex-shrink: 1;
     order: 1;
   }
 }
 
 .ordered-container__item--otavan-opisto-social-media {
-  flex: 1 0 100%;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
   order: 3;
   
   @include breakpoint($breakpoint-pad) {
-    flex: 1 1 50%;
+    flex-basis: 50%;
+    flex-grow: 1;
+    flex-shrink: 1;
     order: 2;
   }
   
   @include breakpoint($breakpoint-desktop) {
-    flex: 1 1 100%;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     margin: 1.5rem 0 0 30%;
     order: 3;
   }
 }
 
 .ordered-container__item--otavan-opisto-description {
-  flex: 1 0 100%;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
   order: 2;
 
   @include breakpoint($breakpoint-pad) {
-    flex: 1 0 100%;
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 0;
     order: 3;
   }
   
   @include breakpoint($breakpoint-desktop) {
-    flex: 1 1 70%;
+    flex-basis: 70%;
+    flex-grow: 1;
+    flex-shrink: 1;
     order: 2;
   }
 }
@@ -173,17 +213,23 @@
 // Index panels - Studies
 .ordered-container__item--studies {
   display: flex;
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   flex-flow: column nowrap;
 
   @include breakpoint($breakpoint-pad){
-    flex: 1 1 100%; 
+    flex-basis: 100%;
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-flow: row nowrap;
     padding: 0;
   }
 
   @include breakpoint($breakpoint-desktop){
-    flex: 1 1 calc(33% - 20px); 
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-flow: column nowrap;
     padding: 0 10px 0 0;
   }
@@ -194,13 +240,17 @@
   // Inherit everything for mobile from ordered-container_item
 
   @include breakpoint($breakpoint-pad){
-    flex: 1 1 calc(50% - 20px); 
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-flow: row nowrap;
     padding: 0 10px;
   }
 
   @include breakpoint($breakpoint-desktop){
-    flex: 1 1 calc(100% - 20px); 
+    flex-basis: calc(100% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-flow: column nowrap;
     padding: 0;
   }
@@ -211,13 +261,17 @@
   // Inherit everything for mobile from ordered-container_item
   
   @include breakpoint($breakpoint-pad){
-    flex: 1 1 calc(50% - 20px); 
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-flow: row nowrap;
     padding: 0 10px;
   }
 
   @include breakpoint($breakpoint-desktop){
-    flex: 1 1 calc(100% - 20px); 
+    flex-basis: calc(100% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     flex-flow: column nowrap;
     padding: 0;
   }
@@ -225,15 +279,21 @@
 
 // Index panels - Messages
 .ordered-container__item--messages {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   
   @include breakpoint($breakpoint-pad){
-    flex: 1 1 calc(50% - 20px);
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     padding: 0 10px;
   }
   
   @include breakpoint($breakpoint-desktop){
-    flex: 1 1 calc(33% - 20px);
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     padding: 0 10px;
   }
 }
@@ -245,15 +305,21 @@
 
 // Index panels - Announcements
 .ordered-container__item--announcements {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   
   @include breakpoint($breakpoint-pad){
-    flex: 1 1 calc(50% - 20px);
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     padding: 0 10px;
   }
   
   @include breakpoint($breakpoint-desktop){
-    flex: 1 1 calc(33% - 20px);
+    flex-basis: calc(33% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     padding: 0 0 0 10px;
   }
 }

@@ -32,8 +32,10 @@
     "webpack": "^3.6.0"
   },
   "dependencies": {
+    "@types/query-string": "^5.0.1",
     "@types/react-datepicker": "^0.55.1",
     "deep-equal": "^1.0.1",
+    "query-string": "^5.0.1",
     "react": "^15.6.1",
     "react-color": "^2.13.5",
     "react-datepicker": "^0.61.0",

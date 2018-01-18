@@ -36,23 +36,33 @@ export interface UserGroupBaseIndexType {
   [index: number]: any    //TODO and fix here
 }
 
+export interface UsersBySchoolDataType {
+  [index: string]: UserType
+}
+
 export interface UserIndexType {
   users: UserBaseIndexType,
-  groups: UserGroupBaseIndexType
+  groups: UserGroupBaseIndexType,
+  usersBySchoolData: UsersBySchoolDataType
 }
 
 export default function userIndex(state:UserIndexType={
   users: {},
-  groups: {}
+  groups: {},
+  usersBySchoolData: {}
 }, action: ActionType):UserIndexType{
   if (action.type === "SET_USER_INDEX"){
     let prop:{[index: number]: UserType} = {};
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {users: Object.assign({}, state.users, prop)});
   } else if (action.type === "SET_USER_GROUP_INDEX"){
-    let prop:{[index: number]: any} = {};
+    let prop:{[index: number]: any} = {}; //TODO change to the user group type
     prop[action.payload.index] = action.payload.value;
     return Object.assign({}, state, {groups: Object.assign({}, state.groups, prop)});
+  } else if (action.type === "SET_USER_BY_SCHOOL_DATA_INDEX"){
+    let prop:{[index: string]: UserType} = {};
+    prop[action.payload.index] = action.payload.value;
+    return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.groups, prop)});
   }
   return state;
 }

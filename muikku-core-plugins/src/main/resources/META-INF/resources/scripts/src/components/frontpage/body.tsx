@@ -171,7 +171,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
         <div className="carousel__item">
           <div className="carousel__item__video">
             <iframe width="1280" height="720"
-              src="https://www.youtube.com/embed/OD5Oj50vyh0?rel=0&amp;showinfo=0"
+              src="https://www.youtube.com/embed/tTlLURdl0rA?rel=0&amp;showinfo=0"
               style={{border: 0, allowfullscreen:"allowfullscreen"}}></iframe>
           </div>
         </div>

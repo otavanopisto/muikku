@@ -41,7 +41,9 @@
     align-items: center;
     background-color: $color-default-body;
     display: flex;
-    flex: 0 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
     justify-content: center;
     margin: 10px;
     position: relative;
@@ -51,11 +53,15 @@
 }
 
 .application-panel__header-title {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .application-panel__header-actions {
-  flex: 0 0;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .application-panel__actions {
@@ -69,7 +75,9 @@
   @include breakpoint($breakpoint-pad) {
     align-items: center;
     display: flex;
-    flex: 0 0 auto;
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
     justify-content: center;
     left: 0;
     position: relative;
@@ -86,7 +94,9 @@
   
 .application-panel__toolbar-actions-main {
   display: flex;
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .application-panel__toolbar-actions-aside {
@@ -110,7 +120,9 @@
 
   @include breakpoint($breakpoint-pad) {
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    flex: 0 0 220px;
+    flex-basis: 220px;
+    flex-grow: 0;
+    flex-shrink: 0;
     display: flex;
     margin: 0 12px;
     overflow: auto;
@@ -133,8 +145,9 @@
 .application-panel__main-container {
   -ms-overflow-style: -ms-autohiding-scrollbar;
   display: flex;
-  flex: 1  1 auto;
-  // padding: 10px 8px 10px 4px;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   padding: 10px 0 10px 0;
   margin: 0;
   overflow: -moz-scrollbars-none;

@@ -315,6 +315,23 @@
   }
 }
   
+.button--primary-function-content {
+  background-color: $color-button-primary-background;
+  color: $color-button-primary-text;
+  display: inline-flex;
+    
+  &:hover, 
+  &.hover {
+    background-color: darken($color-button-primary-background, 10%);
+  }
+
+  &:active, 
+  &.active {
+    background-color: darken($color-button-primary-background, 20%);
+  }
+}  
+  
+  
 .button--remove-label {
 	float: left;
 	margin-top: 48px;
@@ -458,7 +475,9 @@
 .button-pill--delete {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 0 0 10px;
   vertical-align: top;
    
@@ -509,7 +528,9 @@
 .button-pill--label {
   background-color: $color-main-function-button-pill-label-background;
   color: $color-main-function-button-pill-label-text;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 0 0 10px;
   vertical-align: top;
   
@@ -537,8 +558,10 @@
 .button-pill--toggle-read {
   background-color: $color-main-function-button-pill-toggle-read-background;
   color: $color-main-function-button-pill-toggle-read-text;
-  flex: 0 0 auto;
-   margin: 0 0 0 10px;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin: 0 0 0 10px;
   vertical-align: top;
   
   &:hover, 
@@ -565,7 +588,9 @@
 .button-pill--go-back {
   background-color: $color-main-function-button-pill-go-back-background;
   color: $color-main-function-button-pill-go-back-text;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin-right: 10px;
   border-radius: 5px;
   vertical-align: top;
