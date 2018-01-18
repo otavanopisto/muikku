@@ -367,6 +367,14 @@
                            <goal>npm</goal>
                        </goals>
                    </execution>
+                   <execution>
+    <id>webpack build</id>
+    <goals>
+        <goal>webpack</goal>
+    </goals>
+
+    <phase>generate-resources</phase>
+</execution>
                 </executions>
             </plugin>
 
