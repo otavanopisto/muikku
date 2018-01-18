@@ -31,7 +31,7 @@ public class GuiderTestsBase extends AbstractUITest {
     MockCourseStudent mcs = new MockCourseStudent(3l, workspace.getId(), student.getId());
     mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       sendKeys(".gt-search .search", "Second User");
       waitForPresent(".gt-user .gt-user-meta-topic>span");
       assertText(".gt-user .gt-user-meta-topic>span", "Second User (Test Study Programme)");
@@ -61,7 +61,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourseStudent(workspace.getId(), mcs)
       .build();
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitAndClick(String.format("a.gt-filter-link[data-id~=\"%d\"]", workspace.getId()));
       waitForPresent(".gt-user .gt-user-meta-topic>span");
       assertText(".gt-user .gt-user-meta-topic>span", "Second User (Test Study Programme)");
@@ -96,7 +96,7 @@ public class GuiderTestsBase extends AbstractUITest {
       .addCourseStudent(workspace.getId(), mcs)
       .build();
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitAndClick(".gt-user .gt-user-meta-topic>span");
       waitAndClick(".gt-user .gt-tool-view-profile");
       File testFile = getTestFile();
@@ -108,7 +108,7 @@ public class GuiderTestsBase extends AbstractUITest {
       logout();
       mockBuilder.mockLogin(student).build();
       login();
-      navigate("/records/", true);
+      navigate("/records/", false);
       waitForPresent(".mf-item .mf-files .mf-file-name a");
       assertText(".mf-item .mf-files .mf-file-name a", "img_100x100_3x8bit_RGB_circles_center_0016.png");
     } finally {

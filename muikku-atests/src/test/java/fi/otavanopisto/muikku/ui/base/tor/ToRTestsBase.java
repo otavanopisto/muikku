@@ -32,7 +32,7 @@ public class ToRTestsBase extends AbstractUITest {
       TestEnvironments.Browser.INTERNET_EXPLORER,
       TestEnvironments.Browser.EDGE,
       TestEnvironments.Browser.SAFARI,
-      TestEnvironments.Browser.PHANTOMJS
+      TestEnvironments.Browser.CHROME_HEADLESS
     }
   )
   public void recordsWorkspaceEvaluationTest() throws Exception {
@@ -83,7 +83,7 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.mockLogin(student).build();
       login();
       
-      navigate("/records/", true);
+      navigate("/records/", false);
       waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
       assertText("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long", "testcourses (test extension)");
       waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
@@ -147,7 +147,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student).build();
         login();
   
-        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+        navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
         waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
         
         assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -169,7 +169,7 @@ public class ToRTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(admin).build();
         login();
-        navigate(String.format("/evaluation2"), true);
+        navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
         waitAndClick(".assignment-title-wrapper");
         waitForPresentAndVisible(".assignment-wrapper .muikku-text-field");
@@ -193,7 +193,7 @@ public class ToRTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student).build();
         login();
         
-        navigate("/records/", true);
+        navigate("/records/", false);
         waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
         waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
         waitForPresent(".records .tr-task-evaluated-grade");

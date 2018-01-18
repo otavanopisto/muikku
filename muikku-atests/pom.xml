@@ -17,8 +17,6 @@
   <properties>
     <!-- Selenium -->
     <selenium-java.version>2.52.0</selenium-java.version>
-    <!-- PhantomJS driver -->
-    <phantomjsdriver.version>1.3.0</phantomjsdriver.version>
     <wiremock.version>2.6.0</wiremock.version>
   </properties>
 
@@ -29,23 +27,6 @@
       <artifactId>selenium-java</artifactId>
       <version>${selenium-java.version}</version>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.codeborne</groupId>
-      <artifactId>phantomjsdriver</artifactId>
-      <version>${phantomjsdriver.version}</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.seleniumhq.selenium</groupId>
-          <artifactId>selenium-remote-driver</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.seleniumhq.selenium</groupId>
-          <artifactId>selenium-java</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -302,7 +283,7 @@
         <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
-        <it.browser>phantomjs</it.browser>
+        <it.browser>chrome_headless</it.browser>
         <it.package>**</it.package>
         <it.test.file>${project.basedir}/img_100x100_3x8bit_RGB_circles_center_0016.png</it.test.file>
         <it.cargo.stop.timeout>240000</it.cargo.stop.timeout>
@@ -403,16 +384,18 @@
                 <id>create-schema</id>
                 <phase>pre-integration-test</phase>
                 <goals>
+                  <goal>drop</goal>
                   <goal>create</goal>
                 </goals>
               </execution>
-              <execution>
+<!--               <execution>
                 <id>drop-db-after-test</id>
                 <phase>post-integration-test</phase>
                 <goals>
-                  <goal>drop</goal>
+                  	
                 </goals>
-              </execution>
+              </execution> 
+-->
             </executions>
           </plugin>
 

@@ -18,7 +18,7 @@ public class IndexPageTestsBase extends AbstractUITest {
 
   @Test
   public void indexPageTest() throws IOException {
-    navigate("", true);
+    navigate("", false);
     waitForPresent(".hero");
     assertVisible(".hero");
     waitForPresent("#studying");
@@ -39,7 +39,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     mockBuilder.addStudent(student).mockLogin(student).build();
     try{
       login();
-      assertVisible("#loggedUser");      
+      assertVisible(".navbar .button-pill--profile");
     }finally {
       mockBuilder.wiremockReset();
     }
@@ -53,7 +53,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     mockBuilder.addStaffMember(admin).mockLogin(admin).build();
     try{
       login();
-      assertVisible("#loggedUser");      
+      assertVisible(".navbar .navbar__default-options");
     }finally {
       mockBuilder.wiremockReset();
     }

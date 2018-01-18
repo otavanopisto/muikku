@@ -29,7 +29,7 @@ public class DiscussionTestsBase extends AbstractUITest {
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
-        navigate("/discussion", true);
+        navigate("/discussion", false);
         waitAndClick(".di-new-message-button");
         waitAndClick(".mf-textfield-subcontainer input");
         sendKeys(".mf-textfield-subcontainer input", "Test title for discussion");
@@ -63,7 +63,7 @@ public class DiscussionTestsBase extends AbstractUITest {
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
-        navigate("/discussion", true);
+        navigate("/discussion", false);
         waitAndClick(".sm-flex-hide .di-new-area-button");
         waitAndSendKeys(".mf-textfield input", "Test area");
         click("*[name='send']");
@@ -99,7 +99,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
             "<p>Testing testing daa daa</p>", false, false);
         try {
-          navigate("/discussion", true);
+          navigate("/discussion", false);
           waitAndClick(".di-message-meta-topic>span");
           waitAndClick(".di-message-reply-link");
           addTextToCKEditor("Test reply for test.");
@@ -136,7 +136,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
             "<p>Testing testing daa daa</p>", false, false);
         try {
-          navigate("/discussion", true);
+          navigate("/discussion", false);
           waitAndClick(".di-message-meta-topic>span");
           waitAndClick(".di-remove-thread-link");
           waitAndClick(".delete-button>span");
@@ -173,7 +173,7 @@ public class DiscussionTestsBase extends AbstractUITest {
         DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
             "<p>Testing testing daa daa</p>", false, false);
         try {
-          navigate("/discussion", true);
+          navigate("/discussion", false);
           waitAndClick(".di-message-meta-topic>span");
           waitAndClick(".di-message-reply-link");
           addTextToCKEditor("Test reply for test.");
