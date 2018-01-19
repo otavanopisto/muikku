@@ -29,7 +29,6 @@ before_install:
 - . install_chromedriver.sh
 - . travis-setenv.sh
 install:
-- . npm_install.sh
 - . travis-install.sh
 before_script:
 - export _JAVA_OPTIONS="-Xmx2048m -Xms512m -Djava.net.preferIPv4Addresses=true -Djava.net.preferIPv4Stack=true"
