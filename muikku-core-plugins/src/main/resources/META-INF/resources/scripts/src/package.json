@@ -9,7 +9,8 @@
   },
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+  },
   "dependencies": {
     "@types/query-string": "^5.0.1",
     "@types/react-datepicker": "^0.55.1",
