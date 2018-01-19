@@ -19,7 +19,6 @@ addons:
   apt:
     packages:
     - daemon
-    - chromium-chromedriver
     - libxi6
     - libgconf-2-4
 before_install:
@@ -27,6 +26,7 @@ before_install:
   -in travis-encrypted.tar.enc -out travis-encrypted.tar -d
 - tar xvf travis-encrypted.tar  
 - unset GEM_PATH
+- . install_chromedriver.sh
 - . travis-setenv.sh
 install:
 - . travis-install.sh
