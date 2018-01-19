@@ -55,26 +55,23 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
       selectedItems: []
     }
   }
-  componentDidMount(){
-    this.getShares();
-  }
   componentWillReceiveProps(nextProps: GuiderLabelShareDialogProps){
     if (nextProps.userIndex !== this.props.userIndex){
-      this.updateSharesState();
+      this.updateSharesState(nextProps);
     }
   }
-  updateSharesState(){
+  updateSharesState(props=this.props){
     //HAXING THIS IN, since there's no such way to retrieve a staff user from the user index
     this.setState({
       selectedItems: this.sharesResult.map((result:any)=>{
-        let user:UserType = this.props.userIndex.usersBySchoolData[result.id];
+        let user:UserType = props.userIndex.usersBySchoolData[result.userIdentifier];
         if (!user){
           return null;
         }
         return {
           type: "staff",
           value: {
-            id: result.id,
+            id: result.userIdentifier,
             email: "unknown",
             firstName: user.firstName,
             lastName: user.lastName,
@@ -86,10 +83,11 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     })
   }
   async getShares(){
+    this.setState({selectedItems: []});
     try {
       this.sharesResult = await promisify(mApi().user.flags.shares.read(this.props.label.id), 'callback')();
-      this.sharesResult.forEach((user: any)=>{
-        this.props.loadUserIndexBySchoolData(user.userIdentifier)
+      this.sharesResult.forEach((share: any)=>{
+        this.props.loadUserIndexBySchoolData(share.userIdentifier)
       });
       this.updateSharesState();
     } catch (e){
@@ -97,6 +95,29 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     }
   }
   share(closeDialog: ()=>any){
+    this.state.selectedItems.forEach(async (member:StaffRecepientType)=>{
+      let wasAdded = !this.sharesResult.find((share:any)=>{return share.userIdentifier === member.value.id});
+      if (wasAdded){
+        try {
+          await promisify(mApi().user.flags.shares.create(this.props.label.id, {
+            flagId: this.props.label.id,
+            userIdentifier: member.value.id
+          }), 'callback')();
+        } catch (e) {
+          this.props.displayNotification(e.message, "error");
+        }
+      }
+    });
+    this.sharesResult.forEach(async (share:any)=>{
+      let wasRemoved = !this.state.selectedItems.find((member:StaffRecepientType)=>{return member.value.id === share.userIdentifier});
+      if (wasRemoved){
+        try {
+          await promisify(mApi().user.flags.shares.del(this.props.label.id, share.id), 'callback')();
+        } catch (e) {
+          this.props.displayNotification(e.message, "error");
+        }
+      }
+    });
     closeDialog();
   }
   onSharedMembersChange(members: StaffRecepientType[]){
@@ -123,7 +144,7 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     
     //TODO UKKONEN
     //PLEASE MAKE THIS DIALOG LARGER, IT HAS AN INPUT CONTACTS AUTOFILL AND ITS A PAIN
-    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} modifier="guider" 
+    return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onOpen={this.getShares} modifier="guider" 
      title={this.props.i18n.text.get('TODO SHARE LABEL')}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }

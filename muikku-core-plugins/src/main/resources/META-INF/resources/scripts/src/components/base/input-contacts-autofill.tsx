@@ -150,7 +150,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
             <span className="text__icon icon-user"/>
             {
               (item.value.firstName + " " || "") + (item.value.lastName || "")
-            } <i>{item.value.email}</i>
+            } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
           </span>,
           value: item
         };

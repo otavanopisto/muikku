@@ -114,7 +114,7 @@ export default function userIndex(state:UserIndexType={
   } else if (action.type === "SET_USER_BY_SCHOOL_DATA_INDEX"){
     let prop:{[index: string]: UserType} = {};
     prop[action.payload.index] = action.payload.value;
-    return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.groups, prop)});
+    return Object.assign({}, state, {usersBySchoolData: Object.assign({}, state.usersBySchoolData, prop)});
   }
   return state;
 }
