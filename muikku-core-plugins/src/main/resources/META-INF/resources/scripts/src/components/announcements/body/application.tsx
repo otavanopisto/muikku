@@ -14,15 +14,15 @@ import '~/sass/elements/container.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 
-interface AnnouncerApplicationProps {
+interface AnnouncementsApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType
 }
 
-interface AnnouncerApplicationState {
+interface AnnouncementsApplicationState {
 }
 
-class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
+class AnnouncementsApplication extends React.Component<AnnouncementsApplicationProps, AnnouncementsApplicationState>{
   render(){
         let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
         return (<div className="container container--full">
@@ -46,4 +46,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
 export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
-)(AnnouncerApplication);
+)(AnnouncementsApplication);

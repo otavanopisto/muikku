@@ -3,15 +3,12 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
-
 import {i18nType} from '~/reducers/base/i18n';
-
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
-
 import { AnnouncementListType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
@@ -27,10 +24,6 @@ interface AnnouncementState {
 }
 
 class Announcement extends React.Component<AnnouncementProps, AnnouncementState> {
-//  setCurrentAnnouncement(announcement: AnnouncementType){
-//    window.location.hash = window.location.hash.split("/")[0] + "/" + announcement.id;
-//  }
- 
   render(){    
     if (!this.props.announcement) {
       return (null)      

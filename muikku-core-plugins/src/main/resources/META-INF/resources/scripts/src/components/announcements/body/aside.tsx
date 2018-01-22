@@ -20,11 +20,7 @@ interface AnnouncementsAsideState {
 
 class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, AnnouncementsAsideState> {
   
-  
-  
-  
   render(){
-    
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--basic-announcements">
         <div className="panel panel--index">
           {this.props.announcements.length !== 0 ?
