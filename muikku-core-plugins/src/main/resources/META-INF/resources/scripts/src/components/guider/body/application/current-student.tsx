@@ -9,6 +9,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
+import { getUserImageUrl } from '~/util/modifiers';
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -23,7 +24,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   constructor(props: CurrentStudentProps){
     super(props);
   }
-  render(){ 
+  render(){
     if (this.props.guiderStudentsCurrent === null){
       return null;
     }
@@ -34,15 +35,24 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //You can use the cheat && after the property
     //eg. guiderStudentsCurrent.property && guiderStudentsCurrent.property.useSubProperty
     
+   
+  
+     /* <object className="container container--profile-image"
+     data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.)}
+     type="image/jpeg">
+      <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
+    </object>
+     */  
     //This is ugly and raw
     //TODO: Ukkonen make it pretty
     return <div className="application-list__item application-list__item--guider-current-student">
-      <div>
-        <span>LABELS</span>
+      <div className="TODO">
+        
         {this.props.guiderStudentsCurrent.labels && this.props.guiderStudentsCurrent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
           return null;
         })}
       </div>
+    
       <span>{JSON.stringify(this.props.guiderStudentsCurrent)}</span>
       {this.props.guiderCurrentState === "LOADING" ? <div className="application-list__item loader-empty"/> : null}
     </div>

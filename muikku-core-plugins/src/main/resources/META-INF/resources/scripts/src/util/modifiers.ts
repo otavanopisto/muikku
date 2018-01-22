@@ -107,3 +107,13 @@ export function getName(user: UserType){
   }
   return user.firstName + (user.lastName ? " " + user.lastName : "");
 }
+
+export function getUserImageUrl(user: UserType | number){
+  let id:Number;
+  if (typeof user === "number"){
+    id = user;
+  } else {
+    id = user.id;
+  }
+  return `/rest/user/files/user/${id}/identifier/profile-image-96`
+}

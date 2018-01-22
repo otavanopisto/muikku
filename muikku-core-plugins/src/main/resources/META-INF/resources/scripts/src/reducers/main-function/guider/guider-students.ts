@@ -1,6 +1,11 @@
 import {ActionType} from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType } from 'reducers/main-function/user-index';
 
+//TODO remove or comment out, this is mocking code
+import hops from './mock/hops';
+import vops from './mock/vops';
+//TODO
+
 export type GuiderStudentsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
 export type GuiderCurrentStudentStateType = "LOADING" | "ERROR" | "READY";
 export interface GuiderStudentsFilterType {
@@ -209,6 +214,15 @@ export default function guiderStudents(state: GuiderStudentsType={
   } else if (action.type === "SET_CURRENT_GUIDER_STUDENT_PROP"){
     let obj:any = {};
     obj[action.payload.property] = action.payload.value;
+    
+    //TODO remove or comment out, this is mocking code
+    if (action.payload.property === "vops"){
+      obj[action.payload.property] = vops;
+    } else if (action.payload.property === "hops"){
+      obj[action.payload.property] = hops;
+    }
+    //TODO
+    
     return Object.assign({}, state, {
       current: Object.assign({}, state.current, obj)
     });

@@ -410,6 +410,7 @@ public class UserRESTService extends AbstractRESTService {
             studyTimeEnd,
             (String) o.get("curriculumIdentifier"),
             userEntity.getUpdatedByStudent(),
+            userEntity.getId(),
             restFlags
           ));
         }
@@ -492,6 +493,7 @@ public class UserRESTService extends AbstractRESTService {
         studyTimeEnd,
         user.getCurriculumIdentifier(),
         userEntity.getUpdatedByStudent(),
+        userEntity.getId(),
         null
     );
     

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {colorIntToHex} from '~/util/modifiers';
+import {colorIntToHex, getUserImageUrl} from '~/util/modifiers';
 import equals = require("deep-equal");
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -72,7 +72,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
       } else {
         //This is what it shows when the user is ready
         avatar = <object className="container container--profile-image"
-          data={`/rest/user/files/user/${user.id}/identifier/profile-image-96`}
+          data={getUserImageUrl(user)}
           type="image/jpeg">
             <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{user.firstName[0]}</div>
          </object>;
