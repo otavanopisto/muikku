@@ -43,16 +43,19 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //TODO: Ukkonen make it pretty"firstName":"Jari","lastName":"Ahokas","nickName":null,"studyProgrammeName":"y","hasImage":false,"nationality":null,"language":null,"municipality":null,"school":null,"email":"ja...@gmail.com","studyStartDate":"2012-07-11T21:00:00.000+0000","studyEndDate":null,"studyTimeEnd":null,"curriculumIdentifier":null,"updatedByStudent":false,"flags":null}
     return <div className="application-list__item application-list__item--guider-current-student">
       <div className="TODO">
-        {this.props.guiderStudentsCurrent.basic ? <div>
+        {this.props.guiderStudentsCurrent.basic && <div>
            <object className="container container--profile-image"
             data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.userEntityId)}
             type="image/jpeg">
              <div className={`application-list__item-content-avatar`}>{this.props.guiderStudentsCurrent.basic.firstName[0]}</div>
            </object>
            <div className="TODO">{getName(this.props.guiderStudentsCurrent.basic)}</div>
-        </div> : null}
+        </div>}
         {this.props.guiderStudentsCurrent.labels && this.props.guiderStudentsCurrent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
-          return null;
+          return <div key={label.id}>
+            <span style={{color: label.flagColor}}>ICON</span>
+            <span>{label.flagName}</span>
+          </div>
         })}
       </div>
     
