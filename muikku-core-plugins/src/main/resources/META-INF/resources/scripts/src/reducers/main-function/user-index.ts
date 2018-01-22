@@ -38,7 +38,8 @@ export interface UserWithSchoolDataType {
   studyProgrammeName?: string,
   studyStartDate?: string,
   studyTimeEnd?: string,
-  updatedByStudent: boolean
+  updatedByStudent: boolean,
+  userEntityId: number
 }
 
 export interface UserGroupType {
