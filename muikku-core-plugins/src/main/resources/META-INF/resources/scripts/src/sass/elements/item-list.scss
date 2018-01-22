@@ -10,47 +10,82 @@
 .item-list--aside-navigation {
   padding: 0 0 10px 0;
   width: 100%;
-  
-  .item-list__item {
-    background-color: $color-item-list-item-aside-background;
-    
-    &:hover, &.hover {
-      background-color: darken($color-item-list-item-background, 10%);
-    }
-  
-    &:active, &.active {
-      background-color: $color-item-list-item-background-active;
-      color: $color-item-list-item-font-color-active;
-    
-      .text {
-        color: $color-item-list-item-font-color-active;            
-      }
-    }
-  }    
+}
+
+.item-list__topic {
+  font-weight: 600;
+  padding: 12px 0;
 }
   
-// List items
+// Item-list items BASE
 .item-list__item {
   align-items: center;
   background-color: $color-item-list-item-background;
   cursor: pointer;
   display: flex;
-  margin: 0 0 5px;
-  padding: 8px;
+  padding: 12px;
   position: relative;
   transition: background-color 0.2s ease-in-out;
+  
+  &:hover, 
+  &.hover {
+    background-color: $color-item-list-item-background-hover;
+  }
+
+  &:active, 
+  &.active {
+    background-color: $color-item-list-item-background-active;
+  }
 }
 
-.item-list__item--latest-messages,
-.item-list__item--announcements {
+// Item-list items in workspaces panel
+.item-list--panel-workspaces .item-list__item {
+  padding: 8px 12px;
+}
+
+// Item-list items in lastest messages panel
+.item-list--panel-latest-messages .item-list__item {
   align-items: flex-start;
   border-top: solid 1px $color-index-item-list-item-panel-latest-messages-border;
-  margin: 0;
   
   &:first-child {
     border: 0;
   }
 }
+
+// Item-list items in announcements
+.item-list--panel-announcements .item-list__item {
+  align-items: flex-start;
+  border-top: solid 1px $color-index-item-list-item-panel-latest-messages-border;
+  
+  &:first-child {
+    border: 0;
+  }
+}
+
+// Item-list items in main-function's aside panel
+.item-list--aside-navigation .item-list__item {
+  background-color: $color-item-list-item-aside-background;
+  border-radius: 2px;
+  margin: 0 0 5px;
+  padding: 8px;
+  
+  &:hover, 
+  &.hover {
+    background-color: $color-item-list-item-aside-background-hover;
+  }
+
+  &:active, 
+  &.active {
+    background-color: $color-item-list-item-aside-background-active;
+    color: $color-item-list-item-font-color-active;
+  
+    .text {
+      color: $color-item-list-item-font-color-active;            
+    }
+  }
+}
+
 .item-list__item--bordered {
   border-left: solid 4px; 
 }
@@ -77,7 +112,9 @@
 // List item icons
 .item-list__icon {
   display: flex;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-size: $item-list-icon-font-size;
 }
 
@@ -99,11 +136,12 @@
     
 // List item texts
 .item-list__text-body {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
-  margin: 0 0 0 10px;
-  max-width: calc(100% - 36px);
+  margin-left: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

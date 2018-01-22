@@ -83,7 +83,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student).build();
         login();
         try {
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -97,7 +97,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           logout();
           mockBuilder.mockLogin(admin).build();
           login();
-          navigate(String.format("/evaluation"), true);
+          navigate(String.format("/evaluation"), false);
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".assignment-submitted");
           addTextToCKEditor("Test evaluation.");
@@ -176,7 +176,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           
           login();
           
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -195,7 +195,7 @@ public class EvaluationTestsBase extends AbstractUITest {
             .build();
           login();
           
-          navigate(String.format("/evaluation"), true);
+          navigate(String.format("/evaluation"), false);
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".assignment-submitted");
           addTextToCKEditor("Test evaluation.");
@@ -290,7 +290,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           
           login();
           
-          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), true);
+          navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));
           
           assertVisible(String.format("#page-%d .muikku-text-field", htmlMaterial.getId()));
@@ -321,7 +321,7 @@ public class EvaluationTestsBase extends AbstractUITest {
               .withBody(objectMapper.writeValueAsString(courseAssessment))
               .withStatus(200)));
 
-          navigate(String.format("/evaluation"), true);
+          navigate(String.format("/evaluation"), false);
           waitAndClick("#filter-students-by-assessment-requested");
           waitAndClick(".evaluation-student-name");
           addTextToCKEditor("Test evaluation.");
