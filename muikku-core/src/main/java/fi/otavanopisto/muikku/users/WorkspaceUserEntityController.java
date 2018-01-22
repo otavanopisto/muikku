@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -44,7 +46,22 @@ public class WorkspaceUserEntityController {
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceUserIdentifierIncludeArchived(SchoolDataIdentifier workspaceUserIdentifier) {
-    return workspaceUserEntityDAO.findByIdentifier(workspaceUserIdentifier.getIdentifier());
+    // #3746: If workspace user exists both as archived and unarchived, return unarchived
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityDAO.findByIdentifier(workspaceUserIdentifier.getIdentifier());
+    if (CollectionUtils.isEmpty(workspaceUserEntities)) {
+      return null;
+    }
+    else if (workspaceUserEntities.size() == 1) {
+      return workspaceUserEntities.get(0);
+    }
+    else {
+      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+        if (Boolean.FALSE.equals(workspaceUserEntity.getArchived())) {
+          return workspaceUserEntity;
+        }
+      }
+      return workspaceUserEntities.get(0);
+    }
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUserIdentifier(WorkspaceEntity workspaceEntity, SchoolDataIdentifier userIdentifier) {
