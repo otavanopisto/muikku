@@ -58,8 +58,58 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           </div>
         })}
       </div>
-    
-      <span>{JSON.stringify(this.props.guiderStudentsCurrent)}</span>
+      <div className="TODO this is the container that has the basic info, should maybe make a flexbox?">
+        {this.props.guiderStudentsCurrent.basic && <div>
+          <div>
+            <span>{this.props.i18n.text.get("TODO study start date")}</span>
+            <span>{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyStartDate)}</span>
+          </div>
+          <div>
+            <span>{this.props.i18n.text.get("TODO study end date")}</span>
+            <span>{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyEndDate)}</span>
+          </div>
+          <div>
+            <span>{this.props.i18n.text.get("TODO study time end")}</span>
+            <span>{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyTimeEnd)}</span>
+          </div>
+          <div>
+            <span>{this.props.i18n.text.get("TOOD Nationality")}</span>
+            <span>{this.props.guiderStudentsCurrent.basic.nationality}</span>
+          </div>
+          <div>
+            <span>{this.props.i18n.text.get("TODO Kieli")}</span>
+            <span>{this.props.guiderStudentsCurrent.basic.language}</span>
+          </div>
+          <div>
+            <span>{this.props.i18n.text.get("TODO kotikunta")}</span>
+            <span>{this.props.guiderStudentsCurrent.basic.municipality}</span>
+          </div>
+          <div>
+            <span>{this.props.i18n.text.get("TODO koulu")}</span>
+            <span>{this.props.guiderStudentsCurrent.basic.school}</span>
+          </div>
+          {this.props.guiderStudentsCurrent.lastLogin && <div>
+            <span>{this.props.i18n.text.get("TODO last logged in")}</span>
+            <span>{this.props.guiderStudentsCurrent.lastLogin.time}</span>
+          </div>}
+          {this.props.guiderStudentsCurrent.emails && <div>
+            <span>{this.props.i18n.text.get("TODO emails")}</span>
+            {this.props.guiderStudentsCurrent.emails.map((email)=>{
+              return <span key={email.address}>{email.type} - {email.address}
+                {email.defaultAddress ? this.props.i18n.text.get("TODO default") : null}
+              </span>
+            })}
+          </div>}
+          {this.props.guiderStudentsCurrent.phoneNumbers && <div>
+            <span>{this.props.i18n.text.get("TODO phones")}</span>
+            {this.props.guiderStudentsCurrent.phoneNumbers.map((phone)=>{
+              return <span key={phone.number}>{phone.type} - {phone.number}
+                {phone.defaultNumber ? this.props.i18n.text.get("TODO default") : null}
+              </span>
+            })}
+          </div>}
+        </div>}
+      </div>
       {this.props.guiderCurrentState === "LOADING" ? <div className="application-list__item loader-empty"/> : null}
     </div>
   }
