@@ -239,6 +239,7 @@ $color-application-list-item-background-hover: $color-item-list-item-background-
 $color-application-list-item-background-active: $color-item-list-item-background-active;
 $color-application-list-item-background-selected: #bff3fb;
 $color-application-list-item-checkmark-selected: #29b0c4;
+$color-application-list-item-course-border-selected: #29b0c4;
 
 // loader
 $color-loader-empty-ring: #f3f3f3;
@@ -248,6 +249,7 @@ $color-loader-empty-rotating-piece: #3498db;
 $color-form-field-border: #dcdcdc;
 $color-form-field-border-focus: #707070;
 $color-form-field-glow: $color-primary;
+
 
 // form field input tag
 $color-form-field-tag-input-tag-background: $color-default;
@@ -334,5 +336,6 @@ $color-cagtegory-11: #000;
 @import "colors/index";
 @import "colors/application-dialog";
 @import "colors/message";
+@import "colors/course";
 @import "colors/announcement";
 @import "colors/pager";

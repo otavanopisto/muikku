@@ -53,7 +53,7 @@ public class FeedSynchronizer {
     return doc.body().html();
   }
 
-  @Schedule(second = "0", minute = "0", hour = "*")
+  @Schedule(second = "0", minute = "0", hour = "*", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateFeeds() {
     Client client = ClientBuilder.newClient();

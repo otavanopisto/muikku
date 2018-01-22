@@ -32,7 +32,9 @@
 // NAVBAR LOGO
 .navbar__logo {
   display: none;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: $navbar-height;
 }
   
@@ -71,7 +73,9 @@
 // NAVBAR ITEMS CONTAINER
 .navbar__items {
   display: block;
-  flex: 1 0 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
   height: $navbar-height;
   line-height: $navbar-height;
   list-style-type: none;
@@ -148,7 +152,9 @@
 .navbar__default-options {
   align-items: center;
   display: flex;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   height: $navbar-height;
   justify-content: center;
 }

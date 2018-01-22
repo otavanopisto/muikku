@@ -28,7 +28,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".icon-cogs");
       hoverOverElement(".icon-cogs");
       waitAndClick(".icon-announcer");
@@ -64,7 +64,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".icon-cogs");
       hoverOverElement(".icon-cogs");
       waitAndClick(".icon-announcer");
@@ -114,7 +114,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-announcement-title");
       assertTextIgnoreCase(".workspace-announcement-title", "Test title");
     }finally{
@@ -147,7 +147,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     try {
       login();
       
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), true);
+      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
       waitForPresent(".workspace-announcement-title");
       click(".workspace-announcement-title");
       waitForPresent("#announcements .announcement-article h2");

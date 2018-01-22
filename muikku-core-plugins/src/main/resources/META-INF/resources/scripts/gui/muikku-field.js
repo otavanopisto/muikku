@@ -452,9 +452,7 @@
     
     _findWorkspaceMaterialReply: function (callback) {
       mApi().workspace.workspaces.materials.replies
-        .read(this.workspaceEntityId(), this.workspaceMaterialId(), {
-          userEntityId: MUIKKU_LOGGED_USER_ID
-        }) 
+        .read(this.workspaceEntityId(), this.workspaceMaterialId()) 
         .callback($.proxy(function (err, replies) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materials.answerSavingFailed', err));

@@ -34,7 +34,7 @@ public class FlagTestsBase extends AbstractUITest {
     long flagId = 1;
     long studentFlagId = 1;
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitForPresentAndVisible("div.gt-user");
       click("div.gt-user .gt-user-name .gt-user-meta-topic>span");
       waitForPresentAndVisible("div.gt-user .mf-item-tool-btn");
@@ -87,7 +87,7 @@ public class FlagTestsBase extends AbstractUITest {
     Long flagId = createFlag("Test Flaggi", "#990000", "Fishing flags");
     Long studentFlagId = flagStudent(student.getId(), flagId);
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitForPresentAndVisible("div.gt-user");
       waitForPresentAndVisible(".gt-filters a.gt-filter-link");
       click(".gt-filters a.gt-filter-link");
@@ -124,7 +124,7 @@ public class FlagTestsBase extends AbstractUITest {
     Long flagId = createFlag("Test Flaggi", "#990000", "Fishing flags");
     Long studentFlagId = flagStudent(student.getId(), flagId);
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitForPresentAndVisible("div.gt-user");
       waitForPresentAndVisible(".gt-filters a.gt-filter-link");
       click(".gt-filters a.gt-filter-link");
@@ -187,7 +187,7 @@ public class FlagTestsBase extends AbstractUITest {
     Long flagId = createFlag("Test Flaggi", "#990000", "Fishing flags");
     flagStudent(student.getId(), flagId);
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitForPresentAndVisible("div.gt-user");
       waitForPresentAndVisible(".gt-filters a.gt-filter-link");
       click(".gt-filters a.gt-filter-link");
@@ -236,7 +236,7 @@ public class FlagTestsBase extends AbstractUITest {
     Long flagId = createFlag("Test Flaggi", "#990000", "Fishing flags");
     Long studentFlagId = flagStudent(student.getId(), flagId);
     try {
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitForPresentAndVisible("div.gt-user");
       waitForPresentAndVisible(".gt-filters a.gt-filter-link");
       click(".gt-filters a.gt-filter-link");
@@ -264,7 +264,7 @@ public class FlagTestsBase extends AbstractUITest {
       mockBuilder.mockLogin(testPerson).build();
       login();
 
-      navigate("/guider", true);
+      navigate("/guider", false);
       waitForPresentAndVisible("div.gt-user");
       click("div.gt-user .gt-user-name .gt-user-meta-topic>span");
       waitForPresentAndVisible(".gt-tool-view-profile>span");

@@ -78,7 +78,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       Workspace workspace2 = createWorkspace("wiener course", "wiener course for testing", "2", Boolean.TRUE);
       Workspace workspace3 = createWorkspace("potato course", "potato course for testing", "3", Boolean.TRUE);
       try {
-        navigate("/coursepicker", true);
+        navigate("/coursepicker", false);
         waitForPresent("#coursesList");
         waitAndSendKeys(".cp-search-field input.search", "pot");
         waitAndSendKeys(".cp-search-field input.search", "ato");

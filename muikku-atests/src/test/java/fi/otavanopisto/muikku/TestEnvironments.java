@@ -21,7 +21,7 @@ public @interface TestEnvironments {
     SAFARI,
     INTERNET_EXPLORER,
     EDGE,
-    PHANTOMJS
+    CHROME_HEADLESS
   }
   
   public enum ScreenSize {

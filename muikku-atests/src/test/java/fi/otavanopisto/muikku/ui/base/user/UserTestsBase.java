@@ -35,7 +35,7 @@ public class UserTestsBase extends AbstractUITest {
       
       createPasswordChange(student.getEmail());
       logout();
-      navigate("/forgotpassword/reset?h=testtesttest", true);
+      navigate("/forgotpassword/reset?h=testtesttest", false);
       waitForPresent(".username-container");
       assertEquals("test", getAttributeValue(".username-container input", "value"));
     }finally {

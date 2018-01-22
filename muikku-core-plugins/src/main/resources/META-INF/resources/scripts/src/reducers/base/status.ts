@@ -11,14 +11,16 @@ export interface StatusType {
   loggedIn: boolean,
   userId: number,
   permissions: any,
-  contextPath: string
+  contextPath: string,
+  userSchoolDataIdentifier: string
 }
 
 export default function status(state: StatusType={
   loggedIn: !!(<any>window).MUIKKU_LOGGED_USER_ID,
   userId: (<any>window).MUIKKU_LOGGED_USER_ID,
   permissions: (<any>window).MUIKKU_PERMISSIONS,
-  contextPath: (<any>window).CONTEXTPATH
+  contextPath: (<any>window).CONTEXTPATH,
+  userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
     $('#logout').click();

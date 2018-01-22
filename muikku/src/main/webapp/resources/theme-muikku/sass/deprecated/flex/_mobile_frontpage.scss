@@ -96,12 +96,16 @@
   .frontpage-images,
   .frontpage-posts,
   .organization-description-box {
-    flex: 1 1 calc(100% - 20px);
+    flex-basis: calc(100% - 20px); 
+    flex-grow: 1;
+    flex-shrink: 1;
     max-width: calc(100% - 20px);
   }
   
   .organization-some-box {
-    flex: 1 1 calc(50% - 20px);
+    flex-basis: calc(50% - 20px); 
+    flex-grow: 1;
+    flex-shrink: 1;
     order: 2;
   }
   
@@ -111,7 +115,9 @@
   }
   
   .organization-logo-box {
-    flex: 1 1 calc(50% - 20px);
+    flex-basis: calc(50% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1; 
     order: 1;
   }
   
@@ -162,17 +168,23 @@
     }
     
     .of-header-application-bubble-wrapper {
-      flex: 1 1 calc(100% - 30px);
+      flex-basis: calc(100% - 30px);
+      flex-grow: 1;
+      flex-shrink: 1;
       order: 2;
     }
     
     .of-header-site-info-wrapper {
-      flex: 1 0 50%;
+      flex-basis: 50%;
+      flex-grow: 1;
+      flex-shrink: 0;
       order: 1;
     }
     
     .of-header-open-materials-bubble-wrapper {
-      flex: 1 1 calc(100% - 30px);
+      flex-basis: calc(100% - 30px);
+      flex-grow: 1;
+      flex-shrink: 1;
       order: 3;
     }
     
@@ -292,7 +304,9 @@
   .organization-some-box,
   .organization-description-box,
   .organization-logo-box {
-    flex: 1 1 calc(100% - 20px);
+    flex-basis: calc(100% - 20px);
+    flex-grow: 1;
+    flex-shrink: 1;
     max-width: calc(100% - 20px);
   }
   

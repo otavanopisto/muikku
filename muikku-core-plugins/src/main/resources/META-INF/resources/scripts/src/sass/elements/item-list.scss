@@ -11,6 +11,11 @@
   padding: 0 0 10px 0;
   width: 100%;
 }
+
+.item-list__topic {
+  font-weight: 600;
+  padding: 12px 0;
+}
   
 // Item-list items BASE
 .item-list__item {
@@ -61,6 +66,7 @@
 // Item-list items in main-function's aside panel
 .item-list--aside-navigation .item-list__item {
   background-color: $color-item-list-item-aside-background;
+  border-radius: 2px;
   margin: 0 0 5px;
   padding: 8px;
   
@@ -106,7 +112,9 @@
 // List item icons
 .item-list__icon {
   display: flex;
-  flex: 0 0 auto;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   font-size: $item-list-icon-font-size;
 }
 
@@ -128,7 +136,9 @@
     
 // List item texts
 .item-list__text-body {
-  flex: 1 1 auto;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: $text-mobile-font-size;
   line-height: $item-list-item-min-size;
   margin-left: 5px;

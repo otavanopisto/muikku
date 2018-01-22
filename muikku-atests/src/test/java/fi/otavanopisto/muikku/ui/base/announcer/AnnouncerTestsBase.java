@@ -33,7 +33,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         login();
         maximizeWindow();
-        navigate("/announcer", true);
+        navigate("/announcer", false);
         waitAndClick(".an-new-announcement");
         
         waitForPresent(".cke_wysiwyg_frame");
@@ -68,7 +68,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         login();
         maximizeWindow();
-        navigate("/announcer", true);
+        navigate("/announcer", false);
         waitAndClick(".an-new-announcement");
         
         waitForPresent(".cke_wysiwyg_frame");
@@ -135,7 +135,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         login();
         waitForPresentAndVisible("#announcements ul>li>div>a");
         assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
-        navigate("/announcements", true);
+        navigate("/announcements", false);
         waitForPresent("#announcementContextNavigation .gc-navigation-item");
         assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
         click("#announcementContextNavigation .gc-navigation-item a");
@@ -216,12 +216,12 @@ public class AnnouncerTestsBase extends AbstractUITest {
     
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
     try {
-      navigate("/announcer", true);
+      navigate("/announcer", false);
       waitForPresent("div.mf-content-empty");
       waitAndClick("li.an-category[data-folder-id~=\"past\"]");
       waitForPresent("div.an-announcement-topic>span");
       assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
-      navigate("/announcements", true);
+      navigate("/announcements", false);
       waitForPresent("#announcements");
       assertNotPresent(".announcement-article>header");
     }finally{
@@ -247,7 +247,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
     createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
     try {
-      navigate("/announcer", true);
+      navigate("/announcer", false);
       waitForPresent(".an-announcement-topic");
       assertCount("div.an-announcement-topic>span" ,2);
       waitAndClick("li.an-category[data-folder-id~=\"mine\"]");
@@ -271,7 +271,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         login();
         maximizeWindow();
-        navigate("/announcer", true);
+        navigate("/announcer", false);
         waitAndClick(".an-new-announcement");
         
         waitForPresent(".cke_wysiwyg_frame");

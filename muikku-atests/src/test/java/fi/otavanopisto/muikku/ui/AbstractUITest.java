@@ -41,8 +41,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
@@ -82,6 +80,7 @@ import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
+import static java.lang.Math.toIntExact;
 
 public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDemandSessionIdProvider {
   
@@ -168,8 +167,8 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       return TestEnvironments.Browser.SAFARI;
     case "chrome":
       return TestEnvironments.Browser.CHROME;
-    case "phantomjs":
-      return TestEnvironments.Browser.PHANTOMJS;
+    case "chrome_headless":
+      return TestEnvironments.Browser.CHROME_HEADLESS;
     default:
       return null;
     } 
@@ -310,6 +309,19 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return remoteWebDriver; 
 
   }
+
+  protected WebDriver createLocalDriver() {
+    switch (getBrowser()) {
+      case "chrome":
+        return createChromeDriver();
+      case "chrome_headless":
+        return createChromeHeadlessDriver();
+      case "firefox":
+        return createFirefoxDriver();
+    }
+    
+    throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
+  }
   
   protected RemoteWebDriver createChromeDriver() {
     ChromeOptions options = new ChromeOptions();
@@ -326,46 +338,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     return firefoxDriver;
   }
   
-  public static List<String[]> getDefaultSauceBrowsers() {
-    return Arrays.asList(new String[][] {
-    // ((String[]) new String[] { "firefox", "36.0", "Windows 8.1" }),
-    // ((String[]) new String[] { "safari", "8.0", "OS X 10.10" }),
-    ((String[]) new String[] { "chrome", "41.0", "Linux", null }) });
-  }
-  
-  public static List<String[]> getAllSauceBrowsers() {
-    return Arrays.asList(new String[][] {
-      ((String[]) new String[] { "microsoftedge", "20.10240", "Windows 10", "1280x1024"}),
-      ((String[]) new String[] { "internet explorer", "11.0", "Windows 10", "1280x1024"}),
-      ((String[]) new String[] { "internet explorer", "10.0", "Windows 8", "1280x1024"}),
-      ((String[]) new String[] { "firefox", "41.0", "Windows 8.1", "1280x1024"}),
-      ((String[]) new String[] { "safari", "8.0", "OS X 10.10", "1280x1024" }),
-      ((String[]) new String[] { "safari", "8.1", "OS X 10.11", null }),
-      ((String[]) new String[] { "chrome", "45.0", "Linux", null }) 
-      });
-  }
-  
+  protected WebDriver createChromeHeadlessDriver() {
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.addArguments("--headless");
+    chromeOptions.addArguments("--disable-gpu");
 
-  protected WebDriver createLocalDriver() {
-    switch (getBrowser()) {
-      case "chrome":
-        return createChromeDriver();
-      case "phantomjs":
-        return createPhantomJsDriver();
-      case "firefox":
-        return createFirefoxDriver();
+    WebDriver driver = new ChromeDriver(chromeOptions);
+    if(getBrowserDimensions() != null) {
+      driver.manage().window().setSize(new Dimension(toIntExact(getBrowserDimensions().get("width")), toIntExact(getBrowserDimensions().get("length"))));      
+    }else {
+      driver.manage().window().setSize(new Dimension(1280, 1024));
     }
-    
-    throw new RuntimeException(String.format("Unknown browser %s", getBrowser()));
-  }
-  
-  protected WebDriver createPhantomJsDriver() {
-    DesiredCapabilities desiredCapabilities = DesiredCapabilities.phantomjs();
-    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, ".phantomjs/bin/phantomjs");
-    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_PAGE_CUSTOMHEADERS_PREFIX + "Accept-Language", "fi_FI");
-    desiredCapabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] { "--ignore-ssl-errors=true", "--webdriver-loglevel=NONE", "--load-images=false" } );
-    PhantomJSDriver driver = new PhantomJSDriver(desiredCapabilities);
-    driver.manage().window().setSize(new Dimension(1280, 1024));
     return driver;
   }
   
@@ -799,13 +782,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void loginAdmin() throws JsonProcessingException, Exception {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
-    navigate("/login?authSourceId=1", true);
+    navigate("/login?authSourceId=1", false);
     waitForPresent("main.content");
   }
   
   protected void login() {
-    navigate("/login?authSourceId=1", true);
-    waitForPresent(".logged-user");
+    navigate("/login?authSourceId=1", false);
+    waitForPresentAndVisible(".navbar .button-pill--profile");
   }
   
   protected void loginStudent1() throws JsonProcessingException, Exception {
@@ -816,7 +799,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 1));
     TestUtilities.webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", true);
+    navigate("/login?authSourceId=1", false);
     waitForPresent(".index");
   }
   
@@ -828,12 +811,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
     payload = objectMapper.writeValueAsString(new WebhookPersonCreatePayload((long) 2));
     webhookCall("http://dev.muikku.fi:" + getPortHttp() + "/pyramus/webhook", payload);
-    navigate("/login?authSourceId=1", true);
+    navigate("/login?authSourceId=1", false);
     waitForPresent(".index");
   }
   
   protected void logout() {
-    navigate("/", true);
+    navigate("/", false);
     waitAndClick("a.lu-action-signout");
     waitForPresent("body");    
   }
@@ -1331,7 +1314,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   enum RoleType {
     PSEUDO, ENVIRONMENT, WORKSPACE
   }
-
+  
   private String sessionId;
   private WebDriver webDriver;
 

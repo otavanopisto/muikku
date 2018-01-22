@@ -26,7 +26,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       try{
         login();
-        navigate("/communicator", true);
+        navigate("/communicator", false);
         waitAndClick(".mf-primary-function .mf-primary-function-content");
         waitForPresent("#recipientContent");
         sendKeys("#recipientContent", "Test");
@@ -38,7 +38,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick("*[name='send']");
         waitForPresent(".mf-content-master");
         getWebDriver().get("about:blank");
-        navigate("/communicator#sent", true);
+        navigate("/communicator#sent", false);
         waitForPresent(".cm-message-header-content-secondary");
         assertText(".cm-message-header-content-secondary", "Test");  
       }finally{
@@ -58,7 +58,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       try{
         login();
-        navigate("/communicator", true);
+        navigate("/communicator", false);
         waitAndClick(".mf-primary-function .mf-primary-function-content");
         waitForPresent("#recipientContent");
         sendKeys("#recipientContent", "Test");
@@ -70,7 +70,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick("*[name='send']");
         waitForPresent(".mf-content-master");
         getWebDriver().get("about:blank");
-        navigate("/communicator#sent", true);
+        navigate("/communicator#sent", false);
         waitForPresent(".cm-message-header-content-secondary");
         assertText(".cm-message-header-content-secondary", "Test");  
       }finally{
@@ -97,7 +97,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student).build();
         login();        
-        navigate("/communicator", true);
+        navigate("/communicator", false);
         waitScrollAndClick(".cm-page-link-load-more");
         assertTrue(String.format("Elements list is not greater than %d in size", 10), waitForMoreThanSize("div.cm-message-header-content-secondary", 10)); 
       }finally{
@@ -123,7 +123,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student).build();
         login();
-        navigate("/communicator", true);
+        navigate("/communicator", false);
         waitAndClick("div.cm-message-header-content-secondary");
         waitForPresent(".cm-message-content-text");
         assertText("div.cm-message-content-text", "Test content.");
@@ -150,7 +150,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student).build();
         login();
-        navigate("/communicator", true);
+        navigate("/communicator", false);
         waitAndClick("div.cm-message-select input[type=\"checkbox\"]");
         waitAndClick(".icon-delete");
         // waitForPresentVisible(".notification-queue-item-success");
@@ -176,7 +176,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("admin@example.com");
         long recipient = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        navigate("/communicator#sent", true);
+        navigate("/communicator#sent", false);
         waitForPresent(".cm-message-select input[name=\"messageSelect\"]");
         click(".cm-message-select input[name=\"messageSelect\"]");
         waitForPresent(".icon-delete");
@@ -202,7 +202,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
     try{
       try{
         login();
-        navigate("/communicator", true);
+        navigate("/communicator", false);
         waitAndClick(".mf-tool-container .cm-add-label-menu");
         waitForPresent("#communicatorNewlabelField");
         sendKeys("#communicatorNewlabelField", "Test");
@@ -231,7 +231,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
-        navigate("/communicator#inbox", true);
+        navigate("/communicator#inbox", false);
         waitAndClick("input[name=\"messageSelect\"]");
         waitAndClick(".mf-tool-container .cm-add-label-menu");
         waitAndClick(".cm-label-link-name");
@@ -263,7 +263,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
-        navigate("/communicator#inbox", true);
+        navigate("/communicator#inbox", false);
         waitAndClick(".mf-label-functions");
         waitAndClick(".mf-label-function-edit");
         waitForPresent(".mf-label-edit-dialog input[name=\"name\"]");
@@ -293,7 +293,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
-        navigate("/communicator#inbox", true);
+        navigate("/communicator#inbox", false);
         waitAndClick(".mf-label-functions");
         waitAndClick(".mf-label-function-delete");
         waitAndClick(".save-button span");
@@ -319,7 +319,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long recipient = getUserIdByEmail("admin@example.com");
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-        navigate("/communicator#inbox", true);
+        navigate("/communicator#inbox", false);
         waitAndClick("input[name=\"messageSelect\"]");
         
         waitAndClick(".icon-delete");
