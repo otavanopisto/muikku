@@ -99,6 +99,13 @@
   flex-shrink: 1;
 }
 
+.application-panel__tools-container {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+}
+
 .application-panel__toolbar-actions-aside {
   display: flex;
   justify-content: flex-end;
