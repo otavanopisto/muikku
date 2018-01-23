@@ -530,11 +530,15 @@
       if (data.fieldlessMode) {
         $(object).replaceWith(memoFieldElement);
         
-        var countContainer = $('<div class="count-container">')
+        var characterCounter = $('<div class="character-count-container">')
           .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
-          .append('<span class="character-count">')
+          .append('<span class="character-count">');
+        var wordCounter = $('<div class="word-count-container">')
           .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
           .append('<span class="word-count">');
+        this._countContainer = $('<div class="count-container">')
+          .append(characterCounter)
+          .append(wordCounter);
         memoFieldElement.after(countContainer);
 
         var text = data.value || "";
@@ -550,11 +554,15 @@
         
         // #3120 memo word counter (non-richedit)
         if (data.meta.richedit != true) {
-          var countContainer = $('<div class="count-container">')
+          var characterCounter = $('<div class="character-count-container">')
             .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
-            .append('<span class="character-count">')
+            .append('<span class="character-count">');
+          var wordCounter = $('<div class="word-count-container">')
             .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
             .append('<span class="word-count">');
+          this._countContainer = $('<div class="count-container">')
+            .append(characterCounter)
+            .append(wordCounter);
           memoFieldElement.after(countContainer);
           var countMethod = function() {
             var text = memoFieldElement.val().trim();

@@ -205,6 +205,14 @@
     line-height: 1;
     text-align: right;
     
+    .character-count-container{
+      display: inline-block;
+    }
+    
+    .word-count-container{
+      display: inline-block;
+    }
+    
     .character-count-title {
       display: inline-block;
       padding: 2px;
