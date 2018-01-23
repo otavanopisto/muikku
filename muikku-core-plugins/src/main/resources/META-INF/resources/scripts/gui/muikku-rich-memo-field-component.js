@@ -44,11 +44,15 @@
       this._editor.on('contentChange', $.proxy(this._onContentChange, this));
       this._editor.on('instanceReady', $.proxy(this._onInstanceReady, this));
       
-      // #3120 memo word counter (ui)
-      this._wordCountContainer = $('<div class="word-count-container">')
+      // #3120 memo word counter (ui) changed in #3757
+      this._countContainer = $('<div class="count-container">')
+        .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
+        .append('<span class="character-count">')
         .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
         .append('<span class="word-count">'); 
-      $(this.element[0]).after(this._wordCountContainer);
+      $(this.element[0]).after(this._countContainer);
+      
+      
     },
 
     setReadOnly: function (readonly) {
@@ -64,15 +68,22 @@
       }
     },
     
+    //#3757 memo letter counter (functionality)
+    _countLetters:function(){
+      var text = $(this._editor.getData()).text();
+      $(this._countContainer).find('.character-count').text(text === '' ? 0 : text.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length);
+    },
+    
     // #3120 memo word counter (functionality)
     _countWords: function() {
       var text = $(this._editor.getData()).text();
-      $(this._wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
+      $(this._countContainer).find('.word-count').text(text === '' ? 0 : text.trim().split(/\s+/).length);
     },
 
     _onInstanceReady: function (event, data) {
       this.setReadOnly(this._readonly);
       this._countWords();
+      this._countLetters();
     },
     
     _onContentChange: function (event, data) {
@@ -80,6 +91,7 @@
         .val(this._editor.getData())
         .trigger("change");
       this._countWords();
+      this._countLetters();
     },
     
     _destroy: function () {

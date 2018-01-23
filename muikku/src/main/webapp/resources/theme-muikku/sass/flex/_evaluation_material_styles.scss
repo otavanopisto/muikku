@@ -118,10 +118,21 @@ div.muikku-text-field {
 }
 
 // MEMOFIELD WORD COUNT
-.word-count-container {
+.count-container {
   font-size: 13px;
   line-height: 1;
   text-align: right;
+  
+  .character-count-title {
+    display: inline-block;
+    padding: 2px;
+  }
+  
+  .character-count {
+    background: #f3faff;
+    display: inline-block;
+    padding: 2px;
+  }
   
   .word-count-title {
     display: inline-block;
