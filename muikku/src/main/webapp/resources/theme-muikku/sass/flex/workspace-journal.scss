@@ -78,6 +78,10 @@
   background: #fff;
   padding: 20px;
   
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
   
   .workspace-journal-no-entries {
     box-sizing: border-box;

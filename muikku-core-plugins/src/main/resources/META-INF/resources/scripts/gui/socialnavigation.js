@@ -38,15 +38,22 @@ function openInSN(template, options, formSendFunction, formContentFunction) {
     $(textareas).each(function(index,textarea) {
       $(textarea).val(editableContent);
       if (options && options.draftKey) {
-        CKEDITOR.plugins.addExternal('notification', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.8/');
+        CKEDITOR.plugins.addExternal('notification', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/');
         CKEDITOR.plugins.addExternal('change', '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js');
         CKEDITOR.plugins.addExternal('draft', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js');
+        CKEDITOR.plugins.addExternal('widget', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/widget/4.5.9/');
+        CKEDITOR.plugins.addExternal('lineutils', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/lineutils/4.5.9/');
+        CKEDITOR.plugins.addExternal('filetools', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/filetools/4.5.9/');
+        CKEDITOR.plugins.addExternal('notificationaggregator', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/');
+        CKEDITOR.plugins.addExternal('uploadimage', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/');
+        CKEDITOR.plugins.addExternal('uploadwidget', '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/');
         CKEDITOR.replace(textarea, {
           language: getLocale(),
           height : '100px',
           entities: false,
           entities_latin: false,
           entities_greek: false,
+          uploadUrl: '/communicatorAttachmentUploadServlet',
           toolbar: [
             { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'RemoveFormat' ] },
             { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', 'Undo', 'Redo' ] },
@@ -57,7 +64,7 @@ function openInSN(template, options, formSendFunction, formContentFunction) {
             { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
             { name: 'tools', items: [ 'Maximize' ] }
           ],
-          extraPlugins : 'notification,change,draft',
+          extraPlugins : 'notification,change,draft,widget,lineutils,filetools,notificationaggregator,uploadwidget,uploadimage',
           draftKey: options.draftKey
         });
       }
