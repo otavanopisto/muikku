@@ -63,7 +63,6 @@
       this._clear();
       var err = err;
 
-
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
       } else {
@@ -209,7 +208,7 @@
         }
       }, this));
     },
-
+    
     _loadRecords : function () {
       this.element.addClass('loading');
       this._clear();
@@ -314,13 +313,10 @@
 
           var files = $.parseJSON($('[data-files]').attr('data-files'));
 
-
-
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
             renderDustTemplate('/records/records_studyprogrammes.dust', { students: result, files: files }, $.proxy(function(text) {
-
               this.element.append(text);
               this.element.removeClass('loading');
             }, this));
@@ -378,6 +374,14 @@
           }, this))
           .callback($.proxy(function (err, workspaces) {
             callback(err, workspaces);
+          }, this));
+    },
+    
+    _loadStudentWorkspaceActivity: function(workspaceEntityId) {
+        mApi().guider.workspaces.activity
+          .read(workspaceEntityId)
+          .callback($.proxy(function(err, result) {  
+              
           }, this));
     },
 
