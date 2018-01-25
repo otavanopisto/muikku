@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.security;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -16,8 +15,7 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.User;
 
-@RequestScoped
-public class AbstractPermissionResolver {
+public abstract class AbstractPermissionResolver {
 
   @Inject
   private Logger logger;
