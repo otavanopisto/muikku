@@ -9,6 +9,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
+
 {/* Application panel's css */}
 
 import '~/sass/elements/application-panel.scss';

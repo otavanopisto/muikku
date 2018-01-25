@@ -16,8 +16,6 @@ interface AnnouncementsAsideState {
 
 }
 
-
-
 class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, AnnouncementsAsideState> {
   
   render(){
@@ -58,7 +56,6 @@ function mapStateToProps(state: any){
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
-
 
 export default (connect as any)(
   mapStateToProps,

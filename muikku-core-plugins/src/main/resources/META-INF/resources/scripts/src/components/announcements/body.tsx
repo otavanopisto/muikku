@@ -4,14 +4,11 @@ import Playground from '../__playground';
 import Application from './body/application';
 import Aside from './body/aside';
 
-
 interface AnnouncementsBodyProps {
 }
 
 interface AnnouncementsBodyState {
 }
-
-
 
 export default class AnnouncerBody extends React.Component<AnnouncementsBodyProps,AnnouncementsBodyState> {
 
