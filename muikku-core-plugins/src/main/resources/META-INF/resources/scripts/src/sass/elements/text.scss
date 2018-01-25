@@ -577,7 +577,7 @@ b {
   margin-right: 10px;
 }
 
-.text--coursepicker-course-name {
+.text--list-item-title {
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 0;
@@ -585,14 +585,24 @@ b {
   padding: 0 10px 0 0;
 }
 
-.text--coursepicker-course-name-extension {
+.text--list-item-helper-title {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  color: #9c9c9c;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+
+.text--list-item-title-extension {
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.text--coursepicker-course-type-name {
+.text--list-item-type-title {
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 1;
