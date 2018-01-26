@@ -514,9 +514,9 @@
               $('<span>').addClass('muikku-field-examples-title').text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
             );
             exampleDetails.append($('<span>').addClass('muikku-field-example').html(this.options.meta.example.replace(/(?:\r\n|\r|\n)/g, '<br/>')));
-            var wordCountContainer = $(this.element).parent().find('.word-count-container');
-            if (wordCountContainer.length) {
-              $(wordCountContainer).after(exampleDetails);
+            var countContainer = $(this.element).parent().find('.count-container');
+            if (countContainer.length) {
+              $(countContainer).after(exampleDetails);
             }
             else {
               $(this.element).after(exampleDetails);
@@ -530,13 +530,21 @@
       if (data.fieldlessMode) {
         $(object).replaceWith(memoFieldElement);
         
-        var wordCountContainer = $('<div class="word-count-container">')
+        var characterCounter = $('<div class="character-count-container">')
+          .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
+          .append('<span class="character-count">');
+        var wordCounter = $('<div class="word-count-container">')
           .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
           .append('<span class="word-count">');
-        memoFieldElement.after(wordCountContainer);
+        var countContainer = $('<div class="count-container">')
+          .append(characterCounter)
+          .append(wordCounter);
+        memoFieldElement.after(countContainer);
 
         var text = data.value || "";
-        $(wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
+        $(countContainer).find('.character-count').text(text === '' ? 0 : text.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length);
+        $(countContainer).find('.word-count').text(text === '' ? 0 : text.trim().split(/\s+/).length);
+        
       }
       else {
         if (data.meta.richedit == true) {
@@ -546,13 +554,20 @@
         
         // #3120 memo word counter (non-richedit)
         if (data.meta.richedit != true) {
-          var wordCountContainer = $('<div class="word-count-container">')
+          var characterCounter = $('<div class="character-count-container">')
+            .append($('<span class="character-count-title">').text(getLocaleText('plugin.workspace.memoField.characterCount')))
+            .append('<span class="character-count">');
+          var wordCounter = $('<div class="word-count-container">')
             .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
             .append('<span class="word-count">');
-          memoFieldElement.after(wordCountContainer);
+          var countContainer = $('<div class="count-container">')
+            .append(characterCounter)
+            .append(wordCounter);
+          memoFieldElement.after(countContainer);
           var countMethod = function() {
             var text = memoFieldElement.val().trim();
-            $(wordCountContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
+            $(countContainer).find('.character-count').text(text === '' ? 0 : text.replace(/(\s|\r\n|\r|\n)+/g,'').split("").length);
+            $(countContainer).find('.word-count').text(text === '' ? 0 : text.split(/\s+/).length);
           };
           var timer = null;
           memoFieldElement.on('focus', $.proxy(function() {
