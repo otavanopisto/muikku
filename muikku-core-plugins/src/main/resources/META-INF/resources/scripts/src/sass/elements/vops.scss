@@ -1,3 +1,136 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+	
 .vops {
-
+  width: 100%;
+  
+  .vops-title {
+  	width: 100%;
+  	font-family: $text-font-family;
+    font-size: $vops-title-font-size;
+    font-weight: 400;
+  }
+ 
+  .vops-legend-header {
+  	width: 100%;
+  	padding-top: 25px;
+  	padding-bottom: 10px;
+  	
+  	.vops-legend-arrow {
+      display: inline-block;
+      width: $vops-legend-header-size;
+      height: $vops-legend-header-size;
+      border-radius: 100%;
+  	}
+  	
+  	.vops-legend-header-text {
+      display: inline-block;
+      font-size: $vops-legend-header-size;
+      font-family: $text-font-family;
+      font-weight: 300;
+  	}
+  }
+ 
+  .vops-legend {
+  	width: 100%;
+    
+    .vops-legend-topic {
+      width: 100%;
+      font-size: $vops-legend-header-size;
+      font-family: $text-font-family;
+      font-weight: 300;
+    }
+   
+    .vops-legend-items {
+      width: 100%;
+      
+      .vops-legend-item {
+      	display: inline-flex;
+      	align-items: center;
+      	justify-content: center;
+      	flex-direction: column;
+      	padding: 20px;
+      	
+      	.vops-legend-item-text {
+      	  font-family: $text-font-family;
+      	  font-size: $vops-legend-item-text-font-size;
+      	}
+      }
+    }
+  }
+ 
+  .vops-data {
+  	width: 100%;
+  	font-family: $text-font-family;
+    font-size: $vops-data-text-font-size;
+  }
+ 
+  .vops-item {
+  	width: 45px;
+  	height: 45px;
+  	background-color: $color-vops-item-base;
+  	border: solid 3px transparent;
+  	display: inline-block;
+  	
+  	&.vops-item--optional-national {
+  	  border-radius: 50% 50% 50% 3px;
+  	}
+  
+    &.vops-item--optional-school {
+  	  border-radius: 50% 3px 50% 50%;
+  	}
+  	
+  	&.vops-item--mandatory {
+  	  border-radius: 100%;
+  	}
+  
+    &.vops-item--incomplete {
+      border-color: $color-vops-item-incomplete;
+    }
+   
+    &.vops-item--planned {
+      border-color: $color-vops-item-planned;
+    }
+   
+    &.vops-item--passed {
+   	  border-color: $color-vops-item-passed;
+    }
+   
+    &.vops-item--enrolled {
+      background-color: $color-vops-item-enrolled;
+    }
+   
+    &.vops-item--failed {
+      background-color: $color-vops-item-failed;
+    }
+   
+    &.vops-item--placeholder {
+      visibility: hidden;
+    }
+  }
+ 
+  .vops-body {
+  	width: 100%;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	overflow-x: auto;
+  	overflow-y: hidden;
+  	
+  	.vops-table-wrapper {
+  	   width: 100%;
+  	   display: table;
+  	   
+  	   .vops-row {
+  	   	 width: 100%;
+  	   	 display: table-row;
+  	   	 
+  	   	 .vops-row-item {
+  	   	 	display: table-cell;
+  	   	 }
+  	   }
+  	}
+  }
 }
