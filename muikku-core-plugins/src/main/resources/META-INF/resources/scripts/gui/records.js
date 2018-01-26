@@ -327,7 +327,7 @@
 
     _createStudentWorkspacesLoad: function (studentIdentifier) {
       return $.proxy(function (callback) {
-        this._loadStudentWorkspaces(studentIdentifier, $.proxy(function (err, workspaces) {
+        this._loadStudentWorkspacesWithActivity(studentIdentifier, $.proxy(function (err, workspaces) {
           callback(err, workspaces);
         }, this));
       }, this);
@@ -349,16 +349,20 @@
       }, this);
     },
 
-    _loadStudentWorkspaces: function (studentIdentifier, callback) {
+    _loadStudentWorkspacesWithActivity: function (studentIdentifier, callback) {
       mApi().workspace.workspaces
         .read({ includeInactiveWorkspaces: true, userIdentifier: studentIdentifier, includeUnpublished: true, orderBy: ['alphabet'], maxResults: 500 })
         .on('$', $.proxy(function (workspaceEntity, callback) {
-          mApi().workspace.workspaces.students.assessments
-            .read(workspaceEntity.id, studentIdentifier)
-            .callback($.proxy(function (assessmentsErr, assessments) {
-              if( assessmentsErr ){
-                $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
+          
+            async.parallel([this._loadStudentWorkspaces(studentIdentifier, workspaceEntity.id), this._loadStudentActivity(workspaceEntity.id)], $.proxy(function (err, results) {
+              
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
+                var assessments = results[0];
+                results[1].evaluablesDone = results[1].evaluablesPassed + results[1].evaluablesSubmitted + results[1].evaluablesFailed + results[1].evaluablesIncomplete;
+                workspaceEntity.progress = results[1];
+                
                 var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
                 if (assessment) {
                   var grade = this._getGrade(assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier);
@@ -369,22 +373,32 @@
                   workspaceEntity.passed = assessment.passed;
                 }
               }
-              callback();
+              
+             callback();
             }, this));
+            
           }, this))
           .callback($.proxy(function (err, workspaces) {
             callback(err, workspaces);
           }, this));
     },
     
-    _loadStudentWorkspaceActivity: function(workspaceEntityId) {
+    _loadStudentWorkspaces: function (studentIdentifier, workspaceEntityId, callback) {
+      return $.proxy(function (callback) {
+        mApi().workspace.workspaces.students.assessments
+          .read(workspaceEntityId, studentIdentifier)
+          .callback(callback);
+      }, this);
+    },
+    
+    _loadStudentActivity: function (workspaceEntityId, callback) {
+      return $.proxy(function (callback) {
         mApi().guider.workspaces.activity
           .read(workspaceEntityId)
-          .callback($.proxy(function(err, result) {  
-              
-          }, this));
+          .callback(callback);
+      }, this);
     },
-
+    
     _loadStudentTransferCredits: function (studentIdentifier, callback) {
       mApi().user.students.transferCredits
         .read(studentIdentifier, {})
