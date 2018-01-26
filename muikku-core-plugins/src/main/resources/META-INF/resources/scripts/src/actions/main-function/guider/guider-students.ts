@@ -6,6 +6,7 @@ import promisify from '~/util/promisify';
 import { UserGroupListType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
+import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
 
 export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
 export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
@@ -142,6 +143,10 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         promisify(mApi().guider.users.latestNotifications.read(id), 'callback')()
           .then((notifications:GuiderNotificationStudentsDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "notifications", value: notifications}})
+          }),
+        promisify(mApi().workspace.workspaces.read({userIdentifier: id}), 'callback')()
+          .then((workspaces:WorkspaceListType)=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           })
       ]);
       

@@ -1,5 +1,6 @@
 import {ActionType} from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType } from 'reducers/main-function/user-index';
+import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
 
 //TODO remove or comment out, this is mocking code
 import hops from './mock/hops';
@@ -162,7 +163,8 @@ export interface GuiderStudentUserProfileType {
   vops: GuiderVOPSDataType,
   hops: GuiderHOPSDataType,
   lastLogin: GuiderLastLoginStudentDataType,
-  notifications: GuiderNotificationStudentsDataType
+  notifications: GuiderNotificationStudentsDataType,
+  workspaces: WorkspaceListType
 }
 
 export default function guiderStudents(state: GuiderStudentsType={
