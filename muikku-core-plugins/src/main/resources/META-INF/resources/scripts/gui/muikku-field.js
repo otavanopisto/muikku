@@ -336,6 +336,17 @@
                             .addClass('assignment-date-data')
                             .html(formatDate(moment(evaluation.assessmentDate).toDate())))
                       );
+                      if ((typeof MathJax) != 'undefined') {
+                        MathJax.Hub.Config({
+                          "HTML-CSS": {
+                            scale: 90
+                          },
+                          NativeMML: {
+                            scale: 90
+                          }
+                        });
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+                      }
                       if (evaluationContainer.attr('data-open') == 'false') {
                         this._toggleEvaluationContainer();
                       }
