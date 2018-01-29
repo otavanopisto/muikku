@@ -8,6 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/avatar.scss';
 import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
@@ -37,15 +38,26 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //a case where the property is not available
     //You can use the cheat && after the property
     //eg. guiderStudentsCurrent.property && guiderStudentsCurrent.property.useSubProperty
+        
     
-    let studentBasicHeader = this.props.guiderStudentsCurrent.basic && <div>
-      <object className="container container--profile-image"
-       data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.userEntityId)}
-       type="image/jpeg">
-        <div className={`application-list__item-content-avatar`}>{this.props.guiderStudentsCurrent.basic.firstName[0]}</div>
-      </object>
-      <div className="TODO">{getName(this.props.guiderStudentsCurrent.basic)}</div>
-    </div>
+    let studentBasicHeader = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__header">
+        <object
+         data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.userEntityId)}
+         type="image/jpeg">
+          <div className={`avatar avatar--category-1`}>{this.props.guiderStudentsCurrent.basic.firstName[0]}</div>
+        </object>
+        <div className="text text--guider-profile-student-name">{getName(this.props.guiderStudentsCurrent.basic)}</div>
+        {this.props.guiderStudentsCurrent.emails && <div className="text text--guider-profile-student-mail">
+          {this.props.guiderStudentsCurrent.emails.length ? this.props.guiderStudentsCurrent.emails.map((email)=>{
+            return(             
+                <span>{email.defaultAddress ? email.address : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
+            )
+          }): null}        
+        </div>}
+        <div className="text text text--list-item-type-title">
+           Linja
+        </div>
+      </div>
    
     let studentLabels = this.props.guiderStudentsCurrent.labels && this.props.guiderStudentsCurrent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
       return <div key={label.id}>
@@ -54,54 +66,54 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
     });
     
-    let studentBasicInfo = this.props.guiderStudentsCurrent.basic && <div>
+    let studentBasicInfo = this.props.guiderStudentsCurrent.basic && <div className="container container--student-info">
       <div>
-        <span>{this.props.i18n.text.get("TODO study start date")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</span>
         <span>{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyStartDate)}</span>
       </div>
       <div>
-        <span>{this.props.i18n.text.get("TODO study end date")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</span>
         <span>{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyEndDate)}</span>
       </div>
       <div>
-        <span>{this.props.i18n.text.get("TODO study time end")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</span>
         <span>{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyTimeEnd)}</span>
       </div>
       <div>
-        <span>{this.props.i18n.text.get("TODO Nationality")}</span>
-        <span>{this.props.guiderStudentsCurrent.basic.nationality || this.props.i18n.text.get("TODO Unknown Nationality")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.nationality")}</span>
+        <span>{this.props.guiderStudentsCurrent.basic.nationality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.nationality")}</span>
       </div>
       <div>
-        <span>{this.props.i18n.text.get("TODO Kieli")}</span>
-        <span>{this.props.guiderStudentsCurrent.basic.language || this.props.i18n.text.get("TODO Unknown language")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.language")}</span>
+        <span>{this.props.guiderStudentsCurrent.basic.language || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.language")}</span>
       </div>
       <div>
-        <span>{this.props.i18n.text.get("TODO kotikunta")}</span>
-        <span>{this.props.guiderStudentsCurrent.basic.municipality || this.props.i18n.text.get("TODO Unknown kotikunta")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.municipality")}</span>
+        <span>{this.props.guiderStudentsCurrent.basic.municipality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.municipality")}</span>
       </div>
       <div>
-        <span>{this.props.i18n.text.get("TODO koulu")}</span>
-        <span>{this.props.guiderStudentsCurrent.basic.school || this.props.i18n.text.get("TODO Unknown Koulu")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</span>
+        <span>{this.props.guiderStudentsCurrent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
       </div>
       {this.props.guiderStudentsCurrent.lastLogin && <div>
-        <span>{this.props.i18n.text.get("TODO last logged in")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</span>
         <span>{this.props.guiderStudentsCurrent.lastLogin.time}</span>
       </div>}
       {this.props.guiderStudentsCurrent.emails && <div>
-        <span>{this.props.i18n.text.get("TODO emails")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.email")}</span>
         {this.props.guiderStudentsCurrent.emails.length ? this.props.guiderStudentsCurrent.emails.map((email)=>{
           return <span key={email.address}>{email.type} - {email.address}
-            {email.defaultAddress ? `(${this.props.i18n.text.get("TODO default")})` : null}
+            {email.defaultAddress ? `(${this.props.i18n.text.get("plugin.guider.user.details.label.emailDefault")})` : null}
           </span>
-        }) : this.props.i18n.text.get("TODO No emails")}
+        }) : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}
       </div>}
       {this.props.guiderStudentsCurrent.phoneNumbers && <div>
-        <span>{this.props.i18n.text.get("TODO phones")}</span>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.label.phoneNumber")}</span>
         {this.props.guiderStudentsCurrent.phoneNumbers.length ? this.props.guiderStudentsCurrent.phoneNumbers.map((phone)=>{
           return <span key={phone.number}>{phone.type} - {phone.number}
-            {phone.defaultNumber ? `(${this.props.i18n.text.get("TODO default")})` : null}
+            {phone.defaultNumber ? `(${this.props.i18n.text.get("plugin.guider.user.details.label.phoneNumberDefault")})` : null}
           </span>
-        }) : this.props.i18n.text.get("TODO No phones")}
+        }) : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}
       </div>}
     </div>
       

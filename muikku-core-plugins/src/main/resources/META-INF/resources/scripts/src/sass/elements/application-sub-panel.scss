@@ -1,0 +1,15 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.application-sub-panel {}
+
+.application-sub-panel__header {
+  display: flex;
+  align-items: center;
+}
+.application-sub-panel__body {
+  
+  
+}

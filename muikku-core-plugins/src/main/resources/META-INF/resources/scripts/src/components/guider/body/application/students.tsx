@@ -65,7 +65,7 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
     } else if (this.props.guiderStudentsState.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("TODO it's empty")}</span></div>
     }
-    
+        
     return <BodyScrollKeeper hidden={!!this.props.guiderStudentsCurrent}>
       <SelectableList className="application-list" selectModeClassAddition="application-list--select-mode"
         extra={this.props.guiderStudentsState === "LOADING_MORE" ?
@@ -74,7 +74,7 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
       {this.props.guiderStudentsStudents.map((student: GuiderStudentType, index: number)=>{
         let isSelected = this.props.guiderStudentsSelectedIds.includes(student.id);
         return {
-            className: "application-list__item",
+            className: "application-list__item person",
             onSelect: this.props.addToGuiderSelectedStudents.bind(null, student),
             onDeselect: this.props.removeFromGuiderSelectedStudents.bind(null, student),
             onEnter: this.onStudentClick.bind(this, student),

@@ -295,6 +295,23 @@ b {
   width: 24px;
 }
 
+.text--labels {
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-direction: row;
+  flex-wrap: wrap; 
+}  
+  
+.text--label {
+  align-items: center; 
+  display: flex;
+  font-weight: 300;
+  margin: 0 15px 0 0;
+}
+
+
 // Communicator
 .text--communicator-message-caption {
   font-weight: 600;  
@@ -334,23 +351,8 @@ b {
   font-weight: 300;
 }
 
-.text--communicator-labels {
-  display: flex;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-direction: row;
-  flex-wrap: wrap; 
-}  
-  
-.text--communicator-label {
-  align-items: center; 
-  display: flex;
-  font-weight: 300;
-  margin: 0 15px 0 0;
-}
 
-.text--communicator-label-update-dialog-icon {
+.text--label-update-dialog-icon {
   display: block;
   width: 100%;
   min-width: 350px;
@@ -557,8 +559,20 @@ b {
   }
 }
 
-.text__discussion-message-creator {
+.text--discussion-message-creator {
   font-size: 1.6rem;
+}
+
+.text--guider-profile-student-name {
+  font-size: 1.3rem;
+  margin-left: 15px;
+}
+
+.text--guider-profile-student-mail {
+  color: #9c9c9c;
+  font-size: 1.3rem;
+  font-weight: 200;
+  margin-left: 20px;  
 }
 
 .text--discussion-current-thread-title {
@@ -618,7 +632,7 @@ b {
   display: flex;
 }
 
-.text__icon--communicator-label,
+.text__icon--label,
 .text__icon--announcement-workspace {
   padding: 0 5px 0 0;
 }
