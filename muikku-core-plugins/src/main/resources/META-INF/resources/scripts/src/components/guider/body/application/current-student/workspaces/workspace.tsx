@@ -22,10 +22,10 @@ function CourseActivityRow(props: {
   mainAttribute: string
 }){
   return <div className="gt-course-activity-row">
-    <label>{this.props.i18n.text.get(props.labelTranslationString)}</label>
+    <label>{props.i18n.text.get(props.labelTranslationString)}</label>
     <span>{((props.workspace as any)[props.mainAttribute][props.conditionalAttribute] as number) > 0 ? 
         (props.workspace as any)[props.mainAttribute][props.conditionalAttribute] + (props.givenDateAttribute ? " " + 
-        this.props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]) : "") :
+        props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]) : "") :
     "-"}</span>
   </div>
 }

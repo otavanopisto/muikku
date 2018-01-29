@@ -16,13 +16,13 @@ interface CurrentStudentWorkspacesState {
 
 class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesProps, CurrentStudentWorkspacesState> {
   render(){
-    return this.props.guiderStudentsCurrent.workspaces &&  (this.props.guiderStudentsCurrent.workspaces.length ? <div>
+    return this.props.guiderStudentsCurrent.workspaces ?  (this.props.guiderStudentsCurrent.workspaces.length ? <div>
         {this.props.guiderStudentsCurrent.workspaces.map((workspace)=>{
-          return <Workspace workspace={workspace} />
+          return <Workspace workspace={workspace} key={workspace.id}/>
         })}
       </div>: <div className="mf-content-empty cm-no-messages flex-row">
         <h3 className=" lg-flex-cell-full md-flex-cell-full sm-flex-cell-full flex-align-items-center">{this.props.i18n.text.get("plugin.guider.noWorkspaces")}</h3>
-      </div>)
+      </div>) : null;
   }
 }
 
