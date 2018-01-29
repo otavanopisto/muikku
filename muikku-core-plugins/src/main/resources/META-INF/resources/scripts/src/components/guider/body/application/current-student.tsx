@@ -12,6 +12,8 @@ import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStud
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 
+import Workspaces from './current-student/workspaces';
+
 interface CurrentStudentProps {
   i18n: i18nType,
   guiderStudentsCurrent: GuiderStudentUserProfileType,
@@ -249,6 +251,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //it is very clear
     let studentVops = this.props.guiderStudentsCurrent.vops && <Vops data={this.props.guiderStudentsCurrent.vops}></Vops>
   
+    let studentWorkspaces = <Workspaces/>;
+    
     //This is ugly and raw
     //TODO: Ukkonen make it pretty"firstName":"Jari","lastName":"Ahokas","nickName":null,"studyProgrammeName":"y","hasImage":false,"nationality":null,"language":null,"municipality":null,"school":null,"email":"ja...@gmail.com","studyStartDate":"2012-07-11T21:00:00.000+0000","studyEndDate":null,"studyTimeEnd":null,"curriculumIdentifier":null,"updatedByStudent":false,"flags":null}
     return <div className="application-list__item application-list__item--guider-current-student">
@@ -264,6 +268,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
       <div>
         {studentVops}  
+      </div>
+      <div>
+        {studentWorkspaces}
       </div>
       {this.props.guiderCurrentState === "LOADING" ? <div className="application-list__item loader-empty"/> : null}
     </div>

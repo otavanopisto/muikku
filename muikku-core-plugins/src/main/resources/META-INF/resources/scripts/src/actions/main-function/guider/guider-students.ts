@@ -6,7 +6,7 @@ import promisify from '~/util/promisify';
 import { UserGroupListType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
-import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
+import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/index/workspaces';
 
 export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
 export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
@@ -145,7 +145,24 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "notifications", value: notifications}})
           }),
         promisify(mApi().workspace.workspaces.read({userIdentifier: id}), 'callback')()
-          .then((workspaces:WorkspaceListType)=>{
+          .then(async (workspaces:WorkspaceListType)=>{
+            if (workspaces && workspaces.length){
+              await Promise.all([
+                Promise.all(workspaces.map(async (workspace, index)=>{
+                  let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
+                      .read(workspace.id, id), 'callback')();
+                    workspaces[index].studentActivity = activity;
+                  })
+                ),
+                Promise.all(workspaces.map(async (workspace, index)=>{
+                  let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
+                      .read(workspace.id, {userIdentifier: id}), 'callback')();
+                    workspaces[index].forumStatistics = statistics;
+                  })
+                )
+              ]);
+            }
+            
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           })
       ]);
