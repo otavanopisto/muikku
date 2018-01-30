@@ -52,8 +52,8 @@
         .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
         .append('<span class="word-count">');
       this._countContainer = $('<div class="count-container">')
-        .append(characterCounter)
-        .append(wordCounter);
+        .append(wordCounter)
+        .append(characterCounter);
       $(this.element[0]).after(this._countContainer);
       
       

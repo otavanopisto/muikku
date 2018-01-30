@@ -537,14 +537,13 @@
           .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
           .append('<span class="word-count">');
         var countContainer = $('<div class="count-container">')
-          .append(characterCounter)
-          .append(wordCounter);
+          .append(wordCounter)
+          .append(characterCounter);
         memoFieldElement.after(countContainer);
 
-        var text = data.value || "";
+        var text = data.meta.richedit ? memoFieldElement.text() : data.value||'';
         $(countContainer).find('.character-count').text(text === '' ? 0 : text.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length);
         $(countContainer).find('.word-count').text(text === '' ? 0 : text.trim().split(/\s+/).length);
-        
       }
       else {
         if (data.meta.richedit == true) {
@@ -561,8 +560,8 @@
             .append($('<span class="word-count-title">').text(getLocaleText('plugin.workspace.memoField.wordCount')))
             .append('<span class="word-count">');
           var countContainer = $('<div class="count-container">')
-            .append(characterCounter)
-            .append(wordCounter);
+            .append(wordCounter)
+            .append(characterCounter);
           memoFieldElement.after(countContainer);
           var countMethod = function() {
             var text = memoFieldElement.val().trim();
