@@ -8,16 +8,23 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
-import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType, GuiderStudentUserFileType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 
 import Workspaces from './current-student/workspaces';
+import FileUploader from '~/components/general/file-uploader';
+import { AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
+  addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider/guider-students';
+import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 
 interface CurrentStudentProps {
   i18n: i18nType,
   guiderStudentsCurrent: GuiderStudentUserProfileType,
-  guiderCurrentState: GuiderCurrentStudentStateType
+  guiderCurrentState: GuiderCurrentStudentStateType,
+  addFileToCurrentStudent: AddFileToCurrentStudentTriggerType,
+  removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType,
+  displayNotification: DisplayNotificationTriggerType
 }
 
 interface CurrentStudentState {
@@ -253,6 +260,32 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   
     let studentWorkspaces = <Workspaces/>;
     
+    let files = this.props.guiderStudentsCurrent.basic && <div>
+      <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guiderStudentsCurrent.basic.id}
+        onFileError={(file: File, err: Error)=>{
+          this.props.displayNotification(err.message, "error");
+        }} onFileSuccess={(file: File, data: GuiderStudentUserFileType)=>{
+          this.props.addFileToCurrentStudent(data);
+        }}>
+        <span>{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
+      </FileUploader>
+      {this.props.guiderStudentsCurrent.files && (this.props.guiderStudentsCurrent.files.length ?
+        <div>
+          {this.props.guiderStudentsCurrent.files.map((file)=>{
+            return <Link key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>
+              {file.title}
+              <Link disablePropagation onClick={this.props.removeFileFromCurrentStudent.bind(null, file)}>{
+                this.props.i18n.text.get("plugin.guider.user.details.files.file.remove")
+              }</Link>
+            </Link>
+          })}
+        </div> :
+        <div>{
+          this.props.i18n.text.get("TODO no files")
+        }</div>
+      )}
+    </div>
+    
     //This is ugly and raw
     //TODO: Ukkonen make it pretty"firstName":"Jari","lastName":"Ahokas","nickName":null,"studyProgrammeName":"y","hasImage":false,"nationality":null,"language":null,"municipality":null,"school":null,"email":"ja...@gmail.com","studyStartDate":"2012-07-11T21:00:00.000+0000","studyEndDate":null,"studyTimeEnd":null,"curriculumIdentifier":null,"updatedByStudent":false,"flags":null}
     return <div className="application-list__item application-list__item--guider-current-student">
@@ -272,6 +305,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div>
         {studentWorkspaces}
       </div>
+      <div>
+        {files}  
+      </div>
       {this.props.guiderCurrentState === "LOADING" ? <div className="application-list__item loader-empty"/> : null}
     </div>
   }
@@ -286,7 +322,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({addFileToCurrentStudent, removeFileFromCurrentStudent, displayNotification}, dispatch);
 };
 
 export default (connect as any)(

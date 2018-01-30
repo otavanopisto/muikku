@@ -39,6 +39,7 @@ interface LinkProps {
   onTouchEnd?: (e: React.TouchEvent<any>, re: any)=>any,
   onTouchMove?: (e: React.TouchEvent<any>, re: any)=>any,
   className?: string,
+  openInNewTab?: string,
   [otherProp: string]: any
 }
 
@@ -77,7 +78,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (this.props.href && this.props.href[0] === '#'){
       scrollToSection(this.props.href);
     } else if (this.props.href){
-      location.href = this.props.href;
+      if (this.props.openInNewTab){
+        window.open(this.props.href, this.props.openInNewTab).focus();
+      } else {
+        location.href = this.props.href;
+      }
     }
     
     if (this.props.onClick){
@@ -130,7 +135,8 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     let Element = this.props.as || 'a';
     let elementProps:LinkProps  = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];
-    delete elementProps["disabled"]
+    delete elementProps["disabled"];
+    delete elementProps["openInNewTab"];
     
     return <Element {...elementProps}
       className={(this.props.className || "") + (this.state.active ? " active" : "") + (this.props.disabled ? " disabled" : "")}

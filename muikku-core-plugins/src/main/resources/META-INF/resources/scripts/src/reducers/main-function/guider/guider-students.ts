@@ -318,6 +318,18 @@ export default function guiderStudents(state: GuiderStudentsType={
       selected: state.selected.map(mapFn),
       current: newCurrent
     });
+  } else if (action.type === "ADD_FILE_TO_CURRENT_STUDENT"){
+    return Object.assign({}, state, {
+      current: Object.assign({}, state.current, {
+        files: state.current.files.concat([action.payload])
+      })
+    });
+  } else if (action.type === "REMOVE_FILE_FROM_CURRENT_STUDENT"){
+    return Object.assign({}, state, {
+      current: Object.assign({}, state.current, {
+        files: state.current.files.filter((f)=>f.id !== action.payload.id)
+      })
+    });
   }
   return state;
 }
