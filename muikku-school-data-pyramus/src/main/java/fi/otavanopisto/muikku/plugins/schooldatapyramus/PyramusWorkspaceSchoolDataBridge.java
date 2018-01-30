@@ -350,12 +350,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
             String.format("/courses/courses/%d/educationTypes/%d/educationSubtypes", course.getId(), courseEducationType.getId()),
             CourseEducationSubtype[].class);
         
-        if (educationSubtypeIdentifier == null && courseEducationSubtypes.length == 1) {
-          educationSubtypeIdentifier = identifierMapper.getEducationSubtypeIdentifier(courseEducationSubtypes[0].getEducationSubtypeId());
-        }
-        
         if (courseEducationSubtypes == null) {
           continue;
+        }
+
+        if (educationSubtypeIdentifier == null && courseEducationSubtypes.length == 1) {
+          educationSubtypeIdentifier = identifierMapper.getEducationSubtypeIdentifier(courseEducationSubtypes[0].getEducationSubtypeId());
         }
         
         EducationType educationType = pyramusClient.get(
