@@ -392,7 +392,6 @@
     
     _onMaterialsLoaded: function(event, data) {
       $.each(data.assignments, $.proxy(function(index, assignment) {
-        console.log(assignment.evaluated);
         renderDustTemplate("evaluation/evaluation-assignment-wrapper.dust", {
           materialType: assignment.evaluable ? 'assignment' : 'exercise',
           title: assignment.title,
