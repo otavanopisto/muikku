@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -24,8 +23,8 @@ import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.otavanopisto.muikku.plugins.schooldatalocal.model.LocalUserProperty;
-import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.entity.EnvironmentRole;
 import fi.otavanopisto.muikku.schooldata.entity.GroupUser;
@@ -42,7 +41,6 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRole;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceRoleArchetype;
 
 @Dependent
-@Stateful
 public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	
 	@Inject

@@ -1252,10 +1252,7 @@
                 .html(text);
 
               this.element.find(".gt-data-container-1 div.gt-data").addClass('loading');
-
-              
-              
-              
+ 
               mApi().workspace.workspaces
                 .read({ userIdentifier: this.options.userIdentifier })
                 .on('$', $.proxy(function(workspace, workspaceCallback) {
@@ -1280,7 +1277,6 @@
                   renderDustTemplate('guider/guider_profile_workspaces.dust', workspaces, $.proxy(function(text){
                     this.element.find(".gt-data-container-1 div.gt-data").removeClass('loading');                    
                     this.element.find(".gt-data-container-1 div.gt-data").html(text);
-                    
                     
                     $('.gt-vops-legend-content').click( function() {
                       var state = $('.gt-vops-legend-content').hasClass('open') ? 'open' : 'closed';

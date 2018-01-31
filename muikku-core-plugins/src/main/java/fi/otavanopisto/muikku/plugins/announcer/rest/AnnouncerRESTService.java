@@ -252,8 +252,12 @@ public class AnnouncerRESTService extends PluginRESTService {
       @QueryParam("timeFrame") @DefaultValue("CURRENT") AnnouncementTimeFrame timeFrame
   ) {
     UserEntity currentUserEntity = sessionController.getLoggedUserEntity();
-    List<Announcement> announcements = null;
+    if (currentUserEntity == null) {
+      return Response.noContent().build();
+    }
     
+    List<Announcement> announcements = null;
+
     AnnouncementEnvironmentRestriction environment = 
         hideEnvironmentAnnouncements ? AnnouncementEnvironmentRestriction.NONE :
             sessionController.hasEnvironmentPermission(AnnouncerPermissions.LIST_ENVIRONMENT_GROUP_ANNOUNCEMENTS) ? 
@@ -275,15 +279,15 @@ public class AnnouncerRESTService extends PluginRESTService {
         return Response.status(Status.FORBIDDEN).entity("You don't have the permission to list workspace announcements").build();
       }
       
-      List<WorkspaceEntity> workspaceEntities = Arrays.asList(workspaceEntity);
       announcements = announcementController.listWorkspaceAnnouncements(
-          workspaceEntities, environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
+          Arrays.asList(workspaceEntity), environment, timeFrame, currentUserEntity, onlyMine, onlyArchived);
     }
 
     List<AnnouncementRESTModel> restModels = new ArrayList<>();
     for (Announcement announcement : announcements) {
-      if (onlyEditable && !canEdit(announcement, currentUserEntity))
+      if (onlyEditable && !canEdit(announcement, currentUserEntity)) {
         continue;
+      }
       
       List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
       List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, currentUserEntity);
