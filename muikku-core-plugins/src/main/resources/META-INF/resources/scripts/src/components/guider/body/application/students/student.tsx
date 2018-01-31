@@ -2,9 +2,8 @@ import { UserType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider/guider-students";
-import '~/sass/elements/person.scss';
-import '~/sass/elements/application-sub-panel.scss';
-
+import '~/sass/elements/user.scss';
+import '~/sass/elements/application-list.scss';
 
 interface StudentProps {
   student: GuiderStudentType,
@@ -24,7 +23,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
         </div>
       </div>
       <div className="application-list__item-content application-list__item-content--main">
-        <div className="application-list__item-header application-list__item-header--person">
+        <div className="application-list__item-header application-list__item-header--user">
           <div className="text text--list-item-title">{getName(this.props.student as any as UserType)}</div>
           <div className="text text--list-item-helper-title">todo: email@email.com</div>
           <div className="text text--list-item-type-title">{this.props.student.studyProgrammeName}</div>

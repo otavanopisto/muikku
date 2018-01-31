@@ -3,13 +3,38 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-sub-panel {}
+.application-sub-panel:not(:first-child) {
+  border-bottom: 1px solid #000;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
 
 .application-sub-panel__header {
   display: flex;
   align-items: center;
 }
+
 .application-sub-panel__body {
+  display: flex; 
+  align-items: center;
+  padding: 10px;
+}
+
+
+.application-sub-panel__item {
+  flex-basis: auto;
+  flex-shrink: 1;
+  margin-top: 5px;
+  margin-bottom: 5px;
+      
+}
+
+.application-sub-panel__item--guider-basic-info {
+  flex-basis: 50%;
+  display: flex;
   
-  
+  > span {
+    flex-basis: 50%;
+    flex-grow: 1;
+  }  
 }
