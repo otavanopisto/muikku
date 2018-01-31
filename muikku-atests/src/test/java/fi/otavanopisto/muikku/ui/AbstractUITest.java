@@ -78,6 +78,7 @@ import fi.otavanopisto.muikku.atests.StudentFlag;
 import fi.otavanopisto.muikku.atests.Workspace;
 import fi.otavanopisto.muikku.atests.WorkspaceFolder;
 import fi.otavanopisto.muikku.atests.WorkspaceHtmlMaterial;
+import fi.otavanopisto.pyramus.rest.model.Course;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookStudentCreatePayload;
 import static java.lang.Math.toIntExact;
@@ -820,13 +821,32 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitAndClick("a.lu-action-signout");
     waitForPresent("body");    
   }
-  
+  @Deprecated
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {
     PyramusMocks.workspacePyramusMock(NumberUtils.createLong(identifier), name, description);
 
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     
     Workspace payload = new Workspace(null, name, null, "PYRAMUS", identifier, published);
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(payload)
+      .post("/test/workspaces");
+    
+    response.then()
+      .statusCode(200);
+      
+    Workspace workspace = objectMapper.readValue(response.asString(), Workspace.class);
+    assertNotNull(workspace);
+    assertNotNull(workspace.getId());
+    
+    return workspace;
+  }
+  
+  protected Workspace createWorkspace(Course course, Boolean published) throws Exception {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    Workspace payload = new Workspace(null, course.getName(), null, "PYRAMUS", String.valueOf(course.getId()), published);
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
@@ -998,6 +1018,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }  
 
+  protected void reindex() {
+    asAdmin().get("/test/reindex").then().statusCode(200);    
+  }
+
+  protected void mockImport() {
+    asAdmin().get("/test/mockimport").then().statusCode(200);    
+  }
   protected void deleteWorkspace(Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}", id)
