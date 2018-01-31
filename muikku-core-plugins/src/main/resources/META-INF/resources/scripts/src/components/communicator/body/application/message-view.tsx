@@ -21,10 +21,10 @@ interface MessageViewProps {
   status: StatusType
 }
 
-interface MessageVitewState {
+interface MessageViewState {
 }
 
-class MessageView extends React.Component<MessageViewProps, MessageVitewState> {
+class MessageView extends React.Component<MessageViewProps, MessageViewState> {
   private initialXPos: number;
   private initialYPos: number;
   private closeInterval: NodeJS.Timer;

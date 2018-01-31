@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"  
@@ -63,4 +64,31 @@
       </ui:insert>
     </div>
   </ui:define>
+</ui:composition>
+ -->
+ 
+ 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/base.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer">
+      MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT = #{announcerBackingBean.canPublishEnvironment};
+      MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_WORKSPACES = true;
+      MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_GROUPS = #{announcerBackingBean.canPublishGroups};
+    </script>
+    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/dist/announcements.js" />
+    
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
+    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/announcer.css" />
+  </ui:define>
+
 </ui:composition>

@@ -5,13 +5,18 @@ import '~/sass/elements/loaders.scss';
 
 interface ApplicationPanelProps {
   modifier: string,
-  title: React.ReactElement<any> | string,
+  title?: React.ReactElement<any> | string,
   icon?: React.ReactElement<any> | string,
   primaryOption?: React.ReactElement<any>,
-  toolbar: React.ReactElement<any>,
-  aside?: React.ReactElement<any>,
-  children?: React.ReactElement<any> | Array<React.ReactElement<any>>
+  toolbar?: React.ReactElement<any>,
+  asideBefore?: React.ReactElement<any>,   
+  asideAfter?: React.ReactElement<any>,
+  aside?: React.ReactElement<any>,      
+  children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
 }
+
+//{this.props.asideBefore ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
+//{this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
 
 interface ApplicationPanelState {
   sticky: boolean,
@@ -78,19 +83,26 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     return (        
     <div className={`application-panel application-panel--${this.props.modifier}`} ref="top-reference">
       <div className="application-panel__container">                
+        
         <div className="application-panel__header">
+        {this.props.title ? 
           <div className="application-panel__header-title">{this.props.title}</div>
+        : null}
+        {this.props.icon ? 
           <div className="application-panel__header-actions">{this.props.icon}</div>
+        : null}
         </div>
         <div className="application-panel__body">
-          <div style={{display: this.state.sticky ? "block" : "none"}}></div>
+          <div style={{display: this.state.sticky ? "block" : "none"}}></div>          
+         {this.props.toolbar ?
           <div className="application-panel__actions" ref="sticky">
             {this.props.primaryOption ? <div className="application-panel__helper-container application-panel__helper-container--main-action">{this.props.primaryOption}</div> : null}
             <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div>
-          </div>              
+          </div> : null}             
           <div ref="damn" className="application-panel__content">
-            {this.props.aside ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
+            {this.props.asideBefore ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.asideBefore}</div> : null}
             <div className={`application-panel__main-container loader-empty`}>{this.props.children}</div>
+            {this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.asideAfter}</div> : null}
           </div>
         </div>
       </div>
