@@ -79,7 +79,7 @@ class GradingSchoolDataController {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource == null) {
       logger.severe(String.format("Could not find school data source %s", schoolDataSource));
-      return null;
+      return Collections.emptyList();
     }
     
     return listWorkspaceAssessments(dataSource, workspaceIdentifier, studentIdentifier);
@@ -92,8 +92,7 @@ class GradingSchoolDataController {
     } else {
       logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
     }
-  
-    return null;
+    return Collections.emptyList();
   }
   
   public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {

@@ -235,6 +235,9 @@ public class EvaluationRESTService extends PluginRESTService {
 
     SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
     List<fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceIdentifier, studentIdentifier);
+    if (assessments == null) {
+      assessments = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment>();
+    }
     
     return Response.ok(createRestModel(workspaceEntity, assessments.toArray(new fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
   }
