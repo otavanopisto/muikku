@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -99,10 +98,6 @@ class PyramusRestClient implements Serializable {
     Response response = request.get();
     try {
       return createResponse(response, type, path);
-    } catch (Throwable t) {
-      // TODO Remove catch once Pyramus 403 issue is resolved   
-      logger.log(Level.SEVERE, String.format("Pyramus GET request into %s failed", path), t);
-      return null;
     } finally {
       response.close();
     }
