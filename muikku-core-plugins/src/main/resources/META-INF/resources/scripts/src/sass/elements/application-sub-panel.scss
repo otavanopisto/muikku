@@ -22,19 +22,36 @@
 
 
 .application-sub-panel__item {
+  display: flex;
   flex-basis: auto;
   flex-shrink: 1;
   margin-top: 5px;
-  margin-bottom: 5px;
-      
+  margin-bottom: 5px;      
 }
+
 
 .application-sub-panel__item--guider-basic-info {
   flex-basis: 50%;
-  display: flex;
   
   > span {
     flex-basis: 50%;
     flex-grow: 1;
   }  
+}
+
+.application-sub-panel__item--guider-hops {
+     
+  
+  > span {
+    flex-basis: 30%;
+    flex-shrink: 0;
+    flex-grow: 1;   
+  }
+
+  > span:first-child {
+    flex-basis: 70%;
+    flex-shrink: 1;
+    flex-grow: 2;   
+  } 
+  
 }
