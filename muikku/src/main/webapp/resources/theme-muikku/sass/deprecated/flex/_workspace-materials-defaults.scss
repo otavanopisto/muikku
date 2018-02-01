@@ -200,10 +200,31 @@
   
   }
   
-  .word-count-container {
+  .count-container {
     font-size: 13px;
     line-height: 1;
     text-align: right;
+    
+    .character-count-container {
+      display: inline-block;
+      padding: 5px;
+    }
+    
+    .word-count-container {
+      display: inline-block;
+      padding: 5px;
+    }
+    
+    .character-count-title {
+      display: inline-block;
+      padding: 2px;
+    }
+    
+    .character-count {
+      background: #f3faff;
+      display: inline-block;
+      padding: 2px;
+    }
     
     .word-count-title {
       display: inline-block;
