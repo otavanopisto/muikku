@@ -44,7 +44,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
 //      Course selector
-        getWebDriver().navigate().refresh();
+        refresh();
         waitForPresent("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action > select > option:nth-child(1)");
         waitForPresent("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action > select > option:nth-child(2)");
         waitForPresent("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action > select > option:nth-child(3)");
@@ -80,7 +80,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
-        getWebDriver().navigate().refresh();
+        refresh();
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         waitAndClick("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         assertText("div.application-list__item-body.application-list__item-body--course > article", "test course for testing");
@@ -146,7 +146,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course"); 
-        getWebDriver().navigate().refresh();
+        refresh();
         waitAndSendKeys("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input", "pot");
         waitAndSendKeys("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input", "ato");
         waitUntilElementCount("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name", 1);
@@ -187,7 +187,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-        getWebDriver().navigate().refresh();
+        refresh();
         waitForPresentAndVisible("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name");
         waitAndClick("div.application-panel__content > div.application-panel__helper-container > div > a:nth-child(3)");
         waitForPresentAndVisible("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name");

@@ -425,7 +425,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     waitForPresent(selector);
     waitForVisible(selector);
   }
-   
+  
+  protected void refresh() {
+    getWebDriver().navigate().refresh();
+  }
+  
   protected void takeScreenshot() throws WebDriverException, IOException {
     takeScreenshot(new File("target", testName.getMethodName() + ".png"));
   }
