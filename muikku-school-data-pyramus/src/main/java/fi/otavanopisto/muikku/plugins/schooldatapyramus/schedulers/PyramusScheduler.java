@@ -80,13 +80,13 @@ public class PyramusScheduler {
 
     PyramusUpdateScheduler updateScheduler = schedulers.get(schedulerIndex);
     String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
-    logger.info(String.format("Running %s", schedulerName));
+    logger.fine(String.format("Running %s", schedulerName));
     
     try {
       updateScheduler.synchronize();
     }
     catch (Exception ex) {
-      logger.log(Level.SEVERE, String.format("%s failed", schedulerName, ex));
+      logger.log(Level.WARNING, String.format("%s failed", schedulerName), ex);
     }
 
     schedulerIndex = (schedulerIndex + 1) % schedulers.size();
