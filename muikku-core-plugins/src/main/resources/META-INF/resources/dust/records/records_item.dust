@@ -16,8 +16,32 @@
         {:else}
           <div class="tr-item-header-detail grade non-passing" title="{gradingScale}"><span>{grade}</span></div>
         {/passed}
+        {#progress}  
+		  {@select key=assessmentState}
+		  {@eq value="PENDING"}{/eq}
+		  {@eq value="PENDING_PASS"}{/eq}
+		  {@eq value="PENDING_FAIL"}{/eq}
+		  {@any}
+		    <div class="tr-item-header-detail date sm-flex-hide"><span>{#localize key="plugin.records.workspace.pending"/}</span></div>
+		    <div class="tr-item-header-detail submitted"><span>S</span></div>
+		  {/any}
+		  {/select} 
+		{/progress} 
         {:else}
-          {>"records/records_workspace_progress.dust"/}
+        {#progress}  
+		  {@select key=assessmentState}
+		  {@eq value="PENDING"}{/eq}
+		  {@eq value="PENDING_PASS"}{/eq}
+		  {@eq value="PENDING_FAIL"}{/eq}
+		  {@any}
+		    <div class="tr-item-header-detail date sm-flex-hide"><span>{#localize key="plugin.records.workspace.pending"/}</span></div>
+		    <div class="tr-item-header-detail submitted"><span>S</span></div>
+		  {/any}
+		  {@none}
+            {>"records/records_workspace_progress.dust"/}
+          {/none}
+          {/select} 
+        {/progress}  
       {/grade}
     </div> 
   </div>
