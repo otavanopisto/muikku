@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -215,6 +216,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return entityFactory.createEntity(staffMember);
     }
 
+    logger.warning(String.format("PyramusUserSchoolDataBridge.findActiveUser malformed user identifier %s\n%s",
+        identifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", identifier));
   }
 
@@ -232,6 +236,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       return staffMember == null ? null : entityFactory.createEntity(staffMember);
     }
 
+    logger.warning(String.format("PyramusUserSchoolDataBridge.findUser malformed user identifier %s\n%s",
+        identifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", identifier));
   }
 
@@ -335,8 +342,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
       if (staffId != null) {
         emails = pyramusClient.get(String.format("/staff/members/%d/emails", staffId), Email[].class);
-      } else {
-        logger.severe(String.format("Malformed user identifier %s", userIdentifier));
+      }
+      else {
+        logger.severe(String.format("PyramusUserSchoolDataBridge.listUserEmailsByUserIdentifier malformed user identifier %s\n%s",
+            userIdentifier,
+            ExceptionUtils.getStackTrace(new Throwable())
+            ));
       }
     }
     
@@ -406,6 +417,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         return new PyramusUserProperty(userIdentifier, key, value);
       }
     }
+    logger.warning(String.format("PyramusUserSchoolDataBridge.getUserProperty malformed user identifier %s\n%s",
+        userIdentifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
@@ -420,6 +434,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       pyramusClient.put(String.format("/students/students/%d", studentId), student);
       return new PyramusUserProperty(userIdentifier, key, value);
     }
+    logger.warning(String.format("PyramusUserSchoolDataBridge.setUserProperty malformed user identifier %s\n%s",
+        userIdentifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
@@ -441,7 +458,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       return userProperties;
     }
-    
+    logger.warning(String.format("PyramusUserSchoolDataBridge.listUserPropertiesByUser malformed user identifier %s\n%s",
+        userIdentifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
 
@@ -490,7 +509,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       StaffMember staffMember = pyramusClient.get("/staff/members/" + staffId, StaffMember.class);
       return staffMember != null ? entityFactory.createEntity(staffMember.getRole()) : null;
     }
-
+    logger.warning(String.format("PyramusUserSchoolDataBridge.findUserEnvironmentRole malformed user identifier %s\n%s",
+        userIdentifier,
+        ExceptionUtils.getStackTrace(new Throwable())));
     throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
   }
   
@@ -642,7 +663,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     Long personId = getPersonId(userIdentifier);
     
     if (personId == null) {
-      throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
+      logger.warning(String.format("PyramusUserSchoolDataBridge.updateUserCredentials malformed user identifier %s", userIdentifier));
+      throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s\n%s",
+          userIdentifier,
+          ExceptionUtils.getStackTrace(new Throwable())));
     }
     
     try {
@@ -749,8 +773,12 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   public String findUsername(String userIdentifier) {
     Long personId = getPersonId(userIdentifier);
     
-    if (personId == null)
+    if (personId == null) {
+      logger.warning(String.format("PyramusUserSchoolDataBridge.findUsername malformed user identifier %s\n%s",
+          userIdentifier,
+          ExceptionUtils.getStackTrace(new Throwable())));
       throw new SchoolDataBridgeInternalException(String.format("Malformed user identifier %s", userIdentifier));
+    }
     
     try {
       UserCredentials userCredentials = pyramusClient.get("/persons/persons/" + personId + "/credentials", UserCredentials.class);

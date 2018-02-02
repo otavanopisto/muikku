@@ -3,7 +3,7 @@ package fi.otavanopisto.muikku.security.impl;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
@@ -23,7 +23,7 @@ import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
 import fi.otavanopisto.security.User;
 
-@Dependent
+@RequestScoped
 public class DefaultPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
   @Inject
