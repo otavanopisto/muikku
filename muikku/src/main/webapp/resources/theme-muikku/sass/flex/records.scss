@@ -447,14 +447,13 @@
   .tr-item-header-detail {
     display: inline-block;
 
-    &.submitted{
-    box-sizing: border-box;
-    font-size: 12px;
-    font-size: 12px;
-    margin-left: 5px;
-    padding: 0 6px;
-    background-color:#0099ff;
-    color:#fff;
+    &.submitted {
+      box-sizing: border-box;
+      font-size: 12px;
+      margin-left: 5px;
+      padding: 0 6px;
+      background-color:$item-grade-pending-color;
+      color:$item-grade-font-color;
     }
     
     &.grade {
