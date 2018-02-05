@@ -22,8 +22,8 @@
 		  {@eq value="PENDING_PASS"}{/eq}
 		  {@eq value="PENDING_FAIL"}{/eq}
 		  {@any}
-		    <div class="tr-item-header-detail date sm-flex-hide"><span>{#localize key="plugin.records.workspace.pending"/}</span></div>
-		    <div class="tr-item-header-detail submitted"><span>S</span></div>
+		    <div class="tr-item-header-detail date sm-flex-hide"><span></span></div>
+		    <div class="tr-item-header-detail submitted" title={#localize key="plugin.records.workspace.pending"/}><span class="icon-assessment-pending"></span></div>
 		  {/any}
 		  {/select} 
 		{/progress} 
