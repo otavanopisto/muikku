@@ -12,7 +12,7 @@ export interface UpdateEducationFiltersTriggerType {
 }
 
 export interface UpdateCurriculumFiltersTriggerType {
-  ():AnyActionType
+  (callback?: (curriculums: CurriculumFilterListType)=>any):AnyActionType
 }
 
 let updateEducationFilters:UpdateEducationFiltersTriggerType = function updateEducationFilters(){
@@ -28,13 +28,15 @@ let updateEducationFilters:UpdateEducationFiltersTriggerType = function updateEd
   }
 }
   
-let updateCurriculumFilters:UpdateCurriculumFiltersTriggerType = function updateCurriculumFilters(){
+let updateCurriculumFilters:UpdateCurriculumFiltersTriggerType = function updateCurriculumFilters(callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    let curriculums = <CurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
     try {
       dispatch({
         type: "UPDATE_COURSEPICKER_FILTERS_CURRICULUMS",
-        payload: <CurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
+        payload: curriculums
       });
+      callback && callback(curriculums);
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }

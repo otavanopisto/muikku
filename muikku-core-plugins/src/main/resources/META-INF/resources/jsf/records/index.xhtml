@@ -104,6 +104,14 @@
   template="/WEB-INF/templates/base.xhtml">
   
   <ui:define name="scripts">
+    <script defer="defer">
+      MUIKKU_PERMISSIONS.SHOW_STUDIES = #{transcriptofRecordsBackingBean.showStudies};
+
+  	  //TODO WHAT THE HELL???
+      GRADES = #{transcriptofRecordsBackingBean.grades};
+  	  FILES = #{transcriptofRecordsBackingBean.files};
+  	  STUDY_START_DATE = #{transcriptofRecordsBackingBean.studyStartDate};
+    </script>
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/records.js" />
   </ui:define>

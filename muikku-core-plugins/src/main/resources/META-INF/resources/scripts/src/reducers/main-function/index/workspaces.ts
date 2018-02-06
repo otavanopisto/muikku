@@ -33,6 +33,19 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
+export interface WorkspaceStudentAccessmentType {
+  assessorEntityId: number,
+  evaluated: string,
+  gradeIdentifier: string,
+  gradeSchoolDataSource: string,
+  gradingScaleIdentifier: string,
+  gradingScaleSchoolDataSource: string,
+  identifier: string,
+  passed: boolean,
+  verbalAssessment: string,
+  workspaceStudentId: string
+}
+
 export interface WorkspaceType {
   access: string,
   archived: boolean,
@@ -51,7 +64,8 @@ export interface WorkspaceType {
   
   //These are optional addons, and are usually not available
   studentActivity?: WorkspaceStudentActivityType,
-  forumStatistics?: WorkspaceForumStatisticsType
+  forumStatistics?: WorkspaceForumStatisticsType,
+  studentAcessment?: WorkspaceStudentAccessmentType
 }
 
 export interface WorkspaceListType extends Array<WorkspaceType> {}
