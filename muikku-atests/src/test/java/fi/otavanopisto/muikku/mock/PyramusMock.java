@@ -60,6 +60,7 @@ import fi.otavanopisto.pyramus.rest.model.WhoAmI;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeGrade;
 import fi.otavanopisto.pyramus.rest.model.composite.CompositeGradingScale;
+import fi.otavanopisto.pyramus.webhooks.WebhookCourseCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStaffMemberCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookCourseStudentCreatePayload;
 import fi.otavanopisto.pyramus.webhooks.WebhookPersonCreatePayload;
@@ -377,6 +378,11 @@ public class PyramusMock {
         return this;
       }
       
+      public Builder addSubject(Subject subject) {
+        pmock.subjects.add(subject);
+        return this;
+      }
+      
       public Builder mockSubjects() throws JsonProcessingException {
         for (Subject subject : pmock.subjects) {
           stubFor(get(urlEqualTo(String.format("/1/common/subjects/%d", subject.getId())))
@@ -392,6 +398,12 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(pmock.subjects))
             .withStatus(200)));
         return this;
+      }
+      
+      public Builder addEducationType(EducationType eduType) {
+        pmock.educationTypes.add(eduType);
+        return this;
+        
       }
       
       public Builder mockEducationTypes() throws JsonProcessingException {
@@ -818,7 +830,7 @@ public class PyramusMock {
         }
         return this;
       }
-
+      
       public Builder mockCourseAssessments(MockCourseStudent courseStudent, MockStaffMember staffMember) throws JsonProcessingException {
         OffsetDateTime assessmentCreated = OffsetDateTime.of(2015, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC);
         CourseAssessment courseAssessment = new CourseAssessment(1l, courseStudent.getId(), 1l, 1l, staffMember.getId(), assessmentCreated, "Test evaluation.", Boolean.TRUE);
@@ -849,6 +861,48 @@ public class PyramusMock {
             .withBody(pmock.objectMapper.writeValueAsString(courseAssessment))
             .withStatus(200)));
         
+        return this;
+      }
+      
+      public Builder addCourse(Course course) {
+        pmock.courses.add(course);
+        return this;
+      }
+      
+      public Builder mockCourses() throws JsonProcessingException {
+
+        for (Course course : pmock.courses) {
+          String courseJson = pmock.objectMapper.writeValueAsString(course);
+          
+          stubFor(get(urlEqualTo(String.format("/1/courses/courses/%d", course.getId())))
+            .willReturn(aResponse()
+              .withHeader("Content-Type", "application/json")
+              .withBody(courseJson)
+              .withStatus(200)));
+          
+          stubFor(put(urlEqualTo(String.format("/1/courses/courses/%d", course.getId())))
+              .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(courseJson)
+                .withStatus(200)));
+          
+          pmock.payloads.add(pmock.objectMapper.writeValueAsString(new WebhookCourseCreatePayload(course.getId())));
+        }
+
+        String courseArrayJson = pmock.objectMapper.writeValueAsString(pmock.courses);
+        
+        stubFor(get(urlEqualTo("/1/courses/courses"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(courseArrayJson)
+            .withStatus(200)));
+        
+        stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
+          .willReturn(aResponse()
+            .withHeader("Content-Type", "application/json")
+            .withBody(courseArrayJson)
+            .withStatus(200)));
+       
         return this;
       }
       
@@ -932,12 +986,14 @@ public class PyramusMock {
         mockEducationalTimeUnits();
         mockEducationTypes();
         mockSubjects();
+        mockCourses();
         mockCourseEducationTypes();
         mockCourseTypes();
         mockCourseStaffMembers();
         mockCourseStudents();
         mockCourseStaffMemberRoles();
         mockStudentGroups();
+        
         
         for (String payload : pmock.payloads) {
           TestUtilities.webhookCall("http://dev.muikku.fi:" + System.getProperty("it.port.http") + "/pyramus/webhook", payload);
@@ -1073,4 +1129,5 @@ public class PyramusMock {
   private List<String> payloads = new ArrayList<>();
   private HashMap<Long, List<CompositeAssessmentRequest>> compositeCourseAssessmentRequests = new HashMap<>();
   private HashMap<Long, List<CompositeAssessmentRequest>> compositeStaffAssessmentRequests = new HashMap<>();
+  private List<Course> courses = new ArrayList<>();
 }

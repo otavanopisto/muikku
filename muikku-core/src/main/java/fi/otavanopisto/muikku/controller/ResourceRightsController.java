@@ -3,8 +3,6 @@ package fi.otavanopisto.muikku.controller;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
@@ -16,8 +14,6 @@ import fi.otavanopisto.muikku.model.security.ResourceRolePermission;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.security.PermissionScope;
 
-@Stateful
-@Model
 public class ResourceRightsController {
 
   @Inject

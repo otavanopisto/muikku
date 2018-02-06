@@ -18,7 +18,8 @@
         ping_interval: 45,
         auto_minimize: true,
         i18n: getLocale() === "fi" ? "fi" : "en",
-        hide_occupants:true
+        hide_occupants:true,
+        limit_room_controls:true
       });
     }
   });
