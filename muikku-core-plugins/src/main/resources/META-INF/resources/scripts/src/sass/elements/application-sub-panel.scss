@@ -15,11 +15,21 @@
 }
 
 .application-sub-panel__body {
-  display: flex; 
   align-items: center;
   padding: 10px;
 }
 
+.application-sub-panel__body--labels {
+  align-items: center;
+  display: flex;
+  padding: 10px;
+}
+
+.application-sub-panel__body--basic-info {
+  display: flex; 
+  align-items: center;
+  padding: 10px;
+}
 
 .application-sub-panel__item {
   display: flex;
@@ -29,6 +39,27 @@
   margin-bottom: 5px;      
 }
 
+.application-sub-panel__item-body {
+  padding: 10px 14px;   
+}
+
+
+.application-sub-panel__item--label {
+  display: flex;
+  flex-basis: auto;
+  flex-shrink: 1;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  
+  > span:first-child {
+    margin-right: 5px;
+  }      
+}
+
+.application-sub-panel__file-container {
+  padding: 20px;
+}
 
 .application-sub-panel__item--guider-basic-info {
   flex-basis: 50%;
@@ -40,8 +71,6 @@
 }
 
 .application-sub-panel__item--guider-hops {
-     
-  
   > span {
     flex-basis: 30%;
     flex-shrink: 0;
@@ -55,3 +84,11 @@
   } 
   
 }
+
+.application-sub-panel__item--guider-workspace-info {
+  > span {
+    flex-basis: 50%;
+    flex-grow: 1;
+  }  
+}
+

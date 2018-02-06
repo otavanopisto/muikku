@@ -31,7 +31,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
     </select>
   
     return (<div className="container container--full">
-      <ApplicationPanel modifier="coursepicker" primaryOption={primaryOption} toolbar={toolbar} title={title} aside={this.props.aside}>
+      <ApplicationPanel modifier="coursepicker" primaryOption={primaryOption} toolbar={toolbar} title={title} asideBefore={this.props.aside}>
         <Students/>
         <CurrentStudent/>
       </ApplicationPanel>

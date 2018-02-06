@@ -6,6 +6,7 @@ import promisify from '~/util/promisify';
 import { UserGroupListType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
+import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/index/workspaces';
 
 export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
 export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
@@ -17,6 +18,9 @@ export type SET_CURRENT_GUIDER_STUDENT = SpecificActionType<"SET_CURRENT_GUIDER_
 export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD", null>
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", {property: string, value: any}>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
+
+export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", GuiderStudentUserFileType>
+export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", GuiderStudentUserFileType>
 
 export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_USER", {
   studentId: string,
@@ -64,6 +68,35 @@ export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
   (label: GuiderUserLabelType): AnyActionType
 }
 
+export interface AddFileToCurrentStudentTriggerType {
+  (file: GuiderStudentUserFileType): AnyActionType
+}
+
+export interface RemoveFileFromCurrentStudentTriggerType {
+  (file: GuiderStudentUserFileType): AnyActionType
+}
+
+let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
+  return {
+    type: "ADD_FILE_TO_CURRENT_STUDENT",
+    payload: file
+  }
+}
+  
+let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = function removeFileFromCurrentStudent(file){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      await promisify(mApi().guider.files.del(file.id), 'callback')();
+      dispatch({
+        type: "REMOVE_FILE_FROM_CURRENT_STUDENT",
+        payload: file
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+
 let loadStudents:LoadStudentsTriggerType = function loadStudents(filters){
   return loadStudentsHelper.bind(this, filters, true);
 }
@@ -79,7 +112,7 @@ let addToGuiderSelectedStudents:AddToGuiderSelectedStudentsTriggerType = functio
   }
 }
 
-let removeFromGuiderSelectedStudents:RemoveFromGuiderSelectedStudentsTriggerType = function addToGuiderSelectedStudents(student){
+let removeFromGuiderSelectedStudents:RemoveFromGuiderSelectedStudentsTriggerType = function removeFromGuiderSelectedStudents(student){
   return {
     type: "REMOVE_FROM_GUIDER_SELECTED_STUDENTS",
     payload: student
@@ -142,6 +175,27 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         promisify(mApi().guider.users.latestNotifications.read(id), 'callback')()
           .then((notifications:GuiderNotificationStudentsDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "notifications", value: notifications}})
+          }),
+        promisify(mApi().workspace.workspaces.read({userIdentifier: id}), 'callback')()
+          .then(async (workspaces:WorkspaceListType)=>{
+            if (workspaces && workspaces.length){
+              await Promise.all([
+                Promise.all(workspaces.map(async (workspace, index)=>{
+                  let activity:WorkspaceStudentActivityType = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.studentactivity
+                      .read(workspace.id, id), 'callback')();
+                    workspaces[index].studentActivity = activity;
+                  })
+                ),
+                Promise.all(workspaces.map(async (workspace, index)=>{
+                  let statistics:WorkspaceForumStatisticsType = <WorkspaceForumStatisticsType>await promisify(mApi().workspace.workspaces.forumStatistics
+                      .read(workspace.id, {userIdentifier: id}), 'callback')();
+                    workspaces[index].forumStatistics = statistics;
+                  })
+                )
+              ]);
+            }
+            
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           })
       ]);
       
@@ -237,7 +291,10 @@ let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTrigger
 export {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
-  addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers};
+  addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
+  addFileToCurrentStudent, removeFileFromCurrentStudent};
 export default {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
-  addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser};
+  addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
+  addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
+  addFileToCurrentStudent, removeFileFromCurrentStudent};

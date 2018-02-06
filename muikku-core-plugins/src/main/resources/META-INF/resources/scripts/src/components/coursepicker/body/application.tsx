@@ -1,16 +1,13 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-
 import ApplicationPanel from '~/components/general/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
-
 import Toolbar from './application/toolbar';
 import CoursepickerWorkspaces from './application/courses';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
-
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
@@ -56,7 +53,7 @@ class CommunicatorApplication extends React.Component<CoursepickerApplicationPro
     </select>
     
     return (<div className="container container--full">
-      <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} aside={this.props.aside} primaryOption={primaryOption}>
+      <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>
       </ApplicationPanel>
     </div>);

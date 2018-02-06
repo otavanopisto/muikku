@@ -584,9 +584,31 @@ b {
 
 .text--guider-profile-value {
   background-color: #ecfafe;
-  display: inline-block;
   border-radius: 3px;
+  display: inline-block;
   padding: 4px;
+  
+  &:not(:first-child) {
+    margin-left: 5px;  
+  }
+}
+
+.text--guider-hops-value {
+  background-color: #ecfafe;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 2px 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  
+  
+}
+
+.text--guider-header {
+  width: 100%;
+  font-family: $text-font-family;
+  font-size: 1.5rem;
+  font-weight: 400;  
 }
 
 // Coursepicker

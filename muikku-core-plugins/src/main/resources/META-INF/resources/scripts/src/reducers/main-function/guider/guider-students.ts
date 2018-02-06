@@ -1,5 +1,6 @@
 import {ActionType} from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType } from 'reducers/main-function/user-index';
+import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
 
 //TODO remove or comment out, this is mocking code
 import hops from './mock/hops';
@@ -162,7 +163,8 @@ export interface GuiderStudentUserProfileType {
   vops: GuiderVOPSDataType,
   hops: GuiderHOPSDataType,
   lastLogin: GuiderLastLoginStudentDataType,
-  notifications: GuiderNotificationStudentsDataType
+  notifications: GuiderNotificationStudentsDataType,
+  workspaces: WorkspaceListType
 }
 
 export default function guiderStudents(state: GuiderStudentsType={
@@ -315,6 +317,18 @@ export default function guiderStudents(state: GuiderStudentsType={
       students: state.students.map(mapFn),
       selected: state.selected.map(mapFn),
       current: newCurrent
+    });
+  } else if (action.type === "ADD_FILE_TO_CURRENT_STUDENT"){
+    return Object.assign({}, state, {
+      current: Object.assign({}, state.current, {
+        files: state.current.files.concat([action.payload])
+      })
+    });
+  } else if (action.type === "REMOVE_FILE_FROM_CURRENT_STUDENT"){
+    return Object.assign({}, state, {
+      current: Object.assign({}, state.current, {
+        files: state.current.files.filter((f)=>f.id !== action.payload.id)
+      })
     });
   }
   return state;

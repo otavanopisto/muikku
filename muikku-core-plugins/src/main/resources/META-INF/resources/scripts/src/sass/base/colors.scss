@@ -330,6 +330,13 @@ $color-category-9: #ff0000;
 $color-category-10: #0cff00;
 $color-cagtegory-11: #000;
 
+//VOPS (fix these colors)
+$color-vops-item-base: #ccc;
+$color-vops-item-incomplete: orange;
+$color-vops-item-planned: blue;
+$color-vops-item-passed: green;
+$color-vops-item-enrolled: blue;
+$color-vops-item-failed: #4c4c4c;
 
 @import "colors/frontpage";
 @import "colors/main-function";
