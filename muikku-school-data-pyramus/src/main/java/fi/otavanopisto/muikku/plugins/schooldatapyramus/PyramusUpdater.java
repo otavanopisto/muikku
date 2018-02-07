@@ -19,6 +19,9 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -506,6 +509,22 @@ public class PyramusUpdater {
    * @return count of updated courses staff members
    */
   public int updateCourseStaffMembers(Long courseId) {
+    
+    // List of staff members according to Muikku
+    
+    List<WorkspaceUserEntity> currentStaffMembers;
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+    if (workspaceEntity != null) {
+      currentStaffMembers = workspaceUserEntityController.listActiveWorkspaceStaffMembers(workspaceEntity);
+    }
+    else {
+      currentStaffMembers = Collections.emptyList();
+    }
+    
+    // List of staff members according to Pyramus
+    
     CourseStaffMember[] staffMembers = pyramusClient.get().get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
     if (staffMembers != null) {
       for (CourseStaffMember staffMember : staffMembers) {
@@ -515,8 +534,32 @@ public class PyramusUpdater {
         if (workspaceUserEntity == null) {
           fireCourseStaffMemberDiscovered(staffMember);
         }
+        else {
+          for (int i = currentStaffMembers.size() - 1; i >= 0; i--) {
+            if (currentStaffMembers.get(i).getId().equals(workspaceUserEntity.getId())) {
+              currentStaffMembers.remove(i);
+            }
+          }
+        }
       }
     }
+    
+    // At this point current staff members only contain those that Pyramus no longer acknowledges.
+    // We have somehow missed their original removal event but fake them here to get staff in sync.
+    
+    for (WorkspaceUserEntity currentStaffMember : currentStaffMembers) {
+      try {
+        String courseStaffMemberIdentifier = currentStaffMember.getIdentifier();
+        String staffMemberIdentifier = currentStaffMember.getUserSchoolDataIdentifier().getUserEntity().getDefaultIdentifier();
+        Long courseStaffMemberId = NumberUtils.toLong(StringUtils.substringAfterLast(courseStaffMemberIdentifier, "-"));
+        Long staffMemberId = NumberUtils.toLong(StringUtils.substringAfterLast(staffMemberIdentifier, "-"));
+        fireCourseStaffMemberRemoved(courseStaffMemberId, staffMemberId, courseId);
+      }
+      catch (Exception e) {
+        logger.log(Level.WARNING, String.format("Error re-syncing WorkspaceUserEntity %d",  currentStaffMember.getId()), e);
+      }
+    }
+    
     return 0;
   }
   
