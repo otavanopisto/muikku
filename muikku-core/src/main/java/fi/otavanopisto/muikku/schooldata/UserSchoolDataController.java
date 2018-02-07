@@ -47,39 +47,23 @@ public class UserSchoolDataController {
   /* User */
 
   public User createUser(SchoolDataSource schoolDataSource, String firstName, String lastName) {
-    UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
-    if (userBridge != null) {
-      return userBridge.createUser(firstName, lastName);
-    }
-
-    return null;
+    return getUserBridge(schoolDataSource).createUser(firstName, lastName);
   }
 
   public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
-    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.findUser(userIdentifier);
-    }
-
-    return null;
+    return getUserBridge(schoolDataSource).findUser(userIdentifier);
   }
 
   public User findUser(String schoolDataSource, String userIdentifier) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource != null) {
-      return findUser(dataSource, userIdentifier);
+    if (dataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", schoolDataSource));
     }
-
-    return null;
+    return findUser(dataSource, userIdentifier);
   }
 
   public User findActiveUser(SchoolDataSource schoolDataSource, String identifier) {
-    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.findActiveUser(identifier);
-    }
-
-    return null;
+    return getUserBridge(schoolDataSource).findActiveUser(identifier);
   }
 
   public List<User> listUsers() {
@@ -153,103 +137,66 @@ public class UserSchoolDataController {
   public UserEntity findUserEntity(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, user.getIdentifier(), Boolean.FALSE);
-    if (userSchoolDataIdentifier != null) {
-      return userSchoolDataIdentifier.getUserEntity();
-    }
-
-    return null;
+    return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier.getUserEntity();
   }
 
   public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifierAndArchived(dataSource, identifier, Boolean.FALSE);
-    if (userSchoolDataIdentifier != null) {
-      return userSchoolDataIdentifier.getUserEntity();
-    }
-
-    return null;
+    return userSchoolDataIdentifier == null ? null : userSchoolDataIdentifier.getUserEntity();
   }
 
   /* User Emails */
 
   public List<UserEmail> listUserEmails(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listUserEmailsByUserIdentifier(user.getIdentifier());
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
-
-    return null;
+    return getUserBridge(schoolDataSource).listUserEmailsByUserIdentifier(user.getIdentifier());
   }
 
   public List<UserEmail> listUserEmails(SchoolDataIdentifier userIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listUserEmailsByUserIdentifier(userIdentifier.getIdentifier());
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
-
-    return null;
+    return getUserBridge(schoolDataSource).listUserEmailsByUserIdentifier(userIdentifier.getIdentifier());
   }
 
   public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
-    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.findUserEmail(identifier);
-    }
-
-    return null;
+    return getUserBridge(schoolDataSource).findUserEmail(identifier);
   }
   
   /* User properties */
 
   public List<UserProperty> listUserProperties(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listUserPropertiesByUser(user.getIdentifier());
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
-    return null;
+    return getUserBridge(schoolDataSource).listUserPropertiesByUser(user.getIdentifier());
   }
   
   public UserProperty getUserProperty(User user, String key) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.getUserProperty(user.getIdentifier(), key);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
-    return null;
+    return getUserBridge(schoolDataSource).getUserProperty(user.getIdentifier(), key);
   }
 
   public UserProperty setUserProperty(User user, String key, String value) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.setUserProperty(user.getIdentifier(), key, value);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
-    return null;
+    return getUserBridge(schoolDataSource).setUserProperty(user.getIdentifier(), key, value);
   }
 
   /* Roles */
 
   public Role findRole(SchoolDataSource schoolDataSource, String identifier) {
-    UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
-    if (userBridge != null) {
-      return userBridge.findRole(identifier);
-    } else {
-      logger.severe("Could not find userBridge for school data source " + schoolDataSource.getIdentifier());
-    }
-
-    return null;
+    return getUserBridge(schoolDataSource).findRole(identifier);
   }
 
   public List<Role> listRoles() {
@@ -264,92 +211,58 @@ public class UserSchoolDataController {
 
   public Role findUserEnvironmentRole(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.findUserEnvironmentRole(user.getIdentifier());
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
-
-    return null;
+    return getUserBridge(schoolDataSource).findUserEnvironmentRole(user.getIdentifier());
   }
 
   /* UserGroups */
 
   public UserGroup findUserGroup(SchoolDataSource schoolDataSource, String identifier) {
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.findUserGroup(identifier);
-      }
-    }
-    return null;
+    return getUserBridge(schoolDataSource).findUserGroup(identifier);
   }
 
   public List<UserGroup> listUserGroups(SchoolDataSource schoolDataSource) {
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listUserGroups();
-      }
-    }
-    return null;
+    return getUserBridge(schoolDataSource).listUserGroups();
   }
 
   /* Group users */
 
   public GroupUser findGroupUser(SchoolDataSource schoolDataSource, String groupIdentifier, String identifier) {
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.findGroupUser(groupIdentifier, identifier);
-      }
-    }
-    return null;
+    return getUserBridge(schoolDataSource).findGroupUser(groupIdentifier, identifier);
   }
   
   public List<GroupUser> listGroupUsersByGroup(UserGroup userGroup){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listGroupUsersByGroup(userGroup.getIdentifier());
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userGroup.getSchoolDataSource()));
     }
-    return null;
+    return getUserBridge(schoolDataSource).listGroupUsersByGroup(userGroup.getIdentifier());
   }
 
   public List<GroupUser> listGroupUsersByGroupAndType(UserGroup userGroup, GroupUserType type){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userGroup.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listGroupUsersByGroupAndType(userGroup.getIdentifier(), type);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userGroup.getSchoolDataSource()));
     }
-    return null;
+    return getUserBridge(schoolDataSource).listGroupUsersByGroupAndType(userGroup.getIdentifier(), type);
   }
   
   public List<UserAddress> listUserAddressses(SchoolDataIdentifier userIdentifier){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listUserAddresses(userIdentifier);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
-    
-    return null;
+    return getUserBridge(schoolDataSource).listUserAddresses(userIdentifier);
   }
   
   public void updateUser(User user) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        schoolDataBridge.updateUser(user);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
+    getUserBridge(schoolDataSource).updateUser(user);
   }
 	
 	public void updateUserAddress(
@@ -361,30 +274,24 @@ public class UserSchoolDataController {
       String country
   ) throws SchoolDataBridgeUnauthorizedException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(addressIdentifier.getDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        schoolDataBridge.updateUserAddress(
-            studentIdentifier,
-            addressIdentifier,
-            street,
-            postalCode,
-            city,
-            country);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", addressIdentifier.getDataSource()));
     }
+    getUserBridge(schoolDataSource).updateUserAddress(
+      studentIdentifier,
+      addressIdentifier,
+      street,
+      postalCode,
+      city,
+      country);
 	}
   
   public List<UserPhoneNumber> listUserPhoneNumbers(SchoolDataIdentifier userIdentifier){
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(userIdentifier.getDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.listUserPhoneNumbers(userIdentifier);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", userIdentifier.getDataSource()));
     }
-    
-    return null;
+    return getUserBridge(schoolDataSource).listUserPhoneNumbers(userIdentifier);
   }
 
   private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
@@ -395,8 +302,7 @@ public class UserSchoolDataController {
         return userSchoolDataBridge;
       }
     }
-
-    return null;
+    throw new SchoolDataBridgeInternalException(String.format("No UserBridge for data source %s", schoolDataSource));
   }
 
   private User findUserByIdentifier(UserSchoolDataBridge userBridge, String identifier) {
@@ -416,42 +322,26 @@ public class UserSchoolDataController {
 
   public String findUsername(User user) throws SchoolDataBridgeUnauthorizedException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        return schoolDataBridge.findUsername(user.getIdentifier());
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
-    
-    return null;
+    return getUserBridge(schoolDataSource).findUsername(user.getIdentifier());
 	}
 	
 	public void updateUserCredentials(User user, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeUnauthorizedException {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-      if (schoolDataBridge != null) {
-        schoolDataBridge.updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
-      }
+    if (schoolDataSource == null) {
+      throw new SchoolDataBridgeInternalException(String.format("Invalid data source %s", user.getSchoolDataSource()));
     }
+    getUserBridge(schoolDataSource).updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
 	}
 	
   public String requestPasswordResetByEmail(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
-    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.requestPasswordResetByEmail(email);
-    }
-    
-    return null;
+    return getUserBridge(schoolDataSource).requestPasswordResetByEmail(email);
   }
 
   public boolean confirmResetPassword(SchoolDataSource schoolDataSource, String resetCode, String newPassword) throws SchoolDataBridgeUnauthorizedException {
-    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
-    if (schoolDataBridge != null) {
-      return schoolDataBridge.confirmResetPassword(resetCode, newPassword);
-    }
-    
-    return false;
+    return getUserBridge(schoolDataSource).confirmResetPassword(resetCode, newPassword);
   }
 
 }
