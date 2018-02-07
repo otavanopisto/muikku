@@ -19,9 +19,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -551,8 +548,8 @@ public class PyramusUpdater {
       try {
         String courseStaffMemberIdentifier = currentStaffMember.getIdentifier();
         String staffMemberIdentifier = currentStaffMember.getUserSchoolDataIdentifier().getUserEntity().getDefaultIdentifier();
-        Long courseStaffMemberId = NumberUtils.toLong(StringUtils.substringAfterLast(courseStaffMemberIdentifier, "-"));
-        Long staffMemberId = NumberUtils.toLong(StringUtils.substringAfterLast(staffMemberIdentifier, "-"));
+        Long courseStaffMemberId = identifierMapper.getPyramusCourseStaffId(courseStaffMemberIdentifier); 
+        Long staffMemberId = identifierMapper.getPyramusStaffId(staffMemberIdentifier);
         fireCourseStaffMemberRemoved(courseStaffMemberId, staffMemberId, courseId);
       }
       catch (Exception e) {
