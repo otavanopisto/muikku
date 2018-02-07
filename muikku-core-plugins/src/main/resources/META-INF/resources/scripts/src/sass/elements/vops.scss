@@ -43,9 +43,11 @@
 
 
 .vops__legend {
-  width: 100%;
-  background-color: #fbfbfb;
+  background-color: $color-vops-legend-background;
   padding: 5px;
+  width: 100%;
+
+
 }
 
 .vops__legend-topic {
@@ -132,7 +134,7 @@
 }
 
 .vops__body {
-  padding: 5px;
+  padding: 5px 40px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -160,13 +162,13 @@
 
 .vops__row-item--text-primary {
   font-family: $text-font-family;
-  font-size: .875;
-  vertical-align: middle;
+  font-size: $vops-row-item-font-size;
   text-align: left;
+  vertical-align: middle;
 }
 
 .vops__row-item--text {
   font-family: $text-font-family;
-  font-size: .875;  
+  font-size: $vops-row-item-font-size;  
   text-align: center;
 }
