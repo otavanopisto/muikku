@@ -4,41 +4,8 @@ import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/index/workspaces';
+import { AllStudentUsersData, TransferCreditType, RecordType } from '~/reducers/main-function/records/records';
 
-interface TransferCreditType {
-  assessorIdentifier: string,
-  courseName: string,
-  courseNumber: number,
-  curriculumIdentifier: string,
-  date: string,
-  gradeIdentifier: string,
-  gradingScaleIdentifier: string,
-  identifier: string,
-  length: number,
-  lengthUnitIdentifier: string,
-  schoolIdentifier: string,
-  studentIdentifier: string,
-  subjectIdentifier: string,
-  verbalAssessment: string
-}
-
-export type RecordType = {
-    groupCurriculumIdentifier?: string,
-    records: Array<{
-      type: "workspace" | "transferCredit",
-      value: WorkspaceType | TransferCreditType
-    }>
-}
-
-export type RecordsOrderedType = Array<RecordType>
-
-export type AllStudentUsersData = {
-    [id: string]: {
-      user: UserWithSchoolDataType,
-      workspaces: RecordsOrderedType
-    }
-  }
-    
 export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersData>;
 
 export interface UpdateAllStudentUsersTriggerType {
@@ -86,9 +53,9 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
         }));
       }));
       
-      let resultingData:AllStudentUsersData = {}
-      users.map((user, index)=>{
-        resultingData[user.id] = {
+      let resultingData:AllStudentUsersData = []
+      users.forEach((user, index)=>{
+        resultingData[index] = {
           user,
           workspaces: null
         }
@@ -96,7 +63,7 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
         let givenTransferCreditsByServer = transferCredits[index];
         
         if (!user.curriculumIdentifier){
-          resultingData[user.id].workspaces = [{
+          resultingData[index].workspaces = [{
             records: (givenWorkspacesByServer as any).concat(givenTransferCreditsByServer).map(()=>{
               
             })
@@ -157,7 +124,7 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
             return self.indexOf(item) == pos;
           })
           
-          resultingData[user.id].workspaces = workspaceOrder.map((curriculumIdentifier: string)=>{
+          resultingData[index].workspaces = workspaceOrder.map((curriculumIdentifier: string)=>{
             return recordById[curriculumIdentifier];
           }).concat([defaultRecords]).filter((record: RecordType)=>!record.records.length);
         }

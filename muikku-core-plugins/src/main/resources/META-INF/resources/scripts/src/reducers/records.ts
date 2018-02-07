@@ -7,8 +7,11 @@ import websocket from './util/websocket';
 import messageCount from './main-function/message-count';
 
 import {combineReducers} from 'redux';
+import records from '~/reducers/main-function/records/records';
 
 export default combineReducers({
+  records,
+  
   notifications,
   i18n,
   locales,
