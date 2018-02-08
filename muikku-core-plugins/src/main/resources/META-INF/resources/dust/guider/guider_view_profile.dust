@@ -40,6 +40,7 @@
 <!--       {/senderHasPicture} -->
 <!--     </div> -->
     <div class="gt-user-details-items lg-flex-cell-full md-flex-cell-full sm-flex-cell-full ">
+    <div class="gt-tool-hide-profile mf-item-tool-btn"><span>Back</span></div>
      <div class="gt-user-details-item">
        <span class="mf-item-details-label gt-user-details-label">{#localize key="plugin.guider.user.details.label.studyTimeEndTitle"/}</span>
        <span class="mf-item-details-value gt-user-details-value">{?studyTimeEnd}{studyTimeEnd|formatDate}{:else}{#localize key="plugin.guider.content.null"/}{/studyTimeEnd}</span>
