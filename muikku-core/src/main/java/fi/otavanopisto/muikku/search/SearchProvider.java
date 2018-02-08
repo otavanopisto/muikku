@@ -23,6 +23,7 @@ public interface SearchProvider {
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults);
   public SearchResult searchWorkspaces(String schoolDataSource, String subject, int courseNumber);
 
+  public SearchResult findUser(Long userEntityId, boolean includeInactive);
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, Collection<Long> groups,
       Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers, Boolean includeInactiveStudents, Boolean includeHidden, 
       Boolean onlyDefaultUsers, int start, int maxResults);
