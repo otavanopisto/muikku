@@ -125,12 +125,12 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="container container--full">
+      return <div className="container container--dialog-buttons">
         <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
-         {this.props.i18n.text.get('TODO CANCEL')}
+         {this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.cancel')}
         </Link>
         <Link className="button button--standard-ok" onClick={this.share.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('TODO SHARE')}
+          {this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.save')}
         </Link>
       </div>
     }
@@ -145,7 +145,7 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
     //TODO UKKONEN
     //PLEASE MAKE THIS DIALOG LARGER, IT HAS AN INPUT CONTACTS AUTOFILL AND ITS A PAIN
     return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onOpen={this.getShares} modifier="guider" 
-     title={this.props.i18n.text.get('TODO SHARE LABEL')}
+     title={this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.title', this.props.label.name)}
      content={content} footer={footer}>{this.props.children}</Dialog>
   }
 }

@@ -11,6 +11,20 @@
 	width: 100%;
 }
 
+.container--dialog-buttons {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.container--dialog-fields {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+
 .container--profile-image-in-menu {
   border-radius: 100%;
   height: 35px;
