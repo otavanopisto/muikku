@@ -19,7 +19,7 @@ export interface TransferCreditType {
   verbalAssessment: string
 }
 
-export type RecordType = {
+export type RecordGroupType = {
     groupCurriculumIdentifier?: string,
     records: Array<{
       type: "workspace" | "transferCredit",
@@ -27,7 +27,7 @@ export type RecordType = {
     }>
 }
 
-export type RecordsOrderedType = Array<RecordType>
+export type RecordsOrderedType = Array<RecordGroupType>
 
 export type AllStudentUsersData = Array<{
   user: UserWithSchoolDataType,
