@@ -134,7 +134,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         
           {/*TODO please translate this*/}
             <Link className="button button--fatal button--guider-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
-              {this.state.removed ? "TODO Label Removed" : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
+              {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
             </Link>
             <GuiderLabelShareDialog label={this.props.label}><Link className="button button--success button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
               {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
