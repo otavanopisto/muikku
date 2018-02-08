@@ -14,7 +14,7 @@ export interface UpdateAllStudentUsersTriggerType {
 
 let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllStudentUsers(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    try {
+    //try {
       let userId:number = getState().status.userId;
       let users:Array<UserWithSchoolDataType> = await promisify(mApi().user.students.read({
         userEntityId: userId,
@@ -63,10 +63,9 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
         let givenTransferCreditsByServer = transferCredits[index];
         
         if (!user.curriculumIdentifier){
+          let recordsResult = (givenWorkspacesByServer as any).concat(givenTransferCreditsByServer);
           resultingData[index].workspaces = [{
-            records: (givenWorkspacesByServer as any).concat(givenTransferCreditsByServer).map(()=>{
-              
-            })
+            records: recordsResult.length ? recordsResult : []
           }];
         } else {
           let recordById:{[key: string]: RecordType} = {};
@@ -124,9 +123,10 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
             return self.indexOf(item) == pos;
           })
           
+          debugger;
           resultingData[index].workspaces = workspaceOrder.map((curriculumIdentifier: string)=>{
             return recordById[curriculumIdentifier];
-          }).concat([defaultRecords]).filter((record: RecordType)=>!record.records.length);
+          }).concat([defaultRecords]).filter((record: RecordType)=>(record && record.records.length));
         }
       });
       
@@ -134,9 +134,9 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
         type: "UPDATE_ALL_STUDENT_USERS_DATA",
         payload: resultingData
       })
-    } catch (err){
-      dispatch(actions.displayNotification(err.message, 'error'));
-    }
+//    } catch (err){
+//      dispatch(actions.displayNotification(err.message, 'error'));
+//    }
   }
 }
 
