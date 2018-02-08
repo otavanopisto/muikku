@@ -99,7 +99,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
-    WorkspaceAssessmentState assessmentState = WorkspaceAssessmentState.UNASSESSED;
+    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
       assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);

@@ -114,24 +114,24 @@ public class AssessmentRequestController {
     if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
       // Has assessment and no request, or the request is older
       GradingScale gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
-      GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier()); 
-      return grade.isPassingGrade() ? WorkspaceAssessmentState.PASS : WorkspaceAssessmentState.FAIL;
+      GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier());
+      return grade.isPassingGrade() ? new WorkspaceAssessmentState(WorkspaceAssessmentState.PASS) : new WorkspaceAssessmentState(WorkspaceAssessmentState.FAIL);
     }
     else if (latestRequest != null && (latestAssessment == null || latestAssessment.getDate().before(latestRequest.getDate()))) {
       // Has request and no assessment, or the assessment is older
       if (latestAssessment == null) {
-        return WorkspaceAssessmentState.PENDING;
+        return new WorkspaceAssessmentState(WorkspaceAssessmentState.PENDING, latestRequest.getDate());
       }
       else if (Boolean.TRUE.equals(latestAssessment.getPassing())) {
-        return WorkspaceAssessmentState.PENDING_PASS;
+        return new WorkspaceAssessmentState(WorkspaceAssessmentState.PENDING_PASS, latestRequest.getDate());
       }
       else {
-        return WorkspaceAssessmentState.PENDING_FAIL;
+        return new WorkspaceAssessmentState(WorkspaceAssessmentState.PENDING_FAIL, latestRequest.getDate());
       }
     }
     else {
       // Has neither assessment nor request
-      return WorkspaceAssessmentState.UNASSESSED;
+      return new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
     }
   }
 
