@@ -9,17 +9,16 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.AccessTimeout;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.transaction.UserTransaction;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,75 +28,68 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginD
 @Startup
 @Singleton
 @ApplicationScoped
+@TransactionManagement(value=TransactionManagementType.BEAN)
 public class PyramusScheduler {
 
-  private static final int INITIAL_TIMEOUT = 1000 * 300; // 5 minutes
-  private static final int TIMEOUT = 1000 * 30; // 30 sec
-  private static final int ERROR_TIMEOUT = 1000 * 60; // 60 sec
+  private static final int INITIAL_TIMEOUT = 300; // 5 minutes
+  private static final int TIMEOUT = 60; // 1 minute
 
   @Any
   @Inject
   private Instance<PyramusUpdateScheduler> updateSchedulers;
 
-  @Resource
-  private TimerService timerService;
-
   @Inject
   private Logger logger;
-
+  
+  @Resource
+  private ManagedScheduledExecutorService scheduledExecutorService;
+  
+  @Resource
+  private UserTransaction userTransaction;
+  
   @PostConstruct
   public void init() {
-    logger.info(String.format("Launching PyramusScheduler in %dms", INITIAL_TIMEOUT));
     if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE || "true".equals(System.getProperty("tests.running"))) {
       return;
     }
+    logger.info(String.format("Launching PyramusScheduler in %ds", INITIAL_TIMEOUT));
     schedulerIndex = 0;
-    startTimer(INITIAL_TIMEOUT);
+    scheduledExecutorService.scheduleWithFixedDelay(this::synchronizePyramusData, INITIAL_TIMEOUT, TIMEOUT, TimeUnit.SECONDS);
   }
 
-  @Timeout
-  @AccessTimeout(value = 2, unit = TimeUnit.MINUTES)
-  public void syncTimeout(Timer timer) {
+  private void synchronizePyramusData() {
     try {
-      synchronizePyramusData();
-      startTimer(TIMEOUT);
-    }
-    catch (Exception ex) {
-      logger.log(Level.SEVERE, "Synchronization failed.", ex);
-      startTimer(ERROR_TIMEOUT);
-    }
-  }
-
-  public void synchronizePyramusData() {
-    @SuppressWarnings("unchecked")
-    List<PyramusUpdateScheduler> schedulers = IteratorUtils.toList(updateSchedulers.iterator());
-    Collections.sort(schedulers, new Comparator<PyramusUpdateScheduler>() {
-      @Override
-      public int compare(PyramusUpdateScheduler o1, PyramusUpdateScheduler o2) {
-        return o1.getPriority() - o2.getPriority();
-      }
-    });
-
-    PyramusUpdateScheduler updateScheduler = schedulers.get(schedulerIndex);
-    String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
-    logger.info(String.format("Running %s", schedulerName));
-    
-    try {
+      userTransaction.begin();
+      
+      @SuppressWarnings("unchecked")
+      List<PyramusUpdateScheduler> schedulers = IteratorUtils.toList(updateSchedulers.iterator());
+      Collections.sort(schedulers, new Comparator<PyramusUpdateScheduler>() {
+        @Override
+        public int compare(PyramusUpdateScheduler o1, PyramusUpdateScheduler o2) {
+          return o1.getPriority() - o2.getPriority();
+        }
+      });
+  
+      PyramusUpdateScheduler updateScheduler = schedulers.get(schedulerIndex);
+      String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
+      logger.info(String.format("Running %s", schedulerName));
+      
       updateScheduler.synchronize();
+  
+      schedulerIndex = (schedulerIndex + 1) % schedulers.size();
+
+      userTransaction.commit();
     }
-    catch (Exception ex) {
-      logger.log(Level.SEVERE, String.format("%s failed", schedulerName, ex));
+    catch (Exception e) {
+      logger.log(Level.WARNING, "Pyramus synchronization failed", e);
+      try {
+        userTransaction.rollback();
+      }
+      catch (Exception rbe) {
+        logger.log(Level.WARNING, "Pyramus synchronization rollback failed", e);
+      }      
     }
-
-    schedulerIndex = (schedulerIndex + 1) % schedulers.size();
   }
-
-  private void startTimer(int duration) {
-    TimerConfig timerConfig = new TimerConfig();
-    timerConfig.setPersistent(false);
-    timerService.createSingleActionTimer(duration, timerConfig);
-  }
-
   private int schedulerIndex;
 
 }
