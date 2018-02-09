@@ -4,17 +4,32 @@ import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/index/workspaces';
-import { AllStudentUsersData, TransferCreditType, RecordGroupType } from '~/reducers/main-function/records/records';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
 
-export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersData>;
+export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
+export type UPDATE_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
+export type UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION = SpecificActionType<"UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
 
-export interface UpdateAllStudentUsersTriggerType {
+export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   ():AnyActionType
 }
 
-let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllStudentUsers(){
+let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRecordsTriggerType = function updateAllStudentUsersAndSetViewToRecords(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
+      dispatch({
+        type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+        payload: <TranscriptOfRecordLocationType>"RECORDS"
+      });
+      
+      if (getState().records.userDataStatus !== "WAIT"){
+        return;
+      }
+      
+      dispatch({
+        type: "UPDATE_ALL_STUDENT_USERS_DATA_STATUS",
+        payload: <AllStudentUsersDataStatusType>"LOADING"
+      });
       
       //OK let me try to explain this :<
       
@@ -79,7 +94,7 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
       }));
       
       //so now we are here, we need to get the data and order it, this is the weird part
-      let resultingData:AllStudentUsersData = []
+      let resultingData:AllStudentUsersDataType = []
       
       //ok so we loop for user
       users.forEach((user, index)=>{
@@ -195,12 +210,16 @@ let updateAllStudentUsers:UpdateAllStudentUsersTriggerType = function updateAllS
       dispatch({
         type: "UPDATE_ALL_STUDENT_USERS_DATA",
         payload: resultingData
-      })
+      });
+      dispatch({
+        type: "UPDATE_ALL_STUDENT_USERS_DATA_STATUS",
+        payload: <AllStudentUsersDataStatusType>"READY"
+      });
     } catch (err){
       dispatch(actions.displayNotification(err.message, 'error'));
     }
   }
 }
 
-export default {updateAllStudentUsers}
-export {updateAllStudentUsers}
+export default {updateAllStudentUsersAndSetViewToRecords}
+export {updateAllStudentUsersAndSetViewToRecords}

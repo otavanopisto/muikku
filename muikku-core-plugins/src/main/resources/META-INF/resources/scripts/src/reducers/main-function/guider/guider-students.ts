@@ -1,5 +1,5 @@
 import {ActionType} from '~/actions';
-import { UserWithSchoolDataType, UserGroupListType } from 'reducers/main-function/user-index';
+import { UserWithSchoolDataType, UserGroupListType, UserFileType } from '~/reducers/main-function/user-index';
 import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
 
 //TODO remove or comment out, this is mocking code
@@ -77,16 +77,6 @@ export interface GuiderStudentUserAddressType {
   defaultAddress: boolean
 }
 
-export interface GuiderStudentUserFileType {
-  id: number,
-  userEntityId: number,
-  fileName: string,
-  contentType: string,
-  title: string,
-  description: string,
-  archived: boolean
-}
-
 export interface GuiderVOPSRowItemType {
   courseNumber: number,
   description?: string,
@@ -158,7 +148,7 @@ export interface GuiderStudentUserProfileType {
   emails: Array<GuiderStudentUserProfileEmailType>,
   phoneNumbers: Array<GuiderStudentUserProfilePhoneType>,
   addresses: Array<GuiderStudentUserAddressType>,
-  files: Array<GuiderStudentUserFileType>,
+  files: Array<UserFileType>,
   usergroups: UserGroupListType,
   vops: GuiderVOPSDataType,
   hops: GuiderHOPSDataType,

@@ -99,6 +99,16 @@ export interface UserIndexType {
   usersBySchoolData: UsersBySchoolDataType
 }
 
+export interface UserFileType {
+  id: number,
+  userEntityId: number,
+  fileName: string,
+  contentType: string,
+  title: string,
+  description: string,
+  archived: boolean
+}
+
 export default function userIndex(state:UserIndexType={
   users: {},
   groups: {},

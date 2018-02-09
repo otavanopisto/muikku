@@ -8,7 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
-import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType, GuiderStudentUserFileType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 
@@ -17,6 +17,7 @@ import FileUploader from '~/components/general/file-uploader';
 import { AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider/guider-students';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
+import { UserFileType } from '~/reducers/main-function/user-index';
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -264,7 +265,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guiderStudentsCurrent.basic.id}
         onFileError={(file: File, err: Error)=>{
           this.props.displayNotification(err.message, "error");
-        }} onFileSuccess={(file: File, data: GuiderStudentUserFileType)=>{
+        }} onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
         }}>
         <span>{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>

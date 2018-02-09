@@ -3,13 +3,33 @@ import reducer from '~/reducers/records';
 import runApp from '~/run';
 import {Action} from 'redux';
 
+import * as queryString from 'query-string';
+
 import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
-import { updateAllStudentUsers } from '~/actions/main-function/records/records';
+import { updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records/records';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.records.pageTitle')));
-store.dispatch(<Action>updateAllStudentUsers())
+
+function loadCurrentLocation(){
+  let dataSplitted:Array<string> = window.location.hash.split("?");
+  let givenLocation = dataSplitted[0].split("/")[0];
+  let originalData:any = queryString.parse(dataSplitted[1] || "", {arrayFormat: 'bracket'});
+
+  if (!givenLocation && !originalData.w){
+    store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
+    return;
+  } else if (!givenLocation){
+    
+  }
+}
+
+window.addEventListener("hashchange", ()=>{
+  loadCurrentLocation();
+}, false);
+
+loadCurrentLocation();

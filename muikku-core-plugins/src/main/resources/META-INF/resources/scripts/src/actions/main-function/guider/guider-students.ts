@@ -1,9 +1,9 @@
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderStudentUserFileType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
 import { loadStudentsHelper } from './guider-students/helpers';
 import promisify from '~/util/promisify';
-import { UserGroupListType } from 'reducers/main-function/user-index';
+import { UserGroupListType, UserFileType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/index/workspaces';
@@ -19,8 +19,8 @@ export type SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD = SpecificActionType<"SET_CURR
 export type SET_CURRENT_GUIDER_STUDENT_PROP = SpecificActionType<"SET_CURRENT_GUIDER_STUDENT_PROP", {property: string, value: any}>
 export type UPDATE_CURRENT_GUIDER_STUDENT_STATE = SpecificActionType<"UPDATE_CURRENT_GUIDER_STUDENT_STATE", GuiderCurrentStudentStateType>
 
-export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", GuiderStudentUserFileType>
-export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", GuiderStudentUserFileType>
+export type ADD_FILE_TO_CURRENT_STUDENT = SpecificActionType<"ADD_FILE_TO_CURRENT_STUDENT", UserFileType>
+export type REMOVE_FILE_FROM_CURRENT_STUDENT = SpecificActionType<"REMOVE_FILE_FROM_CURRENT_STUDENT", UserFileType>
 
 export type ADD_GUIDER_LABEL_TO_USER = SpecificActionType<"ADD_GUIDER_LABEL_TO_USER", {
   studentId: string,
@@ -36,6 +36,7 @@ export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LA
 export interface LoadStudentsTriggerType {
   (filters: GuiderStudentsFilterType): AnyActionType
 }
+
 export interface LoadMoreStudentsTriggerType {
   (): AnyActionType
 }
@@ -69,11 +70,11 @@ export interface RemoveGuiderLabelFromSelectedUsersTriggerType {
 }
 
 export interface AddFileToCurrentStudentTriggerType {
-  (file: GuiderStudentUserFileType): AnyActionType
+  (file: UserFileType): AnyActionType
 }
 
 export interface RemoveFileFromCurrentStudentTriggerType {
-  (file: GuiderStudentUserFileType): AnyActionType
+  (file: UserFileType): AnyActionType
 }
 
 let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
@@ -157,7 +158,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "addresses", value: addresses}})
           }),
         promisify(mApi().guider.users.files.read(id), 'callback')()
-          .then((files:Array<GuiderStudentUserFileType>)=>{
+          .then((files:Array<UserFileType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
           }),
         promisify(mApi().records.vops.read(id), 'callback')()

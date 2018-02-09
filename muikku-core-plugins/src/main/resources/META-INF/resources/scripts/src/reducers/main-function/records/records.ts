@@ -1,4 +1,4 @@
-import { UserWithSchoolDataType } from "~/reducers/main-function/user-index";
+import { UserWithSchoolDataType, UserFileType } from "~/reducers/main-function/user-index";
 import { WorkspaceType } from "~/reducers/main-function/index/workspaces";
 import { ActionType } from "actions";
 
@@ -29,21 +29,49 @@ export type RecordGroupType = {
 
 export type RecordsOrderedType = Array<RecordGroupType>
 
-export type AllStudentUsersData = Array<{
+export type AllStudentUsersDataType = Array<{
   user: UserWithSchoolDataType,
   workspaces: RecordsOrderedType
 }>
 
-export interface Records {
-  userData: AllStudentUsersData
+export interface GradingScaleInfoType {
+  scale: string,
+  grade: string,
+  passing: boolean
 }
 
+export interface RecordsGradesType {
+  [key: string]: GradingScaleInfoType
+}
+
+export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY";
+
+export interface Records {
+  userData: AllStudentUsersDataType,
+  userDataStatus: AllStudentUsersDataStatusType,
+  studyStartDate: string,
+  grades: RecordsGradesType,
+  files: Array<UserFileType>,
+  location?: TranscriptOfRecordLocationType
+}
+
+export type TranscriptOfRecordLocationType = "RECORDS" | "HOPS" | "VOPS";
+
 export default function records(state: Records={
-    userData: []
+    userData: [],
+    userDataStatus: "WAIT",
+    location: null,
+    files: (window as any).FILES,
+    grades: (window as any).GRADES,
+    studyStartDate: (window as any).STUDY_START_DATE || null
 }, action: ActionType): Records {
   if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA"){
     return Object.assign({}, state, {
       userData: action.payload
+    });
+  } else if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA_STATUS"){
+    return Object.assign({}, state, {
+      userDataStatus: action.payload
     });
   }
   return state;
