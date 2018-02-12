@@ -1,14 +1,14 @@
 {#progress}
   {?evaluablesDonePercent}
     <div class="tr-item-header-detail progressbar">
-      <div class="tr-assignment-progressbar" style="width: calc(2 * {evaluablesDonePercent}%)"></div>
+      <div class="tr-assignment-progressbar" style="width: calc({evaluablesDonePercent}%)"></div>
       <div class="tr-assignment-progressbar-text">{evaluablesDone}/{evaluablesTotal}</div>
     </div>
   {/evaluablesDonePercent}  
   
   {?exercisesDonePercent}
     <div class="tr-item-header-detail progressbar">
-      <div class="tr-excercise-progressbar" style="width: calc(2 * {exercisesDonePercent}%)"></div>
+      <div class="tr-excercise-progressbar" style="width: calc({exercisesDonePercent}%)"></div>
       <div class="tr-excercise-progressbar-text">{exercisesAnswered}/{exercisesTotal}</div>
     </div>
   {/exercisesDonePercent}
