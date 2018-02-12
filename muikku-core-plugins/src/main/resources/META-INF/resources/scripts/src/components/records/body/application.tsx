@@ -6,9 +6,8 @@ import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import { i18nType } from 'reducers/base/i18n';
 
-import Students from './application/students';
-import Toolbar from './application/toolbar';
-import CurrentStudent from './application/current-student';
+import Records from './application/records';
+import CurrentRecord from './application/current-record';
 
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,
@@ -24,16 +23,12 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
   }
   
   render(){
-    let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.guider.guider')}</h2>
-    let toolbar = <Toolbar/>
-    let primaryOption = <select className="form-field__select form-field__select--primary-function">
-      <option>TODO: caption</option>
-    </select>
+    let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.records.records')}</h2>
   
     return (<div className="container container--full">
-      <ApplicationPanel modifier="coursepicker" primaryOption={primaryOption} toolbar={toolbar} title={title} asideBefore={this.props.aside}>
-        <Students/>
-        <CurrentStudent/>
+      <ApplicationPanel modifier="records" title={title} asideBefore={this.props.aside}>
+        <Records/>
+        <CurrentRecord/>
       </ApplicationPanel>
     </div>);
   }

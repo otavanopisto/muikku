@@ -44,27 +44,29 @@ export interface RecordsGradesType {
   [key: string]: GradingScaleInfoType
 }
 
-export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY";
+export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
-export interface Records {
+export interface RecordsType {
   userData: AllStudentUsersDataType,
   userDataStatus: AllStudentUsersDataStatusType,
   studyStartDate: string,
   grades: RecordsGradesType,
   files: Array<UserFileType>,
+  current: any,
   location?: TranscriptOfRecordLocationType
 }
 
 export type TranscriptOfRecordLocationType = "RECORDS" | "HOPS" | "VOPS";
 
-export default function records(state: Records={
+export default function records(state: RecordsType={
     userData: [],
     userDataStatus: "WAIT",
     location: null,
     files: (window as any).FILES,
     grades: (window as any).GRADES,
-    studyStartDate: (window as any).STUDY_START_DATE || null
-}, action: ActionType): Records {
+    studyStartDate: (window as any).STUDY_START_DATE || null,
+    current: null
+}, action: ActionType): RecordsType {
   if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA"){
     return Object.assign({}, state, {
       userData: action.payload
@@ -72,6 +74,10 @@ export default function records(state: Records={
   } else if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA_STATUS"){
     return Object.assign({}, state, {
       userDataStatus: action.payload
+    });
+  } else if (action.type === "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION"){
+    return Object.assign({}, state, {
+      location: action.payload
     });
   }
   return state;

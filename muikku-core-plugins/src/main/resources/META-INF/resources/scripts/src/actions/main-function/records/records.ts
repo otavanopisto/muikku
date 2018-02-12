@@ -217,6 +217,10 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       });
     } catch (err){
       dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch({
+        type: "UPDATE_ALL_STUDENT_USERS_DATA_STATUS",
+        payload: <AllStudentUsersDataStatusType>"ERROR"
+      });
     }
   }
 }
