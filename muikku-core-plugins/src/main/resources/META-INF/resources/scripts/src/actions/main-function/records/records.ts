@@ -102,7 +102,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
         //we add that user to the resulting array, in such order
         resultingData[index] = {
           user,
-          workspaces: null
+          records: null
         }
         
         //we get the results we got from the serveh
@@ -112,9 +112,9 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
         //if the user does not have a curriculum identifier then the order is the workspaces is fairly irrelevant
         //we will just display them as they came from the server and don't tag them to belong to any curriculum
         if (!user.curriculumIdentifier){
-          let recordsResult = (givenWorkspacesByServer as any).concat(givenTransferCreditsByServer);
-          resultingData[index].workspaces = [{
-            records: recordsResult.length ? recordsResult : []
+          resultingData[index].records = [{
+            workspaces: givenWorkspacesByServer,
+            transferCredits: givenTransferCreditsByServer
           }];
           
         //here we need that and we need to order and group them
@@ -125,7 +125,8 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           
           //and this will be the default group
           let defaultRecords: RecordGroupType = {
-             records: []
+            workspaces: [],
+            transferCredits: []
           }
           
           //so we start with the workspace, we need each id as ordered
@@ -136,27 +137,19 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           
             //if there is none it goes to the default record one
             if (!curriculumIdentifier){
-              defaultRecords.records.push({
-                type: "workspace",
-                value: workspace
-              });
+              defaultRecords.workspaces.push(workspace);
               
             //if we don't have it set in the record by id object then we need to create a new record group with that record
             } else if (!recordById[curriculumIdentifier]){
               recordById[curriculumIdentifier] = {
                 groupCurriculumIdentifier: curriculumIdentifier,
-                records: [{
-                  type: "workspace",
-                  value: workspace
-                }]
+                workspaces: [workspace],
+                transferCredits: []
               }
               
             //otherwise we add that record to the record group
             } else {
-              recordById[curriculumIdentifier].records.push({
-                type: "workspace",
-                value: workspace
-              });
+              recordById[curriculumIdentifier].workspaces.push(workspace);
             }
             
             //We fetch the given id
@@ -167,23 +160,15 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           let recordsIdsOrdered = givenTransferCreditsByServer.map((transferCredit)=>{
             let curriculumIdentifier:string = transferCredit.curriculumIdentifier;
             if (!curriculumIdentifier){
-              defaultRecords.records.push({
-                type: "transferCredit",
-                value: transferCredit
-              });
+              defaultRecords.transferCredits.push(transferCredit);
             } else if (!recordById[curriculumIdentifier]){
               recordById[curriculumIdentifier] = {
                 groupCurriculumIdentifier: curriculumIdentifier,
-                records: [{
-                  type: "transferCredit",
-                  value: transferCredit
-                }]
+                workspaces: [],
+                transferCredits: [transferCredit]
               }
             } else {
-              recordById[curriculumIdentifier].records.push({
-                type: "transferCredit",
-                value: transferCredit
-              });
+              recordById[curriculumIdentifier].transferCredits.push(transferCredit);
             }
             return curriculumIdentifier;
           });
@@ -200,9 +185,9 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           //to filter, sometimes there might be no record at all eg, the user curriculum identifier has no workspace or
           //transfer credit with that id; or it might be empty, eg, as the default record hold no records at all,
           //we want to filter those cases out
-          resultingData[index].workspaces = workspaceOrder.map((curriculumIdentifier: string)=>{
+          resultingData[index].records = workspaceOrder.map((curriculumIdentifier: string)=>{
             return recordById[curriculumIdentifier];
-          }).concat([defaultRecords]).filter((record: RecordGroupType)=>(record && record.records.length));
+          }).concat([defaultRecords]).filter((record: RecordGroupType)=>(record && record.workspaces.length + record.transferCredits.length));
         }
       });
       

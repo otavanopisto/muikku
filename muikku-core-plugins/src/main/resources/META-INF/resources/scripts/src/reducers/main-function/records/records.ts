@@ -21,17 +21,15 @@ export interface TransferCreditType {
 
 export type RecordGroupType = {
     groupCurriculumIdentifier?: string,
-    records: Array<{
-      type: "workspace" | "transferCredit",
-      value: WorkspaceType | TransferCreditType
-    }>
+    workspaces: Array<WorkspaceType>,
+    transferCredits: Array<TransferCreditType>
 }
 
 export type RecordsOrderedType = Array<RecordGroupType>
 
 export type AllStudentUsersDataType = Array<{
   user: UserWithSchoolDataType,
-  workspaces: RecordsOrderedType
+  records: RecordsOrderedType
 }>
 
 export interface GradingScaleInfoType {

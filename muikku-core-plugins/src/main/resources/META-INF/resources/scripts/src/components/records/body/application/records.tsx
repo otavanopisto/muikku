@@ -35,6 +35,33 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     }
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
+      <div className="application-list">
+        {this.props.records.userData.map((data)=>{
+          let user = data.user;
+          let records = data.records;
+          
+          return <div key={data.user.id}>
+            <h2>{user.studyProgrammeName}</h2>
+            {records.map((record, index)=>{
+              //TODO remember to add the curriculum reducer information to give the actual curriculum name somehow, this just gives the id
+              return <div key={record.groupCurriculumIdentifier || index}>
+                {record.groupCurriculumIdentifier ? <h3>{record.groupCurriculumIdentifier}</h3> : null}
+                {record.workspaces.map((workspace)=>{
+                  return <div key={workspace.id}>
+                    {workspace.name}
+                  </div>
+                })}
+                {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
+                {record.transferCredits.map((credit)=>{
+                  return <div key={credit.date}>
+                    {credit.courseName}
+                  </div>
+                })}
+              </div>
+            })}
+          </div>
+        })}
+      </div>
     </BodyScrollKeeper>
   }
 }
@@ -42,7 +69,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: state.records,
   }
 };
 
