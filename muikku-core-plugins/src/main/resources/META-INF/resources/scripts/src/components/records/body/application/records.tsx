@@ -20,6 +20,8 @@ interface RecordsProps {
 interface RecordsState {
 }
 
+let storedCurriculumIndex:any = {};
+
 class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
     super(props);
@@ -34,6 +36,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       return <div className="empty"><span>{"ERROR"}</span></div>
     }
     
+    if (Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
+      this.props.records.curriculums.forEach((curriculum)=>{
+        storedCurriculumIndex[curriculum.identifier] = curriculum.name;
+      });
+    }
+    
     return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
       <div className="application-list">
         {this.props.records.userData.map((data)=>{
@@ -45,7 +53,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             {records.map((record, index)=>{
               //TODO remember to add the curriculum reducer information to give the actual curriculum name somehow, this just gives the id
               return <div key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <h3>{record.groupCurriculumIdentifier}</h3> : null}
+                {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
                   return <div key={workspace.id}>
                     {workspace.name}

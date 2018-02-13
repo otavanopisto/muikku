@@ -9,11 +9,13 @@ import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
 import { updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records/records';
+import { updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.records.pageTitle')));
+store.dispatch(<Action>updateCurriculumFilters());
 
 function loadCurrentLocation(){
   let dataSplitted:Array<string> = window.location.hash.split("?");
