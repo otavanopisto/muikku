@@ -11,6 +11,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
+import Link from '~/components/general/link';
 
 interface RecordsProps {
   i18n: i18nType,
@@ -69,6 +70,20 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             })}
           </div>
         })}
+      </div>
+      <div className="TODO files">
+        {this.props.records.files.length ?
+          <div>
+            {this.props.records.files.map((file)=>{
+              return <Link key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>
+                {file.title}
+              </Link>
+            })}
+          </div> :
+          <div>{
+            this.props.i18n.text.get("TODO no files")
+          }</div>
+        }
       </div>
     </BodyScrollKeeper>
   }
