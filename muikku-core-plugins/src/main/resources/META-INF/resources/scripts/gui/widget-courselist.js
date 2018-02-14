@@ -1,8 +1,8 @@
-/* global MUIKKU_LOGGED_USER_ID */
+/* global MUIKKU_LOGGED_USER,MUIKKU_LOGGED_USER_ID */
 $(document).ready(function(){
   mApi().workspace.workspaces
     .read({ userId: MUIKKU_LOGGED_USER_ID })
-    .callback(function (err, workspaces) {
+    .callback(function(err, workspaces) {
       if (!err) {
         renderDustTemplate('frontpage/widget_workspaces.dust', {
           isStudent: MUIKKU_LOGGED_USER.indexOf('STAFF') == -1,
