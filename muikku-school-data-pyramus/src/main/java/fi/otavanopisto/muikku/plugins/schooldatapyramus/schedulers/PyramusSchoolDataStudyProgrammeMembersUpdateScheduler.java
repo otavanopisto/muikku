@@ -26,16 +26,16 @@ public class PyramusSchoolDataStudyProgrammeMembersUpdateScheduler extends Pyram
   }
   
   public void synchronize() {
-    int offset = getOffset();
+    int currentOffset = getOffset();
     int count = 0;
     try {
-      logger.fine("Synchronizing Pyramus study programme members (" + offset + ")");
-      int result = pyramusUpdater.updateStudyProgrammeMembers(offset, BATCH_SIZE);
+      logger.fine("Synchronizing Pyramus study programme members (" + currentOffset + ")");
+      updateOffset(currentOffset + BATCH_SIZE);
+      int result = pyramusUpdater.updateStudyProgrammeMembers(currentOffset, BATCH_SIZE);
       if (result == -1) {
         updateOffset(0);
       } else {
         count = result;
-        updateOffset(offset + BATCH_SIZE);
       }
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus students", count));
