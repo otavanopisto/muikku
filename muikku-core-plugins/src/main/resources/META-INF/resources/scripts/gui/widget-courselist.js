@@ -1,11 +1,8 @@
 $(document).ready(function(){
-  mApi({async: false}).workspace.workspaces
+  mApi().workspace.workspaces
     .read({ userId: MUIKKU_LOGGED_USER_ID })
-    .callback( function (err, workspaces) {
-    	if (err) {
-    	  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-    	}
-    	else {
+    .callback(function (err, workspaces) {
+    	if (!err) {
     	  renderDustTemplate('frontpage/widget_workspaces.dust', {
         	isStudent: MUIKKU_LOGGED_USER.indexOf('STAFF') == -1,
           workspaces: workspaces
