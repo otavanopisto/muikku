@@ -18,32 +18,31 @@
         {/passed}
         {#progress}
           {#assessmentState}
-		    {@select key=state}
-		    {@eq value="pending"}{/eq}
-		    {@eq value="pending_pass"}{/eq}
-		    {@eq value="pending_fail"}{/eq}
-		    {@any}
-		      <div class="tr-item-header-detail date sm-flex-hide"><span></span></div>
-		      <div class="tr-item-header-detail submitted" title='{#localize key="plugin.records.workspace.pending" arg0=date /}'><span class="icon-assessment-pending"></span></div>
-		    {/any}
-		    {/select}
-		  {/assessmentState} 
-		{/progress} 
-        {:else}
-        
+            {@select key=state}
+              {@eq value="pending"}{/eq}
+              {@eq value="pending_pass"}{/eq}
+              {@eq value="pending_fail"}{/eq}
+              {@any}
+              <div class="tr-item-header-detail date sm-flex-hide"><span></span></div>
+              <div class="tr-item-header-detail submitted" title='{#localize key="plugin.records.workspace.pending" arg0=date /}'><span class="icon-assessment-pending"></span></div>
+            {/any}
+            {/select}
+          {/assessmentState} 
+        {/progress} 
+      {:else}
         {#progress}
           {#assessmentState}
-		    {@select key=state}
-		    {@eq value="pending"}{/eq}
-		    {@eq value="pending_pass"}{/eq}
-		    {@eq value="pending_fail"}{/eq}
-		    {@any}
-		      <div class="tr-item-header-detail date sm-flex-hide"><span></span></div>
-		      <div class="tr-item-header-detail submitted" title='{#localize key="plugin.records.workspace.pending" arg0=date /}'><span class="icon-assessment-pending"></span></div>
-		    {/any}
-		    {@none}
-              {>"records/records_workspace_progress.dust"/}
-            {/none}
+            {@select key=state}
+              {@eq value="pending"}{/eq}
+              {@eq value="pending_pass"}{/eq}
+              {@eq value="pending_fail"}{/eq}
+              {@any}
+                <div class="tr-item-header-detail date sm-flex-hide"><span></span></div>
+                <div class="tr-item-header-detail submitted" title='{#localize key="plugin.records.workspace.pending" arg0=date /}'><span class="icon-assessment-pending"></span></div>
+              {/any}
+              {@none}
+                {>"records/records_workspace_progress.dust"/}
+              {/none}
             {/select}
           {/assessmentState}
         {/progress}  
