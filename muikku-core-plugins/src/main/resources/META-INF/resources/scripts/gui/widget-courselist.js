@@ -1,4 +1,4 @@
-/* global MUIKKU_LOGGED_USER */
+/* global MUIKKU_LOGGED_USER_ID */
 $(document).ready(function(){
   mApi().workspace.workspaces
     .read({ userId: MUIKKU_LOGGED_USER_ID })
