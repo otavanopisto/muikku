@@ -20,7 +20,7 @@ $(document).ready(function() {
     });
   }
     
-  $(document).on("Communicator:newmessagereceived", function (event, data) {
+  $(document).on("Communicator:newmessagereceived", function() {
     _refreshMessagesWidgetMessagesList();
   });
   

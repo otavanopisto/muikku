@@ -2,9 +2,9 @@ $(document).ready(function(){
   mApi().workspace.workspaces
     .read({ userId: MUIKKU_LOGGED_USER_ID })
     .callback(function (err, workspaces) {
-    	if (!err) {
-    	  renderDustTemplate('frontpage/widget_workspaces.dust', {
-        	isStudent: MUIKKU_LOGGED_USER.indexOf('STAFF') == -1,
+      if (!err) {
+        renderDustTemplate('frontpage/widget_workspaces.dust', {
+          isStudent: MUIKKU_LOGGED_USER.indexOf('STAFF') == -1,
           workspaces: workspaces
         },
         function (text) {
@@ -18,7 +18,7 @@ $(document).ready(function(){
             });
           }
         });
-    	}
+      }
     });
 });
 
