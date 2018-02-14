@@ -44,6 +44,7 @@ export interface RecordsGradesType {
 }
 
 export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
+export type CurrentStudentUserAndWorkspaceStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
 export interface RecordsType {
   userData: AllStudentUsersDataType,
@@ -51,6 +52,7 @@ export interface RecordsType {
   studyStartDate: string,
   grades: RecordsGradesType,
   files: Array<UserFileType>,
+  currentStatus: CurrentStudentUserAndWorkspaceStatusType,
   current: any,
   location?: TranscriptOfRecordLocationType,
   curriculums: CurriculumFilterListType
@@ -66,6 +68,7 @@ export default function records(state: RecordsType={
     grades: (window as any).GRADES,
     studyStartDate: (window as any).STUDY_START_DATE || null,
     current: null,
+    currentStatus: "WAIT",
     curriculums: []
 }, action: ActionType): RecordsType {
   if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA"){
@@ -83,6 +86,10 @@ export default function records(state: RecordsType={
   } else if (action.type === "UPDATE_COURSEPICKER_FILTERS_CURRICULUMS"){
     return Object.assign({}, state, {
       curriculums: action.payload
+    });
+  } else if (action.type === "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS"){
+    return Object.assign({}, state, {
+      currentStatus: action.payload
     });
   }
   return state;

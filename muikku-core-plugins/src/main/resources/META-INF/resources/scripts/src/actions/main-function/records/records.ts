@@ -4,15 +4,20 @@ import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/index/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType } from '~/reducers/main-function/records/records';
 
 export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
 export type UPDATE_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
 export type UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION = SpecificActionType<"UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
+export type UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS = SpecificActionType<"UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
 
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   ():AnyActionType
 }
+
+export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
+  (userEntityId: number, workspaceId: number):AnyActionType
+} 
 
 let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRecordsTriggerType = function updateAllStudentUsersAndSetViewToRecords(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
@@ -209,6 +214,27 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
     }
   }
 }
+  
+let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, workspaceId){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      dispatch({
+        type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+        payload: <TranscriptOfRecordLocationType>"RECORDS"
+      });
+      dispatch({
+        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        payload: <CurrentStudentUserAndWorkspaceStatusType>"LOADING"
+      });
+    } catch (err){
+      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch({
+        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"
+      });
+    }
+  }
+}
 
-export default {updateAllStudentUsersAndSetViewToRecords}
-export {updateAllStudentUsersAndSetViewToRecords}
+export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace}
+export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace}

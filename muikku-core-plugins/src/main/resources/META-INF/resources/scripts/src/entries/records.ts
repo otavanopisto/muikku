@@ -8,7 +8,7 @@ import * as queryString from 'query-string';
 import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
-import { updateAllStudentUsersAndSetViewToRecords } from '~/actions/main-function/records/records';
+import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace } from '~/actions/main-function/records/records';
 import { updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
 
 let store = runApp(reducer, App);
@@ -18,15 +18,14 @@ store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.r
 store.dispatch(<Action>updateCurriculumFilters());
 
 function loadCurrentLocation(){
-  let dataSplitted:Array<string> = window.location.hash.split("?");
+  let dataSplitted:Array<string> = window.location.hash.replace("#", "").split("?");
   let givenLocation = dataSplitted[0].split("/")[0];
   let originalData:any = queryString.parse(dataSplitted[1] || "", {arrayFormat: 'bracket'});
-
+  
   if (!givenLocation && !originalData.w){
     store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
-    return;
   } else if (!givenLocation){
-    
+    store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), parseInt(originalData.w)));
   }
 }
 

@@ -12,6 +12,8 @@ import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
+import { WorkspaceType } from '~/reducers/main-function/index/workspaces';
+import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 
 interface RecordsProps {
   i18n: i18nType,
@@ -26,6 +28,12 @@ let storedCurriculumIndex:any = {};
 class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
     super(props);
+    
+    this.getWorkspaceLink = this.getWorkspaceLink.bind(this);
+  }
+  
+  getWorkspaceLink(user: UserWithSchoolDataType, workspace: WorkspaceType){
+    return "#?u=" + user.userEntityId + "&w=" + workspace.id;
   }
 
   render(){
@@ -56,9 +64,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <div key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
-                  return <div key={workspace.id}>
+                  //TODO add information, I am not sure how that goes, discuss with lankkinen, make the progress bars ready so
+                  //that ukkonen can work with them already
+                  return <Link key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
                     {workspace.name}
-                  </div>
+                  </Link>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
                 {record.transferCredits.map((credit)=>{
