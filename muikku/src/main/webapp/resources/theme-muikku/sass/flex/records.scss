@@ -442,20 +442,27 @@
   }
 
 }
+
+.tr-item-header-name {
+
+  .tr-evalreq {
+    background-color: #09f;
+    border-radius: 4px;
+	box-sizing: border-box;
+    color: #fff;
+    display: inline-block;	
+    font-size: 12px;
+    line-height: 1;
+    margin-left: 10px;
+    padding: 4px;
+  }
+}
+
 .tr-item-header-details {
 
   .tr-item-header-detail {
     display: inline-block;
 
-    &.submitted {
-      box-sizing: border-box;
-      font-size: 12px;
-      margin-left: 5px;
-      padding: 0 6px;
-      background-color: $item-grade-pending-color;
-      color: $item-grade-font-color;
-    }
-    
     &.grade {
       box-sizing: border-box;
       color: $item-grade-font-color;
@@ -472,11 +479,8 @@
       &.non-passing {
         background-color: $item-grade-failing-color;
       }
-
     }
-
   }
-
 }
 
 .tr-item-description-title {
