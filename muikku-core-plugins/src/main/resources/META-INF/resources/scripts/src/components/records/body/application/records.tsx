@@ -92,7 +92,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
-    records: state.records,
+    records: state.records
   }
 };
 

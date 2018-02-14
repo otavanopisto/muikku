@@ -8,9 +8,11 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
+import { RecordsType } from '~/reducers/main-function/records/records';
 
 interface CurrentRecordProps {
-  i18n: i18nType
+  i18n: i18nType,
+  records: RecordsType
 }
 
 interface CurrentRecordState {
@@ -22,7 +24,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
   }
   
   render(){
-    if (2 + 2 === 4){
+    if (this.props.records.location !== "RECORDS" || !!this.props.records.current){
       return null;
     }
     return <div/>;
@@ -31,7 +33,8 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
 
 function mapStateToProps(state: any){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    records: state.records
   }
 };
 
