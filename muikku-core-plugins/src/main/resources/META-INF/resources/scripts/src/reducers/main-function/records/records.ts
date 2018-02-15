@@ -94,14 +94,16 @@ export interface MaterialEvaluationType {
   passed: boolean
 }
 
+export type MaterialEvaluationsListType = Array<{
+  material: MaterialType,
+  assignment: MaterialAssignmentType,
+  evaluation: MaterialEvaluationType
+}>
+
 export interface CurrentRecordType {
   workspace: WorkspaceType,
   journals: JournalListType,
-  evaluations: Array<{
-    material: MaterialType,
-    assignment: MaterialAssignmentType,
-    evaluation: MaterialEvaluationType
-  }>
+  evaluations: MaterialEvaluationsListType
 }
 
 export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
@@ -151,6 +153,10 @@ export default function records(state: RecordsType={
   } else if (action.type === "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS"){
     return Object.assign({}, state, {
       currentStatus: action.payload
+    });
+  } else if (action.type === "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS"){
+    return Object.assign({}, state, {
+      current: action.payload
     });
   }
   return state;

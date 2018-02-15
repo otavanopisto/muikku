@@ -4,12 +4,13 @@ import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/index/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType } from '~/reducers/main-function/records/records';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
 
 export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
 export type UPDATE_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
 export type UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION = SpecificActionType<"UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
 export type UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS = SpecificActionType<"UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
+export type UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS = SpecificActionType<"UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS", CurrentRecordType>;
 
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   ():AnyActionType
@@ -229,6 +230,8 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       
       let userData:AllStudentUsersDataType = getState().records.userData;
       
+      let [workspace, journals, evaluations] = await Promise.all([
+      
       (async ()=>{
         let workspace:WorkspaceType;
         let wasFoundInMemory = userData.find((dataPoint)=>{
@@ -248,7 +251,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         }
         
         return workspace;
-      })();
+      })(),
       
       (async ()=>{
         let journals = <JournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, {
@@ -257,12 +260,49 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
           maxResults: 512
         }), 'callback')();
         return journals;
-      })();
+      })(),
       
       (async ()=>{
+        let assignments = <Array<MaterialAssignmentType>>await promisify(mApi().workspace.workspaces.materials.read(workspaceId, {
+          assignmentType: "EVALUATED",
+        }), 'callback')();
         
-      })();
+        let materials:Array<MaterialType>;
+        let evaluations:Array<MaterialEvaluationType>;
+        [materials, evaluations] = <any>await Promise.all([
+          Promise.all(assignments.map((assignment)=>{
+            return promisify(mApi().materials.html.read(assignment.materialId), 'callback')();
+          })),
+          Promise.all(assignments.map((assignment)=>{
+            return promisify(mApi().workspace.workspaces.materials.evaluations.read(workspaceId, assignment.materialId, {
+              userEntityId
+            }), 'callback')();
+          }))
+        ]);
+        
+        return assignments.map((assignment, index)=>{
+          return {
+            assignment,
+            evaluation: evaluations[index],
+            material: materials[index]
+          }
+        });
+      })()
       
+      ]);
+      
+      dispatch({
+        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS",
+        payload: {
+          workspace,
+          journals,
+          evaluations
+        }
+      });
+      dispatch({
+        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        payload: <CurrentStudentUserAndWorkspaceStatusType>"READY"
+      });
       
     } catch (err){
       dispatch(actions.displayNotification(err.message, 'error'));
