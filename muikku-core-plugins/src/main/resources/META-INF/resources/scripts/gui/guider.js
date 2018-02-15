@@ -417,10 +417,10 @@
             this._students = this._students.concat(students);
             renderDustTemplate('guider/guider_items.dust', { hasMore : hasMore, students: this._students }, $.proxy(function(text) {
               this.element
-              .html(text)
-              .removeClass('loading');
+                .html(text)
+                .removeClass('loading');
               if (callback) {
-              callback();
+                callback();
               }
             }, this));
           }
@@ -459,7 +459,8 @@
       $('<div>')
         .appendTo(this.element)
         .guiderProfile({
-          userIdentifier: userIdentifier
+          userIdentifier: userIdentifier,
+          previousHash: window.location.hash
         });
       
       window.location.hash = "userprofile/" + userIdentifier;
@@ -855,7 +856,8 @@
 
   $.widget("custom.guiderProfile", {
     options: {
-      userIdentifier: null
+      userIdentifier: null,
+      previousHash: null
     },
     
     _create : function() {
@@ -1133,7 +1135,7 @@
     
     _closeStudentProfile: function(event) {
       document.getElementsByClassName('gt-users-pages')[0].style.display ="block";
-      window.location.hash=null;
+      window.location.hash = this.options.previousHash||''; 
       this.element.remove();
     },
     
