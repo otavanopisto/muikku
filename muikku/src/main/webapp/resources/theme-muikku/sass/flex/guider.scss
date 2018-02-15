@@ -190,6 +190,11 @@
   
 }
 
+.gt-user-view-flags-container{
+  flex-basis: calc(100% - 38px);
+  margin:-3px;
+}
+
 .gt-data {
 
   &.loading {

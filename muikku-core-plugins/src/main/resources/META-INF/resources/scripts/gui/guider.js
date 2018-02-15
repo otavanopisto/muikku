@@ -869,7 +869,7 @@
       this.element.on("click", ".gt-share-flag", $.proxy(this._onShareFlagClick, this));
       this.element.on("click", ".gt-remove-flag", $.proxy(this._onRemoveFlagClick, this));
       this.element.on("click", ".gt-existing-flag", $.proxy(this._onExistingFlagClick, this));
-      this.element.on("click", ".gt-tool-hide-profile", $.proxy(this._closeStudentProfile, this));
+      this.element.on("click", ".icon-goback", $.proxy(this._closeStudentProfile, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
