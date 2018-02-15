@@ -37,22 +37,22 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler extends PyramusDataS
   }
 
   public void synchronize() {
-    int offset = getOffset();
+    int currentOffset = getOffset();
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus workspace users");
 
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
-          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
+          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, currentOffset, BATCH_SIZE);
+      updateOffset(currentOffset + workspaceEntities.size());
       if (workspaceEntities.size() == 0) {
         updateOffset(0);
-      } else {
+      }
+      else {
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
           Long courseId = identityMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
           count += pyramusUpdater.updateCourseStaffMembers(courseId);
         }
-
-        updateOffset(offset + workspaceEntities.size());
       }
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus workspace users", count));
