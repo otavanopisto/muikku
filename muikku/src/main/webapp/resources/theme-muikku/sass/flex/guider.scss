@@ -3,15 +3,15 @@
 
 /* Guider, Guiding tool (.gt-*) */
 
-.gt-students-view-container{
+.gt-students-view-container {
   min-height: 400px;
 }
 
-.gt-content-functions{
+.gt-content-functions {
    height: 70px;  
 }
 
-.gt-content-main{
+.gt-content-main {
   min-height: 450px;
 }
 
@@ -37,11 +37,11 @@
   }
 }  
 
-.gt-user-name{
+.gt-user-name {
   cursor: pointer;
 }
 
-.gt-user-meta-topic{
+.gt-user-meta-topic {
   span{
    margin-left: 10px;
    font-weight: 400;
@@ -49,25 +49,25 @@
   
 }
 
-.gt-email-field{
+.gt-email-field {
   color: $item-header-secondary-font-color;
   font-size: 10px;
 }
 
-.gt-user-details-data{
+.gt-user-details-data {
   padding: 10px;
  } 
  
 
 
-.gt-user-details-items{
+.gt-user-details-items {
     padding: 10px;
     
-    .gt-user-details-item{
+    .gt-user-details-item {
     
     }
     
-   .gt-user-details-label{
+   .gt-user-details-label {
      display: inline-block;
      font-weight: 400;
      
@@ -76,7 +76,7 @@
      }
    }
 
-   .gt-user-details-value{
+   .gt-user-details-value {
      margin-left: 10px;
    }
    
@@ -151,7 +151,7 @@
     padding: 10px;
   }
   
-  div[class*="gt-data-container"]{
+  div[class*="gt-data-container"] {
     width: 100%;
   }
   
@@ -190,9 +190,9 @@
   
 }
 
-.gt-user-view-flags-container{
+.gt-user-view-flags-container {
   flex-basis: calc(100% - 38px);
-  margin:-3px;
+  margin: -3px;
 }
 
 .gt-data {
