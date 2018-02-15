@@ -16,7 +16,6 @@
   </div>
   <div class="gt-user-view-headline mf-widget flex-row flex-align-items-center">
     <h1 class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">{firstName} {lastName}</h1>
-    
   </div>
   {?studentFlags}  
     <div class="mf-widget gt-user-view-flags-container flex-row">  
