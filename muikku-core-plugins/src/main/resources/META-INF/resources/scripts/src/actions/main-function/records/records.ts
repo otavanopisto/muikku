@@ -4,7 +4,7 @@ import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/index/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType } from '~/reducers/main-function/records/records';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType } from '~/reducers/main-function/records/records';
 
 export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
 export type UPDATE_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
@@ -226,6 +226,44 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
         payload: <CurrentStudentUserAndWorkspaceStatusType>"LOADING"
       });
+      
+      let userData:AllStudentUsersDataType = getState().records.userData;
+      
+      (async ()=>{
+        let workspace:WorkspaceType;
+        let wasFoundInMemory = userData.find((dataPoint)=>{
+          return !!dataPoint.records.find((record:RecordGroupType)=>{
+            return !!record.workspaces.find((workspaceSearch:WorkspaceType)=>{
+              if (workspaceSearch.id === workspaceId){
+                workspace = workspaceSearch;
+                return true;
+              }
+              return false;
+            });
+          });
+        });
+      
+        if (!wasFoundInMemory){
+          workspace = <WorkspaceType>await promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')();
+        }
+        
+        return workspace;
+      })();
+      
+      (async ()=>{
+        let journals = <JournalListType>await promisify(mApi().workspace.workspaces.journal.read(workspaceId, {
+          userEntityId,
+          firstResult: 0,
+          maxResults: 512
+        }), 'callback')();
+        return journals;
+      })();
+      
+      (async ()=>{
+        
+      })();
+      
+      
     } catch (err){
       dispatch(actions.displayNotification(err.message, 'error'));
       dispatch({

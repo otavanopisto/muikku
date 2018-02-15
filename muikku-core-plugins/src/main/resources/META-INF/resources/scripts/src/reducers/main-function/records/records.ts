@@ -21,9 +21,9 @@ export interface TransferCreditType {
 }
 
 export type RecordGroupType = {
-    groupCurriculumIdentifier?: string,
-    workspaces: Array<WorkspaceType>,
-    transferCredits: Array<TransferCreditType>
+  groupCurriculumIdentifier?: string,
+  workspaces: Array<WorkspaceType>,
+  transferCredits: Array<TransferCreditType>
 }
 
 export type RecordsOrderedType = Array<RecordGroupType>
@@ -43,6 +43,67 @@ export interface RecordsGradesType {
   [key: string]: GradingScaleInfoType
 }
 
+export interface JournalType {
+  id: number,
+  workspaceEntityId: number,
+  userEntityId: number,
+  firstName: string,
+  lastName: string,
+  content: string,
+  title: string,
+  created: string
+}
+
+export type JournalListType = Array<JournalType>;
+
+export interface MaterialAssignmentType {
+  id: number,
+  materialId: number,
+  parentId: number,
+  nextSiblingId: number,
+  hidden: boolean,
+  assignmentType: string,
+  correctAnswers: string,
+  path: string,
+  title: string
+}
+
+export interface MaterialType {
+  id: number,
+  title: string,
+  licence: string,
+  viewRestrict: string,
+  html: string,
+  contentType: string,
+  currentRevision: number,
+  publishedRevision: number
+}
+
+export interface MaterialEvaluationType {
+  id: number,
+  evaluated: string,
+  assessorEntityId: number,
+  studentEntityId: number,
+  workspaceMaterialId: number,
+  gradingScaleIdentifier: string,
+  gradingScaleSchoolDataSource: string,
+  grade: string,
+  gradeIdentifier: string,
+  gradeSchoolDataSource: string,
+  verbalAssessment: string,
+  passed: boolean
+}
+
+export interface CurrentRecordType {
+  workspace: WorkspaceType,
+  journals: JournalListType,
+  evaluations: Array<{
+    material: MaterialType,
+    assignment: MaterialAssignmentType,
+    evaluation: MaterialEvaluationType
+  }>
+}
+
 export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 export type CurrentStudentUserAndWorkspaceStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";
 
@@ -53,7 +114,7 @@ export interface RecordsType {
   grades: RecordsGradesType,
   files: Array<UserFileType>,
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,
-  current: any,
+  current?: CurrentRecordType,
   location?: TranscriptOfRecordLocationType,
   curriculums: CurriculumFilterListType
 }
