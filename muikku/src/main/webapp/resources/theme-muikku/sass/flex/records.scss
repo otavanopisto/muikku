@@ -446,7 +446,7 @@
 .tr-item-header-name {
 
   .tr-evalreq {
-    background-color: #09f;
+    background-color: $item-evaluation-requested-icon-color;
     border-radius: 4px;
     box-sizing: border-box;
     color: #fff;
@@ -454,7 +454,7 @@
     font-size: 12px;
     line-height: 1;
     margin-left: 10px;
-   padding: 4px;
+    padding: 4px;
   }
 }
 
