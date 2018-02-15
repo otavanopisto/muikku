@@ -61,29 +61,29 @@
 
 
 .gt-user-details-items {
-    padding: 10px;
+  padding: 10px;
     
-    .gt-user-details-item {
+  .gt-user-details-item {
     
-    }
-    
-   .gt-user-details-label {
-     display: inline-block;
-     font-weight: 400;
-     
-     &::after{
-      content: ":";
-     }
-   }
-
-   .gt-user-details-value {
-     margin-left: 10px;
-   }
-   
-   .gt-user-details-indent {
-     margin-left: 4em;
-   }
   }
+    
+  .gt-user-details-label {
+    display: inline-block;
+    font-weight: 400;
+     
+    &::after{
+      content: ":";
+    }
+  }
+
+  .gt-user-details-value {
+    margin-left: 10px;
+  }
+   
+  .gt-user-details-indent {
+    margin-left: 4em;
+  }
+}
 
 
 .gt-user-details-close {
