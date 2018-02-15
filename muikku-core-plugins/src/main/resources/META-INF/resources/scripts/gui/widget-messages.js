@@ -1,53 +1,29 @@
- 
-$(document).ready(function(){
-
-    var WORD_COUNT = 50;
+$(document).ready(function() {
   
-    function generatePreview(html){
-      var text = $('<div>').html(html).text();
-      var words = text.split(' ');
-      if (words.length < WORD_COUNT) {
-        return text;
-      } else {
-        text = "";
-        for (var i = 0; i < WORD_COUNT; i++) {
-          text += ' ' + words[i];
+  function _refreshMessagesWidgetMessagesList() {
+    mApi().communicator.items.read({
+      'firstResult': 0,
+      'maxResults': 6
+    }).callback(function(err, messages) {
+      if (!err) {
+        for (var i = 0, j = messages.length; i < j; i++) {
+          messages[i].caption =  $('<div>').html(messages[i].caption).text();
         }
-        return text + '...';
+        renderDustTemplate('frontpage/widget_messages.dust', {
+          messages : messages
+        },
+        function(text) {
+          $('#messages').empty();
+          $('#messages').append($.parseHTML(text));
+        });
       }
-    }
-  
-    function _refreshMessagesWidgetMessagesList() {
-      mApi({async: false}).communicator.items.read({
-        'firstResult': 0,
-        'maxResults': 6
-      }).callback(function (err, messages) {
-          
-        if( err ){
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-        }else{
-          for(var i = 0, j = messages.length; i < j; i++){
-            messages[i].caption =  $('<div>').html(messages[i].caption).text();
-//            messages[i].content = generatePreview(messages[i].content);
-          }
-
-          renderDustTemplate('frontpage/widget_messages.dust', 
-          {
-             messages : messages
-          }, function (text) {
-
-            $('#messages').empty();
-            $('#messages').append($.parseHTML(text));
-            
-          });
-        }
-      });
-    }
-    
-    $(document).on("Communicator:newmessagereceived", function (event, data) {
-      _refreshMessagesWidgetMessagesList();
     });
-      
+  }
+    
+  $(document).on("Communicator:newmessagereceived", function() {
     _refreshMessagesWidgetMessagesList();
-	});
- 	
+  });
+  
+  _refreshMessagesWidgetMessagesList();
+
+});
