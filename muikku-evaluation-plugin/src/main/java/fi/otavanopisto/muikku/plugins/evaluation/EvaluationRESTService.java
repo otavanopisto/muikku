@@ -22,6 +22,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.UserEntity;
@@ -831,21 +833,36 @@ public class EvaluationRESTService extends PluginRESTService {
   }
   
   private fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry) {
-    UserEntity assessor = userEntityController.findUserEntityByUserIdentifier(entry.getAssessingUserIdentifier());
-    GradingScale gradingScale = gradingController.findGradingScale(entry.getGradingScaleIdentifier());
-    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, entry.getGradeIdentifier());
+    UserEntity assessor = null;
+    if (entry.getAssessingUserIdentifier() != null) {
+      assessor =userEntityController.findUserEntityByUserIdentifier(entry.getAssessingUserIdentifier());
+    }
+    
+    GradingScale gradingScale = null;
+    SchoolDataIdentifier identifier = entry.getGradingScaleIdentifier();
+    if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+      gradingScale = gradingController.findGradingScale(identifier); 
+    }
+        
+    GradingScaleItem grade = null;
+    if (gradingScale != null) {
+      identifier = entry.getGradeIdentifier();
+      if (identifier != null && !StringUtils.isBlank(identifier.getDataSource()) && !StringUtils.isBlank(identifier.getIdentifier())) {
+        grade = gradingController.findGradingScaleItem(gradingScale, identifier); 
+      }
+    }
     
     return new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment(
       entry.getIdentifier().toId(),
       entry.getDate(),
       assessor != null ? assessor.getId() : null,
       entry.getWorkspaceUserIdentifier().toId(),
-      entry.getGradingScaleIdentifier().getIdentifier(),
-      entry.getGradingScaleIdentifier().getDataSource(),
-      entry.getGradeIdentifier().getIdentifier(),
-      entry.getGradeIdentifier().getDataSource(),
+      entry.getGradingScaleIdentifier() == null ? null : entry.getGradingScaleIdentifier().getIdentifier(),
+      entry.getGradingScaleIdentifier() == null ? null : entry.getGradingScaleIdentifier().getDataSource(),
+      entry.getGradeIdentifier() == null ? null : entry.getGradeIdentifier().getIdentifier(),
+      entry.getGradeIdentifier() == null ? null : entry.getGradeIdentifier().getDataSource(),
       entry.getVerbalAssessment(),
-      grade.isPassingGrade()
+      grade == null ? Boolean.FALSE : grade.isPassingGrade()
     ); 
   }
   
