@@ -347,7 +347,8 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusWorkspaceAssessment(courseAssessment.getId().toString(),
         identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
         identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
-        gradeIdentifier.getIdentifier(), gradingScaleIdentifier.getIdentifier(),
+        gradeIdentifier == null ? null : gradeIdentifier.getIdentifier(),
+        gradingScaleIdentifier == null ? null : gradingScaleIdentifier.getIdentifier(),
         courseAssessment.getVerbalAssessment(), courseAssessmentDate, courseAssessment.getPassing());
   }
 
