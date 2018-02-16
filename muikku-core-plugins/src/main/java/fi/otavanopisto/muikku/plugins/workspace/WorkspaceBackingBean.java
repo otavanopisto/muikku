@@ -97,7 +97,7 @@ public class WorkspaceBackingBean {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserIdentifier(workspaceEntity, sessionController.getLoggedUser());
       if (workspaceUserEntity != null) {
         WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
-        this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getStateName();
+        this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getState();
       }
     }
     else {
@@ -175,4 +175,5 @@ public class WorkspaceBackingBean {
   private boolean usersVisible;
   private boolean journalVisible;
   private String assessmentState;
+
 }
