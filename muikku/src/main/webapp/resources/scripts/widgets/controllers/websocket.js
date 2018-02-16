@@ -16,6 +16,9 @@
       this._pingTime = 0;
       this._listeners = {};
       
+      this.addEventListener("webSocketConnected", $.proxy(this._onWebSocketConnected, this));
+      this.addEventListener("webSocketDisconnected", $.proxy(this._onWebSocketDisconnected, this));
+      
       this._getTicket($.proxy(function (ticket) {
         if (this._ticket) {
           this._openWebSocket();
@@ -25,8 +28,6 @@
         }
       }, this));
 
-      this.element.on("webSocketConnected", $.proxy(this._onWebSocketConnected, this));
-      this.element.on("webSocketDisconnected", $.proxy(this._onWebSocketDisconnected, this));
       $(window).on("beforeunload", $.proxy(this._onBeforeWindowUnload, this));
     },
     
