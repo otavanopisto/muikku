@@ -3,8 +3,6 @@ package fi.otavanopisto.muikku.plugins.assessmentrequest;
 import java.util.Date;
 
 public class WorkspaceAssessmentState {
-  private Date date;
-  private String state;
 
   public static final String UNASSESSED = "unassessed";       // no request, no grade
   public static final String PENDING = "pending";             // active request, no grade
@@ -18,20 +16,20 @@ public class WorkspaceAssessmentState {
   }
 
   public WorkspaceAssessmentState(String state) {
-    setState(state);
+    this.state = state;
   }
 
   public WorkspaceAssessmentState(String state, Date date) {
-    setState(state);
-    setDate(date);
+    this.state = state;
+    this.date = date;
   }
 
   public String getState() {
-    return this.state;
+    return state;
   }
 
   public Date getDate() {
-    return this.date;
+    return date;
   }
 
   public void setState(String state) {
@@ -41,4 +39,8 @@ public class WorkspaceAssessmentState {
   public void setDate(Date date) {
     this.date = date;
   }
+
+  private Date date;
+  private String state;
+
 }

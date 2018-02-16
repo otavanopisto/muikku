@@ -115,7 +115,9 @@ public class AssessmentRequestController {
       // Has assessment and no request, or the request is older
       GradingScale gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
       GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier());
-      return grade.isPassingGrade() ? new WorkspaceAssessmentState(WorkspaceAssessmentState.PASS) : new WorkspaceAssessmentState(WorkspaceAssessmentState.FAIL);
+      return grade.isPassingGrade()
+          ? new WorkspaceAssessmentState(WorkspaceAssessmentState.PASS, latestAssessment.getDate())
+          : new WorkspaceAssessmentState(WorkspaceAssessmentState.FAIL, latestAssessment.getDate());
     }
     else if (latestRequest != null && (latestAssessment == null || latestAssessment.getDate().before(latestRequest.getDate()))) {
       // Has request and no assessment, or the assessment is older

@@ -1,7 +1,5 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
-import java.util.Date;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -57,7 +55,6 @@ public class WorkspaceBackingBean {
     journalVisible = true;
     workspaceEntityId = null;
     assessmentState = null;
-    assessmentRequestDate=null;
   }
   
   public String getWorkspaceUrlName() {
@@ -101,7 +98,6 @@ public class WorkspaceBackingBean {
       if (workspaceUserEntity != null) {
         WorkspaceAssessmentState workspaceAssessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
         this.assessmentState = workspaceAssessmentState == null ? null : workspaceAssessmentState.getState();
-        this.assessmentRequestDate = workspaceAssessmentState == null ? null : workspaceAssessmentState.getDate();
       }
     }
     else {
@@ -179,5 +175,5 @@ public class WorkspaceBackingBean {
   private boolean usersVisible;
   private boolean journalVisible;
   private String assessmentState;
-  private Date assessmentRequestDate;
+
 }
