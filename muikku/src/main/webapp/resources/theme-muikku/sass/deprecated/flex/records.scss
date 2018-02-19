@@ -644,3 +644,51 @@
     padding: 15px;
   }
 }
+
+// Progressbars in ToR
+
+.tr-item-header-detail.progressbar {
+  background: $progressbar-background;
+  display: block;
+  height: 3px;
+  position: relative;
+  width: 150px;
+  
+  &:first-child {
+    margin: 2px 40px 10px auto;
+  }
+  
+   &:last-child {
+    margin: 10px 40px 2px auto;
+  }
+}
+
+.tr-assignment-progressbar {
+  background: $assignment-color;
+  height: 3px;
+}
+
+.tr-assignment-progressbar-text {
+  font-size: 11px;
+  line-height: 1;
+  position: absolute;
+  right: -40px;
+  text-align: right;
+  top: -5px;
+  width: 40px;
+}
+
+.tr-excercise-progressbar {
+  background: $exercise-color;
+  height: 3px;
+}
+
+.tr-excercise-progressbar-text {
+  font-size: 11px;
+  line-height: 1;
+  position: absolute;
+  right: -40px;
+  text-align: right;
+  top: -3px;
+  width: 40px;
+}
