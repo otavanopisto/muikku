@@ -9,11 +9,13 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
-import { RecordsType } from '~/reducers/main-function/records/records';
+import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType } from '~/reducers/main-function/index/workspaces';
+import { WorkspaceType, WorkspaceStudentAccessmentType } from '~/reducers/main-function/index/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+
+let ProgressBarLine = require('react-progressbar.js').Line;
 
 interface RecordsProps {
   i18n: i18nType,
@@ -24,6 +26,80 @@ interface RecordsState {
 }
 
 let storedCurriculumIndex:any = {};
+
+function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
+  let gradeId = [
+    transferCredit.gradingScaleIdentifier,
+    transferCredit.gradeIdentifier].join('-');
+  let grade = props.records.grades[gradeId];
+  return <div className="TODO transfer credit value">
+    <span className="TODO transfer-credit-text">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
+    &nbsp;
+    <span className={`TODO workspace-assesment-score ${grade.passing ? "credit-passed" : "credit-failed"}`}>
+      {grade.grade}
+    </span>
+  </div>
+}
+
+function getAssesment(props: RecordsProps, workspace: WorkspaceType){
+  let assesment = workspace.studentAcessment;
+  let gradeId = [
+    assesment.gradingScaleSchoolDataSource,
+    assesment.gradingScaleIdentifier,
+    assesment.gradeSchoolDataSource,
+    assesment.gradeIdentifier].join('-');
+  let grade = props.records.grades[gradeId];
+  return <div className="TODO workspace assesment">
+    <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
+    &nbsp;
+    <span className={`TODO workspace-assesment-score ${workspace.studentAcessment.passed ? "workspace-passed" : "workspace-failed"}`}>
+      {grade.grade}
+    </span>
+  </div>
+}
+
+function getActivity(props: RecordsProps, workspace: WorkspaceType){
+    let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
+      workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
+    return <div className="TOOD workspace activity">
+      <ProgressBarLine containerClassName="progressbar" initialAnimate options={{
+        strokeWidth: 2,
+        duration: 1000,
+        color: "#ce01bd",
+        trailColor: "#eee",
+        trailWidth: 1,
+        svgStyle: {width: "100%", height: "100%"},
+        text: {
+          className: "progressbar-text",
+          style: {
+            color: "#222"
+          }
+        }
+      }}
+      strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
+      trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
+      text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
+      progress={workspace.studentActivity.evaluablesDonePercent/100}/>
+      <ProgressBarLine containerClassName="progressbar" initialAnimate options={{
+        strokeWidth: 2,
+        duration: 1000,
+        color: "#ff9900",
+        trailColor: "#eee",
+        trailWidth: 1,
+        svgStyle: {width: "100%", height: "100%"},
+        text: {
+          className: "progressbar-text",
+          style: {
+            color: "#222"
+          }
+        }
+      }}
+      strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
+      trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
+      text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
+      progress={workspace.studentActivity.exercisesDonePercent/100}/>
+    </div>
+}
 
 class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
@@ -64,16 +140,16 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <div key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
-                  //TODO add information, I am not sure how that goes, discuss with lankkinen, make the progress bars ready so
-                  //that ukkonen can work with them already
-                  return <div key={workspace.id}><Link href={this.getWorkspaceLink(user, workspace)}>
-                    {workspace.name}
-                  </Link></div>
+                  return <Link as='div' className="link workspace--link" key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
+                    <div className="TODO workspace name something???">{workspace.name}</div>
+                    {workspace.studentAcessment ? getAssesment(this.props, workspace) : getActivity(this.props, workspace)}
+                  </Link>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
                 {record.transferCredits.map((credit)=>{
                   return <div key={credit.date}>
-                    {credit.courseName}
+                    <span>{credit.courseName}</span>
+                    {getTransferCreditValue(this.props, credit)}
                   </div>
                 })}
               </div>
