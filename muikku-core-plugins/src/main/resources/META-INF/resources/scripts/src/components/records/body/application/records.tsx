@@ -66,9 +66,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 {record.workspaces.map((workspace)=>{
                   //TODO add information, I am not sure how that goes, discuss with lankkinen, make the progress bars ready so
                   //that ukkonen can work with them already
-                  return <Link key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
+                  return <div key={workspace.id}><Link href={this.getWorkspaceLink(user, workspace)}>
                     {workspace.name}
-                  </Link>
+                  </Link></div>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
                 {record.transferCredits.map((credit)=>{

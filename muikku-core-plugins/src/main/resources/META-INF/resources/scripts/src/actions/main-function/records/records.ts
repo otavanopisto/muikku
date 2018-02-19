@@ -24,6 +24,10 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
       dispatch({
+        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS",
+        payload: null
+      });
+      dispatch({
         type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
         payload: <TranscriptOfRecordLocationType>"RECORDS"
       });
@@ -265,7 +269,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       (async ()=>{
         let assignments = <Array<MaterialAssignmentType>>await promisify(mApi().workspace.workspaces.materials.read(workspaceId, {
           assignmentType: "EVALUATED",
-        }), 'callback')();
+        }), 'callback')() || [];
         
         let materials:Array<MaterialType>;
         let evaluations:Array<MaterialEvaluationType>;
