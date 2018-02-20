@@ -94,11 +94,13 @@ export interface MaterialEvaluationType {
   passed: boolean
 }
 
-export type MaterialEvaluationsListType = Array<{
+export interface MaterialAssignmentEvaluationType {
   material: MaterialType,
   assignment: MaterialAssignmentType,
   evaluation: MaterialEvaluationType
-}>
+}
+
+export type MaterialEvaluationsListType = Array<MaterialAssignmentEvaluationType>;
 
 export interface CurrentRecordType {
   workspace: WorkspaceType,

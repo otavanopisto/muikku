@@ -128,6 +128,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     }
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
+      <h2>{this.props.i18n.text.get("plugin.records.studyStartDateLabel", this.props.i18n.time.format(this.props.records.studyStartDate))}</h2>
       <div className="application-list">
         {this.props.records.userData.map((data)=>{
           let user = data.user;

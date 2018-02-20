@@ -280,7 +280,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
           Promise.all(assignments.map((assignment)=>{
             return promisify(mApi().workspace.workspaces.materials.evaluations.read(workspaceId, assignment.id, {
               userEntityId
-            }), 'callback')();
+            }), 'callback')().then((evaluations:Array<MaterialEvaluationType>)=>{return evaluations[0]});
           }))
         ]);
         
