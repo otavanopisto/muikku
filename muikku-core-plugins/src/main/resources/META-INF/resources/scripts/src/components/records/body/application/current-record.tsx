@@ -9,7 +9,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
-import Evaluation from './current-record/evaluation';
+import Material from './current-record/material';
 
 interface CurrentRecordProps {
   i18n: i18nType,
@@ -34,13 +34,13 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
       <h2>{this.props.records.current.workspace.name}</h2>
       <h3>{this.props.i18n.text.get("plugin.records.tasks.evaluated.topic")}</h3>
       <div className="application-list">
-        {this.props.records.current.evaluations.map((evaluation)=>{
-          return <Evaluation key={evaluation.material.id} evaluation={evaluation} i18n={this.props.i18n} grades={this.props.records.grades}/>
+        {this.props.records.current.materials.map((material)=>{
+          return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
         })}
       </div>
       {this.props.records.current.journals.length ? <h2>{this.props.i18n.text.get("plugin.records.studydiary.topic")}</h2> : null}
       {this.props.records.current.journals.map((journal)=>{
-        return <div>
+        return <div key={journal.id}>
           <h2>{journal.title}</h2>
           <p>{this.props.i18n.time.format(journal.created, "L LT")}</p>
           <div dangerouslySetInnerHTML={{__html: journal.content}}></div>

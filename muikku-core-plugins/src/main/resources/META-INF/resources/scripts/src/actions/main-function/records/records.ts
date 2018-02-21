@@ -222,7 +222,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
   
 let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    try {
+//    try {
       dispatch({
         type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
         payload: <TranscriptOfRecordLocationType>"RECORDS"
@@ -234,7 +234,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       
       let userData:AllStudentUsersDataType = getState().records.userData;
       
-      let [workspace, journals, evaluations] = await Promise.all([
+      let [workspace, journals, materials] = await Promise.all([
       
       (async ()=>{
         let workspace:WorkspaceType;
@@ -284,12 +284,11 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
           }))
         ]);
         
-        return assignments.map((assignment, index)=>{
-          return {
-            assignment,
+        return materials.map((material, index)=>{
+          return <MaterialType>Object.assign(material, {
             evaluation: evaluations[index],
-            material: materials[index]
-          }
+            assignment: assignments[index]
+          });
         });
       })()
       
@@ -300,7 +299,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         payload: {
           workspace,
           journals,
-          evaluations
+          materials
         }
       });
       dispatch({
@@ -308,13 +307,13 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         payload: <CurrentStudentUserAndWorkspaceStatusType>"READY"
       });
       
-    } catch (err){
-      dispatch(actions.displayNotification(err.message, 'error'));
-      dispatch({
-        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
-        payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"
-      });
-    }
+//    } catch (err){
+//      dispatch(actions.displayNotification(err.message, 'error'));
+//      dispatch({
+//        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+//        payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"
+//      });
+//    }
   }
 }
 

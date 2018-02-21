@@ -76,7 +76,10 @@ export interface MaterialType {
   html: string,
   contentType: string,
   currentRevision: number,
-  publishedRevision: number
+  publishedRevision: number,
+  
+  evaluation?: MaterialEvaluationType,
+  assignment?: MaterialAssignmentType
 }
 
 export interface MaterialEvaluationType {
@@ -94,18 +97,12 @@ export interface MaterialEvaluationType {
   passed: boolean
 }
 
-export interface MaterialAssignmentEvaluationType {
-  material: MaterialType,
-  assignment: MaterialAssignmentType,
-  evaluation: MaterialEvaluationType
-}
-
-export type MaterialEvaluationsListType = Array<MaterialAssignmentEvaluationType>;
+export type MaterialListType = Array<MaterialType>;
 
 export interface CurrentRecordType {
   workspace: WorkspaceType,
   journals: JournalListType,
-  evaluations: MaterialEvaluationsListType
+  materials: MaterialListType
 }
 
 export type AllStudentUsersDataStatusType = "WAIT" | "LOADING" | "READY" | "ERROR";

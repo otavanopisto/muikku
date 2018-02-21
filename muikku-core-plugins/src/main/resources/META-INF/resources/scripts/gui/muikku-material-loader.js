@@ -30,7 +30,7 @@
       var parentIds = []; // TODO needed anymore?
       var viewRestricted = $(pageElement).attr('data-view-restricted')
 
-      try {
+//      try {
         var material = {
           title: $(pageElement).attr('data-material-title'),
           html: $(pageElement).attr('data-material-content'),
@@ -151,9 +151,9 @@
           $(pageElement).muikkuMaterialPage('applyState', this.options.readOnlyFields);
         }
 
-      } catch (e) {
-        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
-      }
+//      } catch (e) {
+//        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
+//      }
     },
     
     loadMaterial: function(page, fieldAnswers) {
