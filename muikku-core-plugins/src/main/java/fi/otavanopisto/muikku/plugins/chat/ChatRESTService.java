@@ -61,6 +61,9 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private ChatClientHolder chatClientHolder;
 
   @Context
   private HttpServletRequest request;
@@ -101,21 +104,22 @@ public class ChatRESTService extends PluginRESTService {
       XmppSessionConfiguration sessionConfig = XmppSessionConfiguration.builder()
           .cacheDirectory(null)
           .build();
-      try (XmppClient xmppClient = XmppClient.create(request.getServerName(), sessionConfig, connectionConfig)) {
-        xmppClient.connect();
-        xmppClient.login(credentials.getUsername(), credentials.getPassword());
-        BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
-        String sessionId = boshConnection.getSessionId();
-        long rid = boshConnection.detach();
+      XmppClient xmppClient = XmppClient.create(request.getServerName(), sessionConfig, connectionConfig);
+      xmppClient.connect();
+      xmppClient.login(credentials.getUsername(), credentials.getPassword());
+      BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
+      String sessionId = boshConnection.getSessionId();
+      long rid = boshConnection.detach();
+      chatClientHolder.addClient(xmppClient);
 
-        ChatPrebindParameters chatPrebindParameters = new ChatPrebindParameters();
-        chatPrebindParameters.setBound(true);
-        chatPrebindParameters.setBindEpochMilli(Instant.now().toEpochMilli());
-        chatPrebindParameters.setJid(credentials.getJid());
-        chatPrebindParameters.setSid(sessionId);
-        chatPrebindParameters.setRid(rid);
-        return Response.ok(chatPrebindParameters).build();
-      }
+      ChatPrebindParameters chatPrebindParameters = new ChatPrebindParameters();
+      chatPrebindParameters.setBound(true);
+      chatPrebindParameters.setBindEpochMilli(Instant.now().toEpochMilli());
+      chatPrebindParameters.setJid(credentials.getJid() + "/" + sessionId);
+      chatPrebindParameters.setSid(sessionId);
+      chatPrebindParameters.setRid(rid);
+
+      return Response.ok(chatPrebindParameters).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
     }
