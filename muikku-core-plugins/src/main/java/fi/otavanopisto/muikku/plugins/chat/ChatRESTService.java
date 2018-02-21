@@ -38,6 +38,7 @@ import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.session.XmppClient;
+import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.extensions.httpbind.BoshConnection;
 import rocks.xmpp.extensions.httpbind.BoshConnectionConfiguration;
 
@@ -88,14 +89,19 @@ public class ChatRESTService extends PluginRESTService {
     
     try {
       XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
-      BoshConnectionConfiguration config = BoshConnectionConfiguration
+      BoshConnectionConfiguration connectionConfig = BoshConnectionConfiguration
           .builder()
           .secure(true)
           .hostname(request.getServerName())
           .port(443)
           .path("/http-bind/")
           .build();
-      try (XmppClient xmppClient = XmppClient.create(request.getServerName(), config)) {
+
+      // Initializing cache directory fails if there's non-ascii chars in user name
+      XmppSessionConfiguration sessionConfig = XmppSessionConfiguration.builder()
+          .cacheDirectory(null)
+          .build();
+      try (XmppClient xmppClient = XmppClient.create(request.getServerName(), sessionConfig, connectionConfig)) {
         xmppClient.connect();
         xmppClient.login(credentials.getUsername(), credentials.getPassword());
         BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
