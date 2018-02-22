@@ -176,7 +176,7 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     
     UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
     
-    if (!vopsController.shouldShowStudies(studentEntity)) {
+    if (!vopsController.shouldShowStudies(student)) {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
     }
@@ -310,8 +310,9 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.NOT_FOUND).entity("User not found").build();
     }
+    User user = userController.findUserByIdentifier(userIdentifier);
 
-    if (!vopsController.shouldShowStudies(userEntity)) {
+    if (!vopsController.shouldShowStudies(user)) {
       return Response.ok(HopsRESTModel.nonOptedInHopsRESTModel()).build();
     }
 
