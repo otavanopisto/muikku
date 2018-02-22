@@ -28,7 +28,10 @@
       },
       'severity-loading': {
         'class': 'notification-queue-item-loading'
-      }
+      },
+      'severity-guiding': {
+        'class': 'notification-queue-item-guiding'
+      },
     },
     
     _create: function () {

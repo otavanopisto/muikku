@@ -66,6 +66,56 @@
   z-index:9999;
 }
 
+.notification-queue-item-guiding {
+  background: #fff;
+  color: #2c2c2c;
+  padding: 20px;
+  text-align: left;
+  
+  .notification-queue-login-guiding-wrapper {
+    padding: 0 0 0 84px;
+    position: relative;
+  }
+  
+  // ToDdo: Change to correct icon
+  .notification-queue-login-guiding-icon {
+    background: url('https://cdn3.iconfinder.com/data/icons/brain-games/128/Quiz-Games.png');
+    background-size: contain;
+    height: 64px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 64px;
+  }
+  
+  .notification-queue-login-guiding-title {
+    font-size: 1.3rem;
+    margin: 0 0 15px;
+  }
+  
+  .notification-queue-login-guiding-text {
+    font-size: 0.875rem;
+    margin: 15px 0;
+  }
+  
+  .notification-queue-login-guiding-link {
+    margin: 15px 0 0;
+    text-align: right;
+    
+    a {
+      background: #009fe3;
+      border-radius: 2px;
+      color: #fff;
+      line-height: 1;
+      font-size: 0.872rem;
+      padding: 6px 8px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+  }
+  
+}
+
 .notification-queue-item a.notification-queue-item-close {
   background-image:url('/gfx/eventqueueclose.png');
   top: 12px;
