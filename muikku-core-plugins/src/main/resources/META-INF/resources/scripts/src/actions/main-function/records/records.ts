@@ -18,7 +18,11 @@ export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
 
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
   (userEntityId: number, workspaceId: number):AnyActionType
-} 
+}
+
+export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
+  ():AnyActionType
+}
 
 let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRecordsTriggerType = function updateAllStudentUsersAndSetViewToRecords(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
@@ -222,7 +226,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
   
 let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-//    try {
+    try {
       dispatch({
         type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
         payload: <TranscriptOfRecordLocationType>"RECORDS"
@@ -307,15 +311,22 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         payload: <CurrentStudentUserAndWorkspaceStatusType>"READY"
       });
       
-//    } catch (err){
-//      dispatch(actions.displayNotification(err.message, 'error'));
-//      dispatch({
-//        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
-//        payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"
-//      });
-//    }
+    } catch (err){
+      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch({
+        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"
+      });
+    }
   }
 }
 
-export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace}
-export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace}
+let setLocationToVopsInTranscriptOfRecords:SetLocationToVopsInTranscriptOfRecordsTriggerType = function setLocationToVopsInTranscriptOfRecords(){
+  return {
+    type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+    payload: <TranscriptOfRecordLocationType>"VOPS"
+  };
+}
+
+export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords}
+export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords}

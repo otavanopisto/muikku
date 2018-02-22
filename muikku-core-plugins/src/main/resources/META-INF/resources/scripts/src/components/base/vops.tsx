@@ -1,10 +1,10 @@
-import { GuiderVOPSDataType } from "reducers/main-function/guider/guider-students";
 import * as React from "react";
 
 import '~/sass/elements/vops.scss';
 import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { VOPSDataType } from "~/reducers/main-function/vops";
 
 const MAX_ROW_SIZE = 15;
 const CLASS_TRANSLATIONS:{
@@ -31,7 +31,8 @@ const CLASS_TRANSLATIONS:{
 }
 
 interface VopsProps {
-  data: GuiderVOPSDataType,
+  data?: VOPSDataType,
+  defaultData?: VOPSDataType,
   i18n: i18nType
 }
 
@@ -55,7 +56,8 @@ class Vops extends React.Component<VopsProps, VopsState> {
     });
   }
   render(){
-    if (!this.props.data.optedIn){
+    let data = this.props.data || this.props.defaultData;
+    if (!data.optedIn){
       return null;
     }
     return <div className="vops">
@@ -110,8 +112,8 @@ class Vops extends React.Component<VopsProps, VopsState> {
       </div> : null}
       <div className="vops-data">
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>&nbsp;
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", this.props.data.numCourses)}</span>&nbsp;
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", this.props.data.numMandatoryCourses)}</span>
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", data.numCourses)}</span>&nbsp;
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", data.numMandatoryCourses)}</span>
       </div>
       <div className="vops-body">
         <div className="vops-table-wrapper">
@@ -121,14 +123,14 @@ class Vops extends React.Component<VopsProps, VopsState> {
               return <div className="vops-row-item vops-row-item--text" key={index}>{index + 1}</div>
             })}
           </div>
-          {this.props.data.rows.map((row)=>{
+          {data.rows.map((row)=>{
             return <div className="vops-row" key={row.subjectIdentifier}>
               <div className="vops-row-item vops-row-item--text-primary">
                 {row.subject}
               </div>
-              {row.items.map((item)=>{
+              {row.items.map((item, index)=>{
                 if (item.placeholder){
-                  return <div className="vops-row-item" key={item.courseNumber}><div className="vops-item vops-item--placeholder"></div></div>;
+                  return <div className="vops-row-item" key={index}><div className="vops-item vops-item--placeholder"></div></div>;
                 }
               
                 let vopsClassNameSubType = "";
@@ -138,6 +140,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
                 if (CLASS_TRANSLATIONS.mandatorities[item.mandatority]){
                   vopsClassNameSubType += "vops-item--" + CLASS_TRANSLATIONS.mandatorities[item.mandatority];
                 }
+                
                 return <div className="vops-row-item" key={item.courseNumber}>
                   <div className={`vops-item ${vopsClassNameSubType}`}></div>
                 </div>
@@ -153,6 +156,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
 function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
+    defaultData: state.vops.value
   }
 };
 

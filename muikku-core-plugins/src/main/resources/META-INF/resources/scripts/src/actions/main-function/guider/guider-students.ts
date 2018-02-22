@@ -1,12 +1,13 @@
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderVOPSDataType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
 import { loadStudentsHelper } from './guider-students/helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType, UserFileType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/index/workspaces';
+import { VOPSDataType } from '~/reducers/main-function/vops';
 
 export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
 export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
@@ -162,7 +163,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "files", value: files}})
           }),
         promisify(mApi().records.vops.read(id), 'callback')()
-          .then((vops:GuiderVOPSDataType)=>{
+          .then((vops:VOPSDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
           }),
         promisify(mApi().records.hops.read(id), 'callback')()

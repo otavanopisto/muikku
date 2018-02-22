@@ -5,6 +5,7 @@ import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
 //TODO remove or comment out, this is mocking code
 import hops from './mock/hops';
 import vops from './mock/vops';
+import { VOPSDataType } from '~/reducers/main-function/vops';
 //TODO
 
 export type GuiderStudentsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -77,31 +78,6 @@ export interface GuiderStudentUserAddressType {
   defaultAddress: boolean
 }
 
-export interface GuiderVOPSRowItemType {
-  courseNumber: number,
-  description?: string,
-  educationSubtype?: string,
-  grade: string,
-  mandatority: string,
-  name: string,
-  placeholder: boolean,
-  planned: boolean,
-  state: string
-}
-
-export interface GuiderVOPSRowType {
-  subject: string,
-  subjectIdentifier: string,
-  items: Array<GuiderVOPSRowItemType>
-}
-
-export interface GuiderVOPSDataType {
-  numMandatoryCourses: number,
-  numCourses: number,
-  optedIn: boolean,
-  rows: Array<GuiderVOPSRowType>
-}
-
 export interface GuiderLastLoginStudentDataType {
   userIdentifier: string,
   authenticationProvder: string,
@@ -150,7 +126,7 @@ export interface GuiderStudentUserProfileType {
   addresses: Array<GuiderStudentUserAddressType>,
   files: Array<UserFileType>,
   usergroups: UserGroupListType,
-  vops: GuiderVOPSDataType,
+  vops: VOPSDataType,
   hops: GuiderHOPSDataType,
   lastLogin: GuiderLastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,

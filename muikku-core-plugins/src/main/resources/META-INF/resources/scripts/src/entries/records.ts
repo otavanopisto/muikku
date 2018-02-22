@@ -8,8 +8,9 @@ import * as queryString from 'query-string';
 import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
-import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace } from '~/actions/main-function/records/records';
+import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords } from '~/actions/main-function/records/records';
 import { updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
+import { updateVops } from '~/actions/main-function/vops';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -26,6 +27,9 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
   } else if (!givenLocation){
     store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), parseInt(originalData.w)));
+  } else if (givenLocation === "vops"){
+    store.dispatch(<Action>setLocationToVopsInTranscriptOfRecords());
+    store.dispatch(<Action>updateVops());
   }
 }
 

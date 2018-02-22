@@ -8,9 +8,11 @@ import messageCount from './main-function/message-count';
 
 import {combineReducers} from 'redux';
 import records from '~/reducers/main-function/records/records';
+import vops from '~/reducers/main-function/vops';
 
 export default combineReducers({
   records,
+  vops,
   
   notifications,
   i18n,

@@ -8,6 +8,7 @@ import { i18nType } from 'reducers/base/i18n';
 
 import Records from './application/records';
 import CurrentRecord from './application/current-record';
+import Vops from './application/vops';
 
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,
@@ -29,6 +30,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
       <ApplicationPanel modifier="records" title={title} asideBefore={this.props.aside}>
         <Records/>
         <CurrentRecord/>
+        <Vops/>
       </ApplicationPanel>
     </div>);
   }
