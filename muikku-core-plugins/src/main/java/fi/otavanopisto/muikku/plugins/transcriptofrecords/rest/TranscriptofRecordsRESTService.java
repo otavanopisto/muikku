@@ -174,8 +174,6 @@ public class TranscriptofRecordsRESTService extends PluginRESTService {
 
     User student = userController.findUserByIdentifier(studentIdentifier);
     
-    UserEntity studentEntity = userEntityController.findUserEntityByUser(student);
-    
     if (!vopsController.shouldShowStudies(student)) {
       VopsRESTModel result = new VopsRESTModel(null, 0, 0, false);
       return Response.ok(result).build();
