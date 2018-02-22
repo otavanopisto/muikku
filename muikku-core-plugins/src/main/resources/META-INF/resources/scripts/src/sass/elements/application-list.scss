@@ -23,13 +23,13 @@
 }
 
 .application-list__item {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
   background-color: $color-application-list-item-background;
   cursor: pointer;
   user-select: none;
   transition: background-color 0.2s ease-in-out;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  
+    
   &:hover, 
   &.hover {
     background-color: $color-application-list-item-background-hover;
@@ -46,6 +46,12 @@
     @include breakpoint($breakpoint-pad) {
       border-radius: 3px;
     }
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    -webkit-touch-callout: default;
+    -webkit-user-select: auto;
+    user-select: auto;
   }
 }
 

@@ -3,7 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-panel {
+.reading-panel {
   align-items: center;
   display: flex;
   justify-content: center;
@@ -14,7 +14,7 @@
   }
 }
 
-.application-panel__container {
+.reading-panel__container {
   max-width: $breakpoint-max-usable-screen;
   overflow: visible;
   flex-direction: column;
@@ -22,19 +22,12 @@
   width:100%;
 }
 
-.application-panel__body {
-  background-color: $color-application-panel-box-background;
-  box-shadow: 0 2px 3px $color-panel-shadow;
+.reading-panel__body {
   display: flex;
   flex-direction: column;
-  
-  @include breakpoint($breakpoint-pad) {
-    border: solid 1px $color-application-panel-box-border;
-    box-shadow: none;
-  }
 }
 
-.application-panel__header {
+.reading-panel__header {
   display: none;
   
   @include breakpoint($breakpoint-pad) {
@@ -52,19 +45,19 @@
   }
 }
 
-.application-panel__header-title {
+.reading-panel__header-title {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.application-panel__header-actions {
+.reading-panel__header-actions {
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-.application-panel__actions {
+.reading-panel__actions {
   background: $color-default;
   left: 0;
   position: fixed;
@@ -86,28 +79,29 @@
   }
 }
   
-.application-panel__toolbar {
+.reading-panel__toolbar {
   align-items: center;
   display: flex;
   width: 100%;
 }  
   
-.application-panel__toolbar-actions-main {
+.reading-panel__toolbar-actions-main {
   display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.application-panel__toolbar-actions-aside {
+.reading-panel__toolbar-actions-aside {
   display: flex;
   justify-content: flex-end;
 }
 
-.application-panel__content {
+.reading-panel__content {
   padding: 2.5rem 0 0;
   
   @include breakpoint($breakpoint-pad) {
+    align-items: flex-start;
     display: flex;
     flex-direction: row;
     padding: 0;
@@ -115,19 +109,18 @@
 }
 
 // Helper containers
-.application-panel__helper-container {
+.reading-panel__helper-container {
   display: none;
 
   @include breakpoint($breakpoint-pad) {
     -ms-overflow-style: -ms-autohiding-scrollbar;
-    flex-basis: 220px;
-    flex-grow: 0;
-    flex-shrink: 0;
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
     display: flex;
-    margin: 0 12px;
+    margin: 0 0 0 35px;
     overflow: auto;
     overflow: -moz-scrollbars-none;
-    padding: 12px 0;
     z-index: 1;
     
     &::-webkit-scrollbar { 
@@ -136,17 +129,14 @@
   }
 }
 
-.application-panel__helper-container--main-action {
-  border-bottom: 1px solid $color-main-function-application-panel-actions-border;
-}
-
 // Main containers
-.application-panel__main-container {
+.reading-panel__main-container {
   -ms-overflow-style: -ms-autohiding-scrollbar;
+  background-color: $color-reading-panel-box-background;
   display: flex;
   flex-basis: auto;
   flex-grow: 1;
-  flex-shrink: 1;
+  flex-shrink: 0;
   padding: 10px 0 10px 0;
   margin: 0;
   overflow: -moz-scrollbars-none;
@@ -156,12 +146,21 @@
   }
   
   @include breakpoint($breakpoint-pad) {
-    margin: 0 12px;
-    padding: 12px 0;
+    border: solid 1px $color-reading-panel-box-border;
+    box-shadow: none;
+    flex-basis: auto;
+    flex-shrink: 1;
+    margin: 0 35px 0 0;
+    padding: 20px;
   } 
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 700px;
+    flex-shrink: 1;
+  }
 }
 
-.application-panel__main-container--actions {
+.reading-panel__main-container--actions {
   border-bottom: 1px solid $color-main-function-application-panel-actions-border; 
   flex-direction: row;
   margin: 0;
@@ -173,11 +172,11 @@
   } 
 }
 
-.application-panel__main-container--header {
+.reading-panel__main-container--header {
   justify-content: flex-end;
 }
 
-.application-panel__main-container--content-full {
+.reading-panel__main-container--content-full {
 
   @include breakpoint($breakpoint-pad) {
     padding-left: 0;

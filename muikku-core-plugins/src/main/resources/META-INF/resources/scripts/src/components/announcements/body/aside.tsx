@@ -6,6 +6,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/announcer/announcements';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
+import '~/sass/elements/toc.scss';
 
 interface AnnouncementsAsideProps {
   i18n: i18nType,
@@ -19,8 +20,8 @@ interface AnnouncementsAsideState {
 class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, AnnouncementsAsideState> {
   
   render(){
-    return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--basic-announcements">
-        <div className="panel panel--index">
+    return (<section className="toc">
+        <div className="toc__container">
           {this.props.announcements.length !== 0 ?
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.map((announcement: AnnouncementType)=>{
@@ -42,7 +43,7 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
             </div>
           }
       </div>
-    </div>);
+    </section>);
   }
 }
 

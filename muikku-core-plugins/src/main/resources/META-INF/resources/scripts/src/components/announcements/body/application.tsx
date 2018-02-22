@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 
-import ApplicationPanel from '~/components/general/application-panel';
+import ReadingPanel from '~/components/general/reading-panel';
 import Announcements from './application/announcements';
 import Link from '~/components/general/link';
 
@@ -10,9 +10,9 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
 
-{/* Application panel's css */}
+{/* Reading panel's css */}
 
-import '~/sass/elements/application-panel.scss';
+import '~/sass/elements/reading-panel.scss';
 import '~/sass/elements/loaders.scss';
 
 interface AnnouncementsApplicationProps {
@@ -25,11 +25,11 @@ interface AnnouncementsApplicationState {
 
 class AnnouncementsApplication extends React.Component<AnnouncementsApplicationProps, AnnouncementsApplicationState>{
   render(){
-        let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
+        let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcements.pageTitle')}</h2>
         return (<div className="container container--full">
-          <ApplicationPanel modifier="announcement" asideAfter={this.props.aside} >
+          <ReadingPanel modifier="announcement" title={title} asideAfter={this.props.aside} >
             <Announcements/>
-          </ApplicationPanel>
+          </ReadingPanel>
         </div>);
   }
 }
