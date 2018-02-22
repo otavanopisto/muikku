@@ -38,7 +38,8 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
   }
   render(){
     let evaluation = this.props.material.evaluation;
-    return <div className="application-list__item" onClick={this.toggleOpened}>
+    return <div className={`application-list__item ${this.props.material.evaluation ? "" : "unselectable"}`}
+      onClick={this.props.material.evaluation ? this.toggleOpened : null}>
       <div className="application-list__item-content application-list__item-content--main">
         <div className="application-list__item-header">
           {evaluation ?
