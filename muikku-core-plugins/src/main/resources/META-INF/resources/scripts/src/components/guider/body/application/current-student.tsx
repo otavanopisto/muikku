@@ -11,6 +11,7 @@ import '~/sass/elements/application-list.scss';
 import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
+import Hops from '~/components/base/hops';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
@@ -118,142 +119,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
-    let studentHops = this.props.guiderStudentsCurrent.hops && <div className="gt-user-hops mf-widget flex-row">
-      <div className="hops-form-wrapper lg-flex-cell-full md-flex-cell-full sm-flex-cell-full mf-item">
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.goals.upperSecondary" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.goalSecondarySchoolDegree )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.goals.matriculationExam" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.goalMatriculationExam )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears1" )}
-              <span>{this.props.guiderStudentsCurrent.hops.vocationalYears}</span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears2" )}
-            </label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.goalJustMatriculationExam )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits1" )}
-              <span>{this.props.guiderStudentsCurrent.hops.transferCreditYears}</span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits2" )}
-            </label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.justTransferCredits )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-16 md-flex-cell-16 sm-flex-cell-16">
-            <label>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears1" )}
-              <span>{this.props.guiderStudentsCurrent.hops.completionYears}</span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears2" )}
-            </label>
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.title" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            <span>{
-              this.props.guiderStudentsCurrent.hops.finnish === "AI" ?
-                this.props.i18n.text.get( "plugin.records.hops.languages.finnish.native" ) :
-                this.props.i18n.text.get( "plugin.records.hops.languages.finnish.foreign" )
-            }</span>
-          </div>
-          <p>{this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.additionalInfo" )}</p>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.languages.optional.title" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            <br />
-            <div>
-              <label>{this.props.i18n.text.get( "plugin.records.hops.languages.german" )}</label>
-              <span>{
-                this.props.guiderStudentsCurrent.hops.german ?
-                  this.props.i18n.text.get( "plugin.records.hops.goals.yes" ) :
-                  this.props.i18n.text.get( "plugin.records.hops.goals.no" )
-              }</span>
-            </div>
-            <div>
-              <label>{this.props.i18n.text.get( "plugin.records.hops.languages.french" )}</label>
-              <span>{
-                this.props.guiderStudentsCurrent.hops.french ?
-                  this.props.i18n.text.get( "plugin.records.hops.goals.yes" ) :
-                  this.props.i18n.text.get( "plugin.records.hops.goals.no" )
-              }</span>
-            </div>
-            <div>
-              <label>{this.props.i18n.text.get( "plugin.records.hops.languages.italian" )}</label>
-              <span>{
-                this.props.guiderStudentsCurrent.hops.italian ?
-                  this.props.i18n.text.get( "plugin.records.hops.goals.yes" ) :
-                  this.props.i18n.text.get( "plugin.records.hops.goals.no" )
-              }</span>
-            </div>
-            <div>
-              <label>{this.props.i18n.text.get( "plugin.records.hops.languages.spanish" )}</label>
-              <span>{
-                this.props.guiderStudentsCurrent.hops.spanish ?
-                  this.props.i18n.text.get( "plugin.records.hops.goals.yes" ) :
-                  this.props.i18n.text.get( "plugin.records.hops.goals.no" )
-              }</span>
-            </div>
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.mathSyllabus.title" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.mathSyllabus." + this.props.guiderStudentsCurrent.hops.mathSyllabus )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.science.title" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.science." + this.props.guiderStudentsCurrent.hops.science )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.religion.title" )}</label>
-          </div>
-          <div className="lg-flex-cell-6 md-flex-cell-6 sm-flex-cell-6">
-            {this.props.i18n.text.get( "plugin.records.hops.religion." + this.props.guiderStudentsCurrent.hops.religion )}
-          </div>
-        </div>
-        <div className="flex-row hops-form-section flex-align-items-center">
-          <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
-            <label>{this.props.i18n.text.get( "plugin.records.hops.additionalInfo.title" )}</label>
-            <p>{this.props.guiderStudentsCurrent.hops.additionalInfo}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    let studentHops = this.props.guiderStudentsCurrent.hops && <Hops data={this.props.guiderStudentsCurrent.hops} editable={false}/>
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
