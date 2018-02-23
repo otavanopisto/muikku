@@ -1,6 +1,6 @@
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderHOPSDataType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
 import { loadStudentsHelper } from './guider-students/helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType, UserFileType } from 'reducers/main-function/user-index';
@@ -8,6 +8,7 @@ import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/index/workspaces';
 import { VOPSDataType } from '~/reducers/main-function/vops';
+import { HOPSDataType } from '~/reducers/main-function/hops';
 
 export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
 export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
@@ -167,7 +168,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "vops", value: vops}})
           }),
         promisify(mApi().records.hops.read(id), 'callback')()
-          .then((hops:GuiderHOPSDataType)=>{
+          .then((hops:HOPSDataType)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})
           }),
         promisify(mApi().user.students.logins.read(id, {maxResults:1}), 'callback')()

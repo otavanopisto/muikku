@@ -8,31 +8,29 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
-import { VOPSType } from '~/reducers/main-function/vops';
-import VopsGraph from '~/components/base/vops';
 
-interface VopsProps {
+interface HopsProps {
   i18n: i18nType,
   records: RecordsType,
-  vops: VOPSType
+  hops: any
 }
 
-interface VopsState {
+interface HopsState {
 }
 
-class Vops extends React.Component<VopsProps, VopsState> {
+class Hops extends React.Component<HopsProps, HopsState> {
   render(){
-    if (this.props.records.location !== "VOPS"){
+    if (this.props.records.location !== "HOPS"){
       return null;
-    } else if (this.props.vops.status === "ERROR"){
+    } else if (this.props.hops.status === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.vops.status !== "READY"){
+    } else if (this.props.hops.status !== "READY"){
       return null;
     }
     
-    return <VopsGraph/>
+    //return <HopsGraph/>
   }
 }
 
@@ -40,7 +38,7 @@ function mapStateToProps(state: any){
   return {
     i18n: state.i18n,
     records: state.records,
-    vops: state.vops
+    hops: state.hops
   }
 };
 
@@ -51,4 +49,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default (connect as any)(
   mapStateToProps,
   mapDispatchToProps
-)(Vops);
+)(Hops);

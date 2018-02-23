@@ -6,6 +6,7 @@ import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
 import hops from './mock/hops';
 import vops from './mock/vops';
 import { VOPSDataType } from '~/reducers/main-function/vops';
+import { HOPSDataType } from '~/reducers/main-function/hops';
 //TODO
 
 export type GuiderStudentsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -85,29 +86,6 @@ export interface GuiderLastLoginStudentDataType {
   time: string
 }
 
-//TODO hops has an enum defined structure
-export interface GuiderHOPSDataType {
-  goalSecondarySchoolDegree: "yes" | "no" | "maybe",
-  goalMatriculationExam: "yes" | "no" | "maybe",
-  vocationalYears: string,        //string wtf, but this shit is actually a number
-  goalJustMatriculationExam: "yes" | "no",  //yo
-  justTransferCredits: string,    //another disguised number
-  transferCreditYears: string,    //disguides number
-  completionYears: string,      //disguised number
-  mathSyllabus: "MAA" | "MAB", 
-  finnish: "AI" | "S2",
-  swedish: boolean,
-  english: boolean,
-  german: boolean,
-  french: boolean,
-  italian: boolean,
-  spanish: boolean,
-  science: "BI" | "FY" | "KE" | "GE",
-  religion: "UE" | "ET" | "UX",
-  additionalInfo?: string,
-  optedIn: boolean
-}
-
 //These are actually dates, might be present or not
 //  studytime = Notification about study time ending
 //  nopassedcourses = Notification about low number of finished courses in a year
@@ -127,7 +105,7 @@ export interface GuiderStudentUserProfileType {
   files: Array<UserFileType>,
   usergroups: UserGroupListType,
   vops: VOPSDataType,
-  hops: GuiderHOPSDataType,
+  hops: HOPSDataType,
   lastLogin: GuiderLastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
   workspaces: WorkspaceListType

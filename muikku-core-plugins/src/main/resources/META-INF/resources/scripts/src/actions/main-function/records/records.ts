@@ -24,6 +24,10 @@ export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
   ():AnyActionType
 }
 
+export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
+  ():AnyActionType
+}
+
 let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRecordsTriggerType = function updateAllStudentUsersAndSetViewToRecords(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
@@ -328,5 +332,14 @@ let setLocationToVopsInTranscriptOfRecords:SetLocationToVopsInTranscriptOfRecord
   };
 }
 
-export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords}
-export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords}
+let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecordsTriggerType = function setLocationToHopsInTranscriptOfRecords(){
+  return {
+    type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+    payload: <TranscriptOfRecordLocationType>"HOPS"
+  };
+}
+
+export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords}
+export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords}
