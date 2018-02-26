@@ -21,11 +21,10 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
         type: 'UPDATE_HOPS_STATUS',
         payload: <HOPSStatusType>"LOADING"
       });
-      let userId = getState().status.userSchoolDataIdentifier;
-      //dispatch({
-      //  type: 'UPDATE_HOPS',
-      //  payload: <HOPSDataType>(await promisify(mApi().records.hops.read(userId), 'callback')())
-      //});
+      dispatch({
+        type: 'UPDATE_HOPS',
+        payload: <HOPSDataType>(await promisify(mApi().records.hops.read(), 'callback')())
+      });
       dispatch({
         type: 'UPDATE_HOPS_STATUS',
         payload: <HOPSStatusType>"READY"

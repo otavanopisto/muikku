@@ -11,6 +11,7 @@ import titleActions from '~/actions/base/title';
 import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records/records';
 import { updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
 import { updateVops } from '~/actions/main-function/vops';
+import { updateHops } from '~/actions/main-function/hops';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -32,6 +33,7 @@ function loadCurrentLocation(){
     store.dispatch(<Action>updateVops());
   } else if (givenLocation === "hops"){
     store.dispatch(<Action>setLocationToHopsInTranscriptOfRecords());
+    store.dispatch(<Action>updateHops());
   }
 }
 

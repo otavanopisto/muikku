@@ -8,6 +8,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
+import HopsGraph from '~/components/base/hops';
 
 interface HopsProps {
   i18n: i18nType,
@@ -30,7 +31,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
     
-    //return <HopsGraph/>
+    return <HopsGraph editable/>
   }
 }
 
