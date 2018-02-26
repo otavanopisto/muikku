@@ -49,7 +49,7 @@
           .addClass(severityOption['class'])
           .append($('<span>').html(message))
           .append($('<a>').addClass('notification-queue-item-close').attr('href', 'javascript:void(null)'))
-          .appendTo($(this.element).find('.notification-queue-items')));
+          .appendTo($(this.element).find('.notification-queue-items').addClass('severity-' + severity)));
       } else {
         throw new Error("Severity " + severity + " is undefined");
       }

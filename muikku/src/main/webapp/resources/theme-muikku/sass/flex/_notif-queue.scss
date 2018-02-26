@@ -8,7 +8,12 @@
 }
 
 .notification-queue-items {
+  margin: 0 auto;
+  max-width: 600px;
 
+  &.severity-guiding {
+    max-width: 480px;
+  }
 }
 
 .notification-queue-item {
