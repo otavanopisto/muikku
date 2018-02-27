@@ -4,21 +4,18 @@ import Playground from '../__playground';
 import Application from './body/application';
 import Aside from './body/aside';
 
-
 interface AnnouncementsBodyProps {
 }
 
 interface AnnouncementsBodyState {
 }
 
-
-
-export default class AnnouncerBody extends React.Component<AnnouncementsBodyProps,AnnouncementsBodyState> {
+export default class AnnouncementsBody extends React.Component<AnnouncementsBodyProps,AnnouncementsBodyState> {
 
   render(){
     let aside = <Aside />  
     return (<div className="embbed embbed-full">
-        <Application aside={aside} />        
+        <Application aside={aside} />
         <MainFunctionNavbar navigation={aside}/>
 
     </div>);
