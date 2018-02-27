@@ -1,8 +1,11 @@
 package fi.otavanopisto.muikku;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -44,8 +47,8 @@ public class TestUtilities {
   }
 
   public static Student studentFromMockStudent(MockStudent mockStudent) {
-    Map<String, String> variables = null;
-    List<String> tags = null;
+    Map<String, String> variables = new HashMap<>();
+    List<String> tags = new ArrayList<>();
     Student student = new Student(
         mockStudent.getId(),
         mockStudent.getPersonId(),
