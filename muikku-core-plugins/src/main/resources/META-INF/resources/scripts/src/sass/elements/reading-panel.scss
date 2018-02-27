@@ -15,10 +15,10 @@
 }
 
 .reading-panel__container {
+  display: flex;
+  flex-direction: column;
   max-width: $breakpoint-max-usable-screen;
   overflow: visible;
-  flex-direction: column;
-  display: flex;
   width:100%;
 }
 
@@ -131,19 +131,15 @@
 
 // Main containers
 .reading-panel__main-container {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
   background-color: $color-reading-panel-box-background;
   display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 0;
-  padding: 10px 0 10px 0;
   margin: 0;
   overflow: -moz-scrollbars-none;
-  
-  &::-webkit-scrollbar { 
-    display: none; 
-  }
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  padding: 10px 0;
   
   @include breakpoint($breakpoint-pad) {
     border: solid 1px $color-reading-panel-box-border;
@@ -158,6 +154,10 @@
     flex-basis: 700px;
     flex-shrink: 1;
   }
+  
+  &::-webkit-scrollbar { 
+    display: none; 
+  }
 }
 
 .reading-panel__main-container--actions {
@@ -166,6 +166,7 @@
   margin: 0;
   padding: 10px;
   position: relative;
+  
   @include breakpoint($breakpoint-pad) {
     margin: 0 12px;
     padding: 12px 0;
