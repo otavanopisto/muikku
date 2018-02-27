@@ -8,6 +8,10 @@ export interface UpdateHopsTriggerType {
   ():AnyActionType
 }
 
+export interface SetHopsToTriggerType {
+  (newHops: HOPSDataType):AnyActionType
+}
+
 export interface UPDATE_HOPS extends SpecificActionType<"UPDATE_HOPS", HOPSDataType>{}
 export interface UPDATE_HOPS_STATUS extends SpecificActionType<"UPDATE_HOPS_STATUS", HOPSStatusType>{}
 
@@ -39,5 +43,18 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
   }
 }
 
-export default {updateHops};
-export {updateHops};
+let setHopsTo:SetHopsToTriggerType = function setHopsTo(newHops){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      dispatch({
+        type: 'UPDATE_HOPS',
+        payload: <HOPSDataType>(await promisify(mApi().records.hops.update(newHops), 'callback')())
+      });
+    } catch (err){
+      dispatch(actions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+
+export default {updateHops, setHopsTo};
+export {updateHops, setHopsTo};

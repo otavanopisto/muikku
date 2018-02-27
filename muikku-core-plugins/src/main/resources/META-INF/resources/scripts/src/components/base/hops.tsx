@@ -102,13 +102,14 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="flex-row hops-form-section flex-align-items-center">
           <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
             <label>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears1" )}
+              {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears1")}
               {!this.props.editable ?
                 //Non editable form
                 <span>{this.state.hops.vocationalYears}</span> :
                 
                 //Editable f... 2,5 wot?...
-                <select value={this.state.hops.vocationalYears} onChange={this.setFromEventValue.bind(this, "vocationalYears")}>
+                <select value={this.state.hops.vocationalYears || ""} onChange={this.setFromEventValue.bind(this, "vocationalYears")}>
+                  <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
                   {["1", "2", "2,5", "3", "4", "5", "6", "7", "8", "9", "10"].map((numba)=>{
                     return <option key={numba} value={numba}>{numba}</option>
                   })}  
@@ -144,7 +145,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
                   <span>{this.state.hops.transferCreditYears}</span> :
                   
                   //Editable form.
-                  <select value={this.state.hops.transferCreditYears} onChange={this.setFromEventValue.bind(this, "transferCreditYears")}>
+                  <select value={this.state.hops.transferCreditYears || ""} onChange={this.setFromEventValue.bind(this, "transferCreditYears")}>
+                    <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
                     {["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"].map((numba)=>{
                       return <option key={numba} value={numba}>{numba}</option>
                     })}  
@@ -180,7 +182,8 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 <span>{this.state.hops.completionYears}</span> :
                   
                 //Editable form.
-                <select value={this.state.hops.completionYears} onChange={this.setFromEventValue.bind(this, "completionYears")}>
+                <select value={this.state.hops.completionYears || ""} onChange={this.setFromEventValue.bind(this, "completionYears")}>
+                  <option disabled value="">{this.props.i18n.text.get("plugin.records.hops.selectAnOption")}</option>
                   {["1", "2", "3", "4"].map((numba)=>{
                     return <option key={numba} value={numba}>{numba}</option>
                   })}  
@@ -286,7 +289,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 return <div key={option}>
                   <input type="radio" value={option} checked={this.state.hops.mathSyllabus === option}
                    onChange={onEvent}/>
-                  <label onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.mathSyllabus." + this.state.hops.mathSyllabus)}</label>
+                  <label onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.mathSyllabus." + option)}</label>
                 </div>
               })
             }
@@ -304,7 +307,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 return <div key={option}>
                   <input type="radio" value={option} checked={this.state.hops.science === option}
                    onChange={onEvent}/>
-                  <label onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.science." + this.state.hops.science)}</label>
+                  <label onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.science." + option)}</label>
                 </div>
               })
             }
@@ -322,7 +325,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
                 return <div key={option}>
                   <input type="radio" value={option} checked={this.state.hops.religion === option}
                    onChange={onEvent}/>
-                  <label onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.religion." + this.state.hops.religion)}</label>
+                  <label onClick={onEvent}>{this.props.i18n.text.get("plugin.records.hops.religion." + option)}</label>
                 </div>
               })
             }
@@ -348,7 +351,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return {}
 };
 
 export default (connect as any)(

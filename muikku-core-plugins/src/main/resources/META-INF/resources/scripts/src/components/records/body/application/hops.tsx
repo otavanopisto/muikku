@@ -9,11 +9,14 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import HopsGraph from '~/components/base/hops';
+import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
+import { bindActionCreators } from "redux";
 
 interface HopsProps {
   i18n: i18nType,
   records: RecordsType,
-  hops: any
+  hops: any,
+  setHopsTo: SetHopsToTriggerType
 }
 
 interface HopsState {
@@ -31,7 +34,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
     
-    return <HopsGraph editable/>
+    return <HopsGraph editable onHopsChange={this.props.setHopsTo}/>
   }
 }
 
@@ -44,7 +47,7 @@ function mapStateToProps(state: any){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({setHopsTo}, dispatch);
 };
 
 export default (connect as any)(
