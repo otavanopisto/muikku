@@ -11,6 +11,7 @@ import { RecordsType } from '~/reducers/main-function/records/records';
 import HopsGraph from '~/components/base/hops';
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
+import { HOPSDataType } from '~/reducers/main-function/hops';
 
 interface HopsProps {
   i18n: i18nType,
@@ -23,6 +24,16 @@ interface HopsState {
 }
 
 class Hops extends React.Component<HopsProps, HopsState> {
+  timeout: number;
+  constructor(props: HopsProps){
+    super(props);
+    
+    this.setHopsToWithDelay = this.setHopsToWithDelay.bind(this);
+  }
+  setHopsToWithDelay(hops: HOPSDataType){
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(this.props.setHopsTo.bind(null, hops), 500);
+  }
   render(){
     if (this.props.records.location !== "HOPS"){
       return null;
@@ -34,7 +45,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       return null;
     }
     
-    return <HopsGraph editable onHopsChange={this.props.setHopsTo}/>
+    return <HopsGraph editable onHopsChange={this.setHopsToWithDelay}/>
   }
 }
 

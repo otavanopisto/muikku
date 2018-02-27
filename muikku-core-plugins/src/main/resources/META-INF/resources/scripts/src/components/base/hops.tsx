@@ -32,7 +32,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   
   set(property:string, value:any){
     let nProp:any = {};
-    nProp[property] = value;
+    nProp[property] = value || null;
     let nval = Object.assign({}, this.state.hops, nProp);
     this.props.onHopsChange && this.props.onHopsChange(nval);
     
@@ -335,7 +335,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <div className="lg-flex-cell-10 md-flex-cell-10 sm-flex-cell-10">
             <label>{this.props.i18n.text.get( "plugin.records.hops.additionalInfo.title" )}</label>
             {!this.props.editable ? <p>{this.state.hops.additionalInfo}</p> : 
-              <textarea onChange={this.setFromEventValue.bind(this, "additionalInfo")} value={this.state.hops.additionalInfo}/>}
+              <textarea onChange={this.setFromEventValue.bind(this, "additionalInfo")} value={this.state.hops.additionalInfo || ""}/>}
           </div>
         </div>
       </div>
