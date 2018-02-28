@@ -142,7 +142,6 @@
           this._pinging = true;
         }
         else {
-          if (console) console.log("ping failed, reconnecting...");
           this._pinging = false;
           clearInterval(this._pingHandle);
           this._pingHandle = null;
