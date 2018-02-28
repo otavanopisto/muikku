@@ -40,11 +40,6 @@ public class WebSocketMessenger {
   }
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
-    List<Long> recipientIds = new ArrayList<Long>(recipients.size());
-    for (UserEntity userEntity : recipients) {
-      recipientIds.add(userEntity.getId());
-    }
-    
     WebSocketMessage message = new WebSocketMessage(eventType, data);
     ObjectMapper mapper = new ObjectMapper();
     String strMessage = null;
@@ -54,6 +49,11 @@ public class WebSocketMessenger {
     catch (Exception e) {
       logger.warning("Unable to serialize websocket message");
       return;
+    }
+
+    List<Long> recipientIds = new ArrayList<Long>(recipients.size());
+    for (UserEntity userEntity : recipients) {
+      recipientIds.add(userEntity.getId());
     }
     
     for (String ticket : sessions.keySet()) {
