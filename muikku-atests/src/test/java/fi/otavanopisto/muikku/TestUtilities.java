@@ -1,18 +1,17 @@
 package fi.otavanopisto.muikku;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 import fi.otavanopisto.muikku.mock.model.MockCourse;
 import fi.otavanopisto.muikku.mock.model.MockCourseStudent;
