@@ -8,13 +8,22 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 
 @ApplicationScoped
-public class PyramusSchoolDataStudyProgrammeUpdateScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataStudyProgrammeUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
   @Inject
   private Logger logger;
 
   @Inject
   private PyramusUpdater pyramusUpdater;
+
+  @Override
+  public String getSchedulerName() {
+    return "study-programmes";
+  }
+
+  @Override
+  public void prepare() {
+  }
 
   @Override
   public void synchronize() {

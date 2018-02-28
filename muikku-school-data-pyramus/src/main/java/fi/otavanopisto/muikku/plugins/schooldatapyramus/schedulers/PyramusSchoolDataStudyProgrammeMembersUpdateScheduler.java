@@ -24,14 +24,17 @@ public class PyramusSchoolDataStudyProgrammeMembersUpdateScheduler extends Pyram
   public String getSchedulerName() {
     return "studyprogramme-members";
   }
+
+  @Override
+  public void prepare() {
+    updateOffset(getOffset() + BATCH_SIZE);
+  }
   
   public void synchronize() {
-    int currentOffset = getOffset();
     int count = 0;
     try {
-      logger.fine("Synchronizing Pyramus study programme members (" + currentOffset + ")");
-      updateOffset(currentOffset + BATCH_SIZE);
-      int result = pyramusUpdater.updateStudyProgrammeMembers(currentOffset, BATCH_SIZE);
+      logger.fine("Synchronizing Pyramus study programme members (" + getOffset() + ")");
+      int result = pyramusUpdater.updateStudyProgrammeMembers(getOffset(), BATCH_SIZE);
       if (result == -1) {
         updateOffset(0);
       } else {

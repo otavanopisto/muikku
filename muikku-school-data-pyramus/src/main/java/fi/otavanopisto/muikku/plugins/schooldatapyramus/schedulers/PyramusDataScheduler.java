@@ -12,6 +12,12 @@ public abstract class PyramusDataScheduler {
   private PluginSettingsController pluginSettingsController;
   
   public abstract String getSchedulerName();
+  
+  public boolean isEnabled() {
+    return NumberUtils.toInt(pluginSettingsController.getPluginSetting(
+        "school-data-pyramus",
+        "pyramus-updater." + getSchedulerName() + ".disable")) == 0;
+  }
 
   protected int getOffset() {
     return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data-pyramus", "pyramus-updater." + getSchedulerName() + ".offset"));

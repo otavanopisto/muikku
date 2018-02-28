@@ -26,13 +26,16 @@ public class PyramusSchoolDataPersonsUpdateScheduler extends PyramusDataSchedule
   }
 
   @Override
+  public void prepare() {
+    updateOffset(getOffset() + BATCH_SIZE);
+  }
+
+  @Override
   public void synchronize() {
-    int currentOffset = getOffset();
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus persons");
-      updateOffset(currentOffset + BATCH_SIZE);
-      int result = pyramusUpdater.updatePersons(currentOffset, BATCH_SIZE);
+      int result = pyramusUpdater.updatePersons(getOffset(), BATCH_SIZE);
       if (result == -1) {
         updateOffset(0);
       }
