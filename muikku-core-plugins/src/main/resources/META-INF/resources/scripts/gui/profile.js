@@ -251,6 +251,8 @@
               if (erronous = err) {
                 if (result.status == 403)
                   $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.profile.changePassword.dialog.notif.unauthorized"));
+                else if (result.status == 400)
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.profile.changePassword.dialog.notif.alreadyinuse"));
                 else
                   $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {

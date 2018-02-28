@@ -13,6 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -66,6 +67,8 @@ public class UserPluginRESTService extends PluginRESTService {
       return Response.noContent().build();
     } catch (SchoolDataBridgeUnauthorizedException e) {
       return Response.status(Status.FORBIDDEN).build();
+    } catch (SchoolDataBridgeException e) {
+      return Response.status(Status.BAD_REQUEST).build();
     }
   }
   
