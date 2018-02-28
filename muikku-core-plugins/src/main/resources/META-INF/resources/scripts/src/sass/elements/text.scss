@@ -331,7 +331,6 @@ b {
   
 .text--communicator-body {
   display: inline-block;
-  font-weight: 300;
 }
 
 .text--communicator-labels {
@@ -346,7 +345,6 @@ b {
 .text--communicator-label {
   align-items: center; 
   display: flex;
-  font-weight: 300;
   margin: 0 15px 0 0;
 }
 
@@ -472,7 +470,7 @@ b {
 .text--discussion-thread-item-body {
   font-style: italic;
   width: 100%;
-  padding: 25px 0;
+  padding: 12px 0 0;
 }
 
 .text--discussion-thread-meta {
@@ -484,23 +482,39 @@ b {
 }
 
 .text--discussion-thread-user {
-  
-  span:not(:first-child) {
-    margin-left: 10px;    
-  }
+  font-size: .8125rem;
+  font-weight: 600;
+}
+
+.text--discussion-thread-meta-counter {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: .8125rem;
+  font-weight: 600;
+  justify-content: flex-end;
+}
+
+.text--discussion-thread-meta-counter-title {
+  font-size: .8125rem;
+  font-weight: 600;
+  padding: 0 3px 0 0;
 }
 
 .text--discussion-thread-meta-latest-reply {
-  width: 250px;
-  text-align: right;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: .8125rem;
+  font-weight: 600;
   justify-content: flex-end;
+  text-align: right;
+  width: 250px;
 }
 
 .text--discussion-thread-item-title {
   border-left: 5px solid $color-message-item-title-border;
-  padding-left: 5px; 
+  padding: 0 0 0 5px; 
 }
 
 .text--discussion-current-thread {
