@@ -65,10 +65,8 @@ public class UserPluginRESTService extends PluginRESTService {
           userCredentialChange.getUsername(), userCredentialChange.getNewPassword());
     
       return Response.noContent().build();
-    } catch (SchoolDataBridgeUnauthorizedException e) {
-      return Response.status(Status.FORBIDDEN).build();
     } catch (SchoolDataBridgeException e) {
-      return Response.status(Status.BAD_REQUEST).build();
+      return Response.status(e.getStatusCode()).build();
     }
   }
   
