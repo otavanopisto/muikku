@@ -583,6 +583,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     click(selector);
   }
   
+  protected void scrollToEnd() {
+    ((JavascriptExecutor) getWebDriver()).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+  }
+  
   protected void waitScrollAndClick(String selector) {
     waitForPresent(selector);
     scrollIntoView(selector);
