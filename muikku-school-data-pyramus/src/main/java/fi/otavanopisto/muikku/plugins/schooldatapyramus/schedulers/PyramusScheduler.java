@@ -83,8 +83,6 @@ public class PyramusScheduler {
         String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
         logger.info(String.format("Running %s", schedulerName));
         updateScheduler.synchronize();
-      } else {
-        System.out.println(String.format("scheduler %s is disabled", updateScheduler.getClass().getSimpleName()));
       }
       
       userTransaction.commit();
