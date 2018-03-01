@@ -101,7 +101,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
   public long getEvaluablesDonePercent() {
     long done = evaluablesSubmitted + evaluablesPassed + evaluablesFailed + evaluablesIncomplete;
     long total = getEvaluablesTotal();
-    return total == 0 ? 0 : Math.round(done * 100) / total;
+    return total == 0 ? 0 : Math.round((done * 100) / total);
   }
 
   public long getExercisesUnanswered() {
@@ -119,7 +119,7 @@ public class GuiderStudentWorkspaceActivityRestModel {
   public long getExercisesDonePercent() {
     long done = exercisesAnswered;
     long total = getExercisesTotal();
-    return total == 0 ? 0 : Math.round(done * 100) / total;
+    return total == 0 ? 0 : Math.round((done * 100) / total);
   }
 
   public long getJournalEntryCount() {
