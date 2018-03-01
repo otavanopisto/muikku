@@ -1,7 +1,7 @@
-import Navbar from '../general/navbar';
-import Link from '../general/link';
-import LoginButton from '../base/login-button';
-import ForgotPasswordDialog from '../base/forgot-password-dialog';
+import Navbar from '../../general/navbar';
+import Link from '../../general/link';
+import LoginButton from '../../base/login-button';
+import ForgotPasswordDialog from '../../base/forgot-password-dialog';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';

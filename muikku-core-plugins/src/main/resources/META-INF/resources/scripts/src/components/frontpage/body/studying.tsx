@@ -1,0 +1,67 @@
+import * as React from "react";
+import { i18nType } from "~/reducers/base/i18n";
+
+import '~/sass/elements/container.scss';
+import '~/sass/elements/ordered-container.scss';
+import '~/sass/elements/card.scss';
+import '~/sass/elements/buttons.scss';
+
+interface FrontpageStudyingProps {
+  i18n: i18nType
+}
+
+interface FrontpageStudyingState {
+
+}
+
+export default class FrontpageStudying extends React.Component<FrontpageStudyingProps, FrontpageStudyingState> {
+  render() {
+    return <section id="studying" className="container container--frontpage-section">
+      <h2 className="text text--branded text--frontpage-title">{this.props.i18n.text.get( 'plugin.sectionTitle.studying' )}</h2>
+      <div className="ordered-container ordered-container--frontpage-studying">
+        <div className="ordered-container__item ordered-container__item--upper-secondary-school">
+          <div className="card">
+            <img className="card__image" src="/gfx/kuva_nettilukio.png" alt="" title="" />
+            <div className="card__content">
+              <div className="card__title card__title--frontpage-upper-secondary-school">{this.props.i18n.text.get( 'plugin.studying.nettilukio.title' )}</div>
+              <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettilukio.description' )}</div>
+            </div>
+            <div className="card__footer">
+              <a href="http://www.nettilukio.fi/nettilukio_esittely"
+                className="button button--branded button--frontpage-upper-secondary-school-readmore">
+                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </a>
+            </div>
+          </div>
+        </div>
+        <div className="ordered-container__item ordered-container__item--secondary-school">
+          <div className="card">
+            <img className="card__image" src="/gfx/kuva_nettiperuskoulu.png" alt="" title="" />
+            <div className="card__content">
+              <div className="card__title card__title--frontpage-secondary-school">{this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.title' )}</div>
+              <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.description' )}</div>
+            </div>
+            <div className="card__footer">
+              <a href="http://www.nettilukio.fi/esittely_nettipk"
+                className="button button--branded button--frontpage-secondary-school-readmore">
+                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </a>
+            </div>
+          </div>
+        </div>
+        <div className="ordered-container__item ordered-container__item--open-materials">
+          <div className="card">
+            <img className="card__image" src="/gfx/kuva_aineopiskelu.png" alt="" title="" />
+            <div className="card__content">
+              <div className="card__title card__title--frontpage-open-materials">{this.props.i18n.text.get( 'plugin.studying.aineopiskelu.title' )}</div>
+              <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.aineopiskelu.description' )}</div>
+            </div>
+            <div className="card__footer">
+              <a href="http://www.nettilukio.fi/esittely_nettipk"
+                className="button button--branded button--frontpage-open-materials-readmore">
+                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+}
