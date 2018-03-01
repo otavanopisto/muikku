@@ -75,48 +75,18 @@ public class PyramusScheduler {
     PyramusUpdateScheduler updateScheduler = schedulers.get(schedulerIndex);
     schedulerIndex = (schedulerIndex + 1) % schedulers.size();
     
-    // Let scheduler do preparation work in one transaction
-    //
-    // #3848: Schedulers can now set themselves up so that they can move on
-    // if actual synchronization fails for some reason
-    //
-    // #3849: Skip synchronization if the scheduler has been disabled
-    
-    boolean schedulerIsEnabled = false;
-    try {
-      userTransaction.begin();
-      schedulerIsEnabled = updateScheduler.isEnabled();
-      if (schedulerIsEnabled) {
-        updateScheduler.prepare();
-      }
-      userTransaction.commit();
-    }
-    catch (Exception e) {
-      logger.log(Level.WARNING, "Pyramus synchronization (prepare) failed", e);
-      try {
-        userTransaction.rollback();
-      }
-      catch (Exception rbe) {
-        logger.log(Level.WARNING, "Pyramus synchronization (prepare) rollback failed", e);
-      }
-      return; // Skip actual synchronization if preparation phase fails
-    }
-    
-    // Skip actual synchronization if the scheduler is not enabled
-    
-    if (!schedulerIsEnabled) {
-      return;
-    }
-    
-    // Let scheduler do actual synchronization in another transaction
-
     try {
       userTransaction.begin();
 
-      String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
-      logger.info(String.format("Running %s", schedulerName));
-      updateScheduler.synchronize();
-
+      // #3849: Skip synchronization if the scheduler has been disabled
+      if (updateScheduler.isEnabled()) {
+        String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
+        logger.info(String.format("Running %s", schedulerName));
+        updateScheduler.synchronize();
+      } else {
+        System.out.println(String.format("scheduler %s is disabled", updateScheduler.getClass().getSimpleName()));
+      }
+      
       userTransaction.commit();
     }
     catch (Exception e) {

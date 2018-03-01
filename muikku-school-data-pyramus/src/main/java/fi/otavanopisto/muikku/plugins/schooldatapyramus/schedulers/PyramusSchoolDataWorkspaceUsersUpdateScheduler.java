@@ -36,20 +36,15 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler extends PyramusDataS
     return "workspace-users";
   }
 
-  @Override
-  public void prepare() {
-    updateOffset(getOffset() + BATCH_SIZE);
-  }
-
   public void synchronize() {
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus workspace users");
-
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
-          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, getOffset(), BATCH_SIZE);
+          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, currentOffset, BATCH_SIZE);
       if (workspaceEntities.size() == 0) {
-        updateOffset(0);
+        resetCurrentOffset();
       }
       else {
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {

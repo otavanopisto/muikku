@@ -21,10 +21,6 @@ public class PyramusSchoolDataRolesUpdateScheduler extends PyramusDataScheduler 
     return "roles";
   }
 
-  @Override
-  public void prepare() {
-  }
-
   /* (non-Javadoc)
    * @see fi.otavanopisto.muikku.plugins.schooldatapyramus.schedulers.PyramusUpdateScheduler#synchronizeWorkspaceUsers()
    */

@@ -24,20 +24,17 @@ public class PyramusSchoolDataUserGroupUpdateScheduler extends PyramusDataSchedu
   public String getSchedulerName() {
     return "usergroups";
   }
-  
-  @Override
-  public void prepare() {
-    updateOffset(getOffset() + BATCH_SIZE);
-  }
 
   @Override
   public void synchronize() {
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus usergroups");
-      int result = pyramusUpdater.updateStudentGroups(getOffset(), BATCH_SIZE);
+
+      int result = pyramusUpdater.updateStudentGroups(currentOffset, BATCH_SIZE);
       if (result == -1) {
-        updateOffset(0);
+        resetCurrentOffset();
       } else {
         count = result;
       }

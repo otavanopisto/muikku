@@ -10,6 +10,9 @@ public abstract class PyramusDataScheduler {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+
+  @Inject
+  private PyramusSchedulerOffsetController offsetController;
   
   public abstract String getSchedulerName();
   
@@ -19,12 +22,12 @@ public abstract class PyramusDataScheduler {
         "pyramus-updater." + getSchedulerName() + ".disable")) == 0;
   }
 
-  protected int getOffset() {
-    return NumberUtils.toInt(pluginSettingsController.getPluginSetting("school-data-pyramus", "pyramus-updater." + getSchedulerName() + ".offset"));
+  protected int getAndUpdateCurrentOffset(int batchSize) {
+    return offsetController.getAndUpdateCurrentOffset(getSchedulerName(), batchSize);
   }
-  
-  protected void updateOffset(int newOffset) {
-    pluginSettingsController.setPluginSetting("school-data-pyramus", "pyramus-updater." + getSchedulerName() + ".offset", String.valueOf(newOffset));
+
+  protected void resetCurrentOffset() {
+    offsetController.updateOffset(getSchedulerName(), 0);
   }
   
 }

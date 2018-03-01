@@ -36,20 +36,16 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
     return "usergroup-users";
   }
   
-  @Override
-  public void prepare() {
-    updateOffset(getOffset() + BATCH_SIZE);
-  }
-
   public void synchronize() {
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus user group users");
 
       List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupEntitiesByDataSource(
-          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, getOffset(), BATCH_SIZE);
+          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, currentOffset, BATCH_SIZE);
       if (userGroupEntities.size() == 0) {
-        updateOffset(0);
+        resetCurrentOffset();
       }
       else {
         for (UserGroupEntity userGroupEntity : userGroupEntities) {

@@ -22,10 +22,6 @@ public class PyramusSchoolDataStudyProgrammeUpdateScheduler extends PyramusDataS
   }
 
   @Override
-  public void prepare() {
-  }
-
-  @Override
   public void synchronize() {
     int count = 0;
     try {

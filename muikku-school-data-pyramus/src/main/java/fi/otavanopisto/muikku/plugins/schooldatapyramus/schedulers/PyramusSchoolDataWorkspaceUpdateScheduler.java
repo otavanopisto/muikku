@@ -26,18 +26,15 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler extends PyramusDataSchedu
   }
 
   @Override
-  public void prepare() {
-    updateOffset(getOffset() + BATCH_SIZE);
-  }
-
-  @Override
   public void synchronize() {
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus workspaces");
-      int result = pyramusUpdater.updateCourses(getOffset(), BATCH_SIZE);
+
+      int result = pyramusUpdater.updateCourses(currentOffset, BATCH_SIZE);
       if (result == -1) {
-        updateOffset(0);
+        resetCurrentOffset();
       } else {
         count = result;
       }
