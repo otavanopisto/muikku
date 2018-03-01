@@ -297,8 +297,7 @@ b {
 
 // Communicator
 .text--communicator-message-caption {
-  font-weight: 600;  
-
+  font-size: 1.125rem;
   padding: 10px; 
 }  
 
@@ -483,21 +482,16 @@ b {
 
 .text--discussion-thread-user {
   font-size: .8125rem;
-  font-weight: 600;
 }
 
 .text--discussion-thread-meta-counter {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  font-size: .8125rem;
-  font-weight: 600;
   justify-content: flex-end;
 }
 
 .text--discussion-thread-meta-counter-title {
-  font-size: .8125rem;
-  font-weight: 600;
   padding: 0 3px 0 0;
 }
 
@@ -505,8 +499,6 @@ b {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  font-size: .8125rem;
-  font-weight: 600;
   justify-content: flex-end;
   text-align: right;
   width: 250px;
@@ -522,20 +514,16 @@ b {
   align-items: center;  
     
   span:not(:first-child) {
-    margin-left: 10px;    
+    margin: 0 0 0 10px;    
   }
 }
 
 .text__discussion-breadcrumb-item {
-  padding-left: 5px;
-  
-  &:not(:first-child) {
-    margin-left: 10px;
-  }
+  padding: 0 0 0 7px;
      
   &:not(:last-child)::after {
     content: '>';
-    margin-left: 5px;
+    margin: 0 0 0 5px;
   }
 }
 
@@ -587,13 +575,13 @@ b {
   }
 }
 
-.text__discussion-message-creator {
-  font-size: 1.6rem;
+.text--discussion-message-creator {
+  font-size: 1.125rem;
 }
 
 .text--discussion-current-thread-title {
   font-size: 1.6rem;  
-  font-weight: 600;  
+  font-weight: 400;  
 }
 
 // Coursepicker

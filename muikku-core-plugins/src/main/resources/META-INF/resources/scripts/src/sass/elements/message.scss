@@ -9,18 +9,33 @@
   &.selected {
     border-top: 1px solid $color-default;
   }
+}
+
+.message--communicator {
   
   &:first-child {
     border: 0;
   }
 }
 
-.message__content {
-  flex-flow: row nowrap;
+.message--discussion {
+  
+  &:first-child {
+    border: 0;
+  }
+  
+  // This has to be this specific as :first-child overrides border rules if we put this outside of .message-discussion scope
+  &.message--discussion-reply-of-op {
+    border-top: 5px solid $color-message-border;
+  }
 }
 
-.message__content-aside--discussion {
-  padding: 0 16px 0 0;
+.message--discussion-thread-op {
+  padding: 25px 12px 14px 4px;
+}
+
+.message--discussion-reply-of-reply {
+  margin: 0 0 0 63px;
 }
 
 .message--unread {
@@ -35,14 +50,12 @@
   }
 }
 
-.message--thread-op {
-  border-bottom: 5px solid $color-message-border;
-  padding: 25px 0;
-  border-top: 0;
+.message__content {
+  flex-flow: row nowrap;
 }
 
-.message--thread-reply {
-  border-bottom: none;  
+.message__content-aside--discussion {
+  padding: 0 16px 0 0;
 }
 
 .message__select-container {
@@ -53,14 +66,12 @@
 
 .message__title {
   font-weight: 600;
-  line-height: 1.3;
   padding: 0 0 0 7px;   
 }
 
 .message__title--category-1 {
   border-left: 5px solid $color-message-area-category-1;  
 }
-
 
 .message__title--category-2 {
   border-left: 5px solid $color-message-area-category-2;  
