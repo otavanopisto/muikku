@@ -452,6 +452,22 @@ b {
   margin: 0 20px 0 0;
 }
 
+// Announcements
+.text--announcement-caption {
+  font-size: 1.5rem;
+  font-weight: 200;
+  margin: 0 0 10px;
+}  
+
+.text--announcer-date {
+  margin: 0 0 10px;
+}
+
+.text--announcement-content {
+  line-height: 1.5rem;
+  margin: 20px 0 0;
+}
+
 // Discussion
 .text--discussion-thread-item-body {
   font-style: italic;

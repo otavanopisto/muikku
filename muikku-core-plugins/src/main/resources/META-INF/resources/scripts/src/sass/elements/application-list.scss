@@ -25,11 +25,17 @@
 .application-list__item {
   background-color: $color-application-list-item-background;
   cursor: pointer;
-  user-select: none;
+  -webkit-touch-callout: none;
   transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
-  -webkit-touch-callout: none;
+  user-select: none;
   
+  @include breakpoint($breakpoint-desktop) {
+    -webkit-touch-callout: default;
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+    
   &:hover, 
   &.hover {
     background-color: $color-application-list-item-background-hover;
