@@ -10,6 +10,7 @@ import Studying from './body/studying';
 import Videos from './body/videos';
 import News from './body/news';
 import Organization from './body/organization';
+import Footer from './body/footer';
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/logo.scss';
@@ -36,12 +37,14 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
       
       <Separator/>
       
-      <ScreenContainer>
+      <ScreenContainer fullHeight={false}>
         <Studying i18n={this.props.i18n}/>
         <Videos/>
         <News i18n={this.props.i18n}/>
         <Organization i18n={this.props.i18n}/>
       </ScreenContainer>
+        
+      <Footer i18n={this.props.i18n}/>
     </div>);
   }
 }

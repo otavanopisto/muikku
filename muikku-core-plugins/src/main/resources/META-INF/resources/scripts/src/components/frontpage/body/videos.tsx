@@ -19,22 +19,16 @@ export default class FrontpageVideos extends React.Component<FrontpageVideosProp
             src="https://www.youtube.com/embed/tTlLURdl0rA?rel=0&amp;showinfo=0"
             style={{ border: 0, allowfullscreen: "allowfullscreen" }}></iframe>
         </CarouselVideoItem>
-      </Carousel>
-      <Carousel>
         <CarouselVideoItem>
           <iframe width="1280" height="720"
             src="https://www.youtube.com/embed/CJcpWZD0VT8?rel=0&amp;showinfo=0"
             style={{ border: 0, allowfullscreen: "allowfullscreen" }}></iframe>
         </CarouselVideoItem>
-      </Carousel>
-      <Carousel>
         <CarouselVideoItem>
           <iframe width="1280" height="720"
             src="https://www.youtube.com/embed/EbJnWIyOJNg?rel=0&amp;showinfo=0"
             style={{ border: 0, allowfullscreen: "allowfullscreen" }}></iframe>
         </CarouselVideoItem>
-      </Carousel>
-      <Carousel>
         <CarouselVideoItem>
           <iframe width="1280" height="720"
             src="https://www.youtube.com/embed/iOKUoAAQ7Uk?rel=0&amp;showinfo=0"

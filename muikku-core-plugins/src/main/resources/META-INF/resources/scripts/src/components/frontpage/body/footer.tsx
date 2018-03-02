@@ -19,7 +19,7 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
         <div className="footer__item footer__item--contact">
           <h2 className="text text--branded text--contact-us">{this.props.i18n.text.get( 'plugin.footer.contact.title' )}</h2>
           <p className="text text--branded text--contact-us-information">
-            <span className="text__icon icon-location"></span>
+            <span className="text-icon icon-location"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.streetAddress.label' )}</b>
             <span>Otavantie 2 B, 50670 Otava</span>
           </p>
