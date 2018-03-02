@@ -3,12 +3,12 @@
 @import "../base/mixins";
 
 .pager {
-  border-top: 1px solid #ebebeb;
+  border-top: 1px solid $color-default-separator-border;
 }
 
 .pager__body {
-  display:flex;
   align-items: center;
+  display:flex;
   justify-content: center;
   padding: 24px 0 12px;
 }
@@ -29,8 +29,8 @@
   display: inline-block;
   
   &::before {
+    content: "<";
     display: block;
-    content: "<"
   }
 }
 
@@ -38,15 +38,14 @@
   display: inline-block;
   
   &::before {
-    display: block;
     content: ">";
+    display: block;
   }
 }
   
 .pager__number {
   align-items: center;
   border-radius: 10px;
-  color: #000;
   color: $color-pager-page-index-font;
   display: flex;
   height: 35px;
@@ -56,6 +55,6 @@
 }
 
 .pager__number--current {
-   background-color: $color-pager-selected-page-index-background;
-   color: $color-pager-selected-page-index-font;
+  background-color: $color-pager-selected-page-index-background;
+  color: $color-pager-selected-page-index-font;
 }
