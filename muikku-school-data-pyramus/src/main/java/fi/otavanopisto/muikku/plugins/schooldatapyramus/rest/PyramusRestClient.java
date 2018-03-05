@@ -2,7 +2,6 @@ package fi.otavanopisto.muikku.plugins.schooldatapyramus.rest;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 
@@ -99,10 +99,6 @@ class PyramusRestClient implements Serializable {
     Response response = request.get();
     try {
       return createResponse(response, type, path);
-    } catch (Throwable t) {
-      // TODO Remove catch once Pyramus 403 issue is resolved   
-      logger.log(Level.SEVERE, String.format("Pyramus GET request into %s failed", path), t);
-      return null;
     } finally {
       response.close();
     }
@@ -125,7 +121,7 @@ class PyramusRestClient implements Serializable {
           throw new SchoolDataBridgeUnauthorizedException(String.format("Received http error %d when requesting %s", response.getStatus(), path));
         default:
           logger.warning(String.format("Pyramus DELETE for path %s failed (%d)", path, response.getStatus()));
-          throw new SchoolDataBridgeInternalException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+          throw new SchoolDataBridgeException(response.getStatus(), String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
       }
     }
     finally {
@@ -181,7 +177,7 @@ class PyramusRestClient implements Serializable {
         return null;
       default:
         logger.warning(String.format("Pyramus call for path %s failed (%d)", path, response.getStatus()));
-        throw new SchoolDataBridgeInternalException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
+        throw new SchoolDataBridgeException(response.getStatus(), String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
     }
   }
   

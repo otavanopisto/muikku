@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusUpdater;
 
 @ApplicationScoped
-public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataRolesUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
   
   @Inject
   private Logger logger;
@@ -16,6 +16,11 @@ public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateSched
   @Inject
   private PyramusUpdater pyramusUpdater;
   
+  @Override
+  public String getSchedulerName() {
+    return "roles";
+  }
+
   /* (non-Javadoc)
    * @see fi.otavanopisto.muikku.plugins.schooldatapyramus.schedulers.PyramusUpdateScheduler#synchronizeWorkspaceUsers()
    */

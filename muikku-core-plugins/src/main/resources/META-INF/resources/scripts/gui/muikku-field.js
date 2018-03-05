@@ -567,7 +567,7 @@
           }
         }
         else {
-          if (correctAnswersDisplay == 'ALWAYS' || (correctAnswersDisplay == 'ON_REQUEST' && requestAnswers)) {
+          if (correctAnswersDisplay == 'ALWAYS' || correctAnswersDisplay == 'ON_REQUEST') {
             if ($(field).muikkuField('hasExamples')) {
               var exampleDetails = $('<span>')
                 .addClass('muikku-field-examples')
