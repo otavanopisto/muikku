@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -47,6 +49,8 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageReci
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.search.SearchProvider;
+import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 
@@ -87,6 +91,10 @@ public class CommunicatorController {
   
   @Inject
   private CommunicatorMessageRecipientWorkspaceGroupDAO communicatorMessageRecipientWorkspaceGroupDAO;
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
   
   private String clean(String html) {
     Document doc = Jsoup.parseBodyFragment(html);
@@ -145,6 +153,10 @@ public class CommunicatorController {
     Set<Long> recipientIds = new HashSet<Long>();
     
     for (UserEntity recipient : userRecipients) {
+      // #3758: Only send messages to active users
+      if (!isActiveUser(recipient)) {
+        continue;
+      }
       if (!recipientIds.contains(recipient.getId())) {
         recipientIds.add(recipient.getId());
         communicatorMessageRecipientDAO.create(message, recipient, null);
@@ -161,6 +173,10 @@ public class CommunicatorController {
           for (UserGroupUserEntity groupUser : groupUsers) {
             UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
             UserEntity recipient = userSchoolDataIdentifier.getUserEntity();
+            // #3758: Only send messages to active users
+            if (!isActiveUser(recipient)) {
+              continue;
+            }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               if (!recipientIds.contains(recipient.getId())) {
                 recipientIds.add(recipient.getId());
@@ -183,6 +199,10 @@ public class CommunicatorController {
           
           for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
             UserEntity recipient = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+            // #3758: Only send messages to active users
+            if (!isActiveUser(recipient)) {
+              continue;
+            }
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               if (!recipientIds.contains(recipient.getId())) {
                 recipientIds.add(recipient.getId());
@@ -203,6 +223,7 @@ public class CommunicatorController {
 
           for (WorkspaceUserEntity wosu : workspaceUsers) {
             UserEntity recipient = wosu.getUserSchoolDataIdentifier().getUserEntity();
+            // #3758: Workspace teachers are considered active, no need to check
             if ((recipient != null) && !Objects.equals(sender.getId(), recipient.getId())) {
               if (!recipientIds.contains(recipient.getId())) {
                 recipientIds.add(recipient.getId());
@@ -524,6 +545,24 @@ public class CommunicatorController {
   
   public CommunicatorMessageId findNewerThreadId(UserEntity userEntity, CommunicatorMessageId threadId, CommunicatorFolderType type, CommunicatorLabel label) {
     return communicatorMessageDAO.findNewerThreadId(userEntity, threadId, type, label);
+  }
+
+  private SearchProvider getProvider(String name) {
+    for (SearchProvider searchProvider : searchProviders) {
+      if (name.equals(searchProvider.getName())) {
+        return searchProvider;
+      }
+    }
+    return null;
+  }
+  
+  private boolean isActiveUser(UserEntity userEntity) {
+    SearchProvider searchProvider = getProvider("elastic-search");
+    if (searchProvider != null) {
+      SearchResult searchResult = searchProvider.findUser(userEntity.getId(), false);
+      return searchResult.getTotalHitCount() > 0;
+    }
+    return true;
   }
   
 }

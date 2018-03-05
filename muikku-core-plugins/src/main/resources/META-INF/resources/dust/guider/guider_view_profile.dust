@@ -1,7 +1,7 @@
 {#student}
-  <div class="gt-user-view-headline mf-widget flex-row flex-align-items-center">
-    <h1 class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">{firstName} {lastName}</h1>
-    <div class="gt-user-view-flags-container lg-flex-cell-4 md-flex-cell-4 sm-flex-hide flex-right">      
+  <div class="mf-items-toolbar flex-row">
+  	<div class="mf-items-tool icon-goback" data-from-view=""></div>
+  	<div class="gt-user-view-flags-container lg-flex-cell-4 md-flex-cell-4 sm-flex-hide flex-right">      
       <div class="gt-add-flag-widget icon-add">
         <span class="gt-add-flag-widget-label">{#localize key="plugin.guider.flags.addFlag.label"/}</span>
         <div class="gt-add-flags-container">
@@ -13,6 +13,9 @@
         </div>
       </div>      
     </div>  
+  </div>
+  <div class="gt-user-view-headline mf-widget flex-row flex-align-items-center">
+    <h1 class="lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-12">{firstName} {lastName}</h1>
   </div>
   {?studentFlags}  
     <div class="mf-widget gt-user-view-flags-container flex-row">  

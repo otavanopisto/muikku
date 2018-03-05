@@ -28,6 +28,7 @@ import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.GradingController;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -157,8 +158,9 @@ public class TranscriptofRecordsBackingBean {
   }
   
   public Boolean getShowStudies() {
-    UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
-    return transcriptOfRecordsController.shouldShowStudies(loggedUserEntity);
+    SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+    User user = userController.findUserByIdentifier(userIdentifier);
+    return transcriptOfRecordsController.shouldShowStudies(user);
   }
   
   public Date getStudyStartDate() {

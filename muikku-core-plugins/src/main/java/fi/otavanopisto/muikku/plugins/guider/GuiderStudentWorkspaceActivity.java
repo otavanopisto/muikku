@@ -58,42 +58,32 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addAnswered(Date date) {
-      if ((date != null) && (answeredLastDate == null || answeredLastDate.before(date))) {
-        answeredLastDate = date;
-      }
-      
+      answeredLastDate = getLatest(date, answeredLastDate);
       answered++;
     }
     
     public void addSubmitted(Date date) {
-      if ((date != null) && (submittedLastDate == null || submittedLastDate.before(date))) {
-        submittedLastDate = date;
-      }
-      
+      submittedLastDate = getLatest(date, submittedLastDate);
       submitted++;
     }
     
+    public void addWithdrawn(Date date) {
+      withdrawnLastDate = getLatest(date, withdrawnLastDate);
+      withdrawn++;
+    }
+
     public void addPassed(Date date) {
-      if ((date != null) && (passedLastDate == null || passedLastDate.before(date))) {
-        passedLastDate = date;
-      }
-      
+      passedLastDate = getLatest(date, passedLastDate);
       passed++;
     }
     
     public void addFailed(Date date) {
-      if ((date != null) && (failedLastDate == null || failedLastDate.before(date))) {
-        failedLastDate = date;
-      }
-      
+      failedLastDate = getLatest(date, failedLastDate);
       failed++;
     }
 
     public void addIncomplete(Date date) {
-      if ((date != null) && (incompleteLastDate == null || incompleteLastDate.before(date))) {
-        incompleteLastDate = date;
-      }
-      
+      incompleteLastDate = getLatest(date, incompleteLastDate);
       incomplete++;
     }
     
@@ -133,6 +123,14 @@ public class GuiderStudentWorkspaceActivity {
       return passedLastDate;
     }
 
+    public long getWithdrawn() {
+      return withdrawn;
+    }
+    
+    public Date getWithdrawnLastDate() {
+      return withdrawnLastDate;
+    }
+
     public long getIncomplete() {
       return incomplete;
     }
@@ -140,27 +138,19 @@ public class GuiderStudentWorkspaceActivity {
     public Date getIncompleteLastDate() {
       return incompleteLastDate;
     }
-    
-    public long getCount() {
-      return unanswered + answered + submitted + failed + passed;
-    }
-    
-    public int getDonePercent() {
-      double result = submitted + passed;
-      result /= getCount();
-      return (int) Math.round(result * 100);
-    }
 
-    private long unanswered = 0l;
-    private long answered = 0l;
+    private long unanswered = 0;
+    private long answered = 0;
     private Date answeredLastDate = null;
-    private long submitted = 0l;
+    private long submitted = 0;
     private Date submittedLastDate = null;
-    private long failed = 0l;
+    private long withdrawn = 0;
+    private Date withdrawnLastDate = null;
+    private long failed = 0;
     private Date failedLastDate = null; 
-    private long passed = 0l;
+    private long passed = 0;
     private Date passedLastDate = null;
-    private long incomplete = 0l;
+    private long incomplete = 0;
     private Date incompleteLastDate = null;
   }
   
@@ -171,10 +161,7 @@ public class GuiderStudentWorkspaceActivity {
     }
     
     public void addAnswered(Date date) {
-      if ((date != null) && (answeredLastDate == null || answeredLastDate.before(date))) {
-        answeredLastDate = date;
-      }
-      
+      answeredLastDate = getLatest(date, answeredLastDate);
       answered++;
     }
     
@@ -189,20 +176,20 @@ public class GuiderStudentWorkspaceActivity {
     public Date getAnsweredLastDate() {
       return answeredLastDate;
     }
-    
-    public long getCount() {
-      return unanswered + answered;
-    }
-    
-    public int getDonePercent() {
-      double result = answered;
-      result /= getCount();
-      return (int) Math.round(result * 100);
-    }
 
-    private long unanswered = 0l;
-    private long answered = 0l;
+    private long unanswered = 0;
+    private long answered = 0;
     private Date answeredLastDate = null;
+  }
+
+  private static Date getLatest(Date... dates) {
+    Date result = null;
+    for (Date date : dates) {
+      if (result == null || (date != null && date.after(result))) {
+        result = date;
+      }
+    }
+    return result;
   }
   
 }

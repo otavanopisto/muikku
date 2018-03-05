@@ -852,7 +852,7 @@ public class Evaluation2RESTService {
     
     SchoolDataIdentifier assessorIdentifier = SchoolDataIdentifier.fromId(payload.getAssessorIdentifier());
     User assessingUser = userController.findUserByIdentifier(assessorIdentifier);
-    UserEntity assessingUserEntity = userEntityController.findUserEntityByUser(assessingUser);
+    UserEntity assessingUserEntity = assessingUser == null ? null : userEntityController.findUserEntityByUser(assessingUser);
     
     // Grade
     
