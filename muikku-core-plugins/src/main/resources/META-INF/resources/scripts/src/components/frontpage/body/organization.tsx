@@ -1,6 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import Link from "~/components/general/link";
+import Button from "~/components/general/button";
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
@@ -32,11 +32,11 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <h2 className="text text--branded text--otavan-opisto-info-title">
                 {this.props.i18n.text.get( 'plugin.organization.some.title' )}
               </h2>
-              <Link className="button-social icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"/>
-              <Link className="button-social icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"/>
-              <Link className="button-social icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"/>
-              <Link className="button-social icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"/>
-              <Link className="button-social icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"/>
+              <Button social className="icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"/>
+              <Button social className="icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"/>
+              <Button social className="icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"/>
+              <Button social className="icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"/>
+              <Button social className="icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"/>
             </div>
           </div>
 
@@ -45,12 +45,12 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <div className="text text--branded text--otavan-opisto-info-description"
                 dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get( 'plugin.organization.description')}}>
               </div>
-              <Link href="http://www.otavanopisto.fi" target="top" className="button button--branded button--frontpage-website">
+              <Button href="http://www.otavanopisto.fi" target="top" buttonModifiers={["branded", "frontpage-website"]}>
                 www.otavanopisto.fi
-              </Link>
-              <Link href="http://www.otavanopisto.fi/uutiskirje" target="top" className="button button--branded button--frontpage-newsletter">
+              </Button>
+              <Button href="http://www.otavanopisto.fi/uutiskirje" target="top" buttonModifiers={["branded", "frontpage-newsletter"]}>
                 {this.props.i18n.text.get( 'plugin.organization.newsletter.link' )}
-              </Link>
+              </Button>
             </div>
 
           </div>

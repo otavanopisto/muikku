@@ -1,5 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
+import Button from "~/components/general/button";
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
@@ -27,9 +28,9 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettilukio.description' )}</div>
             </div>
             <div className="card__footer">
-              <a href="http://www.nettilukio.fi/nettilukio_esittely"
-                className="button button--branded button--frontpage-upper-secondary-school-readmore">
-                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </a>
+              <Button href="http://www.nettilukio.fi/nettilukio_esittely"
+                buttonModifiers={["branded", "frontpage-upper-secondary-school-readmore"]}>
+                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </Button>
             </div>
           </div>
         </div>
@@ -41,9 +42,9 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.nettiperuskoulu.description' )}</div>
             </div>
             <div className="card__footer">
-              <a href="http://www.nettilukio.fi/esittely_nettipk"
-                className="button button--branded button--frontpage-secondary-school-readmore">
-                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </a>
+              <Button href="http://www.nettilukio.fi/esittely_nettipk"
+                buttonModifiers={["branded", "frontpage-secondary-school-readmore"]}>
+                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )}</Button>
             </div>
           </div>
         </div>
@@ -55,9 +56,9 @@ export default class FrontpageStudying extends React.Component<FrontpageStudying
               <div className="card__text">{this.props.i18n.text.get( 'plugin.studying.aineopiskelu.description' )}</div>
             </div>
             <div className="card__footer">
-              <a href="http://www.nettilukio.fi/esittely_nettipk"
-                className="button button--branded button--frontpage-open-materials-readmore">
-                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )} </a>
+              <Button href="http://www.nettilukio.fi/esittely_nettipk"
+                buttonModifiers={["branded", "frontpage-open-materials-readmore"]}>
+                {this.props.i18n.text.get( 'plugin.studying.readMore.link' )}</Button>
             </div>
           </div>
         </div>
