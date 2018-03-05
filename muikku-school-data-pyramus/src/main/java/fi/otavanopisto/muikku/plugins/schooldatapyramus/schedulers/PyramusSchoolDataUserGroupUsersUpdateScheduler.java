@@ -37,16 +37,15 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
   }
   
   public void synchronize() {
-    int currentOffset = getOffset();
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus user group users");
 
       List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, currentOffset, BATCH_SIZE);
-      updateOffset(currentOffset + userGroupEntities.size());
       if (userGroupEntities.size() == 0) {
-        updateOffset(0);
+        resetCurrentOffset();
       }
       else {
         for (UserGroupEntity userGroupEntity : userGroupEntities) {
