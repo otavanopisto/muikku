@@ -182,6 +182,11 @@ public class CourseTestsBase extends AbstractUITest {
         "Test", "text/html;editor=CKEditor", 
         "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
         "EVALUATED");
+
+      WorkspaceHtmlMaterial htmlMaterial2 = createWorkspaceHtmlMaterial(workspace.getId(), workspaceFolder1.getId(), 
+          "Test", "text/html;editor=CKEditor", 
+          "<p><object type=\"application/vnd.muikku.field.text\"><param name=\"type\" value=\"application/json\" /><param name=\"content\" value=\"{&quot;name&quot;:&quot;muikku-field-nT0yyez23QwFXD3G0I8HzYeK&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:&quot;&quot;,&quot;hint&quot;:&quot;&quot;}\" /></object></p>", 1l, 
+          "EXERCISE");
       logout();
       try{
         mockBuilder.mockLogin(student);
@@ -203,6 +208,7 @@ public class CourseTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".workspace-progress-element-menu-content.exercise");
         assertPresent(".workspace-progress-element-menu-content.exercise");
       } finally {
+        deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial2.getId());
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());        
       }
