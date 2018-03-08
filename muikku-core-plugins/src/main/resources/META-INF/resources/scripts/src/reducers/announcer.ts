@@ -4,7 +4,7 @@ import status from './base/status';
 import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
-import messageCount from './main-function/message-count';
+import messages from './main-function/messages';
 
 import announcements from './main-function/announcer/announcements';
 import announcerNavigation from './main-function/announcer/announcer-navigation';
@@ -18,7 +18,7 @@ export default combineReducers({
   locales,
   status,
   websocket,
-  messageCount,
+  messages,
   title,
   announcements,
   announcerNavigation,

@@ -6,7 +6,6 @@ import mainFunctionDefault from '~/util/base-main-function';
 
 import * as queryString from 'query-string';
 
-import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
 import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
 import { updateEducationFilters, updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';

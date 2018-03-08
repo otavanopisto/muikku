@@ -2,15 +2,18 @@ import actions from '../base/notifications';
 import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {WorkspaceListType} from '~/reducers/main-function/index/workspaces';
+import {WorkspaceListType, ShortWorkspaceType} from '~/reducers/main-function/workspaces';
 
-export interface UpdateWorkspacesTriggerType {
+export interface LoadWorkspacesFromServerTriggerType {
   ():AnyActionType
 }
 
-export interface UPDATE_WORKSPACES extends SpecificActionType<"UPDATE_WORKSPACES", WorkspaceListType>{}
+export type UPDATE_WORKSPACES = SpecificActionType<"UPDATE_WORKSPACES", WorkspaceListType>;
+export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", ShortWorkspaceType>;
 
-let updateWorkspaces:UpdateWorkspacesTriggerType = function updateWorkspaces(){
+export type ACTIONS = UPDATE_WORKSPACES | UPDATE_LAST_WORKSPACE
+
+let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType = function loadWorkspacesFromServer(){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     let userId = getState().status.userId;
     try {
@@ -24,5 +27,22 @@ let updateWorkspaces:UpdateWorkspacesTriggerType = function updateWorkspaces(){
   }
 }
 
-export default {updateWorkspaces}
-export {updateWorkspaces}
+export interface LoadLastWorkspaceFromServerTriggerType {
+  ():AnyActionType
+}
+
+let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = function loadLastWorkspaceFromServer() {
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+    try {
+      dispatch({
+        type: 'UPDATE_LAST_WORKSPACE',
+        payload: <ShortWorkspaceType>((await promisify(mApi().user.property.read('last-workspace'), 'callback')()) as any).value
+      });
+    } catch (err){
+      dispatch(actions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+
+export default {loadWorkspacesFromServer, loadLastWorkspaceFromServer}
+export {loadWorkspacesFromServer, loadLastWorkspaceFromServer}

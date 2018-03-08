@@ -12,7 +12,7 @@ import { MaterialType } from '~/reducers/main-function/records/records';
 
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
-import { WorkspaceType } from '~/reducers/main-function/index/workspaces';
+import { WorkspaceType } from '~/reducers/main-function/workspaces';
 
 //Bubble gum scripting needs
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js");

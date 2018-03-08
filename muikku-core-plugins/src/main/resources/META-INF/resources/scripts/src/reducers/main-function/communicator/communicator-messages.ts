@@ -1,5 +1,5 @@
 import {ActionType} from '~/actions';
-import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/index/workspaces';
+import {WorkspaceType, WorkspaceListType} from '~/reducers/main-function/workspaces';
 import {UserType, WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType, UserGroupListType } from '~/reducers/main-function/user-index';
 
 export type CommunicatorStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";

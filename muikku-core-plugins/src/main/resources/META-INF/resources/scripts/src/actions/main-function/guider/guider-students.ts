@@ -6,7 +6,7 @@ import promisify from '~/util/promisify';
 import { UserGroupListType, UserFileType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
-import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/index/workspaces';
+import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/workspaces';
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
 
@@ -211,7 +211,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
       dispatch({
         type: "UPDATE_GUIDER_STUDENTS_ALL_PROPS",
         payload: {
-          currentState: "ERROR"
+          currentState: <GuiderCurrentStudentStateType>"ERROR"
         }
       });
      }

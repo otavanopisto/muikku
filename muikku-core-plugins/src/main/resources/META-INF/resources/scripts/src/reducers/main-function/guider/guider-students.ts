@@ -1,6 +1,6 @@
 import {ActionType} from '~/actions';
 import { UserWithSchoolDataType, UserGroupListType, UserFileType } from '~/reducers/main-function/user-index';
-import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
+import { WorkspaceListType } from '~/reducers/main-function/workspaces';
 
 //TODO remove or comment out, this is mocking code
 import hops from './mock/hops';

@@ -6,7 +6,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
-import {LastWorkspaceType} from '~/reducers/main-function/index/last-workspace';
+import {ShortWorkspaceType} from '~/reducers/main-function/workspaces';
 
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/text.scss';
@@ -16,7 +16,7 @@ import '~/sass/elements/panel.scss';
 interface ContinueStudiesPanelProps {
   i18n: i18nType,
   status: StatusType,
-  lastWorkspace: LastWorkspaceType
+  lastWorkspace: ShortWorkspaceType
 }
 
 interface ContinueStudiesPanelState {

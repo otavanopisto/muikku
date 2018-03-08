@@ -4,7 +4,7 @@ import TagInput from '~/components/general/tag-input';
 import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
-import {WorkspaceType} from '~/reducers/main-function/index/workspaces';
+import {WorkspaceType} from '~/reducers/main-function/workspaces';
 import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, ExtendedUserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
 
 export interface InputContactsAutofillProps {

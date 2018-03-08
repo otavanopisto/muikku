@@ -5,16 +5,18 @@ import {Action} from 'redux';
 
 import mainFunctionDefault from '~/util/base-main-function';
 
-import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
+import { loadLastMessagesFromServer } from '~/actions/main-function/messages';
+import { loadAnnouncementsFromServer } from '~/actions/main-function/announcements';
+import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/main-function/workspaces';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store)
-  .addEventListener("Communicator:newmessagereceived", actions.lastMessages.updateLastMessages.bind(null,6));
+  .addEventListener("Communicator:newmessagereceived", loadLastMessagesFromServer.bind(null,6));
 
-store.dispatch(<Action>actions.announcements.updateAnnouncements());
-store.dispatch(<Action>actions.lastWorkspace.updateLastWorkspace());
-store.dispatch(<Action>actions.workspaces.updateWorkspaces());
-store.dispatch(<Action>actions.lastMessages.updateLastMessages(6));
+store.dispatch(<Action>loadAnnouncementsFromServer());
+store.dispatch(<Action>loadLastWorkspaceFromServer());
+store.dispatch(<Action>loadWorkspacesFromServer());
+store.dispatch(<Action>loadLastMessagesFromServer(6));
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.site.title')));

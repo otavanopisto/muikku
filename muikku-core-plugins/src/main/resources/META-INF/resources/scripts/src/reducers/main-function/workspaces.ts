@@ -68,11 +68,31 @@ export interface WorkspaceType {
   studentAcessment?: WorkspaceStudentAccessmentType
 }
 
+export interface ShortWorkspaceType {
+  workspaceName: string,
+  materialName: string,
+  url: string
+}
+
 export interface WorkspaceListType extends Array<WorkspaceType> {}
 
-export default function workspaces(state: WorkspaceListType=[], action: ActionType): WorkspaceListType{
+export interface WorkspacesType {
+  workspaces: WorkspaceListType,
+  lastWorkspace?: ShortWorkspaceType
+}
+
+export default function workspaces(state: WorkspacesType={
+  workspaces: [],
+  lastWorkspace: null
+}, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_WORKSPACES'){
-    return <WorkspaceListType>action.payload;
+    return <WorkspacesType>Object.assign({}, state, {
+      workspaces: action.payload
+    });
+  } else if (action.type === 'UPDATE_LAST_WORKSPACE'){
+    return Object.assign({}, state, {
+      lastWorkspace: <ShortWorkspaceType>action.payload
+    });
   }
   return state;
 }

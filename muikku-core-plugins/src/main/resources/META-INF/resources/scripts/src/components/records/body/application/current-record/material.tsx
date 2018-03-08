@@ -1,7 +1,7 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import { RecordsGradesType, MaterialType } from "~/reducers/main-function/records/records";
-import { WorkspaceType } from "reducers/main-function/index/workspaces";
+import { WorkspaceType } from "~/reducers/main-function/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
 

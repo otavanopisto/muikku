@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType } from "~/reducers/main-function/index/workspaces";
+import { WorkspaceType } from "~/reducers/main-function/workspaces";
 
 export interface UserType {
   id: Number,

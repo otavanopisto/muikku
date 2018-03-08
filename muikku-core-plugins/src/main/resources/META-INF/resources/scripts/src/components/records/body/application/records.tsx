@@ -12,7 +12,7 @@ import '~/sass/elements/message.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAccessmentType } from '~/reducers/main-function/index/workspaces';
+import { WorkspaceType, WorkspaceStudentAccessmentType } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 
 let ProgressBarLine = require('react-progressbar.js').Line;

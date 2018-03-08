@@ -1,5 +1,5 @@
 import { ActionType } from "~/actions";
-import { WorkspaceType, WorkspaceListType } from "~/reducers/main-function/index/workspaces";
+import { WorkspaceType, WorkspaceListType } from "~/reducers/main-function/workspaces";
 
 export interface GuiderUserLabelType {
   id: number,
