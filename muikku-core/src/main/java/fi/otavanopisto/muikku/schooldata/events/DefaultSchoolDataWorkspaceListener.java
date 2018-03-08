@@ -117,6 +117,10 @@ public class DefaultSchoolDataWorkspaceListener {
             if (!workspaceUserEntity.getIdentifier().equals(event.getIdentifier())) {
               workspaceUserEntityController.updateIdentifier(workspaceUserEntity, event.getIdentifier());
             }
+            // #3806: WorkspaceUserEntity exists; check if role has changed
+            if (workspaceUserEntity.getWorkspaceUserRole() == null || !workspaceUserRole.getId().equals(workspaceUserEntity.getWorkspaceUserRole().getId())) {
+              workspaceUserEntityController.updateWorkspaceUserRole(workspaceUserEntity, workspaceUserRole);
+            }
             workspaceUserEntityController.unarchiveWorkspaceUserEntity(workspaceUserEntity);
           }
           

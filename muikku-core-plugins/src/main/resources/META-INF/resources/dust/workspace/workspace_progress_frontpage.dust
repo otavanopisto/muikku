@@ -1,5 +1,6 @@
 {#progress}
-  {?evaluablesDonePercent}
+  
+  {@gt key=evaluablesTotal value=0}
     <div title='{#localize key="plugin.workspace.progress.evaluable.title"/}' class="materials-progress-evaluated-status evaluable c100 p{evaluablesDonePercent}">
       <span>{evaluablesDone}/{evaluablesTotal}</span>
       <div class="slice">
@@ -26,17 +27,9 @@
         {/gt}
        </div>
     </div>    
-  {:else}
-    <div class="materials-progress-practice-status evaluable c100  p{exercisesDonePercent}">
-      <span>0</span>
-      <div class="slice">
-        <div class="bar"></div>
-        <div class="fill"></div>
-      </div>
-    </div>    
-  {/evaluablesDonePercent}  
+  {/gt}
   
-  {?exercisesDonePercent}
+  {@gt key=exercisesTotal value=0}
     <div title='{#localize key="plugin.workspace.progress.exercise.title"/}' class="materials-progress-practice-status exercise c100 green p{exercisesDonePercent}">
       <span>{exercisesAnswered}/{exercisesTotal}</span>
       <div class="slice">
@@ -51,13 +44,6 @@
         <div class="workspace-progress-menu-item"><span>{#localize key="plugin.workspace.progress.exercise.total"/}</span><span>{exercisesTotal}</span></div>
        </div>
     </div>   
-  {:else}
-   <div class="materials-progress-practice-status exercise c100 p0">
-      <span>0</span>      
-      <div class="slice">
-        <div class="bar"></div>
-        <div class="fill"></div>
-      </div>
-    </div>
-  {/exercisesDonePercent}
+  {/gt}
+
 {/progress}

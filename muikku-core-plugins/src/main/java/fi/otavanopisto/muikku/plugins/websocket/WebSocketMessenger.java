@@ -40,72 +40,102 @@ public class WebSocketMessenger {
   }
   
   public void sendMessage(String eventType, Object data, List<UserEntity> recipients) {
+    WebSocketMessage message = new WebSocketMessage(eventType, data);
+    ObjectMapper mapper = new ObjectMapper();
+    String strMessage = null;
     try {
-      List<Long> recipientIds = new ArrayList<Long>(recipients.size());
-      for (UserEntity userEntity : recipients) {
-        recipientIds.add(userEntity.getId());
-      }
-      
-      WebSocketMessage message = new WebSocketMessage(eventType, data);
-      ObjectMapper mapper = new ObjectMapper();
-      String strMessage = mapper.writeValueAsString(message);
-      
-      for (Session session : sessions.values()) {
-        if (session.isOpen()) {
-          Long userId = (Long) session.getUserProperties().get("UserId");
-  
-          if ((userId != null) && (recipientIds.contains(userId))) {
-            session.getBasicRemote().sendText(strMessage);
-          }
-        }
-      }    
+      strMessage = mapper.writeValueAsString(message);
     }
     catch (Exception e) {
-      logger.log(Level.SEVERE, "Failed to send WebSocket message", e);
+      logger.warning("Unable to serialize websocket message");
+      return;
+    }
+
+    List<Long> recipientIds = new ArrayList<Long>(recipients.size());
+    for (UserEntity userEntity : recipients) {
+      recipientIds.add(userEntity.getId());
+    }
+    
+    for (String ticket : sessions.keySet()) {
+      Session session = sessions.get(ticket);
+      try {
+        if (session == null || !session.isOpen()) {
+          closeSession(session, ticket, null);
+          continue;
+        }
+        Long userId = (Long) session.getUserProperties().get("UserId");
+        if (userId != null && recipientIds.contains(userId)) {
+          session.getBasicRemote().sendText(strMessage);
+        }
+      }
+      catch (Exception e) {
+        logger.log(Level.WARNING, "Unable to send websocket message", e);
+        closeSession(session, ticket, null);
+      }
     }
   }
   
   public void sendMessage(String eventType, Object data, String ticket) {
+    WebSocketMessage message = new WebSocketMessage(eventType, data);
+    ObjectMapper mapper = new ObjectMapper();
+    String strMessage = null;
     try {
-      WebSocketMessage message = new WebSocketMessage(eventType, data);
-      ObjectMapper mapper = new ObjectMapper();
-      String strMessage = mapper.writeValueAsString(message);
-      Session session = sessions.get(ticket);
-      if (session == null) {
-        logger.log(Level.SEVERE, "Session doesn't exist");
+      strMessage = mapper.writeValueAsString(message);
+    }
+    catch (Exception e) {
+      logger.warning("Unable to serialize websocket message");
+      return;
+    }
+    
+    Session session = sessions.get(ticket);
+    try {
+      if (session == null || !session.isOpen()) {
+        closeSession(session, ticket, null);
       }
-      else if (session.isOpen()) {
+      else {
         session.getBasicRemote().sendText(strMessage);
       }
     }
     catch (Exception e) {
-      logger.log(Level.SEVERE, "Failed to send WebSocket message", e);
+      logger.log(Level.WARNING, "Unable to send websocket message", e);
+      closeSession(session, ticket, null);
     }
   }
   
-  public void openSession(Session session, String ticket) {
+  public void openSession(Session session, String ticketId) {
     try {
-      WebSocketTicket ticket1 = webSocketTicketController.findTicket(ticket);
-  
-      if (verifyTicket(ticket1)) {
-        session.getUserProperties().put("UserId", ticket1.getUser());
-        sessions.put(ticket, session);
+      WebSocketTicket ticket = webSocketTicketController.findTicket(ticketId);
+      if (ticket != null) {
+        session.getUserProperties().put("UserId", ticket.getUser());
+        sessions.put(ticketId, session);
       }
       else {
-        try {
-          session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Ticket could not be validated."));
-        }
-        catch (Exception e) {
-          // Closing failed, ignore
-        }
+        CloseReason reason = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket");
+        closeSession(session, ticketId, reason);
       }
     }
     catch (Exception e) {
-      logger.log(Level.SEVERE, "Failed to open WebSocket session", e);
+      logger.log(Level.WARNING, "Failed to open WebSocket session", e);
     }
   }
 
-  public void closeSession(Session session, String ticket) {
+  public void closeSession(Session session, String ticket, CloseReason closeReason) {
+    // In normal cases the session is already closed (by client) but should it still
+    // be open for any reason, make a silent last-ditch effort to close it gracefully 
+    if (session != null && session.isOpen()) {
+      try {
+        if (closeReason != null) {
+          session.close(closeReason);
+        }
+        else {
+          session.close();
+        }
+      }
+      catch (Exception e) {
+        // Closing failed, at least we tried...
+      }
+    }
+    // Remove session and its corresponding ticket
     sessions.remove(ticket);
     webSocketTicketController.removeTicket(ticket);
   }
@@ -120,16 +150,13 @@ public class WebSocketMessenger {
         webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(messageData.getEventType())).fire(event);
       }
       else {
-        session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket"));
+        CloseReason reason = new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Invalid ticket");
+        closeSession(session, ticketId, reason);
       }
     }
     catch (Exception e) {
-      logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
+      logger.log(Level.WARNING, "Failed to handle WebSocket message", e);
     }
-  }
-  
-  private boolean verifyTicket(WebSocketTicket ticket) {
-    return ticket != null;
   }
   
 }

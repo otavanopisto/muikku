@@ -1069,15 +1069,11 @@
                   var answer = this.answer();
                   if (correctValues.indexOf(answer) >= 0) {
                     result.correctAnswers++;
-                    if (showCorrectAnswers) {
-                      $(this.element).addClass('muikku-field-correct-answer');
-                    }
+                    $(this.element).addClass('muikku-field-correct-answer');
                   }
                   else {
                     result.wrongAnswers++;
-                    if (showCorrectAnswers) {
-                      $(this.element).addClass('muikku-field-incorrect-answer');
-                    }
+                    $(this.element).addClass('muikku-field-incorrect-answer');
                   }
                 }
                 if (showCorrectAnswers && this.hasDisplayableAnswers()) {

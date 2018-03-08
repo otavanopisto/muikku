@@ -442,6 +442,22 @@
   }
 
 }
+
+.tr-item-header-name {
+
+  .tr-evalreq {
+    background-color: $item-evaluation-requested-icon-color;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #fff;
+    display: inline-block;	
+    font-size: 12px;
+    line-height: 1;
+    margin-left: 10px;
+    padding: 4px;
+  }
+}
+
 .tr-item-header-details {
 
   .tr-item-header-detail {
@@ -463,11 +479,8 @@
       &.non-passing {
         background-color: $item-grade-failing-color;
       }
-
     }
-
   }
-
 }
 
 .tr-item-description-title {

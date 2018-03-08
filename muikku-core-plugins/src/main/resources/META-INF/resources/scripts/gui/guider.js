@@ -297,13 +297,13 @@
       this._workspaceIds = this.options.workspaceIds;
       this._loading = false;
       this._loadPending = false;
-      
-      if (this.options.openStudentProfile) {
+            
+      this._loadStudents($.proxy(function() {
+        if (this.options.openStudentProfile) {
         this._openStudentProfile(this.options.openStudentProfile);
-      } else {
-        this._loadStudents();
-      }
-      
+        }
+      }, this));
+   
       this.element.on('click', '.gt-user-name', $.proxy(this._onUserNameClick,this));
       this.element.on('click', '.gt-tool-view-profile', $.proxy(this._onUserViewProfileClick,this));
       this.element.on('click', '.gt-page-link-load-more', $.proxy(this._onLoadMoreClick,this));
@@ -378,7 +378,7 @@
       }
     },
     
-    _loadStudents: function () {
+    _loadStudents: function (callback) {
       this._loading = true;
       
       var options = {
@@ -419,6 +419,9 @@
               this.element
                 .html(text)
                 .removeClass('loading');
+              if (callback) {
+                callback();
+              }
             }, this));
           }
           
@@ -456,7 +459,8 @@
       $('<div>')
         .appendTo(this.element)
         .guiderProfile({
-          userIdentifier: userIdentifier
+          userIdentifier: userIdentifier,
+          previousHash: window.location.hash
         });
       
       window.location.hash = "userprofile/" + userIdentifier;
@@ -852,7 +856,8 @@
 
   $.widget("custom.guiderProfile", {
     options: {
-      userIdentifier: null
+      userIdentifier: null,
+      previousHash: null
     },
     
     _create : function() {
@@ -864,6 +869,7 @@
       this.element.on("click", ".gt-share-flag", $.proxy(this._onShareFlagClick, this));
       this.element.on("click", ".gt-remove-flag", $.proxy(this._onRemoveFlagClick, this));
       this.element.on("click", ".gt-existing-flag", $.proxy(this._onExistingFlagClick, this));
+      this.element.on("click", ".icon-goback", $.proxy(this._closeStudentProfile, this));
       
       this.element.on("click", ".gt-course-details-container", $.proxy(this._onNameClick, this));
       $(document).on("mouseup", $.proxy(this._onDocumentMouseUp, this));
@@ -1125,6 +1131,12 @@
             }
           }, this));
       }, this);
+    },
+    
+    _closeStudentProfile: function(event) {
+      document.getElementsByClassName('gt-users-pages')[0].style.display ="block";
+      window.location.hash = this.options.previousHash||''; 
+      this.element.remove();
     },
     
     _loadUser: function (flags, callback) {

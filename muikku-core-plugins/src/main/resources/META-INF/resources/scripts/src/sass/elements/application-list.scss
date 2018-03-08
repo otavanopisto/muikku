@@ -1,5 +1,6 @@
 @import "../base/colors";
 @import "../base/mixins";
+@import "../base/vars";
 @import "../base/breakpoints";
 
 .application-list {  
@@ -55,10 +56,6 @@
   }
 }
 
-.application-list__item--discussion-reply--of-reply {
-  margin-left: 67px;
-} 
-
 .application-list__item-content {
   
 }
@@ -108,13 +105,13 @@
 
 .application-list__item-content-avatar {
   align-items: center;
-  border-radius: 50%;
+  border-radius: 100%;
   color: #fff;
   display: flex;
-  font-size: 20px;
-  height: 50px;
+  font-size: 1.25rem;
+  height: 46px;
   justify-content: center;
-  width: 50px;
+  width: 46px;
 }
 
 .application-list__item-content-avatar--category-1 {
@@ -163,17 +160,17 @@
 }
 
 .application-list__item-body {
-  padding: 5px 0 0;
+  padding: 0;
 }
 
 .application-list__item-meta {
-  padding: 5px 0 10px;
+  padding: 0 0 10px;
 }
 
 .application-list__item-footer {
   align-items: center;
   display: flex;   
-  padding: 5px 0 0;
+  padding: 0;
 }
 
 .application-list__item-header-main {
@@ -216,9 +213,16 @@
   font-size: 2 rem;
 }  
   
-.application-list__item-header--discussion-item-header div:not(:first-child) {
-  margin-left: 10px;
+.application-list__item-header--discussion-item-header {
+ 
+  div:not(:first-child) {
+    margin: 0 0 0 10px; 
+  }
 } 
+
+.application-list__item-footer--discussion {
+  padding: 7px 0 0;
+}
 
 // Announcer
 .application-list__item--workspace-announcement {
@@ -255,7 +259,7 @@
 }
 
 .application-list__item--communicator-message {  
-  border-bottom: 5px solid $color-main-function-application-list-item-open-border;
+  border-bottom: 5px solid $color-message-border;
   cursor: default;
   margin: 0 0 5px;
   padding: 0 0 10px;
