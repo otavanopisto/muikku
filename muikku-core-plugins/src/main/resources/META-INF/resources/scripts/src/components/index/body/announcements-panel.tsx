@@ -35,7 +35,9 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                   href={`/announcements?announcementId=${announcement.id}`}>
                   <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
                   <span className="text item-list__text-body item-list__text-body--multiline">
-                    {announcement.caption}
+                    <span className="text item-list__announcement-caption">
+                      {announcement.caption}
+                    </span>
                     <span className="text item-list__announcement-date">
                       {this.props.i18n.time.format(announcement.created)}
                     </span>
