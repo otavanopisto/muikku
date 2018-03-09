@@ -20,6 +20,10 @@
   max-width: $breakpoint-max-usable-screen;
   overflow: visible;
   width:100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 10px;  
+  }
 }
 
 .reading-panel__body {

@@ -33,7 +33,7 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
                       {announcement.caption}
                     </span>
                     <span className="text item-list__announcement-date">
-                      {this.props.i18n.time.format(announcement.created)}
+                      {this.props.i18n.time.format(announcement.startDate)}
                     </span>
                   </span>
                 </Link>
