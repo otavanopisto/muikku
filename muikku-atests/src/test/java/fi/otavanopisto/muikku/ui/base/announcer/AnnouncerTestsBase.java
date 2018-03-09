@@ -103,7 +103,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption", "Test title");
         
         waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date");
-        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date", "07.03.2018");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
       }
@@ -162,7 +162,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
         assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption", "Test title");
         
         waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date");
-        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date", "07.03.2018");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
         deleteUserGroup(2l);
