@@ -91,11 +91,11 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="container container--full">
-        <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+      return <div className="dialog__button-set">
+        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
         </Link>
-        <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        <Link className="button button--success button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
           {/*TODO this should be OK but instead it says edit, please fix*/}
           {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
         </Link>
@@ -116,7 +116,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         
           {/*TODO please translate this*/}
           <Link className="button button--fatal button--communicator-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
-            {this.state.removed ? "Label Removed" : "Remove Label"}
+            {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
           </Link>
         </div>
       )

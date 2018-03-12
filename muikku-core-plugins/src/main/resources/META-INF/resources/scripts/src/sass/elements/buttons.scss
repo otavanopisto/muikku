@@ -333,19 +333,17 @@
 }  
   
   
-.button--remove-label {
-	float: left;
+.button--communicator-remove-label {
 	margin-top: 48px;
 	margin-bottom: 24px;
 }
 
 .button--standard-ok {
-	float: right;
+  margin: 0 5px;
 }
 
 .button--standard-cancel {
-  float: left;
-  margin-left: 0;
+  margin: 0 5px;
 }
 
 .button-pill {
