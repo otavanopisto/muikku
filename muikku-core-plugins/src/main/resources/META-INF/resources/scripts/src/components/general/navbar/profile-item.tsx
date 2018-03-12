@@ -10,6 +10,7 @@ import {logout, LogoutTriggerType} from '~/actions/base/status';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/buttons.scss';
+import { getUserImageUrl } from '~/util/modifiers';
 
 interface ProfileItemProps {
   modifier: string,
@@ -57,7 +58,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       })}>
       <Link className="button-pill button-pill--profile">
         <object className="container container--profile-image"
-         data={`/rest/user/files/user/${this.props.status.userId}/identifier/profile-image-96`}
+         data={getUserImageUrl(this.props.status.userId)}
          type="image/jpeg">
           <span className="button-pill__icon icon-user"></span>
         </object>

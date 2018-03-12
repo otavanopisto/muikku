@@ -11,9 +11,10 @@ import {AnyActionType, SpecificActionType} from '~/actions';
 import {CommunicatorThreadType, CommunicatorStateType,
   CommunicatorMessagesPatchType, CommunicatorMessageLabelType, CommunicatorMessageType,
   CommunicatorMessageUpdateType, CommunicatorSignatureType, CommunicatorMessageListType,
-  CommunicatorMessageItemRecepientType, CommunicatorMessagesType, CommunicatorMessageRecepientType, CommunicatorMessageInThreadType} from '~/reducers/main-function/communicator/communicator-messages';
+  CommunicatorMessagesType, CommunicatorMessageRecepientType, CommunicatorMessageInThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import { StatusType } from "~/reducers/base/status";
+import { ContactRecepientType } from '~/reducers/main-function/user-index';
 
 //////////////////////////////////////// INTERFACES FOR ACTIONS
 export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", CommunicatorThreadType>{}
@@ -44,7 +45,7 @@ export interface PUSH_MESSAGE_LAST_IN_CURRENT_THREAD extends SpecificActionType 
 //////////////////////////////////// INTERFACES
 export interface SendMessageTriggerType {
   (message: {
-    to: CommunicatorMessageItemRecepientType[],
+    to: ContactRecepientType[],
     replyThreadId: number,
     subject: string,
     text: string,

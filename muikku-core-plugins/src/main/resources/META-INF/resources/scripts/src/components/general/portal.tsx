@@ -27,8 +27,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   private node: HTMLElement | null;
   private isUnmounted: boolean;
   
-  constructor() {
-    super();
+  constructor(props: PortalProps) {
+    super(props);
     this.state = { active: false };
     this.handleWrapperClick = this.handleWrapperClick.bind(this);
     this.closePortal = this.closePortal.bind(this);

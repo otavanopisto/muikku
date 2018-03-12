@@ -201,7 +201,8 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("userEntityId") Long userEntityId,
       @DefaultValue ("false") @QueryParam("includeInactiveStudents") Boolean includeInactiveStudents,
       @DefaultValue ("false") @QueryParam("includeHidden") Boolean includeHidden,
-      @QueryParam("flags") Long[] flagIds) {
+      @QueryParam("flags") Long[] flagIds,
+      @QueryParam("flagOwnerIdentifier") String flagOwnerId) {
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
@@ -351,6 +352,19 @@ public class UserRESTService extends AbstractRESTService {
       boolean hasImage = false;
 
       if (results != null && !results.isEmpty()) {
+    	
+    	boolean getFlagsFromStudents = !StringUtils.isBlank(flagOwnerId);
+    	SchoolDataIdentifier ownerIdentifier = null;
+    	if (getFlagsFromStudents) {
+    		ownerIdentifier = SchoolDataIdentifier.fromId(flagOwnerId);
+    		if (ownerIdentifier == null) {
+               return Response.status(Status.BAD_REQUEST).entity("flagOwnerIdentifier is malformed").build();
+            }
+    		if (!ownerIdentifier.equals(sessionController.getLoggedUser())) {
+              return Response.status(Status.FORBIDDEN).build();
+            }
+    	}
+    	  
         for (Map<String, Object> o : results) {
           String studentId = (String) o.get("id");
           if (StringUtils.isBlank(studentId)) {
@@ -372,6 +386,13 @@ public class UserRESTService extends AbstractRESTService {
           Date studyEndDate = getDateResult(o.get("studyEndDate"));
           Date studyTimeEnd = getDateResult(o.get("studyTimeEnd"));
           
+          List<FlagStudent> studentFlags = null;
+          List<fi.otavanopisto.muikku.rest.model.StudentFlag> restFlags = null;
+          if (getFlagsFromStudents) {
+       	    studentFlags = flagController.listByOwnedAndSharedStudentFlags(studentIdentifier, ownerIdentifier);
+            restFlags = createRestModel(studentFlags.toArray(new FlagStudent[0]));
+          }
+          
           students.add(new fi.otavanopisto.muikku.rest.model.Student(
             studentIdentifier.toId(), 
             (String) o.get("firstName"),
@@ -388,7 +409,10 @@ public class UserRESTService extends AbstractRESTService {
             studyEndDate,
             studyTimeEnd,
             (String) o.get("curriculumIdentifier"),
-            userEntity.getUpdatedByStudent()));
+            userEntity.getUpdatedByStudent(),
+            userEntity.getId(),
+            restFlags
+          ));
         }
       }
     }
@@ -468,7 +492,10 @@ public class UserRESTService extends AbstractRESTService {
         studyEndDate,
         studyTimeEnd,
         user.getCurriculumIdentifier(),
-        userEntity.getUpdatedByStudent());
+        userEntity.getUpdatedByStudent(),
+        userEntity.getId(),
+        null
+    );
     
     return Response
         .ok(student)
@@ -1391,7 +1418,13 @@ public class UserRESTService extends AbstractRESTService {
 
   private fi.otavanopisto.muikku.rest.model.StudentFlag createRestModel(FlagStudent flagStudent) {
     SchoolDataIdentifier studentIdentifier = new SchoolDataIdentifier(flagStudent.getStudentIdentifier().getIdentifier(), flagStudent.getStudentIdentifier().getDataSource().getIdentifier());
-    return new fi.otavanopisto.muikku.rest.model.StudentFlag(flagStudent.getId(), flagStudent.getFlag().getId(), studentIdentifier.toId());
+    return new fi.otavanopisto.muikku.rest.model.StudentFlag(
+    		flagStudent.getId(),
+    		flagStudent.getFlag().getId(),
+    		flagStudent.getFlag().getName(),
+    		flagStudent.getFlag().getColor(),
+    		studentIdentifier.toId()
+    );
   }
 
   private List<fi.otavanopisto.muikku.rest.model.StudentFlag> createRestModel(FlagStudent[] flagStudents) {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {colorIntToHex} from '~/util/modifiers';
+import {colorIntToHex, getUserImageUrl} from '~/util/modifiers';
 import equals = require("deep-equal");
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -11,7 +11,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/message.scss';
-
+import '~/sass/elements/avatar.scss';
 
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
 import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
@@ -68,13 +68,13 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
       let avatar;
       if (!user){
         //This is what it shows when the user is not ready
-        avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+        avatar = <div className="avatar avatar--category-1"></div>;
       } else {
         //This is what it shows when the user is ready
         avatar = <object className="container container--discussion-profile-image"
-          data={`/rest/user/files/user/${user.id}/identifier/profile-image-96`}
+          data={getUserImageUrl(user)}
           type="image/jpeg">
-            <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{user.firstName[0]}</div>
+            <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
          </object>;
       }    
             
