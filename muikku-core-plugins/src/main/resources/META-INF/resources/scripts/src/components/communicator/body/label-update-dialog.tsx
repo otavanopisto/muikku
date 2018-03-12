@@ -11,6 +11,7 @@ import {AnyActionType} from '~/actions';
 import {CommunicatorNavigationItemType, CommunicatorNavigationItemListType} from '~/reducers/main-function/communicator/communicator-navigation';
 import {i18nType } from '~/reducers/base/i18n';
 import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/buttons.scss';
@@ -23,8 +24,8 @@ const KEYCODES = {
 interface CommunicatorLabelUpdateDialogProps {
   children: React.ReactElement<any>,
   label: CommunicatorNavigationItemType,
-  isOpen: boolean,
-  onClose: ()=>any,
+  isOpen?: boolean,
+  onClose?: ()=>any,
   i18n: i18nType,
   communicatorNavigation: CommunicatorNavigationItemListType,
   communicatorMessages: CommunicatorMessagesType,
@@ -127,10 +128,10 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    communicatorNavigation: state.communicatorNavigation,
-    communicatorMessages: state.communicatorMessages,
+    communicatorNavigation: (state as any).communicatorNavigation,
+    communicatorMessages: (state as any).communicatorMessages,
     i18n: state.i18n
   }
 };
@@ -139,7 +140,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({updateCommunicatorLabel, removeLabel}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorLabelUpdateDialog);

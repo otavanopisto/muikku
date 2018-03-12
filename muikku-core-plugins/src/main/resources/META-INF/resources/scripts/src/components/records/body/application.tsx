@@ -10,6 +10,7 @@ import Records from './application/records';
 import CurrentRecord from './application/current-record';
 import Vops from './application/vops';
 import Hops from './application/hops';
+import {StateType} from '~/reducers';
 
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,
@@ -38,7 +39,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -48,7 +49,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderApplication);

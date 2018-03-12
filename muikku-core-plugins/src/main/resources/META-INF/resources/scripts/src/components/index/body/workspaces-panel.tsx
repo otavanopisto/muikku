@@ -3,6 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {WorkspaceListType, WorkspaceType} from '~/reducers/main-function/workspaces';
+import {StateType} from '~/reducers';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
@@ -46,10 +47,10 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    workspaces: state.workspaces
+    workspaces: state.workspaces.workspaces
   }
 };
 
@@ -57,7 +58,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(WorkspacesPanel);

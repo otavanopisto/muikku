@@ -12,6 +12,7 @@ import HopsGraph from '~/components/base/hops';
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
 import { HOPSDataType } from '~/reducers/main-function/hops';
+import {StateType} from '~/reducers';
 
 interface HopsProps {
   i18n: i18nType,
@@ -49,10 +50,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records,
+    records: (state as any).records,
     hops: state.hops
   }
 };
@@ -61,7 +62,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({setHopsTo}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Hops);

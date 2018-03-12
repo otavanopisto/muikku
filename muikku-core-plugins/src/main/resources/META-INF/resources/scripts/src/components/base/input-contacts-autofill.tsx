@@ -5,7 +5,7 @@ import promisify from '~/util/promisify';
 import {filterHighlight} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import {WorkspaceType} from '~/reducers/main-function/workspaces';
-import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, ExtendedUserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
+import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
 
 export interface InputContactsAutofillProps {
   placeholder?: string,
@@ -104,7 +104,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         ]
       );
       
-      let userItems:ContactRecepientType[] = searchResults[0].map((item: ExtendedUserType)=>({type: "user", value: item} as any as UserRecepientType));
+      let userItems:ContactRecepientType[] = searchResults[0].map((item: UserType)=>({type: "user", value: item} as any as UserRecepientType));
       let userGroupItems:ContactRecepientType[] = searchResults[1].map((item: UserGroupType)=>({type: "usergroup", value: item} as any as UserGroupRecepientType));
       let workspaceItems:ContactRecepientType[] = searchResults[2].map((item: WorkspaceType)=>({type: "workspace", value: item} as any as WorkspaceRecepientType))
       let staffItems:ContactRecepientType[] = searchResults[3].map((item: UserStaffType)=>({type: "staff", value: item} as any as StaffRecepientType))

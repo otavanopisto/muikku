@@ -24,15 +24,15 @@ export interface HOPSDataType {
   optedIn: boolean
 }
 
-export interface VOPSType {
+export interface HOPSType {
   status: HOPSStatusType,
   value: HOPSDataType
 }
 
-export default function vops(state:VOPSType={
+export default function vops(state:HOPSType={
   status: "WAIT",
   value: null
-}, action: ActionType):VOPSType{
+}, action: ActionType):HOPSType{
   if (action.type === "UPDATE_HOPS_STATUS"){
     return Object.assign({}, state, {
       status: action.payload

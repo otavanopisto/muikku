@@ -13,10 +13,10 @@ import {DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
   deleteDiscussionThreadReplyFromCurrent} from '~/actions/main-function/discussion/discussion-threads';
+import {StateType} from '~/reducers';
 
 interface DiscussionDeleteThreadComponentProps {
   i18n: i18nType,
-  thread: DiscussionThreadType,
   reply?: DiscussionThreadReplyType,
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType,
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType,
@@ -96,11 +96,9 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
-    areas: state.areas,
-    discussionThreads: state.discussionThreads
+    i18n: state.i18n
   }
 };
 
@@ -108,7 +106,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({deleteCurrentDiscussionThread, deleteDiscussionThreadReplyFromCurrent}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionDeleteThreadComponent);

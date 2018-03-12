@@ -13,6 +13,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/form-fields.scss';
 import { bindActionCreators } from "redux";
+import {StateType} from '~/reducers';
 
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
@@ -111,11 +112,11 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderFilters: state.guiderFilters,
-    guiderStudents: state.guiderStudents
+    guiderFilters: (state as any).guiderFilters,
+    guiderStudents: (state as any).guiderStudents
   }
 };
 
@@ -127,7 +128,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
     removeGuiderLabelFromSelectedUsers}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderToolbarLabels);

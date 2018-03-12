@@ -7,6 +7,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import $ from '~/lib/jquery';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 interface LoginButtonProps {
   i18n: i18nType
@@ -33,7 +34,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -43,7 +44,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LoginButton);

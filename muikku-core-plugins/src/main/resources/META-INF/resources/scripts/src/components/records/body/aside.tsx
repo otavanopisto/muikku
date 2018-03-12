@@ -6,6 +6,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
+import {StateType} from '~/reducers';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -48,10 +49,10 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 }
 
-function mapStateToProps( state: any ) {
+function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    location: state.records.location
+    location: (state as any).records.location
   }
 };
 
@@ -59,7 +60,7 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
   return {};
 };
 
-export default ( connect as any )(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )( Navigation );

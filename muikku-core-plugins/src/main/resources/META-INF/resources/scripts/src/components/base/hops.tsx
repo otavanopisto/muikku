@@ -5,10 +5,11 @@ import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { HOPSDataType } from "~/reducers/main-function/hops";
+import {StateType} from '~/reducers';
 
 interface HopsProps {
   data?: HOPSDataType,
-  defaultData?: HOPSDataType,
+  defaultData: HOPSDataType,
   onHopsChange?: (hops:HOPSDataType)=>any,
   i18n: i18nType,
   editable: boolean
@@ -343,7 +344,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
             
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     defaultData: state.hops.value
@@ -354,7 +355,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {}
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Hops);

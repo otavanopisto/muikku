@@ -9,11 +9,13 @@ import {CommunicatorThreadType} from '~/reducers/main-function/communicator/comm
 import {StatusType} from '~/reducers/base/status';
 import {i18nType} from '~/reducers/base/i18n';
 import TouchPager from '~/components/general/touch-pager';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/message.scss';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 
 interface MessageViewProps {
   i18n: i18nType,
@@ -51,11 +53,11 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
       goForward={this.loadMessage.bind(this, this.props.communicatorMessagesCurrent.newerThreadId)}
       goBackwards={this.loadMessage.bind(this, this.props.communicatorMessagesCurrent.olderThreadId)}>{
         this.props.communicatorMessagesCurrent.messages.map((message)=>{
-          let senderObject = {
+          let senderObject:UserRecepientType = {
             type: "user",
             value: message.sender
           };
-          let recipientsObject = message.recipients.map(r=>({
+          let recipientsObject:Array<UserRecepientType> = message.recipients.map((r):UserRecepientType=>({
             type: "user",
             value: {
               id: r.userId,
@@ -64,12 +66,12 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
               nickName: r.nickName
             }
           })).filter(user=>user.value.id !== this.props.status.userId);
-          let userGroupObject = message.userGroupRecipients.map((ug:any)=>({
+          let userGroupObject:Array<UserGroupRecepientType> = message.userGroupRecipients.map((ug:any):UserGroupRecepientType=>({
             type: "usergroup",
             value: ug
           }));
-          let workspaceObject = message.workspaceRecipients.map((w:any)=>({
-            type: "usergroup",
+          let workspaceObject:Array<WorkspaceRecepientType> = message.workspaceRecipients.map((w:any):WorkspaceRecepientType=>({
+            type: "workspace",
             value: w
           }));
           let replytarget = [senderObject];
@@ -131,9 +133,9 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    communicatorMessagesCurrent: state.communicatorMessages.current,
+    communicatorMessagesCurrent: (state as any).communicatorMessages.current,
     i18n: state.i18n,
     status: state.status
   }
@@ -143,7 +145,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(MessageView);

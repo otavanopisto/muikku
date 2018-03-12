@@ -9,6 +9,7 @@ import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
 import NewEditAnnouncement from './application/new-edit-announcement';
+import {StateType} from '~/reducers';
 
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/text.scss';
@@ -52,7 +53,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -62,7 +63,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncerApplication);

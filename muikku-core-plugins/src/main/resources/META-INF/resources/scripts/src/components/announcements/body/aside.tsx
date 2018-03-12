@@ -6,6 +6,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/announcer/announcements';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
+import {StateType} from '~/reducers';
 
 interface AnnouncementsAsideProps {
   i18n: i18nType,
@@ -15,8 +16,6 @@ interface AnnouncementsAsideProps {
 interface AnnouncementsAsideState {
 
 }
-
-
 
 class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, AnnouncementsAsideState> {
   
@@ -48,10 +47,10 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: (state as any).announcements
   }
 };
 
@@ -60,7 +59,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 };
 
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncementsAside);

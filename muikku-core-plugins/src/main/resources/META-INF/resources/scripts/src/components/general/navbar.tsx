@@ -65,7 +65,7 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
                   <div className="navbar__default-options">
                     {this.props.defaultOptions}
                     <ProfileItem modifier={this.props.modifier}/>
-                    <LanguagePicker modifier={this.props.modifier} />
+                    <LanguagePicker />
                   </div>
                 </div>
               </nav>

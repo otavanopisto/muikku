@@ -10,6 +10,7 @@ import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import { VOPSType } from '~/reducers/main-function/vops';
 import VopsGraph from '~/components/base/vops';
+import {StateType} from '~/reducers';
 
 interface VopsProps {
   i18n: i18nType,
@@ -36,10 +37,10 @@ class Vops extends React.Component<VopsProps, VopsState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records,
+    records: (state as any).records,
     vops: state.vops
   }
 };
@@ -48,7 +49,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Vops);

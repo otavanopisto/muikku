@@ -7,6 +7,7 @@ import HoverButton from '~/components/general/hover-button';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
 import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
+import {StateType} from '~/reducers';
 
 import DiscussionThreads from './application/discussion-threads';
 import CurrentThread from './application/current-thread';
@@ -45,10 +46,10 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussionThreads: state.discussionThreads
+    discussionThreads: (state as any).discussionThreads
   }
 };
 
@@ -56,7 +57,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionApplication);

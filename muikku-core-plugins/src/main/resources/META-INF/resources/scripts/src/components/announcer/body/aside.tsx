@@ -6,6 +6,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import { AnnouncerNavigationItemListType, AnnouncerNavigationItemType } from '~/reducers/main-function/announcer/announcer-navigation';
 import { AnnouncementsType } from '~/reducers/main-function/announcer/announcements';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
@@ -40,11 +41,11 @@ class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAside
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcerNavigation: state.announcerNavigation,
-    announcements: state.announcements
+    announcerNavigation: (state as any).announcerNavigation,
+    announcements: (state as any).announcements
   }
 };
 
@@ -53,7 +54,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 };
 
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncerAside);

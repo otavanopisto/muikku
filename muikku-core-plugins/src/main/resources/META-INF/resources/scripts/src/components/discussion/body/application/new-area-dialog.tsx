@@ -11,6 +11,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import {createDiscussionArea, CreateDiscussionAreaTriggerType} from '~/actions/main-function/discussion/discussion-areas';
+import {StateType} from '~/reducers';
 
 interface DiscussionNewAreaProps {
   i18n: i18nType,
@@ -95,7 +96,7 @@ class DiscussionNewArea extends React.Component<DiscussionNewAreaProps, Discussi
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -105,7 +106,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({createDiscussionArea}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionNewArea);

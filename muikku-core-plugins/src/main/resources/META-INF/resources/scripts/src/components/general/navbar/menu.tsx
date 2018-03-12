@@ -7,6 +7,7 @@ import {bindActionCreators} from 'redux';
 import $ from '~/lib/jquery';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
+import {StateType} from '~/reducers';
 
 function checkLinkClicked(target: HTMLElement): boolean {
   return target.nodeName.toLowerCase() === "a" || (target.parentElement ? checkLinkClicked(target.parentElement) : false);
@@ -174,7 +175,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     status: state.status
@@ -185,7 +186,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({logout}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Menu);

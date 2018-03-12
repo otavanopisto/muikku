@@ -5,6 +5,7 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
 import {bindActionCreators} from 'redux';
+import {StateType} from '~/reducers';
 
 import {logout, LogoutTriggerType} from '~/actions/base/status';
 
@@ -67,7 +68,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     status: state.status
@@ -78,7 +79,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({logout}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ProfileItem);

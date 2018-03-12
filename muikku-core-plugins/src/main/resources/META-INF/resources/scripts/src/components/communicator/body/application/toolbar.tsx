@@ -13,6 +13,7 @@ import LabelUpdateDialog from '~/components/communicator/body/label-update-dialo
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import {CommunicatorMessagesType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -200,10 +201,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    communicatorNavigation: state.communicatorNavigation,
-    communicatorMessages: state.communicatorMessages,
+    communicatorNavigation: (state as any).communicatorNavigation,
+    communicatorMessages: (state as any).communicatorMessages,
     i18n: state.i18n
   }
 };
@@ -215,7 +216,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
     removeLabelFromCurrentMessage}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorToolbar);

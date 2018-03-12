@@ -5,6 +5,7 @@ import { i18nType } from "~/reducers/base/i18n";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { VOPSDataType } from "~/reducers/main-function/vops";
+import {StateType} from '~/reducers';
 
 const MAX_ROW_SIZE = 15;
 const CLASS_TRANSLATIONS:{
@@ -32,7 +33,7 @@ const CLASS_TRANSLATIONS:{
 
 interface VopsProps {
   data?: VOPSDataType,
-  defaultData?: VOPSDataType,
+  defaultData: VOPSDataType,
   i18n: i18nType
 }
 
@@ -153,7 +154,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
   }
 }
             
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     defaultData: state.vops.value
@@ -164,7 +165,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Vops);

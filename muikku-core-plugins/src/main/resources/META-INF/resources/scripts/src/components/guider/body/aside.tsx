@@ -9,6 +9,7 @@ import '~/sass/elements/item-list.scss';
 import { GuiderFilterType, GuiderUserLabelListType, GuiderUserLabelType, GuiderWorkspaceType } from '~/reducers/main-function/guider/guider-filters';
 import { GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
 import LabelUpdateDialog from './application/label-update-dialog';
+import {StateType} from '~/reducers';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -60,11 +61,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderFilters: state.guiderFilters,
-    guiderStudents: state.guiderStudents
+    guiderFilters: (state as any).guiderFilters,
+    guiderStudents: (state as any).guiderStudents
   }
 };
 
@@ -72,7 +73,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Navigation);

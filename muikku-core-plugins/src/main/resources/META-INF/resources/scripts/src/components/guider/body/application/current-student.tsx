@@ -19,6 +19,7 @@ import { AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTrigger
   addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider/guider-students';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { UserFileType } from '~/reducers/main-function/user-index';
+import {StateType} from '~/reducers';
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -180,11 +181,11 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsCurrent: state.guiderStudents.current,
-    guiderCurrentState: state.guiderStudents.currentState
+    guiderStudentsCurrent: (state as any).guiderStudents.current,
+    guiderCurrentState: (state as any).guiderStudents.currentState
   }
 };
 
@@ -192,7 +193,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({addFileToCurrentStudent, removeFileFromCurrentStudent, displayNotification}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CurrentStudent);

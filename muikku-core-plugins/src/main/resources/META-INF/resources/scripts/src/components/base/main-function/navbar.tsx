@@ -5,6 +5,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/indicator.scss';
@@ -119,11 +120,11 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     status: state.status,
-    messageCount: state.messageCount,
+    messageCount: state.messages.count,
     title: state.title
   }
 };
@@ -132,7 +133,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(MainFunctionNavbar);

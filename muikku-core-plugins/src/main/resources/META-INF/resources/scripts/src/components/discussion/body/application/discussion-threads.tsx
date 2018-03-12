@@ -18,6 +18,7 @@ import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
+import {StateType} from '~/reducers';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
@@ -150,10 +151,10 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussionThreads: state.discussionThreads,
+    discussionThreads: (state as any).discussionThreads,
     userIndex: state.userIndex
   }
 };
@@ -162,7 +163,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionThreads);

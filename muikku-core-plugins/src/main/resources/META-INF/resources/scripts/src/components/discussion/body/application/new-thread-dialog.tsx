@@ -9,6 +9,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
 import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
 import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
+import {StateType} from '~/reducers';
 
 const ckEditorConfig = {
   toolbar: [
@@ -150,11 +151,11 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    areas: state.areas,
+    areas: (state as any).areas,
     i18n: state.i18n,
-    discussionThreads: state.discussionThreads
+    discussionThreads: (state as any).discussionThreads
   }
 };
 
@@ -162,7 +163,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({createDiscussionThread}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DicussionNewThread);

@@ -8,14 +8,16 @@ import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
 import JumboDialog from "~/components/general/jumbo-dialog";
 import { replyToCurrentDiscussionThread, ReplyToCurrentDiscussionThreadTriggerType } from "~/actions/main-function/discussion/discussion-threads";
+import {StateType} from '~/reducers';
 
 interface ReplyThreadProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
   reply?: DiscussionThreadReplyType,
-  replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
   quote?: string,
-  quoteAuthor?: string
+  quoteAuthor?: string,
+      
+  replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
 }
 
 interface ReplyThreadState {
@@ -108,7 +110,7 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -118,7 +120,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({replyToCurrentDiscussionThread}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ReplyThread);

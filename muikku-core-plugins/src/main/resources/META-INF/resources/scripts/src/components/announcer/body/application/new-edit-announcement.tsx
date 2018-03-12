@@ -15,6 +15,7 @@ import { WorkspaceType } from '~/reducers/main-function/workspaces';
 import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/main-function/user-index';
 import { createAnnouncement, CreateAnnouncementTriggerType,
   updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
+import {StateType} from '~/reducers';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -245,7 +246,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     userIndex: state.userIndex
@@ -256,7 +257,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({loadUserGroupIndex, createAnnouncement, updateAnnouncement}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(NewEditAnnouncement);

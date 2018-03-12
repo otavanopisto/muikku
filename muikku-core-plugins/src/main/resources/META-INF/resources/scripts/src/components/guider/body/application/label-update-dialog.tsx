@@ -15,6 +15,7 @@ import '~/sass/elements/form-fields.scss';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
 import GuiderLabelShareDialog from './label-share-dialog';
+import {StateType} from '~/reducers';
 
 const KEYCODES = {
   ENTER: 13
@@ -23,8 +24,8 @@ const KEYCODES = {
 interface GuiderLabelUpdateDialogProps {
   children: React.ReactElement<any>,
   label: GuiderUserLabelType,
-  isOpen: boolean,
-  onClose: ()=>any,
+  isOpen?: boolean,
+  onClose?: ()=>any,
   i18n: i18nType,
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType,
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType
@@ -146,7 +147,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   } 
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -156,7 +157,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({updateGuiderFilterLabel, removeGuiderFilterLabel}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderLabelUpdateDialog);

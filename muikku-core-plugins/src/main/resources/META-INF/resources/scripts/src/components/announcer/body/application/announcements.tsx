@@ -3,6 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
+import {StateType} from '~/reducers';
 
 import NewEditAnnouncement from './new-edit-announcement';
 
@@ -105,10 +106,11 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
   }
 }
 
-function mapStateToProps(state: any){
+//TODO yet another one with the different version
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: (state as any).announcements
   }
 };
 
@@ -119,7 +121,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   }, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Announcements);

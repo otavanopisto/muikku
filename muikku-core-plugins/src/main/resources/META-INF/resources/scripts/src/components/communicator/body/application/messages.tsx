@@ -4,11 +4,10 @@ import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 
-import actions from '~/actions/main-function/communicator/communicator-messages';
-
-import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
+import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType, loadMoreMessages, removeFromCommunicatorSelectedMessages, addToCommunicatorSelectedMessages} from '~/actions/main-function/communicator/communicator-messages';
 import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType, CommunicatorThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
@@ -140,24 +139,28 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    communicatorMessagesMessages: state.communicatorMessages.messages,
-    communicatorMessagesHasMore: state.communicatorMessages.hasMore,
-    communicatorMessagesState: state.communicatorMessages.state,
-    communicatorMessagesSelected: state.communicatorMessages.selected,
-    communicatorMessagesSelectedIds: state.communicatorMessages.selectedIds,
-    communicatorMessagesCurrent: state.communicatorMessages.current,
+    communicatorMessagesMessages: (state as any).communicatorMessages.messages,
+    communicatorMessagesHasMore: (state as any).communicatorMessages.hasMore,
+    communicatorMessagesState: (state as any).communicatorMessages.state,
+    communicatorMessagesSelected: (state as any).communicatorMessages.selected,
+    communicatorMessagesSelectedIds: (state as any).communicatorMessages.selectedIds,
+    communicatorMessagesCurrent: (state as any).communicatorMessages.current,
     i18n: state.i18n,
     userId: state.status.userId
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators(actions, dispatch);
+  return bindActionCreators({
+    loadMoreMessages,
+    removeFromCommunicatorSelectedMessages,
+    addToCommunicatorSelectedMessages
+  }, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorMessages);

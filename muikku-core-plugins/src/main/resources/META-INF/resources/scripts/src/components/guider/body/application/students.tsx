@@ -17,6 +17,7 @@ import { GuiderStudentListType, GuiderStudentsStateType, GuiderStudentType, Guid
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Student from './students/student';
 import { UserType } from '~/reducers/main-function/user-index';
+import {StateType} from '~/reducers';
 
 interface GuiderStudentsProps {
   i18n: i18nType,
@@ -90,14 +91,14 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsState: state.guiderStudents.state,
-    guiderStudentsHasMore: state.guiderStudents.hasMore,
-    guiderStudentsStudents: state.guiderStudents.students,
-    guiderStudentsCurrent: state.guiderStudents.current,
-    guiderStudentsSelectedIds: state.guiderStudents.selectedIds
+    guiderStudentsState: (state as any).guiderStudents.state,
+    guiderStudentsHasMore: (state as any).guiderStudents.hasMore,
+    guiderStudentsStudents: (state as any).guiderStudents.students,
+    guiderStudentsCurrent: (state as any).guiderStudents.current,
+    guiderStudentsSelectedIds: (state as any).guiderStudents.selectedIds
   }
 };
 
@@ -105,7 +106,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({loadMoreStudents, addToGuiderSelectedStudents, removeFromGuiderSelectedStudents}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderStudents);

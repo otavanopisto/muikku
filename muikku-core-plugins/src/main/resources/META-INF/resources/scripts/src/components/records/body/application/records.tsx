@@ -14,6 +14,7 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
 import { WorkspaceType, WorkspaceStudentAccessmentType } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
+import {StateType} from '~/reducers';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
@@ -176,10 +177,10 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: (state as any).records
   }
 };
 
@@ -187,7 +188,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Records);

@@ -13,6 +13,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
 import { CoursepickerFiltersType, CoursePickerBaseFilterType } from '~/reducers/main-function/coursepicker/coursepicker-filters';
 import { CoursePickerCoursesType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import {StateType} from '~/reducers';
 
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>,
@@ -60,11 +61,11 @@ class CommunicatorApplication extends React.Component<CoursepickerApplicationPro
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerFilters: state.coursepickerFilters,
-    coursepickerCourses: state.coursepickerCourses
+    coursepickerFilters: (state as any).coursepickerFilters,
+    coursepickerCourses: (state as any).coursepickerCourses
   }
 };
 
@@ -72,7 +73,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorApplication);

@@ -7,6 +7,7 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
 import {ShortWorkspaceType} from '~/reducers/main-function/workspaces';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/text.scss';
@@ -48,11 +49,11 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     status: state.status,
     i18n: state.i18n,
-    lastWorkspace: state.lastWorkspace
+    lastWorkspace: state.workspaces.lastWorkspace
   }
 };
 
@@ -60,7 +61,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ContinueStudiesPanel);

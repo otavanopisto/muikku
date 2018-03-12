@@ -3,6 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
@@ -60,11 +61,11 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
   }       
 }
 
-
-function mapStateToProps(state: any){
+//TODO fix this is using the other version of announcements
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: (state as any).announcements
   }
 };
 
@@ -72,7 +73,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncementView);

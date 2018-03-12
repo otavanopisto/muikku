@@ -7,13 +7,12 @@ export interface UserType {
   lastName?: string,
   nickName?: string,
   studyProgrammeName?: string,
-  hasImage: boolean,
-  hasEvaluationFees: false,
-  curriculumIdentifier?: string;
-}
-
-export interface ExtendedUserType extends UserType {
-  email: string,
+  hasImage?: boolean,
+  hasEvaluationFees?: false,
+  curriculumIdentifier?: string,
+ 
+  //EXTENDED VALUES, may or may not be available
+  email?: string,
   language?: string,
   municipality?: string,
   nationality?: string,
@@ -72,7 +71,7 @@ export interface WorkspaceRecepientType {
 
 export interface UserRecepientType {
   type: "user",
-  value: ExtendedUserType
+  value: UserType
 }
 
 export interface UserGroupRecepientType {

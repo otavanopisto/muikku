@@ -12,6 +12,7 @@ import MessageView from './application/message-view';
 import NewMessage from './application/new-message';
 import SignatureUpdateDialog from './signature-update-dialog';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
@@ -76,10 +77,9 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
-    communicatorMessages: state.communicatorMessages
+    i18n: state.i18n
   }
 };
 
@@ -87,7 +87,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorApplication);

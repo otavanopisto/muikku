@@ -11,6 +11,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { CoursePickerCoursesType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import {StateType} from '~/reducers';
 
 interface CoursepickerToolbarProps {
   i18n: i18nType,
@@ -72,10 +73,10 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerCourses: state.coursepickerCourses
+    coursepickerCourses: (state as any).coursepickerCourses
   }
 };
 
@@ -83,7 +84,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CoursepickerToolbar);

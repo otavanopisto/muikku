@@ -10,6 +10,7 @@ import {CoursepickerFiltersType,
   EducationFilterType,
   CurriculumFilterType} from '~/reducers/main-function/coursepicker/coursepicker-filters';
 import { CoursePickerCoursesType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import {StateType} from '~/reducers';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -52,11 +53,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerFilters: state.coursepickerFilters,
-    coursepickerCourses: state.coursepickerCourses
+    coursepickerFilters: (state as any).coursepickerFilters,
+    coursepickerCourses: (state as any).coursepickerCourses
   }
 };
 
@@ -64,7 +65,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Navigation);

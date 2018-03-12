@@ -3,6 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import Link from '../../general/link';
 import {CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
@@ -44,10 +45,10 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    lastMessages: state.lastMessages
+    lastMessages: state.messages.messages
   }
 };
 
@@ -55,7 +56,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LastMessagesPanel);

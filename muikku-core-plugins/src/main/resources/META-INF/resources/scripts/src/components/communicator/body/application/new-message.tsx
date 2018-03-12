@@ -10,6 +10,7 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
+import {StateType} from '~/reducers';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -41,8 +42,8 @@ type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | U
 
 interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
-  replyThreadId: number,
-  initialSelectedItems: SelectedItemListType,
+  replyThreadId?: number,
+  initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
   signature: CommunicatorSignatureType,
   sendMessage: SendMessageTriggerType
@@ -151,10 +152,10 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: state.communicatorMessages.signature
+    signature: (state as any).communicatorMessages.signature
   }
 };
 
@@ -162,7 +163,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({sendMessage}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorNewMessage);

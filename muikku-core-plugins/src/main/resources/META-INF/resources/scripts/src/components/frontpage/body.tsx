@@ -20,6 +20,7 @@ import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/footer.scss';
 import ScreenContainer from '~/components/general/screen-container';
+import {StateType} from '~/reducers';
 
 interface FrontpageBodyProps {
   i18n: i18nType
@@ -49,7 +50,7 @@ class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodySta
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -59,7 +60,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(FrontpageBody);
