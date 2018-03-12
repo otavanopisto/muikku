@@ -30,6 +30,7 @@ import org.junit.runners.model.Statement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
@@ -583,6 +584,10 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     click(selector);
   }
   
+  protected void scrollToEnd() {
+    ((JavascriptExecutor) getWebDriver()).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+  }
+  
   protected void waitScrollAndClick(String selector) {
     waitForPresent(selector);
     scrollIntoView(selector);
@@ -629,7 +634,11 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void clearElement(String selector) {
     getWebDriver().findElement(By.cssSelector(selector)).clear();
   }
-  
+
+  protected void selectAllAndClear(String selector) {
+    getWebDriver().findElement(By.cssSelector(selector)).sendKeys(Keys.chord(Keys.CONTROL, "a"));
+    getWebDriver().findElement(By.cssSelector(selector)).sendKeys(Keys.BACK_SPACE);
+  }
   
   protected void waitUntilTextRemovedFromElement(final String selector, String textToRemove) {
     new WebDriverWait(getWebDriver(), 60).until(new ExpectedCondition<Boolean>() {
@@ -822,8 +831,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   
   protected void logout() {
     navigate("/", false);
-    waitAndClick("a.lu-action-signout");
-    waitForPresent("body");    
+    waitAndClick(".navbar .button-pill--profile");
+    waitAndClick("body a.link--profile > span.icon-signout+span");
+    waitForPresent("body");
   }
   @Deprecated
   protected Workspace createWorkspace(String name, String description, String identifier, Boolean published) throws Exception {

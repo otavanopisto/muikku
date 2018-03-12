@@ -507,7 +507,7 @@
                 // Verbal assessment
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
                 // Date
-                $('#assignmentEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
+                $('#assignmentEvaluationDate').datepicker('setDate', new Date());
                 // Assessor
                 $('#assignmentAssessor').val(assessment.assessorIdentifier);
                 // Grading
@@ -540,7 +540,7 @@
                 // Verbal assessment
                 CKEDITOR.instances.assignmentEvaluateFormLiteralEvaluation.setData(supplementationRequest.requestText);
                 // Date
-                $('#assignmentEvaluationDate').datepicker('setDate', moment(supplementationRequest.requestDate).toDate());
+                $('#assignmentEvaluationDate').datepicker('setDate', new Date());
                 // Assessor
                 $('#assignmentAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
                 // Grading
@@ -637,7 +637,7 @@
             // Verbal assessment
             CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(assessment.verbalAssessment);
             // Date
-            $('#workspaceEvaluationDate').datepicker('setDate', moment(assessment.assessmentDate).toDate());
+            $('#workspaceEvaluationDate').datepicker('setDate', new Date());
             // Assessor
             $('#workspaceAssessor').val(assessment.assessorIdentifier);
             // Grading
@@ -669,7 +669,7 @@
             // Verbal assessment
             CKEDITOR.instances.workspaceEvaluateFormLiteralEvaluation.setData(supplementationRequest.requestText);
             // Date
-            $('#workspaceEvaluationDate').datepicker('setDate', moment(supplementationRequest.requestDate).toDate());
+            $('#workspaceEvaluationDate').datepicker('setDate', new Date());
             // Assessor
             $('#workspaceAssessor option[data-user-entity-id="' + supplementationRequest.userEntityId + '"]').attr('selected','selected');
             // Grading

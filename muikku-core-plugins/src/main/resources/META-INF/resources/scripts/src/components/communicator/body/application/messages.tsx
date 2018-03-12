@@ -94,7 +94,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
         {this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
           let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
           return {
-            className: `application-list__item message ${message.unreadMessagesInThread ? "message--unread" : ""}`,
+            className: `application-list__item message message--communicator ${message.unreadMessagesInThread ? "message--unread" : ""}`,
             onSelect: this.props.addToCommunicatorSelectedMessages.bind(null, message),
             onDeselect: this.props.removeFromCommunicatorSelectedMessages.bind(null, message),
             onEnter: this.setCurrentMessage.bind(this, message),

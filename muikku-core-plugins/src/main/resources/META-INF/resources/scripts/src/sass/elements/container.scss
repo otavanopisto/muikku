@@ -1,3 +1,5 @@
+@import "../base/colors";
+@import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
 	
@@ -135,4 +137,15 @@
 .container--student-info {
   display: flex;
   flex-wrap: wrap;
+}
+
+.container--discussion-profile-image {
+  align-items: center;
+  border-radius: 100%;
+  color: #fff;
+  display: flex;
+  font-family: $text-font-family;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
 }

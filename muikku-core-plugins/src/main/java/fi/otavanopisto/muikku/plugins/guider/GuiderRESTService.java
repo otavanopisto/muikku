@@ -99,7 +99,7 @@ public class GuiderRESTService extends PluginRESTService {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to analyze assignments progress for student %s in workspace %d", userIdentifier, workspaceEntity.getId())).build();
     }
     
-    WorkspaceAssessmentState assessmentState = WorkspaceAssessmentState.UNASSESSED;
+    WorkspaceAssessmentState assessmentState = new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
     WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, userIdentifier);
     if (workspaceUserEntity != null && workspaceUserEntity.getWorkspaceUserRole().getArchetype() == WorkspaceRoleArchetype.STUDENT) {
       assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
@@ -220,17 +220,17 @@ public class GuiderRESTService extends PluginRESTService {
         activity.getEvaluables().getAnsweredLastDate(), 
         activity.getEvaluables().getSubmitted(), 
         activity.getEvaluables().getSubmittedLastDate(), 
+        activity.getEvaluables().getWithdrawn(), 
+        activity.getEvaluables().getWithdrawnLastDate(), 
         activity.getEvaluables().getPassed(), 
         activity.getEvaluables().getPassedLastDate(), 
         activity.getEvaluables().getFailed(), 
         activity.getEvaluables().getFailedLastDate(),
         activity.getEvaluables().getIncomplete(),
         activity.getEvaluables().getIncompleteLastDate(),
-        activity.getEvaluables().getDonePercent(), 
         activity.getExercises().getUnanswered(), 
         activity.getExercises().getAnswered(), 
-        activity.getExercises().getAnsweredLastDate(), 
-        activity.getExercises().getDonePercent(),
+        activity.getExercises().getAnsweredLastDate(),
         assessmentState);
     return model;
   }

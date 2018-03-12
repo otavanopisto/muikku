@@ -1,5 +1,6 @@
 @import "../base/colors";
 @import "../base/mixins";
+@import "../base/vars";
 @import "../base/breakpoints";
 
 .application-list {  
@@ -25,11 +26,17 @@
 .application-list__item {
   background-color: $color-application-list-item-background;
   cursor: pointer;
-  user-select: none;
+  -webkit-touch-callout: none;
   transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
-  -webkit-touch-callout: none;
+  user-select: none;
   
+  @include breakpoint($breakpoint-desktop) {
+    -webkit-touch-callout: default;
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+    
   &:hover, 
   &.hover {
     background-color: $color-application-list-item-background-hover;
@@ -48,10 +55,6 @@
     }
   }
 }
-
-.application-list__item--discussion-reply--of-reply {
-  margin-left: 67px;
-} 
 
 .application-list__item-content {
   
@@ -100,23 +103,74 @@
   flex-shrink: 1;
 }
 
+.application-list__item-content-avatar {
+  align-items: center;
+  border-radius: 100%;
+  color: #fff;
+  display: flex;
+  font-size: 1.25rem;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
+}
+
+.application-list__item-content-avatar--category-1 {
+  background-color: $color-main-function-category-1;
+}
+
+.application-list__item-content-avatar--category-2 {
+  background-color: $color-main-function-category-2;
+}
+
+.application-list__item-content-avatar--category-3 {
+  background-color: $color-main-function-category-3;
+}
+
+.application-list__item-content-avatar--category-4 {
+  background-color: $color-main-function-category-4;
+}
+
+.application-list__item-content-avatar--category-5 {
+  background-color: $color-main-function-category-5;
+}
+
+.application-list__item-content-avatar--category-6 {
+  background-color: $color-main-function-category-6;
+}
+
+.application-list__item-content-avatar--category-7 {
+  background-color: $color-main-function-category-7;
+}
+
+.application-list__item-content-avatar--category-8 {
+  background-color: $color-main-function-category-8;
+}
+
+.application-list__item-content-avatar--category-9 {
+  background-color: $color-main-function-category-9;
+}
+
+.application-list__item-content-avatar--category-10 {
+  background-color: $color-main-function-category-10;
+}
+
 .application-list__item-header {
   align-items: center;
   display: flex;      
 }
 
 .application-list__item-body {
-  padding: 5px 0 0;
+  padding: 0;
 }
 
 .application-list__item-meta {
-  padding: 5px 0 10px;
+  padding: 0 0 10px;
 }
 
 .application-list__item-footer {
   align-items: center;
   display: flex;   
-  padding: 5px 0 0;
+  padding: 0;
 }
 
 .application-list__item-header-main {
@@ -159,9 +213,16 @@
   font-size: 2 rem;
 }  
   
-.application-list__item-header--discussion-item-header div:not(:first-child) {
-  margin-left: 10px;
+.application-list__item-header--discussion-item-header {
+ 
+  div:not(:first-child) {
+    margin: 0 0 0 10px; 
+  }
 } 
+
+.application-list__item-footer--discussion {
+  padding: 7px 0 0;
+}
 
 // Announcer
 .application-list__item--workspace-announcement {
@@ -198,7 +259,7 @@
 }
 
 .application-list__item--communicator-message {  
-  border-bottom: 5px solid $color-main-function-application-list-item-open-border;
+  border-bottom: 5px solid $color-message-border;
   cursor: default;
   margin: 0 0 5px;
   padding: 0 0 10px;
@@ -231,6 +292,3 @@
 .application-list__item-footer--course {
   padding: 12px 9px;
 }
-
-
-

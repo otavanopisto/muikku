@@ -3,7 +3,7 @@ import Body from '../components/announcements/body';
 import * as React from 'react';
 import '~/sass/util/base.scss';
 
-export default class Announcer extends React.Component<{},{}> {
+export default class Announcement extends React.Component<{},{}> {
   render(){
     return (<div id="root">
       <Notifications></Notifications>

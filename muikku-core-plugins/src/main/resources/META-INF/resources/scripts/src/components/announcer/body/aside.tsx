@@ -20,7 +20,6 @@ interface AnnouncerAsideState {
 
 }
 
-
 class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAsideState> {
   render(){
     return (    

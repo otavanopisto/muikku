@@ -11,10 +11,9 @@ public class GuiderStudentWorkspaceActivityRestModel {
 
   public GuiderStudentWorkspaceActivityRestModel(Date lastVisit, long numVisits, long journalEntryCount, Date lastJournalEntry,
       long evaluablesUnanswered, long evaluablesAnswered, Date evaluablesAnsweredLastDate, long evaluablesSubmitted,
-      Date evaluablesSubmittedLastDate, long evaluablesPassed, Date evaluablesPassedLastDate, 
-      long evaluablesFailed, Date evaluablesFailedLastDate, long evaluablesIncomplete, Date evaluablesIncompleteLastDate, int evaluablesDonePercent, 
-      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, 
-      int exercisesDonePercent, WorkspaceAssessmentState assessmentState) {
+      Date evaluablesSubmittedLastDate, long evaluablesWithdrawn, Date evaluablesWithdrawnLastDate, long evaluablesPassed, Date evaluablesPassedLastDate, 
+      long evaluablesFailed, Date evaluablesFailedLastDate, long evaluablesIncomplete, Date evaluablesIncompleteLastDate, 
+      long exercisesUnanswered, long exercisesAnswered, Date exercisesAnsweredLastDate, WorkspaceAssessmentState assessmentState) {
     super();
     this.lastVisit = lastVisit;
     this.numVisits = numVisits;
@@ -27,18 +26,16 @@ public class GuiderStudentWorkspaceActivityRestModel {
     this.evaluablesSubmittedLastDate = evaluablesSubmittedLastDate;
     this.evaluablesPassed = evaluablesPassed;
     this.evaluablesPassedLastDate = evaluablesPassedLastDate;
+    this.evaluablesWithdrawn = evaluablesWithdrawn;
+    this.evaluablesWithdrawnLastDate = evaluablesWithdrawnLastDate;
     this.evaluablesFailed = evaluablesFailed;
     this.evaluablesFailedLastDate = evaluablesFailedLastDate;
     this.evaluablesIncomplete = evaluablesIncomplete;
     this.evaluablesIncompleteLastDate = evaluablesIncompleteLastDate;
-    this.evaluablesDonePercent = evaluablesDonePercent;
     this.exercisesUnanswered = exercisesUnanswered;
     this.exercisesAnswered = exercisesAnswered;
     this.exercisesAnsweredLastDate = exercisesAnsweredLastDate;
-    this.exercisesDonePercent = exercisesDonePercent;
     this.assessmentState = assessmentState;
-    this.evaluablesTotal = evaluablesUnanswered + evaluablesAnswered + evaluablesSubmitted + evaluablesPassed + evaluablesFailed + evaluablesIncomplete;
-    this.exercisesTotal = exercisesUnanswered + exercisesAnswered;
   }
 
   public void setLastVisit(Date lastVisit) {
@@ -93,8 +90,18 @@ public class GuiderStudentWorkspaceActivityRestModel {
     return evaluablesPassedLastDate;
   }
 
-  public double getEvaluablesDonePercent() {
-    return evaluablesDonePercent;
+  public long getEvaluablesWithdrawn() {
+    return evaluablesWithdrawn;
+  }
+  
+  public Date getEvaluablesWithdrawnLastDate() {
+    return evaluablesWithdrawnLastDate;
+  }
+
+  public long getEvaluablesDonePercent() {
+    long done = evaluablesSubmitted + evaluablesPassed + evaluablesFailed + evaluablesIncomplete;
+    long total = getEvaluablesTotal();
+    return total == 0 ? 0 : Math.round((done * 100) / total);
   }
 
   public long getExercisesUnanswered() {
@@ -109,8 +116,10 @@ public class GuiderStudentWorkspaceActivityRestModel {
     return exercisesAnsweredLastDate;
   }
 
-  public double getExercisesDonePercent() {
-    return exercisesDonePercent;
+  public long getExercisesDonePercent() {
+    long done = exercisesAnswered;
+    long total = getExercisesTotal();
+    return total == 0 ? 0 : Math.round((done * 100) / total);
   }
 
   public long getJournalEntryCount() {
@@ -154,19 +163,17 @@ public class GuiderStudentWorkspaceActivityRestModel {
   }
 
   public long getEvaluablesTotal() {
-    return evaluablesTotal;
-  }
-
-  public void setEvaluablesTotal(long evaluablesTotal) {
-    this.evaluablesTotal = evaluablesTotal;
+    return evaluablesUnanswered +
+        evaluablesAnswered +
+        evaluablesSubmitted +
+        evaluablesWithdrawn +
+        evaluablesPassed +
+        evaluablesFailed +
+        evaluablesIncomplete;
   }
 
   public long getExercisesTotal() {
-    return exercisesTotal;
-  }
-
-  public void setExercisesTotal(long exercisesTotal) {
-    this.exercisesTotal = exercisesTotal;
+    return exercisesUnanswered + exercisesAnswered;
   }
 
   private Date lastVisit;
@@ -180,20 +187,18 @@ public class GuiderStudentWorkspaceActivityRestModel {
   private Date evaluablesAnsweredLastDate;
   private long evaluablesSubmitted;
   private Date evaluablesSubmittedLastDate;
+  private long evaluablesWithdrawn;
+  private Date evaluablesWithdrawnLastDate;
   private long evaluablesPassed;
   private Date evaluablesPassedLastDate;
   private long evaluablesFailed;
   private Date evaluablesFailedLastDate;
   private long evaluablesIncomplete;
   private Date evaluablesIncompleteLastDate;
-  private int evaluablesDonePercent;
-  private long evaluablesTotal;
 
   private long exercisesUnanswered;
   private long exercisesAnswered;
   private Date exercisesAnsweredLastDate;
-  private int exercisesDonePercent;
-  private long exercisesTotal;
   
   private WorkspaceAssessmentState assessmentState;
 }

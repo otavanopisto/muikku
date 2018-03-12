@@ -116,6 +116,42 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
+  public SearchResult findUser(Long userEntityId, boolean includeInactive) {
+
+    // Query that checks activity based on user having a study end date set
+    
+    BoolQueryBuilder query = boolQuery();
+    if (!includeInactive) {
+      query.mustNot(existsQuery("studyEndDate"));
+    }
+    query.must(termQuery("userEntityId", userEntityId));
+    
+    // Search
+    
+    SearchRequestBuilder requestBuilder = elasticClient.prepareSearch("muikku").setTypes("User");
+    
+    // Results processing
+    
+    SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHits searchHits = response.getHits();
+    long totalHitCount = searchHits.getTotalHits();
+    SearchHit[] results = searchHits.getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      if(hitSource == null){
+        hitSource = new HashMap<>();
+        for(String key : hit.getFields().keySet()){
+          hitSource.put(key, hit.getFields().get(key).getValue().toString());
+        }
+      }
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+    return new SearchResult(0, searchResults.size(), searchResults, totalHitCount);
+  }
+  
+  @Override
   public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, 

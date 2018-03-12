@@ -37,16 +37,17 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
   }
   
   public void synchronize() {
-    int offset = getOffset();
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus user group users");
 
       List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupEntitiesByDataSource(
-          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
+          SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, currentOffset, BATCH_SIZE);
       if (userGroupEntities.size() == 0) {
-        updateOffset(0);
-      } else {
+        resetCurrentOffset();
+      }
+      else {
         for (UserGroupEntity userGroupEntity : userGroupEntities) {
           switch (identityMapper.getStudentGroupType(userGroupEntity.getIdentifier())) {
             case STUDENTGROUP:
@@ -59,8 +60,6 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
             break;
           }
         }
-
-        updateOffset(offset + userGroupEntities.size());
       }
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus user group users", count));

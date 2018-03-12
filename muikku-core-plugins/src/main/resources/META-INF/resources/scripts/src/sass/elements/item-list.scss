@@ -40,13 +40,13 @@
 
 // Item-list items in workspaces panel
 .item-list--panel-workspaces .item-list__item {
-  padding: 8px 12px;
+
 }
 
 // Item-list items in lastest messages panel
 .item-list--panel-latest-messages .item-list__item {
   align-items: flex-start;
-  border-top: solid 1px $color-index-item-list-item-panel-latest-messages-border;
+  border-top: solid 1px $color-default-item-separator-border;
   
   &:first-child {
     border: 0;
@@ -56,7 +56,7 @@
 // Item-list items in announcements
 .item-list--panel-announcements .item-list__item {
   align-items: flex-start;
-  border-top: solid 1px $color-index-item-list-item-panel-latest-messages-border;
+  border-top: solid 1px $color-default-item-separator-border;
   
   &:first-child {
     border: 0;

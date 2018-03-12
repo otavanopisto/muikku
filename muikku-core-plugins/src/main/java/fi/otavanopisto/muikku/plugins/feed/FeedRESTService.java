@@ -1,8 +1,10 @@
 package fi.otavanopisto.muikku.plugins.feed;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -15,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.feed.model.Feed;
@@ -43,23 +47,19 @@ public class FeedRESTService extends PluginRESTService {
       @PathParam("NAMES") String names,
       @QueryParam("numItems") @DefaultValue("10") int numItems,
       @QueryParam("order") @DefaultValue("DESCENDING") FeedSortOrder order) {
-    List<String> namesList = Arrays.asList(names.split(","));
     
-    if (namesList.size() == 0) {
+    if (StringUtils.isBlank(names)) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    
+
+    Set<String> nameSet = Stream.of(names.split(",")).collect(Collectors.toSet());
     List<Feed> feeds = new ArrayList<>();
     
-    for (String name : namesList) {
+    for (String name : nameSet) {
       Feed feed = feedDAO.findByName(name);
-      if (feed == null) {
-        return Response
-            .status(Status.NOT_FOUND)
-            .entity("Feed not found: " + name)
-            .build();
+      if (feed != null) {
+        feeds.add(feed);
       }
-      feeds.add(feedDAO.findByName(name));
     }
     
     List<FeedItem> feedItems = feedItemDao.findByFeeds(feeds, numItems, order);

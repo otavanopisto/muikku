@@ -314,8 +314,7 @@ b {
 
 // Communicator
 .text--communicator-message-caption {
-  font-weight: 600;  
-
+  font-size: 1.125rem;
   padding: 10px; 
 }  
 
@@ -348,9 +347,22 @@ b {
   
 .text--communicator-body {
   display: inline-block;
-  font-weight: 300;
 }
 
+.text--communicator-labels {
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-direction: row;
+  flex-wrap: wrap; 
+}  
+  
+.text--communicator-label {
+  align-items: center; 
+  display: flex;
+  margin: 0 15px 0 0;
+}
 
 .text--label-update-dialog-icon {
   display: block;
@@ -454,11 +466,27 @@ b {
   margin: 0 20px 0 0;
 }
 
+// Announcements
+.text--announcement-caption {
+  font-size: 1.5rem;
+  font-weight: 200;
+  margin: 0 0 10px;
+}  
+
+.text--announcer-date {
+  margin: 0 0 10px;
+}
+
+.text--announcement-content {
+  line-height: 1.5rem;
+  margin: 20px 0 0;
+}
+
 // Discussion
 .text--discussion-thread-item-body {
   font-style: italic;
   width: 100%;
-  padding: 25px 0;
+  padding: 12px 0 0;
 }
 
 .text--discussion-thread-meta {
@@ -470,45 +498,49 @@ b {
 }
 
 .text--discussion-thread-user {
-  
-  span:not(:first-child) {
-    margin-left: 10px;    
-  }
+  font-size: 0.8125rem;
+}
+
+.text--discussion-thread-meta-counter {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+}
+
+.text--discussion-thread-meta-counter-title {
+  padding: 0 3px 0 0;
 }
 
 .text--discussion-thread-meta-latest-reply {
-  width: 250px;
-  text-align: right;
-  display: flex;
   align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
   justify-content: flex-end;
+  text-align: right;
+  width: 250px;
 }
 
 .text--discussion-thread-item-title {
   border-left: 5px solid $color-message-item-title-border;
-  padding-left: 5px; 
+  padding: 0 0 0 5px; 
 }
 
 .text--discussion-current-thread {
   display: flex;
   align-items: center;  
-    
-  span:not(:first-child) {
-    margin-left: 10px;    
-  }
 }
 
 .text__discussion-breadcrumb-item {
-  padding-left: 5px;
-  
-  &:not(:first-child) {
-    margin-left: 10px;
-  }
-     
-  &:not(:last-child)::after {
-    content: '>';
-    margin-left: 5px;
-  }
+  padding: 0 7px;
+}
+
+.text__discussion-breadcrumb-arrow {
+  align-items: center;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 0 0;
 }
 
 .text__discussion-breadcrumb-item--area-1 {
@@ -560,12 +592,16 @@ b {
 }
 
 .text--discussion-message-creator {
+<<<<<<< HEAD
   font-size: 1.6rem;
+=======
+  font-size: 1.125rem;
+>>>>>>> 007770a7941519390121aceccd6d96dae9917eec
 }
 
 .text--discussion-current-thread-title {
   font-size: 1.6rem;  
-  font-weight: 600;  
+  font-weight: 400;  
 }
 
 // Guider
