@@ -15,11 +15,15 @@
 }
 
 .application-panel__container {
+  display: flex;
+  flex-direction: column;
   max-width: $breakpoint-max-usable-screen;
   overflow: visible;
-  flex-direction: column;
-  display: flex;
   width:100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 10px;  
+  }
 }
 
 .application-panel__body {

@@ -512,19 +512,18 @@ b {
 .text--discussion-current-thread {
   display: flex;
   align-items: center;  
-    
-  span:not(:first-child) {
-    margin: 0 0 0 10px;    
-  }
 }
 
 .text__discussion-breadcrumb-item {
-  padding: 0 0 0 7px;
-     
-  &:not(:last-child)::after {
-    content: '>';
-    margin: 0 0 0 5px;
-  }
+  padding: 0 7px;
+}
+
+.text__discussion-breadcrumb-arrow {
+  align-items: center;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 0 0;
 }
 
 .text__discussion-breadcrumb-item--area-1 {
