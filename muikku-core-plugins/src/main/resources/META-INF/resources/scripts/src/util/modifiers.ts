@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { UserType } from '~/reducers/main-function/user-index';
+import { UserType, UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 
 function escapeRegExp(str: string) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -101,9 +101,19 @@ export function unescapeHTML(str: string){
   return doc.documentElement.textContent;
 }
 
-export function getName(user: UserType){
+export function getName(user: UserType | UserWithSchoolDataType){
   if (!user){
     return "";
   }
   return user.firstName + (user.lastName ? " " + user.lastName : "");
+}
+
+export function getUserImageUrl(user: UserType | number){
+  let id:Number;
+  if (typeof user === "number"){
+    id = user;
+  } else {
+    id = user.id;
+  }
+  return `/rest/user/files/user/${id}/identifier/profile-image-96`
 }

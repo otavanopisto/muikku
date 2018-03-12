@@ -1,0 +1,17 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.user {
+  border-radius: 2px;
+  border-top: 1px solid $color-message-border;
+  margin: 0 0 1px;
+  padding: 14px 12px 14px 4px;
+  
+  &:first-child {
+    border-top: 1px solid $color-default;
+  }  
+}
+
+

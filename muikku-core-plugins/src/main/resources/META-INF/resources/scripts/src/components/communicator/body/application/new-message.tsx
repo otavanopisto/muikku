@@ -115,7 +115,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupMessagingPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (<input key="2" type="text" className="form-field form-field--communicator-new-message-subject"
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}

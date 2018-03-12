@@ -13,7 +13,8 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/message.scss';
-import { getName } from "~/util/modifiers";
+import '~/sass/elements/avatar.scss';
+import { getName, getUserImageUrl } from "~/util/modifiers";
 
 interface CurrentThreadProps {
   discussionThreads: DiscussionType,
@@ -49,15 +50,15 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let avatar;
     if (!userCreator){
       //This is what it shows when the user is not ready
-      avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+      avatar = <div className="avatar avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
       avatar = <object className="container container--discussion-profile-image"
-        data={`/rest/user/files/user/${userCreator.id}/identifier/profile-image-96`}
+        data={getUserImageUrl(userCreator)}
         type="image/jpeg">
-          <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
+          <div className={`avatar avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
        </object>;
-    }    
+    }
     
     let canRemoveThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.removeThread;
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
@@ -71,7 +72,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <div className="application-list__item-content-container message message--discussion message--discussion-thread-op">
             <div className="application-list__item-content-wrapper message__content">       
               <div className="application-list__item-content--aside message__content-aside--discussion">
-                <div className="application-list__item-content-avatar application-list_item-content-avatar--category">{avatar}</div>
+                <div className="avatar avatar--category-1">{avatar}</div>
               </div>
               <div className="application-list__item-content--main">
                 <div className="application-list__item-header">    
@@ -116,13 +117,13 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           let avatar;
           if (!user){
             //This is what it shows when the user is not ready
-            avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+            avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
             avatar = <object className="container container--discussion-profile-image"
-              data={`/rest/user/files/user/${user.id}/identifier/profile-image-96`}
+              data={getUserImageUrl(user)}
               type="image/jpeg">
-                <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{user.firstName[0]}</div>
+                <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
              </object>;
           }          
           
