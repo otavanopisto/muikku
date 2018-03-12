@@ -53,7 +53,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       avatar = <div className="avatar avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
-      avatar = <object className="container container--profile-image"
+      avatar = <object className="container container--discussion-profile-image"
         data={getUserImageUrl(userCreator)}
         type="image/jpeg">
           <div className={`avatar avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>

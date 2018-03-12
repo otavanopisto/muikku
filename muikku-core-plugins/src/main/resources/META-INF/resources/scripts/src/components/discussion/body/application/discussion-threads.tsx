@@ -71,7 +71,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         avatar = <div className="avatar avatar--category-1"></div>;
       } else {
         //This is what it shows when the user is ready
-        avatar = <object className="container container--profile-image"
+        avatar = <object className="container container--discussion-profile-image"
           data={getUserImageUrl(user)}
           type="image/jpeg">
             <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
