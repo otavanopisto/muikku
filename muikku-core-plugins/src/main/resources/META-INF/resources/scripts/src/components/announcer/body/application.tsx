@@ -15,8 +15,6 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
 
-{/* Application panel's css */}
-
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
 

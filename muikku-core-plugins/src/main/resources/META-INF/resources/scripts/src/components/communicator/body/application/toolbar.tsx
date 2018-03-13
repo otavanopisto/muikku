@@ -179,7 +179,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         }).map((label: CommunicatorNavigationItemType)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
-          return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+          return (<Link className={`link link--full link--label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessages.bind(null, label) : this.props.removeLabelFromSelectedMessages.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>

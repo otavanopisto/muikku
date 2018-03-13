@@ -72,7 +72,8 @@ div.form-field-tag-input {
 }
 
 // Needs to be redone with divs
-.form-field__select--primary-function {    
+.form-field__select--primary-function,
+.form-field--toolbar-selector {    
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -168,7 +169,7 @@ div.form-field-tag-input {
   margin-bottom: 5px;
 }
 
-.form-field--communicator-label-name {
+.form-field--label-name {
   display: block;
   margin-bottom: 24px;
   text-align: center;
@@ -176,14 +177,13 @@ div.form-field-tag-input {
 
 .form-field--toolbar-selector {
   display: inline-block;
-  height: 100%;
   margin-right: 10px;
-  max-width: 250px;
   vertical-align: top;
+  max-width: 150px;
   width: 100%;
   
-  @include breakpoint-down($breakpoint-medium-mobile) {
-    max-width: 150px;
+@include breakpoint($breakpoint-pad) {
+    max-width: 250px;
   }
 }
 

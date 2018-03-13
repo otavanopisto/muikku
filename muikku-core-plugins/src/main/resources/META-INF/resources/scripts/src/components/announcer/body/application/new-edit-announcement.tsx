@@ -212,7 +212,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
          <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
       </div>),
-      (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserMessagingPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
       (<input key="3" type="text" className="container container--new-announcement-topic form-field form-field--new-announcement-topic"
         placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}

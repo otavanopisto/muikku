@@ -295,6 +295,23 @@ b {
   width: 24px;
 }
 
+.text--labels {
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-direction: row;
+  flex-wrap: wrap; 
+}  
+  
+.text--label {
+  align-items: center; 
+  display: flex;
+  font-weight: 300;
+  margin: 0 15px 0 0;
+}
+
+
 // Communicator
 .text--communicator-message-caption {
   font-size: 1.125rem;
@@ -347,7 +364,7 @@ b {
   margin: 0 15px 0 0;
 }
 
-.text--communicator-label-update-dialog-icon {
+.text--label-update-dialog-icon {
   display: block;
   width: 100%;
   min-width: 350px;
@@ -512,19 +529,18 @@ b {
 .text--discussion-current-thread {
   display: flex;
   align-items: center;  
-    
-  span:not(:first-child) {
-    margin: 0 0 0 10px;    
-  }
 }
 
 .text__discussion-breadcrumb-item {
-  padding: 0 0 0 7px;
-     
-  &:not(:last-child)::after {
-    content: '>';
-    margin: 0 0 0 5px;
-  }
+  padding: 0 7px;
+}
+
+.text__discussion-breadcrumb-arrow {
+  align-items: center;
+  display: flex;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 0 0;
 }
 
 .text__discussion-breadcrumb-item--area-1 {
@@ -584,6 +600,49 @@ b {
   font-weight: 400;  
 }
 
+// Guider
+
+.text--guider-profile-student-name {
+  font-size: 1.3rem;
+  margin-left: 15px;
+}
+
+.text--guider-profile-student-mail {
+  color: #9c9c9c;
+  font-size: 1.3rem;
+  font-weight: 200;
+  margin-left: 20px;  
+}
+
+.text--guider-profile-value {
+  background-color: #ecfafe;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 4px;
+  
+  &:not(:first-child) {
+    margin-left: 5px;  
+  }
+}
+
+.text--guider-hops-value {
+  background-color: #ecfafe;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 2px 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+  
+  
+}
+
+.text--guider-header {
+  width: 100%;
+  font-family: $text-font-family;
+  font-size: 1.5rem;
+  font-weight: 400;  
+}
+
 // Coursepicker
 .text--coursepicker-course-icon {
   color: $color-course-icon;
@@ -595,7 +654,7 @@ b {
   margin-right: 10px;
 }
 
-.text--coursepicker-course-name {
+.text--list-item-title {
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 0;
@@ -603,14 +662,24 @@ b {
   padding: 0 10px 0 0;
 }
 
-.text--coursepicker-course-name-extension {
+.text--list-item-helper-title {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  color: #9c9c9c;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+
+.text--list-item-title-extension {
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
 }
 
-.text--coursepicker-course-type-name {
+.text--list-item-type-title {
   display: inline-flex;
   flex-basis: auto;
   flex-grow: 1;
@@ -626,7 +695,7 @@ b {
   display: flex;
 }
 
-.text__icon--communicator-label,
+.text__icon--label,
 .text__icon--announcement-workspace {
   padding: 0 5px 0 0;
 }

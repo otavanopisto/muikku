@@ -35,7 +35,7 @@
   width: 100%; 
   
   @include breakpoint($breakpoint-mobile-xl) {
-    border-radius: 5px;
+    border-radius: 2px;
     bottom: auto;
     font-size: $text-desktop-font-size;
     left: auto;
@@ -97,6 +97,7 @@
   padding: 20px;
   position: relative;
   width: 100%;
+  min-height: 250px;
 }
 
 .dialog__footer {
@@ -111,6 +112,13 @@
     position: relative;
     width: 100%;
   }
+}
+
+.dialog__button-set {
+  align-items: center;
+  display: flex;
+  fle-flow: row nowrap;
+  justify-content: flex-end;
 }
 
 .jumbo-dialog {

@@ -1,0 +1,94 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.application-sub-panel:not(:first-child) {
+  border-bottom: 1px solid $color-main-function-application-sub-panel-bottom-border;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.application-sub-panel__header {
+  display: flex;
+  align-items: center;
+}
+
+.application-sub-panel__body {
+  align-items: center;
+  padding: 10px;
+}
+
+.application-sub-panel__body--labels {
+  align-items: center;
+  display: flex;
+  padding: 10px;
+}
+
+.application-sub-panel__body--basic-info {
+  display: flex; 
+  align-items: center;
+  padding: 10px;
+}
+
+.application-sub-panel__item {
+  display: flex;
+  flex-basis: auto;
+  flex-shrink: 1;
+  margin-top: 5px;
+  margin-bottom: 5px;      
+}
+
+.application-sub-panel__item-body {
+  padding: 10px 14px;   
+}
+
+
+.application-sub-panel__item--label {
+  display: flex;
+  flex-basis: auto;
+  flex-shrink: 1;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+  
+  > span:first-child {
+    margin-right: 5px;
+  }      
+}
+
+.application-sub-panel__file-container {
+  padding: 20px;
+}
+
+.application-sub-panel__item--guider-basic-info {
+  flex-basis: 50%;
+  
+  > span {
+    flex-basis: 50%;
+    flex-grow: 1;
+  }  
+}
+
+.application-sub-panel__item--guider-hops {
+  > span {
+    flex-basis: 30%;
+    flex-shrink: 0;
+    flex-grow: 1;   
+  }
+
+  > span:first-child {
+    flex-basis: 70%;
+    flex-shrink: 1;
+    flex-grow: 2;   
+  } 
+  
+}
+
+.application-sub-panel__item--guider-workspace-info {
+  > span {
+    flex-basis: 50%;
+    flex-grow: 1;
+  }  
+}
+

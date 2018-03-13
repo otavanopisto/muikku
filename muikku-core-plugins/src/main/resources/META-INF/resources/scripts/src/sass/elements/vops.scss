@@ -1,0 +1,174 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+	
+.vops {
+  width: 100%;
+}
+
+.vops__title {
+  width: 100%;
+  font-family: $text-font-family;
+  font-size: $vops-title-font-size;
+  font-weight: 400;
+}
+
+.vops__legend-header {
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.vops__legend-arrow {
+  display: inline-block;
+  width: $vops-legend-header-size;
+  height: $vops-legend-header-size;
+  border-radius: 100%;
+  
+  &::before {
+    color: $color-text-link;
+  }
+
+}
+
+.vops__legend-header-text {
+  color: $color-text-link;
+  cursor: pointer;
+  display: inline-block;      
+  font-size: $vops-legend-header-size;
+  font-family: $text-font-family;      
+  font-weight: 300;
+  text-decoration: underline;
+}
+
+
+.vops__legend {
+  background-color: $color-vops-legend-background;
+  padding: 5px;
+  width: 100%;
+
+
+}
+
+.vops__legend-topic {
+  width: 100%;
+  font-size: $vops-legend-header-size;
+  font-family: $text-font-family;
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.vops__legend-items {
+  width: 100%;
+}
+
+.vops__legend-item {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.vops__legend-item-text {
+  font-family: $text-font-family;
+  font-size: $vops-legend-item-text-font-size;
+  margin-left: 5px;
+}
+
+
+.vops__data {
+  width: 100%;
+  font-family: $text-font-family;
+  font-size: $vops-data-text-font-size;
+  padding: 20px 0 20px 5px;
+  padding-bottom: 20px;
+  padding-top: 20px;
+  
+  > span:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.vops__item {
+  width: 30px;
+  height:30px;
+  background-color: $color-vops-item-base;
+  border: solid 3px transparent;
+  display: inline-block;
+}
+
+.vops__item--optional-national {
+  border-radius: 50% 50% 50% 3px;
+}
+
+.vops__item--optional-school {
+  border-radius: 50% 3px 50% 50%;
+}
+
+.vops__item--mandatory {
+  border-radius: 100%;
+}
+
+.vops__item--incomplete {
+  border-color: $color-vops-item-incomplete;
+}
+
+.vops__item--planned {
+  border-color: $color-vops-item-planned;
+}
+
+.vops__item--passed {
+  border-color: $color-vops-item-passed;
+}
+
+.vops__item--enrolled {
+  background-color: $color-vops-item-enrolled;
+}
+
+.vops__item--failed {
+  background-color: $color-vops-item-failed;
+}
+
+.vops__item--placeholder {
+  visibility: hidden;
+}
+
+.vops__body {
+  padding: 5px 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.vops__table-wrapper {
+  width: 100%;
+  display: table;
+}
+
+.vops__row {
+ width: 100%;
+ display: table-row;         
+}
+
+.vops__row-item {
+  display: table-cell;
+  text-align: center;
+  padding-top:3px;
+  padding-bottom: 3px;
+}
+
+.vops__row-item--text-primary {
+  font-family: $text-font-family;
+  font-size: $vops-row-item-font-size;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.vops__row-item--text {
+  font-family: $text-font-family;
+  font-size: $vops-row-item-font-size;  
+  text-align: center;
+}

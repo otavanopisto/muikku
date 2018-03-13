@@ -14,7 +14,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -32,9 +31,6 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private GradingController gradingController;
@@ -137,7 +133,7 @@ public class TranscriptOfRecordsController {
 
   public boolean shouldShowStudies(User user) {
     UserProperty userProperty = userSchoolDataController.getUserProperty(user, "hops.enabled");
-    if(userProperty != null && "yes".equals(userProperty.getValue())) {
+    if(userProperty != null && "1".equals(userProperty.getValue())) {
       return true;
     } else {
       return false;

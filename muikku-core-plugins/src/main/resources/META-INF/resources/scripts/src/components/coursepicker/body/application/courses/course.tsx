@@ -41,11 +41,11 @@ class Course extends React.Component<CourseProps, CourseState>{
     return <div className={`application-list__item course ${this.state.expanded ? "course--open" : ""}`}>
       <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="text text--coursepicker-course-icon icon-books"></span>
-        <span className="text text--coursepicker-course-name">{this.props.course.name}</span>
+        <span className="text text--list-item-title">{this.props.course.name}</span>
         {this.props.course.nameExtension ? 
-          <span className="text text--coursepicker-course-name-extension">({this.props.course.nameExtension})</span>
+          <span className="text text--list-item-title-extension">({this.props.course.nameExtension})</span>
         : null}
-        <span className="text text--coursepicker-course-type-name">{this.props.course.educationTypeName}</span>
+        <span className="text text--list-item-type-title">{this.props.course.educationTypeName}</span>
       </div>
       {this.state.expanded ?
         <div>             
