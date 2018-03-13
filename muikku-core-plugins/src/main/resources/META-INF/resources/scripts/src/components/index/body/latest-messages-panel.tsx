@@ -28,7 +28,9 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
                       href={`/communicator#inbox/${message.communicatorMessageId}`}>
                 <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
                 <span className="text item-list__text-body item-list__text-body--multiline">
-                  {message.caption}
+                  <span className="text item-list__latest-message-caption">
+                    {message.caption}
+                  </span>
                   <span className="text item-list__latest-message-date">
                     {this.props.i18n.time.format(message.created)}
                   </span>
