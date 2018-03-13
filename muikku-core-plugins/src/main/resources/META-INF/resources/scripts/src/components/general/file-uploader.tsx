@@ -1,5 +1,6 @@
 import * as React from "react";
 import $ from '~/lib/jquery';
+import '~/sass/elements/file-uploader.scss';
 
 interface FileUploaderProps {
   children: any,
@@ -50,7 +51,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
     });
   }
   render(){
-    return <div className={`file-uploader ${this.props.modifier ? this.props.modifier : ""}`} style={{
+    return <div className={`file-uploader text ${this.props.modifier ? this.props.modifier : ""}`} style={{
       position: "relative",
       overflow: "hidden"
     }}>{this.props.children}<input type="file" multiple style={{

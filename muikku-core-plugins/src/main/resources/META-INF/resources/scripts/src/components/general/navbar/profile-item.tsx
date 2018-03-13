@@ -32,20 +32,20 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
     const items: Array<any> = [
       {
         icon: "user",
-        text: 'plugin.profile.links.personal',
+        text: 'plugin.profileBadge.links.personalInfo',
         href: "/profile"
       },
       {
         icon: "forgotpassword",
-        text: 'plugin.footer.instructions'
+        text: 'plugin.profileBadge.links.userGuide'
       },
       {
         icon: "helpdesk",
-        text: 'plugin.home.helpdesk'
+        text: 'plugin.profileBadge.links.helpdesk'
       },
       {
         icon: "signout",
-        text: 'plugin.logout.logout',
+        text: 'plugin.profileBadge.links.logout',
         onClick: this.props.logout
       }
     ]

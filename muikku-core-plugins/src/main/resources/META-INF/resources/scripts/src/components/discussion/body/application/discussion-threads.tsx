@@ -11,7 +11,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/message.scss';
-
+import '~/sass/elements/avatar.scss';
 
 import {DiscussionType, DiscussionThreadType} from '~/reducers/main-function/discussion/discussion-threads';
 import { UserIndexType, UserType } from '~/reducers/main-function/user-index';
@@ -69,13 +69,13 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
       let avatar;
       if (!user){
         //This is what it shows when the user is not ready
-        avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+        avatar = <div className="avatar avatar--category-1"></div>;
       } else {
         //This is what it shows when the user is ready
-        avatar = <object className="container container--profile-image"
+        avatar = <object className="container container--discussion-profile-image"
           data={getUserImageUrl(user)}
           type="image/jpeg">
-            <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{user.firstName[0]}</div>
+            <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
          </object>;
       }    
             
@@ -111,32 +111,34 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
         //you can pick the timee from the thread, as thread.lastModified or thread.created, depends on which one you need there
         
         return (
-          <div key={thread.id} className="application-list__item-content-container--message message message--discussion" onClick={this.getToThread.bind(this, thread)}>
+          <div key={thread.id} className="application-list__item message message--discussion" onClick={this.getToThread.bind(this, thread)}>
             <div className="application-list__item-content-wrapper message__content">
               <div className="application-list__item-content--aside message__content-aside--discussion">
                 {avatar}
               </div>            
               <div className="application-list__item-content--main">
                 <div className="application-list__item-header application-list__item-header--discussion-item-header">
-                  {thread.locked ? 
-                    <div className="icon-lock"></div> : null
-                  }
-                  {thread.sticky ? 
-                      <div className="icon-pin"></div> : null                
-                  }                                 
-                  <div className={`text message__title message__title--category-${thread.forumAreaId}`}>{thread.title}</div></div>
-                <div className="application-list__item-body">
-                  <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
-                </div>
-                <div className="application-list__item-footer">
+                {thread.locked ? 
+                  <div className="icon-lock"></div> : null
+                }
+                {thread.sticky ? 
+                  <div className="icon-pin"></div> : null                
+                }                                 
+                <div className={`text message__title message__title--category-${thread.forumAreaId}`}>{thread.title}</div></div>
+                {thread.sticky ?
+                  <div className="application-list__item-body">
+                    <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
+                  </div> : null        
+                }
+                <div className="application-list__item-footer application-list__item-footer--discussion">
                   <div className="text text--discussion-thread-user">
-                    <span>{user && user.firstName +  ' ' + user.lastName}</span> 
-                    <span>{this.props.i18n.time.format(thread.created)}</span>
+                    <span>{user && user.firstName +  ' ' + user.lastName}, {this.props.i18n.time.format(thread.created)}</span> 
                   </div>                                  
                   <div className="text text--discussion-thread-meta">
-                    <div className="text text--item-counter">
-                      <span>{thread.numReplies}</span>
-                    </div>                    
+                    <div className="text text--discussion-thread-meta-counter">
+                      <span className="text text--discussion-thread-meta-counter-title">{this.props.i18n.text.get("plugin.discussion.titleText.replyCount")} </span>
+                      <span className="text text--item-counter">{thread.numReplies}</span>
+                    </div>
                     <div className="text text--discussion-thread-meta-latest-reply">
                       <span>{this.props.i18n.text.get("plugin.discussion.titleText.lastMessage")} {this.props.i18n.time.format(thread.updated)}</span>
                     </div>

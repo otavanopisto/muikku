@@ -93,7 +93,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
         {this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
           let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
           return {
-            className: `application-list__item message ${message.unreadMessagesInThread ? "message--unread" : ""}`,
+            className: `application-list__item message message--communicator ${message.unreadMessagesInThread ? "message--unread" : ""}`,
             onSelect: this.props.addToCommunicatorSelectedMessages.bind(null, message),
             onDeselect: this.props.removeFromCommunicatorSelectedMessages.bind(null, message),
             onEnter: this.setCurrentMessage.bind(this, message),
@@ -122,9 +122,9 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                       <span className="text text--communicator-body">{message.caption}</span>
                     </div>
                     {message.labels ? <div className="application-list__item-footer">
-                      <div className="text text--communicator-labels">{message.labels.map((label)=>{
-                        return <span className="text text--communicator-label" key={label.id}>
-                          <span className="text__icon text__icon--communicator-label icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                      <div className="text text--labels">{message.labels.map((label)=>{
+                        return <span className="text text--label" key={label.id}>
+                          <span className="text__icon text__icon--label icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                           <span>{label.labelName}</span>
                         </span>
                       })}</div>

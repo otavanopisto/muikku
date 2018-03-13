@@ -62,88 +62,89 @@ class Vops extends React.Component<VopsProps, VopsState> {
       return null;
     }
     return <div className="vops">
-      <div className="vops-title">{this.props.i18n.text.get("plugin.records.studyplan.title")}</div>
-      <div className="vops-legend-header">
-        <span className={`vops-legend-arrow icon-arrow-${this.state.legendOpened ? "up" : "down"}`} onClick={this.toggleLegend}></span>
-        <span className="vops-legend-header-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title")}</span>
+      <div className="vops__title">{this.props.i18n.text.get("plugin.records.studyplan.title")}</div>
+      <div className="vops__data">
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>&nbsp;
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", this.props.data.numCourses)}</span>&nbsp;
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", this.props.data.numMandatoryCourses)}</span>
+      </div>    
+      <div className="vops__legend-header" onClick={this.toggleLegend}>
+        <span className={`vops__legend-arrow icon-arrow-${this.state.legendOpened ? "up" : "down"}`}></span>
+        <span className="vops__legend-header-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title")}</span>
       </div>
-      {this.state.legendOpened ? <div className="vops-legend">
-        <div className="vops-legend-topic">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.shapes")}</div>
-        <div className="vops-legend-items">
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--mandatory"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.mandatory")}</div>
+      {this.state.legendOpened ? <div className="vops__legend">
+        <div className="vops__legend-topic">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.shapes")}</div>
+        <div className="vops__legend-items">
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--mandatory"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.mandatory")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--optional-national"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.optional.national")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--optional-national"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.optional.national")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--optional-school"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.optional.school")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--optional-school"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.optional.school")}</div>
           </div>
         </div>
-        <div className="vops-legend-topic">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.colors")}</div>
-        <div className="vops-legend-items">
-          <div className="vops-legend-item">
-            <div className="vops-item"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.neutral")}</div>
+        <div className="vops__legend-topic">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.colors")}</div>
+        <div className="vops__legend-items">
+          <div className="vops__legend-item">
+            <div className="vops__item"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.neutral")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--incomplete"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.incomplete")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--incomplete"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.incomplete")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--planned"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.planned")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--planned"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.planned")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--passed"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.passed")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--passed"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.passed")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--enrolled"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.enrolled")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--enrolled"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.enrolled")}</div>
           </div>
-          <div className="vops-legend-item">
-            <div className="vops-item vops-item--failed"></div>
-            <div className="vops-legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.failed")}</div>
+          <div className="vops__legend-item">
+            <div className="vops__item vops__item--failed"></div>
+            <div className="vops__legend-item-text">{this.props.i18n.text.get("plugin.records.studyplan.legend.title.failed")}</div>
           </div>
         </div>
       </div> : null}
-      <div className="vops-data">
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>&nbsp;
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", data.numCourses)}</span>&nbsp;
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", data.numMandatoryCourses)}</span>
-      </div>
-      <div className="vops-body">
-        <div className="vops-table-wrapper">
-          <div className="vops-row vops-row--header">
-            <div className="vops-row-item vops-row-item--text-primary">{this.props.i18n.text.get("plugin.records.title.subject")}</div>
+      <div className="vops__body">
+        <div className="vops__table-wrapper">
+          <div className="vops__row vops__row--header">
+            <div className="vops__row-item vops__row-item--text-primary">{this.props.i18n.text.get("plugin.records.title.subject")}</div>
             {Array.from(Array(MAX_ROW_SIZE)).map((item, index)=>{
-              return <div className="vops-row-item vops-row-item--text" key={index}>{index + 1}</div>
+              return <div className="vops__row-item vops__row-item--text" key={index}>{index + 1}</div>
             })}
           </div>
-          {data.rows.map((row)=>{
-            return <div className="vops-row" key={row.subjectIdentifier}>
-              <div className="vops-row-item vops-row-item--text-primary">
+
+          {this.props.data.rows.map((row)=>{
+            return <div className="vops__row" key={row.subjectIdentifier}>
+              <div className="vops__row-item vops__row-item--text-primary">
                 {row.subject}
               </div>
               {row.items.map((item, index)=>{
                 if (item.placeholder){
-                  return <div className="vops-row-item" key={index}><div className="vops-item vops-item--placeholder"></div></div>;
+                  return <div className="vops__row-item" key={index}><div className="vops__item vops__item--placeholder"></div></div>;
                 }
               
                 let vopsClassNameSubType = "";
                 if (CLASS_TRANSLATIONS.states[item.state]){
-                  vopsClassNameSubType += "vops-item--" + CLASS_TRANSLATIONS.states[item.state] + " ";
+                  vopsClassNameSubType += "vops__item--" + CLASS_TRANSLATIONS.states[item.state] + " ";
                 }
                 if (CLASS_TRANSLATIONS.mandatorities[item.mandatority]){
-                  vopsClassNameSubType += "vops-item--" + CLASS_TRANSLATIONS.mandatorities[item.mandatority];
+                  vopsClassNameSubType += "vops__item--" + CLASS_TRANSLATIONS.mandatorities[item.mandatority];
                 }
-                
-                return <div className="vops-row-item" key={item.courseNumber}>
-                  <div className={`vops-item ${vopsClassNameSubType}`}></div>
+
+                return <div className="vops__row-item" key={item.courseNumber}>
+                  <div className={`vops__item ${vopsClassNameSubType}`}></div>
                 </div>
               })}
             </div>

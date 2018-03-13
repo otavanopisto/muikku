@@ -301,6 +301,7 @@
     background-color: $color-button-primary-background;
     color: $color-button-primary-text;
     display: inline-flex;
+    height: 40px;
     width: 100%;
     
     &:hover, 
@@ -339,11 +340,9 @@
 }
 
 .button--standard-ok {
-	float: right;
 }
 
 .button--standard-cancel {
-  float: left;
   margin-left: 0;
 }
 

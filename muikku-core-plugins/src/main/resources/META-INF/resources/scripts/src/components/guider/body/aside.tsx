@@ -26,7 +26,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     return <div className="item-list item-list--aside-navigation">
       {this.props.guiderFilters.labels.length !== 0 ? 
-        <span>TODO FLAGS</span>
+        <span className="text item-list__topic">{this.props.i18n.text.get("plugin.guider.filters.flags")}</span>
       : null}
       {this.props.guiderFilters.labels.map((label: GuiderUserLabelType)=>{
         let isActive = this.props.guiderStudents.filters.labelFilters.includes(label.id);
@@ -34,7 +34,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             queryString.stringify(Object.assign({}, locationData, {c: "", l: (locationData.l || []).filter((i:string)=>parseInt(i)!==label.id)}), {arrayFormat: 'bracket'}) :
             queryString.stringify(Object.assign({}, locationData, {c: "", l: (locationData.l || []).concat(label.id)}), {arrayFormat: 'bracket'})
         return <Link key={label.id} className={`item-list__item ${isActive ? "active" : ""}`} href={"#?" + hash}>
-          <span className="TODO-icon" style={{color: label.color}}>ICON</span>
+          <span className="icon-flag" style={{color: label.color}}></span>
           <span className="item-list__text-body text">
             {label.name}
           </span>
@@ -45,7 +45,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
           </LabelUpdateDialog>
         </Link>
       })}
-      <span>TODO WORKSPACES</span>
+      <span className="text item-list__topic">{this.props.i18n.text.get("plugin.guider.filters.workspaces")}</span>
       {this.props.guiderFilters.workspaces.map((workspace: GuiderWorkspaceType)=>{
         let isActive = this.props.guiderStudents.filters.workspaceFilters.includes(workspace.id);
         let hash = isActive ?

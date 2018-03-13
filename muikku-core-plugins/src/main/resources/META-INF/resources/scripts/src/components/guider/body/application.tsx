@@ -28,7 +28,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.guider.guider')}</h2>
     let toolbar = <Toolbar/>
     let primaryOption = <select className="form-field__select form-field__select--primary-function">
-      <option>TODO: caption</option>
+      <option>TODO: option</option>
     </select>
   
     return (<div className="container container--full">

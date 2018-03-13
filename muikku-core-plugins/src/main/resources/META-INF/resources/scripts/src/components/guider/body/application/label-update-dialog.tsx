@@ -105,12 +105,12 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="container container--full">
+      return <div className="container container--dialog-buttons">
         <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
-         {this.props.i18n.text.get('TODO CANCEL')}
+         {this.props.i18n.text.get('plugin.guider.flags.newFlagDialog.cancel')}
         </Link>
         <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('TODO OKAY')}
+          {this.props.i18n.text.get('plugin.guider.flags.newFlagDialog.create')}
         </Link>
       </div>
     }
@@ -118,31 +118,33 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
-          <div className="text text--guider-label-update-dialog-icon">
+          <div className="text text--label-update-dialog-icon">
             <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
           </div>
-          <input value={this.state.name}
-            className="form-field form-field--guider-label-name"
-            disabled={this.state.removed}
-            onChange={this.onNameChange}/>
-          <textarea className="form-field form-field--guider-label-description"
-            value={this.state.description}
-            disabled={this.state.removed}
-            onChange={this.onDescriptionChange}/>
+          <div className="container container--dialog-fields">
+            <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
+              className="form-field form-field--guider-label-name"
+              disabled={this.state.removed}
+              onChange={this.onNameChange}/>
+            <textarea placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-field form-field--guider-label-description"
+              value={this.state.description}
+              disabled={this.state.removed}
+              onChange={this.onDescriptionChange}/>
+          </div>
           {sliderPicker}
         
           {/*TODO please translate this*/}
-          <Link className="button button--fatal button--guider-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
-            {this.state.removed ? "TODO Label Removed" : "TODO Remove Label"}
-          </Link>
-          <GuiderLabelShareDialog label={this.props.label}><Link className="button button--success button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
-            {"TODO Share Label"}
-          </Link></GuiderLabelShareDialog>
+            <Link className="button button--fatal button--guider-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
+              {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
+            </Link>
+            <GuiderLabelShareDialog label={this.props.label}><Link className="button button--success button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
+              {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
+            </Link></GuiderLabelShareDialog>
         </div>
       )
     }
     return <Dialog isOpen={this.props.isOpen} onClose={this.props.onClose} onKeyStroke={this.handleKeydown} onOpen={this.resetState} modifier="guider" 
-     title={this.props.i18n.text.get('TODO EDIT LABEL')}
+     title={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.title', this.props.label.name)}
      content={content} footer={footer}>{this.props.children}</Dialog>
   } 
 }

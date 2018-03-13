@@ -2,6 +2,8 @@ import { UserType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider/guider-students";
+import '~/sass/elements/user.scss';
+import '~/sass/elements/application-list.scss';
 
 interface StudentProps {
   student: GuiderStudentType,
@@ -21,17 +23,19 @@ export default class Student extends React.Component<StudentProps, StudentState>
         </div>
       </div>
       <div className="application-list__item-content application-list__item-content--main">
-        <div className="application-list__item-header">
-          {getName(this.props.student as any as UserType)}
+        <div className="application-list__item-header application-list__item-header--user">
+          <div className="text text--list-item-title">{getName(this.props.student as any as UserType)}</div>
+          <div className="text text--list-item-helper-title">todo: email@email.com</div>
+          <div className="text text--list-item-type-title">{this.props.student.studyProgrammeName}</div>
         </div>
-        <div className="application-list__item-body">
+        <div className="application-list__item-body text text--labels">
           {this.props.student.flags.map((flag: GuiderStudentUserProfileLabelType)=>{
-            return <div key={flag.id}>
-              <span style={{color: flag.flagColor}}>ICON</span>
+            return <div className="text text--label" key={flag.id}>
+              <span className="icon-flag" style={{color: flag.flagColor}}></span>
               <span>{flag.flagName}</span>
             </div>
           })}
-        </div>
+        </div>          
       </div>
     </div>
   }

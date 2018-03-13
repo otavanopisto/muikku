@@ -1,3 +1,5 @@
+@import "../base/colors";
+@import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
 	
@@ -10,6 +12,20 @@
 	position: relative;
 	width: 100%;
 }
+
+.container--dialog-buttons {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.container--dialog-fields {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
 
 .container--profile-image-in-menu {
   border-radius: 100%;
@@ -116,4 +132,20 @@
 
 .container--message-actions {
   padding: 10px 0;    
+}
+
+.container--student-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container--discussion-profile-image {
+  align-items: center;
+  border-radius: 100%;
+  color: #fff;
+  display: flex;
+  font-family: $text-font-family;
+  height: 46px;
+  justify-content: center;
+  width: 46px;
 }

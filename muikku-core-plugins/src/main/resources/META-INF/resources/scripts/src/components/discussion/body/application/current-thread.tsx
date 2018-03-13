@@ -13,6 +13,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/message.scss';
+import '~/sass/elements/avatar.scss';
 import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
@@ -50,13 +51,13 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let avatar;
     if (!userCreator){
       //This is what it shows when the user is not ready
-      avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+      avatar = <div className="avatar avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
-      avatar = <object className="container container--profile-image"
+      avatar = <object className="container container--discussion-profile-image"
         data={getUserImageUrl(userCreator)}
         type="image/jpeg">
-          <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
+          <div className={`avatar avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
        </object>;
     }
     
@@ -64,20 +65,20 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
 
         
-    return <div className="application-list">
-        <div className="application-list--open application-list__item--discussion-current-thread">
-          <div className="application-list__item-header">
-            <h1 className="text text--discussion-current-thread-title">{this.props.discussionThreads.current.title}</h1>
-          </div>              
-          <div className="application-list__item-content-container--message message message--thread-op ">
+    return <div className="application-list application-list--open ">
+        <div className="application-list__item-header">
+          <h3 className="text text--discussion-current-thread-title">{this.props.discussionThreads.current.title}</h3>
+        </div>
+        <div className="application-list__item--discussion-current-thread">
+          <div className="application-list__item-content-container message message--discussion message--discussion-thread-op">
             <div className="application-list__item-content-wrapper message__content">       
               <div className="application-list__item-content--aside message__content-aside--discussion">
-                <div className="application-list__item-content-avatar application-list_item-content-avatar--category">{avatar}</div>
+                <div className="avatar avatar--category-1">{avatar}</div>
               </div>
               <div className="application-list__item-content--main">
                 <div className="application-list__item-header">    
                   <div className="application-list__item-header-main">
-                    <span className="text text__discussion-message-creator">{getName(userCreator)}</span> 
+                    <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
                   </div>                  
                   <div className="application-list__item-header-aside">
                     <span className="text">{this.props.i18n.time.format(this.props.discussionThreads.current.created)}</span>
@@ -86,7 +87,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 <div className="application-list__item-body">
                   <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
                 </div>
-                <div className="application-list__item-footer container container--message-actions">
+                <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
                   <ReplyThread>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                   </ReplyThread>              
@@ -116,19 +117,19 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           let avatar;
           if (!user){
             //This is what it shows when the user is not ready
-            avatar = <div className="application-list__item-content-avatar application-list__item-content-avatar--category-1"></div>;
+            avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <object className="container container--profile-image"
+            avatar = <object className="container container--discussion-profile-image"
               data={getUserImageUrl(user)}
               type="image/jpeg">
-                <div className={`application-list__item-content-avatar  application-list__item-content-avatar--category-${userCategory}`}>{user.firstName[0]}</div>
+                <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
              </object>;
           }          
           
           return ( 
-            <div key={reply.id} className={`application-list--open application-list__item--discussion-reply ${reply.parentReplyId ? "application-list__item--discussion-reply--of-reply" : "application-list__item--discussion-reply--main"}`}>
-              <div className="application-list__item-content-container--message message message--thread-reply">
+            <div key={reply.id} className="application-list--open application-list__item--discussion-reply">
+              <div className={`application-list__item-content-container message message--discussion ${reply.parentReplyId ? "message--discussion-reply-of-reply" : "message--discussion-reply-of-op"}`}>
                 <div className="application-list__item-content-wrapper message__content">              
                   <div className="application-list__item-content--aside message__content-aside--discussion">
                     {avatar}
@@ -136,7 +137,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                   <div className="application-list__item-content--main">                        
                     <div className="application-list__item-header">       
                       <div className="application-list__item-header-main">
-                        <span className="text text__discussion-message-creator">{getName(user)}</span> 
+                        <span className="text text--discussion-message-creator">{getName(user)}</span> 
                       </div>
                       <div className="application-list__item-header-aside">
                         <span className="text">{this.props.i18n.time.format(reply.created)}</span>
@@ -144,8 +145,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                     </div>                   
                     <div className="application-list__item__body">
                       <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
-                    </div>  
-                    <div className="application-list__item__footer container container--message-actions">
+                    </div>
+                    <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
                       <ReplyThread reply={reply}>
                         <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                       </ReplyThread>

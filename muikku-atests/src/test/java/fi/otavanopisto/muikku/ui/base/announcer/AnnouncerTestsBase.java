@@ -32,25 +32,22 @@ public class AnnouncerTestsBase extends AbstractUITest {
     try{
       try{
         login();
-        maximizeWindow();
         navigate("/announcer", false);
-        waitAndClick(".an-new-announcement");
+        waitAndClick("div.application-panel__helper-container.application-panel__helper-container--main-action > a.button--primary-function");
         
         waitForPresent(".cke_wysiwyg_frame");
-        waitForPresent("*[name='endDate']");
-        clearElement("*[name='endDate']");
-        sendKeys("*[name='endDate']", "21.12.2025");
-        
-        sendKeys(".mf-textfield-subject", "Test title");
-        click(".mf-form-header");
-        waitForPresent("#ui-datepicker-div");
-        waitForNotVisible("#ui-datepicker-div");
+        waitForPresent("div.jumbo-dialog__body > div.container.container--new-announcement-options > div:nth-child(3) > div.react-datepicker-wrapper > div > input");
+        selectAllAndClear("div.jumbo-dialog__body > div.container.container--new-announcement-options > div:nth-child(3) > div.react-datepicker-wrapper > div > input");
+        sendKeys("div.jumbo-dialog__body > div.container.container--new-announcement-options > div:nth-child(3) > div.react-datepicker-wrapper > div > input", "21.12.2025");
+        waitAndClick(".jumbo-dialog__header");
+        waitForNotVisible(".react-datepicker");
+        sendKeys(".form-field--new-announcement-topic", "Test title");
         addTextToCKEditor("Announcer test announcement");
-        waitAndClick(".mf-toolbar input[name='send']");
-        
-        waitForPresent(".an-announcement-topic");
-        assertTextIgnoreCase(".an-announcement-topic>span", "Test title");
-        assertTextIgnoreCase(".an-announcement-content>p", "Announcer test announcement"); 
+        waitAndClick(".button--standard-ok");
+        waitForNotVisible(".jumbo-dialog");
+        waitForPresent(".text--item-article-header");
+        assertTextIgnoreCase(".text--item-article-header", "Test title");
+        assertTextIgnoreCase(".text--item-article>p", "Announcer test announcement");
       }finally{
         deleteAnnouncements();
       }
@@ -67,28 +64,20 @@ public class AnnouncerTestsBase extends AbstractUITest {
     try{
       try{
         login();
-        maximizeWindow();
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null);
         navigate("/announcer", false);
-        waitAndClick(".an-new-announcement");
-        
-        waitForPresent(".cke_wysiwyg_frame");
-        waitForPresent("*[name='endDate']");
-        clearElement("*[name='endDate']");
-        sendKeys("*[name='endDate']", "21.12.2025");
-        
-        sendKeys(".mf-textfield-subject", "Test title");
-        click(".mf-form-header");
-        waitForPresent("#ui-datepicker-div");
-        waitForNotVisible("#ui-datepicker-div");
-        addTextToCKEditor("Announcer test announcement");
-        waitAndClick(".mf-toolbar input[name='send']");
-        
-        waitForPresent(".an-announcement-topic");
-        waitAndClick(".an-announcement-select input");
-        waitAndClick(".mf-items-toolbar .icon-delete");
-        waitAndClick(".mf-toolbar input[name='send']");
+        waitForPresent(".text--item-article-header");
+        waitAndClick(".announcement__select-container input");
+        waitAndClick("span.button-pill__icon.icon-delete");
+        waitAndClick("a.button--standard-ok");
         reloadCurrentPage();
-        assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".text--item-article-header") == false);
+        navigate("/", false);
+        navigate("/announcer#archived", false);
+        
+        waitForPresent(".text--item-article-header");
+        assertTextIgnoreCase(".text--item-article-header", "Test title");
+        assertTextIgnoreCase(".text--item-article>p", "Announcer test announcement");
       }finally{
         deleteAnnouncements();
       }
@@ -110,8 +99,11 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresentAndVisible("#announcements ul>li>div>a");
-        assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
+        waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption", "Test title");
+        
+        waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
       }
@@ -133,16 +125,15 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresentAndVisible("#announcements ul>li>div>a");
-        assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
-        navigate("/announcements", false);
-        waitForPresent("#announcementContextNavigation .gc-navigation-item");
-        assertTextIgnoreCase("#announcementContextNavigation .gc-navigation-item a", "Test title");
-        click("#announcementContextNavigation .gc-navigation-item a");
-        waitForPresent(".announcement-article h2");
-        assertTextIgnoreCase(".announcement-article h2", "Test title");
-        assertTextIgnoreCase(".announcement-article div.article-datetime", "12.11.2015");
-        assertTextIgnoreCase(".announcement-article div.article-context", "announcer test announcement");
+
+        waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption", "Test title");
+        waitAndClick("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption");
+        
+        waitForPresent("header.text--announcement-caption");
+        assertTextIgnoreCase("header.text--announcement-caption", "Test title");
+        assertTextIgnoreCase("div.text-announcement-date", "12.11.2015");
+        assertTextIgnoreCase("section.text--announcement-content", "announcer test announcement");
       }finally{
         deleteAnnouncements();
       }
@@ -166,8 +157,12 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresent("#announcements ul>li>div>a");
-        assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
+
+        waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption", "Test title");
+        
+        waitForPresentAndVisible("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date");
+        assertTextIgnoreCase("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-date", "12.11.2015");
       }finally{
         deleteAnnouncements();
         deleteUserGroup(2l);
@@ -192,8 +187,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
         logout();
         mockBuilder.mockLogin(student);
         login();
-        waitForPresent("#announcements");
-        assertTrue("Element found even though it shouldn't be there", isElementPresent("#announcements ul>li>div>a") == false);
+        waitForPresentAndVisible("div.ordered-container__item--announcements");
+        
+        assertTrue("Element found even though it shouldn't be there", isElementPresent("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption") == false);
       }finally{
         deleteAnnouncements();
       }
@@ -206,27 +202,27 @@ public class AnnouncerTestsBase extends AbstractUITest {
   public void pastAnnnouncementsListTest() throws JsonProcessingException, Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Long courseId = 1l;
+
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
-    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
-    
+    login();    
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
     try {
       navigate("/announcer", false);
-      waitForPresent("div.mf-content-empty");
-      waitAndClick("li.an-category[data-folder-id~=\"past\"]");
-      waitForPresent("div.an-announcement-topic>span");
-      assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
-      navigate("/announcements", false);
-      waitForPresent("#announcements");
-      assertNotPresent(".announcement-article>header");
+      waitForPresent("div.application-panel__main-container.loader-empty");
+      navigate("/", false);
+      navigate("/announcer#past", false);
+      
+      waitForPresent(".text--item-article-header");
+      assertTextIgnoreCase(".text--item-article-header", "Test title");
+      assertTextIgnoreCase(".text--item-article>p", "Announcer test announcement");       
+      navigate("/", false);
+      
+      waitForPresentAndVisible("div.ordered-container__item--announcements");
+      
+      assertTrue("Element found even though it shouldn't be there", isElementPresent("div.ordered-container__item--announcements span.item-list__text-body--multiline span.item-list__announcement-caption") == false);
     }finally{
       deleteAnnouncements();
-      deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
   }
@@ -236,73 +232,26 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
     MockStaffMember another = new MockStaffMember(3l, 3l, "Another", "User", UserRole.ADMINISTRATOR, "121212-1234", "blaablaa@example.com", Sex.MALE);
-    Long courseId = 1l;
+
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStaffMember(another).addStudent(student).mockLogin(admin).build();
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
-    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
-    
+    login();    
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
     createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
     try {
       navigate("/announcer", false);
-      waitForPresent(".an-announcement-topic");
-      assertCount("div.an-announcement-topic>span" ,2);
-      waitAndClick("li.an-category[data-folder-id~=\"mine\"]");
-      waitForPresent("li.an-category.selected[data-folder-id~=\"mine\"]");
-      waitForPresent("div.an-announcement-topic>span");
-      assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
-      assertCount("div.an-announcement-topic>span" ,1);
+      waitForPresent(".text--item-article-header");
+      assertCount(".text--item-article-header" ,2);
+      
+      navigate("/", false);
+      navigate("/announcer#mine", false);
+      waitForPresent(".text--item-article-header");
+      assertTextIgnoreCase(".text--item-article-header", "Test title");
+      assertCount(".text--item-article-header" ,1);
     }finally{
       deleteAnnouncements();
-      deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();
     }
   }
-
-  @Test
-  public void archivedAnnouncementListTest() throws JsonProcessingException, Exception {
-    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-    try{
-      try{
-        login();
-        maximizeWindow();
-        navigate("/announcer", false);
-        waitAndClick(".an-new-announcement");
-        
-        waitForPresent(".cke_wysiwyg_frame");
-        waitForPresent("*[name='endDate']");
-        clearElement("*[name='endDate']");
-        sendKeys("*[name='endDate']", "21.12.2025");
-        
-        sendKeys(".mf-textfield-subject", "Test title");
-        click(".mf-form-header");
-        waitForPresent("#ui-datepicker-div");
-        waitForNotVisible("#ui-datepicker-div");
-        addTextToCKEditor("Announcer test announcement");
-        waitAndClick(".mf-toolbar input[name='send']");
-        
-        waitForPresent(".an-announcement-topic");
-        waitAndClick(".an-announcement-select input");
-        waitAndClick(".mf-items-toolbar .icon-delete");
-        waitAndClick(".mf-toolbar input[name='send']");
-        reloadCurrentPage();
-        assertTrue("Element found even though it shouldn't be there", isElementPresent(".an-announcement-topic>span") == false);
-        waitAndClick("li.an-category[data-folder-id~=\"archived\"]");
-        waitForPresent("li.an-category.selected[data-folder-id~=\"archived\"]");
-        waitForPresent("div.an-announcement-topic>span");
-        assertTextIgnoreCase("div.an-announcement-topic>span", "Test title");
-      }finally{
-        deleteAnnouncements();
-      }
-    }finally {
-      mockBuilder.wiremockReset();
-    }
-  }
-  
   
 }

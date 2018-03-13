@@ -1,6 +1,8 @@
 // Generic
 $color-default: #fff;
-$color-default-contrast: #4a4a4a;
+$color-default-contrast: #2c2c2c;
+$color-default-item-separator-border: #f2f2f2;
+$color-default-separator-border: #ebebeb;
 
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
@@ -213,7 +215,7 @@ $color-frontpage-logo-muikku-verkko-box-shadow: rgba(0, 0, 0, 0.2);
 
 // panel
 $color-panel-background: $color-default;
-$color-panel-border: #e2e3e3;
+$color-panel-border: #e2e2e2;
 $color-panel-shadow: rgba(0,0,0,0.05);
 
 // item list
@@ -232,6 +234,13 @@ $color-indicator-text: $color-fatal-contrast;
 // application panel
 $color-application-panel-box-background: $color-default;
 $color-application-panel-box-border: $color-panel-border;
+
+// reading panel
+$color-reading-panel-box-background: $color-default;
+$color-reading-panel-box-border: $color-panel-border;
+
+// toc
+$color-toc-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background: #fff;
@@ -330,19 +339,12 @@ $color-category-9: #ff0000;
 $color-category-10: #0cff00;
 $color-cagtegory-11: #000;
 
-//VOPS (fix these colors)
-$color-vops-item-base: #ccc;
-$color-vops-item-incomplete: orange;
-$color-vops-item-planned: blue;
-$color-vops-item-passed: green;
-$color-vops-item-enrolled: blue;
-$color-vops-item-failed: #4c4c4c;
-
 @import "colors/frontpage";
 @import "colors/main-function";
 @import "colors/index";
 @import "colors/application-dialog";
 @import "colors/message";
 @import "colors/course";
+@import "colors/vops";
 @import "colors/announcement";
 @import "colors/pager";
