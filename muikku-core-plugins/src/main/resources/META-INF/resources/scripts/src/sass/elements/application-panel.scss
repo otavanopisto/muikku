@@ -97,6 +97,7 @@
 }  
   
 .application-panel__toolbar-actions-main {
+  align-items: center;
   display: flex;
   flex-basis: auto;
   flex-grow: 1;
@@ -149,6 +150,7 @@
 
 .application-panel__helper-container--main-action {
   border-bottom: 1px solid $color-main-function-application-panel-actions-border;
+  height: 65px;
 }
 
 // Main containers
@@ -178,7 +180,9 @@
   margin: 0;
   padding: 10px;
   position: relative;
+  
   @include breakpoint($breakpoint-pad) {
+    height: 65px;
     margin: 0 12px;
     padding: 12px 0;
   } 

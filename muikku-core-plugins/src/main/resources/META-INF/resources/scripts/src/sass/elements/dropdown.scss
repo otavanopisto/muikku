@@ -60,6 +60,7 @@
   }
  
   &.dropdown--profile {
+  
     .dropdown__container {
       background-color: $color-environment-dropdown-profile-menu-background;
       color: $color-environment-dropdown-profile-menu-text;
@@ -84,7 +85,8 @@
     }
   }
  
-  &.dropdown--labels .dropdown__container, &.dropdown--guider-labels .dropdown__container {
+  &.dropdown--communicator-labels .dropdown__container, 
+  &.dropdown--guider-labels .dropdown__container {
     padding: 5px;
     background-color: $color-main-function-dropdown-labels-background;
     border: solid 1px $color-main-function-dropdown-labels-border;

@@ -288,11 +288,12 @@ b {
   align-items: center;
   background-color: $color-main-function-item-counter-background;
   border: 1px solid $color-default;
-  border-radius: 100%;
+  border-radius: 3px;
   display: flex;
-  height: 24px;
+  height: 22px;
   justify-content: center;
-  width: 24px;
+  min-width: 22px;
+  padding: 0 4px;
 }
 
 .text--labels {
@@ -601,7 +602,6 @@ b {
 }
 
 // Guider
-
 .text--guider-profile-student-name {
   font-size: 1.3rem;
   margin-left: 15px;

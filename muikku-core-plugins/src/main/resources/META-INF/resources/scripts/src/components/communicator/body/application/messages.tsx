@@ -108,7 +108,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                     </div>
                   </div>
                   <div className="application-list__item-content application-list__item-content--main">
-                    <div className="application-list__item-header">
+                    <div className="application-list__item-header application-list__item-header--message">
                       <div className="text text--communicator-usernames">
                         <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
                       </div>
@@ -122,7 +122,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                     <div className="application-list__item-body">
                       <span className="text text--communicator-body">{message.caption}</span>
                     </div>
-                    {message.labels ? <div className="application-list__item-footer">
+                    {message.labels ? <div className="application-list__item-footer application-list__item-footer--message">
                       <div className="text text--labels">{message.labels.map((label)=>{
                         return <span className="text text--label" key={label.id}>
                           <span className="text__icon text__icon--label icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>

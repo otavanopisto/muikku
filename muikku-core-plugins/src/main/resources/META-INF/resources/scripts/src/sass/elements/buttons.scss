@@ -301,7 +301,7 @@
     background-color: $color-button-primary-background;
     color: $color-button-primary-text;
     display: inline-flex;
-    height: 40px;
+    height: $button-primary-height;
     width: 100%;
     
     &:hover, 

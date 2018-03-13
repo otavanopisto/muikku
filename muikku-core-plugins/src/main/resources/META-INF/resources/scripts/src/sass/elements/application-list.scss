@@ -252,6 +252,15 @@
 }
 
 // Communicator
+.application-list__item-header--message {
+  height: 22px;
+  margin: 0 0 2px;
+}
+
+.application-list__item-footer--message {
+  margin: 2px 0 0;
+}
+
 .application-list--communicator-message-view {
   padding: 10px 20px 10px 30px;
   height: 100%;
@@ -261,7 +270,6 @@
 .application-list__item--communicator-message {  
   border-bottom: 5px solid $color-message-border;
   cursor: default;
-  margin: 0 0 5px;
   padding: 0 0 10px;
   
   &:last-child {
@@ -291,4 +299,14 @@
 
 .application-list__item-footer--course {
   padding: 12px 9px;
+}
+
+// Guider
+.application-list__item-header--student {
+  height: 22px;
+  margin: 0 0 2px;
+}
+
+.application-list__item-footer--student {
+  margin: 2px 0 0;
 }
