@@ -90,6 +90,9 @@
                   cardStateClass: cardStateClass,
                   isRequest: isRequest,
                   isEvaluated: isEvaluated});
+                
+                console.log(assessmentRequests[i]);
+                
                 renderDustTemplate("evaluation/evaluation-card.dust", assessmentRequests[i], $.proxy(function (html) {
                   var card = $(html).appendTo($('.evaluation-cards-container'));
                   $(card).find('.evaluate-button').on('click', function() {
@@ -97,12 +100,23 @@
                     $(document).evaluationModal('open', $(this).closest('.evaluation-card'), !workspaceEntityId);
                   });
                   $(card).find('.archive-button').on('click', function(event) {
-                    var archiveCard = $(event.target).closest('.evaluation-card');
-                    $(document).evaluationModal('confirmStudentArchive', archiveCard, $.proxy(function(archived) {
-                      if (archived) {
-                        $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
-                      }
-                    }, this));
+                    if(workspaceEntityId){
+                      var archiveCard = $(event.target).closest('.evaluation-card');
+                      $(document).evaluationModal('confirmStudentArchive', archiveCard, $.proxy(function(archived) {
+                        if (archived) {
+                          $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
+                        }
+                      }, this));
+                    }
+                    else {
+                      console.log("Archiving!");
+                      var archiveCard = $(event.target).closest('.evaluation-card');
+                      $(document).evaluationModal('confirmRequestArchive', archiveCard, $.proxy(function(archived) {
+                        if (archived) {
+                          $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
+                        }
+                      }, this));
+                    }
                   });
                   $(card).find('.evaluation-important-button').on('click', $.proxy(function() {
                     this._changeRequestImportance(card, true);

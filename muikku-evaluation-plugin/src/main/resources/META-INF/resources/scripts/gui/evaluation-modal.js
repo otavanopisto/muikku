@@ -737,6 +737,65 @@
       }, this));
     },
     
+    //ToDo
+    confirmRequestArchive: function(card, callback) {
+      //?
+      var workspaceEntityId = $(card).attr('data-workspace-entity-id');
+      var workspaceUserIdentifier = $(card).attr('data-workspace-user-identifier');
+      var studentName = $(card).find('.evaluation-card-student').text();
+      
+      renderDustTemplate('evaluation/evaluation-archive-request-confirm.dust', {studentName: studentName}, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          resizable : false,
+          width : 560,
+          dialogClass : "evaluation-archive-request-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-remove-text'),
+            'class' : 'remove-button',
+            'click' : function(event) {
+              //ReDo create an endpoint and call it here with all needed parameters
+              mApi().workspace.workspaces.students
+                .read(workspaceEntityId, workspaceUserIdentifier)
+                .callback($.proxy(function (err, workspaceUserEntity) {
+                  if (err) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  }
+                  else {
+                    workspaceUserEntity.active = false;
+                    mApi().workspace.workspaces.students
+                      .update(workspaceEntityId, workspaceUserIdentifier, workspaceUserEntity)
+                      .callback($.proxy(function (err, html) {
+                        if (err) {
+                          $('.notification-queue').notificationQueue('notification', 'error', err);
+                        }
+                        else {
+                          $(this).dialog("destroy").remove();
+                          if (callback) {
+                            callback(true);
+                          }
+                        }
+                      }, this));
+                  }
+                }, this));
+              //End here
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+              if (callback) {
+                callback(false);
+              }
+            }
+          } ]
+        });
+      }, this));
+    },
+    
     _confirmAssessmentDeletion: function(callback) {
       var studentName = $(this._requestCard).find('.evaluation-card-student').text();
       renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {
