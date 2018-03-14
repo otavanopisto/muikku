@@ -737,14 +737,13 @@
       }, this));
     },
     
-    //ToDo
     confirmRequestArchive: function(card, callback) {
-      //?
       var workspaceEntityId = $(card).attr('data-workspace-entity-id');
-      var workspaceUserIdentifier = $(card).attr('data-workspace-user-identifier');
+      var UserEntityId =$(card).attr('data-user-entity-id');
       var studentName = $(card).find('.evaluation-card-student').text();
+      var workspaceName = $(card).attr('data-workspace-name');
       
-      renderDustTemplate('evaluation/evaluation-archive-request-confirm.dust', {studentName: studentName}, $.proxy(function(text) {
+      renderDustTemplate('evaluation/evaluation-archive-request-confirm.dust', {studentName: studentName, workspaceName: workspaceName}, $.proxy(function(text) {
         var dialog = $(text);
         $(text).dialog({
           modal : true,
@@ -756,31 +755,19 @@
             'text' : dialog.attr('data-button-remove-text'),
             'class' : 'remove-button',
             'click' : function(event) {
-              //ReDo create an endpoint and call it here with all needed parameters
-              mApi().workspace.workspaces.students
-                .read(workspaceEntityId, workspaceUserIdentifier)
-                .callback($.proxy(function (err, workspaceUserEntity) {
-                  if (err) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
+            mApi().evaluation.workspace.user.evaluationrequestarchive
+              .update(workspaceEntityId, UserEntityId)
+              .callback($.proxy(function (err) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                }
+                else {
+                  $(this).dialog("destroy").remove();
+                  if (callback) {
+                    callback(true);
                   }
-                  else {
-                    workspaceUserEntity.active = false;
-                    mApi().workspace.workspaces.students
-                      .update(workspaceEntityId, workspaceUserIdentifier, workspaceUserEntity)
-                      .callback($.proxy(function (err, html) {
-                        if (err) {
-                          $('.notification-queue').notificationQueue('notification', 'error', err);
-                        }
-                        else {
-                          $(this).dialog("destroy").remove();
-                          if (callback) {
-                            callback(true);
-                          }
-                        }
-                      }, this));
-                  }
-                }, this));
-              //End here
+                }
+              }, this));
             }
           }, {
             'text' : dialog.attr('data-button-cancel-text'),
