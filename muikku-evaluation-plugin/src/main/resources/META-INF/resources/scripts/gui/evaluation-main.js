@@ -98,8 +98,8 @@
                     $(document).evaluationModal('open', $(this).closest('.evaluation-card'), !workspaceEntityId);
                   });
                   $(card).find('.archive-button').on('click', function(event) {
+                    var archiveCard = $(event.target).closest('.evaluation-card');
                     if(workspaceEntityId) {
-                      var archiveCard = $(event.target).closest('.evaluation-card');
                       $(document).evaluationModal('confirmStudentArchive', archiveCard, $.proxy(function(archived) {
                         if (archived) {
                           $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
@@ -107,7 +107,6 @@
                       }, this));
                     }
                     else {
-                      var archiveCard = $(event.target).closest('.evaluation-card');
                       $(document).evaluationModal('confirmRequestArchive', archiveCard, $.proxy(function(archived) {
                         if (archived) {
                           $(document).trigger("discardCard", {workspaceUserEntityId: $(archiveCard).attr('data-workspace-user-entity-id')});
