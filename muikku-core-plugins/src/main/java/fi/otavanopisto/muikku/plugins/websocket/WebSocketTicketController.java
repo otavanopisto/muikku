@@ -3,10 +3,14 @@ package fi.otavanopisto.muikku.plugins.websocket;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.plugins.websocket.WebSocketTicket;
 
+@Stateless
 public class WebSocketTicketController {
    
   @Inject
@@ -20,6 +24,7 @@ public class WebSocketTicketController {
     return webSocketTicketDAO.findByTicket(ticket);
   }
 
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void removeTicket(String ticket) {
     WebSocketTicket webSocketTicket = findTicket(ticket);
     if (webSocketTicket != null) {
@@ -27,6 +32,7 @@ public class WebSocketTicketController {
     }
   }
 
+  @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
   public void removeAllTickets() {
     List<WebSocketTicket> tickets = webSocketTicketDAO.listAll();
     for (WebSocketTicket ticket : tickets) {
