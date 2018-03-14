@@ -31,6 +31,8 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
     } else if (!this.props.lastWorkspace){
       return null;
     }
+    
+    //TODO UKKONNEN missing translations over there
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
       <div className="text text--for-panels-title">
         <span className="text__panel-icon text__panel-icon--continue-studies icon-revert"></span>
