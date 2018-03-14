@@ -40,6 +40,7 @@ export interface LoadDiscussionThreadTriggerType {
     page?: number,
     threadId: number,
     threadPage?: number,
+    forceRefresh?: boolean,
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -253,7 +254,11 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
     try {
       let newCurrentThread:DiscussionThreadType = discussion.threads.find((thread)=>{
         return thread.id === data.threadId;
-      }) || <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
+      });
+    
+      if (!newCurrentThread || data.forceRefresh){
+        newCurrentThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
+      }
       
       let pages:number = Math.ceil(newCurrentThread.numReplies / MAX_LOADED_AT_ONCE) || 1;
     
@@ -267,12 +272,20 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         dispatch(loadUserIndex(reply.creator));
       });
       
+      let newThreads: DiscussionThreadListType = state.discussionThreads.threads.map((thread: DiscussionThreadType)=>{
+        if (thread.id !== newCurrentThread.id){
+          return thread;
+        }
+        return newCurrentThread;
+      });
+      
       let newProps:DiscussionPatchType = {
         current: newCurrentThread,
         currentReplies: replies,
         currentState: "READY",
         page: actualPage,
-        currentPage: actualThreadPage
+        currentPage: actualThreadPage,
+        threads: newThreads
       };
       
       //In a nutshell, if I go from all areas to a specific thread, then once going back it will cause it to load twice
@@ -320,12 +333,13 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
           discussion.current.forumAreaId, discussion.current.id, payload), 'callback')();
       
       //sadly the new calculation is overly complex and error prone so we'll just do this;
-      
+      //We also need to use force refresh to avoid reusing data in memory
       dispatch(loadDiscussionThread({
         areaId: discussion.current.forumAreaId,
         threadId: discussion.current.id,
         success: data.success,
-        fail: data.fail
+        fail: data.fail,
+        forceRefresh: true
       }));
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));

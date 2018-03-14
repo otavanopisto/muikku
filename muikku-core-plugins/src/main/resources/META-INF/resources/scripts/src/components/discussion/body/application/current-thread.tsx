@@ -144,7 +144,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                       </div>
                     </div>                   
                     <div className="application-list__item__body">
-                      <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
+                      <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>
                     </div>
                     <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
                       <ReplyThread reply={reply}>
