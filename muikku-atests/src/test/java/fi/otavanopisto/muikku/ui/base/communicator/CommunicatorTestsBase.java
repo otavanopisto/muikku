@@ -3,8 +3,11 @@ package fi.otavanopisto.muikku.ui.base.communicator;
 import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import org.junit.Test;
 
 import fi.otavanopisto.muikku.TestUtilities;
@@ -86,8 +89,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-    
-  @Test
+
+  @Test 
   public void communicatorReadMessageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -108,6 +111,37 @@ public class CommunicatorTestsBase extends AbstractUITest {
         assertText(".text--communicator-message-caption", "Test caption");
         waitForPresent(".text--communicator-message-content");
         assertText(".text--communicator-message-content", "Test content.");
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }  
+  }
+  
+  @Test
+  public void communicatorLatestMessagesIndexWidget() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long sender = getUserIdByEmail("admin@example.com");
+        long recipient = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        logout();
+        mockBuilder.mockLogin(student).build();
+        login();
+
+        waitForPresent("span.item-list__latest-message-caption");
+        assertText("span.item-list__latest-message-caption", "Test caption");
+        LocalDate date = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        String dateText = date.format(formatter);
+        waitForPresent("span.item-list__latest-message-date");
+        assertText("span.item-list__latest-message-date", dateText);
       }finally{
         deleteCommunicatorMessages(); 
       }
