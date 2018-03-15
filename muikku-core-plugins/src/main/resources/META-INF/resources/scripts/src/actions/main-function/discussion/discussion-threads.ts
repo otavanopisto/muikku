@@ -22,7 +22,8 @@ export interface UPDATE_DISCUSSION_THREAD_REPLY extends SpecificActionType<"UPDA
 export interface LoadDiscussionThreadsTriggerType {
   (data:{
     areaId: number,
-    page: number
+    page: number,
+    forceRefresh?: boolean,
   }):AnyActionType
 }
 
@@ -92,19 +93,18 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
       payload: <DiscussionStateType>"WAIT"
     });
     
+    let state = getState();
+    let discussion:DiscussionType = state.discussionThreads;
+    
+    //Avoid loading if it's the same area
+    if (!data.forceRefresh && discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
+      return;
+    }
+    
     //NOTE we reload the discussion areas every time we load the threads because we have absolutely no
     //idea if the amount of pages per thread change every time I select a page, data updates on the fly
     //one solution would be to make a realtime change
     dispatch(loadDiscussionAreas(async ()=>{
-      
-      let state = getState();
-      let discussion:DiscussionType = state.discussionThreads;
-      
-      //Avoid loading if it's the same area
-      if (discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
-        return;
-      }
-      
       dispatch({
         type: "UPDATE_DISCUSSION_THREADS_STATE",
         payload: <DiscussionStateType>"LOADING"
@@ -355,6 +355,11 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
     
     try {
       await promisify(mApi().forum.areas.threads.del(discussion.current.forumAreaId, discussion.current.id), 'callback')();
+      dispatch(loadDiscussionThreads({
+        areaId: discussion.areaId,
+        page: discussion.page,
+        forceRefresh: true
+      }));
       
       //TODO same hacky method to trigger the goback event
       if (history.replaceState){
