@@ -139,13 +139,14 @@
   flex-wrap: wrap;
 }
 
-.container--discussion-profile-image {
+.container--discussion-profile-image,
+.container--guider-profile-image {
   align-items: center;
   border-radius: 100%;
   color: #fff;
   display: flex;
   font-family: $text-font-family;
-  height: 46px;
+  height: $avatar-size;
   justify-content: center;
-  width: 46px;
+  width: $avatar-size;
 }

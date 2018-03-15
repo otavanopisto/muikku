@@ -59,26 +59,26 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
   render(){
     let content = (closeDialog: ()=>any) => <div className="text text--delete-announcement">
       {this.props.announcement ?
-       this.props.i18n.text.get('TODO remove announcement messsage') :
-       this.props.i18n.text.get('TODO remove selected announcements messsage')}
+       this.props.i18n.text.get('plugin.announcer.deleteDialog.description') :
+       this.props.i18n.text.get('plugin.announcer.deleteDialog.description')}
     </div>
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div>
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
-            {this.props.i18n.text.get('TODO cancel remove announcement')}
+         <div className="dialog__button-set">
+          <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
+            {this.props.i18n.text.get('plugin.announcer.deleteDialog.cancelButton.label')}
           </Link>
-          <Link className="button button--standard-ok"
+          <Link className="button button--fatal button--standard-ok"
             onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('TODO confirm remove announcement')}
+            {this.props.i18n.text.get('plugin.announcer.deleteDialog.deleteButton.label')}
           </Link>
         </div>
       )
     }
     
     return <Dialog modifier="delete-announcement"
-      title={this.props.i18n.text.get('TODO remove announcement')}
+      title={this.props.i18n.text.get('plugin.announcer.deleteDialog.title')}
       content={content} footer={footer}>
       {this.props.children}
     </Dialog>

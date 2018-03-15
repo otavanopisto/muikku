@@ -5,13 +5,13 @@
 
 .avatar {
   align-items: center;
-  border-radius: 50%;
+  border-radius: 100%;
   color: $color-environment-link-icon-color;
   display: flex;
   font-size: $avatar-font-size;
-  height: 50px;
+  height: $avatar-size;
   justify-content: center;
-  width: 50px;
+  width: $avatar-size;
 }
 
 .avatar--category-1 {

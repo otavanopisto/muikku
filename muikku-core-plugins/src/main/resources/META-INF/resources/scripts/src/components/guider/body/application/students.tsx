@@ -75,7 +75,7 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
       {this.props.guiderStudentsStudents.map((student: GuiderStudentType, index: number)=>{
         let isSelected = this.props.guiderStudentsSelectedIds.includes(student.id);
         return {
-            className: "application-list__item user",
+            className: "application-list__item user user--guider",
             onSelect: this.props.addToGuiderSelectedStudents.bind(null, student),
             onDeselect: this.props.removeFromGuiderSelectedStudents.bind(null, student),
             onEnter: this.onStudentClick.bind(this, student),

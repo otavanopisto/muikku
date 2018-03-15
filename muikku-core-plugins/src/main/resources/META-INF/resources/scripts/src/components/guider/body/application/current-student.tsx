@@ -55,6 +55,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     
     let studentBasicHeader = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__header">
         <object
+         className="container container--guider-profile-image"
          data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.userEntityId)}
          type="image/jpeg">
           <div className={`avatar avatar--category-1`}>{this.props.guiderStudentsCurrent.basic.firstName[0]}</div>

@@ -126,11 +126,11 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="container container--dialog-buttons">
-        <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+      return <div className="dialog__button-set">
+        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.cancel')}
         </Link>
-        <Link className="button button--standard-ok" onClick={this.share.bind(this, closeDialog)}>
+        <Link className="button button--success button--standard-ok" onClick={this.share.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.save')}
         </Link>
       </div>

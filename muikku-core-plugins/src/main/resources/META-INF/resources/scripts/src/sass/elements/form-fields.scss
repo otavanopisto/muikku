@@ -60,6 +60,7 @@ div.form-field-tag-input {
 // This does not mostly belong here, mostly
 .form-field__input-decoration--main-function-search {
   background-color: $color-main-function-input-field-decoration-background;
+  border-radius: 2px;
   
   &::before {
     align-items: center;
@@ -177,7 +178,7 @@ div.form-field-tag-input {
 
 .form-field--toolbar-selector {
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 20px;
   vertical-align: top;
   max-width: 150px;
   width: 100%;
