@@ -260,6 +260,8 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         newCurrentThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
       }
       
+      dispatch(loadUserIndex(newCurrentThread.creator));
+      
       let pages:number = Math.ceil(newCurrentThread.numReplies / MAX_LOADED_AT_ONCE) || 1;
     
       dispatch({
