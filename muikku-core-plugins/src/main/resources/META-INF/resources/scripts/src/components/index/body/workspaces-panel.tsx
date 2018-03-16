@@ -4,6 +4,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {WorkspaceListType, WorkspaceType} from '~/reducers/main-function/workspaces';
 import {StateType} from '~/reducers';
+import Panel from '~/components/general/panel';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
@@ -21,8 +22,8 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
         <span className="text__panel-icon text__panel-icon--workspaces icon-books"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>
       </div>
-      <div className="panel panel--index">        
-        {this.props.workspaces ? (
+      <Panel modifier="index">        
+        {this.props.workspaces.length ? (
           <div className="item-list item-list--panel-workspaces">
             {this.props.workspaces.map((workspace: WorkspaceType)=>{
               return <Link key={workspace.id} className="item-list__item item-list__item--workspaces" href={`/workspace/${workspace.urlName}`}>
@@ -42,7 +43,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
             {" "}{this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part2')}
           </div>
         )}
-       </div>
+       </Panel>
      </div>);
   }
 }

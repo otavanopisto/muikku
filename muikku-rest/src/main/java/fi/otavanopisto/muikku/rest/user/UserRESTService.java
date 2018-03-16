@@ -492,8 +492,8 @@ public class UserRESTService extends AbstractRESTService {
         studyEndDate,
         studyTimeEnd,
         user.getCurriculumIdentifier(),
-        userEntity.getUpdatedByStudent(),
-        userEntity.getId(),
+        userEntity == null ? false : userEntity.getUpdatedByStudent(),
+        userEntity == null ? -1 : userEntity.getId(),
         null
     );
     

@@ -19,6 +19,7 @@ import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import {StateType} from '~/reducers';
+import OverflowDetector from '~/components/general/overflow-detector';
 
 interface DiscussionThreadsProps {
   discussionThreads: DiscussionType,
@@ -127,7 +128,8 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
                 <div className={`text message__title message__title--category-${thread.forumAreaId}`}>{thread.title}</div></div>
                 {thread.sticky ?
                   <div className="application-list__item-body">
-                    <div className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}></div>
+                    <OverflowDetector as="div" classNameWhenOverflown="text--discussion-thread-item-body--overflown"
+                     className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{__html: thread.message}}/>
                   </div> : null        
                 }
                 <div className="application-list__item-footer application-list__item-footer--discussion">

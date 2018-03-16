@@ -8,11 +8,11 @@ import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
 import {ShortWorkspaceType} from '~/reducers/main-function/workspaces';
 import {StateType} from '~/reducers';
+import Panel from '~/components/general/panel';
 
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/item-list.scss';
-import '~/sass/elements/panel.scss';
 
 interface ContinueStudiesPanelProps {
   i18n: i18nType,
@@ -38,7 +38,7 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
         <span className="text__panel-icon text__panel-icon--continue-studies icon-revert"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.lastWorkspace.continueStudiesLink')}</span>
       </div>
-      <div className="panel panel--index">
+      <Panel modifier="index">
         <h2 className="text text--panel-continue-studies-workspace-name">
           {this.props.lastWorkspace.workspaceName}
         </h2>
@@ -46,7 +46,7 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
           Olit vimeksi sivulla{" "}<b><i>{this.props.lastWorkspace.materialName}</i></b>{" "}
           <Link className="text__panel-link" href={this.props.lastWorkspace.url}>Jatka opintoja</Link>
         </span>
-      </div>
+      </Panel>
     </div>);
   }
 }

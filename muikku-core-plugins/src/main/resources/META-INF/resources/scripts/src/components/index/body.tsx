@@ -12,6 +12,7 @@ import * as React from 'react';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
 
+//TODO css get rid of ordered container 
 export default class IndexBody extends React.Component<{},{}> {
   render(){
     return (<div className="container container--full">

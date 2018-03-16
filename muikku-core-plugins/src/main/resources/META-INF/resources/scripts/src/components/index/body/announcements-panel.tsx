@@ -21,6 +21,7 @@ interface AnnouncementsPanelState {
   
 }
 
+//TODO css get rid of ordered container
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   render(){
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--basic-announcements">
