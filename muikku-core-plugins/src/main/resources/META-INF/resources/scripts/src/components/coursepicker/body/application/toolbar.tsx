@@ -10,12 +10,12 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { CoursePickerCoursesType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import { CoursesType } from '~/reducers/main-function/courses';
 import {StateType} from '~/reducers';
 
 interface CoursepickerToolbarProps {
   i18n: i18nType,
-  coursepickerCourses: CoursePickerCoursesType
+  courses: CoursesType
 }
 
 interface CoursepickerToolbarState {
@@ -28,7 +28,7 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
     super(props);
     
     this.state = {
-      searchquery: this.props.coursepickerCourses.filters.query || ""
+      searchquery: this.props.courses.activeFilters.query || ""
     }
     
     this.setSearchQuery = this.setSearchQuery.bind(this);
@@ -54,9 +54,9 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
   }
   
   componentWillReceiveProps(nextProps: CoursepickerToolbarProps){
-    if ((nextProps.coursepickerCourses.filters.query || "") !== this.state.searchquery){
+    if ((nextProps.courses.activeFilters.query || "") !== this.state.searchquery){
       this.setState({
-        searchquery: nextProps.coursepickerCourses.filters.query || ""
+        searchquery: nextProps.courses.activeFilters.query || ""
       });
     }
   }
@@ -76,7 +76,7 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerCourses: (state as any).coursepickerCourses
+    courses: state.courses
   }
 };
 

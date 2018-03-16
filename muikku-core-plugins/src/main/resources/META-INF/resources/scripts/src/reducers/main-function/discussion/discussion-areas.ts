@@ -16,7 +16,7 @@ export interface DiscussionAreaUpdateType {
   numThreads?: number
 }
 
-export interface DiscussionAreaListType extends Array<DiscussionAreaType> {};
+export type DiscussionAreaListType = Array<DiscussionAreaType>;
 
 export default function areas(state: DiscussionAreaListType=[], action: ActionType): DiscussionAreaListType {
   if (action.type === "UPDATE_DISCUSSION_AREAS"){

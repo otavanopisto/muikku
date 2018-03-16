@@ -3,6 +3,7 @@ import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi from '~/lib/mApi';
 import { VOPSDataType, VOPSStatusType } from '~/reducers/main-function/vops';
+import { StateType } from '~/reducers';
 
 export interface UpdateVopsTriggerType {
   ():AnyActionType
@@ -12,7 +13,7 @@ export interface UPDATE_VOPS extends SpecificActionType<"UPDATE_VOPS", VOPSDataT
 export interface UPDATE_VOPS_STATUS extends SpecificActionType<"UPDATE_VOPS_STATUS", VOPSStatusType>{}
 
 let updateVops:UpdateVopsTriggerType = function updateVops() {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       if (getState().vops.status !== "WAIT"){
         return null;

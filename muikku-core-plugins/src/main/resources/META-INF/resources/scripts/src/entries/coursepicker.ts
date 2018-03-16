@@ -8,25 +8,24 @@ import * as queryString from 'query-string';
 
 import titleActions from '~/actions/base/title';
 import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
-import { updateEducationFilters, updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
-import { CousePickerCoursesFilterType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
-import { loadCourses } from '~/actions/main-function/coursepicker/coursepicker-courses';
+import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { UserType } from 'reducers/main-function/user-index';
+import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('TODO coursepicker title')));
-store.dispatch(<Action>updateEducationFilters());
-store.dispatch(<Action>updateCurriculumFilters());
+store.dispatch(<Action>loadAvaliableEducationFiltersFromServer());
+store.dispatch(<Action>loadAvaliableCurriculumFiltersFromServer());
 
 function loadLocation(originalData: any){
-  let filters:CousePickerCoursesFilterType = {
-    "educationFilters": originalData.e || [],
-    "curriculumFilters": originalData.c || [],
-    "query": originalData.q || null,
-    "baseFilter": originalData.b || "ALL_COURSES"
+  let filters:CoursesActiveFiltersType = {
+    educationFilters: originalData.e || [],
+    curriculumFilters: originalData.c || [],
+    query: originalData.q || null,
+    baseFilter: originalData.b || "ALL_COURSES"
   }
-  store.dispatch(<Action>loadCourses(filters));
+  store.dispatch(<Action>loadCoursesFromServer(filters));
 }
 
 window.addEventListener("hashchange", ()=>{
@@ -42,7 +41,7 @@ if (currentLocationHasData){
 store.dispatch(<Action>loadUserIndexBySchoolData(store.getState().status.userSchoolDataIdentifier, (user:UserType)=>{
   if (!currentLocationHasData && user.curriculumIdentifier){
     location.hash = "#?" + queryString.stringify({
-      c: user.curriculumIdentifier
+      c: [user.curriculumIdentifier]
     }, {arrayFormat: 'bracket'});
   } else if (!currentLocationHasData){
     loadLocation(currentLocationData);

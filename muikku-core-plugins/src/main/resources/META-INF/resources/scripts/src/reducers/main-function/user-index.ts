@@ -56,7 +56,7 @@ export interface UserStaffType {
   userEntityId: number
 }
 
-export interface UserGroupListType extends Array<UserGroupType> {}
+export type UserGroupListType = Array<UserGroupType>;
 
 export interface UserBaseIndexType {
   [index: number]: UserType

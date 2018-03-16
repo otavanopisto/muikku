@@ -8,7 +8,7 @@ export interface NotificationType {
   message: string
 }
 
-export interface NotificationListType extends Array<NotificationType> {}
+export type NotificationListType = Array<NotificationType>;
 
 export default function notifications(state: NotificationListType=[], action: ActionType){
   if (action.type === 'ADD_NOTIFICATION') {

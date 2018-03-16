@@ -11,21 +11,19 @@ import * as queryString from 'query-string';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
-import { CoursepickerFiltersType, CoursePickerBaseFilterType } from '~/reducers/main-function/coursepicker/coursepicker-filters';
-import { CoursePickerCoursesType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
 import {StateType} from '~/reducers';
+import { CoursesType, CoursesBaseFilterType } from '~/reducers/main-function/courses';
 
 interface CoursepickerApplicationProps {
   aside: React.ReactElement<any>,
   i18n: i18nType,
-  coursepickerFilters: CoursepickerFiltersType,
-  coursepickerCourses: CoursePickerCoursesType
+  courses: CoursesType
 }
 
 interface CoursepickerApplicationState {
 }
 
-class CommunicatorApplication extends React.Component<CoursepickerApplicationProps, CoursepickerApplicationState> {
+class CoursepickerApplication extends React.Component<CoursepickerApplicationProps, CoursepickerApplicationState> {
   constructor(props: CoursepickerApplicationProps){
     super(props);
     
@@ -47,8 +45,8 @@ class CommunicatorApplication extends React.Component<CoursepickerApplicationPro
     
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
-    let primaryOption = <select className="form-field__select form-field__select--primary-function" value={this.props.coursepickerCourses.filters.baseFilter} onChange={this.onCoursepickerFilterChange}>
-      {this.props.coursepickerFilters.baseFilters.map((filter: CoursePickerBaseFilterType)=>{
+    let primaryOption = <select className="form-field__select form-field__select--primary-function" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+      {this.props.courses.avaliableFilters.baseFilters.map((filter: CoursesBaseFilterType)=>{
         return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
       })} 
     </select>
@@ -64,8 +62,7 @@ class CommunicatorApplication extends React.Component<CoursepickerApplicationPro
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerFilters: (state as any).coursepickerFilters,
-    coursepickerCourses: (state as any).coursepickerCourses
+    courses: state.courses
   }
 };
 
@@ -76,4 +73,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(CommunicatorApplication);
+)(CoursepickerApplication);

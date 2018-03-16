@@ -26,8 +26,8 @@ export interface DiscussionThreadReplyType {
   parentReplyId: number
 }
 
-export interface DiscussionThreadReplyListType extends Array<DiscussionThreadReplyType> {}
-export interface DiscussionThreadListType extends Array<DiscussionThreadType> {}
+export type DiscussionThreadReplyListType = Array<DiscussionThreadReplyType>;
+export type DiscussionThreadListType = Array<DiscussionThreadType>;
 
 export type DiscussionStateType = "LOADING" | "ERROR" | "READY";
 

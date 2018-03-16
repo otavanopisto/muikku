@@ -6,8 +6,7 @@ import title from './base/title';
 import websocket from './util/websocket';
 import messages from './main-function/messages';
 
-import coursepickerFilters from './main-function/coursepicker/coursepicker-filters';
-import coursepickerCourses from './main-function/coursepicker/coursepicker-courses';
+import courses from './main-function/courses';
 
 import {combineReducers} from 'redux';
 import userIndex from './main-function/user-index';
@@ -20,7 +19,7 @@ export default combineReducers({
   websocket,
   messages,
   title,
-  coursepickerFilters,
+  
   userIndex,
-  coursepickerCourses
+  courses
 });

@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 
 import {i18nType} from '~/reducers/base/i18n';
-import { CoursePickerCourseType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import { CourseType } from '~/reducers/main-function/courses';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/course-description.scss';
@@ -16,7 +16,7 @@ import {StateType} from '~/reducers';
 interface CourseProps {
   i18n: i18nType,
   status: StatusType,
-  course: CoursePickerCourseType
+  course: CourseType
 }
 
 interface CourseState {

@@ -6,16 +6,12 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import {CoursepickerFiltersType,
-  EducationFilterType,
-  CurriculumFilterType} from '~/reducers/main-function/coursepicker/coursepicker-filters';
-import { CoursePickerCoursesType } from '~/reducers/main-function/coursepicker/coursepicker-courses';
+import {CoursesType, CourseEducationFilterType, CourseCurriculumFilterType} from '~/reducers/main-function/courses';
 import {StateType} from '~/reducers';
 
 interface NavigationProps {
   i18n: i18nType,
-  coursepickerFilters: CoursepickerFiltersType,
-  coursepickerCourses: CoursePickerCoursesType
+  courses: CoursesType
 }
 
 interface NavigationState { 
@@ -26,8 +22,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
     let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
     return <div className="item-list item-list--aside-navigation">
       <span className="text item-list__topic">{this.props.i18n.text.get('plugin.coursepicker.filters.degree')}</span>
-      {this.props.coursepickerFilters.educationTypes.map((educationType: EducationFilterType)=>{
-        let isActive = this.props.coursepickerCourses.filters.educationFilters.includes(educationType.identifier);
+      {this.props.courses.avaliableFilters.educationTypes.map((educationType: CourseEducationFilterType)=>{
+        let isActive = this.props.courses.activeFilters.educationFilters.includes(educationType.identifier);
         let hash = isActive ? 
             queryString.stringify(Object.assign({}, locationData, {e: (locationData.e || []).filter((i:string)=>i!==educationType.identifier)}), {arrayFormat: 'bracket'}) :
             queryString.stringify(Object.assign({}, locationData, {e: (locationData.e || []).concat(educationType.identifier)}), {arrayFormat: 'bracket'})
@@ -38,8 +34,8 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         </Link>
       })}      
       <span className="text item-list__topic">{this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}</span>
-      {this.props.coursepickerFilters.curriculums.map((curriculum: CurriculumFilterType)=>{
-        let isActive = this.props.coursepickerCourses.filters.curriculumFilters.includes(curriculum.identifier);
+      {this.props.courses.avaliableFilters.curriculums.map((curriculum: CourseCurriculumFilterType)=>{
+        let isActive = this.props.courses.activeFilters.curriculumFilters.includes(curriculum.identifier);
         let hash = isActive ?
             queryString.stringify(Object.assign({}, locationData, {c: (locationData.c || []).filter((c:string)=>c!==curriculum.identifier)}), {arrayFormat: 'bracket'}) :
             queryString.stringify(Object.assign({}, locationData, {c: (locationData.c || []).concat(curriculum.identifier)}), {arrayFormat: 'bracket'});
@@ -56,8 +52,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerFilters: (state as any).coursepickerFilters,
-    coursepickerCourses: (state as any).coursepickerCourses
+    courses: state.courses
   }
 };
 

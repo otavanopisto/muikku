@@ -25,7 +25,7 @@ export interface CommunicatorMessageLabelPatchType {
   messageThreadId?: number,
   userEntityId?: number
 }
-export interface CommunicatorMessageLabelListType extends Array<CommunicatorMessageLabelType> {};
+export type CommunicatorMessageLabelListType = Array<CommunicatorMessageLabelType>;
 
 export interface CommunicatorMessageType {
   caption: string,
@@ -87,7 +87,7 @@ export interface CommunicatorMessageRecepientType {
   lastName?: string | null,
   recipientId: number
 }
-export interface CommunicatorMessageListType extends Array<CommunicatorMessageType> {}
+export type CommunicatorMessageListType = Array<CommunicatorMessageType>;
 
 export interface CommunicatorMessagesType {
   state: CommunicatorStateType,

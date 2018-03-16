@@ -9,7 +9,7 @@ export interface AnnouncerNavigationItemType {
   text(i18n: i18nType):string
 }
 
-export interface AnnouncerNavigationItemListType extends Array<AnnouncerNavigationItemType> {}
+export type AnnouncerNavigationItemListType = Array<AnnouncerNavigationItemType>;
 
 const defaultNavigation: AnnouncerNavigationItemListType = [
   {

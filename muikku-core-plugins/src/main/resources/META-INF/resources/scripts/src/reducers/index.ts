@@ -40,6 +40,7 @@ import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
 import {WorkspacesType} from './main-function/workspaces';
+import { CoursesType } from './main-function/courses';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -55,5 +56,6 @@ export interface StateType {
   vops?: VOPSType,
   messages?: MessagesType,
   userIndex?: UserIndexType,
-  workspaces?: WorkspacesType
+  workspaces?: WorkspacesType,
+  courses?: CoursesType
 }
