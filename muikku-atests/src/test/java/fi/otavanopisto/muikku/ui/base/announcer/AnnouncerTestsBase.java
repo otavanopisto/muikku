@@ -53,7 +53,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       }
     }finally {
       mockBuilder.wiremockReset();
-    }   
+    }
   }
   
   @Test

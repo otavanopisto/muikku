@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.atests;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,6 +54,8 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
 import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
 import fi.otavanopisto.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.otavanopisto.muikku.plugins.forum.ForumController;
+import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumArea;
 import fi.otavanopisto.muikku.plugins.forum.model.ForumAreaGroup;
@@ -161,6 +164,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
   @Inject
   private CommunicatorNewInboxMessageNotification communicatorNewInboxMessageNotification;
+  
+  @Inject
+  private EnvironmentForumAreaDAO environmentForumAreaDAO;
   
   @GET
   @Path("/login")
@@ -867,6 +873,30 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @DELETE
+  @Path("/discussion/cleanup")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response cleanupDiscussions() {
+    List<EnvironmentForumArea> forumAreas = environmentForumAreaDAO.listAllNonArchived();
+    List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+    for(EnvironmentForumArea forumArea : forumAreas) {
+      List<ForumThread> threads = forumController.listForumThreads(forumArea  , 0, Integer.MAX_VALUE, true); 
+      for (ForumThread thread : threads) {
+        List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
+        for (ForumThreadReply reply : replies) {
+          forumController.deleteReply(reply); 
+        }
+        forumController.deleteThread(thread);
+      } 
+      forumController.deleteArea(forumArea);
+    }
+    for (ForumAreaGroup group : groups) {
+      forumController.deleteAreaGroup(group);
+    }
+    return Response.noContent().build();
+
+  }
+  
   @POST
   @Path("/discussiongroups/{GROUPID}/discussions/{DISCUSSIONID}/threads")
   @RESTPermit (handling = Handling.UNSECURED)

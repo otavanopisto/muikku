@@ -1,14 +1,25 @@
 package fi.otavanopisto.muikku.ui.base.discussions;
 
+import static fi.otavanopisto.muikku.mock.PyramusMock.mocker;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.stubbing.ServeEvent;
 
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.atests.Discussion;
 import fi.otavanopisto.muikku.atests.DiscussionGroup;
 import fi.otavanopisto.muikku.atests.DiscussionThread;
+import fi.otavanopisto.muikku.mock.PyramusMock.Builder;
+import fi.otavanopisto.muikku.mock.model.MockStaffMember;
 import fi.otavanopisto.muikku.ui.AbstractUITest;
+import fi.otavanopisto.pyramus.rest.model.Sex;
+import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class DiscussionTestsBase extends AbstractUITest {
   
@@ -19,30 +30,31 @@ public class DiscussionTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
       }
     )
   public void discussionSendMessageTest() throws Exception {
-    loginAdmin();
-    
+    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
-      Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
-      try {
-        navigate("/discussion", false);
-        waitAndClick(".di-new-message-button");
-        waitAndClick(".mf-textfield-subcontainer input");
-        sendKeys(".mf-textfield-subcontainer input", "Test title for discussion");
-        addTextToCKEditor("Test text for discussion.");
-        click("*[name='send']");
-        waitForPresent(".di-message-meta-content>span>p");
-        assertText(".di-message-meta-content>span>p", "Test text for discussion.");
-      } finally {
-        deleteDiscussion(discussionGroup.getId(), discussion.getId());
-      }
+      createDiscussion(discussionGroup.getId(), "test discussion");
+      navigate("/discussion", false);
+      waitAndClick(".application-panel__helper-container--main-action .button--primary-function");
+      waitAndClick("input.form-field--new-discussion-thread-title");
+      sendKeys("input.form-field--new-discussion-thread-title", "Test title for discussion");
+      addTextToCKEditor("Test text for discussion.");
+      click("a.button--standard-ok");
+      waitForPresent("h3.text--discussion-current-thread-title");
+      assertText("h3.text--discussion-current-thread-title", "Test title for discussion");
+      waitForPresent(".text--item-article p");
+      assertTextIgnoreCase(".text--item-article p", "Test text for discussion.");
     } finally {
-      deleteDiscussionGroup(discussionGroup.getId());
-      WireMock.reset();
+      cleanUpDiscussions();
+      mockBuilder.wiremockReset();
     }
 
   }
@@ -54,27 +66,27 @@ public class DiscussionTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
       }
     )
   public void discussionAdminCreateAreaTest() throws Exception {
-    loginAdmin();
-    DiscussionGroup discussionGroup = createDiscussionGroup("test group");
-    try {
-      Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
-      try {
-        navigate("/discussion", false);
-        waitAndClick(".sm-flex-hide .di-new-area-button");
-        waitAndSendKeys(".mf-textfield input", "Test area");
-        click("*[name='send']");
-        waitForPresent("#discussionAreaSelect option:nth-child(2)");
-        assertText("#discussionAreaSelect option:nth-child(2)", "Test area");
-      } finally {
-        deleteDiscussion(discussionGroup.getId(), discussion.getId());
-      }
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    try{
+      navigate("/discussion", false);
+      waitAndClick(".application-panel__toolbar .button-pill__icon.icon-add");
+      waitAndSendKeys("input.form-field--new-discussion-area-name", "Test area");
+      waitAndClick(".form-field--new-discussion-area-description");
+      waitAndSendKeys(".form-field--new-discussion-area-description", "Description of test area");
+      click(".button--standard-ok");
+      waitForPresent(".application-panel__toolbar select.form-field--toolbar-selector option:nth-child(2)");
+      assertTextIgnoreCase(".application-panel__toolbar select.form-field--toolbar-selector option:nth-child(2)", "Test area");
     } finally {
-      deleteDiscussionGroup(discussionGroup.getId());
-      WireMock.reset();
+      cleanUpDiscussions();
+      mockBuilder.wiremockReset();
     }
 
   }
@@ -86,35 +98,31 @@ public class DiscussionTestsBase extends AbstractUITest {
         TestEnvironments.Browser.FIREFOX,
         TestEnvironments.Browser.INTERNET_EXPLORER,
         TestEnvironments.Browser.EDGE,
-        TestEnvironments.Browser.SAFARI
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
       }
     )
   public void discussionReplyTest() throws Exception {
-    loginAdmin();
-
+    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
-      try {
-        DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
-            "<p>Testing testing daa daa</p>", false, false);
-        try {
-          navigate("/discussion", false);
-          waitAndClick(".di-message-meta-topic>span");
-          waitAndClick(".di-message-reply-link");
-          addTextToCKEditor("Test reply for test.");
-          click("*[name='send']");
-          waitForPresent(".di-replies-container .mf-item-content-text p");
-          assertText(".di-replies-container .mf-item-content-text p", "Test reply for test.");
-        } finally {
-          deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
-        }
-      } finally {
-        deleteDiscussion(discussionGroup.getId(), discussion.getId());
-      }
+      createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
+          "<p>Testing testing daa daa</p>", false, false);
+
+      navigate("/discussion", false);
+      waitAndClick(".message__title--category-1 ");
+      waitAndClick(".link--application-list-item-footer:nth-child(1)");
+      addTextToCKEditor("Test reply for test.");
+      click(".button--standard-ok");
+      waitForPresent(".application-list__item--discussion-reply .application-list__item__body article p");
+      assertText(".application-list__item--discussion-reply .application-list__item__body article p", "Test reply for test.");
     } finally {
-      deleteDiscussionGroup(discussionGroup.getId());
-      WireMock.reset();
+      cleanUpDiscussions();
+      mockBuilder.wiremockReset();
     }
   }
   
@@ -152,7 +160,7 @@ public class DiscussionTestsBase extends AbstractUITest {
       WireMock.reset();
     }
   }
-  
+
   @Test
   @TestEnvironments (
       browsers = {

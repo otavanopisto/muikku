@@ -622,8 +622,8 @@ public class PyramusMock {
       }
       
       public Builder mockStaffMembers() throws JsonProcessingException {
-        Map<String, String> variables = null;
-        List<String> tags = null;
+        Map<String, String> variables = new HashMap<String, String>();
+        List<String> tags = new ArrayList<>();
         List<StaffMember> staffs = new ArrayList<>();
         for (MockStaffMember mockStaffMember : pmock.staffMembers) {
           StaffMember staffMember = new StaffMember(mockStaffMember.getId(), mockStaffMember.getPersonId(), null, mockStaffMember.getFirstName(), mockStaffMember.getLastName(), null, mockStaffMember.getRole(), tags, variables);
@@ -1021,10 +1021,14 @@ public class PyramusMock {
       
       public Builder showMatchedServeEvents() {
         System.out.print("Show all matched events");
-        List<ServeEvent> allServeEvents = WireMock.getAllServeEvents(); 
+        List<ServeEvent> allServeEvents = WireMock.getAllServeEvents();
+        List<String> used = new ArrayList<>();
         for (ServeEvent serveEvent : allServeEvents) {
           if (serveEvent.getWasMatched()) {
-            System.out.print(serveEvent.getStubMapping().toString()); 
+            if(!used.contains(serveEvent.getStubMapping().toString())) {
+              System.out.print(serveEvent.getStubMapping().toString());
+              used.add(serveEvent.getStubMapping().toString());
+            }
           }
         }
         return this;
