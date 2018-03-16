@@ -13,10 +13,10 @@ import {DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
   deleteDiscussionThreadReplyFromCurrent} from '~/actions/main-function/discussion/discussion-threads';
+import {StateType} from '~/reducers';
 
 interface DiscussionDeleteThreadComponentProps {
   i18n: i18nType,
-  thread: DiscussionThreadType,
   reply?: DiscussionThreadReplyType,
   deleteCurrentDiscussionThread: DeleteCurrentDiscussionThreadTriggerType,
   deleteDiscussionThreadReplyFromCurrent: DeleteDiscussionThreadReplyFromCurrentTriggerType,
@@ -73,11 +73,11 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div>
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+         <div className="dialog__button-set">
+          <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.cancelButton')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Link className="button button--fatal button--standard-ok" onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.confirmButton')}
           </Link>
         </div>
@@ -96,11 +96,9 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
-    areas: state.areas,
-    discussionThreads: state.discussionThreads
+    i18n: state.i18n
   }
 };
 
@@ -108,7 +106,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({deleteCurrentDiscussionThread, deleteDiscussionThreadReplyFromCurrent}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionDeleteThreadComponent);

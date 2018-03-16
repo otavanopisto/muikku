@@ -3,6 +3,8 @@ import {connect, Dispatch} from 'react-redux';
 import Link from '../../general/link';
 import {CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
+import Panel from '~/components/general/panel';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
@@ -20,8 +22,8 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
         <span className="text__panel-icon text__panel-icon--latest-messages icon-envelope"></span>
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
-      <div className="panel panel--index">
-        {this.props.lastMessages ? (
+      <Panel modifier="index">
+        {this.props.lastMessages.length ? (
           <div className="item-list item-list--panel-latest-messages">
             {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
               return (<Link key={message.id} className={`item-list__item item-list__item--latest-messages ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
@@ -41,15 +43,15 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
           ) : (
             <div className="text text--panel-nothing">{this.props.i18n.text.get("plugin.frontPage.messages.noMessages")}</div>
           )}
-      </div>
+      </Panel>
     </div>);
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    lastMessages: state.lastMessages
+    lastMessages: state.messages.messages
   }
 };
 
@@ -57,7 +59,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LastMessagesPanel);

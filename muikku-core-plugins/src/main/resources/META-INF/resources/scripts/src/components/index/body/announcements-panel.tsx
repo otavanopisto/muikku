@@ -4,6 +4,7 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
 import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/announcer/announcements';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/text.scss';
@@ -20,6 +21,7 @@ interface AnnouncementsPanelState {
   
 }
 
+//TODO css get rid of ordered container
 class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, AnnouncementsPanelState> {
   render(){
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--basic-announcements">
@@ -55,7 +57,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     status: state.status,
     i18n: state.i18n,
@@ -67,7 +69,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncementsPanel);

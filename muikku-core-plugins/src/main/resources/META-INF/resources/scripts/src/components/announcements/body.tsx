@@ -15,9 +15,8 @@ export default class AnnouncementsBody extends React.Component<AnnouncementsBody
   render(){
     let aside = <Aside />  
     return (<div className="embbed embbed-full">
-        <Application aside={aside} />
-        <MainFunctionNavbar navigation={aside}/>
-
+        <Application aside={aside} />        
+        <MainFunctionNavbar navigation={aside} activeTrail="index"/>
     </div>);
   }
 }

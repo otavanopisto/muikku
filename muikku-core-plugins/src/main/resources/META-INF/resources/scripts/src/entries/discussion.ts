@@ -5,7 +5,6 @@ import {Action} from 'redux';
 
 import mainFunctionDefault from '~/util/base-main-function';
 
-import actions from '~/actions/main-function';
 import titleActions from '~/actions/base/title';
 import {loadDiscussionAreas} from '~/actions/main-function/discussion/discussion-areas';
 import {loadDiscussionThreads, loadDiscussionThread} from '~/actions/main-function/discussion/discussion-threads';

@@ -2,7 +2,7 @@ import notifications from './base/notifications';
 import locales from './base/locales';
 import status from './base/status';
 import i18n from './base/i18n';
-import messageCount from './main-function/message-count';
+import messages from './main-function/messages';
 import communicatorNavigation from './main-function/communicator/communicator-navigation';
 import communicatorMessages from './main-function/communicator/communicator-messages';
 import title from './base/title';
@@ -14,7 +14,7 @@ export default combineReducers({
   i18n,
   locales,
   status,
-  messageCount,
+  messages,
   communicatorNavigation,
   communicatorMessages,
   title

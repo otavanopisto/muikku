@@ -11,6 +11,7 @@ import Dialog from '~/components/general/dialog';
 import { deleteSelectedAnnouncements, deleteAnnouncement,
   DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
 import { AnnouncementType } from 'reducers/main-function/announcer/announcements';
+import {StateType} from '~/reducers';
 
 interface DeleteAnnouncementDialogProps {
   i18n: i18nType,
@@ -84,11 +85,9 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
-    areas: state.areas,
-    discussionThreads: state.discussionThreads
+    i18n: state.i18n
   }
 };
 
@@ -96,7 +95,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({deleteSelectedAnnouncements, deleteAnnouncement}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DeleteAnnouncementDialog);

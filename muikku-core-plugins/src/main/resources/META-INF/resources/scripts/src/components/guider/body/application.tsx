@@ -9,6 +9,7 @@ import { i18nType } from 'reducers/base/i18n';
 import Students from './application/students';
 import Toolbar from './application/toolbar';
 import CurrentStudent from './application/current-student';
+import {StateType} from '~/reducers';
 
 interface GuiderApplicationProps {
   aside: React.ReactElement<any>,
@@ -39,7 +40,7 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -49,7 +50,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderApplication);

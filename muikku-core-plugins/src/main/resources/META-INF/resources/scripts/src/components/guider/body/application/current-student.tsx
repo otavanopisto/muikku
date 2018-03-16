@@ -7,17 +7,21 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
-import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType, GuiderStudentUserFileType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
+import Hops from '~/components/base/hops';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
 import { AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider/guider-students';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
+import { UserFileType } from '~/reducers/main-function/user-index';
+import {StateType} from '~/reducers';
 
 interface CurrentStudentProps {
   i18n: i18nType,
@@ -51,6 +55,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     
     let studentBasicHeader = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__header">
         <object
+         className="container container--guider-profile-image"
          data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.userEntityId)}
          type="image/jpeg">
           <div className={`avatar avatar--category-1`}>{this.props.guiderStudentsCurrent.basic.firstName[0]}</div>
@@ -135,149 +140,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
-    
-     let studentHops = this.props.guiderStudentsCurrent.hops && <div className="text application-sub-panel__body">
-
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-            {this.props.i18n.text.get( "plugin.records.hops.goals.upperSecondary" )}
-          </span>
-          <span>
-            <span className="text text--guider-profile-value">
-              {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.goalSecondarySchoolDegree )}
-            </span>
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-            {this.props.i18n.text.get( "plugin.records.hops.goals.matriculationExam" )}
-          </span>
-          <span>
-            <span className="text text--guider-profile-value">
-              {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.goalMatriculationExam )}
-            </span>
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears1" )}
-              <span className="text text--guider-hops-value">{this.props.guiderStudentsCurrent.hops.vocationalYears}</span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.vocationalYears2" )}
-          </span>
-          <span>
-            <span  className="text text--guider-profile-value">  
-              {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.goalJustMatriculationExam )}
-            </span>
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits1" )}
-              <span className="text text--guider-hops-value">{this.props.guiderStudentsCurrent.hops.transferCreditYears}</span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.justTransferCredits2" )}
-          </span>
-          <span>
-            <span className="text text--guider-profile-value">
-              {this.props.i18n.text.get( "plugin.records.hops.goals." + this.props.guiderStudentsCurrent.hops.justTransferCredits )}
-            </span>
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears1" )}
-              <span className="text text--guider-hops-value">{this.props.guiderStudentsCurrent.hops.completionYears}</span>
-              {this.props.i18n.text.get( "plugin.records.hops.goals.completionYears2" )}
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-              {this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.title" )}
-          </span>
-          <span>
-            <span className="text text--guider-profile-value">{
-              this.props.guiderStudentsCurrent.hops.finnish === "AI" ?
-                this.props.i18n.text.get( "plugin.records.hops.languages.finnish.native" ) :
-                this.props.i18n.text.get( "plugin.records.hops.languages.finnish.foreign" )
-            }</span>
-          </span>
-        </div>
-        <div>
-          <span className="application-sub-panel__item application-sub-panel__item--guider-hops">
-            {this.props.i18n.text.get( "plugin.records.hops.languages.mandatory.additionalInfo" )}
-          </span>
-        </div>            
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-            {this.props.i18n.text.get( "plugin.records.hops.languages.optional.title" )}
-          </span>
-          <span>
-            <span>
-            {this.props.guiderStudentsCurrent.hops.german ?
-              <span className="text text--guider-profile-value">
-                {this.props.i18n.text.get( "plugin.records.hops.languages.german" )}
-              </span>: null}
-            </span>
-            {this.props.guiderStudentsCurrent.hops.french ?
-            <span>
-              <span className="text text--guider-profile-value">
-                {this.props.i18n.text.get( "plugin.records.hops.languages.french" )}
-              </span>
-            </span> : null}
-            {this.props.guiderStudentsCurrent.hops.italian ?
-            <span>
-              <span  className="text text--guider-profile-value">
-                {this.props.i18n.text.get( "plugin.records.hops.languages.italian" )}                
-               </span>
-            </span> : null}
-            {this.props.guiderStudentsCurrent.hops.spanish ?            
-            <span>
-              <span className="text text--guider-profile-value">
-                {this.props.i18n.text.get( "plugin.records.hops.languages.spanish" )}                
-              </span>
-            </span>: null}
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-            {this.props.i18n.text.get( "plugin.records.hops.mathSyllabus.title" )}
-          </span>
-          <span>            
-            <span className="text text--guider-profile-value">
-            {this.props.i18n.text.get( "plugin.records.hops.mathSyllabus." + this.props.guiderStudentsCurrent.hops.mathSyllabus )}
-            </span>
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-            {this.props.i18n.text.get( "plugin.records.hops.science.title" )}
-          </span>
-          <span>
-            <span className="text text--guider-profile-value">
-              {this.props.i18n.text.get( "plugin.records.hops.science." + this.props.guiderStudentsCurrent.hops.science )}
-            </span>
-          </span>
-        </div>
-        <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-          <span>
-            {this.props.i18n.text.get( "plugin.records.hops.religion.title" )}
-          </span>
-          <span>
-            <span className="text text--guider-profile-value">
-              {this.props.i18n.text.get( "plugin.records.hops.religion." + this.props.guiderStudentsCurrent.hops.religion )}
-            </span>
-          </span>
-        </div>
-        {this.props.guiderStudentsCurrent.hops.additionalInfo ? 
-          <div className="application-sub-panel__item application-sub-panel__item--guider-hops">
-            <span>
-              {this.props.i18n.text.get( "plugin.records.hops.additionalInfo.title" )}
-              <span className="text text--guider-profile-value">
-                {this.props.guiderStudentsCurrent.hops.additionalInfo}
-              </span>
-            </span>
-          </div>
-        : null}              
-    </div>
+    let studentHops = this.props.guiderStudentsCurrent.hops && <Hops data={this.props.guiderStudentsCurrent.hops} editable={false}/>
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
@@ -289,7 +152,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guiderStudentsCurrent.basic.id}
         onFileError={(file: File, err: Error)=>{
           this.props.displayNotification(err.message, "error");
-        }} onFileSuccess={(file: File, data: GuiderStudentUserFileType)=>{
+        }} onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
         }}>
         <span>{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
@@ -342,19 +205,19 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsCurrent: state.guiderStudents.current,
-    guiderCurrentState: state.guiderStudents.currentState
+    guiderStudentsCurrent: (state as any).guiderStudents.current,
+    guiderCurrentState: (state as any).guiderStudents.currentState
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({addFileToCurrentStudent, removeFileFromCurrentStudent, displayNotification}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CurrentStudent);

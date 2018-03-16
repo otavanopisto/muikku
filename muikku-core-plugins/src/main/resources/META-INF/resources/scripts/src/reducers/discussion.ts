@@ -4,7 +4,7 @@ import status from './base/status';
 import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
-import messageCount from './main-function/message-count';
+import messages from './main-function/messages';
 import userIndex from './main-function/user-index';
 
 import {combineReducers} from 'redux';
@@ -17,7 +17,7 @@ export default combineReducers({
   locales,
   status,
   websocket,
-  messageCount,
+  messages,
   title,
   areas,
   discussionThreads,

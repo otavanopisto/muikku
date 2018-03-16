@@ -5,6 +5,7 @@ import LabelUpdateDialog from './label-update-dialog';
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import {i18nType} from '~/reducers/base/i18n';
 import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
@@ -44,11 +45,11 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    communicatorNavigation: state.communicatorNavigation,
-    communicatorMessages: state.communicatorMessages
+    communicatorNavigation: (state as any).communicatorNavigation,
+    communicatorMessages: (state as any).communicatorMessages
   }
 };
 
@@ -56,7 +57,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Navigation);

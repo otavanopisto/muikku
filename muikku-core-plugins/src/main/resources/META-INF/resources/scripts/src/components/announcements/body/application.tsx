@@ -4,6 +4,7 @@ import {connect, Dispatch} from 'react-redux';
 import ReadingPanel from '~/components/general/reading-panel';
 import Announcements from './application/announcements';
 import Link from '~/components/general/link';
+import {StateType} from '~/reducers';
 
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/text.scss';
@@ -34,7 +35,7 @@ class AnnouncementsApplication extends React.Component<AnnouncementsApplicationP
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -44,7 +45,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncementsApplication);

@@ -13,6 +13,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { updateDiscussionArea, UpdateDiscussionAreaTriggerType } from '~/actions/main-function/discussion/discussion-areas';
+import {StateType} from '~/reducers';
 
 interface DiscussionModifyAreaProps {
   i18n: i18nType,
@@ -120,11 +121,11 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    areas: state.areas,
-    discussionThreads: state.discussionThreads
+    areas: (state as any).areas,
+    discussionThreads: (state as any).discussionThreads
   }
 };
 
@@ -132,7 +133,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({updateDiscussionArea}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionModifyArea);

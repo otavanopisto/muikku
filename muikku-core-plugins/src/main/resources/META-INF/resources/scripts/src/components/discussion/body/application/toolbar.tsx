@@ -14,7 +14,7 @@ import NewArea from './new-area-dialog';
 import ModifyArea from './modify-area-dialog';
 import DeleteArea from './delete-area-dialog';
 import { StatusType } from '~/reducers/base/status';
-
+import {StateType} from '~/reducers';
 
 interface DiscussionToolbarProps {
   i18n: i18nType,
@@ -94,11 +94,11 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    areas: state.areas,
-    discussionThreads: state.discussionThreads,
+    areas: (state as any).areas,
+    discussionThreads: (state as any).discussionThreads,
     status: state.status
   }
 };
@@ -107,7 +107,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {}
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorToolbar);

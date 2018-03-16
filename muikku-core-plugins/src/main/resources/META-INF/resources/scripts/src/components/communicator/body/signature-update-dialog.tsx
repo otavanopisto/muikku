@@ -8,6 +8,7 @@ import {bindActionCreators} from 'redux';
 import {updateSignature, UpdateSignatureTriggerType} from '~/actions/main-function/communicator/communicator-messages';
 import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
@@ -31,7 +32,7 @@ const CKEDITOR_CONFIG = {
 const CKEDITOR_PLUGINS = {};
 
 interface CommunicatorSignatureUpdateDialogProps {
-  children: React.ReactElement<any>,
+  children?: React.ReactElement<any>,
   isOpen: boolean,
   onClose: ()=>any,
   signature: CommunicatorSignatureType,
@@ -96,9 +97,9 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    signature: state.communicatorMessages.signature,
+    signature: (state as any).communicatorMessages.signature,
     i18n: state.i18n
   }
 };
@@ -107,7 +108,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({updateSignature}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorSignatureUpdateDialog);

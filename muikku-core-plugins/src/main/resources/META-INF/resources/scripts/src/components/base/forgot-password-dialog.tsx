@@ -3,6 +3,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/form.scss';
 import '~/sass/elements/form-fields.scss';
@@ -49,7 +50,7 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -59,7 +60,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ForgotPasswordDialog);

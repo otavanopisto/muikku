@@ -4,6 +4,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
 import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType } from '~/reducers/main-function/guider/guider-students';
+import {StateType} from '~/reducers';
 import '~/sass/elements/application-list.scss';
 
 interface CurrentStudentWorkspacesProps {
@@ -27,11 +28,11 @@ class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesP
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsCurrent: state.guiderStudents.current,
-    guiderCurrentState: state.guiderStudents.currentState
+    guiderStudentsCurrent: (state as any).guiderStudents.current,
+    guiderCurrentState: (state as any).guiderStudents.currentState
   }
 };
 
@@ -39,7 +40,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CurrentStudentWorkspaces);

@@ -12,6 +12,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
+import {StateType} from '~/reducers';
 
 interface GuiderToolbarProps {
   i18n: i18nType,
@@ -105,10 +106,10 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudents: state.guiderStudents
+    guiderStudents: (state as any).guiderStudents
   }
 };
 
@@ -116,7 +117,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderToolbar);

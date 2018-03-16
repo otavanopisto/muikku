@@ -14,6 +14,7 @@ import SelectableList from '~/components/general/selectable-list';
 import {CoursePickerCoursesType, CoursePickerCoursesStateType, CoursePickerCourseListType, CoursePickerCourseType} from '~/reducers/main-function/coursepicker/coursepicker-courses';
 import { loadMoreCourses, LoadMoreCoursesTriggerType } from '~/actions/main-function/coursepicker/coursepicker-courses';
 import Course from './courses/course';
+import {StateType} from '~/reducers';
 
 interface CoursepickerWorkspacesProps {
   i18n: i18nType,
@@ -58,12 +59,12 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerCoursesState: state.coursepickerCourses.state,
-    coursepickerHasMore: state.coursepickerCourses.hasMore,
-    coursepickerCoursesCourses: state.coursepickerCourses.courses
+    coursepickerCoursesState: (state as any).coursepickerCourses.state,
+    coursepickerHasMore: (state as any).coursepickerCourses.hasMore,
+    coursepickerCoursesCourses: (state as any).coursepickerCourses.courses
   }
 };
 
@@ -71,7 +72,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({loadMoreCourses}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CoursepickerWorkspaces);

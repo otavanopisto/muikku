@@ -1,8 +1,9 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { WorkspaceType } from "~/reducers/main-function/index/workspaces";
+import { WorkspaceType } from "~/reducers/main-function/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
+import {StateType} from '~/reducers';
 import '~/sass/elements/application-list.scss';
 
 interface StudentWorkspaceProps {
@@ -135,7 +136,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -145,7 +146,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(StudentWorkspace);

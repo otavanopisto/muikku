@@ -1,4 +1,4 @@
-import Feed from '../general/feed';
+import Feed from '../../general/feed';
 import * as React from 'react';
 import mApi from '~/lib/mApi';
 

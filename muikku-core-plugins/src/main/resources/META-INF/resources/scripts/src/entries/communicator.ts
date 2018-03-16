@@ -5,7 +5,6 @@ import mApi from '~/lib/mApi';
 
 import mainFunctionDefault from '~/util/base-main-function';
 
-import actions from '~/actions/main-function';
 import communicatorActions from '~/actions/main-function/communicator';
 import titleActions from '~/actions/base/title';
 

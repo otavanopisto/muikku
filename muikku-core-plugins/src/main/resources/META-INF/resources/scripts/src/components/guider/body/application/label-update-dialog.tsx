@@ -15,6 +15,7 @@ import '~/sass/elements/form-fields.scss';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
 import GuiderLabelShareDialog from './label-share-dialog';
+import {StateType} from '~/reducers';
 
 const KEYCODES = {
   ENTER: 13
@@ -23,8 +24,8 @@ const KEYCODES = {
 interface GuiderLabelUpdateDialogProps {
   children: React.ReactElement<any>,
   label: GuiderUserLabelType,
-  isOpen: boolean,
-  onClose: ()=>any,
+  isOpen?: boolean,
+  onClose?: ()=>any,
   i18n: i18nType,
   updateGuiderFilterLabel: UpdateGuiderFilterLabelTriggerType,
   removeGuiderFilterLabel: RemoveGuiderFilterLabelTriggerType
@@ -104,12 +105,12 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
-      return <div className="container container--dialog-buttons">
-        <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
-         {this.props.i18n.text.get('plugin.guider.flags.newFlagDialog.cancel')}
+      return <div className="dialog__button-set">
+        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
+         {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
         </Link>
-        <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.guider.flags.newFlagDialog.create')}
+        <Link className="button button--success button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.save')}
         </Link>
       </div>
     }
@@ -136,7 +137,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
             <Link className="button button--fatal button--guider-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
               {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
             </Link>
-            <GuiderLabelShareDialog label={this.props.label}><Link className="button button--success button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
+            <GuiderLabelShareDialog label={this.props.label}><Link className="button button--info button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
               {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
             </Link></GuiderLabelShareDialog>
         </div>
@@ -148,7 +149,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   } 
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -158,7 +159,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({updateGuiderFilterLabel, removeGuiderFilterLabel}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderLabelUpdateDialog);

@@ -1,10 +1,11 @@
-import Navbar from '../general/navbar';
-import Link from '../general/link';
-import LoginButton from '../base/login-button';
-import ForgotPasswordDialog from '../base/forgot-password-dialog';
+import Navbar from '../../general/navbar';
+import Link from '../../general/link';
+import LoginButton from '../../base/login-button';
+import ForgotPasswordDialog from '../../base/forgot-password-dialog';
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/label.scss';
 import '~/sass/elements/link.scss';
@@ -45,7 +46,7 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
       }
     ]} defaultOptions={[
       (<LoginButton key="0"/>),
-      (<ForgotPasswordDialog key="1"><Link className="label label--forgot-password">
+      (<ForgotPasswordDialog modifier="forgot-password" key="1"><Link className="label label--forgot-password">
          <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
        </Link></ForgotPasswordDialog>)
     ]} menuItems={[
@@ -58,7 +59,7 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -68,7 +69,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(FrontpageNavbar);

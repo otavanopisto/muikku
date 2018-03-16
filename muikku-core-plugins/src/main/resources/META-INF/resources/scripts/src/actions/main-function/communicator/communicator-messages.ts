@@ -1,6 +1,4 @@
 import notificationActions from '~/actions/base/notifications';
-import messageCountActions from '~/actions/main-function/message-count';
-import actions from '~/actions/main-function';
 
 import {hexToColorInt} from '~/util/modifiers';
 import promisify from '~/util/promisify';
@@ -15,6 +13,7 @@ import {CommunicatorThreadType, CommunicatorStateType,
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import { StatusType } from "~/reducers/base/status";
 import { ContactRecepientType } from '~/reducers/main-function/user-index';
+import { updateMessageCount } from '~/actions/main-function/messages';
 
 //////////////////////////////////////// INTERFACES FOR ACTIONS
 export interface SET_CURRENT_MESSAGE_THREAD extends SpecificActionType<"SET_CURRENT_MESSAGE_THREAD", CommunicatorThreadType>{}
@@ -170,7 +169,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage(message) {
               payload: messages[0]
             });
             if (communicatorMessages.location !== "sent") {
-              dispatch(messageCountActions.updateMessageCount(messageCount + 1));
+              dispatch(updateMessageCount(messageCount + 1));
             }
 
             if (communicatorMessages.current && communicatorMessages.current.messages[0].communicatorMessageId === result.communicatorMessageId) {
@@ -275,10 +274,10 @@ let toggleMessagesReadStatus:ToggleMessageReadStatusTriggerType =  function togg
     
     try {
       if (message.unreadMessagesInThread){
-        dispatch(messageCountActions.updateMessageCount(messageCount - 1));
+        dispatch(updateMessageCount(messageCount - 1));
         await promisify(mApi().communicator[getApiId(item)].markasread.create(message.communicatorMessageId), 'callback')();
       } else {
-        dispatch(messageCountActions.updateMessageCount(messageCount + 1));
+        dispatch(updateMessageCount(messageCount + 1));
         await promisify(mApi().communicator[getApiId(item)].markasunread.create(message.communicatorMessageId), 'callback')();
       }
     } catch (err){
@@ -292,7 +291,7 @@ let toggleMessagesReadStatus:ToggleMessageReadStatusTriggerType =  function togg
           }
         }
       });
-      dispatch(messageCountActions.updateMessageCount(messageCount));
+      dispatch(updateMessageCount(messageCount));
     }
     
     mApi().communicator[getApiId(item)].cacheClear();
@@ -351,7 +350,7 @@ let deleteSelectedMessages:DeleteSelectedMessagesTriggerType = function deleteSe
       type: "UNLOCK_TOOLBAR",
       payload: null
     });
-    dispatch(messageCountActions.updateMessageCount(messageCount));
+    dispatch(updateMessageCount(messageCount));
   }
 }
 
@@ -402,7 +401,7 @@ let deleteCurrentMessage:DeleteCurrentMessageTriggerType = function deleteCurren
     //SADLY the current message doesn't have a mention on wheter
     //The message is read or unread so the message count has to be recalculated
     //by server logic
-    dispatch(messageCountActions.updateMessageCount());
+    dispatch(updateMessageCount());
     
     location.hash = "#" + item.location;
   }

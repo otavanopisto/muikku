@@ -39,7 +39,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/records/", to = "/jsf/records/index.jsf")
+@Join(path = "/records", to = "/jsf/records/index.jsf")
 @LoggedIn
 public class TranscriptofRecordsBackingBean {
   

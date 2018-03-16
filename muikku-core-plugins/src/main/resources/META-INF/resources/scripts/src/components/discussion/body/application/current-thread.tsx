@@ -15,6 +15,7 @@ import '~/sass/elements/container.scss';
 import '~/sass/elements/message.scss';
 import '~/sass/elements/avatar.scss';
 import { getName, getUserImageUrl } from "~/util/modifiers";
+import {StateType} from '~/reducers';
 
 interface CurrentThreadProps {
   discussionThreads: DiscussionType,
@@ -87,11 +88,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                   <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
                 </div>
                 <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
-                  <ReplyThread thread={this.props.discussionThreads.current}>
+                  <ReplyThread>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                   </ReplyThread>              
-                  <ReplyThread thread={this.props.discussionThreads.current}
-                   quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
+                  <ReplyThread quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                   </ReplyThread>                
                   {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
@@ -144,13 +144,15 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                       </div>
                     </div>                   
                     <div className="application-list__item__body">
-                      <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
-                    </div>  
+                      {reply.deleted ? 
+                        <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.reply.deleted")}]</article> :
+                        <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
+                    </div>
                     <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
-                      <ReplyThread thread={this.props.discussionThreads.current} reply={reply}>
+                      <ReplyThread reply={reply}>
                         <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                       </ReplyThread>
-                      <ReplyThread thread={this.props.discussionThreads.current} reply={reply}
+                      <ReplyThread reply={reply}
                        quote={reply.message} quoteAuthor={getName(user)}>
                         <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                       </ReplyThread>
@@ -172,10 +174,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussionThreads: state.discussionThreads,
+    discussionThreads: (state as any).discussionThreads,
     userIndex: state.userIndex,
     userId: state.status.userId,
     permissions: state.status.permissions
@@ -186,7 +188,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CurrentThread);

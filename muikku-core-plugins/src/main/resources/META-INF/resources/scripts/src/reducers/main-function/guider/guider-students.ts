@@ -1,10 +1,12 @@
 import {ActionType} from '~/actions';
-import { UserWithSchoolDataType, UserGroupListType } from 'reducers/main-function/user-index';
-import { WorkspaceListType } from '~/reducers/main-function/index/workspaces';
+import { UserWithSchoolDataType, UserGroupListType, UserFileType } from '~/reducers/main-function/user-index';
+import { WorkspaceListType } from '~/reducers/main-function/workspaces';
 
 //TODO remove or comment out, this is mocking code
 import hops from './mock/hops';
 import vops from './mock/vops';
+import { VOPSDataType } from '~/reducers/main-function/vops';
+import { HOPSDataType } from '~/reducers/main-function/hops';
 //TODO
 
 export type GuiderStudentsStateType = "LOADING" | "LOADING_MORE" | "ERROR" | "READY";
@@ -77,69 +79,11 @@ export interface GuiderStudentUserAddressType {
   defaultAddress: boolean
 }
 
-export interface GuiderStudentUserFileType {
-  id: number,
-  userEntityId: number,
-  fileName: string,
-  contentType: string,
-  title: string,
-  description: string,
-  archived: boolean
-}
-
-export interface GuiderVOPSRowItemType {
-  courseNumber: number,
-  description?: string,
-  educationSubtype?: string,
-  grade: string,
-  mandatority: string,
-  name: string,
-  placeholder: boolean,
-  planned: boolean,
-  state: string
-}
-
-export interface GuiderVOPSRowType {
-  subject: string,
-  subjectIdentifier: string,
-  items: Array<GuiderVOPSRowItemType>
-}
-
-export interface GuiderVOPSDataType {
-  numMandatoryCourses: number,
-  numCourses: number,
-  optedIn: boolean,
-  rows: Array<GuiderVOPSRowType>
-}
-
 export interface GuiderLastLoginStudentDataType {
   userIdentifier: string,
   authenticationProvder: string,
   address: string,
   time: string
-}
-
-//TODO hops has an enum defined structure
-export interface GuiderHOPSDataType {
-  goalSecondarySchoolDegree: "yes" | "no" | "maybe",
-  goalMatriculationExam: "yes" | "no" | "maybe",
-  vocationalYears: string,        //string wtf, but this shit is actually a number
-  goalJustMatriculationExam: "yes" | "no",  //yo
-  justTransferCredits: string,    //another disguised number
-  transferCreditYears: string,    //disguides number
-  completionYears: string,      //disguised number
-  mathSyllabus: "MAA" | "MAB", 
-  finnish: "AI" | "S2",
-  swedish: boolean,
-  english: boolean,
-  german: boolean,
-  french: boolean,
-  italian: boolean,
-  spanish: boolean,
-  science: "BI" | "FY" | "KE" | "GE",
-  religion: "UE" | "ET" | "UX",
-  additionalInfo?: string,
-  optedIn: boolean
 }
 
 //These are actually dates, might be present or not
@@ -158,10 +102,10 @@ export interface GuiderStudentUserProfileType {
   emails: Array<GuiderStudentUserProfileEmailType>,
   phoneNumbers: Array<GuiderStudentUserProfilePhoneType>,
   addresses: Array<GuiderStudentUserAddressType>,
-  files: Array<GuiderStudentUserFileType>,
+  files: Array<UserFileType>,
   usergroups: UserGroupListType,
-  vops: GuiderVOPSDataType,
-  hops: GuiderHOPSDataType,
+  vops: VOPSDataType,
+  hops: HOPSDataType,
   lastLogin: GuiderLastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
   workspaces: WorkspaceListType

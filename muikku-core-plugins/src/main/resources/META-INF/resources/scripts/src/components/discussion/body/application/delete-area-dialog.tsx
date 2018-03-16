@@ -12,6 +12,7 @@ import '~/sass/elements/buttons.scss';
 import { deleteDiscussionArea, DeleteDiscussionAreaTriggerType } from '~/actions/main-function/discussion/discussion-areas';
 import { DiscussionAreaType, DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
 import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
+import {StateType} from '~/reducers';
 
 interface DiscussionDeleteAreaProps {
   i18n: i18nType,
@@ -61,11 +62,11 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div>
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+         <div className="dialog__button-set">
+          <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.cancel')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Link className="button button--fatal button--standard-ok" onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.send')}
           </Link>
         </div>
@@ -80,11 +81,11 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    areas: state.areas,
-    discussionThreads: state.discussionThreads
+    areas: (state as any).areas,
+    discussionThreads: (state as any).discussionThreads
   }
 };
 
@@ -92,7 +93,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({deleteDiscussionArea}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(DiscussionDeleteArea);

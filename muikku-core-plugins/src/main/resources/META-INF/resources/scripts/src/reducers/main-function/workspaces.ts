@@ -33,6 +33,19 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
+export interface WorkspaceStudentAccessmentType {
+  assessorEntityId: number,
+  evaluated: string,
+  gradeIdentifier: string,
+  gradeSchoolDataSource: string,
+  gradingScaleIdentifier: string,
+  gradingScaleSchoolDataSource: string,
+  identifier: string,
+  passed: boolean,
+  verbalAssessment: string,
+  workspaceStudentId: string
+}
+
 export interface WorkspaceType {
   access: string,
   archived: boolean,
@@ -51,14 +64,35 @@ export interface WorkspaceType {
   
   //These are optional addons, and are usually not available
   studentActivity?: WorkspaceStudentActivityType,
-  forumStatistics?: WorkspaceForumStatisticsType
+  forumStatistics?: WorkspaceForumStatisticsType,
+  studentAcessment?: WorkspaceStudentAccessmentType
+}
+
+export interface ShortWorkspaceType {
+  workspaceName: string,
+  materialName: string,
+  url: string
 }
 
 export interface WorkspaceListType extends Array<WorkspaceType> {}
 
-export default function workspaces(state: WorkspaceListType=[], action: ActionType): WorkspaceListType{
+export interface WorkspacesType {
+  workspaces: WorkspaceListType,
+  lastWorkspace?: ShortWorkspaceType
+}
+
+export default function workspaces(state: WorkspacesType={
+  workspaces: [],
+  lastWorkspace: null
+}, action: ActionType): WorkspacesType {
   if (action.type === 'UPDATE_WORKSPACES'){
-    return <WorkspaceListType>action.payload;
+    return <WorkspacesType>Object.assign({}, state, {
+      workspaces: action.payload
+    });
+  } else if (action.type === 'UPDATE_LAST_WORKSPACE'){
+    return Object.assign({}, state, {
+      lastWorkspace: <ShortWorkspaceType>action.payload
+    });
   }
   return state;
 }

@@ -22,7 +22,8 @@ export interface UPDATE_DISCUSSION_THREAD_REPLY extends SpecificActionType<"UPDA
 export interface LoadDiscussionThreadsTriggerType {
   (data:{
     areaId: number,
-    page: number
+    page: number,
+    forceRefresh?: boolean,
   }):AnyActionType
 }
 
@@ -40,6 +41,7 @@ export interface LoadDiscussionThreadTriggerType {
     page?: number,
     threadId: number,
     threadPage?: number,
+    forceRefresh?: boolean,
     success?: ()=>any,
     fail?: ()=>any
   }):AnyActionType
@@ -91,19 +93,18 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
       payload: <DiscussionStateType>"WAIT"
     });
     
+    let state = getState();
+    let discussion:DiscussionType = state.discussionThreads;
+    
+    //Avoid loading if it's the same area
+    if (!data.forceRefresh && discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
+      return;
+    }
+    
     //NOTE we reload the discussion areas every time we load the threads because we have absolutely no
     //idea if the amount of pages per thread change every time I select a page, data updates on the fly
     //one solution would be to make a realtime change
     dispatch(loadDiscussionAreas(async ()=>{
-      
-      let state = getState();
-      let discussion:DiscussionType = state.discussionThreads;
-      
-      //Avoid loading if it's the same area
-      if (discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
-        return;
-      }
-      
       dispatch({
         type: "UPDATE_DISCUSSION_THREADS_STATE",
         payload: <DiscussionStateType>"LOADING"
@@ -253,7 +254,13 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
     try {
       let newCurrentThread:DiscussionThreadType = discussion.threads.find((thread)=>{
         return thread.id === data.threadId;
-      }) || <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
+      });
+    
+      if (!newCurrentThread || data.forceRefresh){
+        newCurrentThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.read(data.areaId, data.threadId), 'callback')();
+      }
+      
+      dispatch(loadUserIndex(newCurrentThread.creator));
       
       let pages:number = Math.ceil(newCurrentThread.numReplies / MAX_LOADED_AT_ONCE) || 1;
     
@@ -267,12 +274,20 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         dispatch(loadUserIndex(reply.creator));
       });
       
+      let newThreads: DiscussionThreadListType = state.discussionThreads.threads.map((thread: DiscussionThreadType)=>{
+        if (thread.id !== newCurrentThread.id){
+          return thread;
+        }
+        return newCurrentThread;
+      });
+      
       let newProps:DiscussionPatchType = {
         current: newCurrentThread,
         currentReplies: replies,
         currentState: "READY",
         page: actualPage,
-        currentPage: actualThreadPage
+        currentPage: actualThreadPage,
+        threads: newThreads
       };
       
       //In a nutshell, if I go from all areas to a specific thread, then once going back it will cause it to load twice
@@ -320,12 +335,13 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
           discussion.current.forumAreaId, discussion.current.id, payload), 'callback')();
       
       //sadly the new calculation is overly complex and error prone so we'll just do this;
-      
+      //We also need to use force refresh to avoid reusing data in memory
       dispatch(loadDiscussionThread({
         areaId: discussion.current.forumAreaId,
         threadId: discussion.current.id,
         success: data.success,
-        fail: data.fail
+        fail: data.fail,
+        forceRefresh: true
       }));
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
@@ -341,6 +357,11 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
     
     try {
       await promisify(mApi().forum.areas.threads.del(discussion.current.forumAreaId, discussion.current.id), 'callback')();
+      dispatch(loadDiscussionThreads({
+        areaId: discussion.areaId,
+        page: discussion.page,
+        forceRefresh: true
+      }));
       
       //TODO same hacky method to trigger the goback event
       if (history.replaceState){

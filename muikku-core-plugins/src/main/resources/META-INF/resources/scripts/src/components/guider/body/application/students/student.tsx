@@ -23,18 +23,20 @@ export default class Student extends React.Component<StudentProps, StudentState>
         </div>
       </div>
       <div className="application-list__item-content application-list__item-content--main">
-        <div className="application-list__item-header application-list__item-header--user">
+        <div className="application-list__item-header application-list__item-header--student">
           <div className="text text--list-item-title">{getName(this.props.student as any as UserType)}</div>
           <div className="text text--list-item-helper-title">todo: email@email.com</div>
           <div className="text text--list-item-type-title">{this.props.student.studyProgrammeName}</div>
         </div>
-        <div className="application-list__item-body text text--labels">
+        <div className="application-list__item-footer application-list__item-footer--student">
+          <div className="text text--labels">
           {this.props.student.flags.map((flag: GuiderStudentUserProfileLabelType)=>{
             return <div className="text text--label" key={flag.id}>
-              <span className="icon-flag" style={{color: flag.flagColor}}></span>
+              <span className="text__icon text__icon--label icon-flag" style={{color: flag.flagColor}}></span>
               <span>{flag.flagName}</span>
             </div>
           })}
+          </div>
         </div>          
       </div>
     </div>

@@ -13,6 +13,7 @@ import { AnnouncementListType, AnnouncementType } from '~/reducers/main-function
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
+import {StateType} from '~/reducers';
 
 interface AnnouncementProps {
   i18n: i18nType,
@@ -39,20 +40,18 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcement: state.currentAnnouncement
+    announcement: (state as any).currentAnnouncement
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({
-
-  }, dispatch);
+  return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Announcement);

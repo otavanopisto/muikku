@@ -4,13 +4,14 @@ import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {AnnouncementListType} from '~/reducers/main-function/announcer/announcements';
 
-export interface UpdateAnnouncementsTriggerType {
+//REDUX ACTIONS
+export interface UPDATE_ANNOUNCEMENTS extends SpecificActionType<"UPDATE_ANNOUNCEMENTS", AnnouncementListType>{}
+
+export interface LoadAnnouncementsFromServerTriggerType {
   (options?: any, callback?: (announcements:AnnouncementListType )=>any):AnyActionType
 }
 
-export interface UPDATE_ANNOUNCEMENTS extends SpecificActionType<"UPDATE_ANNOUNCEMENTS", AnnouncementListType>{}
-
-let updateAnnouncements:UpdateAnnouncementsTriggerType = function updateAnnouncements(options={hideWorkspaceAnnouncements: "false"}, callback){
+let loadAnnouncementsFromServer:LoadAnnouncementsFromServerTriggerType = function loadAnnouncementsFromServer(options={hideWorkspaceAnnouncements: "false"}, callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
     try {
       let announcements:AnnouncementListType = <AnnouncementListType>await promisify(mApi().announcer.announcements.read(options), 'callback')();
@@ -25,5 +26,5 @@ let updateAnnouncements:UpdateAnnouncementsTriggerType = function updateAnnounce
   }
 }
 
-export default {updateAnnouncements}
-export {updateAnnouncements}
+export default {loadAnnouncementsFromServer}
+export {loadAnnouncementsFromServer}

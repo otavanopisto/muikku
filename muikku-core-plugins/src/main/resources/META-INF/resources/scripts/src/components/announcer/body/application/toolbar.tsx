@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -44,7 +45,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       location.hash = location.hash.split("/")[0] + "/" + announcement.id;
     }
   }
-  onGoBackClick(e: Event){
+  onGoBackClick(){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
@@ -117,10 +118,11 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
   }
 }
 
-function mapStateToProps(state: any){
+//TODO this is another one that uses the different version of announcements
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: (state as any).announcements
   }
 };
 
@@ -128,7 +130,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {}
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AnnouncerToolbar);

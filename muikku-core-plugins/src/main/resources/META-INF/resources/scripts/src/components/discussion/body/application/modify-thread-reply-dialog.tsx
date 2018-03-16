@@ -8,6 +8,7 @@ import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
 import JumboDialog from "~/components/general/jumbo-dialog";
 import { modifyReplyFromCurrentThread, ModifyReplyFromCurrentThreadTriggerType } from "~/actions/main-function/discussion/discussion-threads";
+import {StateType} from '~/reducers';
 
 interface ModifyThreadReplyProps {
   i18n: i18nType,
@@ -105,7 +106,7 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n
   }
@@ -115,7 +116,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({modifyReplyFromCurrentThread}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(ModifyThreadReply);

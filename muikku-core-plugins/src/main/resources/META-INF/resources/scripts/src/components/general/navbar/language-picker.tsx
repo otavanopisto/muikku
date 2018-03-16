@@ -5,6 +5,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {LocaleListType} from '~/reducers/base/locales';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/dropdown.scss';
 import '~/sass/elements/link.scss';
@@ -33,7 +34,7 @@ class LanguagePicker extends React.Component<LanguagePickerProps, LanguagePicker
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     locales: state.locales
   }
@@ -43,7 +44,7 @@ const mapDispatchToProps = (dispatch: Dispatch<any>)=>{
   return bindActionCreators({setLocale}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(LanguagePicker);

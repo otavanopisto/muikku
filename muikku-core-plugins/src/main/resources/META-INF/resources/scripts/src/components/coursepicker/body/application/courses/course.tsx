@@ -11,6 +11,7 @@ import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
 
 import { StatusType } from '~/reducers/base/status';
+import {StateType} from '~/reducers';
 
 interface CourseProps {
   i18n: i18nType,
@@ -65,7 +66,7 @@ class Course extends React.Component<CourseProps, CourseState>{
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     status: state.status
@@ -76,7 +77,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return {};
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Course);

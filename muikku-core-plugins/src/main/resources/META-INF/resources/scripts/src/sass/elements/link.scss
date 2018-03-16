@@ -195,16 +195,32 @@
   }
 }
 
-.link--label, .link--guider-label {
+.link--communicator-label, 
+.link--guider-label {
+  border-top: 1px solid $color-default;
   justify-content: flex-start;
   text-transform: none;
   
-  &.selected {
+  &:hover,
+  &.hover {
+    background-color: $color-main-function-label-link-hover-background;
+  }
+  
+  &:active,
+  &.active {
     background-color: $color-main-function-label-link-active-background;
   }
   
+  &.selected {
+    background-color: $color-main-function-label-link-selected-background;
+    
+    .text {
+      font-weight: 600;
+    }
+  }
+  
   &.semi-selected {
-    background-color: lighten($color-main-function-label-link-active-background, 50%);
+    background-color: lighten($color-main-function-label-link-selected-background, 5%);
   }
 }
 

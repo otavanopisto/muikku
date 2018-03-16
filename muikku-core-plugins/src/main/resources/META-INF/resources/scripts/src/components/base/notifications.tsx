@@ -4,6 +4,7 @@ import {connect, Dispatch} from 'react-redux';
 import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
 import {NotificationListType, NotificationType} from '~/reducers/base/notifications';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/notification-queue.scss';
 
@@ -35,7 +36,7 @@ class Notifications extends React.Component<NotificationsProps, NotificationsSta
   }
 }
   
-function mapStateToProps(state:any){
+function mapStateToProps(state: StateType){
   return {
     notifications: state.notifications
   }
@@ -45,7 +46,7 @@ function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
   return bindActionCreators({hideNotification, displayNotification}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Notifications);

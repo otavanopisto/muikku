@@ -7,22 +7,22 @@ $color-default-separator-border: #ebebeb;
 $color-inverse: $color-default-contrast;
 $color-inverse-contrast: $color-default;
 
-$color-warn: #ef6000;
+$color-warn: #ea7503;
 $color-warn-contrast: $color-default;
 
-$color-info: #549fca;
+$color-info: #009fe3;
 $color-info-contrast: $color-default;
 
-$color-fatal: #bf3000;
+$color-fatal: #de3211;
 $color-fatal-contrast: $color-default;
 
 $color-error: #ff6600;
 $color-error-contrast: $color-default;
 
-$color-success: #27b91c; 
+$color-success: #24c118;
 $color-success-contrast: $color-default;
 
-$color-cancel: #7391a7; 
+$color-cancel: #7391a7;
 $color-cancel-contrast: $color-default;
 
 $color-loading: $color-inverse;
@@ -31,8 +31,15 @@ $color-loading-contrast: $color-default;
 $color-primary: #009fe3;
 $color-primary-contrast: $color-default;
 
-$color-secondary: #00af00;
+$color-secondary: #72d200;
 $color-secondary-contrast: $color-default;
+
+$color-tertiary: #62c3eb;
+$color-tertiary-contrast: $color-default;
+
+$color-list-hover-background: #E7FFFC;
+$color-list-active-background: rgba(208, 255, 249, 1);
+$color-list-selected-background: #bff3fb;
 
 // General
 $color-default-body: #f5f5f5;
@@ -221,8 +228,8 @@ $color-panel-shadow: rgba(0,0,0,0.05);
 // item list
 $color-item-list-item-font-color-active: #fff;
 $color-item-list-item-background: #fff;
-$color-item-list-item-background-hover: rgba(208, 255, 249, 0.5);
-$color-item-list-item-background-active: rgba(208, 255, 249, 1);
+$color-item-list-item-background-hover: $color-list-hover-background;
+$color-item-list-item-background-active: $color-list-active-background;
 $color-item-list-item-aside-background: #f7f7f7;
 $color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
 $color-item-list-item-aside-background-active: rgb(98, 174, 193);
@@ -244,9 +251,9 @@ $color-toc-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background: #fff;
-$color-application-list-item-background-hover: $color-item-list-item-background-hover;
-$color-application-list-item-background-active: $color-item-list-item-background-active;
-$color-application-list-item-background-selected: #bff3fb;
+$color-application-list-item-background-hover: $color-list-hover-background;
+$color-application-list-item-background-active: $color-list-active-background;
+$color-application-list-item-background-selected: $color-list-selected-background;
 $color-application-list-item-checkmark-selected: #29b0c4;
 $color-application-list-item-course-border-selected: #29b0c4;
 

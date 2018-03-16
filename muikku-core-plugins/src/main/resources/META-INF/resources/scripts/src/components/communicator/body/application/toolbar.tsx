@@ -13,6 +13,7 @@ import LabelUpdateDialog from '~/components/communicator/body/label-update-dialo
 import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
 import {CommunicatorMessagesType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
+import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
@@ -115,7 +116,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
               }).map((label)=>{
                 let isSelected = this.props.communicatorMessages.current.labels.find(l=>l.labelId === label.id);
-                return (<Link className={`link link--full link--label ${isSelected ? "selected" : ""}`}
+                return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
                   onClick={!isSelected ? this.props.addLabelToCurrentMessage.bind(null, label) : this.props.removeLabelFromCurrentMessage.bind(null, label)}>
                   <span className="link__icon icon-tag" style={{color: label.color}}></span>
                   <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
@@ -179,7 +180,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         }).map((label: CommunicatorNavigationItemType)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
-          return (<Link className={`link link--full link--label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
+          return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
             onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessages.bind(null, label) : this.props.removeLabelFromSelectedMessages.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
@@ -200,10 +201,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
-    communicatorNavigation: state.communicatorNavigation,
-    communicatorMessages: state.communicatorMessages,
+    communicatorNavigation: (state as any).communicatorNavigation,
+    communicatorMessages: (state as any).communicatorMessages,
     i18n: state.i18n
   }
 };
@@ -215,7 +216,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
     removeLabelFromCurrentMessage}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CommunicatorToolbar);

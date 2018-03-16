@@ -1,5 +1,4 @@
 import notificationActions from '~/actions/base/notifications';
-import messageCountActions from '~/actions/main-function/message-count';
 
 import {hexToColorInt} from '~/util/modifiers';
 import promisify from '~/util/promisify';

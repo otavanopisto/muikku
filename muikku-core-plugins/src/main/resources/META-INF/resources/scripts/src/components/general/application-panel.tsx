@@ -11,7 +11,6 @@ interface ApplicationPanelProps {
   toolbar?: React.ReactElement<any>,
   asideBefore?: React.ReactElement<any>,   
   asideAfter?: React.ReactElement<any>,
-  aside?: React.ReactElement<any>,      
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
 }
 

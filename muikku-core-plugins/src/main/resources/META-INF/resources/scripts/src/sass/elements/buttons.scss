@@ -301,7 +301,7 @@
     background-color: $color-button-primary-background;
     color: $color-button-primary-text;
     display: inline-flex;
-    height: 40px;
+    height: $button-primary-height;
     width: 100%;
     
     &:hover, 
@@ -591,7 +591,7 @@
   flex-grow: 0;
   flex-shrink: 0;
   margin-right: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   vertical-align: top;
   
   &:hover, 
@@ -623,7 +623,7 @@
     color: $color-main-function-button-pill-prev-page-text;
     display: inline-flex;
     margin-left: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     vertical-align: top;
     
     &:hover, 
@@ -652,7 +652,7 @@
     color: $color-main-function-button-pill-next-page-text;
     display: inline-flex;
     margin-left: 10px;
-    border-radius: 5px;
+    border-radius: 10px;
     vertical-align: top;
     
     &:hover, 

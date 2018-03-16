@@ -13,6 +13,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/form-fields.scss';
 import { bindActionCreators } from "redux";
+import {StateType} from '~/reducers';
 
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
@@ -59,13 +60,13 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           let isSelected = (this.props.guiderStudents.current.labels || []).find(l=>l.flagId === label.id);
           return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""}`}
             onClick={!isSelected ? this.props.addGuiderLabelToCurrentUser.bind(null, label) : this.props.removeGuiderLabelFromCurrentUser.bind(null, label)}>
-            <span className="link__icon icon-tag" style={{color: label.color}}></span>
+            <span className="link__icon icon-flag" style={{color: label.color}}></span>
             <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
           </Link>);
         }))
       }>
         <Link className="button-pill button-pill--label">
-          <span className="button-pill__icon icon-tag"></span>
+          <span className="button-pill__icon icon-flag"></span>
         </Link>
       </Dropdown>
     }
@@ -99,23 +100,23 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           onClick={!isSelected || isPartiallySelected ? 
             this.props.addGuiderLabelToSelectedUsers.bind(null, label) :
             this.props.removeGuiderLabelFromSelectedUsers.bind(null, label)}>
-           <span className="link__icon icon-tag" style={{color: label.color}}></span>
+           <span className="link__icon icon-flag" style={{color: label.color}}></span>
            <span className="text">{filterHighlight(label.name, this.state.labelFilter)}</span>
         </Link>);
       }))
     }>
       <Link className="button-pill button-pill--label">
-        <span className="button-pill__icon icon-tag"></span>
+        <span className="button-pill__icon icon-flag"></span>
       </Link>
     </Dropdown>;
   }
 }
 
-function mapStateToProps(state: any){
+function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderFilters: state.guiderFilters,
-    guiderStudents: state.guiderStudents
+    guiderFilters: (state as any).guiderFilters,
+    guiderStudents: (state as any).guiderStudents
   }
 };
 
@@ -127,7 +128,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
     removeGuiderLabelFromSelectedUsers}, dispatch);
 };
 
-export default (connect as any)(
+export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(GuiderToolbarLabels);

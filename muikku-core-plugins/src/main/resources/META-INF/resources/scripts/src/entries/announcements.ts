@@ -3,7 +3,7 @@ import reducer from '~/reducers/announcements';
 import runApp from '~/run';
 import mainFunctionDefault from '~/util/base-main-function';
 import { Action } from 'redux';
-import {updateAnnouncements} from '~/actions/main-function/announcements';
+import {loadAnnouncementsFromServer} from '~/actions/main-function/announcements';
 import {loadAnnouncement} from '~/actions/main-function/announcements/announcements';
 import {AnnouncementListType} from '~/reducers/main-function/announcer/announcements';
 
@@ -14,7 +14,7 @@ let urlString = window.location.search;
 let indexOf = urlString.indexOf('=') + 1;    
 let annnouncementId = parseInt(urlString.substring(indexOf));
 
-store.dispatch(<Action>updateAnnouncements({hideWorkspaceAnnouncements: "false"}, (announcements:AnnouncementListType)=>{}));
+store.dispatch(<Action>loadAnnouncementsFromServer({hideWorkspaceAnnouncements: "false"}, (announcements:AnnouncementListType)=>{}));
 store.dispatch(<Action>loadAnnouncement(annnouncementId));
 
 //let currentLocation = window.location.hash.replace("#","").split("/");
