@@ -11,17 +11,17 @@ import '~/sass/elements/message.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
-import {CoursePickerCoursesType, CoursePickerCoursesStateType, CoursePickerCourseListType, CoursePickerCourseType} from '~/reducers/main-function/coursepicker/coursepicker-courses';
-import { loadMoreCourses, LoadMoreCoursesTriggerType } from '~/actions/main-function/coursepicker/coursepicker-courses';
+import {CoursesStateType, CourseListType, CourseType} from '~/reducers/main-function/courses';
+import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
 import Course from './courses/course';
 import {StateType} from '~/reducers';
 
 interface CoursepickerWorkspacesProps {
   i18n: i18nType,
-  coursepickerCoursesState: CoursePickerCoursesStateType,
+  coursepickerCoursesState: CoursesStateType,
   coursepickerHasMore: boolean,
-  loadMoreCourses: LoadMoreCoursesTriggerType,
-  coursepickerCoursesCourses: CoursePickerCourseListType
+  loadMoreCoursesFromServer: LoadMoreCoursesFromServerTriggerType,
+  coursepickerCoursesCourses: CourseListType
 }
 
 interface CoursepickerWorkspacesState {
@@ -51,7 +51,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     }    
     return (
     <div className="application-list_item-wrapper ">
-      {this.props.coursepickerCoursesCourses.map((course: CoursePickerCourseType)=>{
+      {this.props.coursepickerCoursesCourses.map((course: CourseType)=>{
         return <Course key={course.id} course={course}/>
       })}
       {this.props.coursepickerCoursesState === "LOADING_MORE" ? <div className="application-list__item loader-empty"/> : null}
@@ -62,14 +62,14 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    coursepickerCoursesState: (state as any).coursepickerCourses.state,
-    coursepickerHasMore: (state as any).coursepickerCourses.hasMore,
-    coursepickerCoursesCourses: (state as any).coursepickerCourses.courses
+    coursepickerCoursesState: state.courses.state,
+    coursepickerHasMore: state.courses.hasMore,
+    coursepickerCoursesCourses: state.courses.courses
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({loadMoreCourses}, dispatch);
+  return bindActionCreators({loadMoreCoursesFromServer}, dispatch);
 };
 
 export default connect(

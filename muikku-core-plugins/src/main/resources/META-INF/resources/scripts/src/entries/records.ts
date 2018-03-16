@@ -9,7 +9,7 @@ import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
 import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records/records';
-import { updateCurriculumFilters } from '~/actions/main-function/coursepicker/coursepicker-filters';
+import { loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';
 
@@ -17,7 +17,7 @@ let store = runApp(reducer, App);
 mainFunctionDefault(store);
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.records.pageTitle')));
-store.dispatch(<Action>updateCurriculumFilters());
+store.dispatch(<Action>loadAvaliableCurriculumFiltersFromServer());
 
 function loadCurrentLocation(){
   let dataSplitted:Array<string> = window.location.hash.replace("#", "").split("?");

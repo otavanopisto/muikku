@@ -2,6 +2,7 @@ import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi from '~/lib/mApi';
 import {UserType} from '~/reducers/main-function/user-index';
+import { StateType } from '~/reducers';
 
 export interface LoadUserIndexTriggerType {
   (userId: number, callback?: (user:UserType)=>any):AnyActionType
@@ -35,7 +36,7 @@ let fetchingStateUserBySchoolData:{[index: string]: boolean} = {};
 let fetchingStateUserGroup:{[index: number]: boolean} = {};
 
 let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, callback) { 
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let currentUserInfo = state.userIndex.users[userId];
     if (currentUserInfo || fetchingStateUser[userId]){
@@ -60,9 +61,9 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, cal
 }
 
 let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function loadUserIndexBySchoolData(userId, callback) { 
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    let currentUserInfo = state.userIndex.users[userId];
+    let currentUserInfo = state.userIndex.usersBySchoolData[userId];
     if (currentUserInfo || fetchingStateUserBySchoolData[userId]){
       return;
     }
@@ -85,7 +86,7 @@ let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function l
 }
 
 let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIndex(groupId) { 
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let currentGroupInfo = state.userIndex.groups[groupId];
     if (currentGroupInfo || fetchingStateUser[groupId]){

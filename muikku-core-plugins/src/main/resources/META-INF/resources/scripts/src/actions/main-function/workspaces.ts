@@ -3,6 +3,7 @@ import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {WorkspaceListType, ShortWorkspaceType} from '~/reducers/main-function/workspaces';
+import { StateType } from '~/reducers';
 
 export interface LoadWorkspacesFromServerTriggerType {
   ():AnyActionType
@@ -14,7 +15,7 @@ export type UPDATE_LAST_WORKSPACE = SpecificActionType<"UPDATE_LAST_WORKSPACE", 
 export type ACTIONS = UPDATE_WORKSPACES | UPDATE_LAST_WORKSPACE
 
 let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType = function loadWorkspacesFromServer(){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let userId = getState().status.userId;
     try {
       dispatch({
@@ -32,7 +33,7 @@ export interface LoadLastWorkspaceFromServerTriggerType {
 }
 
 let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = function loadLastWorkspaceFromServer() {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: 'UPDATE_LAST_WORKSPACE',

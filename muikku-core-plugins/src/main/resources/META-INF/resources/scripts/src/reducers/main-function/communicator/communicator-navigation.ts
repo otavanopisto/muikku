@@ -25,9 +25,9 @@ export interface LabelType {
   name: string
 }
 
-export interface LabelListType extends Array<LabelType> {};
+export type LabelListType = Array<LabelType>;
 
-export interface CommunicatorNavigationItemListType extends Array<CommunicatorNavigationItemType> {}
+export type CommunicatorNavigationItemListType = Array<CommunicatorNavigationItemType>;
 
 const defaultNavigation: CommunicatorNavigationItemListType = [
   {

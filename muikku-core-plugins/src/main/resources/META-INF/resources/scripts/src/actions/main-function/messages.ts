@@ -3,6 +3,7 @@ import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {CommunicatorMessageListType} from '~/reducers/main-function/communicator/communicator-messages';
 import mApi from '~/lib/mApi';
+import { StateType } from '~/reducers';
 
 export interface UpdateMessageCountTriggerType {
   (value?: number):AnyActionType
@@ -19,7 +20,7 @@ let updateMessageCount:UpdateMessageCountTriggerType =  function updateMessageCo
     }
   }
   
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: "UPDATE_MESSAGE_COUNT",
@@ -36,7 +37,7 @@ export interface LoadLastMessagesFromSeverTriggerType {
 }
 
 let loadLastMessagesFromServer:LoadLastMessagesFromSeverTriggerType = function loadLastMessagesFromServer(maxResults) {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: 'UPDATE_MESSAGES',

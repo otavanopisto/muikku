@@ -3,6 +3,7 @@ import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi from '~/lib/mApi';
 import { HOPSDataType, HOPSStatusType } from '~/reducers/main-function/hops';
+import { StateType } from '~/reducers';
 
 export interface UpdateHopsTriggerType {
   ():AnyActionType
@@ -16,7 +17,7 @@ export interface UPDATE_HOPS extends SpecificActionType<"UPDATE_HOPS", HOPSDataT
 export interface UPDATE_HOPS_STATUS extends SpecificActionType<"UPDATE_HOPS_STATUS", HOPSStatusType>{}
 
 let updateHops:UpdateHopsTriggerType = function updateHops() {
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       if (getState().hops.status !== "WAIT"){
         return null;
@@ -44,7 +45,7 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
 }
 
 let setHopsTo:SetHopsToTriggerType = function setHopsTo(newHops){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: 'UPDATE_HOPS',

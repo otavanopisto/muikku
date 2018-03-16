@@ -41,7 +41,7 @@ export interface AnnouncementUpdateType {
   }>
 }
 
-export interface AnnouncementListType extends Array<AnnouncementType> {}
+export type AnnouncementListType = Array<AnnouncementType>;
 
 export type AnnouncementsStateType = "LOADING" | "ERROR" | "READY";
 

@@ -74,7 +74,7 @@ export interface ShortWorkspaceType {
   url: string
 }
 
-export interface WorkspaceListType extends Array<WorkspaceType> {}
+export type WorkspaceListType = Array<WorkspaceType>;
 
 export interface WorkspacesType {
   workspaces: WorkspaceListType,
