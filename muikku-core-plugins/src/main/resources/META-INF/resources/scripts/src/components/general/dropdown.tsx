@@ -91,7 +91,7 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         <div className="dropdown__container">
           {this.props.items.map((item, index)=>{
             let element = typeof item === "function" ? item(this.close) : item;
-            return (<div className="dropdown__container__item" key={index}>
+            return (<div className="dropdown__container-item" key={index}>
               {element}
             </div>);
           })}
