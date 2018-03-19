@@ -109,3 +109,30 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
   }
 }
 
+interface ApplicationPanelToolbarProps {
+  
+}
+
+interface ApplicationPanelToolbarState {
+  
+}
+
+export class ApplicationPanelToolbar extends React.Component<ApplicationPanelToolbarProps, ApplicationPanelToolbarState> {
+  render(){
+    return <div className="application-panel__toolbar">{this.props.children}</div>
+  }
+}
+
+interface ApplicationPanelToolbarActionsMainProps {
+  
+}
+
+interface ApplicationPanelToolbarActionsMainState {
+  
+}
+
+export class ApplicationPanelToolbarActionsMain extends React.Component<ApplicationPanelToolbarActionsMainProps, ApplicationPanelToolbarActionsMainState> {
+  render(){
+    return <div className="application-panel__toolbar-actions-main">{this.props.children}</div>
+  }
+}

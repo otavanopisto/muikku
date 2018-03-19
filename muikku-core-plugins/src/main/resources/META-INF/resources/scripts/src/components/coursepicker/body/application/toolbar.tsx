@@ -5,13 +5,12 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 
-import '~/sass/elements/link.scss';
-import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { CoursesType } from '~/reducers/main-function/courses';
 import {StateType} from '~/reducers';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel';
 
 interface CoursepickerToolbarProps {
   i18n: i18nType,
@@ -63,12 +62,12 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
 
   render(){
       return ( 
-        <div className="application-panel__toolbar">
-          <div className="application-panel__toolbar-actions-main">
+        <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>
             <input className="form-field__input form-field__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
             <div className="form-field__input-decoration--main-function-search icon-search"></div>
-          </div>
-        </div>
+          </ApplicationPanelToolbarActionsMain>
+        </ApplicationPanelToolbar>
       )
   }
 }

@@ -31,12 +31,14 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     coursepickerNextState = "LOADING_MORE";
   }
   
+  let newCoursesPropsWhileLoading:CoursesPatchType = {
+    state: coursepickerNextState,
+    activeFilters: actualFilters
+  }
+  
   dispatch({
     type: "UPDATE_COURSES_ALL_PROPS",
-    payload: {
-      state: coursepickerNextState,
-      filters: actualFilters
-    }
+    payload: newCoursesPropsWhileLoading
   });
   
   //Generate the api query, our first result in the messages that we have loaded
