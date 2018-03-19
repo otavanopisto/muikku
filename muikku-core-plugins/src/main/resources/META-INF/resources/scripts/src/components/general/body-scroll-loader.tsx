@@ -12,6 +12,7 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     this.onScroll = this.onScroll.bind(this);
   }
   checkCanLoadMore(){
+    console.log("checking can load more");
     if (this.cancellingLoadingPropertyLocation && (this.props as any)[this.cancellingLoadingPropertyLocation]){
       return;
     }
@@ -43,6 +44,9 @@ export default class BodyScrollLoader<T, S> extends React.Component<T, S> {
     this.checkCanLoadMore();
   }
   componentDidMount(){
+    if (!(this.props as any)[this.loadMoreTriggerFunctionLocation]){
+      throw new Error("Undefined loadMoreTriggerFunctionLocation at " + this.loadMoreTriggerFunctionLocation);
+    }
     window.addEventListener("scroll", this.onScroll);
   }
   componentWillUnmount(){

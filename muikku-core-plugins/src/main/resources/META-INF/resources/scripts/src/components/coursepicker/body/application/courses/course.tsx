@@ -6,12 +6,12 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import { CourseType } from '~/reducers/main-function/courses';
 
-import '~/sass/elements/application-list.scss';
 import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
 
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
+import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 
 interface CourseProps {
   i18n: i18nType,
@@ -39,30 +39,30 @@ class Course extends React.Component<CourseProps, CourseState>{
   render(){
     //Please fix this markup I have no idea which standard to use, this is more or less like communicator
     //you can move the toggle expanded function wherever you want that you need the action to be triggered
-    return <div className={`application-list__item course ${this.state.expanded ? "course--open" : ""}`}>
-      <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleExpanded}>
+    return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`}>
+      <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
         <span className="text text--coursepicker-course-icon icon-books"></span>
         <span className="text text--list-item-title">{this.props.course.name}</span>
         {this.props.course.nameExtension ? 
           <span className="text text--list-item-title-extension">({this.props.course.nameExtension})</span>
         : null}
         <span className="text text--list-item-type-title">{this.props.course.educationTypeName}</span>
-      </div>
+      </ApplicationListItemHeader>
       {this.state.expanded ?
         <div>             
-          <div className="application-list__item-body application-list__item-body--course">
+          <ApplicationListItemBody className="application-list__item-body--course">
             <article className="text text--coursepicker-course-description" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
-          </div>
-          <div className="application-list__item-footer application-list__item-footer--course">
+          </ApplicationListItemBody>
+          <ApplicationListItemFooter className="application-list__item-footer--course">
             <Link className="button button--primary-function-content" href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
               {this.props.course.isCourseMember ?
                this.props.i18n.text.get("plugin.coursepicker.course.goto") :
                this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Link>
-          </div>
+          </ApplicationListItemFooter>
         </div>
       : null}
-    </div>
+    </ApplicationListItem>
   }
 }
 

@@ -15,6 +15,7 @@ import {CoursesStateType, CourseListType, CourseType} from '~/reducers/main-func
 import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
 import Course from './courses/course';
 import {StateType} from '~/reducers';
+import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 
 interface CoursepickerWorkspacesProps {
   i18n: i18nType,
@@ -36,7 +37,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     //it will only call the function if this is true
     this.hasMorePropertyLocation = "coursepickerHasMore";
     //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreCourses";
+    this.loadMoreTriggerFunctionLocation = "loadMoreCoursesFromServer";
   }
 
   render(){
@@ -49,13 +50,12 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
     } else if (this.props.coursepickerCoursesState.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("TODO it's empty")}</span></div>
     }    
-    return (
-    <div className="application-list_item-wrapper ">
+    return (<ApplicationList>
       {this.props.coursepickerCoursesCourses.map((course: CourseType)=>{
         return <Course key={course.id} course={course}/>
       })}
-      {this.props.coursepickerCoursesState === "LOADING_MORE" ? <div className="application-list__item loader-empty"/> : null}
-    </div>)
+      {this.props.coursepickerCoursesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}
+    </ApplicationList>);
   }
 }
 
