@@ -249,10 +249,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
         waitAndClick(".button-pill--label");
-        waitAndClick(".dropdown--communicator-labels .dropdown__container a.link--communicator-label");
+        waitAndClick("a.link--communicator-label span.text");
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer .text--communicator-label span:nth-child(2)");
-        assertText(".application-list__item-footer .text--communicator-label span:nth-child(2)", "test");
+        waitForPresentAndVisible(".application-list__item-footer--message .text--label span:nth-child(2)");
+        assertTextIgnoreCase(".application-list__item-footer--message .text--label span:nth-child(2)", "test");
         
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
         waitForPresent("span.text--communicator-username");
@@ -283,10 +283,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] .icon-edit");
-        waitForPresentAndVisible(".text--communicator-label-update-dialog-icon");
-        waitForPresentAndVisible("div.dialog__content > div > input.form-field--communicator-label-name");
-        clearElement("div.dialog__content > div > input.form-field--communicator-label-name");
-        sendKeys("div.dialog__content > div > input.form-field--communicator-label-name", "Dun dun duun");
+
+        waitForPresentAndVisible(".form-field--label-name");
+        clearElement(".form-field--label-name");
+        sendKeys(".form-field--label-name", "Dun dun duun");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--communicator");
         waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
@@ -315,9 +315,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] .icon-edit");
-        waitForPresentAndVisible(".text--communicator-label-update-dialog-icon");
+        waitForPresentAndVisible(".dialog--communicator.dialog--visible");
         waitAndClick(".button--communicator-remove-label");
-        assertTextIgnoreCase(".button--communicator-remove-label", "Label removed");
+        assertClassPresent(".button--communicator-remove-label", "disabled");
         waitAndClick(".button--standard-ok");
         waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
         assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
