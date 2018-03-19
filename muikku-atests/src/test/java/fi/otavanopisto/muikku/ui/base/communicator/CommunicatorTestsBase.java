@@ -149,65 +149,63 @@ public class CommunicatorTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }  
   }
-  
-//  @Test
-//  public void communicatorDeleteInboxMessageTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-//    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-//    Builder mockBuilder = mocker();
-//    try{
-//      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-//      login();
-//      try{
-//        long sender = getUserIdByEmail("admin@example.com");
-//        long recipient = getUserIdByEmail("student@example.com");
-//        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-//        logout();
-//        mockBuilder.mockLogin(student).build();
-//        login();
-//        navigate("/communicator", false);
-//        waitAndClick("div.cm-message-select input[type=\"checkbox\"]");
-//        waitAndClick(".icon-delete");
-//        // waitForPresentVisible(".notification-queue-item-success");
-//        waitForPresent(".cm-messages-container");
-//        assertTrue("Element found even though it shouldn't be there", isElementPresent("div.mf-item-select input[type=\"checkbox\"]") == false);
-//      }finally{
-//        deleteCommunicatorMessages(); 
-//      }
-//    }finally {
-//      mockBuilder.wiremockReset();
-//    }  
-//  }
 
-//  @Test
-//  public void communicatorDeleteSentMessageTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-//    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-//    Builder mockBuilder = mocker();
-//    try{
-//      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-//      login();
-//      try{
-//        long sender = getUserIdByEmail("admin@example.com");
-//        long recipient = getUserIdByEmail("student@example.com");
-//        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
-//        navigate("/communicator#sent", false);
-//        waitForPresent(".cm-message-select input[name=\"messageSelect\"]");
-//        click(".cm-message-select input[name=\"messageSelect\"]");
-//        waitForPresent(".icon-delete");
-//        click(".icon-delete");
-//        waitForPresent(".cm-messages-container");
-//        waitForPresent(".content");
-//        String currentUrl = getWebDriver().getCurrentUrl();
-//        assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("https://dev.muikku.fi:" + getPortHttps() + "/communicator#sent"));
-//        assertTrue("Element found even though it shouldn't be there", isElementPresent("div.cm-message-select input[type=\"checkbox\"]") == false);
-//      }finally{
-//        deleteCommunicatorMessages(); 
-//      }
-//    }finally {
-//      mockBuilder.wiremockReset();
-//    }
-//  }
+  @Test
+  public void communicatorDeleteInboxMessageTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+      login();
+      try{
+        long sender = getUserIdByEmail("admin@example.com");
+        long recipient = getUserIdByEmail("student@example.com");
+        createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+        logout();
+        mockBuilder.mockLogin(student).build();
+        login();
+        navigate("/communicator", false);
+        waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+        
+        waitAndClick(".icon-delete");
+        waitForPresent(".application-list__item-content--aside");
+        assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content--aside .message__select-container input:first-child") == false);
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }  
+  }
+
+  @Test
+  public void communicatorDeleteSentMessageTest() throws Exception {
+  MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+  MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+  Builder mockBuilder = mocker();
+  try{
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    try{
+      long sender = getUserIdByEmail("admin@example.com");
+      long recipient = getUserIdByEmail("student@example.com");
+      createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
+      navigate("/communicator#sent", false);
+      waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+      waitAndClick(".icon-delete");
+      
+      waitForPresent(".application-list__item-content--aside");
+      String currentUrl = getWebDriver().getCurrentUrl();
+      assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("http://dev.muikku.fi:" + getPortHttp() + "/communicator#sent"));
+      assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content--aside .message__select-container input:first-child") == false);      
+      }finally{
+        deleteCommunicatorMessages(); 
+      }
+    }finally {
+      mockBuilder.wiremockReset();
+    }
+  }
  
   @Test
   public void communicatorCreateLabelTest() throws Exception {
@@ -249,10 +247,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
         waitAndClick(".button-pill--label");
-        waitAndClick(".dropdown--communicator-labels .dropdown__container a.link--communicator-label");
+        waitAndClick("a.link--communicator-label span.text");
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer .text--communicator-label span:nth-child(2)");
-        assertText(".application-list__item-footer .text--communicator-label span:nth-child(2)", "test");
+        waitForPresentAndVisible(".application-list__item-footer--message .text--label span:nth-child(2)");
+        assertTextIgnoreCase(".application-list__item-footer--message .text--label span:nth-child(2)", "test");
         
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
         waitForPresent("span.text--communicator-username");
@@ -283,10 +281,10 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] .icon-edit");
-        waitForPresentAndVisible(".text--communicator-label-update-dialog-icon");
-        waitForPresentAndVisible("div.dialog__content > div > input.form-field--communicator-label-name");
-        clearElement("div.dialog__content > div > input.form-field--communicator-label-name");
-        sendKeys("div.dialog__content > div > input.form-field--communicator-label-name", "Dun dun duun");
+
+        waitForPresentAndVisible(".form-field--label-name");
+        clearElement(".form-field--label-name");
+        sendKeys(".form-field--label-name", "Dun dun duun");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--communicator");
         waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
@@ -315,9 +313,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] .icon-edit");
-        waitForPresentAndVisible(".text--communicator-label-update-dialog-icon");
+        waitForPresentAndVisible(".dialog--communicator.dialog--visible");
         waitAndClick(".button--communicator-remove-label");
-        assertTextIgnoreCase(".button--communicator-remove-label", "Label removed");
+        assertClassPresent(".button--communicator-remove-label", "disabled");
         waitAndClick(".button--standard-ok");
         waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
         assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");

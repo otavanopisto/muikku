@@ -145,7 +145,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                     </div>                   
                     <div className="application-list__item__body">
                       {reply.deleted ? 
-                        <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.reply.deleted")}]</article> :
+                        <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
                         <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
                     </div>
                     <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">

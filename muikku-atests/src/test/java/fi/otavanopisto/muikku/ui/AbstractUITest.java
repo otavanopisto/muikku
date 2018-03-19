@@ -797,7 +797,7 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     navigate("/login?authSourceId=1", false);
-    waitForPresent("main.content");
+    waitForPresentAndVisible(".navbar .button-pill--profile");
   }
   
   protected void login() {
@@ -1002,6 +1002,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void deleteDiscussion(Long groupId, Long id) {
     asAdmin()
       .delete("/test/discussiongroups/{GROUPID}/discussions/{ID}", groupId, id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void cleanUpDiscussions() {
+    asAdmin()
+      .delete("/test/discussion/cleanup")
       .then()
       .statusCode(204);
   }
