@@ -103,7 +103,10 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       return (
         <div className="application-panel__toolbar">        
           <div className="application-panel__toolbar-actions-main">
-            <div className="text text--main-function-current-folder">
+            <div className="text text--main-function-current-folder">              
+          
+              {/* Yeah, this is not beautiful, but it's simple and if the hash fails, this isn't the worst thing that fails */}
+          
               {this.props.i18n.text.get("plugin.announcer.cat." + location.hash.substring(1))}
             </div>
             <DeleteAnnouncementDialog>
