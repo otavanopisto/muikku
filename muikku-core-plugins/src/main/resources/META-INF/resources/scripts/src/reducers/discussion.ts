@@ -8,8 +8,7 @@ import messages from './main-function/messages';
 import userIndex from './main-function/user-index';
 
 import {combineReducers} from 'redux';
-import areas from '~/reducers/main-function/discussion/discussion-areas';
-import discussionThreads from '~/reducers/main-function/discussion/discussion-threads'
+import discussion from '~/reducers/main-function/discussion';
 
 export default combineReducers({
   notifications,
@@ -19,7 +18,7 @@ export default combineReducers({
   websocket,
   messages,
   title,
-  areas,
-  discussionThreads,
+  
+  discussion,
   userIndex
 });

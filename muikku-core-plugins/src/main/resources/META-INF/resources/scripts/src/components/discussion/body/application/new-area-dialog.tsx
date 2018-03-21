@@ -10,7 +10,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import {createDiscussionArea, CreateDiscussionAreaTriggerType} from '~/actions/main-function/discussion/discussion-areas';
+import {createDiscussionArea, CreateDiscussionAreaTriggerType} from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionNewAreaProps {

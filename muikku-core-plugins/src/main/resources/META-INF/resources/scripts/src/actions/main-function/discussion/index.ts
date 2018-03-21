@@ -1,11 +1,11 @@
 import { AnyActionType, SpecificActionType} from "~/actions";
-import { DiscussionAreaListType, DiscussionAreaType } from "~/reducers/main-function/discussion/discussion-areas";
 import promisify from "~/util/promisify";
 import notificationActions from '~/actions/base/notifications';
 import mApi from '~/lib/mApi';
-import {DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType, DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType} from "~/reducers/main-function/discussion/discussion-threads";
+import {DiscussionAreaListType, DiscussionAreaType, DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType,
+  DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType, DiscussionAreaUpdateType} from "~/reducers/main-function/discussion";
 import { loadUserIndex } from "~/actions/main-function/user-index";
-import {loadDiscussionAreas} from './discussion-areas';
+import { StateType } from "~/reducers";
 
 const MAX_LOADED_AT_ONCE = 30;
 
@@ -18,8 +18,15 @@ export interface SET_TOTAL_DISCUSSION_PAGES extends SpecificActionType<"SET_TOTA
 export interface SET_TOTAL_DISCUSSION_THREAD_PAGES extends SpecificActionType<"SET_TOTAL_DISCUSSION_THREAD_PAGES", number>{};
 export interface UPDATE_DISCUSSION_THREAD extends SpecificActionType<"UPDATE_DISCUSSION_THREAD", DiscussionThreadType>{}
 export interface UPDATE_DISCUSSION_THREAD_REPLY extends SpecificActionType<"UPDATE_DISCUSSION_THREAD_REPLY", DiscussionThreadReplyType>{}
+export interface UPDATE_DISCUSSION_AREAS extends SpecificActionType<"UPDATE_DISCUSSION_AREAS", DiscussionAreaListType>{}
+export interface PUSH_DISCUSSION_AREA_LAST extends SpecificActionType<"PUSH_DISCUSSION_AREA_LAST", DiscussionAreaType>{}
+export interface UPDATE_DISCUSSION_AREA extends SpecificActionType<"UPDATE_DISCUSSION_AREA", {
+  areaId: number,
+  update: DiscussionAreaUpdateType
+}>{}
+export interface DELETE_DISCUSSION_AREA extends SpecificActionType<"DELETE_DISCUSSION_AREA", number>{}
 
-export interface LoadDiscussionThreadsTriggerType {
+export interface loadDiscussionThreadsFromServerTriggerType {
   (data:{
     areaId: number,
     page: number,
@@ -35,7 +42,7 @@ export interface ModifyDiscussionThreadTriggerType {
   (data:{thread: DiscussionThreadType, locked: boolean, message: string, sticky: boolean, title: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
 }
 
-export interface LoadDiscussionThreadTriggerType {
+export interface LoadDiscussionThreadFromServerTriggerType {
   (data:{
     areaId: number,
     page?: number,
@@ -80,8 +87,8 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
   }):AnyActionType
 }
 
-let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscussionThreads(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType = function loadDiscussionThreadsFromServer(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     
     //Remove the current messsage
     dispatch({
@@ -94,7 +101,7 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
     });
     
     let state = getState();
-    let discussion:DiscussionType = state.discussionThreads;
+    let discussion:DiscussionType = state.discussion;
     
     //Avoid loading if it's the same area
     if (!data.forceRefresh && discussion.areaId === data.areaId && discussion.state === "READY" && discussion.page === data.page){
@@ -104,7 +111,7 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
     //NOTE we reload the discussion areas every time we load the threads because we have absolutely no
     //idea if the amount of pages per thread change every time I select a page, data updates on the fly
     //one solution would be to make a realtime change
-    dispatch(loadDiscussionAreas(async ()=>{
+    dispatch(loadDiscussionAreasFromServer(async ()=>{
       dispatch({
         type: "UPDATE_DISCUSSION_THREADS_STATE",
         payload: <DiscussionStateType>"LOADING"
@@ -113,12 +120,12 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
       //Calculate the amount of pages
       let allThreadNumber = 0;
       if (data.areaId){
-        let area:DiscussionAreaType = state.areas.find((area: DiscussionAreaType)=>{
+        let area:DiscussionAreaType = discussion.areas.find((area: DiscussionAreaType)=>{
           return area.id === data.areaId;
         });
         allThreadNumber = area.numThreads;
       } else {
-        state.areas.forEach((area: DiscussionAreaType)=>{
+        discussion.areas.forEach((area: DiscussionAreaType)=>{
           allThreadNumber += area.numThreads;
         });
       }
@@ -172,16 +179,16 @@ let loadDiscussionThreads:LoadDiscussionThreadsTriggerType = function loadDiscus
 }
 
 let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDiscussionThread(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.create(data.forumAreaId, data), 'callback')();
       
-      let discussion:DiscussionType = getState().discussionThreads;
+      let discussion:DiscussionType = getState().discussion;
       window.location.hash = newThread.forumAreaId + "/" + 
         (newThread.forumAreaId === discussion.areaId ? discussion.page : "1") + "/" + newThread.id + "/1";
       
       //non-ready, also area count might change, so let's reload it
-      dispatch(loadDiscussionAreas());
+      dispatch(loadDiscussionAreasFromServer());
       
       //since we cannot be sure how the new tread affected whatever they are looking at now, and we can't just push first
       //because we might not have the last, lets make it so that when they go back the server is called in order
@@ -202,7 +209,7 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
 }
 
 let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDiscussionThread(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let payload:DiscussionThreadType = Object.assign({}, data.thread, {
         title: data.title,
@@ -225,10 +232,10 @@ let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDi
   }
 }
 
-let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussionThread(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = function loadDiscussionThreadFromServer(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    let discussion:DiscussionType = state.discussionThreads
+    let discussion:DiscussionType = state.discussion
     
     //Avoid loading if it's the same thread that has been loaded already
     if (discussion.current && discussion.current.id === data.threadId && discussion.currentPage === data.threadPage){
@@ -274,7 +281,7 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
         dispatch(loadUserIndex(reply.creator));
       });
       
-      let newThreads: DiscussionThreadListType = state.discussionThreads.threads.map((thread: DiscussionThreadType)=>{
+      let newThreads: DiscussionThreadListType = state.discussion.threads.map((thread: DiscussionThreadType)=>{
         if (thread.id !== newCurrentThread.id){
           return thread;
         }
@@ -318,7 +325,7 @@ let loadDiscussionThread:LoadDiscussionThreadTriggerType = function loadDiscussi
 }
 
 let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = function replyToDiscussionThread(data){ 
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let payload:any = {
       message: data.message
     }
@@ -328,7 +335,7 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
     }
   
     let state = getState();
-    let discussion:DiscussionType = state.discussionThreads
+    let discussion:DiscussionType = state.discussion
     
     try {
       let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.replies.create(
@@ -336,7 +343,7 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
       
       //sadly the new calculation is overly complex and error prone so we'll just do this;
       //We also need to use force refresh to avoid reusing data in memory
-      dispatch(loadDiscussionThread({
+      dispatch(loadDiscussionThreadFromServer({
         areaId: discussion.current.forumAreaId,
         threadId: discussion.current.id,
         success: data.success,
@@ -351,13 +358,13 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
 }
 
 let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = function deleteCurrentDiscussionThread(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    let discussion:DiscussionType = state.discussionThreads
+    let discussion:DiscussionType = state.discussion
     
     try {
       await promisify(mApi().forum.areas.threads.del(discussion.current.forumAreaId, discussion.current.id), 'callback')();
-      dispatch(loadDiscussionThreads({
+      dispatch(loadDiscussionThreadsFromServer({
         areaId: discussion.areaId,
         page: discussion.page,
         forceRefresh: true
@@ -385,14 +392,14 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
 }
 
 let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurrentTriggerType = function deleteDiscussionThreadReplyFromCurrent(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    let discussion:DiscussionType = state.discussionThreads
+    let discussion:DiscussionType = state.discussion
     
     try {
       await promisify(mApi().forum.areas.threads.replies.del(discussion.current.forumAreaId, discussion.current.id, data.reply.id), 'callback')();
       
-      dispatch(loadDiscussionThread({
+      dispatch(loadDiscussionThreadFromServer({
         areaId: discussion.current.forumAreaId,
         threadId: discussion.current.id,
         success: data.success,
@@ -406,9 +413,9 @@ let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurren
 }
 
 let modifyReplyFromCurrentThread:ModifyReplyFromCurrentThreadTriggerType = function modifyReplyFromCurrentThread(data){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
-    let discussion:DiscussionType = state.discussionThreads
+    let discussion:DiscussionType = state.discussion
     
     try {
       let newReply = <DiscussionThreadReplyType>await promisify(mApi().forum.areas.threads.replies.update(
@@ -427,9 +434,103 @@ let modifyReplyFromCurrentThread:ModifyReplyFromCurrentThreadTriggerType = funct
   }
 }
 
-export {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread,
+export interface LoadDiscussionAreasFromServerTriggerType {
+  (callback?: ()=>any):AnyActionType
+}
+
+let loadDiscussionAreasFromServer:LoadDiscussionAreasFromServerTriggerType = function loadDiscussionAreasFromServer(callback){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      dispatch({
+        type: 'UPDATE_DISCUSSION_AREAS',
+        payload: <DiscussionAreaListType>await promisify(mApi().forum.areas.read(), 'callback')()
+      });
+      callback && callback();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+  
+export interface CreateDiscussionAreaTriggerType {
+  (data:{name: string, description: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
+}
+
+let createDiscussionArea:CreateDiscussionAreaTriggerType = function createDiscussionArea(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      let newArea = <DiscussionAreaType>await promisify(mApi().forum.areas.create({
+        name: data.name,
+        description: data.description
+      }), 'callback')();
+      dispatch({
+        type: 'PUSH_DISCUSSION_AREA_LAST',
+        payload: newArea
+      });
+      location.hash = "#" + newArea.id;
+      data.success && data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+  
+export interface UpdateDiscussionAreaTriggerType {
+  (data:{id: number, name: string, description: string, success?: ()=>any, fail?: ()=>any}):AnyActionType
+}
+
+let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscussionArea(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().forum.areas.update(data.id, {
+        name: data.name,
+        description: data.description
+      }), 'callback')();
+      dispatch({
+        type: 'UPDATE_DISCUSSION_AREA',
+        payload: {
+          areaId: data.id,
+          update: {
+            name: data.name,
+            description: data.description
+          }
+        }
+      });
+      data.success && data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+  
+export interface DeleteDiscussionAreaTriggerType {
+  (data:{id: number, success?: ()=>any, fail?: ()=>any}):AnyActionType
+}
+
+let deleteDiscussionArea:DeleteDiscussionAreaTriggerType = function deleteDiscussionArea(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().forum.areas.del(data.id), 'callback')();
+      location.hash = "";
+      dispatch({
+        type: 'DELETE_DISCUSSION_AREA',
+        payload: data.id
+      });
+      data.success && data.success();
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+export {loadDiscussionThreadsFromServer, createDiscussionThread, loadDiscussionThreadFromServer,
   replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread}
-export default {loadDiscussionThreads, createDiscussionThread, loadDiscussionThread,
+  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread,
+  loadDiscussionAreasFromServer, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea}
+export default {loadDiscussionThreadsFromServer, createDiscussionThread, loadDiscussionThreadFromServer,
   replyToCurrentDiscussionThread, modifyDiscussionThread, deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread}
+  deleteDiscussionThreadReplyFromCurrent, modifyReplyFromCurrentThread,
+  loadDiscussionAreasFromServer, createDiscussionArea, updateDiscussionArea, deleteDiscussionArea}

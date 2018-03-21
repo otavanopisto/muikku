@@ -29,18 +29,13 @@ function scrollToSection(anchor: string) {
   }, 500);
 }
 
-interface LinkProps {
+interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
   disablePropagation?: boolean,
   disabled?: boolean,
   as?: string,
   href?: string,
-  onClick?: (e: Event, re: any)=>any,
-  onTouchStart?: (e: React.TouchEvent<any>, re: any)=>any,
-  onTouchEnd?: (e: React.TouchEvent<any>, re: any)=>any,
-  onTouchMove?: (e: React.TouchEvent<any>, re: any)=>any,
   className?: string,
-  openInNewTab?: string,
-  [otherProp: string]: any
+  openInNewTab?: string
 }
 
 interface LinkState {
@@ -66,7 +61,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     this.touchCordX = null;
     this.touchCordY = null;
   }
-  onClick(e: Event, re: any){
+  onClick(e: React.MouseEvent<HTMLAnchorElement>){
     e.preventDefault();
     if (this.props.disablePropagation){
       e.stopPropagation();
@@ -86,10 +81,10 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     }
     
     if (this.props.onClick){
-      this.props.onClick(e, re);
+      this.props.onClick(e);
     }
   }
-  onTouchStart(e: React.TouchEvent<any>, re: any){
+  onTouchStart(e: React.TouchEvent<HTMLAnchorElement>){
     e.preventDefault();
     if (this.props.disablePropagation){
       e.stopPropagation();
@@ -101,11 +96,11 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (!this.props.disabled){
       this.setState({active: true});
       if (this.props.onTouchStart){
-        this.props.onTouchStart(e, re);
+        this.props.onTouchStart(e);
       }
     } 
   }
-  onTouchMove(e: React.TouchEvent<any>, re: any){
+  onTouchMove(e: React.TouchEvent<HTMLAnchorElement>){
     if (this.state.active){
       let X = e.changedTouches[0].pageX;
       let Y = e.changedTouches[0].pageY;
@@ -116,7 +111,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     }
     
     if (!this.props.disabled && this.props.onTouchMove){
-      this.props.onTouchMove(e, re);
+      this.props.onTouchMove(e);
     }
   }
   onTouchEnd(e: React.TouchEvent<any>, re: any){
@@ -125,10 +120,10 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     }
     
     if (this.state.active){
-      this.onClick(e as any, re);
+      this.onClick(e as any);
     }
     if (!this.props.disabled && this.props.onTouchEnd){
-      this.props.onTouchEnd(e, re);
+      this.props.onTouchEnd(e);
     }
   }
   render(){

@@ -1,7 +1,7 @@
 import { UserIndexType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion/discussion-threads";
+import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";
 import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
@@ -18,7 +18,7 @@ import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
 interface CurrentThreadProps {
-  discussionThreads: DiscussionType,
+  discussion: DiscussionType,
   i18n: i18nType,
   userIndex: UserIndexType,
   userId: number,
@@ -31,23 +31,23 @@ interface CurrentThreadState {
 
 class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadState> {
   getToPage(n: number){
-    if (this.props.discussionThreads.areaId === this.props.discussionThreads.current.forumAreaId){
-      window.location.hash = this.props.discussionThreads.current.forumAreaId + "/" + this.props.discussionThreads.page +
-      "/" + this.props.discussionThreads.current.id + "/" + n;
+    if (this.props.discussion.areaId === this.props.discussion.current.forumAreaId){
+      window.location.hash = this.props.discussion.current.forumAreaId + "/" + this.props.discussion.page +
+      "/" + this.props.discussion.current.id + "/" + n;
     }
-    window.location.hash = this.props.discussionThreads.current.forumAreaId + "/1" +
-      "/" + this.props.discussionThreads.current.id + "/" + n;
+    window.location.hash = this.props.discussion.current.forumAreaId + "/1" +
+      "/" + this.props.discussion.current.id + "/" + n;
   }
   
   render(){
-    if (!this.props.discussionThreads.current){
+    if (!this.props.discussion.current){
       return null;
     }
-    let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussionThreads.current.forumAreaId] || {};
+    let areaPermissions = this.props.permissions.AREA_PERMISSIONS[this.props.discussion.current.forumAreaId] || {};
     
     //Again note that the user might not be ready
-    let userCreator = this.props.userIndex.users[this.props.discussionThreads.current.creator];
-    let userCategory = this.props.discussionThreads.current.creator > 10 ? this.props.discussionThreads.current.creator % 10 + 1 : this.props.discussionThreads.current.creator;
+    let userCreator = this.props.userIndex.users[this.props.discussion.current.creator];
+    let userCategory = this.props.discussion.current.creator > 10 ? this.props.discussion.current.creator % 10 + 1 : this.props.discussion.current.creator;
     let avatar;
     if (!userCreator){
       //This is what it shows when the user is not ready
@@ -61,13 +61,13 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
        </object>;
     }
     
-    let canRemoveThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.removeThread;
-    let canEditThread = this.props.userId === this.props.discussionThreads.current.creator || areaPermissions.editMessage;
+    let canRemoveThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.removeThread;
+    let canEditThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.editMessage;
 
         
     return <div className="application-list application-list--open ">
         <div className="application-list__item-header">
-          <h3 className="text text--discussion-current-thread-title">{this.props.discussionThreads.current.title}</h3>
+          <h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>
         </div>
         <div className="application-list__item--discussion-current-thread">
           <div className="application-list__item-content-container message message--discussion message--discussion-thread-op">
@@ -81,20 +81,20 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                     <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
                   </div>                  
                   <div className="application-list__item-header-aside">
-                    <span className="text">{this.props.i18n.time.format(this.props.discussionThreads.current.created)}</span>
+                    <span className="text">{this.props.i18n.time.format(this.props.discussion.current.created)}</span>
                   </div>              
                 </div>                        
                 <div className="application-list__item-body">
-                  <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussionThreads.current.message}}></article>
+                  <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
                 </div>
                 <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
                   <ReplyThread>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                   </ReplyThread>              
-                  <ReplyThread quote={this.props.discussionThreads.current.message} quoteAuthor={getName(userCreator)}>
+                  <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator)}>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
                   </ReplyThread>                
-                  {canEditThread ? <ModifyThread thread={this.props.discussionThreads.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
+                  {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
                   {canRemoveThread ? 
                   <DeleteThreadComponent>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>            
@@ -107,7 +107,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             
       {
         
-        this.props.discussionThreads.currentReplies.map((reply: DiscussionThreadReplyType)=>{
+        this.props.discussion.currentReplies.map((reply: DiscussionThreadReplyType)=>{
           //Again note that the user might not be ready
           let user = this.props.userIndex.users[reply.creator];
           let userCategory = reply.creator > 10 ? reply.creator % 10 + 1 : reply.creator;                    
@@ -169,7 +169,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             </div>                    
           )})
       }
-      <Pager onClick={this.getToPage} current={this.props.discussionThreads.currentPage} pages={this.props.discussionThreads.currentTotalPages}/>
+      <Pager onClick={this.getToPage} current={this.props.discussion.currentPage} pages={this.props.discussion.currentTotalPages}/>
     </div>
   }
 }
@@ -177,7 +177,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussionThreads: (state as any).discussionThreads,
+    discussion: state.discussion,
     userIndex: state.userIndex,
     userId: state.status.userId,
     permissions: state.status.permissions

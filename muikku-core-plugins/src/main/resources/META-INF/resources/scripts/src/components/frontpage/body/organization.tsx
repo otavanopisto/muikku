@@ -1,6 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import Button from "~/components/general/button";
+import Button, { ButtonSocial } from "~/components/general/button";
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
@@ -32,11 +32,11 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
               <h2 className="text text--branded text--otavan-opisto-info-title">
                 {this.props.i18n.text.get( 'plugin.organization.some.title' )}
               </h2>
-              <Button social className="icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"/>
-              <Button social className="icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"/>
-              <Button social className="icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"/>
-              <Button social className="icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"/>
-              <Button social className="icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"/>
+              <ButtonSocial className="icon-some-facebook" href="https://www.facebook.com/otavanopisto" target="top"/>
+              <ButtonSocial className="icon-some-twitter" href="https://twitter.com/OtavanOpisto" target="top"/>
+              <ButtonSocial className="icon-some-instagram" href="https://www.instagram.com/otavanopisto/" target="top"/>
+              <ButtonSocial className="icon-some-pinterest" href="https://fi.pinterest.com/otavanopisto/" target="top"/>
+              <ButtonSocial className="icon-some-linkedin" href="https://www.linkedin.com/company/106028" target="top"/>
             </div>
           </div>
 

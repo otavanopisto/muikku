@@ -6,13 +6,13 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
-import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/main-function/discussion/discussion-threads';
+import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/main-function/discussion';
 import Link from '~/components/general/link';
 import Dialog from '~/components/general/dialog';
 import {DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
-  deleteDiscussionThreadReplyFromCurrent} from '~/actions/main-function/discussion/discussion-threads';
+  deleteDiscussionThreadReplyFromCurrent} from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionDeleteThreadComponentProps {

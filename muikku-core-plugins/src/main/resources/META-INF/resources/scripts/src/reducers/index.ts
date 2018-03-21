@@ -41,6 +41,7 @@ import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
 import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
+import { DiscussionType } from './main-function/discussion';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -57,5 +58,6 @@ export interface StateType {
   messages?: MessagesType,
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-  courses?: CoursesType
+  courses?: CoursesType,
+  discussion?: DiscussionType
 }

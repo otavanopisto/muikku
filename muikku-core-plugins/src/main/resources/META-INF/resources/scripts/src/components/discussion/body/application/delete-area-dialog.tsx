@@ -9,15 +9,13 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import { deleteDiscussionArea, DeleteDiscussionAreaTriggerType } from '~/actions/main-function/discussion/discussion-areas';
-import { DiscussionAreaType, DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
-import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
+import { deleteDiscussionArea, DeleteDiscussionAreaTriggerType } from '~/actions/main-function/discussion';
+import { DiscussionAreaType, DiscussionType } from '~/reducers/main-function/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionDeleteAreaProps {
   i18n: i18nType,
-  areas: DiscussionAreaListType,
-  discussionThreads: DiscussionType,
+  discussion: DiscussionType,
   children: React.ReactElement<any>,
   deleteDiscussionArea: DeleteDiscussionAreaTriggerType
 }
@@ -49,7 +47,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
     });
   }
   componentWillReceiveProps(nextProps: DiscussionDeleteAreaProps){
-    this.area = nextProps.areas.find(area=>area.id === nextProps.discussionThreads.areaId);
+    this.area = nextProps.discussion.areas.find(area=>area.id === nextProps.discussion.areaId);
   }
   render(){
     if (!this.area){
@@ -84,8 +82,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    areas: (state as any).areas,
-    discussionThreads: (state as any).discussionThreads
+    discussion: state.discussion
   }
 };
 

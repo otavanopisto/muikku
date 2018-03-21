@@ -38,6 +38,10 @@ export default class OverflowDetector extends React.Component<OverflowDetectorPr
   }
   render(){
     let Element = this.props.as;
-    return <Element {...this.props} className={`${this.props.className} ${this.state.overflown ? this.props.classNameWhenOverflown : ""}`} ref="element"/>
+    let givenProps:OverflowDetectorProps = Object.assign({}, this.props);
+    delete givenProps["classNameWhenOverflown"];
+    delete givenProps["className"];
+    delete givenProps["as"];
+    return <Element {...givenProps} className={`${this.props.className} ${this.state.overflown ? this.props.classNameWhenOverflown : ""}`} ref="element"/>
   }
 }

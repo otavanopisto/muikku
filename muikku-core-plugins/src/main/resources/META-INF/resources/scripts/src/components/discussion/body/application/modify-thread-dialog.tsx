@@ -7,9 +7,8 @@ import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
-import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion/discussion-threads';
-import { createDiscussionThread, CreateDiscussionThreadTriggerType, modifyDiscussionThread, ModifyDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
+import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
+import { createDiscussionThread, CreateDiscussionThreadTriggerType, modifyDiscussionThread, ModifyDiscussionThreadTriggerType } from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
 
 const ckEditorConfig = {
@@ -33,9 +32,8 @@ const extraPlugins = {
 
 interface ModifyThreadProps {
   children: React.ReactElement<any>,
-  areas: DiscussionAreaListType,
   i18n: i18nType,
-  discussionThreads: DiscussionType,
+  discussion: DiscussionType,
   thread: DiscussionThreadType,
   modifyDiscussionThread: ModifyDiscussionThreadTriggerType
 }
@@ -147,9 +145,8 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
 
 function mapStateToProps(state: StateType){
   return {
-    areas: (state as any).areas,
     i18n: state.i18n,
-    discussionThreads: (state as any).discussionThreads
+    discussion: state.discussion
   }
 };
 
