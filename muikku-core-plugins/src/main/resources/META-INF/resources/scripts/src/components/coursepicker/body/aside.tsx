@@ -23,7 +23,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
     let locationData = queryString.parse( document.location.hash.split( "?" )[1] || "", { arrayFormat: 'bracket' } );
 
     return <Navigation>
-      <NavigationTopic name={this.props.i18n.text.get( 'plugin.coursepicker.filters.degree' )}>
+      <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.title')}>
         {this.props.courses.avaliableFilters.educationTypes.map( ( educationType: CourseEducationFilterType ) => {
           let isActive = this.props.courses.activeFilters.educationFilters.includes( educationType.identifier );
           let hash = "?" + ( isActive ?
@@ -32,7 +32,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
           return <NavigationElement key={educationType.identifier} isActive={isActive} hash={hash}>{educationType.name}</NavigationElement>
         } )}
       </NavigationTopic>
-      <NavigationTopic name={this.props.i18n.text.get( 'plugin.coursepicker.filters.curriculum' )}>
+      <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
         {this.props.courses.avaliableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
           let isActive = this.props.courses.activeFilters.curriculumFilters.includes( curriculum.identifier );
           let hash = "?" + ( isActive ?
