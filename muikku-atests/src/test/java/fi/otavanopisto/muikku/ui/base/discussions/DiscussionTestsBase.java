@@ -271,5 +271,52 @@ public class DiscussionTestsBase extends AbstractUITest {
       mockBuilder.wiremockReset();
     }
   }
-  
+
+  @Test
+  @TestEnvironments (
+      browsers = {
+        TestEnvironments.Browser.CHROME,
+        TestEnvironments.Browser.FIREFOX,
+        TestEnvironments.Browser.INTERNET_EXPLORER,
+        TestEnvironments.Browser.EDGE,
+        TestEnvironments.Browser.SAFARI,
+        TestEnvironments.Browser.CHROME_HEADLESS
+      }
+    )
+  public void discussionEditTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+    login();
+    DiscussionGroup discussionGroup = createDiscussionGroup("test group");
+    try {
+      Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
+      try {
+        DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
+            "<p>Testing testing daa daa</p>", false, false);
+        try {
+          navigate("/discussion", false);
+          waitAndClick(".message__title");
+          waitAndClick(".link--application-list-item-footer:nth-child(3)");
+          waitAndClick("input.form-field--new-discussion-thread-title");
+          sendKeys("input.form-field--new-discussion-thread-title", "ing");
+          addToEndCKEditor("ing");
+          waitAndClick(".button--standard-ok");
+          waitForPresentAndVisible("h3.text--discussion-current-thread-title");
+          reloadCurrentPage();
+          waitForPresentAndVisible("h3.text--discussion-current-thread-title");
+          assertText("h3.text--discussion-current-thread-title", "Testinging");
+          waitForPresent(".text--item-article p");
+          assertTextIgnoreCase(".text--item-article p", "Testing testing daa daaing");
+        } finally {
+          deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
+        }
+      } finally {
+        deleteDiscussion(discussionGroup.getId(), discussion.getId());
+      }
+    } finally {
+      deleteDiscussionGroup(discussionGroup.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
 }
