@@ -160,7 +160,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
           archived: false,
           caption: this.state.subject,
           content: this.state.text,
-          publiclyVisible: false,
+          publiclyVisible: this.state.currentTarget.length==0 ? true : false,
           endDate: this.state.endDate.format("YYYY-MM-DD"),
           startDate: this.state.startDate.format("YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id),
@@ -179,7 +179,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
         announcement: {
           caption: this.state.subject,
           content: this.state.text,
-          publiclyVisible: false,
+          publiclyVisible: this.state.currentTarget.length==0 ? true : false,
           endDate: this.state.endDate.format("YYYY-MM-DD"),
           startDate: this.state.startDate.format("YYYY-MM-DD"),
           userGroupEntityIds: this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id),
