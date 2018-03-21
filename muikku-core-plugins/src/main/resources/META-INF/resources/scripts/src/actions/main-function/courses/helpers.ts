@@ -51,9 +51,9 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   let myWorkspaces = false;
   let includeUnpublished = false;
   
-  if (filters.baseFilter === "MY_COURSES"){
+  if (actualFilters.baseFilter === "MY_COURSES"){
     myWorkspaces = true;
-  } else if (filters.baseFilter === "AS_TEACHER"){
+  } else if (actualFilters.baseFilter === "AS_TEACHER"){
     myWorkspaces = true;
     includeUnpublished = true;
   }
@@ -68,7 +68,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     includeUnpublished
   }
   
-  if (filters.query){
+  if (actualFilters.query){
     (params as any).search = filters.query;
   }
   

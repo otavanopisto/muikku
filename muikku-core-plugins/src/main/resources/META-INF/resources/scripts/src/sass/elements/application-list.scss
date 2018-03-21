@@ -30,6 +30,7 @@
   transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   user-select: none;
+  position: relative;
   
   @include breakpoint($breakpoint-desktop) {
     -webkit-touch-callout: default;

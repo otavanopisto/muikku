@@ -15,12 +15,9 @@
       this._pingTime = 0;
       this._listeners = {};
       
-<<<<<<< HEAD
       this.addEventListener("webSocketConnected", $.proxy(this._onWebSocketConnected, this));
       this.addEventListener("webSocketDisconnected", $.proxy(this._onWebSocketDisconnected, this));
       
-=======
->>>>>>> 690d2e4824bcee2088bd784d9fcf9c900494b19e
       this._getTicket($.proxy(function (ticket) {
         if (this._ticket) {
           this._openWebSocket();
@@ -236,19 +233,9 @@
       var eventType = message.eventType;
       if (eventType == "ping:pong") {
         this._pinging = false;
-<<<<<<< HEAD:muikku/src/main/webapp/resources/scripts/widgets/controllers/websocket.js
         this._pingTime = 0;
       } else {
         this.trigger(eventType, message.data);
-=======
-      }
-      else {
-        this.element.trigger(eventType, message.data);
-<<<<<<< HEAD
->>>>>>> 0bf5f4aca8aa9b32c93c5724e94c1104abe38960:muikku/src/main/webapp/resources/scripts/gui/websocket.js
-=======
->>>>>>> c2fe909e5d8753dec17225e4c44dae912bfdcc26:muikku/src/main/webapp/resources/scripts/gui/websocket.js
->>>>>>> 690d2e4824bcee2088bd784d9fcf9c900494b19e
       }
     },
     
