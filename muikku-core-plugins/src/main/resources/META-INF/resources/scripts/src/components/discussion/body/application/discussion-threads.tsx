@@ -19,6 +19,7 @@ import Pager from '~/components/general/pager';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import { StateType } from '~/reducers';
 import OverflowDetector from '~/components/general/overflow-detector';
+import { DiscussionThreads, DiscussionThread, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from './threads/threads';
 
 interface DiscussionThreadsProps {
   discussion: DiscussionType,
@@ -29,7 +30,7 @@ interface DiscussionThreadsProps {
 interface DiscussionThreadsState {
 }
 
-class DiscussionThreads extends React.Component<DiscussionThreadsProps, DiscussionThreadsState> {
+class DDiscussionThreads extends React.Component<DiscussionThreadsProps, DiscussionThreadsState> {
   constructor( props: DiscussionThreadsProps ) {
     super( props );
 
@@ -59,7 +60,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
     }
 
     return <BodyScrollKeeper hidden={!!this.props.discussion.current}>
-      <div className="discussion-threads">{
+      <DiscussionThreads>{
         this.props.discussion.threads.map( ( thread: DiscussionThreadType, index: number ) => {
 
           //NOTE That the index might not be ready as they load async, this user might be undefined in the first rendering
@@ -81,50 +82,43 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
           }
 
           return (
-            <div key={thread.id} className="discussion-thread" onClick={this.getToThread.bind( this, thread )}>
-              <div className="discussion-thread__content">
-                <div className="discussion-thread__avatar-container">
-                  {avatar}
+            <DiscussionThread key={thread.id} onClick={this.getToThread.bind( this, thread )} avatar={avatar}>
+              <DiscussionThreadHeader>
+                {thread.locked ?
+                  <div className="discussion__icon icon-lock"></div> : null
+                }
+                {thread.sticky ?
+                  <div className="discussion__icon icon-pin"></div> : null
+                }
+                <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
+                  <span className="text">{thread.title}</span>
                 </div>
-                <div className="discussion-thread__main-container">
-                  <div className="discussion-thread__header">
-                    {thread.locked ?
-                      <div className="discussion__icon icon-lock"></div> : null
-                    }
-                    {thread.sticky ?
-                      <div className="discussion__icon icon-pin"></div> : null
-                    }
-                    <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
-                      <span className="text">{thread.title}</span>
-                    </div>
+              </DiscussionThreadHeader>
+              {thread.sticky ?
+                <DiscussionThreadBody>
+                  <OverflowDetector as="div" classNameWhenOverflown="text--discussion-thread-item-body--overflown"
+                    className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{ __html: thread.message }} />
+                </DiscussionThreadBody> : null
+              }
+              <DiscussionThreadFooter>
+                <div className="text text--discussion-thread-user">
+                  <span>{user && user.firstName + ' ' + user.lastName}, {this.props.i18n.time.format( thread.created )}</span>
+                </div>
+                <div className="text text--discussion-thread-meta">
+                  <div className="text text--discussion-thread-meta-counter">
+                    <span className="text text--discussion-thread-meta-counter-title">{this.props.i18n.text.get( "plugin.discussion.titleText.replyCount" )} </span>
+                    <span className="text text--item-counter">{thread.numReplies}</span>
                   </div>
-                  {thread.sticky ?
-                    <div className="discussion-thread__body">
-                      <OverflowDetector as="div" classNameWhenOverflown="text--discussion-thread-item-body--overflown"
-                        className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{ __html: thread.message }} />
-                    </div> : null
-                  }
-                  <div className="discussion-thread__footer">
-                    <div className="text text--discussion-thread-user">
-                      <span>{user && user.firstName + ' ' + user.lastName}, {this.props.i18n.time.format( thread.created )}</span>
-                    </div>
-                    <div className="text text--discussion-thread-meta">
-                      <div className="text text--discussion-thread-meta-counter">
-                        <span className="text text--discussion-thread-meta-counter-title">{this.props.i18n.text.get( "plugin.discussion.titleText.replyCount" )} </span>
-                        <span className="text text--item-counter">{thread.numReplies}</span>
-                      </div>
-                      <div className="text text--discussion-thread-meta-latest-reply">
-                        <span>{this.props.i18n.text.get( "plugin.discussion.titleText.lastMessage" )} {this.props.i18n.time.format( thread.updated )}</span>
-                      </div>
-                    </div>
+                  <div className="text text--discussion-thread-meta-latest-reply">
+                    <span>{this.props.i18n.text.get( "plugin.discussion.titleText.lastMessage" )} {this.props.i18n.time.format( thread.updated )}</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </DiscussionThreadFooter>
+            </DiscussionThread>
           )
         } )
       }<Pager onClick={this.getToPage} current={this.props.discussion.page} pages={this.props.discussion.totalPages} />
-      </div>
+      </DiscussionThreads>
     </BodyScrollKeeper>
   }
 }
@@ -144,4 +138,4 @@ function mapDispatchToProps( dispatch: Dispatch<any> ) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( DiscussionThreads );
+)( DDiscussionThreads );

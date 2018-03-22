@@ -142,7 +142,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                       <div className="discussion-thread__header-aside">
                         <span className="text">{this.props.i18n.time.format(reply.created)}</span>
                       </div>
-                    </div>                   
+                    </div>
                     <div className="discussion-thread__body">
                       {reply.deleted ? 
                         <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
