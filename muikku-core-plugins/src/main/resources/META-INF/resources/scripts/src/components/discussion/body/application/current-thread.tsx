@@ -16,6 +16,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
+import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
 
 interface CurrentThreadProps {
   discussion: DiscussionType,
@@ -65,45 +66,28 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canEditThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.editMessage;
 
         
-    return <div className="discussion-current-thread">
-        <div className="discussion-current-thread__title">
-          <h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>
-        </div>
-        <div className="discussion-current-thread__element">
-          <div className="discussion-current-thread__op-message">
-            <div className="discussion-current-thread__message-container">       
-              <div className="discussion-thread__avatar-container">
-                <div className="avatar avatar--category-1">{avatar}</div>
-              </div>
-              <div className="discussion-thread__main-container">
-                <div className="discussion-thread__header">    
-                  <div className="application-list__item-header-main">
-                    <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
-                  </div>                  
-                  <div className="application-list__item-header-aside">
-                    <span className="text">{this.props.i18n.time.format(this.props.discussion.current.created)}</span>
-                  </div>              
-                </div>                        
-                <div className="discussion-thread__body">
-                  <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
-                </div>
-                <div className="discussion-thread__footer">
-                  <ReplyThread>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
-                  </ReplyThread>              
-                  <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator)}>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
-                  </ReplyThread>                
-                  {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
-                  {canRemoveThread ? 
-                  <DeleteThreadComponent>
-                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>            
-                  </DeleteThreadComponent> : null}
-                </div>              
-              </div>
-            </div>
-          </div>
-        </div>
+    return <DiscussionCurrentThread title={<h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>}>
+        <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
+          <DiscussionThreadHeader aside={<span className="text">{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
+            <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
+          </DiscussionThreadHeader>
+          <DiscussionThreadBody>
+            <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
+          </DiscussionThreadBody>
+          <DiscussionThreadFooter>
+            <ReplyThread>
+              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
+            </ReplyThread>              
+            <ReplyThread quote={this.props.discussion.current.message} quoteAuthor={getName(userCreator)}>
+              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+            </ReplyThread>                
+            {canEditThread ? <ModifyThread thread={this.props.discussion.current}><Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link></ModifyThread> : null}
+            {canRemoveThread ? 
+            <DeleteThreadComponent>
+              <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>            
+            </DeleteThreadComponent> : null}  
+          </DiscussionThreadFooter>
+        </DiscussionCurrentThreadElement>
             
       {
         
@@ -127,50 +111,36 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
              </object>;
           }          
           
-          return ( 
-            <div key={reply.id} className="discussion-current-thread__element">
-              <div className={reply.parentReplyId ? "discussion-current-thread__reply-of-reply" : "discussion-current-thread__reply-of-op"}>
-                <div className="discussion-current-thread__message-container ">              
-                  <div className="discussion-thread__avatar-container">
-                    {avatar}
-                  </div>            
-                  <div className="discussion-thread__main-container">                        
-                    <div className="discussion-thread__header">       
-                      <div className="discussion-thread__header-main">
-                        <span className="text text--discussion-message-creator">{getName(user)}</span> 
-                      </div>
-                      <div className="discussion-thread__header-aside">
-                        <span className="text">{this.props.i18n.time.format(reply.created)}</span>
-                      </div>
-                    </div>
-                    <div className="discussion-thread__body">
-                      {reply.deleted ? 
-                        <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
-                        <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
-                    </div>
-                    <div className="discussion-thread__footer">
-                      <ReplyThread reply={reply}>
-                        <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
-                      </ReplyThread>
-                      <ReplyThread reply={reply}
-                       quote={reply.message} quoteAuthor={getName(user)}>
-                        <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
-                      </ReplyThread>
-                      {canEditMessage ? <ModifyThreadReply reply={reply}>
-                          <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
-                      </ModifyThreadReply> : null}
-                      {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
-                        <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
-                      </DeleteThreadComponent> : null}
-                    </div>                  
-                  </div>
-                </div>
-              </div>
-            </div>                    
+          return (
+            <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar}>
+              <DiscussionThreadHeader aside={<span className="text">{this.props.i18n.time.format(reply.created)}</span>}>
+                <span className="text text--discussion-message-creator">{getName(user)}</span> 
+              </DiscussionThreadHeader>
+              <DiscussionThreadBody>
+                {reply.deleted ? 
+                  <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
+                  <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
+              </DiscussionThreadBody>
+                <DiscussionThreadFooter>
+                  <ReplyThread reply={reply}>
+                  <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
+                </ReplyThread>
+                <ReplyThread reply={reply}
+                 quote={reply.message} quoteAuthor={getName(user)}>
+                  <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.quote")}</Link>
+                </ReplyThread>
+                {canEditMessage ? <ModifyThreadReply reply={reply}>
+                    <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.edit")}</Link>
+                </ModifyThreadReply> : null}
+                {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
+                  <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
+                </DeleteThreadComponent> : null} 
+              </DiscussionThreadFooter> 
+            </DiscussionCurrentThreadElement>                 
           )})
       }
       <Pager onClick={this.getToPage} current={this.props.discussion.currentPage} pages={this.props.discussion.currentTotalPages}/>
-    </div>
+    </DiscussionCurrentThread>
   }
 }
 
