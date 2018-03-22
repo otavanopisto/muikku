@@ -12,10 +12,8 @@ import ModifyThreadReply from './modify-thread-reply-dialog';
 import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
-import '~/sass/elements/message.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
 
