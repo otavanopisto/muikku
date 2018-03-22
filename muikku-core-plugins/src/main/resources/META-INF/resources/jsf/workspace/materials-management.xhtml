@@ -130,10 +130,6 @@
           <div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <span class="workspace-materials-management-line-separator"></span><a  class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
           </div>
-          <div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <input type="file" />
-          </div>
-  
           <ui:repeat var="articleNode" value="#{node.children}">
             <ui:fragment rendered="#{articleNode.type eq 'folder'}">
               <h2 id="page-#{articleNode.workspaceMaterialId}"
@@ -167,9 +163,6 @@
             <div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
               <span class="workspace-materials-management-line-separator"></span><a  class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
             </div>
-            <div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-              <input type="file" />
-            </div>
           </ui:repeat>
         </ui:fragment>
   
@@ -189,9 +182,6 @@
             class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full material-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
           <div class="workspace-materials-management-add lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
-          </div>
-          <div class="workspaces-materials-management-insert-file lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <input type="file" />
           </div>
         </ui:fragment>
       </ui:repeat>
