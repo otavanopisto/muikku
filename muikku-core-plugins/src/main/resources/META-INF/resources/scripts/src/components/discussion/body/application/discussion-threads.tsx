@@ -94,7 +94,7 @@ class DiscussionThreads extends React.Component<DiscussionThreadsProps, Discussi
                     {thread.sticky ?
                       <div className="discussion__icon icon-pin"></div> : null
                     }
-                    <div className={`discussion__category discussion__category--category-${thread.forumAreaId}`}>
+                    <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
                       <span className="text">{thread.title}</span>
                     </div>
                   </div>

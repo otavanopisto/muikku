@@ -9,13 +9,15 @@ import ReplyThread from './reply-thread-dialog';
 import ModifyThread from './modify-thread-dialog';
 import DeleteThreadComponent from './delete-thread-component-dialog';
 import ModifyThreadReply from './modify-thread-reply-dialog';
+import { getName, getUserImageUrl } from "~/util/modifiers";
+import {StateType} from '~/reducers';
+
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/message.scss';
 import '~/sass/elements/avatar.scss';
-import { getName, getUserImageUrl } from "~/util/modifiers";
-import {StateType} from '~/reducers';
+import '~/sass/elements/discussion.scss';
 
 interface CurrentThreadProps {
   discussion: DiscussionType,
@@ -65,18 +67,18 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canEditThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.editMessage;
 
         
-    return <div className="application-list application-list--open ">
-        <div className="application-list__item-header">
+    return <div className="discussion-current-thread">
+        <div className="discussion-current-thread__title">
           <h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>
         </div>
-        <div className="application-list__item--discussion-current-thread">
-          <div className="application-list__item-content-container message message--discussion message--discussion-thread-op">
-            <div className="application-list__item-content-wrapper message__content">       
-              <div className="application-list__item-content--aside message__content-aside--discussion">
+        <div className="discussion-current-thread__element">
+          <div className="discussion-current-thread__op-message">
+            <div className="discussion-current-thread__message-container">       
+              <div className="discussion-thread__avatar-container">
                 <div className="avatar avatar--category-1">{avatar}</div>
               </div>
-              <div className="application-list__item-content--main">
-                <div className="application-list__item-header">    
+              <div className="discussion-thread__main-container">
+                <div className="discussion-thread__header">    
                   <div className="application-list__item-header-main">
                     <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
                   </div>                  
@@ -84,10 +86,10 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                     <span className="text">{this.props.i18n.time.format(this.props.discussion.current.created)}</span>
                   </div>              
                 </div>                        
-                <div className="application-list__item-body">
+                <div className="discussion-thread__body">
                   <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
                 </div>
-                <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
+                <div className="discussion-thread__footer">
                   <ReplyThread>
                     <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                   </ReplyThread>              
@@ -128,27 +130,27 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           }          
           
           return ( 
-            <div key={reply.id} className="application-list--open application-list__item--discussion-reply">
-              <div className={`application-list__item-content-container message message--discussion ${reply.parentReplyId ? "message--discussion-reply-of-reply" : "message--discussion-reply-of-op"}`}>
-                <div className="application-list__item-content-wrapper message__content">              
-                  <div className="application-list__item-content--aside message__content-aside--discussion">
+            <div key={reply.id} className="discussion-current-thread__element">
+              <div className={reply.parentReplyId ? "discussion-current-thread__reply-of-reply" : "discussion-current-thread__reply-of-op"}>
+                <div className="discussion-current-thread__message-container ">              
+                  <div className="discussion-thread__avatar-container">
                     {avatar}
                   </div>            
-                  <div className="application-list__item-content--main">                        
-                    <div className="application-list__item-header">       
-                      <div className="application-list__item-header-main">
+                  <div className="discussion-thread__main-container">                        
+                    <div className="discussion-thread__header">       
+                      <div className="discussion-thread__header-main">
                         <span className="text text--discussion-message-creator">{getName(user)}</span> 
                       </div>
-                      <div className="application-list__item-header-aside">
+                      <div className="discussion-thread__header-aside">
                         <span className="text">{this.props.i18n.time.format(reply.created)}</span>
                       </div>
                     </div>                   
-                    <div className="application-list__item__body">
+                    <div className="discussion-thread__body">
                       {reply.deleted ? 
                         <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
                         <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
                     </div>
-                    <div className="application-list__item-footer application-list__item-footer--discussion container container--message-actions">
+                    <div className="discussion-thread__footer">
                       <ReplyThread reply={reply}>
                         <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                       </ReplyThread>
