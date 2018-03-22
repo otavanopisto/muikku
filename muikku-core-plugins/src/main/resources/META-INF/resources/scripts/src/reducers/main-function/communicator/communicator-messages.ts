@@ -245,11 +245,11 @@ export default function communicatorMessages(state: CommunicatorMessagesType={
       return label;
     })) : state.current)});
   } else if (action.type === "REMOVE_ONE_LABEL_FROM_ALL_MESSAGES"){
-    return Object.assign({}, state, {selected: state.selected.filter((selected: CommunicatorMessageType)=>{
+    return Object.assign({}, state, {selected: state.selected.map((selected: CommunicatorMessageType)=>{
       return Object.assign({}, selected, {
         labels: selected.labels.filter(label=>label.labelId !== action.payload.labelId)
       });
-    }), messages: state.messages.filter((message: CommunicatorMessageType)=>{
+    }), messages: state.messages.map((message: CommunicatorMessageType)=>{
       return Object.assign({}, message, {
         labels: message.labels.filter(label=>label.labelId !== action.payload.labelId)
       });
