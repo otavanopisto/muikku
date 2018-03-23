@@ -36,16 +36,16 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
         hash: "vops"
       }
     ]
-    return <div className="item-list item-list--aside-navigation">
+    return <select className="item-list item-list--aside-navigation">
       {sections.map((section, index)=>{
-        return <Link key={index} className={`item-list__item ${section.isActive ? "active" : ""}`} href={"#" + section.hash}>
+        return <option key={index} className="" value={"#" + section.hash}>
           <span className="item-list__icon icon-new-section"></span>
           <span className="item-list__text-body text">
             {section.name}
           </span>
-        </Link>
+        </option>
       })}
-    </div>
+    </select>
   }
 }
 

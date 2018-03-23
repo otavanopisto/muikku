@@ -9,6 +9,7 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
+import '~/sass/elements/application-sub-panel.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
@@ -128,24 +129,49 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       });
     }
     
-    return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
-      <h2>{this.props.i18n.text.get("plugin.records.studyStartDateLabel", this.props.i18n.time.format(this.props.records.studyStartDate))}</h2>
-      <div className="application-list">
+    let studentBasicInfo = <div className="container container--student-info application-sub-panel__body--basic-info text">
+      <div className="application-sub-panel__item application-sub-panel__item--guider-basic-info">
+        <span>{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</span>
+        <span><span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.records.studyStartDate)}</span></span>
+      </div>
+    </div> 
+      
+    let studentRecords = <div className="application-list">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
-          let records = data.records;
-          
+          let records = data.records;      
           return <div key={data.user.id}>
-            <h2>{user.studyProgrammeName}</h2>
+          <div className="application-sub-panel__header text text--guider-header">{user.studyProgrammeName}</div>
             {records.map((record, index)=>{
               //TODO remember to add the curriculum reducer information to give the actual curriculum name somehow, this just gives the id
               return <div key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
-                  return <Link as='div' className="link workspace--link" key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
-                    <div className="TODO workspace name something???">{workspace.name}</div>
-                    {workspace.studentAcessment ? getAssesment(this.props, workspace) : getActivity(this.props, workspace)}
-                  </Link>
+                  return (
+                  <div className="application-list__item course" >
+                  <div className="">     
+                    <div className="application-list__item-header application-list__item-header--course">
+                      <span className="text text--coursepicker-course-icon icon-books"></span>
+                      <span className="text text--list-item-title">
+                        <span>{workspace.name}</span>
+                        {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
+                      </span> 
+                      <span className="text text--list-item-type-title">
+                        <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+                          workspace.studentActivity.evaluablesDonePercent}%
+                        </span>
+                        <span> / </span>
+                        <span title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+                          workspace.studentActivity.exercisesDonePercent}%
+                        </span>
+                      </span>
+                    </div>                                                              
+                  </div>
+                </div>                  
+                )  
+                  
+                  
+
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
                 {record.transferCredits.map((credit)=>{
@@ -158,21 +184,34 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             })}
           </div>
         })}
-      </div>
-      <div className="TODO files">
-        {this.props.records.files.length ?
-          <div>
-            {this.props.records.files.map((file)=>{
-              return <Link key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>
-                {file.title}
-              </Link>
-            })}
-          </div> :
-          <div>{
-            this.props.i18n.text.get("TODO no files")
-          }</div>
-        }
-      </div>
+      </div>  
+
+    // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
+    
+    return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
+    
+    <div className="application-sub-panel"></div>        
+    <div className="application-sub-panel">
+      {studentBasicInfo}
+    </div>
+    <div className="application-sub-panel">
+      {studentRecords}
+    </div>
+      
+    <div className="application-sub-panel">
+      {this.props.records.files.length ?
+        <div className="text application-sub-panel__file-container application-list">
+          {this.props.records.files.map((file)=>{
+            return <Link key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>
+              {file.title}
+            </Link>
+          })}
+        </div> :
+        <div className="text application-sub-panel__file-container">{
+          this.props.i18n.text.get("plugin.guider.user.details.files.empty")
+        }</div>
+      }
+    </div>
     </BodyScrollKeeper>
   }
 }
