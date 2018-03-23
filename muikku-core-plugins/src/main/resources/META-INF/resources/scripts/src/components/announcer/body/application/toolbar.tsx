@@ -103,8 +103,8 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       return (
         <div className="application-panel__toolbar">        
           <div className="application-panel__toolbar-actions-main">
-            <div className="text text--main-function-current-folder">
-
+            <div className="text text--main-function-current-folder">              
+              {this.props.i18n.text.get("plugin.announcer.cat." + this.props.announcements.location)}
             </div>
             <DeleteAnnouncementDialog>
               <Link className="button-pill button-pill--delete" disabled={this.props.announcements.selected.length === 0}>
