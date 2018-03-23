@@ -46,13 +46,17 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
             <section className="text text--announcer-announcement-content" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>  
           <div className="application-list__item-meta">
-            {/* This should be shown only if announcement has workspaces set */}
-            <div className="text text--announcer-announcement-workspaces">
-              <div className="text text--announcer-workspace"> 
-                <span className="text__icon text__icon--anouncement-workspace icon-books"></span>
-                <span className="text text--announcement-workspace-name"></span>
-              </div>
-            </div>
+            {this.props.announcements.current.workspaces ? 
+              <div className="text text--announcer-announcement-workspaces">
+                {this.props.announcements.current.workspaces.map((workspace)=>{
+                  return (                         
+                    <div className="text text--announcement-workspace" key={workspace.id}> 
+                      <span className="text__icon text__icon--announcement-workspace icon-books"></span>
+                      <span className="text text--announcement-workspace-name">{workspace.name}</span>
+                    </div>
+                  )
+                })}                      
+              </div> : null}
           </div>
             
         </div>                 
