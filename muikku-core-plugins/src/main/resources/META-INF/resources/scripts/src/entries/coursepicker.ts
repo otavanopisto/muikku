@@ -14,7 +14,7 @@ import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
-store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('TODO coursepicker title')));
+store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.coursepicker.pageTitle')));
 store.dispatch(<Action>loadAvaliableEducationFiltersFromServer());
 store.dispatch(<Action>loadAvaliableCurriculumFiltersFromServer());
 
