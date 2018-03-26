@@ -70,7 +70,8 @@
   }  
 }
 
-.application-sub-panel__item--guider-hops {
+.application-sub-panel__item--hops-readable {
+
   > span {
     flex-basis: 30%;
     flex-shrink: 0;
@@ -81,9 +82,15 @@
     flex-basis: 70%;
     flex-shrink: 1;
     flex-grow: 2;   
-  } 
-  
+  }   
 }
+.application-sub-panel__item--hops-editable {
+  flex-direction: column;
+  > span {
+   padding: 10px 0 10px 0;
+  }
+}
+
 
 .application-sub-panel__item--guider-workspace-info {
   > span {
