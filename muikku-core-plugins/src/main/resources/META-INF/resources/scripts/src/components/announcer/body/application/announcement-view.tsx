@@ -8,7 +8,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
-import { AnnouncementsType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
 interface MessageViewProps {
   i18n: i18nType,
@@ -69,7 +69,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: (state as any).announcements
+    announcements: state.announcements
   }
 };
 

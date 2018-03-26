@@ -1,4 +1,42 @@
 import {ActionType} from '~/actions';
+import { i18nType } from '~/reducers/base/i18n';
+
+export interface AnnouncerNavigationItemType {
+  location: string,
+  id: string | number,
+  icon: string,
+  color?: string,
+  text(i18n: i18nType):string
+}
+
+export type AnnouncerNavigationItemListType = Array<AnnouncerNavigationItemType>;
+
+const defaultNavigation: AnnouncerNavigationItemListType = [
+  {
+    location: "active",
+    id: "active",
+    icon: "new-section",
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.active")}
+  },
+  {
+    location: "past",
+    id: "past",
+    icon: "new-section",
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.past")}
+  },
+  {
+    location: "mine",
+    id: "mine",
+    icon: "new-section",
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.mine")}
+  },
+  {
+    location: "archived",
+    id: "archived",
+    icon: "new-section",
+    text(i18n: i18nType):string {return i18n.text.get("plugin.announcer.cat.archived")}
+  }
+]
 
 export interface AnnouncementType {
   archived: boolean,
@@ -52,17 +90,19 @@ export interface AnnouncementsType {
   selected: AnnouncementListType,
   selectedIds: Array<number>,
   location: string,
-  toolbarLock: boolean
+  toolbarLock: boolean,
+  navigation: AnnouncerNavigationItemListType
 }
 
 export interface AnnouncementsPatchType {
   state?: AnnouncementsStateType,
   announcements?: AnnouncementListType,
+  current?: AnnouncementType,
   selected?: AnnouncementListType,
   selectedIds?: Array<number>,
   location?: string,
   toolbarLock?: boolean,
-  current?: AnnouncementType
+  navigation?: AnnouncerNavigationItemListType
 }
 
 export default function announcements(state: AnnouncementsType={
@@ -72,9 +112,12 @@ export default function announcements(state: AnnouncementsType={
     selected: [],
     selectedIds: [],
     location: "",
-    toolbarLock: false
+    toolbarLock: false,
+    navigation: defaultNavigation
 }, action: ActionType): AnnouncementsType {
-  if (action.type === "UPDATE_ANNOUNCEMENTS_STATE"){
+  if (action.type === "UPDATE_ANNOUNCEMENTS"){
+    return Object.assign({}, state, {announcements: action.payload});
+  } else if (action.type === "UPDATE_ANNOUNCEMENTS_STATE"){
     let newState: AnnouncementsStateType = action.payload;
     return Object.assign({}, state, {state: newState});
   } else if (action.type === "UPDATE_ANNOUNCEMENTS_ALL_PROPERTIES"){

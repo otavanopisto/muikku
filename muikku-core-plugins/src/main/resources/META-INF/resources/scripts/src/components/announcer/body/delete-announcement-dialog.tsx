@@ -9,8 +9,8 @@ import { i18nType } from '~/reducers/base/i18n';
 import Link from '~/components/general/link';
 import Dialog from '~/components/general/dialog';
 import { deleteSelectedAnnouncements, deleteAnnouncement,
-  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
-import { AnnouncementType } from 'reducers/main-function/announcer/announcements';
+  DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcements';
+import { AnnouncementType } from 'reducers/main-function/announcements';
 import {StateType} from '~/reducers';
 
 interface DeleteAnnouncementDialogProps {

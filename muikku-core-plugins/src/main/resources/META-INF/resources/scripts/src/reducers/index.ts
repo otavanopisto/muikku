@@ -34,7 +34,7 @@ import {StatusType} from './base/status';
 
 import {WebsocketStateType} from './util/websocket';
 
-import { AnnouncementListType } from './main-function/announcer/announcements';
+import { AnnouncementsType } from './main-function/announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
@@ -52,7 +52,7 @@ export interface StateType {
   
   websocket?: WebsocketStateType,
   
-  announcements?: AnnouncementListType,
+  announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
   messages?: MessagesType,

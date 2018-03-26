@@ -11,7 +11,7 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 
 import DeleteAnnouncementDialog from '../delete-announcement-dialog';
 
@@ -62,7 +62,9 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
   }
   render(){
     if (this.props.announcements.current) {
+      
       //TODO this should be done more efficiently but the information is not included in the announcement
+      //this is why we had to have notOverrideCurrent in the reducers, it's such a mess
       let currentIndex:number = this.props.announcements.announcements.findIndex((a:AnnouncementType)=>a.id === this.props.announcements.current.id);
       let next:AnnouncementType = null;
       let prev:AnnouncementType = null;
@@ -122,7 +124,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: (state as any).announcements
+    announcements: state.announcements
   }
 };
 
