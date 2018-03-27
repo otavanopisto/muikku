@@ -67,14 +67,14 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
           
           var value = this.getValue();
           if(value != ""){
-          	var applyStyle = new CKEDITOR.style({ 
-           	 element: 'mark',
-            	attributes: { 
-            	  'data-muikku-word-definition': value 
-            	}
+            var applyStyle = new CKEDITOR.style({ 
+              element: 'mark',
+              attributes: { 
+                'data-muikku-word-definition': value 
+              }
          	 });
           
-          	applyStyle.apply(editor);
+            applyStyle.apply(editor);
           }
         }
       }]
