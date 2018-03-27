@@ -9,8 +9,9 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
       id: 'tab-basic',
       label: lang.definitionDialogTabTitle,
       elements: [{
-        type: 'text',
+        type: 'textarea',
         id: 'text',
+        class: 'max-size',
         label: lang.definitionDialogTextLabel,
         setup: function(editor) {
           var text = null;
@@ -64,14 +65,17 @@ CKEDITOR.dialog.add('muikkuWordDefinitionDialog', function (editor) {
           
           removeStyle.remove(editor);
           
-          var applyStyle = new CKEDITOR.style({ 
-            element: 'mark',
-            attributes: { 
-              'data-muikku-word-definition': this.getValue() 
-            }
-          });
+          var value = this.getValue();
+          if(value != ""){
+          	var applyStyle = new CKEDITOR.style({ 
+           	 element: 'mark',
+            	attributes: { 
+            	  'data-muikku-word-definition': value 
+            	}
+         	 });
           
-          applyStyle.apply(editor);
+          	applyStyle.apply(editor);
+          }
         }
       }]
     }],
