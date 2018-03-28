@@ -193,3 +193,17 @@ export class ApplicationPanelToolbarActionsMain extends React.Component<Applicat
     return <div className="application-panel__toolbar-actions-main">{this.props.children}</div>
   }
 }
+
+interface ApplicationPanelToolbarActionsAsideProps {
+  
+}
+
+interface ApplicationPanelToolbarActionsAsideState {
+  
+}
+
+export class ApplicationPanelToolbarActionsAside extends React.Component<ApplicationPanelToolbarActionsAsideProps, ApplicationPanelToolbarActionsAsideState> {
+  render(){
+    return <div className="application-panel__toolbar-actions-main">{this.props.children}</div>
+  }
+}

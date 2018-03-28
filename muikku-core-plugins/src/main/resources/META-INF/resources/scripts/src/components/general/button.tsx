@@ -5,8 +5,9 @@ import Link from './link';
 
 interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> {
   buttonAs?: any,
-  buttonModifiers?: Array<string>,
-  className?: string
+  buttonModifiers?: string | Array<string>,
+  className?: string,
+  disabled?: boolean
 }
 
 interface ButtonState {
@@ -20,8 +21,10 @@ export default class Button  extends React.Component<ButtonProps, ButtonState> {
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     
+    let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
+    
     return <Element {...elementProps}
-    className={`button ${this.props.className ? this.props.className : ""} ${(this.props.buttonModifiers || []).map(s=>`button--${s}`).join(" ")}`}/>
+    className={`button ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button--${s}`).join(" ")}`}/>
   }
 }
 
@@ -33,8 +36,10 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     
+    let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
+    
     return <Element {...elementProps}
-    className={`button-social ${(this.props.buttonModifiers || []).map(s=>`button-social--${s}`).join(" ")}`}/>
+    className={`button-social ${(modifiers || []).map(s=>`button-social--${s}`).join(" ")}`}/>
   }
 }
 
@@ -50,8 +55,10 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
     
+    let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
+    
     return <Element {...elementProps}
-    className={`button-pill ${(this.props.buttonModifiers || []).map(s=>`button-pill--${s}`).join(" ")}`}>
+    className={`button-pill ${(modifiers || []).map(s=>`button-pill--${s}`).join(" ")}`}>
       {this.props.icon && <span className={`button-pill__icon icon-${this.props.icon}`}></span>}
       {this.props.children}
     </Element>

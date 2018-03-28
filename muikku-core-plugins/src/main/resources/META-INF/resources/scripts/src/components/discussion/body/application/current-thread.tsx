@@ -74,7 +74,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           <DiscussionThreadBody>
             <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
           </DiscussionThreadBody>
-          <DiscussionThreadFooter>
+          <DiscussionThreadFooter hasActions>
             <ReplyThread>
               <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
             </ReplyThread>              
