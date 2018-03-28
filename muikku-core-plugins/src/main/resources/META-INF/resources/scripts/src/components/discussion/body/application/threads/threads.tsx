@@ -1,10 +1,12 @@
-import '~/sass/elements/discussion.scss';
+import '~/sass/elements/application-list.scss';
+import '~/sass/elements/message.scss';
+
 import * as React from 'react';
 import Pager from '~/components/general/pager';
 
 export class DiscussionThreads extends React.Component<{}, {}> {
   render(){
-    return <div className="discussion-threads">
+    return <div className="application-list application-list__items">
       {this.props.children}
     </div>
   }
@@ -15,10 +17,10 @@ export class DiscussionThread extends React.Component<{
   avatar: React.ReactNode
 }, {}> {
   render(){
-    return <div className="discussion-thread" onClick={this.props.onClick}>
-      <div className="discussion-thread__content">
-        <div className="discussion-thread__avatar-container">{this.props.avatar}</div>
-        <div className="discussion-thread__main-container">{this.props.children}</div>
+    return <div className="application-list__item message message--discussion" onClick={this.props.onClick}>
+      <div className="application-list__item-content-wrapper message__content">
+        <div className="application-list__item-content--aside message__content-aside--discussion">{this.props.avatar}</div>
+        <div className="application-list__item-content--main">{this.props.children}</div>
       </div>
     </div>
   }
@@ -29,28 +31,30 @@ export class DiscussionThreadHeader extends React.Component<{
 },{}> {
   render(){
     if (this.props.aside){
-      return <div className="discussion-thread__header">
-        <div className="discussion-thread__header-main">
+      return <div className="application-list__item-header">
+        <div className="application-list__item-header-main">
           {this.props.children}
         </div>
-        <div className="discussion-thread__header-aside">
+        <div className="application-list__item-header-aside">
           {this.props.aside}
         </div>
       </div>
     }
-    return <div className="discussion-thread__header">{this.props.children}</div>
+    return <div className="application-list__item-header application-list__item-header--discussion-item-header">{this.props.children}</div>
   }
 }
 
 export class DiscussionThreadBody extends React.Component<{},{}> {
   render(){
-    return <div className="discussion-thread__body">{this.props.children}</div>
+    return <div className="application-list__item__body">{this.props.children}</div>
   }
 }
 
-export class DiscussionThreadFooter extends React.Component<{},{}> {
+export class DiscussionThreadFooter extends React.Component<{
+  hasActions?: boolean
+},{}> {
   render(){
-    return <div className="discussion-thread__footer">{this.props.children}</div>
+    return <div className={`application-list__item-footer application-list__item-footer--discussion ${this.props.hasActions ? "container container--message-actions" : ""}`}>{this.props.children}</div>
   }
 }
 
@@ -58,8 +62,8 @@ export class DiscussionCurrentThread extends React.Component<{
   title: React.ReactNode
 },{}> {
   render(){
-    return <div className="discussion-current-thread">
-      <div className="discussion-current-thread__title">{this.props.title}</div>
+    return <div className="application-list application-list--open">
+      <div className="application-list__item-header">{this.props.title}</div>
       {this.props.children}
     </div>
   }
@@ -72,16 +76,18 @@ export class DiscussionCurrentThreadElement extends React.Component<{
   avatar: React.ReactNode
 }, {}> {
   render(){
-    let internalClass = this.props.isOpMessage ? "discussion-current-thread__op-message" : (
-        this.props.isReplyOfReply ? "discussion-current-thread__reply-of-reply" : "discussion-current-thread__reply-of-op"
+    let internalClass = this.props.isOpMessage ? "application-list__item-content-container message message--discussion message--discussion-thread-op" : (
+        this.props.isReplyOfReply ? "application-list__item-content-container message message--discussion message--discussion-reply-of-reply" :
+          "application-list__item-content-container message message--discussion message--discussion-reply-of-op"
     )
-    return <div className="discussion-current-thread__element">
+    let baseClass = this.props.isOpMessage ? "application-list__item--discussion-current-thread" : "application-list--open application-list__item--discussion-reply";
+    return <div className={baseClass}>
       <div className={internalClass}>
-        <div className="discussion-current-thread__message-container">
-          <div className="discussion-thread__avatar-container">
+        <div className="application-list__item-content-wrapper message__content">
+          <div className="application-list__item-content--aside message__content-aside--discussion">
             {this.props.avatar}
           </div>
-          <div className="discussion-thread__main-container">
+          <div className="application-list__item-content--main">
             {this.props.children}
           </div>
         </div>

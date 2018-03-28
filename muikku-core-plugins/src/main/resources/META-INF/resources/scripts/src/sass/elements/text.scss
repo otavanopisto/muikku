@@ -504,11 +504,11 @@ b {
   bottom: 0;
   background: linear-gradient(transparent 1rem, white);
   
-  .discussion-thread:hover & {
+  .message:hover & {
   	background: linear-gradient(transparent 1rem, $color-application-list-item-background-hover);
   }
  
-  .discussion-thread:active & {
+  .message:active & {
   	background: linear-gradient(transparent 1rem, $color-application-list-item-background-active);
   }
 }

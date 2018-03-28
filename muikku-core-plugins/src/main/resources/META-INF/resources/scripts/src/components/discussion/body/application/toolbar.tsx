@@ -57,9 +57,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
     if (this.props.discussion.current){
       let currentArea = this.props.discussion.areas.find((area)=>area.id === this.props.discussion.current.forumAreaId);
       return <div className="application-panel__toolbar">
-        <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-          <span className="button-pill__icon icon-goback"></span>
-        </Link>
+        <ButtonPill buttonModifiers="go-back" onClick={this.onGoBackClick} icon="goback"/>
         <div className="text text--discussion-current-thread">
           <div className={`text__discussion-breadcrumb-item text__discussion-breadcrumb-item--area-${currentArea.id}`}>
             {currentArea.name}
