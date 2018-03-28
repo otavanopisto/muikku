@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:jsf="http://xmlns.jcp.org/jsf">
 
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
+    <script type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
+	  <script type="text/javascript">
+	    CKEDITOR.disableAutoInline = true;
+	  </script>
+    
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jquery.auto-grow-input/1.0.3/jquery.auto-grow-input.min.js"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/autosize/3.0.15/autosize.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"/>
+<!--     <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"/> -->
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"/>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/modernizr/3.3.1-webrtc/modernizr.min.js"></script>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/gumadapter/1.0.0/gumadapter.js"></script>
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/recordrtc/5.3.7/RecordRTC.min.js"></script>
@@ -23,12 +28,37 @@
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-connect-field-component.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-rich-memo-field-component.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-sorter-component.js"/>
+    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-math-exercise-component.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-image-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-word-definition.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-explanation-widget.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/article-details.js"/>
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-field.js"/> 
     <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/muikku-material-loader.js"/> 
+    
+  <link rel="stylesheet" type="text/css" href="https://digabi.github.io/mathquill/build/mathquill.css"/>
+  <link rel="stylesheet" type="text/css" href="https://digabi.github.io/rich-text-editor/dist/rich-text-editor.css"/>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bacon.js/0.7.95/Bacon.min.js"></script>
+<!--   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js"></script> -->
+
+  <script src="https://digabi.github.io/mathquill/build/mathquill.min.js"></script>
+  <script src="https://digabi.github.io/rich-text-editor/proto/rich-text-editor-bundle-generated.js"></script>
+
+  
+  <style>
+    body { margin-top: 50px; font-family: sans-serif;}
+    h1 {font-size: 2em;}
+    .rich-text-editor-tools { z-index: 9999; }
+    .answer { border: 1px solid #aaa; padding: 5px; box-sizing: content-box; min-height: 100px; font: 17px "Times New Roman"; }
+    .rich-text-editor img[src^="data:image/svg+xml"] { vertical-align: middle; margin: 4px; padding: 3px 10px; cursor: pointer; border: 1px solid transparent; }
+    .rich-text-editor.rich-text-focused img[src^="data:image/svg+xml"],
+    .rich-text-editor:focus img[src^="data:image/svg+xml"] { background: #EDF9FF; border: 1px solid #E6F2F8; }
+    .rich-text-editor img[src*="data:image/png"] { margin: 4px; }
+    .rich-text-editor:focus img[src*="data:image/png"],
+    .rich-text-editor.rich-text-focused img[src*="data:image/png"] { box-shadow: 0 0 3px 1px rgba(0, 0, 0, .2); }
+    .result { display: none; }
+  </style>
   
   
 </ui:composition>
