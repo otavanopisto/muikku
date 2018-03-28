@@ -12,23 +12,26 @@
   font-family: $text-font-family;
   font-size: $vops-title-font-size;
   font-weight: 400;
+  margin: 0 0 10px;
 }
 
 .vops__legend-header {
-  width: 100%;
+  align-items: center;
+  display: flex;
   padding-bottom: 10px;
+  width: 100%;
 }
 
 .vops__legend-arrow {
   display: inline-block;
-  width: $vops-legend-header-size;
+  font-size: $vops-legend-header-arrow-size;
   height: $vops-legend-header-size;
-  border-radius: 100%;
+  margin: 0 5px 0 0;
+  width: $vops-legend-header-size;
   
   &::before {
     color: $color-text-link;
   }
-
 }
 
 .vops__legend-header-text {
@@ -37,25 +40,20 @@
   display: inline-block;      
   font-size: $vops-legend-header-size;
   font-family: $text-font-family;      
-  font-weight: 300;
   text-decoration: underline;
 }
 
-
 .vops__legend {
   background-color: $color-vops-legend-background;
-  padding: 5px;
+  padding: 10px;
   width: 100%;
-
-
 }
 
 .vops__legend-topic {
-  width: 100%;
   font-size: $vops-legend-header-size;
   font-family: $text-font-family;
-  font-weight: 300;
   text-transform: uppercase;
+  width: 100%;
 }
 
 .vops__legend-items {
@@ -75,14 +73,11 @@
   margin-left: 5px;
 }
 
-
 .vops__data {
-  width: 100%;
   font-family: $text-font-family;
   font-size: $vops-data-text-font-size;
-  padding: 20px 0 20px 5px;
-  padding-bottom: 20px;
-  padding-top: 20px;
+  padding: 10px 0;
+  width: 100%;
   
   > span:not(:first-child) {
     margin-left: 15px;

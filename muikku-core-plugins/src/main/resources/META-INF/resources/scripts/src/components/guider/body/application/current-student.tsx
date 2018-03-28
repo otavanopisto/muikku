@@ -7,6 +7,8 @@ import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/label.scss';
+import '~/sass/elements/course.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
@@ -74,10 +76,10 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div>
    
     let studentLabels = this.props.guiderStudentsCurrent.labels && this.props.guiderStudentsCurrent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
-      return <div className="application-sub-panel__item--label" key={label.id}>
-        <span className="icon-flag" style={{color: label.flagColor}}></span>
-        <span className="text">{label.flagName}</span>
-      </div>
+      return <span className="label" key={label.id}>
+        <span className="label__icon icon-flag" style={{color: label.flagColor}}></span>
+        <span className="label__text text">{label.flagName}</span>
+      </span>
     });
     
     let studentBasicInfo = this.props.guiderStudentsCurrent.basic && <div className="container container--student-info application-sub-panel__body application-sub-panel__body--basic-info text">
@@ -162,7 +164,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   
     let studentWorkspaces = <Workspaces/>;
     
-    let files = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__item-body">
+    let files = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__body">
       <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guiderStudentsCurrent.basic.id}
         onFileError={(file: File, err: Error)=>{
           this.props.displayNotification(err.message, "error");
@@ -191,7 +193,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     return <div className="react-required-container">
       <div className="application-sub-panel">
         {studentBasicHeader}
-        <div className="application-sub-panel__body application-sub-panel__body--labels">
+        <div className="application-sub-panel__body application-sub-panel__body--labels labels">
           {studentLabels}
         </div>
       </div>
