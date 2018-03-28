@@ -39,6 +39,9 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
     window.location.hash = window.location.hash.split("/")[0] + "/" + announcement.id;
   }
   render(){
+    if (this.props.announcements.state === "LOADING"){
+      return null;
+    }
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>
         <SelectableList className="application-list"
           selectModeClassAddition="application-list--select-mode" dataState={this.props.announcements.state}>
