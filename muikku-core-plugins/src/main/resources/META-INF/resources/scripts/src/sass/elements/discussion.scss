@@ -4,100 +4,97 @@
 @import "../base/breakpoints";
 	
 .discussion-threads {
-    height: 100%;
-    width: 100%;
-    overflow-y: auto;
-    
+	height: 100%;
+	width: 100%;
+	overflow-y: auto;
 }
 
 .discussion-thread {
-        background-color: #fff;
-        cursor: pointer;
-        -webkit-touch-callout: none;
-        transition: background-color 0.2s ease-in-out;
-        -webkit-user-select: none;
-        user-select: none;
-        position: relative;
-        border-top: 1px solid $color-message-border;
-        padding: 14px 12px 14px 4px;
-        
-        &:first-child {
-          border: 0;
-        }
-       
-        &:hover, &.hover {
-            background-color: $color-application-list-item-background-hover;
-        }
-        &:active, &.active {
-            background-color: $color-application-list-item-background-active;
-        }
-        @media screen and (min-width:64em) {
-           & {
-               -webkit-touch-callout: default;
-               -webkit-user-select: auto;
-               user-select: auto;
-           }
-       }
-      
-        .discussion-thread__content {
-          display: flex;
-          border-left: solid 3px $color-message-unread-border;
-          padding: 0 0 0 6px;
-        }
-     
-     
-    }
+	background-color: #fff;
+	border-top: 1px solid $color-message-border;
+	cursor: pointer;
+	padding: 14px 0;
+	position: relative;
+	-webkit-touch-callout: none;
+	transition: background-color 0.2s ease-in-out;
+	-webkit-user-select: none;
+	user-select: none;
+	
+	&:first-child {
+	  border: 0;
+	}
+	
+	&:hover, &.hover {
+	  background-color: $color-application-list-item-background-hover;
+	}
+	
+	&:active, &.active {
+	  background-color: $color-application-list-item-background-active;
+	}
+	
+	@media screen and (min-width:64em) {
+		& {
+      -webkit-touch-callout: default;
+      -webkit-user-select: auto;
+      user-select: auto;
+		}
+	}
+	
+	.discussion-thread__content {
+	  display: flex;
+	}  
+}
    
-   .discussion-thread__main-container {
-      	flex-basis: auto;
+.discussion-thread__main-container {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+  
+.discussion-thread__header {
+  align-items: center;
+  display: flex;
+  	
+  .discussion-thread__header-main {
+    flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
-      }
-     
-     .discussion-thread__header {
-     	align-items: center;
-     	display: flex;
-     	
-     	.discussion-thread__header-main {
-     	flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-     }
-    
-    .discussion-thread__header-aside {
-     	flex-basis: auto;
+  }
+ 
+  .discussion-thread__header-aside {
+    flex-basis: auto;
     flex-grow: 0;
     flex-shrink: 0;
     justify-content: right;
-     }
-     }
-    
-    .discussion-thread__body {
-    	padding: 0;
-    }
-   
-   .discussion-thread__footer {
-   	padding: 7px 0 0;
-   	align-items: center;
-    display: flex;
-   }
+  }
+}
+ 
+.discussion-thread__body {
+ 	padding: 0;
+}
+
+.discussion-thread__footer {
+  padding: 7px 0 0;
+  align-items: center;
+  display: flex;
+}
 
 .discussion-thread__avatar-container {
-       	padding: 0 16px 0 0;
-       	display: none;
+  padding: 0 16px 0 0;
+  display: none;
        	
-         @media screen and (min-width: 48em){
-       		&{
-                  align-items: flex-start;
-                 display: flex;
-                flex-basis: auto;
-                    flex-grow: 0;
-                          flex-shrink: 0;
-                           }
-                    }
-       }
+  @media screen and (min-width: 48em){
+    &{
+			align-items: flex-start;
+			display: flex;
+			flex-basis: auto;
+			flex-grow: 0;
+			flex-shrink: 0;
+    }
+  }
+}
 
-   .discussion-category {
+.discussion-category {
   font-weight: 600;
   padding: 0 0 0 7px;   
 }
@@ -148,34 +145,37 @@
 
 .discussion-current-thread {
 	height: 100%;
-    width: 100%;
-    overflow-y: auto;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    overflow: -moz-scrollbars-none;
+  width: 100%;
+  overflow-y: auto;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow: -moz-scrollbars-none;
     
-    .discussion-current-thread__title {
-    	    align-items: center;
+  .discussion-current-thread__title {
+    align-items: center;
     display: flex;
-    }
+  }
    
-    .discussion-current-thread__element {
-    	.discussion-current-thread__op-message {
-    		border: 0;
-    		padding: 25px 12px 14px 4px;
-    	}
-        .discussion-current-thread__reply-of-op {
-  		    border-top: 5px solid #f2f2f2;
-    		padding: 25px 12px 14px 4px;
-    	}
-        .discussion-current-thread__reply-of-reply {
-      	    border: 0;
-        	margin: 0 0 0 63px;
-        	padding: 25px 12px 14px 4px;
-        }
-       
-       .discussion-current-thread__message-container {
-       	  flex-flow: row nowrap;
-       	  display: flex;
-       }
+  .discussion-current-thread__element {
+  
+    .discussion-current-thread__op-message {
+      border: 0;
+    	padding: 25px 12px 14px 4px;
     }
+    
+    .discussion-current-thread__reply-of-op {
+  	  border-top: 5px solid #f2f2f2;
+    	padding: 25px 12px 14px 4px;
+    }
+    
+    .discussion-current-thread__reply-of-reply {
+      border: 0;
+      margin: 0 0 0 63px;
+      padding: 25px 12px 14px 4px;
+    }
+       
+    .discussion-current-thread__message-container {
+      flex-flow: row nowrap;
+      display: flex;
+    }
+  }
 }

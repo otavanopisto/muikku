@@ -134,13 +134,13 @@
 }
 
 .vops__body {
-  padding: 5px 40px;
-  width: 100%;
+	align-items: center;
   display: flex;
-  align-items: center;
   justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
+  padding: 5px 0;
+  width: 100%;
 }
 
 .vops__table-wrapper {

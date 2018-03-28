@@ -15,8 +15,12 @@
 }
 
 .application-sub-panel__body {
-  align-items: center;
-  padding: 10px;
+
+}
+
+.application-sub-panel__body--basic-info {
+	align-items: flex-start;
+  display: flex; 
 }
 
 .application-sub-panel__body--labels {
@@ -25,24 +29,49 @@
   padding: 10px;
 }
 
-.application-sub-panel__body--basic-info {
-  display: flex; 
-  align-items: center;
-  padding: 10px;
+.application-sub-panel__item {
+	align-items: center;
+	display: flex;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin: 3px 0;   
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }  
 }
 
-.application-sub-panel__item {
-  display: flex;
-  flex-basis: auto;
-  flex-shrink: 1;
-  margin-top: 5px;
-  margin-bottom: 5px;      
-}
+.application-sub-panel__item-title {
+	flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 0;
+	margin: 0 0 5px;
+	
+	@include breakpoint($breakpoint-desktop) {
+    flex-basis: 250px;
+	  margin: 0 10px 0 0;
+  }
+} 
+
+.application-sub-panel__item-data {
+	display: flex;
+	flex-basis: auto;
+	flex-flow: column wrap;
+	flex-grow: 0;
+  flex-shrink: 0;
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+    flex-flow: row wrap;
+    flex-shrink: 1;
+  }
+} 
 
 .application-sub-panel__item-body {
   padding: 10px 14px;   
 }
-
 
 .application-sub-panel__item--label {
   display: flex;
@@ -51,44 +80,8 @@
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 10px;
-  
-  > span:first-child {
-    margin-right: 5px;
-  }      
 }
 
 .application-sub-panel__file-container {
   padding: 20px;
 }
-
-.application-sub-panel__item--guider-basic-info {
-  flex-basis: 50%;
-  
-  > span {
-    flex-basis: 50%;
-    flex-grow: 1;
-  }  
-}
-
-.application-sub-panel__item--guider-hops {
-  > span {
-    flex-basis: 30%;
-    flex-shrink: 0;
-    flex-grow: 1;   
-  }
-
-  > span:first-child {
-    flex-basis: 70%;
-    flex-shrink: 1;
-    flex-grow: 2;   
-  } 
-  
-}
-
-.application-sub-panel__item--guider-workspace-info {
-  > span {
-    flex-basis: 50%;
-    flex-grow: 1;
-  }  
-}
-
