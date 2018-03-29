@@ -3,6 +3,11 @@ package fi.otavanopisto.muikku.plugins.workspace.fieldio;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
+import org.jsoup.safety.Cleaner;
+import org.jsoup.safety.Whitelist;
 
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -16,6 +21,8 @@ public class WorkspaceMathExerciseFieldIOHandler implements WorkspaceFieldIOHand
 
   @Override
   public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
+    value = clean(value);
+
     WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(field, reply);
     if (StringUtils.isNotBlank(value)) {
       if (fieldAnswer == null) {
@@ -43,6 +50,18 @@ public class WorkspaceMathExerciseFieldIOHandler implements WorkspaceFieldIOHand
   @Override
   public String getType() {
     return "application/vnd.muikku.field.mathexercise";
+  }
+
+  private String clean(String html) {
+    Document doc = Jsoup.parse(html);
+    doc = new Cleaner(Whitelist.relaxed()
+        .addAttributes("div", "id", "class")
+        .addAttributes("span", "id", "class")
+        .removeTags("a"))
+        .clean(doc);
+    doc.select("a[target]").attr("rel", "noopener noreferer");
+    doc.outputSettings().escapeMode(EscapeMode.xhtml);
+    return doc.body().html();
   }
 
 }

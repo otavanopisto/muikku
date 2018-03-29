@@ -118,24 +118,25 @@
             }
           });
           
-          var answer = answerField.html();
-          this._answer = answer;
-          return answer;
+          this._answer = answerField.html();
+          return this._answer;
         }, this),
         set: $.proxy(function (answer) {
           var editorField = this.element.find(".muikku-math-exercise-field-editor");
+
           editorField.html(answer);
 
           editorField.find("span.muikku-math-exercise-formula").each($.proxy(function (index, formulaElement) {
+            var formula = $(formulaElement);
+            var latex = formula.text();
+            // Remove beginning \( and trailing \) from text
+            latex = latex.replace(/^\\\(|\\\)$/g, '');
+
+            var img = $('<img alt="' + latex + '" class="muikku-math-exercise-formula"/>');
+            formula.replaceWith(img);
+            
             // Queue up an event to render the latex in img
             MathJax.Hub.Queue($.proxy(function () {
-              var formula = $(formulaElement);
-              var latex = formula.text();
-              // Remove beginning \( and trailing \) from text
-              latex = latex.replace(/^\\\(|\\\)$/g, '');
-              var img = $('<img alt="' + latex + '" class="muikku-math-exercise-formula">');
-              formula.replaceWith(img);
-              
               this.updateImage(img, latex);
             }, this));
           }, this));
@@ -231,10 +232,10 @@
     
     answer: function(val) {
       if (val === undefined) {
-        return JSON.stringify(this._answerHandler.get());
+        return this._answerHandler.get();
       } else {
-        var answer = $.parseJSON(val);
-        this._answerHandler.set(answer);
+        this._answer = val;
+        this._answerHandler.set(this._answer);
       }
     },
 
