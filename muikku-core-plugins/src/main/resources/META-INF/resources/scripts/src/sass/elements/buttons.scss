@@ -428,6 +428,7 @@
   display: none;
 
   @include breakpoint($breakpoint-pad) {
+    background: $color-default;
     box-shadow: 0 0 5px $color-button-pill-shadow;
     display: inline-flex;
     font-size: $button-pill-navbar-font-size;
@@ -435,8 +436,19 @@
     margin-right: 15px;
     width: $button-pill-navbar-size;
     
+    &:hover, 
+	  &.hover {
+	    background-color: $color-default;
+	  }
+	  
+	  &:active, 
+	  &.active {
+	    background-color: $color-default;
+	  }
+    
     .button-pill__icon {
       color: $color-environment-button-pill-icon-user;
+      font-size: 1.25rem;
     }
   }
 }

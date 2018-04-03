@@ -11,6 +11,7 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/label.scss';
 import '~/sass/elements/message.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
@@ -124,10 +125,10 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                       <span className="text text--communicator-body">{thread.caption}</span>
                     </div>
                     {thread.labels ? <div className="application-list__item-footer application-list__item-footer--message">
-                      <div className="text text--labels">{thread.labels.map((label)=>{
-                        return <span className="text text--label" key={label.id}>
-                          <span className="text__icon text__icon--label icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                          <span>{label.labelName}</span>
+                      <div className="labels">{thread.labels.map((label)=>{
+                        return <span className="label" key={label.id}>
+                          <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                          <span className="text label__text">{label.labelName}</span>
                         </span>
                       })}</div>
                     </div> : null}

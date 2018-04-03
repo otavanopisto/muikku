@@ -259,7 +259,7 @@
 }
 
 .application-list__item-footer--message {
-  margin: 2px 0 0;
+  margin: 5px 0 0;
 }
 
 .application-list--communicator-message-view {
@@ -290,16 +290,8 @@
 }
 
 // Coursepicker
-.application-list__item-header--course {
-  padding: 14px 12px;     
-}
-
 .application-list__item-body--course {
-  padding: 12px 9px;
-}
-
-.application-list__item-footer--course {
-  padding: 12px 9px;
+  padding: 12px 0;
 }
 
 // Guider
@@ -309,5 +301,5 @@
 }
 
 .application-list__item-footer--student {
-  margin: 2px 0 0;
+  margin: 5px 0 0;
 }

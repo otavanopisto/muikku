@@ -1,8 +1,16 @@
+@import "../base/colors";
+@import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
 
 .file-uploader {
+  border: 2px solid $color-tertiary;
   padding: 20px;
-  border: 4px solid skyblue;
+  position: relative;
+}
+
+.file-uploader__hint {
+	display: flex;
+	justify-content: center;
 }
 
