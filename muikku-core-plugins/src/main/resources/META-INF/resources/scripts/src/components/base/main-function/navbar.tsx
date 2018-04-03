@@ -124,7 +124,7 @@ function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
     status: state.status,
-    messageCount: state.messages.count,
+    messageCount: state.messages.unreadThreadCount,
     title: state.title
   }
 };

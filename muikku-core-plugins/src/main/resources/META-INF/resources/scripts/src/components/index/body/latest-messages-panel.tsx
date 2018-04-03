@@ -1,14 +1,14 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import Link from '../../general/link';
-import {CommunicatorMessageListType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
+import {MessageThreadListType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import Panel from '~/components/general/panel';
 
 interface LastMessagesPanelProps {
   i18n: i18nType,
-  lastMessages: CommunicatorMessageListType
+  lastThreads: MessageThreadListType
 }
 
 interface LastMessagesPanelState {
@@ -23,18 +23,18 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
         <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.communicator.lastMessages')}</span>
       </div>
       <Panel modifier="index">
-        {this.props.lastMessages.length ? (
+        {this.props.lastThreads.length ? (
           <div className="item-list item-list--panel-latest-messages">
-            {this.props.lastMessages.map((message: CommunicatorMessageType)=>{
-              return (<Link key={message.id} className={`item-list__item item-list__item--latest-messages ${message.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
-                      href={`/communicator#inbox/${message.communicatorMessageId}`}>
-                <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${message.unreadMessagesInThread ? "-alt" : ""}`}></span>
+            {this.props.lastThreads.map((thread)=>{
+              return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
+                      href={`/communicator#inbox/${thread.communicatorMessageId}`}>
+                <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${thread.unreadMessagesInThread ? "-alt" : ""}`}></span>
                 <span className="text item-list__text-body item-list__text-body--multiline">
                   <span className="text item-list__latest-message-caption">
-                    {message.caption}
+                    {thread.caption}
                   </span>
                   <span className="text item-list__latest-message-date">
-                    {this.props.i18n.time.format(message.created)}
+                    {this.props.i18n.time.format(thread.created)}
                   </span>
                 </span>
               </Link>);
@@ -51,7 +51,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    lastMessages: state.messages.messages
+    lastThreads: state.messages.threads
   }
 };
 

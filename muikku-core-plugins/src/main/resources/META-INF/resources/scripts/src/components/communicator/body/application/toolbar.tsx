@@ -3,15 +3,10 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
-import {deleteCurrentMessage, DeleteCurrentMessageTriggerType, addLabelToCurrentMessage, AddLabelToCurrentMessageTriggerType,
-  removeLabelFromSelectedMessages, RemoveLabelFromSelectedMessagesTriggerType, deleteSelectedMessages, DeleteSelectedMessagesTriggerType,
-  toggleMessagesReadStatus, ToggleMessageReadStatusTriggerType, removeLabelFromCurrentMessage, RemoveLabelFromCurrentMessageTriggerType,
-  addLabelToSelectedMessages, AddLabelToSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
-import {addCommunicatorLabel, AddCommunicatorLabelTriggerType} from '~/actions/main-function/communicator/communicator-navigation';
+import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads, toggleMessageThreadReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads, removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType, AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType, ToggleMessageThreadReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType, RemoveLabelFromCurrentMessageThreadTriggerType} from '~/actions/main-function/messages';
 import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
-import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
-import {CommunicatorMessagesType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
+import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
@@ -22,17 +17,17 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 
 interface CommunicatorToolbarProps {
-  communicatorNavigation: CommunicatorNavigationItemListType,
-  communicatorMessages: CommunicatorMessagesType,
+  messages: MessagesType,
   i18n: i18nType,
-  deleteCurrentMessage: DeleteCurrentMessageTriggerType,
-  addLabelToCurrentMessage: AddLabelToCurrentMessageTriggerType,
-  removeLabelFromSelectedMessages: RemoveLabelFromSelectedMessagesTriggerType,
-  deleteSelectedMessages: DeleteSelectedMessagesTriggerType,
-  toggleMessagesReadStatus: ToggleMessageReadStatusTriggerType,
-  addCommunicatorLabel: AddCommunicatorLabelTriggerType,
-  removeLabelFromCurrentMessage: RemoveLabelFromCurrentMessageTriggerType,
-  addLabelToSelectedMessages: AddLabelToSelectedMessagesTriggerType
+  
+  deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType,
+  addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType,
+  removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType,
+  deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType,
+  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType,
+  addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType,
+  addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType,
+  removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType
 }
 
 interface CommunicatorToolbarState {
@@ -80,14 +75,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
   }
   render(){
-    let currentLocation = this.props.communicatorNavigation.find((item)=>{
-      return (item.location === this.props.communicatorMessages.location);
+    let currentLocation = this.props.messages.navigation.find((item)=>{
+      return (item.location === this.props.messages.location);
     });
     
     if (!currentLocation){
       return null;
     }
-    if (this.props.communicatorMessages.current){
+    if (this.props.messages.currentThread){
       return ( 
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">          
@@ -102,22 +97,22 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
               </LabelUpdateDialog> : null}
             </div>                
-            <Link className="button-pill button-pill--delete" onClick={this.props.deleteCurrentMessage}>
+            <Link className="button-pill button-pill--delete" onClick={this.props.deleteCurrentMessageThread}>
               <span className="button-pill__icon icon-delete"></span>
             </Link>          
             <Dropdown modifier="communicator-labels" items={
               [
                 <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                   type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-                <Link className="link link--full link--new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+                <Link className="link link--full link--new" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
                   {this.props.i18n.text.get("plugin.communicator.label.create")}
                 </Link>
-              ].concat(this.props.communicatorNavigation.filter((item)=>{
+              ].concat(this.props.messages.navigation.filter((item)=>{
                 return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
               }).map((label)=>{
-                let isSelected = this.props.communicatorMessages.current.labels.find(l=>l.labelId === label.id);
+                let isSelected = this.props.messages.currentThread.labels.find(l=>l.labelId === label.id);
                 return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
-                  onClick={!isSelected ? this.props.addLabelToCurrentMessage.bind(null, label) : this.props.removeLabelFromCurrentMessage.bind(null, label)}>
+                  onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                   <span className="link__icon icon-tag" style={{color: label.color}}></span>
                   <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
                 </Link>);
@@ -130,14 +125,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           </div>
           <div className="application-panel__toolbar-actions-aside">
             <Link className="button-pill button-pill--prev-page"
-              disabled={this.props.communicatorMessages.current.olderThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>
+              disabled={this.props.messages.currentThread.olderThreadId === null}
+              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}>
               <span className="button-pill__icon icon-arrow-left"></span>
             </Link>        
             
             <Link className="button-pill button-pill--next-page"
-              disabled={this.props.communicatorMessages.current.newerThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.newerThreadId)}>
+              disabled={this.props.messages.currentThread.newerThreadId === null}
+              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}>
               <span className="button-pill__icon icon-arrow-right"></span>
             </Link>
           </div>
@@ -147,9 +142,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   
     let allInCommon:number[] = [];
     let onlyInSome:number[] = [];
-    let isAtLeastOneSelected = this.props.communicatorMessages.selected.length >= 1;
+    let isAtLeastOneSelected = this.props.messages.selectedThreads.length >= 1;
     if (isAtLeastOneSelected){
-      let partialIds = this.props.communicatorMessages.selected.map((message: CommunicatorMessageType)=>{return message.labels.map(l=>l.labelId)});
+      let partialIds = this.props.messages.selectedThreads.map((thread)=>{return thread.labels.map(l=>l.labelId)});
       allInCommon = intersect(...partialIds);
       onlyInSome = difference(...partialIds);
     }
@@ -164,7 +159,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       </div>
       
       <Link className="button-pill button-pill--delete"
-       disabled={this.props.communicatorMessages.selected.length == 0} onClick={this.props.deleteSelectedMessages}>
+       disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}>
         <span className="button-pill__icon icon-delete"></span>
       </Link>
                
@@ -172,16 +167,16 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         [
           <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-          <span className="link link--full" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+          <span className="link link--full" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </span>
-        ].concat(this.props.communicatorNavigation.filter((item)=>{
+        ].concat(this.props.messages.navigation.filter((item)=>{
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
-        }).map((label: CommunicatorNavigationItemType)=>{
+        }).map((label)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
           return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
-            onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessages.bind(null, label) : this.props.removeLabelFromSelectedMessages.bind(null, label)}>
+            onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessageThreads.bind(null, label) : this.props.removeLabelFromSelectedMessageThreads.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
           </Link>);
@@ -193,9 +188,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       </Dropdown>
       
       <Link className="button-pill button-pill--toggle-read"
-        disabled={this.props.communicatorMessages.selected.length !== 1}
-        onClick={this.props.communicatorMessages.toolbarLock ? null : this.props.toggleMessagesReadStatus.bind(null, this.props.communicatorMessages.selected[0])}>
-        <span className={`button-pill__icon icon-message-${this.props.communicatorMessages.selected.length === 1 && !this.props.communicatorMessages.selected[0].unreadMessagesInThread ? "un" : ""}read`}></span>
+        disabled={this.props.messages.selectedThreads.length !== 1}
+        onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadReadStatus.bind(null, this.props.messages.selectedThreads[0])}>
+        <span className={`button-pill__icon icon-message-${this.props.messages.selectedThreads.length === 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "un" : ""}read`}></span>
       </Link>
     </div>
   }
@@ -203,17 +198,16 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
 
 function mapStateToProps(state: StateType){
   return {
-    communicatorNavigation: (state as any).communicatorNavigation,
-    communicatorMessages: (state as any).communicatorMessages,
+    messages: state.messages,
     i18n: state.i18n
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({deleteCurrentMessage, addLabelToCurrentMessage,
-    removeLabelFromSelectedMessages, deleteSelectedMessages,
-    toggleMessagesReadStatus, addCommunicatorLabel, addLabelToSelectedMessages,
-    removeLabelFromCurrentMessage}, dispatch);
+  return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
+    removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads,
+    toggleMessageThreadReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
+    removeLabelFromCurrentMessageThread}, dispatch);
 };
 
 export default connect(

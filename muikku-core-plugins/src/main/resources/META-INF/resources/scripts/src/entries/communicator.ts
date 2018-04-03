@@ -5,24 +5,24 @@ import mApi from '~/lib/mApi';
 
 import mainFunctionDefault from '~/util/base-main-function';
 
-import communicatorActions from '~/actions/main-function/communicator';
+import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
 import titleActions from '~/actions/base/title';
 
 import {Action} from 'redux';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store)
-  .addEventListener("Communicator:newmessagereceived", communicatorActions.communicatorMessages.loadNewlyReceivedMessage);
+  .addEventListener("Communicator:newmessagereceived", loadNewlyReceivedMessage);
 
 let currentLocation = window.location.hash.replace("#","").split("/");
 function loadLocation(location: string[]){
   if (location.length === 1){
-    store.dispatch(<Action>communicatorActions.communicatorMessages.loadMessages(location[0]));
+    store.dispatch(<Action>loadMessageThreads(location[0]));
   } else {
-    store.dispatch(<Action>communicatorActions.communicatorMessages.loadMessage(location[0], parseInt(location[1])));
+    store.dispatch(<Action>loadMessageThread(location[0], parseInt(location[1])));
   }
 }
-store.dispatch(<Action>communicatorActions.communicatorNavigation.updateCommunicatorNavigationLabels(()=>{
+store.dispatch(<Action>loadMessagesNavigationLabels(()=>{
   if (currentLocation[0].includes("label")){
     loadLocation(currentLocation);
   }
@@ -41,4 +41,4 @@ if (!window.location.hash){
 }
 
 store.dispatch(titleActions.updateTitle(store.getState().i18n.text.get('plugin.communicator.pageTitle')));
-store.dispatch(<Action>communicatorActions.communicatorMessages.loadSignature());
+store.dispatch(<Action>loadSignature());
