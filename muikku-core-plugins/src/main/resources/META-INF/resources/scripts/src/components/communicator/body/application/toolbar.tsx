@@ -15,6 +15,8 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
+import { ButtonPill } from '~/components/general/button';
 
 interface CommunicatorToolbarProps {
   messages: MessagesType,
@@ -84,22 +86,18 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
     if (this.props.messages.currentThread){
       return ( 
-        <div className="application-panel__toolbar">
-          <div className="application-panel__toolbar-actions-main">          
-            <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-              <span className="button-pill__icon icon-goback"></span>
-            </Link>
+        <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>         
+            <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick}/>
           
             <div className="text text--main-function-current-folder">
               <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               {"  " + currentLocation.text(this.props.i18n)}
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-                <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+                <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
               </LabelUpdateDialog> : null}
-            </div>                
-            <Link className="button-pill button-pill--delete" onClick={this.props.deleteCurrentMessageThread}>
-              <span className="button-pill__icon icon-delete"></span>
-            </Link>          
+            </div>
+            <ButtonPill buttonModifiers="delete" icon="delete" onClick={this.props.deleteCurrentMessageThread}/>
             <Dropdown modifier="communicator-labels" items={
               [
                 <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
@@ -118,25 +116,19 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 </Link>);
               }))
             }>
-              <Link className="button-pill button-pill--label">
-                <span className="button-pill__icon icon-tag"></span>
-              </Link>
+              <ButtonPill buttonModifiers="label" icon="tag"/>
             </Dropdown>
-          </div>
-          <div className="application-panel__toolbar-actions-aside">
-            <Link className="button-pill button-pill--prev-page"
+          </ApplicationPanelToolbarActionsMain>
+          <ApplicationPanelToolbarActionsAside>
+            <ButtonPill buttonModifiers="prev-page" icon="arrow-left"
               disabled={this.props.messages.currentThread.olderThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}>
-              <span className="button-pill__icon icon-arrow-left"></span>
-            </Link>        
+              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>       
             
-            <Link className="button-pill button-pill--next-page"
+            <ButtonPill buttonModifiers="next-page" icon="arrow-right"
               disabled={this.props.messages.currentThread.newerThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}>
-              <span className="button-pill__icon icon-arrow-right"></span>
-            </Link>
-          </div>
-        </div>
+              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
+          </ApplicationPanelToolbarActionsAside>
+        </ApplicationPanelToolbar>
       )
     }
   
@@ -149,19 +141,17 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
       onlyInSome = difference(...partialIds);
     }
     
-    return <div className="application-panel__toolbar">
+    return <ApplicationPanelToolbar>
       <div className="text text--main-function-current-folder">
         <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         {"  " + currentLocation.text(this.props.i18n)}
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-          <Link className="button-pill button-pill--toolbar-edit-label"><span className="button-pill__icon icon-edit"></span></Link>
+          <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
          </LabelUpdateDialog> : null}
       </div>
       
-      <Link className="button-pill button-pill--delete"
-       disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}>
-        <span className="button-pill__icon icon-delete"></span>
-      </Link>
+      <ButtonPill buttonModifiers="delete" icon="delete"
+       disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
                
       <Dropdown modifier="communicator-labels" items={
         [
@@ -182,17 +172,13 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           </Link>);
         }))
       }>
-        <Link className="button-pill button-pill--label">
-          <span className="button-pill__icon icon-tag"></span>
-        </Link>
+        <ButtonPill buttonModifiers="label" icon="tag"/>
       </Dropdown>
       
-      <Link className="button-pill button-pill--toggle-read"
+      <ButtonPill buttonModifiers="toggle-read" icon={`message-${this.props.messages.selectedThreads.length === 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "un" : ""}read`}
         disabled={this.props.messages.selectedThreads.length !== 1}
-        onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadReadStatus.bind(null, this.props.messages.selectedThreads[0])}>
-        <span className={`button-pill__icon icon-message-${this.props.messages.selectedThreads.length === 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "un" : ""}read`}></span>
-      </Link>
-    </div>
+        onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadReadStatus.bind(null, this.props.messages.selectedThreads[0])}/>
+    </ApplicationPanelToolbar>
   }
 }
 

@@ -8,6 +8,7 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
+import { ButtonPill } from '~/components/general/button';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -33,9 +34,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             {item.text(this.props.i18n)}
           </span>
           {item.type === "label" ? <LabelUpdateDialog label={item}>
-            <Link disablePropagation as="span" className="button-pill button-pill--navigation-edit-label">
-              <span className="item-list__icon icon-edit"/>
-            </Link>
+            <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="edit"/>
           </LabelUpdateDialog> : null}
         </Link>
       })}

@@ -11,6 +11,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import {MessageSignatureType} from '~/reducers/main-function/messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
+import Button from '~/components/general/button';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -134,12 +135,12 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
+          </Button>
+          <Button buttonModifiers="standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
-          </Link>
+          </Button>
         </div>
       )
     }

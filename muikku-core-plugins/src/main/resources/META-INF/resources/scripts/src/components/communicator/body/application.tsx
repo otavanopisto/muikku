@@ -17,6 +17,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/container.scss';
+import Button, { ButtonPill } from '~/components/general/button';
 
 interface CommunicatorApplicationProps {
   aside: React.ReactElement<any>,
@@ -56,13 +57,11 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
       </Link>
     ]}>
-      <Link className="button-pill button-pill--settings">
-        <span className="button-pill__icon icon-settings"></span>
-      </Link>
+      <ButtonPill buttonModifiers="settings" icon="settings"/>
     </Dropdown>
-    let primaryOption = <NewMessage><a className="button button--primary-function">
-    {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
-    </a></NewMessage>
+    let primaryOption = <NewMessage><Button buttonModifiers="primary-function">
+      {this.props.i18n.text.get('plugin.communicator.newMessage.label')}
+    </Button></NewMessage>
     let toolbar = <Toolbar/>
       
     //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server

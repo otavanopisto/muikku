@@ -13,8 +13,8 @@ import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/container.scss';
-import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
+import Button from '~/components/general/button';
 
 const KEYCODES = {
   ENTER: 13
@@ -91,13 +91,13 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
-        </Link>
-        <Link className="button button--success button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        </Button>
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
           {/*TODO this should be OK but instead it says edit, please fix*/}
           {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
-        </Link>
+        </Button>
       </div>
     }
     let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
@@ -112,9 +112,9 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
             disabled={this.state.removed}
             onChange={this.onNameChange}/>
           {sliderPicker}
-          <Link className="button button--fatal button--communicator-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
+          <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
             {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
-          </Link>
+          </Button>
         </div>
       )
     }

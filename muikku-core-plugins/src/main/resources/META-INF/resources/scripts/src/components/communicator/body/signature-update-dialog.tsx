@@ -11,7 +11,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/text.scss';
-import '~/sass/elements/buttons.scss';
+import Button from '~/components/general/button';
 
 const KEYCODES = {
   ENTER: 13
@@ -78,12 +78,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
     let footer = (closeDialog: ()=>any)=>{
       return (
         <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+          </Button>
+          <Button buttonModifiers="standard-ok" onClick={this.update.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.settings.signatures.create')}
-          </Link>
+          </Button>
         </div>
       )    
     }
