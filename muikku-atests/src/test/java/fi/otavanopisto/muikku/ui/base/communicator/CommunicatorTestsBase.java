@@ -75,7 +75,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         for(int i = 0; i < 40; i++)
           createCommunicatorMesssage("Test " + i, "Test content " + i, sender, recipient);
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();        
         navigate("/communicator", false);
         waitForPresentAndVisible("div.message");
@@ -103,7 +103,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long recipient = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
         waitAndClick("div.application-list__item.message");
@@ -132,7 +132,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long recipient = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
 
         waitForPresent("span.item-list__latest-message-caption");
@@ -163,7 +163,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long recipient = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
         waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");

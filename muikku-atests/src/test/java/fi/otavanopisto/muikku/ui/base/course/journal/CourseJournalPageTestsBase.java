@@ -56,7 +56,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addCourseStudent(courseId, courseStudent).build();
 
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
@@ -85,7 +85,7 @@ public class CourseJournalPageTestsBase extends AbstractUITest {
       mockBuilder.addCourseStudent(courseId, courseStudent).build();
       
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       try {
         navigate(String.format("/workspace/%s/journal", workspace.getUrlName()), false);
