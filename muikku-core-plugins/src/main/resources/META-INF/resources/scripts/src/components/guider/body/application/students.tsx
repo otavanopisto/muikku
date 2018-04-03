@@ -8,6 +8,7 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/label.scss';
 import '~/sass/elements/message.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';

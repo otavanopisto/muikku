@@ -3,46 +3,108 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-sub-panel:not(:first-child) {
-  border-bottom: 1px solid $color-main-function-application-sub-panel-bottom-border;
+.application-sub-panel:not(:first-child):not(:last-child) {
+  border-bottom: 5px solid $color-default-item-separator-border;
   padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
 .application-sub-panel__header {
-  display: flex;
   align-items: center;
+  display: flex;
+  margin: 0 0 10px;
 }
 
 .application-sub-panel__body {
-  align-items: center;
-  padding: 10px;
-}
-
-.application-sub-panel__body--labels {
-  align-items: center;
-  display: flex;
-  padding: 10px;
+  padding: 10px 0;
 }
 
 .application-sub-panel__body--basic-info {
-  display: flex; 
-  align-items: center;
-  padding: 10px;
+
+}
+
+.application-sub-panel__body--labels {
+  padding: 10px 0;
 }
 
 .application-sub-panel__item {
+  align-items: center;
   display: flex;
-  flex-basis: auto;
+  flex-basis: 100%;
+  flex-flow: row wrap;
+  flex-grow: 1;
   flex-shrink: 1;
-  margin-top: 5px;
-  margin-bottom: 5px;      
+  padding: 10px 0; 
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid $color-default-item-separator-border;
+  }  
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row nowrap;
+  }  
 }
 
-.application-sub-panel__item-body {
-  padding: 10px 14px;   
-}
+ .application-sub-panel__item-header {
+   padding: 10px 0 0;
+ }
 
+.application-sub-panel__item-title {
+	flex-basis: 100%;
+  flex-grow: 0;
+  flex-shrink: 0;
+	margin: 0 0 5px;
+	
+	@include breakpoint($breakpoint-desktop) {
+    flex-basis: 250px;
+	  margin: 0 10px 0 0;
+  }
+} 
+
+.application-sub-panel__item-data {
+	align-items: center;
+	display: flex;
+	flex-basis: auto;
+	flex-flow: column wrap;
+	flex-grow: 0;
+  flex-shrink: 0;
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-grow: 1;
+    flex-flow: row wrap;
+    flex-shrink: 1;
+  }
+} 
+
+// HOPS readonly override for rendering item-title and item-data
+.application-sub-panel__body--hops {
+
+  .application-sub-panel__item-title {
+    flex-basis: 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin: 0 0 5px;
+    
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: 60%;
+      margin: 0 10px 0 0;
+    }
+  }
+  
+  .application-sub-panel__item-data {
+    display: inline-flex;
+    flex-basis: auto;
+    flex-flow: column wrap;
+    flex-grow: 0;
+    flex-shrink: 0;
+    
+    @include breakpoint($breakpoint-desktop) {
+      flex-grow: 1;
+      flex-flow: row wrap;
+      flex-shrink: 1;
+    }
+  } 
+}
 
 .application-sub-panel__item--label {
   display: flex;
@@ -51,15 +113,12 @@
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 10px;
-  
-  > span:first-child {
-    margin-right: 5px;
-  }      
 }
 
 .application-sub-panel__file-container {
   padding: 20px;
 }
+
 
 .application-sub-panel__item--guider-basic-info {
   flex-basis: 50%;

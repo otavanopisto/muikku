@@ -1,9 +1,17 @@
 //VOPS (fix these colors) 
 
-$color-vops-item-base: #ccc;
-$color-vops-item-incomplete: orange;
-$color-vops-item-planned: blue;
-$color-vops-item-passed: green;
-$color-vops-item-enrolled: blue;
+$color-vops-item-base: #e3e3e3;
+$color-vops-item-incomplete: #ea7503;
+$color-vops-item-planned: #009fe3;
+$color-vops-item-passed: #2ed31c;
+$color-vops-item-enrolled: #009fe3;
 $color-vops-item-failed: #4c4c4c;
 $color-vops-legend-background: #fbfbfb;
+
+/* $color-vops-item-base: #ccc; */
+/* $color-vops-item-incomplete: orange; */
+/* $color-vops-item-planned: blue; */
+/* $color-vops-item-passed: green; */
+/* $color-vops-item-enrolled: blue; */
+/* $color-vops-item-failed: #4c4c4c; */
+/* $color-vops-legend-background: #fbfbfb; */

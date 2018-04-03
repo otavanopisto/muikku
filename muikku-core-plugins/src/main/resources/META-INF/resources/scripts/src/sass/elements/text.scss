@@ -296,23 +296,6 @@ b {
   padding: 0 4px;
 }
 
-.text--labels {
-  display: flex;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-direction: row;
-  flex-wrap: wrap; 
-}  
-  
-.text--label {
-  align-items: center; 
-  display: flex;
-  font-weight: 300;
-  margin: 0 15px 0 0;
-}
-
-
 // Communicator
 .text--communicator-message-caption {
   font-size: 1.125rem;
@@ -348,21 +331,6 @@ b {
   
 .text--communicator-body {
   display: inline-block;
-}
-
-.text--communicator-labels {
-  display: flex;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 1;
-  flex-direction: row;
-  flex-wrap: wrap; 
-}  
-  
-.text--communicator-label {
-  align-items: center; 
-  display: flex;
-  margin: 0 15px 0 0;
 }
 
 .text--label-update-dialog-icon {
@@ -418,11 +386,6 @@ b {
   &:not(:last-child):after {
     content: ",";
   }
-}
-
-.text--communicator-message-label {
-  margin-left: 5px;
-  display: inline-block;
 }
 
 // Announcer
@@ -641,11 +604,14 @@ b {
   background-color: #ecfafe;
   border-radius: 3px;
   display: inline-block;
+  margin: 2px 5px 2px 0;
   padding: 4px;
-  
-  &:not(:first-child) {
-    margin-left: 5px;  
-  }
+}
+
+.text--guider-profile-label {
+	font-weight: 600;
+	margin: 2px 5px 2px 0;
+	padding: 0;
 }
 
 .text--guider-hops-value {
@@ -655,8 +621,6 @@ b {
   padding: 2px 5px;
   margin-left: 5px;
   margin-right: 5px;
-  
-  
 }
 
 .text--guider-header {
@@ -694,7 +658,6 @@ b {
   padding: 0 10px 0 0;
 }
 
-
 .text--list-item-title-extension {
   display: inline-flex;
   flex-basis: auto;
@@ -718,7 +681,6 @@ b {
   display: flex;
 }
 
-.text__icon--label,
 .text__icon--announcement-workspace {
   padding: 0 5px 0 0;
 }

@@ -13,6 +13,7 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
+import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/message.scss';
 import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
