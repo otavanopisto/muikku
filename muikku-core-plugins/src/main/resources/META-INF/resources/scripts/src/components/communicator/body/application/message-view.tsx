@@ -5,7 +5,7 @@ import equals = require("deep-equal");
 
 import Link from '~/components/general/link';
 import NewMessage from './new-message';
-import {CommunicatorThreadType} from '~/reducers/main-function/communicator/communicator-messages';
+import {MessageThreadExpandedType} from '~/reducers/main-function/messages';
 import {StatusType} from '~/reducers/base/status';
 import {i18nType} from '~/reducers/base/i18n';
 import TouchPager from '~/components/general/touch-pager';
@@ -20,7 +20,7 @@ import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } fro
 
 interface MessageViewProps {
   i18n: i18nType,
-  communicatorMessagesCurrent: CommunicatorThreadType,
+  currentThread: MessageThreadExpandedType,
   status: StatusType
 }
 
@@ -46,14 +46,14 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
     }
   }
   render(){ 
-    if (this.props.communicatorMessagesCurrent === null){
+    if (this.props.currentThread === null){
       return null;
     }
-    return <TouchPager hasNext={!!this.props.communicatorMessagesCurrent.newerThreadId}
-      hasPrev={!!this.props.communicatorMessagesCurrent.olderThreadId}
-      goForward={this.loadMessage.bind(this, this.props.communicatorMessagesCurrent.newerThreadId)}
-      goBackwards={this.loadMessage.bind(this, this.props.communicatorMessagesCurrent.olderThreadId)}>{
-        this.props.communicatorMessagesCurrent.messages.map((message)=>{
+    return <TouchPager hasNext={!!this.props.currentThread.newerThreadId}
+      hasPrev={!!this.props.currentThread.olderThreadId}
+      goForward={this.loadMessage.bind(this, this.props.currentThread.newerThreadId)}
+      goBackwards={this.loadMessage.bind(this, this.props.currentThread.olderThreadId)}>{
+        this.props.currentThread.messages.map((message)=>{
           let senderObject:UserRecepientType = {
             type: "user",
             value: message.sender
@@ -136,7 +136,7 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
 
 function mapStateToProps(state: StateType){
   return {
-    communicatorMessagesCurrent: (state as any).communicatorMessages.current,
+    currentThread: state.messages.currentThread,
     i18n: state.i18n,
     status: state.status
   }

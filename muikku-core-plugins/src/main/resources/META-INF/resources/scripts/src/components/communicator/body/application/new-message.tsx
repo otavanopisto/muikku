@@ -5,10 +5,10 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
+import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
+import {MessageSignatureType} from '~/reducers/main-function/messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 
@@ -45,7 +45,7 @@ interface CommunicatorNewMessageProps {
   replyThreadId?: number,
   initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
-  signature: CommunicatorSignatureType,
+  signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType
 }
 
@@ -155,7 +155,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: (state as any).communicatorMessages.signature
+    signature: state.messages.signature
   }
 };
 
