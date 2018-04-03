@@ -31,6 +31,24 @@ export type DiscussionThreadListType = Array<DiscussionThreadType>;
 
 export type DiscussionStateType = "LOADING" | "ERROR" | "READY";
 
+export interface DiscussionAreaType {
+  id: number,
+  name: string,
+  description: string,
+  groupId: number,
+  numThreads: number
+}
+
+export interface DiscussionAreaUpdateType {
+  id?: number,
+  name?: string,
+  description?: string,
+  groupId?: number,
+  numThreads?: number
+}
+
+export type DiscussionAreaListType = Array<DiscussionAreaType>;
+
 export interface DiscussionType {
   state: DiscussionStateType,
   threads: DiscussionThreadListType,
@@ -41,7 +59,8 @@ export interface DiscussionType {
   currentState: DiscussionStateType,
   currentReplies: DiscussionThreadReplyListType,
   currentPage: number,
-  currentTotalPages: number
+  currentTotalPages: number,
+  areas: DiscussionAreaListType
 }
 
 export interface DiscussionPatchType {
@@ -54,10 +73,11 @@ export interface DiscussionPatchType {
   currentState?: DiscussionStateType,
   currentReplies?: DiscussionThreadReplyListType,
   currentPage?: number,
-  currentTotalPages?: number
+  currentTotalPages?: number,
+  areas?: DiscussionAreaListType
 }
 
-export default function discussionThreads(state: DiscussionType={
+export default function discussion(state: DiscussionType={
     state: "LOADING",
     threads: [],
     areaId: null,
@@ -67,7 +87,8 @@ export default function discussionThreads(state: DiscussionType={
     currentState: "READY",
     currentPage: 1,
     currentTotalPages: 1,
-    currentReplies: []
+    currentReplies: [],
+    areas: []
 }, action: ActionType): DiscussionType {
   if (action.type === "UPDATE_DISCUSSION_THREADS_STATE"){
     let newState: DiscussionStateType = action.payload;
@@ -118,6 +139,21 @@ export default function discussionThreads(state: DiscussionType={
         return action.payload;
       })
     });
+  } else if (action.type === "UPDATE_DISCUSSION_AREAS"){
+    let newAreas:DiscussionAreaListType = action.payload;
+    return Object.assign({}, state, {areas: newAreas});
+  } else if (action.type === "PUSH_DISCUSSION_AREA_LAST"){
+    let newAreas:DiscussionAreaListType = state.areas.concat([action.payload]);
+    return Object.assign({}, state, {areas: newAreas});
+  } else if (action.type === "UPDATE_DISCUSSION_AREA"){
+    return Object.assign({}, state, {areas: state.areas.map((area)=>{
+      if (area.id === action.payload.areaId){
+        return Object.assign({}, area, action.payload.update);
+      }
+      return area;
+    })});
+  } else if (action.type === "DELETE_DISCUSSION_AREA"){
+    return Object.assign({}, state, {areas: state.areas.filter(area=>area.id!==action.payload)});
   }
   return state;
 }

@@ -4,7 +4,7 @@ import Link from './link';
 import '~/sass/elements/buttons.scss';
 
 interface HoverButtonProps {
-  onClick?: (e: Event, re: any)=>any,
+  onClick?: (e: React.MouseEvent<HTMLAnchorElement>)=>any,
   modifier: string,
   icon: string,
   href?: string

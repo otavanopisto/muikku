@@ -1,13 +1,13 @@
 import { i18nType } from "~/reducers/base/i18n";
 import * as React from "react";
-import { DiscussionThreadType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion/discussion-threads";
+import { DiscussionThreadType, DiscussionThreadReplyType } from "~/reducers/main-function/discussion";
 import { Dispatch, connect } from "react-redux";
 import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
 import JumboDialog from "~/components/general/jumbo-dialog";
-import { modifyReplyFromCurrentThread, ModifyReplyFromCurrentThreadTriggerType } from "~/actions/main-function/discussion/discussion-threads";
+import { modifyReplyFromCurrentThread, ModifyReplyFromCurrentThreadTriggerType } from "~/actions/main-function/discussion";
 import {StateType} from '~/reducers';
 
 interface ModifyThreadReplyProps {

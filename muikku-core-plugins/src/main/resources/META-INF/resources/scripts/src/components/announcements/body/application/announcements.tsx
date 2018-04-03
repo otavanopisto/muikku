@@ -9,7 +9,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
-import { AnnouncementListType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementType } from '~/reducers/main-function/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
@@ -43,7 +43,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcement: (state as any).currentAnnouncement
+    announcement: state.announcements.current
   }
 };
 

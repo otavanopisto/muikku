@@ -3,7 +3,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StatusType} from '~/reducers/base/status';
-import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/announcer/announcements';
+import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/announcements';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/ordered-container.scss';
@@ -61,7 +61,7 @@ function mapStateToProps(state: StateType){
   return {
     status: state.status,
     i18n: state.i18n,
-    announcements: state.announcements
+    announcements: state.announcements.announcements
   }
 };
 

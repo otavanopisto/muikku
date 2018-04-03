@@ -6,9 +6,8 @@ import Link from '~/components/general/link';
 import JumboDialog from '~/components/general/jumbo-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import { DiscussionAreaListType } from '~/reducers/main-function/discussion/discussion-areas';
-import { DiscussionType } from '~/reducers/main-function/discussion/discussion-threads';
-import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion/discussion-threads';
+import { DiscussionType } from '~/reducers/main-function/discussion';
+import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
 
 const ckEditorConfig = {
@@ -32,9 +31,8 @@ const extraPlugins = {
 
 interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
-  areas: DiscussionAreaListType,
   i18n: i18nType,
-  discussionThreads: DiscussionType,
+  discussion: DiscussionType,
   createDiscussionThread: CreateDiscussionThreadTriggerType
 }
 
@@ -57,7 +55,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
       locked: false,
       threadPinned: false,
       threadLocked: false,
-      selectedAreaId: props.areas[0] && props.areas[0].id
+      selectedAreaId: props.discussion.areas[0] && props.discussion.areas[0].id
     }
     
     this.togglePinned = this.togglePinned.bind(this);
@@ -103,8 +101,8 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     this.setState({threadLocked: !this.state.threadLocked});
   }
   componentWillReceiveProps(nextProps: DicussionNewThreadProps){
-    if (nextProps.discussionThreads.areaId !== this.state.selectedAreaId){
-      this.setState({selectedAreaId: nextProps.discussionThreads.areaId || (nextProps.areas[0] && nextProps.areas[0].id)});
+    if (nextProps.discussion.areaId !== this.state.selectedAreaId){
+      this.setState({selectedAreaId: nextProps.discussion.areaId || (nextProps.discussion.areas[0] && nextProps.discussion.areas[0].id)});
     }
   }
   onAreaChange(e: React.ChangeEvent<HTMLSelectElement>){
@@ -116,7 +114,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
          <input className="form-field form-field--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          <select className="form-field form-field--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
-           {this.props.areas.map((area)=><option key={area.id} value={area.id}>
+           {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
              {area.name}
            </option>)}
          </select>
@@ -153,9 +151,8 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
 
 function mapStateToProps(state: StateType){
   return {
-    areas: (state as any).areas,
     i18n: state.i18n,
-    discussionThreads: (state as any).discussionThreads
+    discussion: state.discussion
   }
 };
 

@@ -34,13 +34,14 @@ import {StatusType} from './base/status';
 
 import {WebsocketStateType} from './util/websocket';
 
-import { AnnouncementListType } from './main-function/announcer/announcements';
+import { AnnouncementsType } from './main-function/announcements';
 import { HOPSType } from './main-function/hops';
 import { VOPSType } from './main-function/vops';
 import {MessagesType} from './main-function/messages';
 import {UserIndexType} from './main-function/user-index';
 import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
+import { DiscussionType } from './main-function/discussion';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -51,11 +52,12 @@ export interface StateType {
   
   websocket?: WebsocketStateType,
   
-  announcements?: AnnouncementListType,
+  announcements?: AnnouncementsType,
   hops?: HOPSType,
   vops?: VOPSType,
   messages?: MessagesType,
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
-  courses?: CoursesType
+  courses?: CoursesType,
+  discussion?: DiscussionType
 }

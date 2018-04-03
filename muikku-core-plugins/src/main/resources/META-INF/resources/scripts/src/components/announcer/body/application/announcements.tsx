@@ -15,12 +15,12 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
 
-import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
 import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedTriggerType,
-  removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcer/announcements';
+  removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcements';
 import DeleteAnnouncementDialog from '../delete-announcement-dialog';
 
 interface AnnouncementsProps {
@@ -39,6 +39,9 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
     window.location.hash = window.location.hash.split("/")[0] + "/" + announcement.id;
   }
   render(){
+    if (this.props.announcements.state === "LOADING"){
+      return null;
+    }
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>
         <SelectableList className="application-list"
           selectModeClassAddition="application-list--select-mode" dataState={this.props.announcements.state}>
@@ -110,7 +113,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: (state as any).announcements
+    announcements: state.announcements
   }
 };
 

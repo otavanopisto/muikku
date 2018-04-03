@@ -7,14 +7,14 @@ import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
 import { loadLastMessagesFromServer } from '~/actions/main-function/messages';
-import { loadAnnouncementsFromServer } from '~/actions/main-function/announcements';
+import { loadAnnouncementsAsAClient } from '~/actions/main-function/announcements';
 import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions/main-function/workspaces';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store)
   .addEventListener("Communicator:newmessagereceived", loadLastMessagesFromServer.bind(null,6));
 
-store.dispatch(<Action>loadAnnouncementsFromServer());
+store.dispatch(<Action>loadAnnouncementsAsAClient());
 store.dispatch(<Action>loadLastWorkspaceFromServer());
 store.dispatch(<Action>loadWorkspacesFromServer());
 store.dispatch(<Action>loadLastMessagesFromServer(6));

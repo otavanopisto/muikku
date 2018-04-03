@@ -5,7 +5,6 @@ import i18n from './base/i18n';
 import title from './base/title';
 import websocket from './util/websocket';
 import messages from './main-function/messages';
-import currentAnnouncement from './main-function/announcements/current-announcement';
 
 import announcements from './main-function/announcements';
 import {combineReducers} from 'redux';
@@ -20,6 +19,5 @@ export default combineReducers({
   messages,
   title,
   announcements,
-  currentAnnouncement,
   userIndex
 });

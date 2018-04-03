@@ -8,7 +8,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
-import { AnnouncementsType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
 interface MessageViewProps {
   i18n: i18nType,
@@ -46,13 +46,17 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
             <section className="text text--announcer-announcement-content" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>  
           <div className="application-list__item-meta">
-            {/* This should be shown only if announcement has workspaces set */}
-            <div className="text text--announcer-announcement-workspaces">
-              <div className="text text--announcer-workspace"> 
-                <span className="text__icon text__icon--anouncement-workspace icon-books"></span>
-                <span className="text text--announcement-workspace-name"></span>
-              </div>
-            </div>
+            {this.props.announcements.current.workspaces ? 
+              <div className="text text--announcer-announcement-workspaces">
+                {this.props.announcements.current.workspaces.map((workspace)=>{
+                  return (                         
+                    <div className="text text--announcement-workspace" key={workspace.id}> 
+                      <span className="text__icon text__icon--announcement-workspace icon-books"></span>
+                      <span className="text text--announcement-workspace-name">{workspace.name}</span>
+                    </div>
+                  )
+                })}                      
+              </div> : null}
           </div>
             
         </div>                 
@@ -65,7 +69,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: (state as any).announcements
+    announcements: state.announcements
   }
 };
 

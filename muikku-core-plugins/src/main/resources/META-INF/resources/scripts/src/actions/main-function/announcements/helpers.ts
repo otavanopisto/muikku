@@ -1,14 +1,16 @@
 import { AnyActionType } from "~/actions";
-import { AnnouncerNavigationItemListType, AnnouncerNavigationItemType } from "~/reducers/main-function/announcer/announcer-navigation";
-import { AnnouncementsType, AnnouncementsStateType, AnnouncementListType, AnnouncementsPatchType } from "~/reducers/main-function/announcer/announcements";
+import { AnnouncementsType, AnnouncementsStateType, AnnouncementListType, AnnouncementsPatchType, AnnouncerNavigationItemListType, AnnouncerNavigationItemType } from "~/reducers/main-function/announcements";
 import { StatusType } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
 import mApi from '~/lib/mApi';
 import notificationActions from '~/actions/base/notifications';
+import { StateType } from "~/reducers";
 
 const MAX_LOADED_AT_ONCE = 30;
 
-export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, notOverrideCurrent: boolean, force: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+export async function loadAnnouncementsHelper(location:string | null, workspaceId: number, notOverrideCurrent: boolean,
+    force: boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
+  
   if (!notOverrideCurrent){
     //Remove the current announcement
     dispatch({
@@ -18,7 +20,7 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
   }
   
   let state = getState();
-  let navigation:AnnouncerNavigationItemListType = state.announcerNavigation;
+  let navigation:AnnouncerNavigationItemListType = state.announcements.navigation;
   let announcements:AnnouncementsType = state.announcements;
   let status:StatusType = state.status;
   let actualLocation:string = location || announcements.location;

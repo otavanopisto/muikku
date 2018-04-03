@@ -47,7 +47,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     return newHash;
   }
   
-  onGoBackClick(e: Event){
+  onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
     //TODO this is a retarded way to do things if we ever update to a SPA
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){

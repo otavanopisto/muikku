@@ -6,7 +6,7 @@ import ApplicationPanel from '~/components/general/application-panel';
 import HoverButton from '~/components/general/hover-button';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
-import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
+import {DiscussionType} from '~/reducers/main-function/discussion';
 import {StateType} from '~/reducers';
 
 import DiscussionThreads from './application/discussion-threads';
@@ -22,7 +22,7 @@ interface DiscussionApplicationState {
 
 interface DiscussionApplicationProps {
   i18n: i18nType,
-  discussionThreads: DiscussionType
+  discussion: DiscussionType
 }
 
 class DiscussionApplication extends React.Component<DiscussionApplicationProps, DiscussionApplicationState> {
@@ -32,7 +32,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
   render(){
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.forum.pageTitle')}</h2>
     let toolbar = <Toolbar/>
-    let primaryOption = !this.props.discussionThreads.current ? <NewThread><Link className="button button--primary-function">    
+    let primaryOption = !this.props.discussion.current ? <NewThread><Link className="button button--primary-function">    
     {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
     </Link></NewThread> : null;
 
@@ -49,7 +49,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussionThreads: (state as any).discussionThreads
+    discussion: state.discussion
   }
 };
 

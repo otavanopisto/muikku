@@ -7,14 +7,14 @@ import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
 import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import { i18nType } from 'reducers/base/i18n';
-import { AnnouncementType } from '~/reducers/main-function/announcer/announcements';
+import { AnnouncementType } from '~/reducers/main-function/announcements';
 import { AnyActionType } from '~/actions';
 import DatePicker from 'react-datepicker';
 import '~/sass/elements/datepicker/datepicker.scss';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
 import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/main-function/user-index';
 import { createAnnouncement, CreateAnnouncementTriggerType,
-  updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcer/announcements';
+  updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
 import {StateType} from '~/reducers';
 
 const ckEditorConfig = {

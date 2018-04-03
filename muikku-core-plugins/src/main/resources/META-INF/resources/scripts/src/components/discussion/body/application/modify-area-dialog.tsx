@@ -5,20 +5,19 @@ import Link from '~/components/general/link';
 import JumboDialog from '~/components/general/jumbo-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/main-function/discussion/discussion-areas';
-import {DiscussionType} from '~/reducers/main-function/discussion/discussion-threads';
+import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/main-function/discussion';
+import {DiscussionType} from '~/reducers/main-function/discussion';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { updateDiscussionArea, UpdateDiscussionAreaTriggerType } from '~/actions/main-function/discussion/discussion-areas';
+import { updateDiscussionArea, UpdateDiscussionAreaTriggerType } from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
 
 interface DiscussionModifyAreaProps {
   i18n: i18nType,
-  areas: DiscussionAreaListType,
-  discussionThreads: DiscussionType,
+  discussion: DiscussionType,
   children: React.ReactElement<any>,
   updateDiscussionArea: UpdateDiscussionAreaTriggerType
 }
@@ -39,7 +38,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
     this.onNameChange = this.onNameChange.bind(this);
     this.modifyArea = this.modifyArea.bind(this);
     
-    this.area = this.props.areas.find(area=>area.id === this.props.discussionThreads.areaId);
+    this.area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
     
     this.state = {
       name: (this.area && this.area.name) || "",
@@ -54,7 +53,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
     this.setState({name: e.target.value});
   }
   componentWillReceiveProps(nextProps: DiscussionModifyAreaProps){
-    this.area = nextProps.areas.find(area=>area.id === nextProps.discussionThreads.areaId);
+    this.area = nextProps.discussion.areas.find(area=>area.id === nextProps.discussion.areaId);
     
     this.setState({
       name: (this.area && this.area.name) || "",
@@ -124,8 +123,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    areas: (state as any).areas,
-    discussionThreads: (state as any).discussionThreads
+    discussion: state.discussion
   }
 };
 

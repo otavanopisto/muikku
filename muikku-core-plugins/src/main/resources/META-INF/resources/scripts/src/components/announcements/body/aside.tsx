@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
-import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/announcer/announcements';
+import {AnnouncementType, AnnouncementsType} from '~/reducers/main-function/announcements';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import {StateType} from '~/reducers';
@@ -11,7 +11,7 @@ import '~/sass/elements/toc.scss';
 
 interface AnnouncementsAsideProps {
   i18n: i18nType,
-  announcements: AnnouncementListType
+  announcements: AnnouncementsType
 }
 
 interface AnnouncementsAsideState {
@@ -23,9 +23,9 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
   render(){
     return (<section className="toc">
         <div className="toc__container">
-          {this.props.announcements.length !== 0 ?
+          {this.props.announcements.announcements.length !== 0 ?
             <div className="item-list item-list--panel-announcements">
-              {this.props.announcements.map((announcement: AnnouncementType)=>{
+              {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
                 return <Link key={announcement.id} className={`item-list__item item-list__item--announcements ${announcement.workspaces ? "item-list__item--has-workspaces" : ""}`}
                   href={`/announcements?announcementId=${announcement.id}`}>
                   <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
@@ -53,7 +53,7 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    announcements: (state as any).announcements
+    announcements: state.announcements
   }
 };
 

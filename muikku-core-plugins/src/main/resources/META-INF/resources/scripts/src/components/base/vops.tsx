@@ -158,7 +158,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    defaultData: state.vops.value
+    defaultData: state.vops && state.vops.value
   }
 };
 

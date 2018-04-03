@@ -879,20 +879,25 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   public Response cleanupDiscussions() {
     List<EnvironmentForumArea> forumAreas = environmentForumAreaDAO.listAllNonArchived();
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
+    List<ForumThread> threads = new ArrayList<>();
+    List<ForumThreadReply> replies = new ArrayList<>();
     for(EnvironmentForumArea forumArea : forumAreas) {
-      List<ForumThread> threads = forumController.listForumThreads(forumArea  , 0, Integer.MAX_VALUE, true); 
+      threads = forumController.listForumThreads(forumArea  , 0, Integer.MAX_VALUE, true); 
       for (ForumThread thread : threads) {
-        List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
+        replies = forumController.listForumThreadReplies(thread, 0, Integer.MAX_VALUE, true);
         for (ForumThreadReply reply : replies) {
           forumController.deleteReply(reply); 
         }
         forumController.deleteThread(thread);
       } 
-      forumController.deleteArea(forumArea);
     }
-    for (ForumAreaGroup group : groups) {
-      forumController.deleteAreaGroup(group);
+    
+    for(EnvironmentForumArea forumArea : forumAreas) {
+      forumController.deleteArea(forumArea);      
     }
+//    for (ForumAreaGroup group : groups) {
+//      forumController.deleteAreaGroup(group);
+//    }
     return Response.noContent().build();
 
   }
