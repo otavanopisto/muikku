@@ -82,7 +82,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </span>
     });
     
-    let studentBasicInfo = this.props.guiderStudentsCurrent.basic && <div className="container container--student-info application-sub-panel__body application-sub-panel__body--basic-info text">
+    let studentBasicInfo = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__body application-sub-panel__body--basic-info text">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
@@ -171,7 +171,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         }} onFileSuccess={(file: File, data: UserFileType)=>{
           this.props.addFileToCurrentStudent(data);
         }}>
-        <span>{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
+        <span className="text file-uploader__hint">{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
       </FileUploader>
       {this.props.guiderStudentsCurrent.files && (this.props.guiderStudentsCurrent.files.length ?
         <div className="text application-sub-panel__file-container application-list">

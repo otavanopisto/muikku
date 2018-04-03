@@ -52,8 +52,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
   }
   render(){
     return <div className={`file-uploader text ${this.props.modifier ? this.props.modifier : ""}`} style={{
-      position: "relative",
-      overflow: "hidden"
+      position: "relative"
     }}>{this.props.children}<input type="file" multiple style={{
       cursor: "pointer",
       opacity: 0,
@@ -61,6 +60,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
       top: 0,
       right: 0,
       bottom: 0,
+      width: "100%",
       position: "absolute"
     }} onChange={this.onFileInputChange}/></div>
   }
