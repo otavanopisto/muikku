@@ -363,7 +363,7 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
             "EXERCISE");
         logout();
         try {
-          mockBuilder.mockLogin(student).build();
+          mockBuilder.mockLogin(student);
           login();
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
           waitForPresent(String.format("#page-%d", htmlMaterial.getId()));

@@ -80,7 +80,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockCourseAssessments(courseStudent, admin);
       
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       
       navigate("/records/", false);
@@ -144,7 +144,7 @@ public class ToRTestsBase extends AbstractUITest {
         "EVALUATED");
       try{        
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
   
         navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -167,7 +167,7 @@ public class ToRTestsBase extends AbstractUITest {
         .mockStaffCompositeCourseAssessmentRequests();
         
         logout();
-        mockBuilder.mockLogin(admin).build();
+        mockBuilder.mockLogin(admin);
         login();
         navigate(String.format("/evaluation2"), false);
         waitAndClick(".evaluate-button");
@@ -190,7 +190,7 @@ public class ToRTestsBase extends AbstractUITest {
         assertTextIgnoreCase(".assignment-wrapper .assignment-grade .assignment-grade-data", "Excellent");
         
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
         
         navigate("/records/", false);

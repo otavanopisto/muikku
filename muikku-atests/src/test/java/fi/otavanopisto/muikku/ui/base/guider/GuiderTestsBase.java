@@ -106,7 +106,7 @@ public class GuiderTestsBase extends AbstractUITest {
       scrollIntoView(".gt-user-file .gt-user-file-name a");
       assertTextIgnoreCase(".gt-user-file .gt-user-file-name a", testFile.getName());
       logout();
-      mockBuilder.mockLogin(student).build();
+      mockBuilder.mockLogin(student);
       login();
       navigate("/records/", false);
       waitForPresent(".mf-item .mf-files .mf-file-name a");
