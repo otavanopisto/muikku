@@ -4,18 +4,18 @@ import {bindActionCreators} from 'redux';
 import equals = require("deep-equal");
 
 import Link from '~/components/general/link';
-import {MessageThreadExpandedType} from '~/reducers/main-function/messages';
+import {MessageThreadExpandedType, MessageThreadLabelListType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import TouchPager from '~/components/general/touch-pager';
 import {StateType} from '~/reducers';
 import Message from './message-view/message';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/message.scss';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 
 interface MessageViewProps {
   i18n: i18nType,
@@ -50,9 +50,13 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
     return <TouchPager hasNext={!!this.props.currentThread.newerThreadId}
       hasPrev={!!this.props.currentThread.olderThreadId}
       goForward={this.loadMessage.bind(this, this.props.currentThread.newerThreadId)}
-      goBackwards={this.loadMessage.bind(this, this.props.currentThread.olderThreadId)}>{
-        this.props.currentThread.messages.map((message)=>{
-          return <Message key={message.id} message={message}/>
+      goBackwards={this.loadMessage.bind(this, this.props.currentThread.olderThreadId)}>
+        {this.props.currentThread.messages.map((message, index)=>{
+          let labels:MessageThreadLabelListType = null;
+          if (index === 0){
+            labels = this.props.currentThread.labels;
+          }
+          return <Message key={message.id} message={message} labels={labels}/>
         })}
       </TouchPager>
   }
