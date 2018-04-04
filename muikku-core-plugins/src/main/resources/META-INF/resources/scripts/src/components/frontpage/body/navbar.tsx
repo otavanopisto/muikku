@@ -26,27 +26,27 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
     return <Navbar modifier="frontpage" navbarItems={[
       {
         modifier: "studying",
-        item: (<Link href="#studying" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.studying')}</span></Link>)
+        item: (<Link href="#studying" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.studying')}</span></Link>)
       },
       {
         modifier: "news",
-        item: (<Link href="#news" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.news')}</span></Link>)
+        item: (<Link href="#news" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.news')}</span></Link>)
       },
       {
         modifier: "otavan-opisto",
-        item: (<Link href="#organization" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.otavanOpisto')}</span></Link>)
+        item: (<Link href="#organization" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.otavanOpisto')}</span></Link>)
       },
       {
         modifier: "contact",
-        item: (<Link href="#contact" className="link link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.contact')}</span></Link>)
+        item: (<Link href="#contact" className="link link--frontpage link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.contact')}</span></Link>)
       },
       {
         modifier: "open-materials",
-        item: (<Link href="/coursepicker" className="link link--highlight link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.openMaterials')}</span></Link>)
+        item: (<Link href="/coursepicker" className="link link--frontpage link--highlight link--full"><span>{this.props.i18n.text.get('plugin.navigation.link.openMaterials')}</span></Link>)
       }
     ]} defaultOptions={[
       (<LoginButton key="0"/>),
-      (<ForgotPasswordDialog modifier="forgot-password" key="1"><Link className="label label--forgot-password">
+      (<ForgotPasswordDialog modifier="forgot-password" key="1"><Link className="link link--forgot-password">
          <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
        </Link></ForgotPasswordDialog>)
     ]} menuItems={[

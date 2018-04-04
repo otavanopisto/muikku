@@ -148,17 +148,16 @@ $color-navbar-default-text: $color-inverse;
 $color-navbar-default-shadow: rgba(0, 0, 0, 0.2);
 
 // Links
-$color-link-default-text: $color-inverse;
+$color-link-frontpage-text: $color-inverse;
 $color-link-highlight-text: $color-secondary;
-$color-link-hover-text: $color-primary;
-$color-link-active-text: $color-primary;
+$color-link-default-text: $color-primary;
 $color-link-inverse-text: $color-default;
 $color-link-default-background: rgba(0, 0, 0, 0);
 $color-link-highlight-background: rgba(0, 0, 0, 0);
 $color-link-hover-background: rgba(0, 0, 0, 0.05);
 $color-link-active-background: rgba(0, 0, 0, 0.1);
 $color-link-inverse-background: invisible;
-$color-link-application-item-footer: #5aa6e1;
+$color-link-application-item-footer: $color-primary;
 
 // Menu
 $color-menu-default-background: #f5f5f5;
