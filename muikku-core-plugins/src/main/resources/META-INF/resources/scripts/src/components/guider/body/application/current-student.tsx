@@ -15,7 +15,7 @@ import '~/sass/elements/avatar.scss';
 import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
-import Hops from '~/components/base/hops';
+import Hops from '~/components/base/hops_readable';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';

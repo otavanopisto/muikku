@@ -336,6 +336,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   }
 }
 
+
 function mapStateToProps( state: StateType ) {
   return {
     i18n: state.i18n,
