@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import equals = require("deep-equal");
 
 import Link from '~/components/general/link';
-import {MessageThreadExpandedType, MessageThreadLabelListType} from '~/reducers/main-function/messages';
+import {MessageThreadExpandedType, MessageThreadLabelListType, MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import TouchPager from '~/components/general/touch-pager';
 import {StateType} from '~/reducers';
@@ -19,7 +19,7 @@ import '~/sass/elements/message.scss';
 
 interface MessageViewProps {
   i18n: i18nType,
-  currentThread: MessageThreadExpandedType
+  messages: MessagesType
 }
 
 interface MessageViewState {
@@ -44,17 +44,18 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
     }
   }
   render(){ 
-    if (this.props.currentThread === null){
+    if (this.props.messages.currentThread === null){
       return null;
     }
-    return <TouchPager hasNext={!!this.props.currentThread.newerThreadId}
-      hasPrev={!!this.props.currentThread.olderThreadId}
-      goForward={this.loadMessage.bind(this, this.props.currentThread.newerThreadId)}
-      goBackwards={this.loadMessage.bind(this, this.props.currentThread.olderThreadId)}>
-        {this.props.currentThread.messages.map((message, index)=>{
+    
+    return <TouchPager hasNext={!!this.props.messages.currentThread.newerThreadId}
+      hasPrev={!!this.props.messages.currentThread.olderThreadId}
+      goForward={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}
+      goBackwards={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}>
+        {this.props.messages.currentThread.messages.map((message, index)=>{
           let labels:MessageThreadLabelListType = null;
           if (index === 0){
-            labels = this.props.currentThread.labels;
+            labels = this.props.messages.currentThread.labels;
           }
           return <Message key={message.id} message={message} labels={labels}/>
         })}
@@ -64,7 +65,7 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
 
 function mapStateToProps(state: StateType){
   return {
-    currentThread: state.messages.currentThread,
+    messages: state.messages,
     i18n: state.i18n
   }
 };

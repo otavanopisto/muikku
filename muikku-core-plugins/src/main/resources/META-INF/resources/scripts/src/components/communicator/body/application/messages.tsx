@@ -18,7 +18,7 @@ import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import { loadMoreMessageThreads, removeFromMessagesSelectedThreads, addToMessagesSelectedThreads, LoadMoreMessageThreadsTriggerType, RemoveFromMessagesSelectedThreadsTriggerType, AddToMessagesSelectedThreadsTriggerType } from '~/actions/main-function/messages';
-import { MessageThreadListType, MessagesStateType, MessageThreadExpandedType, MessageThreadType } from '~/reducers/main-function/messages';
+import { MessageThreadListType, MessagesStateType, MessageThreadExpandedType, MessageThreadType, MessagesType } from '~/reducers/main-function/messages';
 
 
 interface CommunicatorMessagesProps {
@@ -28,6 +28,7 @@ interface CommunicatorMessagesProps {
   selectedThreads: MessageThreadListType,
   selectedThreadsIds: Array<number>,
   currentThread: MessageThreadExpandedType,
+  messages: MessagesType,
   
   loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType,
   removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType,
@@ -150,6 +151,7 @@ function mapStateToProps(state: StateType){
     selectedThreads: state.messages.selectedThreads,
     selectedThreadsIds: state.messages.selectedThreadsIds,
     currentThread: state.messages.currentThread,
+    messages: state.messages,
     i18n: state.i18n,
     userId: state.status.userId
   }
