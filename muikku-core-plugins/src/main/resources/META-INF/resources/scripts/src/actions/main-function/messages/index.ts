@@ -378,7 +378,7 @@ let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType = 
     
     let done = 0;
     threads.forEach((thread)=>{
-      dispatch(toggleMessageThreadReadStatus(thread, true, ()=>{
+      let cb = ()=>{
         done++;
         if (done === threads.length){
           dispatch({
@@ -386,7 +386,12 @@ let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType = 
             payload: null
           });
         }
-      }))
+      };
+      if (thread.unreadMessagesInThread === !threads[0].unreadMessagesInThread){
+        cb();
+      } else {
+        dispatch(toggleMessageThreadReadStatus(thread, true, cb))
+      }
     });
   }
 }
