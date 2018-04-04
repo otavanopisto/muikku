@@ -167,8 +167,8 @@ export interface MessagesType {
 export interface MessagesPatchType {
   state?: MessagesStateType,
   threads?: MessageThreadListType,
-  selected?: MessageThreadListType,
-  selectedIds?: Array<number>,
+  selectedThreads?: MessageThreadListType,
+  selectedThreadsIds?: Array<number>,
   hasMore?: boolean,
   location?: string,
   toolbarLock?: boolean,
