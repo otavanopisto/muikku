@@ -9,7 +9,7 @@ import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelF
   AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
   ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
   RemoveLabelFromCurrentMessageThreadTriggerType} from '~/actions/main-function/messages';
-import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
+import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
 import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
@@ -141,9 +141,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.messages.selectedThreads.length >= 1;
     if (isAtLeastOneSelected){
-      let partialIds = this.props.messages.selectedThreads.map((thread)=>{return thread.labels.map(l=>l.labelId)});
+      let partialIds:Array<Array<number>> = this.props.messages.selectedThreads.map((thread)=>{return thread.labels.map(l=>l.labelId)});
       allInCommon = intersect(...partialIds);
-      onlyInSome = difference(...partialIds);
+      onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
     
     let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));

@@ -88,6 +88,16 @@ export function difference(...elements:any[]){
   return elements.reduce(differenceTwo);
 }
 
+export function flatten(...elements:any[]){
+  if (elements.length === 1){
+    return [];
+  }
+  
+  return elements.reduce((a, b)=>{
+    return a.concat(b);
+  });
+}
+
 export function escapeHTML(str: string){
   return str.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
