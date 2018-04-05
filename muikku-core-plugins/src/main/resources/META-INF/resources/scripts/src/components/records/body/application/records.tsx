@@ -5,6 +5,7 @@ import * as queryString from 'query-string';
 
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/course.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
@@ -53,7 +54,6 @@ function getAssesment(props: RecordsProps, workspace: WorkspaceType){
   let grade = props.records.grades[gradeId];
   return <div className="TODO workspace assesment">
     <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
-    &nbsp;
     <span className={`TODO workspace-assesment-score ${workspace.studentAcessment.passed ? "workspace-passed" : "workspace-failed"}`}>
       {grade.grade}
     </span>
@@ -99,7 +99,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
       strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
       trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
-      progress={workspace.studentActivity.exercisesDonePercent/100}/>
+      progress={workspace.studentActivity.exercisesDonePercent/100}/>onClick=
     </div>
 }
 
@@ -107,21 +107,22 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
     super(props);
     
-    this.getWorkspaceLink = this.getWorkspaceLink.bind(this);
+    this.goToWorkspace = this.goToWorkspace.bind(this);
   }
   
-  getWorkspaceLink(user: UserWithSchoolDataType, workspace: WorkspaceType){
-    return "#?u=" + user.userEntityId + "&w=" + workspace.id;
+  goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
+    window.location.hash = "#?u=" + user.userEntityId + "&w=" + workspace.id;
   }
-
+    
   render(){
+    
     if (this.props.records.userDataStatus === "LOADING"){
       return null;
     } else if (this.props.records.userDataStatus === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    }
+    }    
     
     if (Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
       this.props.records.curriculums.forEach((curriculum)=>{
@@ -134,12 +135,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         <span>{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</span>
         <span><span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.records.studyStartDate)}</span></span>
       </div>
-    </div> 
-      
+    </div>  
+    
     let studentRecords = <div className="application-list">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
           let records = data.records;      
+
           return <div key={data.user.id}>
           <div className="application-sub-panel__header text text--guider-header">{user.studyProgrammeName}</div>
             {records.map((record, index)=>{
@@ -147,31 +149,28 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <div key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
-                  return (
-                  <div className="application-list__item course" >
-                  <div className="">     
-                    <div className="application-list__item-header application-list__item-header--course">
-                      <span className="text text--coursepicker-course-icon icon-books"></span>
-                      <span className="text text--list-item-title">
-                        <span>{workspace.name}</span>
-                        {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
-                      </span> 
-                      <span className="text text--list-item-type-title">
-                        <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
-                          workspace.studentActivity.evaluablesDonePercent}%
+                  return (                                             
+                  <div className="application-list__item course" onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                    <div>   
+                      <div className="application-list__item-header application-list__item-header--course">
+                        <span className="text text--coursepicker-course-icon icon-books"></span>
+                        <span className="text text--list-item-title" >
+                          <span>{workspace.name}</span>
+                          {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
+                        </span> 
+                        <span className="text text--list-item-type-title">
+                          <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+                            workspace.studentActivity.evaluablesDonePercent}%
+                          </span>
+                          <span> / </span>
+                          <span title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+                            workspace.studentActivity.exercisesDonePercent}%
+                          </span>
                         </span>
-                        <span> / </span>
-                        <span title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
-                          workspace.studentActivity.exercisesDonePercent}%
-                        </span>
-                      </span>
-                    </div>                                                              
-                  </div>
-                </div>                  
+                      </div>                                                              
+                    </div>
+                  </div>                  
                 )  
-                  
-                  
-
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
                 {record.transferCredits.map((credit)=>{

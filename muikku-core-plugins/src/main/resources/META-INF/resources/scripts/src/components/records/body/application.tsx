@@ -9,7 +9,7 @@ import CurrentRecord from './application/current-record';
 import Vops from './application/vops';
 import Hops from './application/hops';
 import {StateType} from '~/reducers';
-import PrimaryOption from './application/toolbar';
+import PrimaryOption from './application/primary';
 
 
 interface StudiesApplicationProps {
