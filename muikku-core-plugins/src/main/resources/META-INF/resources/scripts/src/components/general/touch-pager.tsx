@@ -14,8 +14,7 @@ interface TouchPagerProps {
 }
 
 interface TouchPagerState {
-  drag: number,
-  minHeight: number
+  drag: number
 }
 
 export default class TouchPager extends React.Component<TouchPagerProps, TouchPagerState> {
@@ -34,8 +33,7 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
     this.closeInterval = null;
     
     this.state = {
-      drag: 0,
-      minHeight: 0
+      drag: 0
     }
   }
   onTouchStart(e: React.TouchEvent<any>){
@@ -86,27 +84,14 @@ export default class TouchPager extends React.Component<TouchPagerProps, TouchPa
       });
     }, 10);
   }
-  componentDidMount(){
-    let component = this.refs["main"] as HTMLDivElement;
-    let top = component.getBoundingClientRect().top;
-    let height = window.innerHeight|| (document as any).clientHeight|| document.documentElement.clientHeight;
-    
-    let diff = height - top;
-    if (this.state.minHeight !== diff){
-      this.setState({minHeight: diff});
-    }
-  }
   componentWillReceiveProps(){
     this.setState({drag: 0});
   }
   render(){
     return <div className={`touch-pager ${this.props.modifier ? 'touch-pager--' + this.props.modifier : ''}`}
-     ref="main"
-//   Do we really need to calculate ?
-//   style={{minHeight: this.state.minHeight}} 
-     onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
-      <div className="touch-pager__prev-page" style={{position: "absolute", top: 0, height: "100%", right: "100%", width: "100%", transform: `translateX(${this.state.drag}px)`}}>{this.props.prev}</div>
+     ref="main" onTouchStart={this.onTouchStart} onTouchMove={this.onTouchMove} onTouchEnd={this.onTouchEnd}>
       <div className="touch-pager__current-page" ref="centerContainer">{this.props.children}</div>
+      <div className="touch-pager__prev-page" style={{position: "absolute", top: 0, height: "100%", right: "100%", width: "100%", transform: `translateX(${this.state.drag}px)`}}>{this.props.prev}</div>
       <div className="touch-pager__next-page" style={{position: "absolute", top: 0, height: "100%", left: "100%", width: "100%", transform: `translateX(${this.state.drag}px)`}}>{this.props.next}</div>
     </div>
   }

@@ -26,6 +26,13 @@ export function filterMatch(string: string, filter: string){
 }
 
 export function filterHighlight(string: string, filter: string){
+  if (filter === ""){
+    return React.createElement(
+        "span",
+        {},
+        string
+    );
+  }
   return string.split(new RegExp("(" + escapeRegExp(filter) + ")", "i")).map((element, index)=>{
     if (index % 2 === 0){
       return React.createElement(

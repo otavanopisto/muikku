@@ -52,13 +52,15 @@ class MessageView extends React.Component<MessageViewProps, MessageViewState> {
       hasPrev={!!this.props.messages.currentThread.olderThreadId}
       goForward={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}
       goBackwards={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}>
-        {this.props.messages.currentThread.messages.map((message, index)=>{
-          let labels:MessageThreadLabelListType = null;
-          if (index === 0){
-            labels = this.props.messages.currentThread.labels;
-          }
-          return <Message key={message.id} message={message} labels={labels}/>
-        })}
+        <div className="application-list">
+          {this.props.messages.currentThread.messages.map((message, index)=>{
+            let labels:MessageThreadLabelListType = null;
+            if (index === 0){
+              labels = this.props.messages.currentThread.labels;
+            }
+            return <Message key={message.id} message={message} labels={labels}/>
+          })}
+        </div>
       </TouchPager>
   }
 }
