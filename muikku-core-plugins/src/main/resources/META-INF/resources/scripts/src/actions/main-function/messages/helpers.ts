@@ -132,8 +132,8 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
       location: properLocation
     }
     if (!concat){
-      payload.selected = [];
-      payload.selectedIds = [];
+      payload.selectedThreads = [];
+      payload.selectedThreadsIds = [];
     }
     
     //And there it goes

@@ -3,8 +3,13 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
-import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads, toggleMessageThreadReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads, removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType, AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType, ToggleMessageThreadReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType, RemoveLabelFromCurrentMessageThreadTriggerType} from '~/actions/main-function/messages';
-import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
+import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelFromSelectedMessageThreads,
+  deleteSelectedMessageThreads, toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
+  removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType,
+  AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
+  ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
+  RemoveLabelFromCurrentMessageThreadTriggerType} from '~/actions/main-function/messages';
+import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
 import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
@@ -26,7 +31,7 @@ interface CommunicatorToolbarProps {
   addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType,
   removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType,
   deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType,
-  toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType,
+  toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType,
   addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType,
   addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType,
   removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType
@@ -136,10 +141,12 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     let onlyInSome:number[] = [];
     let isAtLeastOneSelected = this.props.messages.selectedThreads.length >= 1;
     if (isAtLeastOneSelected){
-      let partialIds = this.props.messages.selectedThreads.map((thread)=>{return thread.labels.map(l=>l.labelId)});
+      let partialIds:Array<Array<number>> = this.props.messages.selectedThreads.map((thread)=>{return thread.labels.map(l=>l.labelId)});
       allInCommon = intersect(...partialIds);
-      onlyInSome = difference(...partialIds);
+      onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
+    
+    let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));
     
     return <ApplicationPanelToolbar>
       <div className="text text--main-function-current-folder">
@@ -175,9 +182,9 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         <ButtonPill buttonModifiers="label" icon="tag"/>
       </Dropdown>
       
-      <ButtonPill buttonModifiers="toggle-read" icon={`message-${this.props.messages.selectedThreads.length === 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "un" : ""}read`}
-        disabled={this.props.messages.selectedThreads.length !== 1}
-        onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadReadStatus.bind(null, this.props.messages.selectedThreads[0])}/>
+      {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`message-${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "un" : ""}read`}
+        disabled={this.props.messages.selectedThreads.length < 1}
+        onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
     </ApplicationPanelToolbar>
   }
 }
@@ -192,7 +199,7 @@ function mapStateToProps(state: StateType){
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
     removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads,
-    toggleMessageThreadReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
+    toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
     removeLabelFromCurrentMessageThread}, dispatch);
 };
 

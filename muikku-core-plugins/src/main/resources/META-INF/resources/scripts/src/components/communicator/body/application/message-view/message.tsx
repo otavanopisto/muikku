@@ -1,17 +1,19 @@
 import NewMessage from '../new-message';
 import * as React from 'react';
-import { MessageType } from '~/reducers/main-function/messages';
+import { MessageType, MessageThreadLabelListType } from '~/reducers/main-function/messages';
 import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
 import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
 import { StatusType } from '~/reducers/base/status';
+import { colorIntToHex } from '~/util/modifiers';
 
 interface MessageProps {
   message: MessageType,
   status: StatusType,
-  i18n: i18nType
+  i18n: i18nType,
+  labels?: MessageThreadLabelListType
 }
 
 interface MessageState {
@@ -70,14 +72,12 @@ class Message extends React.Component<MessageProps, MessageState> {
           </div>
         </div>
         <div className="container container--communicator-message-labels">
-          {/* TODO: labels are outside of the message object
-      {message.labels.map((label)=>{
-        return <span className="communicator text communicator-text-tag" key={label.id}>
-          <span className="text__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-          {label.labelName}
-        </span>
-      })} 
-      */}
+          {this.props.labels && this.props.labels.map((label)=>{
+            return <span className="communicator text communicator-text-tag" key={label.id}>
+              <span className="text__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+              {label.labelName}
+            </span>
+          })}
         </div>
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message">

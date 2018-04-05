@@ -151,7 +151,11 @@ export interface RemoveLabelFromCurrentMessageThreadTriggerType {
 }
 
 export interface ToggleMessageThreadReadStatusTriggerType {
-  ( thread: MessageThreadType ): AnyActionType
+  ( thread: MessageThreadType, dontLockToolbar?: boolean, callback?: ()=>any): AnyActionType
+}
+
+export interface ToggleMessageThreadsReadStatusTriggerType {
+  ( threads: MessageThreadListType ): AnyActionType
 }
 
 export interface DeleteSelectedMessageThreadsTriggerType {
@@ -296,12 +300,14 @@ let removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTrig
   return setLabelStatusCurrentMessage.bind( this, label, false );
 }
 
-let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = function toggleMessageThreadReadStatus( thread ) {
+let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = function toggleMessageThreadReadStatus(thread, dontLockToolbar=false, callback) {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
-    dispatch( {
-      type: "LOCK_TOOLBAR",
-      payload: null
-    } );
+    if (!dontLockToolbar){
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null
+      });
+    }
 
     let state = getState();
 
@@ -337,8 +343,8 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
         await promisify( mApi().communicator[getApiId( item )].markasunread.create( thread.communicatorMessageId ), 'callback' )();
       }
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
-      dispatch( {
+      dispatch(displayNotification(err.message,'error'));
+      dispatch({
         type: "UPDATE_ONE_MESSAGE_THREAD",
         payload: {
           thread,
@@ -346,15 +352,47 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
             unreadMessagesInThread: thread.unreadMessagesInThread
           }
         }
-      } );
+      });
       dispatch( updateUnreadMessageThreadsCount( state.messages.unreadThreadCount ) );
     }
 
     mApi().communicator[getApiId( item )].cacheClear();
-    dispatch( {
-      type: "UNLOCK_TOOLBAR",
+    
+    if (!dontLockToolbar){
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+    }
+    
+    callback && callback();
+  }
+}
+
+let toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType = function toggleMessageThreadsReadStatus( threads ) {
+  return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
+    dispatch({
+      type: "LOCK_TOOLBAR",
       payload: null
-    } );
+    });
+    
+    let done = 0;
+    threads.forEach((thread)=>{
+      let cb = ()=>{
+        done++;
+        if (done === threads.length){
+          dispatch({
+            type: "UNLOCK_TOOLBAR",
+            payload: null
+          });
+        }
+      };
+      if (thread.unreadMessagesInThread === !threads[0].unreadMessagesInThread){
+        cb();
+      } else {
+        dispatch(toggleMessageThreadReadStatus(thread, true, cb))
+      }
+    });
   }
 }
 
@@ -491,7 +529,7 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
     });
 
     if ( existantMessage && existantMessage.unreadMessagesInThread ) {
-      dispatch( toggleMessageThreadReadStatus( existantMessage ) );
+      dispatch( toggleMessageThreadReadStatus(existantMessage, true) );
     } else if ( !existantMessage ) {
       try {
         await promisify( mApi().communicator[getApiId( item )].markasread.create( currentThread.messages[0].communicatorMessageId ), 'callback' )();
@@ -534,7 +572,7 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
               type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
               payload: result.messages[0]
             });
-            dispatch(toggleMessageThreadReadStatus(threads[0]));
+            dispatch(toggleMessageThreadReadStatus(threads[0], true));
           }
         }
       } catch ( err ) { }
@@ -725,7 +763,7 @@ export {
   sendMessage, loadMessageThreads, updateMessagesSelectedThreads,
   addToMessagesSelectedThreads, removeFromMessagesSelectedThreads,
   loadMoreMessageThreads, addLabelToSelectedMessageThreads, removeLabelFromSelectedMessageThreads,
-  addLabelToCurrentMessageThread, removeLabelFromCurrentMessageThread, toggleMessageThreadReadStatus,
+  addLabelToCurrentMessageThread, removeLabelFromCurrentMessageThread, toggleMessageThreadReadStatus, toggleMessageThreadsReadStatus,
   deleteSelectedMessageThreads, deleteCurrentMessageThread, loadMessageThread, loadNewlyReceivedMessage,
   loadSignature, updateSignature, updateUnreadMessageThreadsCount, loadLastMessageThreadsFromServer,
   loadMessagesNavigationLabels, addMessagesNavigationLabel, updateMessagesNavigationLabel, removeMessagesNavigationLabel
