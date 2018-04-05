@@ -57,10 +57,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
   //later once a pattern is defined
   render() {
-    return <div className="application-sub-panel__body application-sub-panel__body--hops text">
+    return <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
 
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.goals.upperSecondary")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.goals.upperSecondary")}</div>
         <div className="application-sub-panel__item-data">
           {!this.props.editable ?
             //NON EDITABLE FORM
@@ -81,7 +81,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationExam")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.goals.matriculationExam")}</div>
         <div className="application-sub-panel__item-data">
           {!this.props.editable ?
             <span className="text text--guider-profile-value">
@@ -101,7 +101,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">
           {this.props.i18n.text.get("plugin.records.hops.goals.vocationalYears1")}
           {!this.props.editable ?
             //Non editable form
@@ -173,7 +173,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">
           {this.props.i18n.text.get("plugin.records.hops.goals.completionYears1")}
           {!this.props.editable ?
             //Non editable form
@@ -191,7 +191,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.languages.mandatory.title")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.languages.mandatory.title")}</div>
         <div className="application-sub-panel__item-data">
           {!this.props.editable ?
             <span className="text text--guider-profile-value">{
@@ -212,10 +212,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.languages.mandatory.additionalInfo")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.languages.mandatory.additionalInfo")}</div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">
           {this.props.i18n.text.get("plugin.records.hops.languages.optional.title")}
         </div>
         <div className="application-sub-panel__item-data">
@@ -272,7 +272,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.mathSyllabus.title")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.mathSyllabus.title")}</div>
         <div className="application-sub-panel__item-data">
           {!this.props.editable ?
             <span className="text text--guider-profile-value">{this.props.i18n.text.get("plugin.records.hops.mathSyllabus." + this.state.hops.mathSyllabus)}</span> :
@@ -288,7 +288,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.science.title")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.science.title")}</div>
         <div className="application-sub-panel__item-data">
           {!this.props.editable ?
             <span className="text text--guider-profile-value">{this.props.i18n.text.get("plugin.records.hops.science." + this.state.hops.science)}</span> :
@@ -304,7 +304,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.hops.religion.title")}</div>
+        <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">{this.props.i18n.text.get("plugin.records.hops.religion.title")}</div>
         <div className="application-sub-panel__item-data">
           {!this.props.editable ?
             <span className="text text--guider-profile-value">{this.props.i18n.text.get("plugin.records.hops.religion." + this.state.hops.religion)}</span> :
@@ -321,7 +321,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
       </div>
       {this.props.editable ||  this.state.hops.additionalInfo ?
         <div className="application-sub-panel__item">
-          <div className="application-sub-panel__item-title">
+          <div className="application-sub-panel__item-title application-sub-panel__item-title--readable">
             {this.props.i18n.text.get("plugin.records.hops.additionalInfo.title")}
           </div>
           <div className="application-sub-panel__item-data">

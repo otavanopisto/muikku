@@ -50,16 +50,20 @@
  }
 
 .application-sub-panel__item-title {
-	flex-basis: 100%;
+  flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 0;
-	margin: 0 0 5px;
-	
-	@include breakpoint($breakpoint-desktop) {
-    flex-basis: 250px;
-	  margin: 0 10px 0 0;
-  }
+  margin: 0 0 5px;
+
 } 
+
+.application-sub-panel__item-title--readable {
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 250px;
+	margin: 0 10px 0 0;
+  }
+}  
+
 
 .application-sub-panel__item-data {
 	align-items: center;
@@ -145,8 +149,15 @@
 }
 .application-sub-panel__item--hops-editable {
   flex-direction: column;
+  align-items: flex-start;
+  
   > span {
    padding: 10px 0 10px 0;
+  }
+    
+  textarea {
+    height: 100px;
+    width: 100%;
   }
 }
 
