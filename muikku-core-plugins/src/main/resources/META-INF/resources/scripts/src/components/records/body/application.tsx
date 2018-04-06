@@ -1,15 +1,15 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
-
 import ApplicationPanel from '~/components/general/application-panel';
 import { i18nType } from 'reducers/base/i18n';
-
 import Records from './application/records';
 import CurrentRecord from './application/current-record';
 import Vops from './application/vops';
 import Hops from './application/hops';
 import {StateType} from '~/reducers';
 import PrimaryOption from './application/primary';
+import Toolbar from './application/toolbar';
+
 
 
 interface StudiesApplicationProps {
@@ -27,9 +27,11 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
   render(){
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.records.pageTitle')}</h2>
     let primaryOption  = <PrimaryOption />
+    let toolbar = <Toolbar />      
+
       
     return (<div className="container container--full">
-      <ApplicationPanel modifier="records" title={title} primaryOption={primaryOption}>
+      <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption}>
         <Records/>
         <CurrentRecord/>
         <Vops/>

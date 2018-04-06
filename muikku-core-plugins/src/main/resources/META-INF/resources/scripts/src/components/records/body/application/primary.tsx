@@ -5,16 +5,16 @@ import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records
 import {StateType} from '~/reducers';
 import '~/sass/elements/form-fields.scss';
 
-interface StudiesToolbarProps {
+interface StudiesPrimaryOptionProps {
   i18n: i18nType,
   location: TranscriptOfRecordLocationType
 }
 
-interface StudiesToolbarState {
+interface StudiesPrimaryOptionState {
 }
 
-class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbarState> {
-  constructor(props: StudiesToolbarProps){
+class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, StudiesPrimaryOptionState> {
+  constructor(props: StudiesPrimaryOptionProps){
     super(props);
     
     this.onSelectChange = this.onSelectChange.bind(this);
@@ -69,4 +69,4 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(StudiesToolbar);
+)(StudiesPrimaryOption);
