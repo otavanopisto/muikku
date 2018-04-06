@@ -99,7 +99,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
         closeDialog();
         this.setState({
           text: "",
-          selectedItems: [],
+          selectedItems: this.props.initialSelectedItems || [],
           subject: "",
           locked: false
         });

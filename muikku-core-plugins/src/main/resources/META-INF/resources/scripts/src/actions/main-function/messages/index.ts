@@ -10,7 +10,7 @@ import { ContactRecepientType } from '~/reducers/main-function/user-index';
 import { StatusType } from '~/reducers/base/status';
 
 export interface UpdateMessageThreadsCountTriggerType {
-  ( value?: number ): AnyActionType
+  ( ): AnyActionType
 }
 
 export interface UPDATE_UNREAD_MESSAGE_THREADS_COUNT extends SpecificActionType<"UPDATE_UNREAD_MESSAGE_THREADS_COUNT", number> { }
@@ -63,14 +63,7 @@ export interface REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS extends SpecificActio
 }>{}
 
 
-let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = function updateUnreadMessageThreadsCount( value ) {
-  if ( typeof value !== "undefined" ) {
-    return {
-      type: "UPDATE_UNREAD_MESSAGE_THREADS_COUNT",
-      payload: value
-    }
-  }
-
+let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = function updateUnreadMessageThreadsCount() {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     try {
       dispatch( {
@@ -198,11 +191,12 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
     try {
       let result: MessageType;
-      if ( message.replyThreadId ) {
+      if (message.replyThreadId) {
         result = <MessageType>await promisify( mApi().communicator.messages.create( message.replyThreadId, data ), 'callback' )();
       } else {
         result = <MessageType>await promisify( mApi().communicator.messages.create( data ), 'callback' )();
       }
+      dispatch(updateUnreadMessageThreadsCount());
 
       mApi().communicator.sentitems.cacheClear();
       message.success && message.success();
@@ -210,13 +204,18 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
       let state = getState();
       let status: StatusType = state.status;
 
+      //This as in the main thread list will check wheter the message was sent and we are in the inbox or unreadlocation, that will work if
+      //and only if one of the receivers is us, otherwise it's always active for when a message is sent
       const isInboxOrUnread = state.messages.location === "inbox" || state.messages.location === "unread"
-      if ( state.messages.location === "sent" || ( isInboxOrUnread && result.recipients
-          .find( ( recipient: MessageRecepientType ) => {return recipient.userId === status.userId} ) ) ) {
+      const isInboxOrUnreadAndWeAreOneOfTheRecepients = isInboxOrUnread && result.recipients
+        .find(( recipient: MessageRecepientType ) => {return recipient.userId === status.userId});
+      const weAreInSentLocation = state.messages.location === "sent";
+      const weJustSentThatMessageAndWeAreInCurrent = state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId;
+      if (weAreInSentLocation || isInboxOrUnreadAndWeAreOneOfTheRecepients || weJustSentThatMessageAndWeAreInCurrent) {
         let item = state.messages.navigation.find((item)=>{
           return item.location === state.messages.location;
-        } );
-        if ( !item ) {
+        });
+        if (!item) {
           return;
         }
         let params = {
@@ -227,27 +226,27 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         try {
           let threads: MessageThreadListType = <MessageThreadListType>await promisify( mApi().communicator[getApiId( item )].read( params ), 'callback' )();
           if ( threads[0] ) {
-            dispatch( {
+            dispatch({
               type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
               payload: threads[0]
-            } );
-            if ( state.messages.location !== "sent" ) {
-              dispatch( updateUnreadMessageThreadsCount( state.messages.unreadThreadCount + 1 ) );
-            }
+            });
 
             if ( state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === result.communicatorMessageId ) {
               dispatch({
                 type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
                 payload: result
               });
-              if ( state.messages.location !== "sent" ) {
-                dispatch( toggleMessageThreadReadStatus( threads[0] ) );
+              if (state.messages.location !== "sent" && threads[0].unreadMessagesInThread) {
+                dispatch(toggleMessageThreadReadStatus(threads[0], true));
               }
             }
 
           }
         } catch ( err ) { }
       }
+      
+      //Also in case we are in that current thread and it's the one active
+      
     } catch ( err ) {
       dispatch( displayNotification( err.message, 'error' ) );
       message.fail && message.fail();
@@ -336,12 +335,11 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
 
     try {
       if ( thread.unreadMessagesInThread ) {
-        dispatch( updateUnreadMessageThreadsCount( state.messages.unreadThreadCount - 1 ) );
         await promisify( mApi().communicator[getApiId( item )].markasread.create( thread.communicatorMessageId ), 'callback' )();
       } else {
-        dispatch( updateUnreadMessageThreadsCount( state.messages.unreadThreadCount + 1 ) );
         await promisify( mApi().communicator[getApiId( item )].markasunread.create( thread.communicatorMessageId ), 'callback' )();
       }
+      dispatch(updateUnreadMessageThreadsCount());
     } catch ( err ) {
       dispatch(displayNotification(err.message,'error'));
       dispatch({
@@ -353,7 +351,6 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
           }
         }
       });
-      dispatch( updateUnreadMessageThreadsCount( state.messages.unreadThreadCount ) );
     }
 
     mApi().communicator[getApiId( item )].cacheClear();
@@ -417,15 +414,10 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
       } );
       return;
     }
-    
-    let messageUnreadThreadCount:number = state.messages.unreadThreadCount;
-    
+        
     await Promise.all(state.messages.selectedThreads.map(async( thread) => {
       try {
         await promisify( mApi().communicator[getApiId( item )].del( thread.communicatorMessageId ), 'callback' )();
-        if ( thread.unreadMessagesInThread ) {
-          messageUnreadThreadCount--;
-        }
         dispatch( {
           type: "DELETE_MESSAGE_THREAD",
           payload: thread
@@ -440,7 +432,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
       type: "UNLOCK_TOOLBAR",
       payload: null
     });
-    dispatch(updateUnreadMessageThreadsCount(messageUnreadThreadCount));
+    dispatch(updateUnreadMessageThreadsCount());
   }
 }
 
@@ -572,7 +564,10 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
               type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
               payload: result.messages[0]
             });
-            dispatch(toggleMessageThreadReadStatus(threads[0], true));
+            if (threads[0].unreadMessagesInThread){
+              console.log("I did")
+              dispatch(toggleMessageThreadReadStatus(threads[0], true));
+            }
           }
         }
       } catch ( err ) { }
