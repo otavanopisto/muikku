@@ -193,19 +193,15 @@
 .link--profile {
   font-size: 14px;
   background-color: $color-environment-link-profile-menu-background;
-  color: $color-environment-link-profile-menu-text;
+  color: $color-default-contrast;
   justify-content: flex-start;
 
   &:hover,
-  &.hover {
-    background-color: $color-environment-link-profile-menu-hover-background;
-    color: $color-environment-link-profile-menu-text;
-  }
-
+  &.hover,
   &:active,
   &.active {
     background-color: $color-environment-link-profile-menu-hover-background;
-    color: $color-environment-link-profile-menu-text;
+    color: $color-default-contrast;
   }
 }
 
