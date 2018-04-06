@@ -536,7 +536,7 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
 
     let state = getState();
 
-    if ( state.messages.location === "unread" || state.messages.location === "inbox" ) {
+    if (state.messages.location === "unread" || state.messages.location === "inbox" ) {
       let item = state.messages.navigation.find((item)=>{
         return item.location === state.messages.location;
       } );
@@ -554,23 +554,24 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
       try {
         let threads: MessageThreadListType = <MessageThreadListType>await promisify( mApi().communicator[getApiId( item )].read( params ), 'callback' )();
         if ( threads[0] ) {
-          let result: MessageThreadExpandedType = <MessageThreadExpandedType>await promisify( mApi().communicator.communicatormessages.read( threads[0].id, params ), 'callback' )();
           dispatch({
             type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
             payload: threads[0]
           });
-          if (state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === threads[0].communicatorMessageId ) {
+          if (state.messages.currentThread && state.messages.currentThread.messages[0].communicatorMessageId === threads[0].communicatorMessageId) {
+            let result: MessageType = <MessageType>await promisify( mApi().communicator.communicatormessages.read( threads[0].id, params ), 'callback' )();
             dispatch({
               type: "PUSH_MESSAGE_LAST_IN_CURRENT_THREAD",
-              payload: result.messages[0]
+              payload: result
             });
             if (threads[0].unreadMessagesInThread){
-              console.log("I did")
               dispatch(toggleMessageThreadReadStatus(threads[0], true));
             }
           }
         }
-      } catch ( err ) { }
+      } catch ( err ) {
+        dispatch(displayNotification(err.message, 'error'));
+      }
     }
   }
 }
