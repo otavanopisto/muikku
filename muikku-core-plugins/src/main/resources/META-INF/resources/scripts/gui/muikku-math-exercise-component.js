@@ -22,7 +22,9 @@
       this._readonly = this.options.readonly;
       this.element.addClass("muikku-math-exercise-field");
 
-      this.element.muikkuField($.extend(this.options, methods));
+      var fieldOptions = $.extend(this.options, methods);
+      fieldOptions.trackInput = true;
+      this.element.muikkuField(fieldOptions);
 
       MathJax.Hub.Config({
         jax: ["input/TeX", "output/SVG"],
@@ -85,15 +87,16 @@
       // Initialize digabi editor
       makeRichText(this.element.find(".muikku-math-exercise-field-editor")[0], {
         screenshot: {
-          saver: ({data}) =>
+          saver: ({data}) => {
+            console.log("saver");
             new Promise(resolve => {
               const reader = new FileReader()
               reader.onload = evt => resolve(evt.target.result)
               reader.readAsDataURL(data)
-            }),
+            });
+          },
           limit: 10
         },
-        baseUrl: 'https://dev.muikku.fi:8443',
         updateMathImg: $.proxy(this.updateImage, this)
       });
 
