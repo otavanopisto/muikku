@@ -17,6 +17,7 @@ interface CurrentStudentWorkspacesState {
 
 class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesProps, CurrentStudentWorkspacesState> {
   render(){
+    //TODO WAT?... mf???? o.o communicator?...
     return this.props.guider.currentStudent.workspaces ?  (this.props.guider.currentStudent.workspaces.length ? <div className="application-list">
         {this.props.guider.currentStudent.workspaces.map((workspace)=>{
           return <Workspace workspace={workspace} key={workspace.id}/>

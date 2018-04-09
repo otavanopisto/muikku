@@ -4,11 +4,11 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 
-import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import { GuiderUserLabelListType, GuiderUserLabelType, GuiderWorkspaceType, GuiderType } from '~/reducers/main-function/guider';
 import LabelUpdateDialog from './application/label-update-dialog';
 import {StateType} from '~/reducers';
+import { ButtonPill } from '~/components/general/button';
 
 interface NavigationProps {
   i18n: i18nType,
@@ -37,9 +37,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
             {label.name}
           </span>
           <LabelUpdateDialog label={label}>
-            <Link disablePropagation as="span" className="button-pill button-pill--navigation-edit-label">
-              <span className="item-list__icon icon-edit"/>
-            </Link>
+            <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="edit"/>
           </LabelUpdateDialog>
         </Link>
       })}

@@ -13,6 +13,7 @@ import '~/sass/elements/form-fields.scss';
 import { bindActionCreators } from "redux";
 import {StateType} from '~/reducers';
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
+import { ButtonPill } from "~/components/general/button";
 
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
@@ -63,9 +64,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           </Link>);
         }))
       }>
-        <Link className="button-pill button-pill--label">
-          <span className="button-pill__icon icon-flag"></span>
-        </Link>
+        <ButtonPill buttonModifiers="label" icon="flag"/>
       </Dropdown>
     }
   
@@ -103,9 +102,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         </Link>);
       }))
     }>
-      <Link className="button-pill button-pill--label">
-        <span className="button-pill__icon icon-flag"></span>
-      </Link>
+      <ButtonPill buttonModifiers="label" icon="flag"/>
     </Dropdown>;
   }
 }

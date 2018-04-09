@@ -13,6 +13,8 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
 import { GuiderType } from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel';
+import { ButtonPill } from '~/components/general/button';
 
 interface GuiderToolbarProps {
   i18n: i18nType,
@@ -89,19 +91,17 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
 
   render(){
       return ( 
-        <div className="application-panel__toolbar">
-          <div className="application-panel__toolbar-actions-main">
-            {this.props.guider.currentStudent ? <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-              <span className="button-pill__icon icon-goback"></span>
-            </Link> : null}
+        <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>
+            {this.props.guider.currentStudent ? <ButtonPill icon="goback" buttonModifiers="go-back" onClick={this.onGoBackClick}/> : null}
             <GuiderToolbarLabels/>          
             {this.props.guider.currentStudent ? null : 
-            <div className="application-panel__tools-container">
+            <ApplicationPanelToolsContainer>
               <input className="form-field__input form-field__input--main-function-search" value={this.state.searchquery} onChange={this.setSearchQuery}/>
               <div className="form-field__input-decoration--main-function-search icon-search"></div>              
-            </div>}
-          </div>
-        </div>
+            </ApplicationPanelToolsContainer>}
+          </ApplicationPanelToolbarActionsMain>
+        </ApplicationPanelToolbar>
       )
   }
 }
