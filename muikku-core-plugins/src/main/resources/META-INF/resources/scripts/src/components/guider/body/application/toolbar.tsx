@@ -11,12 +11,12 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderType } from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
 
 interface GuiderToolbarProps {
   i18n: i18nType,
-  guiderStudents: GuiderStudentsType
+  guider: GuiderType
 }
 
 interface GuiderToolbarState {
@@ -29,7 +29,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
     super(props);
     
     this.state = {
-      searchquery: this.props.guiderStudents.filters.query || ""
+      searchquery: this.props.guider.activeFilters.query || ""
     }
     
     this.setSearchQuery = this.setSearchQuery.bind(this);
@@ -80,9 +80,9 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   }
   
   componentWillReceiveProps(nextProps: GuiderToolbarProps){
-    if ((nextProps.guiderStudents.filters.query || "") !== this.state.searchquery){
+    if ((nextProps.guider.activeFilters.query || "") !== this.state.searchquery){
       this.setState({
-        searchquery: nextProps.guiderStudents.filters.query || ""
+        searchquery: nextProps.guider.activeFilters.query || ""
       });
     }
   }
@@ -91,11 +91,11 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
       return ( 
         <div className="application-panel__toolbar">
           <div className="application-panel__toolbar-actions-main">
-            {this.props.guiderStudents.current ? <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
+            {this.props.guider.currentStudent ? <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
               <span className="button-pill__icon icon-goback"></span>
             </Link> : null}
             <GuiderToolbarLabels/>          
-            {this.props.guiderStudents.current ? null : 
+            {this.props.guider.currentStudent ? null : 
             <div className="application-panel__tools-container">
               <input className="form-field__input form-field__input--main-function-search" value={this.state.searchquery} onChange={this.setSearchQuery}/>
               <div className="form-field__input-decoration--main-function-search icon-search"></div>              
@@ -109,7 +109,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudents: (state as any).guiderStudents
+    guider: state.guider
   }
 };
 

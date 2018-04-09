@@ -3,14 +3,13 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
-import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderType } from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
 import '~/sass/elements/application-list.scss';
 
 interface CurrentStudentWorkspacesProps {
   i18n: i18nType,
-  guiderStudentsCurrent: GuiderStudentUserProfileType,
-  guiderCurrentState: GuiderCurrentStudentStateType
+  guider: GuiderType
 }
 
 interface CurrentStudentWorkspacesState {
@@ -18,8 +17,8 @@ interface CurrentStudentWorkspacesState {
 
 class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesProps, CurrentStudentWorkspacesState> {
   render(){
-    return this.props.guiderStudentsCurrent.workspaces ?  (this.props.guiderStudentsCurrent.workspaces.length ? <div className="application-list">
-        {this.props.guiderStudentsCurrent.workspaces.map((workspace)=>{
+    return this.props.guider.currentStudent.workspaces ?  (this.props.guider.currentStudent.workspaces.length ? <div className="application-list">
+        {this.props.guider.currentStudent.workspaces.map((workspace)=>{
           return <Workspace workspace={workspace} key={workspace.id}/>
         })}
       </div> : <div className="mf-content-empty cm-no-messages flex-row">
@@ -31,8 +30,7 @@ class CurrentStudentWorkspaces extends React.Component<CurrentStudentWorkspacesP
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsCurrent: (state as any).guiderStudents.current,
-    guiderCurrentState: (state as any).guiderStudents.currentState
+    guider: state.guider
   }
 };
 

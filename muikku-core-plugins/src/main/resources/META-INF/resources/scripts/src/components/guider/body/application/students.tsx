@@ -13,21 +13,22 @@ import '~/sass/elements/message.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
-import { LoadMoreStudentsTriggerType, loadMoreStudents, addToGuiderSelectedStudents, removeFromGuiderSelectedStudents, AddToGuiderSelectedStudentsTriggerType, RemoveFromGuiderSelectedStudentsTriggerType } from '~/actions/main-function/guider/guider-students';
-import { GuiderStudentListType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileType } from '~/reducers/main-function/guider/guider-students';
+import { LoadMoreStudentsTriggerType, loadMoreStudents, addToGuiderSelectedStudents,
+  removeFromGuiderSelectedStudents, AddToGuiderSelectedStudentsTriggerType,
+  RemoveFromGuiderSelectedStudentsTriggerType } from '~/actions/main-function/guider';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Student from './students/student';
 import { UserType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
+import { GuiderStudentsStateType, GuiderStudentUserProfileType, GuiderStudentType, GuiderType } from '~/reducers/main-function/guider';
 
 interface GuiderStudentsProps {
   i18n: i18nType,
   guiderStudentsState: GuiderStudentsStateType,
   guiderStudentsHasMore: boolean,
   loadMoreStudents: LoadMoreStudentsTriggerType,
-  guiderStudentsStudents: GuiderStudentListType,
   guiderStudentsCurrent: GuiderStudentUserProfileType,
-  guiderStudentsSelectedIds: Array<string>,
+  guider: GuiderType,
   addToGuiderSelectedStudents: AddToGuiderSelectedStudentsTriggerType,
   removeFromGuiderSelectedStudents: RemoveFromGuiderSelectedStudentsTriggerType
 }
@@ -73,8 +74,8 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
         extra={this.props.guiderStudentsState === "LOADING_MORE" ?
           <div className="application-list__item loader-empty"/>
          : null} dataState={this.props.guiderStudentsState}>
-      {this.props.guiderStudentsStudents.map((student: GuiderStudentType, index: number)=>{
-        let isSelected = this.props.guiderStudentsSelectedIds.includes(student.id);
+      {this.props.guider.students.map((student: GuiderStudentType, index: number)=>{
+        let isSelected = this.props.guider.selectedStudentsIds.includes(student.id);
         return {
             className: "application-list__item user user--guider",
             onSelect: this.props.addToGuiderSelectedStudents.bind(null, student),
@@ -95,11 +96,10 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsState: (state as any).guiderStudents.state,
-    guiderStudentsHasMore: (state as any).guiderStudents.hasMore,
-    guiderStudentsStudents: (state as any).guiderStudents.students,
-    guiderStudentsCurrent: (state as any).guiderStudents.current,
-    guiderStudentsSelectedIds: (state as any).guiderStudents.selectedIds
+    guiderStudentsState: state.guider.state,
+    guiderStudentsHasMore: state.guider.hasMore,
+    guiderStudentsCurrent: state.guider.currentStudent,
+    guider: state.guider
   }
 };
 

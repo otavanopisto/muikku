@@ -1,7 +1,7 @@
 import { UserType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
-import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider/guider-students";
+import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider";
 import '~/sass/elements/user.scss';
 import '~/sass/elements/application-list.scss';
 

@@ -12,8 +12,8 @@ import {i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
-import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
+import { GuiderUserLabelType } from '~/reducers/main-function/guider';
+import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 import GuiderLabelShareDialog from './label-share-dialog';
 import {StateType} from '~/reducers';
 

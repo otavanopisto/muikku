@@ -10,8 +10,8 @@ import mApi from '~/lib/mApi';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
-import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
+import { GuiderUserLabelType } from '~/reducers/main-function/guider';
+import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/main-function/user-index';
