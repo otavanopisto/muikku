@@ -3,15 +3,16 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
-import {deleteCurrentMessage, DeleteCurrentMessageTriggerType, addLabelToCurrentMessage, AddLabelToCurrentMessageTriggerType,
-  removeLabelFromSelectedMessages, RemoveLabelFromSelectedMessagesTriggerType, deleteSelectedMessages, DeleteSelectedMessagesTriggerType,
-  toggleMessagesReadStatus, ToggleMessageReadStatusTriggerType, removeLabelFromCurrentMessage, RemoveLabelFromCurrentMessageTriggerType,
-  addLabelToSelectedMessages, AddLabelToSelectedMessagesTriggerType} from '~/actions/main-function/communicator/communicator-messages';
-import {addCommunicatorLabel, AddCommunicatorLabelTriggerType} from '~/actions/main-function/communicator/communicator-navigation';
-import {filterMatch, filterHighlight, intersect, difference} from '~/util/modifiers';
+import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelFromSelectedMessageThreads,
+  deleteSelectedMessageThreads, toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
+  removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType,
+  AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
+  ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
+  RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
+  restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType} from '~/actions/main-function/messages';
+import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
-import {CommunicatorNavigationItemListType, CommunicatorNavigationItemType} from '~/reducers/main-function/communicator/communicator-navigation';
-import {CommunicatorMessagesType, CommunicatorMessageType} from '~/reducers/main-function/communicator/communicator-messages';
+import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
@@ -20,19 +21,23 @@ import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
+import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
+import { ButtonPill } from '~/components/general/button';
 
 interface CommunicatorToolbarProps {
-  communicatorNavigation: CommunicatorNavigationItemListType,
-  communicatorMessages: CommunicatorMessagesType,
+  messages: MessagesType,
   i18n: i18nType,
-  deleteCurrentMessage: DeleteCurrentMessageTriggerType,
-  addLabelToCurrentMessage: AddLabelToCurrentMessageTriggerType,
-  removeLabelFromSelectedMessages: RemoveLabelFromSelectedMessagesTriggerType,
-  deleteSelectedMessages: DeleteSelectedMessagesTriggerType,
-  toggleMessagesReadStatus: ToggleMessageReadStatusTriggerType,
-  addCommunicatorLabel: AddCommunicatorLabelTriggerType,
-  removeLabelFromCurrentMessage: RemoveLabelFromCurrentMessageTriggerType,
-  addLabelToSelectedMessages: AddLabelToSelectedMessagesTriggerType
+  
+  deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType,
+  addLabelToCurrentMessageThread: AddLabelToCurrentMessageThreadTriggerType,
+  removeLabelFromSelectedMessageThreads: RemoveLabelFromSelectedMessageThreadsTriggerType,
+  deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType,
+  toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType,
+  addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType,
+  addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType,
+  removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType,
+  restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType,
+  restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType
 }
 
 interface CommunicatorToolbarState {
@@ -80,140 +85,129 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     }
   }
   render(){
-    let currentLocation = this.props.communicatorNavigation.find((item)=>{
-      return (item.location === this.props.communicatorMessages.location);
+    let currentLocation = this.props.messages.navigation.find((item)=>{
+      return (item.location === this.props.messages.location);
     });
     
     if (!currentLocation){
       return null;
     }
-    if (this.props.communicatorMessages.current){
+    if (this.props.messages.currentThread){
       return ( 
-        <div className="application-panel__toolbar">
-          <div className="application-panel__toolbar-actions-main">          
-            <Link className="button-pill button-pill--go-back" onClick={this.onGoBackClick}>
-              <span className="button-pill__icon icon-goback"></span>
-            </Link>
+        <ApplicationPanelToolbar>
+          <ApplicationPanelToolbarActionsMain>         
+            <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick}/>
           
             <div className="text text--main-function-current-folder">
               <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               {"  " + currentLocation.text(this.props.i18n)}
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-                <Link className="button-pill button-pill--toolbar-edit-label"><span className="icon icon-edit"></span></Link>
+                <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
               </LabelUpdateDialog> : null}
-            </div>                
-            <Link className="button-pill button-pill--delete" onClick={this.props.deleteCurrentMessage}>
-              <span className="button-pill__icon icon-delete"></span>
-            </Link>          
+            </div>
+            {this.props.messages.location === "trash" ?
+              <ButtonPill buttonModifiers="restore" icon="put-back" onClick={this.props.restoreCurrentMessageThread}/> : null}
+            <ButtonPill buttonModifiers="delete" icon="delete" onClick={this.props.deleteCurrentMessageThread}/>
             <Dropdown modifier="communicator-labels" items={
               [
                 <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                   type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-                <Link className="link link--full link--new" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+                <Link className="link link--full link--new" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
                   {this.props.i18n.text.get("plugin.communicator.label.create")}
                 </Link>
-              ].concat(this.props.communicatorNavigation.filter((item)=>{
+              ].concat(this.props.messages.navigation.filter((item)=>{
                 return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
               }).map((label)=>{
-                let isSelected = this.props.communicatorMessages.current.labels.find(l=>l.labelId === label.id);
+                let isSelected = this.props.messages.currentThread.labels.find(l=>l.labelId === label.id);
                 return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
-                  onClick={!isSelected ? this.props.addLabelToCurrentMessage.bind(null, label) : this.props.removeLabelFromCurrentMessage.bind(null, label)}>
+                  onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                   <span className="link__icon icon-tag" style={{color: label.color}}></span>
                   <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
                 </Link>);
               }))
             }>
-              <Link className="button-pill button-pill--label">
-                <span className="button-pill__icon icon-tag"></span>
-              </Link>
+              <ButtonPill buttonModifiers="label" icon="tag"/>
             </Dropdown>
-          </div>
-          <div className="application-panel__toolbar-actions-aside">
-            <Link className="button-pill button-pill--prev-page"
-              disabled={this.props.communicatorMessages.current.olderThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.olderThreadId)}>
-              <span className="button-pill__icon icon-arrow-left"></span>
-            </Link>        
+          </ApplicationPanelToolbarActionsMain>
+          <ApplicationPanelToolbarActionsAside>
+            <ButtonPill buttonModifiers="prev-page" icon="arrow-left"
+              disabled={this.props.messages.currentThread.olderThreadId === null}
+              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.olderThreadId)}/>       
             
-            <Link className="button-pill button-pill--next-page"
-              disabled={this.props.communicatorMessages.current.newerThreadId === null}
-              onClick={this.loadMessage.bind(this, this.props.communicatorMessages.current.newerThreadId)}>
-              <span className="button-pill__icon icon-arrow-right"></span>
-            </Link>
-          </div>
-        </div>
+            <ButtonPill buttonModifiers="next-page" icon="arrow-right"
+              disabled={this.props.messages.currentThread.newerThreadId === null}
+              onClick={this.loadMessage.bind(this, this.props.messages.currentThread.newerThreadId)}/>
+          </ApplicationPanelToolbarActionsAside>
+        </ApplicationPanelToolbar>
       )
     }
   
     let allInCommon:number[] = [];
     let onlyInSome:number[] = [];
-    let isAtLeastOneSelected = this.props.communicatorMessages.selected.length >= 1;
+    let isAtLeastOneSelected = this.props.messages.selectedThreads.length >= 1;
     if (isAtLeastOneSelected){
-      let partialIds = this.props.communicatorMessages.selected.map((message: CommunicatorMessageType)=>{return message.labels.map(l=>l.labelId)});
+      let partialIds:Array<Array<number>> = this.props.messages.selectedThreads.map((thread)=>{return thread.labels.map(l=>l.labelId)});
       allInCommon = intersect(...partialIds);
-      onlyInSome = difference(...partialIds);
+      onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
     
-    return <div className="application-panel__toolbar">
+    let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));
+    
+    return <ApplicationPanelToolbar>
       <div className="text text--main-function-current-folder">
         <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         {"  " + currentLocation.text(this.props.i18n)}
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
-          <Link className="button-pill button-pill--toolbar-edit-label"><span className="button-pill__icon icon-edit"></span></Link>
+          <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
          </LabelUpdateDialog> : null}
       </div>
       
-      <Link className="button-pill button-pill--delete"
-       disabled={this.props.communicatorMessages.selected.length == 0} onClick={this.props.deleteSelectedMessages}>
-        <span className="button-pill__icon icon-delete"></span>
-      </Link>
+      {this.props.messages.location === "trash" ? <ButtonPill buttonModifiers="restore" icon="put-back"
+        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.restoreSelectedMessageThreads}/> : null}
+      <ButtonPill buttonModifiers="delete" icon="delete"
+       disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
                
       <Dropdown modifier="communicator-labels" items={
         [
           <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
-          <span className="link link--full" onClick={this.props.addCommunicatorLabel.bind(null, this.state.labelFilter)}>
+          <span className="link link--full" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </span>
-        ].concat(this.props.communicatorNavigation.filter((item)=>{
+        ].concat(this.props.messages.navigation.filter((item)=>{
           return item.type === "label" && filterMatch(item.text(this.props.i18n), this.state.labelFilter);
-        }).map((label: CommunicatorNavigationItemType)=>{
+        }).map((label)=>{
           let isSelected = allInCommon.includes(label.id as number);
           let isPartiallySelected = onlyInSome.includes(label.id as number);
           return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""} ${isPartiallySelected ? "semi-selected" : ""} ${isAtLeastOneSelected ? "" : "disabled"}`}
-            onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessages.bind(null, label) : this.props.removeLabelFromSelectedMessages.bind(null, label)}>
+            onClick={!isSelected || isPartiallySelected ? this.props.addLabelToSelectedMessageThreads.bind(null, label) : this.props.removeLabelFromSelectedMessageThreads.bind(null, label)}>
             <span className="link__icon icon-tag" style={{color: label.color}}></span>
             <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
           </Link>);
         }))
       }>
-        <Link className="button-pill button-pill--label">
-          <span className="button-pill__icon icon-tag"></span>
-        </Link>
+        <ButtonPill buttonModifiers="label" icon="tag"/>
       </Dropdown>
       
-      <Link className="button-pill button-pill--toggle-read"
-        disabled={this.props.communicatorMessages.selected.length !== 1}
-        onClick={this.props.communicatorMessages.toolbarLock ? null : this.props.toggleMessagesReadStatus.bind(null, this.props.communicatorMessages.selected[0])}>
-        <span className={`button-pill__icon icon-message-${this.props.communicatorMessages.selected.length === 1 && !this.props.communicatorMessages.selected[0].unreadMessagesInThread ? "un" : ""}read`}></span>
-      </Link>
-    </div>
+      {isUnreadOrInboxOrLabel ? <ButtonPill buttonModifiers="toggle-read" icon={`message-${this.props.messages.selectedThreads.length >= 1 && !this.props.messages.selectedThreads[0].unreadMessagesInThread ? "un" : ""}read`}
+        disabled={this.props.messages.selectedThreads.length < 1}
+        onClick={this.props.messages.toolbarLock ? null : this.props.toggleMessageThreadsReadStatus.bind(null, this.props.messages.selectedThreads)}/> : null}
+    </ApplicationPanelToolbar>
   }
 }
 
 function mapStateToProps(state: StateType){
   return {
-    communicatorNavigation: (state as any).communicatorNavigation,
-    communicatorMessages: (state as any).communicatorMessages,
+    messages: state.messages,
     i18n: state.i18n
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({deleteCurrentMessage, addLabelToCurrentMessage,
-    removeLabelFromSelectedMessages, deleteSelectedMessages,
-    toggleMessagesReadStatus, addCommunicatorLabel, addLabelToSelectedMessages,
-    removeLabelFromCurrentMessage}, dispatch);
+  return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
+    removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads,
+    toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
+    removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads}, dispatch);
 };
 
 export default connect(

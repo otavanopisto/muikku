@@ -42,6 +42,7 @@ import {UserIndexType} from './main-function/user-index';
 import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
+import { GuiderType } from './main-function/guider';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -59,5 +60,6 @@ export interface StateType {
   userIndex?: UserIndexType,
   workspaces?: WorkspacesType,
   courses?: CoursesType,
-  discussion?: DiscussionType
+  discussion?: DiscussionType,
+  guider?: GuiderType
 }

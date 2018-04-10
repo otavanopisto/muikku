@@ -29,6 +29,9 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.TagController;
+import fi.otavanopisto.muikku.dao.users.FlagDAO;
+import fi.otavanopisto.muikku.dao.users.FlagStudentDAO;
+import fi.otavanopisto.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.otavanopisto.muikku.dao.workspace.WorkspaceMaterialProducerDAO;
 import fi.otavanopisto.muikku.model.base.Tag;
 import fi.otavanopisto.muikku.model.users.Flag;
@@ -112,6 +115,9 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
   private WorkspaceEntityController workspaceEntityController;
 
   @Inject
+  private WorkspaceEntityDAO workspaceEntityDAO;
+  
+  @Inject
   private WorkspaceController workspaceController;
   
   @Inject
@@ -140,6 +146,12 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
 
   @Inject
   private FlagController flagController;
+  
+  @Inject
+  private FlagDAO flagDAO;
+
+  @Inject
+  private FlagStudentDAO flagStudentDAO;
   
   @Inject
   private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
@@ -409,6 +421,35 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @DELETE
+  @Path("/workspaces")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteWorkspaces() {
+    List<WorkspaceEntity> workspaceEntities = workspaceEntityDAO.listAll();
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      try{
+        List<WorkspaceMaterialProducer> workspaceMaterialProducers = workspaceController.listWorkspaceMaterialProducers(workspaceEntity);
+        for (WorkspaceMaterialProducer workspaceMaterialProducer : workspaceMaterialProducers) {
+          workspaceController.deleteWorkspaceMaterialProducer(workspaceMaterialProducer);
+        }
+      }catch (Exception e) {
+        return Response.status(500).entity(e.getMessage()).build();
+      }
+      try {
+        workspaceMaterialController.deleteAllWorkspaceNodes(workspaceEntity);
+      } catch (WorkspaceMaterialContainsAnswersExeption e) {
+        return Response.status(500).entity(e.getMessage()).build();
+      }  
+      List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesIncludeArchived(workspaceEntity);
+      for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+        workspaceUserEntityController.deleteWorkspaceUserEntity(workspaceUserEntity);
+      }
+      
+      workspaceEntityController.deleteWorkspaceEntity(workspaceEntity);  
+    }
+    return Response.noContent().build();
+  }
+  
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/folders")
   @RESTPermit (handling = Handling.UNSECURED)
@@ -697,6 +738,24 @@ public class AcceptanceTestsRESTService extends PluginRESTService {
     }
     
     return Response.ok(createRestEntity(flagController.flagStudent(flag, studentIdentifier))).build();
+  }
+
+  @DELETE
+  @Path("/flags")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response deleteStudentFlag() {   
+    List<FlagStudent> flagStudents = flagStudentDAO.listAll();
+    List<Flag> flags = flagDAO.listAll();
+
+    for(FlagStudent flagStudent : flagStudents) {
+      flagStudentDAO.delete(flagStudent);
+    }
+    
+    for(Flag flag : flags) {
+      flagDAO.delete(flag);
+    }
+    
+    return Response.noContent().build();
   }
   
   @DELETE

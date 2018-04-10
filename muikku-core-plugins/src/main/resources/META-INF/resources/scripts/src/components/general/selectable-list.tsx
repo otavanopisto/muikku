@@ -151,6 +151,7 @@ export default class SelectableList extends React.Component<SelectableListProps,
           {child.contents(child.notSelectable ? null : <input type="checkbox" className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
         </div>
       })}
+      {this.props.extra}
     </div>
   }
 }

@@ -1,21 +1,20 @@
 import * as React from 'react';
 import Dialog from '~/components/general/dialog';
 import Link from '~/components/general/link';
-import {updateCommunicatorLabel, UpdateCommunicatorLabelTriggerType, removeLabel, RemoveLabelTriggerType} from '~/actions/main-function/communicator/communicator-navigation';
+import {updateMessagesNavigationLabel, removeMessagesNavigationLabel, UpdateMessagesNavigationLabelTriggerType, RemoveMessagesNavigationLabelTriggerType} from '~/actions/main-function/messages';
+import { MessagesType, MessagesNavigationItemType } from '~/reducers/main-function/messages';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ColorResult} from 'react-color';
 //Another weird typescript bug, won't import properly
 const SliderPicker:any = require('react-color').SliderPicker;
 import {AnyActionType} from '~/actions';
-import {CommunicatorNavigationItemType, CommunicatorNavigationItemListType} from '~/reducers/main-function/communicator/communicator-navigation';
 import {i18nType } from '~/reducers/base/i18n';
-import {CommunicatorMessagesType} from '~/reducers/main-function/communicator/communicator-messages';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/container.scss';
-import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
+import Button from '~/components/general/button';
 
 const KEYCODES = {
   ENTER: 13
@@ -23,14 +22,13 @@ const KEYCODES = {
 
 interface CommunicatorLabelUpdateDialogProps {
   children: React.ReactElement<any>,
-  label: CommunicatorNavigationItemType,
+  label: MessagesNavigationItemType,
   isOpen?: boolean,
   onClose?: ()=>any,
   i18n: i18nType,
-  communicatorNavigation: CommunicatorNavigationItemListType,
-  communicatorMessages: CommunicatorMessagesType,
-  updateCommunicatorLabel: UpdateCommunicatorLabelTriggerType,
-  removeLabel: RemoveLabelTriggerType
+  messages: MessagesType,
+  updateMessagesNavigationLabel: UpdateMessagesNavigationLabelTriggerType,
+  removeMessagesNavigationLabel: RemoveMessagesNavigationLabelTriggerType
 }
 
 interface CommunicatorLabelUpdateDialogState {
@@ -85,21 +83,21 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   update(closeDialog: ()=>any){
     closeDialog();
     if ((this.state.name !== this.props.label.text(this.props.i18n) || this.state.color !== this.props.label.color) && !this.state.removed){
-      this.props.updateCommunicatorLabel(this.props.label, this.state.name, this.state.color);
+      this.props.updateMessagesNavigationLabel(this.props.label, this.state.name, this.state.color);
     } else if (this.state.removed){
-      this.props.removeLabel(this.props.label);
+      this.props.removeMessagesNavigationLabel(this.props.label);
     }
   }
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
-        </Link>
-        <Link className="button button--success button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        </Button>
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
           {/*TODO this should be OK but instead it says edit, please fix*/}
           {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
-        </Link>
+        </Button>
       </div>
     }
     let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
@@ -114,11 +112,9 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
             disabled={this.state.removed}
             onChange={this.onNameChange}/>
           {sliderPicker}
-        
-          {/*TODO please translate this*/}
-          <Link className="button button--fatal button--communicator-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
+          <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
             {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
-          </Link>
+          </Button>
         </div>
       )
     }
@@ -130,14 +126,13 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
 
 function mapStateToProps(state: StateType){
   return {
-    communicatorNavigation: (state as any).communicatorNavigation,
-    communicatorMessages: (state as any).communicatorMessages,
+    messages: state.messages,
     i18n: state.i18n
   }
 };
 
 function mapDispatchToProps(dispatch: Dispatch<AnyActionType>){
-  return bindActionCreators({updateCommunicatorLabel, removeLabel}, dispatch);
+  return bindActionCreators({updateMessagesNavigationLabel, removeMessagesNavigationLabel}, dispatch);
 };
 
 export default connect(

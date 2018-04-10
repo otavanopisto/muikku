@@ -10,8 +10,8 @@ import mApi from '~/lib/mApi';
 import '~/sass/elements/container.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
-import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
+import { GuiderUserLabelType } from '~/reducers/main-function/guider';
+import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import { StaffRecepientType, UserIndexType, UserType } from '~/reducers/main-function/user-index';
@@ -19,6 +19,7 @@ import promisify from '~/util/promisify';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { loadUserIndexBySchoolData, LoadUserIndexBySchoolDataTriggerType } from '~/actions/main-function/user-index';
 import {StateType} from '~/reducers';
+import Button from '~/components/general/button';
 
 const KEYCODES = {
   ENTER: 13
@@ -127,12 +128,12 @@ class GuiderLabelShareDialog extends React.Component<GuiderLabelShareDialogProps
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
-         {this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.cancel')}
-        </Link>
-        <Link className="button button--success button--standard-ok" onClick={this.share.bind(this, closeDialog)}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
+          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
+        </Button>
+        <Button buttonModifiers={["success", "standard-ok"]} onClick={this.share.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.guider.flags.shareFlagDialog.save')}
-        </Link>
+        </Button>
       </div>
     }
     let content = (closeDialog: ()=>any)=>{

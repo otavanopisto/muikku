@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .link {
-  @include prefix(transition, moz ms webkit o, background-color 0.3s);
+  @include prefix(transition, moz ms webkit o, background-color 0.3s, color 0.3s);
   @include prefix(user-select, moz ms webkit o, none);
   color: $color-link-default-text;
   cursor: pointer;
@@ -16,7 +16,6 @@
   position: relative;
   text-align: center;
   text-decoration: none;
-  text-transform: uppercase;
   white-space: nowrap;
   
   @include breakpoint($breakpoint-pad) {
@@ -30,23 +29,38 @@
   &:not(.link--icon) .link__icon {
     margin-right: 10px;
   }
- 
+  
   &:hover,
   &.hover {
-    background-color: $color-link-hover-background;
-    color: $color-link-hover-text;
+    color: darken($color-link-default-text, 20%);
   }
 
   &:active,
   &.active {
-    background-color: $color-link-active-background;
-    color: $color-link-active-text;
+    color: darken($color-link-default-text, 20%);
   }
-  
+
   &.disabled, &:disabled {
     cursor: default;
     opacity: 0.5;
   }
+}
+
+.link--frontpage {
+  color: $color-link-frontpage-text;
+  text-transform: uppercase;
+  
+  &:hover,
+  &.hover,
+  &:active,
+  &.active {
+    background-color: $color-link-hover-background;
+    color: $color-link-default-text;
+  }
+}
+
+.link--forgot-password {
+  margin: 0 10px;
 }
 
 .link--icon {
@@ -179,19 +193,15 @@
 .link--profile {
   font-size: 14px;
   background-color: $color-environment-link-profile-menu-background;
-  color: $color-environment-link-profile-menu-text;
+  color: $color-default-contrast;
   justify-content: flex-start;
 
   &:hover,
-  &.hover {
-    background-color: $color-environment-link-profile-menu-hover-background;
-    color: $color-environment-link-profile-menu-text;
-  }
-
+  &.hover,
   &:active,
   &.active {
     background-color: $color-environment-link-profile-menu-hover-background;
-    color: $color-environment-link-profile-menu-text;
+    color: $color-default-contrast;
   }
 }
 

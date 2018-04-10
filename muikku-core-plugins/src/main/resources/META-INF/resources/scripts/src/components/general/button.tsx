@@ -7,7 +7,8 @@ interface ButtonProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes
   buttonAs?: any,
   buttonModifiers?: string | Array<string>,
   className?: string,
-  disabled?: boolean
+  disabled?: boolean,
+  disablePropagation?: boolean
 }
 
 interface ButtonState {
@@ -54,6 +55,7 @@ export class ButtonPill extends React.Component<ButtonPillProps, ButtonState> {
     delete elementProps["buttonAs"];
     delete elementProps["buttonModifiers"];
     delete elementProps["className"];
+    delete elementProps["icon"];
     
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
     
