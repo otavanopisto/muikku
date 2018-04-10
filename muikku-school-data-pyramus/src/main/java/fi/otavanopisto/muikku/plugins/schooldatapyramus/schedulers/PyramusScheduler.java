@@ -58,26 +58,33 @@ public class PyramusScheduler {
   }
 
   private void synchronizePyramusData() {
+
+    // Sort schedulers in priority order
+    
+    @SuppressWarnings("unchecked")
+    List<PyramusUpdateScheduler> schedulers = IteratorUtils.toList(updateSchedulers.iterator());
+    Collections.sort(schedulers, new Comparator<PyramusUpdateScheduler>() {
+      @Override
+      public int compare(PyramusUpdateScheduler o1, PyramusUpdateScheduler o2) {
+        return o1.getPriority() - o2.getPriority();
+      }
+    });
+
+    // Select scheduler for this run
+    
+    PyramusUpdateScheduler updateScheduler = schedulers.get(schedulerIndex);
+    schedulerIndex = (schedulerIndex + 1) % schedulers.size();
+    
     try {
       userTransaction.begin();
-      
-      @SuppressWarnings("unchecked")
-      List<PyramusUpdateScheduler> schedulers = IteratorUtils.toList(updateSchedulers.iterator());
-      Collections.sort(schedulers, new Comparator<PyramusUpdateScheduler>() {
-        @Override
-        public int compare(PyramusUpdateScheduler o1, PyramusUpdateScheduler o2) {
-          return o1.getPriority() - o2.getPriority();
-        }
-      });
-  
-      PyramusUpdateScheduler updateScheduler = schedulers.get(schedulerIndex);
-      String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
-      logger.info(String.format("Running %s", schedulerName));
-      
-      updateScheduler.synchronize();
-  
-      schedulerIndex = (schedulerIndex + 1) % schedulers.size();
 
+      // #3849: Skip synchronization if the scheduler has been disabled
+      if (updateScheduler.isEnabled()) {
+        String schedulerName = StringUtils.substringBefore(updateScheduler.getClass().getSimpleName(), "$");
+        logger.info(String.format("Running %s", schedulerName));
+        updateScheduler.synchronize();
+      }
+      
       userTransaction.commit();
     }
     catch (Exception e) {
@@ -89,7 +96,9 @@ public class PyramusScheduler {
         logger.log(Level.WARNING, "Pyramus synchronization rollback failed", e);
       }      
     }
+    
   }
+  
   private int schedulerIndex;
 
 }

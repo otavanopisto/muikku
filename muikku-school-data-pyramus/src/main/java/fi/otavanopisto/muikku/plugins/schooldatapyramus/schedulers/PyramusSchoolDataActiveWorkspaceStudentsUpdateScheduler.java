@@ -34,14 +34,13 @@ public class PyramusSchoolDataActiveWorkspaceStudentsUpdateScheduler extends Pyr
 
   @Override
   public void synchronize() {
-    int currentOffset = getOffset();    
+    int currentOffset = getAndUpdateCurrentOffset(BATCH_SIZE);
     int count = 0;
     try {
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, currentOffset, BATCH_SIZE);
-      updateOffset(currentOffset + workspaceEntities.size());
       if (workspaceEntities.size() == 0) {
-        updateOffset(0);
+        resetCurrentOffset();
       }
       else {
         for (WorkspaceEntity workspaceEntity : workspaceEntities) {
@@ -59,4 +58,5 @@ public class PyramusSchoolDataActiveWorkspaceStudentsUpdateScheduler extends Pyr
   public int getPriority() {
     return 5;
   }
+
 }

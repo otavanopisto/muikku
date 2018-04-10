@@ -14,8 +14,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.otavanopisto.muikku.controller.PluginSettingsController;
-import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.schooldata.GradingController;
@@ -23,6 +21,7 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.UserSchoolDataController;
 import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserProperty;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.search.SearchResult;
@@ -32,9 +31,6 @@ public class TranscriptOfRecordsController {
 
   @Inject
   private UserSchoolDataController userSchoolDataController;
-  
-  @Inject
-  private PluginSettingsController pluginSettingsController;
   
   @Inject
   private GradingController gradingController;
@@ -135,19 +131,13 @@ public class TranscriptOfRecordsController {
     userSchoolDataController.setUserProperty(user, "hops." + propertyName, value ? "yes" : "no");
   }
 
-  public boolean shouldShowStudies(UserEntity userEntity) {
-    if (userEntity != null) {
-      String studyViewStudents = pluginSettingsController.getPluginSetting("transcriptofrecords", "studyViewStudents");
-      if (studyViewStudents != null) {
-        String[] ids = studyViewStudents.split(",");
-        for (int i = 0; i < ids.length; i++) {
-          if (StringUtils.equals(ids[i], userEntity.getId().toString())) {
-            return true;
-          }
-        }
-      }
+  public boolean shouldShowStudies(User user) {
+    UserProperty userProperty = userSchoolDataController.getUserProperty(user, "hops.enabled");
+    if(userProperty != null && "1".equals(userProperty.getValue())) {
+      return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   public TranscriptofRecordsUserProperties loadUserProperties(User user) {
