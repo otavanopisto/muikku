@@ -150,7 +150,15 @@ export default function guider( state: GuiderType = {
   selectedStudentsIds: [],
   currentStudent: null
 }, action: ActionType ): GuiderType {
-  if (action.type === "UPDATE_GUIDER_ACTIVE_FILTERS"){
+  if (action.type === "LOCK_TOOLBAR"){
+    return Object.assign({}, state, {
+      toolbarLock: true
+    });
+  } else if (action.type === "UNLOCK_TOOLBAR"){
+    return Object.assign({}, state, {
+      toolbarLock: false
+    });
+  } else if (action.type === "UPDATE_GUIDER_ACTIVE_FILTERS"){
     return Object.assign({}, state, {
       activeFilters: action.payload
     });
