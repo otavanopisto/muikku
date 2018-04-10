@@ -483,7 +483,7 @@
   }
 }
 
-.button-pill--delete {
+.button-pill--delete, .button-pill--restore {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;

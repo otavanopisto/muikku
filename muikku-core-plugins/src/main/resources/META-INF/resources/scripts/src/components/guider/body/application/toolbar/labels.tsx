@@ -4,21 +4,20 @@ import Dropdown from "~/components/general/dropdown";
 import { filterHighlight, filterMatch, intersect, difference } from "~/util/modifiers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
-import { GuiderFilterType } from "~/reducers/main-function/guider/guider-filters";
-import { GuiderStudentsType, GuiderStudentType } from "~/reducers/main-function/guider/guider-students";
-import { createGuiderFilterLabel, CreateGuiderFilterLabelTriggerType } from "~/actions/main-function/guider/guider-filters";
-import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType, removeGuiderLabelFromSelectedUsers } from "~/actions/main-function/guider/guider-students";
+import { createGuiderFilterLabel, CreateGuiderFilterLabelTriggerType } from "~/actions/main-function/guider";
+import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType, removeGuiderLabelFromSelectedUsers } from "~/actions/main-function/guider";
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/form-fields.scss';
 import { bindActionCreators } from "redux";
 import {StateType} from '~/reducers';
+import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
+import { ButtonPill } from "~/components/general/button";
 
 interface GuiderToolbarLabelsProps {
   i18n: i18nType,
-  guiderFilters: GuiderFilterType,
-  guiderStudents: GuiderStudentsType,
+  guider: GuiderType
   
   createGuiderFilterLabel: CreateGuiderFilterLabelTriggerType,
   addGuiderLabelToCurrentUser: AddGuiderLabelToCurrentUserTriggerType,
@@ -45,7 +44,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
     this.setState({labelFilter: e.target.value});
   }
   render(){
-    if (this.props.guiderStudents.current){
+    if (this.props.guider.currentStudent){
       return <Dropdown modifier="guider-labels" items={
           [
           <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
@@ -54,10 +53,10 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
             onClick={this.props.createGuiderFilterLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </Link>
-        ].concat(this.props.guiderFilters.labels.filter((item)=>{
+        ].concat(this.props.guider.availableFilters.labels.filter((item)=>{
           return filterMatch(item.name, this.state.labelFilter);
         }).map((label)=>{
-          let isSelected = (this.props.guiderStudents.current.labels || []).find(l=>l.flagId === label.id);
+          let isSelected = (this.props.guider.currentStudent.labels || []).find(l=>l.flagId === label.id);
           return (<Link className={`link link--full link--guider-label ${isSelected ? "selected" : ""}`}
             onClick={!isSelected ? this.props.addGuiderLabelToCurrentUser.bind(null, label) : this.props.removeGuiderLabelFromCurrentUser.bind(null, label)}>
             <span className="link__icon icon-flag" style={{color: label.color}}></span>
@@ -65,18 +64,16 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           </Link>);
         }))
       }>
-        <Link className="button-pill button-pill--label">
-          <span className="button-pill__icon icon-flag"></span>
-        </Link>
+        <ButtonPill buttonModifiers="label" icon="flag" disabled={this.props.guider.toolbarLock}/>
       </Dropdown>
     }
   
     let allInCommon:number[] = [];
     let onlyInSome:number[] = [];
-    let isAtLeastOneSelected = this.props.guiderStudents.selected.length >= 1;
+    let isAtLeastOneSelected = this.props.guider.selectedStudents.length >= 1;
     
     if (isAtLeastOneSelected){
-      let partialIds = this.props.guiderStudents.selected.map((student: GuiderStudentType)=>{
+      let partialIds = this.props.guider.selectedStudents.map((student: GuiderStudentType)=>{
         return student.flags.map(l=>l.flagId)}
       );
       allInCommon = intersect(...partialIds);
@@ -90,7 +87,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         <span className="link link--full" onClick={this.props.createGuiderFilterLabel.bind(null, this.state.labelFilter)}>
           {this.props.i18n.text.get("plugin.communicator.label.create")}
         </span>
-      ].concat(this.props.guiderFilters.labels.filter((item)=>{
+      ].concat(this.props.guider.availableFilters.labels.filter((item)=>{
         return filterMatch(item.name, this.state.labelFilter);
       }).map((label)=>{
         let isSelected = allInCommon.includes(label.id as number);
@@ -105,9 +102,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         </Link>);
       }))
     }>
-      <Link className="button-pill button-pill--label">
-        <span className="button-pill__icon icon-flag"></span>
-      </Link>
+      <ButtonPill buttonModifiers="label" icon="flag"/>
     </Dropdown>;
   }
 }
@@ -115,8 +110,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderFilters: (state as any).guiderFilters,
-    guiderStudents: (state as any).guiderStudents
+    guider: state.guider
   }
 };
 
