@@ -7,9 +7,9 @@ import * as queryString from 'query-string';
 
 import mainFunctionDefault from '~/util/base-main-function';
 import { Action } from 'redux';
-import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider/guider-filters';
-import { GuiderStudentsFilterType } from '~/reducers/main-function/guider/guider-students';
-import { loadStudents, loadStudent } from '~/actions/main-function/guider/guider-students';
+import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
+import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
+import { loadStudents, loadStudent } from '~/actions/main-function/guider';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -21,7 +21,7 @@ function loadCurrentLocation(){
   let originalData:any = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
 
   if (!originalData.c){
-    let filters:GuiderStudentsFilterType = {
+    let filters:GuiderActiveFiltersType = {
       "workspaceFilters": (originalData.w || []).map((num:string)=>parseInt(num)),
       "labelFilters": (originalData.l || []).map((num:string)=>parseInt(num)),
       "query": originalData.q || null

@@ -10,12 +10,12 @@ import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/container.scss';
-import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-fields.scss';
-import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
-import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider/guider-filters';
+import { GuiderUserLabelType } from '~/reducers/main-function/guider';
+import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 import GuiderLabelShareDialog from './label-share-dialog';
 import {StateType} from '~/reducers';
+import Button from '~/components/general/button';
 
 const KEYCODES = {
   ENTER: 13
@@ -106,12 +106,12 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
-        </Link>
-        <Link className="button button--success button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        </Button>
+        <Button buttonModifiers={["success", "standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.save')}
-        </Link>
+        </Button>
       </div>
     }
     let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
@@ -132,14 +132,14 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
               onChange={this.onDescriptionChange}/>
           </div>
           {sliderPicker}
-        
-          {/*TODO please translate this*/}
-            <Link className="button button--fatal button--guider-remove-label" disabled={this.state.removed} onClick={this.removeLabel}>
-              {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
-            </Link>
-            <GuiderLabelShareDialog label={this.props.label}><Link className="button button--info button--guider-share-label" disabled={this.state.removed} onClick={this.shareLabel}>
+          <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+            {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
+          </Button>
+          <GuiderLabelShareDialog label={this.props.label}>
+            <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
               {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
-            </Link></GuiderLabelShareDialog>
+            </Button>
+          </GuiderLabelShareDialog>
         </div>
       )
     }

@@ -155,7 +155,15 @@ export interface DeleteSelectedMessageThreadsTriggerType {
   (): AnyActionType
 }
 
+export interface RestoreSelectedMessageThreadsTriggerType {
+  (): AnyActionType
+}
+
 export interface DeleteCurrentMessageThreadTriggerType {
+  (): AnyActionType
+}
+
+export interface RestoreCurrentMessageThreadTriggerType {
   (): AnyActionType
 }
 
@@ -224,8 +232,8 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         }
 
         try {
-          let threads: MessageThreadListType = <MessageThreadListType>await promisify( mApi().communicator[getApiId( item )].read( params ), 'callback' )();
-          if ( threads[0] ) {
+          let threads: MessageThreadListType = <MessageThreadListType>await promisify(mApi().communicator[getApiId(item)].read(params), 'callback' )();
+          if (threads[0]) {
             dispatch({
               type: "PUSH_ONE_MESSAGE_THREAD_FIRST",
               payload: threads[0]
@@ -245,7 +253,20 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
         } catch ( err ) { }
       }
       
-      //Also in case we are in that current thread and it's the one active
+      //Also we need to update the specific message in the thread view if it's there
+      let thread:MessageThreadType = state.messages.threads.find((thread)=>thread.communicatorMessageId === result.communicatorMessageId);
+      if (thread){
+        let newCount = thread.messageCountInThread + 1;
+        dispatch({
+          type: "UPDATE_ONE_MESSAGE_THREAD",
+          payload: {
+            thread,
+            update: {
+              messageCountInThread: newCount
+            }
+          }
+        });
+      }
       
     } catch ( err ) {
       dispatch( displayNotification( err.message, 'error' ) );
@@ -755,6 +776,102 @@ let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = fun
   }
 }
 
+let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = function restoreSelectedMessageThreads() {
+  return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
+    dispatch({
+      type: "LOCK_TOOLBAR",
+      payload: null
+    });
+
+    let state = getState();
+
+    let item = state.messages.navigation.find((item)=>{
+      return item.location === state.messages.location;
+    });
+    if (!item) {
+      //TODO translate this
+      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+      return;
+    }
+    
+    await Promise.all(state.messages.selectedThreads.map(async( thread) => {
+      try {
+        await promisify(mApi().communicator[getApiId(item)].restore.update(thread.communicatorMessageId), 'callback' )();
+        dispatch({
+          type: "DELETE_MESSAGE_THREAD",
+          payload: thread
+        });
+      } catch (err) {
+        dispatch(displayNotification(err.message,'error'));
+      }
+    }));
+
+    mApi().communicator[getApiId(item)].cacheClear();
+    dispatch( {
+      type: "UNLOCK_TOOLBAR",
+      payload: null
+    });
+    dispatch(updateUnreadMessageThreadsCount());
+  }
+}
+
+let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = function restoreCurrentMessageThread() {
+  return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
+    dispatch({
+      type: "LOCK_TOOLBAR",
+      payload: null
+    });
+
+    let state = getState();
+    
+    let item = state.messages.navigation.find((item)=>{
+      return item.location === state.messages.location;
+    });
+    if ( !item ) {
+      //TODO translate this
+      dispatch(displayNotification( "Invalid navigation location", 'error' ) );
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
+      return;
+    }
+
+    let communicatorMessageId = state.messages.currentThread.messages[0].communicatorMessageId;
+
+    try {
+      await promisify(mApi().communicator[getApiId(item)].restore.update( communicatorMessageId ), 'callback' )();
+      let toDeleteMessageThread:MessageThreadType = state.messages.threads.find((message) => message.communicatorMessageId === communicatorMessageId );
+      if (toDeleteMessageThread){
+        dispatch({
+          type: "DELETE_MESSAGE_THREAD",
+          payload: toDeleteMessageThread
+        });
+      }
+    } catch ( err ) {
+      dispatch(displayNotification( err.message, 'error' ) );
+    }
+
+    mApi().communicator[getApiId(item)].cacheClear();
+    dispatch({
+      type: "UNLOCK_TOOLBAR",
+      payload: null
+    });
+
+    //SADLY the current message doesn't have a mention on wheter
+    //The message is read or unread so the message count has to be recalculated
+    //by server logic
+    dispatch(updateUnreadMessageThreadsCount());
+
+    location.hash = "#" + item.location;
+  }
+}
+
+
 export {
   sendMessage, loadMessageThreads, updateMessagesSelectedThreads,
   addToMessagesSelectedThreads, removeFromMessagesSelectedThreads,
@@ -762,5 +879,6 @@ export {
   addLabelToCurrentMessageThread, removeLabelFromCurrentMessageThread, toggleMessageThreadReadStatus, toggleMessageThreadsReadStatus,
   deleteSelectedMessageThreads, deleteCurrentMessageThread, loadMessageThread, loadNewlyReceivedMessage,
   loadSignature, updateSignature, updateUnreadMessageThreadsCount, loadLastMessageThreadsFromServer,
-  loadMessagesNavigationLabels, addMessagesNavigationLabel, updateMessagesNavigationLabel, removeMessagesNavigationLabel
+  loadMessagesNavigationLabels, addMessagesNavigationLabel, updateMessagesNavigationLabel, removeMessagesNavigationLabel,
+  restoreSelectedMessageThreads, restoreCurrentMessageThread
 }

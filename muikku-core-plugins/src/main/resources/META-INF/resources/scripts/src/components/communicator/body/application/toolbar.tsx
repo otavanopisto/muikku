@@ -8,7 +8,8 @@ import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelF
   removeLabelFromCurrentMessageThread, DeleteCurrentMessageThreadTriggerType,
   AddLabelToCurrentMessageThreadTriggerType, RemoveLabelFromSelectedMessageThreadsTriggerType, DeleteSelectedMessageThreadsTriggerType,
   ToggleMessageThreadsReadStatusTriggerType, AddMessagesNavigationLabelTriggerType, AddLabelToSelectedMessageThreadsTriggerType,
-  RemoveLabelFromCurrentMessageThreadTriggerType} from '~/actions/main-function/messages';
+  RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
+  restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType} from '~/actions/main-function/messages';
 import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
 import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
 import {MessagesType} from '~/reducers/main-function/messages';
@@ -34,7 +35,9 @@ interface CommunicatorToolbarProps {
   toggleMessageThreadsReadStatus: ToggleMessageThreadsReadStatusTriggerType,
   addMessagesNavigationLabel: AddMessagesNavigationLabelTriggerType,
   addLabelToSelectedMessageThreads: AddLabelToSelectedMessageThreadsTriggerType,
-  removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType
+  removeLabelFromCurrentMessageThread: RemoveLabelFromCurrentMessageThreadTriggerType,
+  restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType,
+  restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType
 }
 
 interface CommunicatorToolbarState {
@@ -102,6 +105,8 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
               </LabelUpdateDialog> : null}
             </div>
+            {this.props.messages.location === "trash" ?
+              <ButtonPill buttonModifiers="restore" icon="put-back" onClick={this.props.restoreCurrentMessageThread}/> : null}
             <ButtonPill buttonModifiers="delete" icon="delete" onClick={this.props.deleteCurrentMessageThread}/>
             <Dropdown modifier="communicator-labels" items={
               [
@@ -157,6 +162,8 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
          </LabelUpdateDialog> : null}
       </div>
       
+      {this.props.messages.location === "trash" ? <ButtonPill buttonModifiers="restore" icon="put-back"
+        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.restoreSelectedMessageThreads}/> : null}
       <ButtonPill buttonModifiers="delete" icon="delete"
        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
                
@@ -200,7 +207,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({deleteCurrentMessageThread, addLabelToCurrentMessageThread,
     removeLabelFromSelectedMessageThreads, deleteSelectedMessageThreads,
     toggleMessageThreadsReadStatus, addMessagesNavigationLabel, addLabelToSelectedMessageThreads,
-    removeLabelFromCurrentMessageThread}, dispatch);
+    removeLabelFromCurrentMessageThread, restoreCurrentMessageThread, restoreSelectedMessageThreads}, dispatch);
 };
 
 export default connect(
