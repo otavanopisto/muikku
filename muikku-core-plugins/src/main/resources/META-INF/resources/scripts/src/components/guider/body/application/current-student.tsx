@@ -65,7 +65,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         {this.props.guider.currentStudent.emails && <div className="text text--guider-profile-student-mail">
           {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email)=>{
             return(             
-                <span>{email.defaultAddress ? email.address : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
+              <span key={email.address}>{email.defaultAddress ? email.address : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
             )
           }): null}        
         </div>}
