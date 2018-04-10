@@ -97,7 +97,9 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   }
   update(closeDialog: ()=>any){
     closeDialog();
-    if ((this.state.name !== this.props.label.name || this.state.color !== this.props.label.color) && !this.state.removed){
+    if ((this.state.name !== this.props.label.name ||
+        this.state.color !== this.props.label.color ||
+        this.state.description !== this.props.label.description) && !this.state.removed){
       this.props.updateGuiderFilterLabel(this.props.label, this.state.name, this.state.description, this.state.color);
     } else if (this.state.removed){
       this.props.removeGuiderFilterLabel(this.props.label);
