@@ -53,11 +53,9 @@
             parent.append(tocItem);
           }
         } 
-        // Add sections
-        var uploader = createFileUploader();
-        newPage.after(uploader);
+        newPage.prev().remove();
+        newPage.next().remove();
         newPage.after(createAddPageSectionLink());
-        enableFileUploader(uploader);
       })
       .on('fileDiscarded', function (event, data) {
         $(this).workspaceMaterialUpload('reset');
@@ -1182,29 +1180,31 @@
   
   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 30;
-    var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
-    if (animate) {
-      $(window).data('scrolling', true);
-      $('html,body').animate({
-        scrollTop : scrollTop
-      }, {
-        duration : 500,
-        easing : "easeInOutQuad",
-        complete : function() {
-          $('li.active').removeClass('active');
-          $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
-          window.location.hash = 'p-' + workspaceMaterialId;
-          scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
-          $('html,body').scrollTop(scrollTop);
-          Waypoint.refreshAll();
-          $(window).data('scrolling', false);
-        }
-      });
-    } else {
-      $('html,body').scrollTop(scrollTop);
-      $('li.active').removeClass('active');
-      $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
-      window.location.hash = 'p-' + workspaceMaterialId;
+    if($('#page-' + workspaceMaterialId).offset()){
+      var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
+      if (animate) {
+        $(window).data('scrolling', true);
+        $('html,body').animate({
+          scrollTop : scrollTop
+        }, {
+          duration : 500,
+          easing : "easeInOutQuad",
+          complete : function() {
+            $('li.active').removeClass('active');
+            $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
+            window.location.hash = 'p-' + workspaceMaterialId;
+            scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
+            $('html,body').scrollTop(scrollTop);
+            Waypoint.refreshAll();
+            $(window).data('scrolling', false);
+          }
+        });
+      } else {
+        $('html,body').scrollTop(scrollTop);
+        $('li.active').removeClass('active');
+        $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
+        window.location.hash = 'p-' + workspaceMaterialId;
+      }
     }
   }
   
@@ -1231,10 +1231,9 @@
       material.nextSiblingId = nextSiblingId;
       mApi({async: false}).workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
         if (!err) {
-          // Move the "add page" boxes (2) first
+          // Move the "add page" box first
           $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
-          $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
-          $("#page-" + workspaceNodeId).insertBefore($("#page-" + nextSiblingId).prev().prev());
+          $("#page-" + workspaceNodeId).insertBefore($("#page-" + nextSiblingId).prev());
         }
         else {
           $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -1354,9 +1353,9 @@
       offset: 50
     });
     
-    $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      enableFileUploader(element);
-    });
+    //$('.workspaces-materials-management-insert-file').each(function(index, element) {
+    //  enableFileUploader(element);
+    //});
     
     $(window).data('initializing', false);
   });
@@ -1650,6 +1649,11 @@
   
   $(document).on('click', '.workspaces-materials-management-add', function (event, data) {
 	  
+    //remove previous new page
+    var oldPage = $(document).find(".workspace-materials-management-new");
+    oldPage.prev().remove();
+    oldPage.remove();
+    
     var parentId = undefined;
     var nextSiblingId = undefined;
     var previousMaterial = $(this).parent().prevAll('.material-page').first();
@@ -1661,7 +1665,6 @@
       var uploader = createFileUploader();
       $(newPage).before(uploader);
       enableFileUploader(uploader, parentId, nextSiblingId);
-      $(newPage).after(createAddPageSectionLink());
       
       // Documents cannot be created at root
       if (!$(previousMaterial).length) {
@@ -1741,6 +1744,9 @@
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
 
+                newPage.prev().remove();
+                newPage.after(createAddPageSectionLink());
+                
                 var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="' + workspaceMaterialResult.id + '" />');
                 newPageTocItem.append('<a href="#page-' + workspaceMaterialResult.id + '">' + materialResult.title + '</a>');
                 newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
@@ -1819,7 +1825,7 @@
           })
           .callback($.proxy(function (err, workspaceMaterial) {
             if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
               mApi().materials.html
@@ -1839,7 +1845,10 @@
                     'data-assignment-type': workspaceMaterial.assignmentType,
                     'data-correct-answers': workspaceMaterial.correctAnswers,
                   });
-      
+                  
+                  newPage.prev().remove();
+                  newPage.after(createAddPageSectionLink());
+                  
                   var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="' + workspaceMaterial.id + '" />');
                   newPageTocItem.append('<a href="#page-' + workspaceMaterial.id + '">' + workspaceMaterial.title + '</a>');
                   newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
@@ -1899,6 +1908,10 @@
               'data-material-type': 'folder',
               'data-workspace-material-id': workspaceFolderResult.id
             });
+            
+            newPage.prev().remove();
+            newPage.after(createAddPageSectionLink());
+            
             var newSectionTocItem = $('<ul class="workspace-materials-toc-section" data-workspace-node-id="'+workspaceFolderResult.id+'" />');
             var newPageTocItem = $('<li class="workspace-materials-toc-subtitle " />');
             newPageTocItem.append('<a href="#page-'+workspaceFolderResult.id+'">'+workspaceFolderResult.title+'</a>');

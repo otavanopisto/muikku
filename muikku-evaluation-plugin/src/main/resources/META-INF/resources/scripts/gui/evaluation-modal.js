@@ -737,6 +737,52 @@
       }, this));
     },
     
+    confirmRequestArchive: function(card, callback) {
+      var workspaceEntityId = $(card).attr('data-workspace-entity-id');
+      var UserEntityId =$(card).attr('data-user-entity-id');
+      var studentName = $(card).find('.evaluation-card-student').text();
+      var workspaceName = $(card).attr('data-workspace-name');
+      
+      renderDustTemplate('evaluation/evaluation-archive-request-confirm.dust', {studentName: studentName, workspaceName: workspaceName}, $.proxy(function(text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal : true,
+          minHeight : 200,
+          resizable : false,
+          width : 560,
+          dialogClass : "evaluation-archive-request-confirm-dialog",
+          buttons : [ {
+            'text' : dialog.attr('data-button-remove-text'),
+            'class' : 'remove-button',
+            'click' : function(event) {
+            mApi().evaluation.workspace.user.evaluationrequestarchive
+              .update(workspaceEntityId, UserEntityId)
+              .callback($.proxy(function (err) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                }
+                else {
+                  $(this).dialog("destroy").remove();
+                  if (callback) {
+                    callback(true);
+                  }
+                }
+              }, this));
+            }
+          }, {
+            'text' : dialog.attr('data-button-cancel-text'),
+            'class' : 'cancel-button',
+            'click' : function(event) {
+              $(this).dialog("destroy").remove();
+              if (callback) {
+                callback(false);
+              }
+            }
+          } ]
+        });
+      }, this));
+    },
+    
     _confirmAssessmentDeletion: function(callback) {
       var studentName = $(this._requestCard).find('.evaluation-card-student').text();
       renderDustTemplate('evaluation/evaluation_remove_workspace_evaluation_confirm.dust', { studentName: studentName }, $.proxy(function(text) {

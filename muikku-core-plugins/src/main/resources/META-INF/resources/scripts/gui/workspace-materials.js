@@ -192,6 +192,34 @@
         }, this));
     };
     
+    if ($('.isUserLoggedIn').val() == 'false') {
+      
+      var logInGuidingIcon = $('<div>')
+        .addClass('notification-queue-login-guiding-icon');
+      
+      var backToFrontPageLink = $('<a>')
+        .attr('href', '/')
+        .text(getLocaleText('plugin.workspace.logInGuidingLink') + ' ');
+      
+      var logInGuide = $('<div>')
+        .addClass('notification-queue-login-guiding-wrapper')
+        .append(logInGuidingIcon)
+        .append($('<div>')
+          .addClass('notification-queue-login-guiding-title')
+          .text(getLocaleText('plugin.workspace.logInGuidingTitle') + ' ')
+        )
+        .append($('<div>')
+          .addClass('notification-queue-login-guiding-text')
+          .text(getLocaleText('plugin.workspace.logInGuidingInformation') + ' ')
+        )
+        .append($('<div>')
+          .addClass('notification-queue-login-guiding-link')
+          .append(backToFrontPageLink)
+        );
+ 
+      $('.notification-queue').notificationQueue('notification', 'guiding', logInGuide);
+    }
+    
     if ($('.maySignUp').val() == 'true') {
       if ($('.canSignUp').val() == 'true') {
         var workspaceEntityId = $('.workspaceEntityId').val();

@@ -25,6 +25,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.base.BooleanPredicate;
 import fi.otavanopisto.muikku.model.base.Tag;
@@ -62,6 +64,7 @@ import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
@@ -974,6 +977,44 @@ public class Evaluation2RESTService {
     }
     
     return Response.ok(restAssessmentRequests).build();
+  }
+  
+  //TODO update only one, find by id
+  @PUT
+  @Path("/workspace/{WORKSPACEENTITYID}/user/{USERENTITYID}/evaluationrequestarchive")
+  @RESTPermit (handling = Handling.INLINE, requireLoggedIn = true)
+  public Response archiveWorkspaceAssessmentRequest(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("USERENTITYID") Long userEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.ACCESS_EVALUATION)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // Entities and identifiers
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    SchoolDataIdentifier workspaceIdentifier = new SchoolDataIdentifier(workspaceEntity.getIdentifier(), workspaceEntity.getDataSource().getIdentifier());
+    SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+    
+    List<WorkspaceAssessmentRequest> requests = gradingController.listWorkspaceAssessmentRequests(workspaceIdentifier.getDataSource(), workspaceIdentifier.getIdentifier(), userIdentifier.getIdentifier()); 
+    if (CollectionUtils.isNotEmpty(requests)) {
+      for (WorkspaceAssessmentRequest request : requests) {
+        gradingController.updateWorkspaceAssessmentRequest(
+        request.getSchoolDataSource(),
+        request.getIdentifier(),
+        request.getWorkspaceUserIdentifier(),
+        request.getWorkspaceUserSchoolDataSource(),
+        workspaceIdentifier.getIdentifier(),
+        userIdentifier.getIdentifier(),
+        request.getRequestText(),
+        request.getDate(),
+        Boolean.TRUE, // archived
+        request.getHandled());
+      }
+      return Response.noContent().build();
+    }
+    return Response.status(Status.BAD_REQUEST).build();
   }
   
   private RestAssessmentRequest toRestAssessmentRequest(CompositeAssessmentRequest compositeAssessmentRequest) {
