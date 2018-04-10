@@ -205,7 +205,7 @@ export default function guider( state: GuiderType = {
       currentStudent: Object.assign( {}, state.currentStudent, obj )
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE"){
-    return Object.assign( {}, state, {
+    return Object.assign({}, state, {
       currentState: action.payload
     });
   } else if (action.type === "ADD_GUIDER_LABEL_TO_USER" || action.type === "REMOVE_GUIDER_LABEL_FROM_USER"){

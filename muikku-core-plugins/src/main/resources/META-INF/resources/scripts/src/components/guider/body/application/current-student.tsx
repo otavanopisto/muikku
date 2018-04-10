@@ -53,6 +53,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //You can use the cheat && after the property
     //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
         
+    let defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e)=>e.defaultAddress);
     
     let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
         <object
@@ -62,15 +63,11 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
         </object>
         <div className="text text--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic)}</div>
-        {this.props.guider.currentStudent.emails && <div className="text text--guider-profile-student-mail">
-          {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email)=>{
-            return(             
-                <span>{email.defaultAddress ? email.address : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
-            )
-          }): null}        
-        </div>}
+        <div className="text text--guider-profile-student-mail">
+          <span>{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
+        </div>
         <div className="text text--list-item-type-title">
-           Linja
+           {this.props.guider.currentStudent.basic.studyProgrammeName}
         </div>
       </div>
    
@@ -214,7 +211,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>
         {files}  
       </div>     
-      {this.props.guider.state === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
+      {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
     </div>
   }
 }
