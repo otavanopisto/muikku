@@ -3,11 +3,11 @@ import { UserWithSchoolDataType, UserGroupListType, UserFileType } from '~/reduc
 import { WorkspaceType, WorkspaceListType } from "~/reducers/main-function/workspaces";
 
 //TODO remove or comment out, this is mocking code
-import hops from './mock/hops';
-import vops from './mock/vops';
+//import hops from './mock/hops';
+//import vops from './mock/vops';
+//TODO
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
-//TODO
 
 export interface GuiderUserLabelType {
   id: number,
@@ -194,11 +194,11 @@ export default function guider( state: GuiderType = {
     obj[action.payload.property] = action.payload.value;
 
     //TODO remove or comment out, this is mocking code
-    if (action.payload.property === "vops"){
-      obj[action.payload.property] = vops;
-    } else if (action.payload.property === "hops"){
-      obj[action.payload.property] = hops;
-    }
+//    if (action.payload.property === "vops"){
+//      obj[action.payload.property] = vops;
+//    } else if (action.payload.property === "hops"){
+//      obj[action.payload.property] = hops;
+//    }
     //TODO
 
     return Object.assign( {}, state, {

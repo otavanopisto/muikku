@@ -155,11 +155,13 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
-    let studentHops = this.props.guider.currentStudent.hops && <Hops data={this.props.guider.currentStudent.hops} editable={false}/>
+    let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
+        <Hops data={this.props.guider.currentStudent.hops} editable={false}/> : null;
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
-    let studentVops = this.props.guider.currentStudent.vops && <Vops data={this.props.guider.currentStudent.vops}></Vops>
+    let studentVops = (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
+        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
   
     let studentWorkspaces = <Workspaces/>;
     
@@ -199,13 +201,13 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel">
         {studentBasicInfo}
       </div>
-      <div className="application-sub-panel">
+      {studentHops ? <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</div>        
         {studentHops}
-      </div>
-      <div className="application-sub-panel">
+      </div> : null}
+      {studentVops ? <div className="application-sub-panel">
         {studentVops}  
-      </div>
+      </div> : null}
        <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</div>
         {studentWorkspaces}
