@@ -82,19 +82,22 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate)}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.studyStartDate ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate)}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.studyEndDate ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd)}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.studyTimeEnd ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd) : "-"}</span>
         </div>
       </div>
       {this.props.guider.currentStudent.emails && <div className="application-sub-panel__item">
