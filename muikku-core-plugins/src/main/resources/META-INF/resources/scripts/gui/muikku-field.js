@@ -1,14 +1,14 @@
 (function() {
   'use strict';
   
-//  $(document).muikkuWebSocket("addEventListener", 'workspace:field-answer-error', function (data) {
-//    try {
-//      var message = $.parseJSON(data);
-//      $('.notification-queue').notificationQueue('notification', 'error', message.error);
-//    } catch (e) {
-//      $('.notification-queue').notificationQueue('notification', 'error', 'Internal error occurred');
-//    }
-//  });
+  $(document).muikkuWebSocket("addEventListener", 'workspace:field-answer-error', function (data) {
+    try {
+      var message = $.parseJSON(data);
+      $('.notification-queue').notificationQueue('notification', 'error', message.error);
+    } catch (e) {
+      $('.notification-queue').notificationQueue('notification', 'error', 'Internal error occurred');
+    }
+  });
   
   $.widget("custom.muikkuMaterialPage", {
     options: {
@@ -722,7 +722,7 @@
         $(this.element).on("paste", $.proxy(this._onPaste, this));
       }
       
-      //$(document).muikkuWebSocket("addEventListener", 'workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
+      $(document).muikkuWebSocket("addEventListener", 'workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
       
       this.readonly(this.options.readonly);
     },
@@ -808,15 +808,15 @@
         var workspaceEntityId = page.muikkuMaterialPage('workspaceEntityId'); 
         var workspaceMaterialId =  page.muikkuMaterialPage('workspaceMaterialId'); 
 
-//        $(document).muikkuWebSocket("sendMessage", 'workspace:field-answer-save', JSON.stringify({
-//          'answer': this.answer(),
-//          'embedId': this.embedId(),
-//          'materialId': this.materialId(),
-//          'fieldName':this.fieldName(),
-//          'workspaceEntityId': workspaceEntityId,
-//          'workspaceMaterialId': workspaceMaterialId,
-//          'userEntityId': MUIKKU_LOGGED_USER_ID
-//        }));
+        $(document).muikkuWebSocket("sendMessage", 'workspace:field-answer-save', JSON.stringify({
+          'answer': this.answer(),
+          'embedId': this.embedId(),
+          'materialId': this.materialId(),
+          'fieldName':this.fieldName(),
+          'workspaceEntityId': workspaceEntityId,
+          'workspaceMaterialId': workspaceMaterialId,
+          'userEntityId': MUIKKU_LOGGED_USER_ID
+        }));
         
         if (this._saveFailedTimeoutId == null) {
           this._saveFailedTimeoutId = setTimeout($.proxy(this._saveFailed, this), this.options.saveFailedTimeout);
@@ -866,10 +866,6 @@
     },
     
     _onFieldAnswerSaved: function (data) {
-      
-      //I added this
-      return;
-      
       var message = $.parseJSON(data);
       
       if (this._saveFailedTimeoutId != null) {
