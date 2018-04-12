@@ -617,7 +617,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertEquals(StringUtils.lowerCase(text), actual);
   }
-
+  
+  protected void assertTextStartsWith(String selector, String text) {
+    String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
+    assertTrue(StringUtils.startsWithIgnoreCase(actual, text));
+  }
+  
   protected void assertNotTextIgnoreCase(String selector, String text) {
     String actual = StringUtils.lowerCase(getWebDriver().findElement(By.cssSelector(selector)).getText());
     assertNotEquals(text, actual);
@@ -733,6 +738,12 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       }
     });
   }
+  
+  protected void clickOnBullshitElement(String selector) {
+    Actions action = new Actions(getWebDriver());
+    action.moveToElement(getWebDriver().findElement(By.cssSelector(selector))).click().build().perform();
+  }
+
   
   protected boolean waitUntilElementCount(final String selector, final int count) {
     WebDriver driver = getWebDriver();
@@ -1046,9 +1057,17 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
   protected void mockImport() {
     asAdmin().get("/test/mockimport").then().statusCode(200);    
   }
+  
   protected void deleteWorkspace(Long id) {
     asAdmin()
       .delete("/test/workspaces/{WORKSPACEID}", id)
+      .then()
+      .statusCode(204);
+  }
+  
+  protected void deleteWorkspaces() {
+    asAdmin()
+      .delete("/test/workspaces")
       .then()
       .statusCode(204);
   }
@@ -1214,6 +1233,13 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     
     Flag result = objectMapper.readValue(response.asString(), Flag.class);
     return result.getId();
+  }
+  
+  protected void deleteFlags() {
+    asAdmin()
+      .delete("/test/flags")
+      .then()
+      .statusCode(204);
   }
   
   protected void deleteFlag(Long flagId) {

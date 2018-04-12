@@ -4,8 +4,6 @@ import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 
-import {LoadMoreMessagesTriggerType, RemoveFromCommunicatorSelectedMessagesTriggerType, AddToCommunicatorSelectedMessagesTriggerType, loadMoreMessages, removeFromCommunicatorSelectedMessages, addToCommunicatorSelectedMessages} from '~/actions/main-function/communicator/communicator-messages';
-import {CommunicatorMessageListType, CommunicatorStateType, CommunicatorMessageType, CommunicatorMessageRecepientType, CommunicatorThreadType} from '~/reducers/main-function/communicator/communicator-messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
@@ -19,18 +17,23 @@ import '~/sass/elements/message.scss';
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
+import { loadMoreMessageThreads, removeFromMessagesSelectedThreads, addToMessagesSelectedThreads, LoadMoreMessageThreadsTriggerType, RemoveFromMessagesSelectedThreadsTriggerType, AddToMessagesSelectedThreadsTriggerType } from '~/actions/main-function/messages';
+import { MessageThreadListType, MessagesStateType, MessageThreadExpandedType, MessageThreadType, MessagesType } from '~/reducers/main-function/messages';
 
 
 interface CommunicatorMessagesProps {
-  communicatorMessagesSelected: CommunicatorMessageListType,
-  communicatorMessagesHasMore: boolean,
-  communicatorMessagesState: CommunicatorStateType,
-  communicatorMessagesSelectedIds: Array<number>,
-  communicatorMessagesMessages: CommunicatorMessageListType,
-  communicatorMessagesCurrent: CommunicatorThreadType,
-  loadMoreMessages: LoadMoreMessagesTriggerType,
-  removeFromCommunicatorSelectedMessages: RemoveFromCommunicatorSelectedMessagesTriggerType,
-  addToCommunicatorSelectedMessages: AddToCommunicatorSelectedMessagesTriggerType,
+  threads: MessageThreadListType,
+  hasMore: boolean,
+  state: MessagesStateType,
+  selectedThreads: MessageThreadListType,
+  selectedThreadsIds: Array<number>,
+  currentThread: MessageThreadExpandedType,
+  messages: MessagesType,
+  
+  loadMoreMessageThreads: LoadMoreMessageThreadsTriggerType,
+  removeFromMessagesSelectedThreads: RemoveFromMessagesSelectedThreadsTriggerType,
+  addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType,
+  
   i18n: i18nType,
   userId: number
 }
@@ -42,64 +45,64 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
   constructor(props: CommunicatorMessagesProps){
     super(props);
     
-    this.getMessageUserNames = this.getMessageUserNames.bind(this);
-    this.setCurrentMessage = this.setCurrentMessage.bind(this);
+    this.getThreadUserNames = this.getThreadUserNames.bind(this);
+    this.setCurrentThread = this.setCurrentThread.bind(this);
     
     //once this is in state READY only then a loading more event can be triggered
-    this.statePropertyLocation = "communicatorMessagesState";
+    this.statePropertyLocation = "state";
     //it will only call the function if this is true
-    this.hasMorePropertyLocation = "communicatorMessagesHasMore";
+    this.hasMorePropertyLocation = "hasMore";
     //this is the function that will be called
-    this.loadMoreTriggerFunctionLocation = "loadMoreMessages";
+    this.loadMoreTriggerFunctionLocation = "loadMoreMessageThreads";
     //abort if this is true (in this case it causes the current element to be invisible)
-    this.cancellingLoadingPropertyLocation = "communicatorMessagesCurrent";
+    this.cancellingLoadingPropertyLocation = "currentThread";
   }
-  getMessageUserNames(message:CommunicatorMessageType, userId: number):string {
-    if (message.senderId !== userId || !message.recipients){
-      if (message.senderId === userId){
+  getThreadUserNames(thread:MessageThreadType, userId: number):string {
+    if (thread.senderId !== userId || !thread.recipients){
+      if (thread.senderId === userId){
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
-      return (message.sender.firstName ? message.sender.firstName + " " : "")+(message.sender.lastName ? message.sender.lastName : "");
+      return (thread.sender.firstName ? thread.sender.firstName + " " : "")+(thread.sender.lastName ? thread.sender.lastName : "");
     }
     
-    return message.recipients.map((recipient: CommunicatorMessageRecepientType)=>{
+    return thread.recipients.map((recipient)=>{
       if (recipient.userId === userId){
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
       return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
     }).join(", ");
   }
-  setCurrentMessage(message: CommunicatorMessageType){
-    window.location.hash = window.location.hash.split("/")[0] + "/" + message.communicatorMessageId;
+  setCurrentThread(thread: MessageThreadType){
+    window.location.hash = window.location.hash.split("/")[0] + "/" + thread.communicatorMessageId;
   }
   render(){
-    if (this.props.communicatorMessagesState === "LOADING"){
+    if (this.props.state === "LOADING"){
       return null;
-    } else if (this.props.communicatorMessagesState === "ERROR"){
+    } else if (this.props.state === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.communicatorMessagesMessages.length === 0){
+    } else if (this.props.state.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
     //DO NOT DELETE
     //VERY CRITICAL CODE
     //REMOVAL WILL CAUSE EXPLOSION
-    return <BodyScrollKeeper hidden={!!this.props.communicatorMessagesCurrent}>
+    return <BodyScrollKeeper hidden={!!this.props.currentThread}>
       <SelectableList className="application-list" selectModeClassAddition="application-list--select-mode"
-        extra={this.props.communicatorMessagesState === "LOADING_MORE" ?
+        extra={this.props.state === "LOADING_MORE" ?
           <div className="application-list__item loader-empty"/>
-         : null} dataState={this.props.communicatorMessagesState}>
-        {this.props.communicatorMessagesMessages.map((message: CommunicatorMessageType, index: number)=>{
-          let isSelected = this.props.communicatorMessagesSelectedIds.includes(message.communicatorMessageId);
+         : null} dataState={this.props.state}>
+        {this.props.threads.map((thread, index: number)=>{
+          let isSelected:boolean = this.props.selectedThreadsIds.includes(thread.communicatorMessageId);
           return {
-            className: `application-list__item message message--communicator ${message.unreadMessagesInThread ? "message--unread" : ""}`,
-            onSelect: this.props.addToCommunicatorSelectedMessages.bind(null, message),
-            onDeselect: this.props.removeFromCommunicatorSelectedMessages.bind(null, message),
-            onEnter: this.setCurrentMessage.bind(this, message),
+            className: `application-list__item message message--communicator ${thread.unreadMessagesInThread ? "message--unread" : ""}`,
+            onSelect: this.props.addToMessagesSelectedThreads.bind(null, thread),
+            onDeselect: this.props.removeFromMessagesSelectedThreads.bind(null, thread),
+            onEnter: this.setCurrentThread.bind(this, thread),
             isSelected,
-            key: message.communicatorMessageId,
+            key: thread.communicatorMessageId,
             contents: (checkbox: React.ReactElement<any>)=>{
               return <div className="application-list__item-content-wrapper message__content">
                   <div className="application-list__item-content application-list__item-content--aside">
@@ -110,20 +113,20 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                   <div className="application-list__item-content application-list__item-content--main">
                     <div className="application-list__item-header application-list__item-header--message">
                       <div className="text text--communicator-usernames">
-                        <span className="text text--communicator-username">{this.getMessageUserNames(message, this.props.userId)}</span>
+                        <span className="text text--communicator-username">{this.getThreadUserNames(thread, this.props.userId)}</span>
                       </div>
-                      {message.messageCountInThread > 1 ? <div className="text text--item-counter">
-                      {message.messageCountInThread}
+                      {thread.messageCountInThread > 1 ? <div className="text text--item-counter">
+                      {thread.messageCountInThread}
                       </div> : null}
                       <div className="text text--communicator-date">
-                        {this.props.i18n.time.format(message.threadLatestMessageDate)}
+                        {this.props.i18n.time.format(thread.threadLatestMessageDate)}
                       </div>                
                     </div>
                     <div className="application-list__item-body">
-                      <span className="text text--communicator-body">{message.caption}</span>
+                      <span className="text text--communicator-body">{thread.caption}</span>
                     </div>
-                    {message.labels ? <div className="application-list__item-footer application-list__item-footer--message">
-                      <div className="labels">{message.labels.map((label)=>{
+                    {thread.labels ? <div className="application-list__item-footer application-list__item-footer--message">
+                      <div className="labels">{thread.labels.map((label)=>{
                         return <span className="label" key={label.id}>
                           <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                           <span className="text label__text">{label.labelName}</span>
@@ -142,12 +145,13 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
 
 function mapStateToProps(state: StateType){
   return {
-    communicatorMessagesMessages: (state as any).communicatorMessages.messages,
-    communicatorMessagesHasMore: (state as any).communicatorMessages.hasMore,
-    communicatorMessagesState: (state as any).communicatorMessages.state,
-    communicatorMessagesSelected: (state as any).communicatorMessages.selected,
-    communicatorMessagesSelectedIds: (state as any).communicatorMessages.selectedIds,
-    communicatorMessagesCurrent: (state as any).communicatorMessages.current,
+    threads: state.messages.threads,
+    hasMore: state.messages.hasMore,
+    state: state.messages.state,
+    selectedThreads: state.messages.selectedThreads,
+    selectedThreadsIds: state.messages.selectedThreadsIds,
+    currentThread: state.messages.currentThread,
+    messages: state.messages,
     i18n: state.i18n,
     userId: state.status.userId
   }
@@ -155,9 +159,9 @@ function mapStateToProps(state: StateType){
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
   return bindActionCreators({
-    loadMoreMessages,
-    removeFromCommunicatorSelectedMessages,
-    addToCommunicatorSelectedMessages
+    loadMoreMessageThreads,
+    removeFromMessagesSelectedThreads,
+    addToMessagesSelectedThreads
   }, dispatch);
 };
 

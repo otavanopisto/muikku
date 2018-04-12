@@ -5,12 +5,13 @@ import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
 import JumboDialog from '~/components/general/jumbo-dialog';
-import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/communicator/communicator-messages';
+import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
-import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
+import {MessageSignatureType} from '~/reducers/main-function/messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
+import Button from '~/components/general/button';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -45,7 +46,7 @@ interface CommunicatorNewMessageProps {
   replyThreadId?: number,
   initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
-  signature: CommunicatorSignatureType,
+  signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType
 }
 
@@ -98,7 +99,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
         closeDialog();
         this.setState({
           text: "",
-          selectedItems: [],
+          selectedItems: this.props.initialSelectedItems || [],
           subject: "",
           locked: false
         });
@@ -134,12 +135,12 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
+          </Button>
+          <Button buttonModifiers="standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
-          </Link>
+          </Button>
         </div>
       )
     }
@@ -155,7 +156,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: (state as any).communicatorMessages.signature
+    signature: state.messages.signature
   }
 };
 

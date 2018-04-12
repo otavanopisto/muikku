@@ -12,23 +12,22 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
-import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderStudentUserProfileLabelType } from '~/reducers/main-function/guider/guider-students';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
-import { AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
-  addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider/guider-students';
-import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
-import { UserFileType } from '~/reducers/main-function/user-index';
+import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
+  addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider';
+import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
+import {UserFileType} from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
+import {GuiderType, GuiderStudentUserProfileLabelType} from '~/reducers/main-function/guider';
 
 interface CurrentStudentProps {
   i18n: i18nType,
-  guiderStudentsCurrent: GuiderStudentUserProfileType,
-  guiderCurrentState: GuiderCurrentStudentStateType,
+  guider: GuiderType,
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType,
   removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType,
   displayNotification: DisplayNotificationTriggerType
@@ -44,7 +43,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
   
   //TODO doesn't anyone notice that nor assesment requested, nor no passed courses etc... is available in this view
   render(){
-    if (this.props.guiderStudentsCurrent === null){
+    if (this.props.guider.currentStudent === null){
       return null;
     }
     
@@ -52,69 +51,69 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //step by step loading, make sure to show this in the way this is represented, ensure to have
     //a case where the property is not available
     //You can use the cheat && after the property
-    //eg. guiderStudentsCurrent.property && guiderStudentsCurrent.property.useSubProperty
+    //eg. guider.currentStudent.property && guider.currentStudent.property.useSubProperty
         
+    let defaultEmailAddress = this.props.guider.currentStudent.emails && this.props.guider.currentStudent.emails.find((e)=>e.defaultAddress);
     
-    let studentBasicHeader = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__header">
+    let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
         <object
          className="container container--guider-profile-image"
-         data={getUserImageUrl(this.props.guiderStudentsCurrent.basic.userEntityId)}
+         data={getUserImageUrl(this.props.guider.currentStudent.basic.userEntityId)}
          type="image/jpeg">
-          <div className={`avatar avatar--category-1`}>{this.props.guiderStudentsCurrent.basic.firstName[0]}</div>
+          <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
         </object>
-        <div className="text text--guider-profile-student-name">{getName(this.props.guiderStudentsCurrent.basic)}</div>
-        {this.props.guiderStudentsCurrent.emails && <div className="text text--guider-profile-student-mail">
-          {this.props.guiderStudentsCurrent.emails.length ? this.props.guiderStudentsCurrent.emails.map((email)=>{
-            return(             
-                <span>{email.defaultAddress ? email.address : this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
-            )
-          }): null}        
-        </div>}
+        <div className="text text--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic)}</div>
+        <div className="text text--guider-profile-student-mail">
+          <span>{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
+        </div>
         <div className="text text--list-item-type-title">
-           Linja
+           {this.props.guider.currentStudent.basic.studyProgrammeName}
         </div>
       </div>
    
-    let studentLabels = this.props.guiderStudentsCurrent.labels && this.props.guiderStudentsCurrent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
+    let studentLabels = this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.map((label: GuiderStudentUserProfileLabelType)=>{
       return <span className="label" key={label.id}>
         <span className="label__icon icon-flag" style={{color: label.flagColor}}></span>
         <span className="label__text text">{label.flagName}</span>
       </span>
     });
     
-    let studentBasicInfo = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__body application-sub-panel__body--basic-info text">
+    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body application-sub-panel__body--basic-info text">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyStartDate)}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.studyStartDate ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyStartDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyEndDateTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyEndDate)}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.studyEndDate ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyEndDate) : "-"}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyTimeEndTitle")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.guiderStudentsCurrent.basic.studyTimeEnd)}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.studyTimeEnd ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.basic.studyTimeEnd) : "-"}</span>
         </div>
       </div>
-      {this.props.guiderStudentsCurrent.emails && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.emails && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.email")}</div>
         <div className="application-sub-panel__item-data">
-        {this.props.guiderStudentsCurrent.emails.length ? this.props.guiderStudentsCurrent.emails.map((email)=>{
+        {this.props.guider.currentStudent.emails.length ? this.props.guider.currentStudent.emails.map((email)=>{
           return <span key={email.address} className="text text--guider-profile-value">
           {email.defaultAddress ? `*` : null} {email.address} ({email.type})
           </span>
         }) : <span className="text text--guider-profile-value">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>}
         </div>
       </div>}
-      {this.props.guiderStudentsCurrent.phoneNumbers && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.phoneNumbers && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.phoneNumber")}</div>
         <div className="application-sub-panel__item-data">
-        {this.props.guiderStudentsCurrent.phoneNumbers.length ? this.props.guiderStudentsCurrent.phoneNumbers.map((phone)=>{
+        {this.props.guider.currentStudent.phoneNumbers.length ? this.props.guider.currentStudent.phoneNumbers.map((phone)=>{
           return <span key={phone.number} className="text text--guider-profile-value">
           {phone.defaultNumber ? `*` : null} {phone.number} ({phone.type})
           </span>
@@ -124,31 +123,31 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.nationality")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guiderStudentsCurrent.basic.nationality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.nationality")}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.nationality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.nationality")}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.language")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guiderStudentsCurrent.basic.language || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.language")}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.language || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.language")}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.municipality")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guiderStudentsCurrent.basic.municipality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.municipality")}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.municipality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.municipality")}</span>
         </div>
       </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</div>
         <div className="application-sub-panel__item-data">
-        <span className="text text--guider-profile-value">{this.props.guiderStudentsCurrent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
+        <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
         </div>
       </div>
-      {this.props.guiderStudentsCurrent.lastLogin && <div className="application-sub-panel__item">
+      {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guiderStudentsCurrent.lastLogin.time}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.lastLogin.time}</span>
         </div>
       </div>}
     </div>
@@ -156,16 +155,18 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
-    let studentHops = this.props.guiderStudentsCurrent.hops && <Hops data={this.props.guiderStudentsCurrent.hops} editable={false}/>
+    let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
+        <Hops data={this.props.guider.currentStudent.hops} editable={false}/> : null;
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
-    let studentVops = this.props.guiderStudentsCurrent.vops && <Vops data={this.props.guiderStudentsCurrent.vops}></Vops>
+    let studentVops = (this.props.guider.currentStudent.vops && this.props.guider.currentStudent.vops.optedIn) ?
+        <Vops data={this.props.guider.currentStudent.vops}></Vops> : null;
   
     let studentWorkspaces = <Workspaces/>;
     
-    let files = this.props.guiderStudentsCurrent.basic && <div className="application-sub-panel__body">
-      <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guiderStudentsCurrent.basic.id}
+    let files = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
+      <FileUploader url="/transcriptofrecordsfileupload/" targetUserIdentifier={this.props.guider.currentStudent.basic.id}
         onFileError={(file: File, err: Error)=>{
           this.props.displayNotification(err.message, "error");
         }} onFileSuccess={(file: File, data: UserFileType)=>{
@@ -173,9 +174,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         }}>
         <span className="text file-uploader__hint">{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
       </FileUploader>
-      {this.props.guiderStudentsCurrent.files && (this.props.guiderStudentsCurrent.files.length ?
+      {this.props.guider.currentStudent.files && (this.props.guider.currentStudent.files.length ?
         <div className="text application-sub-panel__file-container application-list">
-          {this.props.guiderStudentsCurrent.files.map((file)=>{
+          {this.props.guider.currentStudent.files.map((file)=>{
             return <Link key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>
               {file.title}
               <Link disablePropagation onClick={this.props.removeFileFromCurrentStudent.bind(null, file)}>{
@@ -200,13 +201,13 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel">
         {studentBasicInfo}
       </div>
-      <div className="application-sub-panel">
+      {studentHops ? <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.hops")}</div>        
         {studentHops}
-      </div>
-      <div className="application-sub-panel">
+      </div> : null}
+      {studentVops ? <div className="application-sub-panel">
         {studentVops}  
-      </div>
+      </div> : null}
        <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</div>
         {studentWorkspaces}
@@ -215,7 +216,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>
         {files}  
       </div>     
-      {this.props.guiderCurrentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
+      {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
     </div>
   }
 }
@@ -223,8 +224,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    guiderStudentsCurrent: (state as any).guiderStudents.current,
-    guiderCurrentState: (state as any).guiderStudents.currentState
+    guider: state.guider
   }
 };
 

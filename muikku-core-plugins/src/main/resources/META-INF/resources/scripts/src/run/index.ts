@@ -5,6 +5,7 @@ import {createStore, applyMiddleware, Reducer} from 'redux';
 import {render} from 'react-dom';
 import {logger} from 'redux-logger';
 import {composeWithDevTools} from 'redux-devtools-extension';
+import { StateType } from '~/reducers';
 
 // TODO add a runApp that uses the history Api and takes the following
 // this will speed up the application quite a lot by merging
@@ -24,7 +25,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 //    }
 // })
 
-export default function runApp(reducer: Reducer<any>, App: any, existentStore: Store<any>=null): Store<any> {
+export default function runApp(reducer: Reducer<any>, App: any, existentStore: Store<StateType>=null): Store<StateType> {
   let store = existentStore;
   if (!store){
     if (process.env["NODE_ENV"] !== "production"){
@@ -40,7 +41,7 @@ export default function runApp(reducer: Reducer<any>, App: any, existentStore: S
       React.createElement(App, null)
   ), document.querySelector("#app"));
   
-  let newStore = {
+  let newStore:Store<StateType> = {
     dispatch(action: any){
       if (typeof action === 'function') {
         return action(store.dispatch, store.getState);

@@ -26,6 +26,13 @@ export function filterMatch(string: string, filter: string){
 }
 
 export function filterHighlight(string: string, filter: string){
+  if (filter === ""){
+    return React.createElement(
+        "span",
+        {},
+        string
+    );
+  }
   return string.split(new RegExp("(" + escapeRegExp(filter) + ")", "i")).map((element, index)=>{
     if (index % 2 === 0){
       return React.createElement(
@@ -86,6 +93,18 @@ export function difference(...elements:any[]){
   }
   
   return elements.reduce(differenceTwo);
+}
+
+export function flatten(...elements:any[]){
+  if (elements.length === 1){
+    return elements[0];
+  } else if (elements.length === 0){
+    return [];
+  }
+  
+  return elements.reduce((a, b)=>{
+    return a.concat(b);
+  });
 }
 
 export function escapeHTML(str: string){

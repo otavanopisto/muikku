@@ -5,13 +5,13 @@ import CKEditor from '~/components/general/ckeditor';
 import {connect, Dispatch} from 'react-redux';
 import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
-import {updateSignature, UpdateSignatureTriggerType} from '~/actions/main-function/communicator/communicator-messages';
-import {CommunicatorSignatureType} from '~/reducers/main-function/communicator/communicator-messages';
+import {updateSignature, UpdateSignatureTriggerType} from '~/actions/main-function/messages';
+import {MessageSignatureType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/text.scss';
-import '~/sass/elements/buttons.scss';
+import Button from '~/components/general/button';
 
 const KEYCODES = {
   ENTER: 13
@@ -35,7 +35,7 @@ interface CommunicatorSignatureUpdateDialogProps {
   children?: React.ReactElement<any>,
   isOpen: boolean,
   onClose: ()=>any,
-  signature: CommunicatorSignatureType,
+  signature: MessageSignatureType,
   updateSignature: UpdateSignatureTriggerType,
   i18n: i18nType
 }
@@ -78,12 +78,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
     let footer = (closeDialog: ()=>any)=>{
       return (
         <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.update.bind(this, closeDialog)}>
+          </Button>
+          <Button buttonModifiers="standard-ok" onClick={this.update.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.settings.signatures.create')}
-          </Link>
+          </Button>
         </div>
       )    
     }
@@ -99,7 +99,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
 
 function mapStateToProps(state: StateType){
   return {
-    signature: (state as any).communicatorMessages.signature,
+    signature: state.messages.signature,
     i18n: state.i18n
   }
 };

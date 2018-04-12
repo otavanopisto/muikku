@@ -204,6 +204,20 @@ interface ApplicationPanelToolbarActionsAsideState {
 
 export class ApplicationPanelToolbarActionsAside extends React.Component<ApplicationPanelToolbarActionsAsideProps, ApplicationPanelToolbarActionsAsideState> {
   render(){
-    return <div className="application-panel__toolbar-actions-main">{this.props.children}</div>
+    return <div className="application-panel__toolbar-actions-aside">{this.props.children}</div>
+  }
+}
+
+interface ApplicationPanelToolsContainerProps {
+  
+}
+
+interface ApplicationPanelToolsContainerState {
+  
+}
+
+export class ApplicationPanelToolsContainer extends React.Component<ApplicationPanelToolsContainerProps, ApplicationPanelToolsContainerState>{
+  render(){
+    return <div className="application-panel__tools-container">{this.props.children}</div>
   }
 }

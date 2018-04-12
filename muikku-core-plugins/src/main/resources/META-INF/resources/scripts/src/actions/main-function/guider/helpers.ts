@@ -5,27 +5,28 @@ import promisify from '~/util/promisify';
 import mApi from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
-import { GuiderStudentsType, GuiderStudentsFilterType, GuiderStudentsStateType, GuiderStudentListType, GuiderStudentsPatchType } from '~/reducers/main-function/guider/guider-students';
+import { GuiderType, GuiderActiveFiltersType, GuiderStudentsStateType, GuiderStudentListType, GuiderPatchType } from '~/reducers/main-function/guider';
+import { StateType } from '~/reducers';
 
 //HELPERS
 const MAX_LOADED_AT_ONCE = 25;
 
-export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>any){
+export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   dispatch({
     type: "SET_CURRENT_GUIDER_STUDENT",
     payload: null
   });
   
   let state = getState();
-  let guiderStudents:GuiderStudentsType = state.guiderStudents;
+  let guider:GuiderType = state.guider;
   let flagOwnerIdentifier:string = state.status.userSchoolDataIdentifier;
   
   //Avoid loading courses again for the first time if it's the same location
-  if (initial && equals(filters, guiderStudents.filters) && guiderStudents.state === "READY"){
+  if (initial && equals(filters, guider.activeFilters) && guider.state === "READY"){
     return;
   }
   
-  let actualFilters = filters || guiderStudents.filters;
+  let actualFilters = filters || guider.activeFilters;
   
   let guiderStudentsNextState:GuiderStudentsStateType;
   //If it's for the first time
@@ -38,7 +39,7 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
   }
   
   dispatch({
-    type: "UPDATE_GUIDER_STUDENTS_ALL_PROPS",
+    type: "UPDATE_GUIDER_ALL_PROPS",
     payload: {
       state: guiderStudentsNextState,
       filters: actualFilters
@@ -46,7 +47,7 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
   });
   
   //Generate the api query, our first result in the messages that we have loaded
-  let firstResult = initial ? 0 : guiderStudents.students.length + 1;
+  let firstResult = initial ? 0 : guider.students.length + 1;
   //We only concat if it is not the initial, that means adding to the next messages
   let concat = !initial;
   let maxResults = MAX_LOADED_AT_ONCE + 1;
@@ -82,22 +83,22 @@ export async function loadStudentsHelper(filters:GuiderStudentsFilterType | null
     }
     
     //Create the payload for updating all the communicator properties
-    let payload:GuiderStudentsPatchType = {
+    let payload:GuiderPatchType = {
       state: "READY",
-      students: (concat ? guiderStudents.students.concat(actualStudents) : actualStudents),
+      students: (concat ? guider.students.concat(actualStudents) : actualStudents),
       hasMore
     }
     
     //And there it goes
     dispatch({
-      type: "UPDATE_GUIDER_STUDENTS_ALL_PROPS",
+      type: "UPDATE_GUIDER_ALL_PROPS",
       payload
     });
   } catch (err){
     //Error :(
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({
-      type: "UPDATE_GUIDER_STUDENTS_STATE",
+      type: "UPDATE_GUIDER_STATE",
       payload: <GuiderStudentsStateType>"ERROR"
     });
   }

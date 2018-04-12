@@ -80,7 +80,7 @@ public class EvaluationTestsBase extends AbstractUITest {
         Long assessorId = getUserEntityIdForIdentifier(String.format("STAFF-%s", admin.getId()));
         
         logout();
-        mockBuilder.mockLogin(student).build();
+        mockBuilder.mockLogin(student);
         login();
         try {
           navigate(String.format("/workspace/%s/materials", workspace.getUrlName()), false);
@@ -95,7 +95,7 @@ public class EvaluationTestsBase extends AbstractUITest {
           waitForPresentAndVisible(".notification-queue-item-success");
           waitForElementToBeClickable(String.format("#page-%d .muikku-withdraw-assignment", htmlMaterial.getId()));
           logout();
-          mockBuilder.mockLogin(admin).build();
+          mockBuilder.mockLogin(admin);
           login();
           navigate(String.format("/evaluation"), false);
           waitAndClick("#filter-students-by-assessment-requested");

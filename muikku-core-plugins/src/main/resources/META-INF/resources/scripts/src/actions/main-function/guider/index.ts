@@ -1,18 +1,20 @@
 import mApi from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderStudentsFilterType, GuiderStudentsPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderStudentsType } from '~/reducers/main-function/guider/guider-students';
-import { loadStudentsHelper } from './guider-students/helpers';
+import { GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType } from '~/reducers/main-function/guider';
+import { loadStudentsHelper } from './helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType, UserFileType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
-import { GuiderUserLabelType } from '~/reducers/main-function/guider/guider-filters';
+import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType } from '~/reducers/main-function/guider';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/workspaces';
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
+import { StateType } from '~/reducers';
+import { colorIntToHex } from '~/util/modifiers';
 
-export type UPDATE_GUIDER_STUDENTS_FILTERS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_FILTERS", GuiderStudentsFilterType>
-export type UPDATE_GUIDER_STUDENTS_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_STUDENTS_ALL_PROPS", GuiderStudentsPatchType>
-export type UPDATE_GUIDER_STUDENTS_STATE = SpecificActionType<"UPDATE_GUIDER_STUDENTS_STATE", GuiderStudentsStateType>
+export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<"UPDATE_GUIDER_ACTIVE_FILTERS", GuiderActiveFiltersType>
+export type UPDATE_GUIDER_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_ALL_PROPS", GuiderPatchType>
+export type UPDATE_GUIDER_STATE = SpecificActionType<"UPDATE_GUIDER_STATE", GuiderStudentsStateType>
 export type ADD_TO_GUIDER_SELECTED_STUDENTS = SpecificActionType<"ADD_TO_GUIDER_SELECTED_STUDENTS", GuiderStudentType>
 export type REMOVE_FROM_GUIDER_SELECTED_STUDENTS = SpecificActionType<"REMOVE_FROM_GUIDER_SELECTED_STUDENTS", GuiderStudentType>
 
@@ -34,9 +36,30 @@ export type REMOVE_GUIDER_LABEL_FROM_USER = SpecificActionType<"REMOVE_GUIDER_LA
   label: GuiderStudentUserProfileLabelType
 }>
 
+export type UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS", GuiderUserLabelListType>
+export type UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES", GuiderWorkspaceListType>
+export type UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL", GuiderUserLabelType>
+export type UPDATE_GUIDER_AVAILABLE_FILTER_LABEL = SpecificActionType<"UPDATE_GUIDER_AVAILABLE_FILTER_LABEL", {
+  labelId: number,
+  update: {
+    name: string,
+    description: string,
+    color: string
+  }
+}>
+export type UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS", {
+  labelId: number,
+  update: {
+    flagName: string,
+    flagColor: string
+  }
+}>
+export type DELETE_GUIDER_AVAILABLE_FILTER_LABEL = SpecificActionType<"DELETE_GUIDER_AVAILABLE_FILTER_LABEL", number>
+export type DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS = SpecificActionType<"DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS", number>
+
 
 export interface LoadStudentsTriggerType {
-  (filters: GuiderStudentsFilterType): AnyActionType
+  (filters: GuiderActiveFiltersType): AnyActionType
 }
 
 export interface LoadMoreStudentsTriggerType {
@@ -79,6 +102,26 @@ export interface RemoveFileFromCurrentStudentTriggerType {
   (file: UserFileType): AnyActionType
 }
 
+export interface UpdateLabelFiltersTriggerType {
+  ():AnyActionType
+}
+
+export interface UpdateWorkspaceFiltersTriggerType {
+  ():AnyActionType
+}
+
+export interface CreateGuiderFilterLabelTriggerType {
+  (name: string):AnyActionType
+}
+
+export interface UpdateGuiderFilterLabelTriggerType {
+  (label: GuiderUserLabelType, name: string, description: string, color: string):AnyActionType
+}
+
+export interface RemoveGuiderFilterLabelTriggerType {
+  (label: GuiderUserLabelType):AnyActionType
+}
+
 let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFileToCurrentStudent(file){
   return {
     type: "ADD_FILE_TO_CURRENT_STUDENT",
@@ -87,7 +130,7 @@ let addFileToCurrentStudent:AddFileToCurrentStudentTriggerType = function addFil
 }
   
 let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = function removeFileFromCurrentStudent(file){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       await promisify(mApi().guider.files.del(file.id), 'callback')();
       dispatch({
@@ -123,9 +166,14 @@ let removeFromGuiderSelectedStudents:RemoveFromGuiderSelectedStudentsTriggerType
 }
 
 let loadStudent:LoadStudentTriggerType = function loadStudent(id){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
+      
+      dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null
+      });
       
       dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
@@ -206,13 +254,22 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"READY"
       });
+      
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
       dispatch({
-        type: "UPDATE_GUIDER_STUDENTS_ALL_PROPS",
+        type: "UPDATE_GUIDER_ALL_PROPS",
         payload: {
           currentState: <GuiderCurrentStudentStateType>"ERROR"
         }
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
       });
      }
   }
@@ -258,36 +315,149 @@ async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<Guide
 }
 
 let addGuiderLabelToCurrentUser:AddGuiderLabelToCurrentUserTriggerType = function addGuiderLabelToCurrentUser(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    let students:GuiderStudentsType = getState().guiderStudents;
-    let student = students.current;
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let guider:GuiderType = getState().guider;
+    let student = guider.currentStudent;
     addLabelToUserUtil(student.basic, student.labels, label, dispatch);
   }
 }
 
 let removeGuiderLabelFromCurrentUser:RemoveGuiderLabelFromCurrentUserTriggerType = function removeGuiderLabelFromCurrentUser(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    let students:GuiderStudentsType = getState().guiderStudents;
-    let student = students.current;
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let guider:GuiderType = getState().guider;
+    let student = guider.currentStudent;
     removeLabelFromUserUtil(student.basic, student.labels, label, dispatch);
   }
 }
 
 let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = function addGuiderLabelToSelectedUsers(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    let students:GuiderStudentsType = getState().guiderStudents;
-    students.selected.forEach((student:GuiderStudentType)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let guider:GuiderType = getState().guider;
+    guider.selectedStudents.forEach((student:GuiderStudentType)=>{
       addLabelToUserUtil(student, student.flags, label, dispatch);
     });
   }
 }
 
 let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTriggerType = function removeGuiderLabelFromSelectedUsers(label){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
-    let students:GuiderStudentsType = getState().guiderStudents;
-    students.selected.forEach((student:GuiderStudentType)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let guider:GuiderType = getState().guider;
+    guider.selectedStudents.forEach((student:GuiderStudentType)=>{
       removeLabelFromUserUtil(student, student.flags, label, dispatch);
     });
+  }
+}
+
+let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilters(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let currentUser = getState().status.userSchoolDataIdentifier;
+    try {
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_FILTERS_LABELS",
+        payload: <GuiderUserLabelListType>(await promisify(mApi().user.flags.read({
+          ownerIdentifier: currentUser
+        }), 'callback')()) || []
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+  
+let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWorkspaceFilters(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let currentUser = getState().status.userSchoolDataIdentifier;
+    try {
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_FILTERS_WORKSPACES",
+        payload: <GuiderWorkspaceListType>(await promisify(mApi().workspace.workspaces.read({
+          userIdentifier: currentUser,
+          maxResults: 500,
+          orderBy: "alphabet"
+        }), 'callback')()) || []
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+
+let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function createGuiderFilterLabel(name){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
+    
+    let color:number = Math.round(Math.random() * 16777215);
+    let label = {
+      name,
+      color: colorIntToHex(color),
+      description: "",
+      ownerIdentifier: currentUserSchoolDataIdentifier
+    };
+    
+    try {
+      let newLabel:GuiderUserLabelType = <GuiderUserLabelType>await promisify(mApi().user.flags.create(label), 'callback')();
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_FILTERS_ADD_LABEL",
+        payload: newLabel
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+
+let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function updateGuiderFilterLabel(label, name, description, color){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let newLabel:GuiderUserLabelType = Object.assign({}, label, {
+      name,
+      description,
+      color
+    });
+  
+    try {
+      await promisify(mApi().user.flags.update(label.id, newLabel), 'callback')();
+      dispatch({
+        type: "UPDATE_GUIDER_AVAILABLE_FILTER_LABEL",
+        payload: {
+          labelId: newLabel.id,
+          update: {
+            name,
+            description,
+            color
+          }
+        }
+      });
+      dispatch({
+        type: "UPDATE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
+        payload: {
+          labelId: newLabel.id,
+          update: {
+            flagName: name,
+            flagColor: color
+          }
+        }
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
+  }
+}
+
+let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function removeGuiderFilterLabel(label){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().user.flags.del(label.id), 'callback')();
+      dispatch({
+        type: "DELETE_GUIDER_AVAILABLE_FILTER_LABEL",
+        payload: label.id
+      });
+      dispatch({
+        type: "DELETE_ONE_GUIDER_LABEL_FROM_ALL_STUDENTS",
+        payload: label.id
+      });
+    } catch (err){
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
+    }
   }
 }
 
@@ -295,9 +465,6 @@ export {loadStudents, loadMoreStudents, loadStudent,
   addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
   addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
   addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
-  addFileToCurrentStudent, removeFileFromCurrentStudent};
-export default {loadStudents, loadMoreStudents, loadStudent,
-  addToGuiderSelectedStudents, removeFromGuiderSelectedStudents,
-  addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser,
-  addGuiderLabelToSelectedUsers, removeGuiderLabelFromSelectedUsers,
-  addFileToCurrentStudent, removeFileFromCurrentStudent};
+  addFileToCurrentStudent, removeFileFromCurrentStudent, updateLabelFilters,
+  updateWorkspaceFilters, createGuiderFilterLabel,
+  updateGuiderFilterLabel, removeGuiderFilterLabel};
