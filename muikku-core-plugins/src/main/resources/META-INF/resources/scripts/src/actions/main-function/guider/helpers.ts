@@ -42,7 +42,7 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
     type: "UPDATE_GUIDER_ALL_PROPS",
     payload: {
       state: guiderStudentsNextState,
-      filters: actualFilters
+      activeFilters: actualFilters
     }
   });
   
