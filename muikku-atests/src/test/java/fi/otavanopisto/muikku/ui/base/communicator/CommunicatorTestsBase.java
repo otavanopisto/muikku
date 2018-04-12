@@ -249,8 +249,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label span.text");
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer--message .text--label span:nth-child(2)");
-        assertTextIgnoreCase(".application-list__item-footer--message .text--label span:nth-child(2)", "test");
+        waitForPresentAndVisible(".application-list__item-footer--message .label__text");
+        assertTextIgnoreCase(".application-list__item-footer--message .label__text", "test");
         
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
         waitForPresent("span.text--communicator-username");
