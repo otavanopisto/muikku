@@ -72,7 +72,7 @@ class Message extends React.Component<MessageProps, MessageState> {
           </div>
         </div>
         {this.props.labels ? 
-        <div className="labels">
+        <div className="labels labels--communicator-message">
           {this.props.labels && this.props.labels.map((label)=>{
             return <span className="label" key={label.id}>
               <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
