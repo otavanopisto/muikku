@@ -57,7 +57,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
   //later once a pattern is defined
   render() {
-    return <div className="text application-sub-panel__body">
+    return <div className="text application-sub-panel__body application-sub-panel__body--hops-editable">
 
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title">
