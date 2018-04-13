@@ -125,14 +125,14 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                     <div className="application-list__item-body">
                       <span className="text text--communicator-body">{thread.caption}</span>
                     </div>
-                    {thread.labels ? <div className="application-list__item-footer application-list__item-footer--message">
+                    <div className="application-list__item-footer application-list__item-footer--message">
                       <div className="labels">{thread.labels.map((label)=>{
                         return <span className="label" key={label.id}>
                           <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
                           <span className="text label__text">{label.labelName}</span>
                         </span>
                       })}</div>
-                    </div> : null}
+                    </div>
                   </div>    
                 </div>
               }
