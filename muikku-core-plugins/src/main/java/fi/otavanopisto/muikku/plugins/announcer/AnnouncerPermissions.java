@@ -57,7 +57,7 @@ public class AnnouncerPermissions extends AbstractMuikkuPermissionCollection imp
   public static final String LIST_WORKSPACE_ANNOUNCEMENTS = "LIST_WORKSPACE_ANNOUNCEMENTS";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FIND_ANNOUNCEMENT = "FIND_ANNOUNCEMENT";
   
   @Scope (PermissionScope.ENVIRONMENT)
