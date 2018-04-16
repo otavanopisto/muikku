@@ -80,8 +80,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         navigate("/communicator", false);
         waitForPresentAndVisible("div.message");
         scrollToEnd();
-        sleep(2000);
-        assertTrue(String.format("Elements list is not greater than %d in size", 30), waitForMoreThanSize("div.message", 30)); 
+        waitForMoreThanSize("div.message", 30);
+        assertCount("div.message", 39);
       }finally{
         deleteCommunicatorMessages(); 
       }

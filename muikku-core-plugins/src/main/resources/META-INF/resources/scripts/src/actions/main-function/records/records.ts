@@ -1,16 +1,17 @@
 import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
 import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
+import { StateType } from '~/reducers';
 
-export type UPDATE_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
-export type UPDATE_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
-export type UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION = SpecificActionType<"UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
-export type UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS = SpecificActionType<"UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
-export type UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS = SpecificActionType<"UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS", CurrentRecordType>;
+export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
+export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS", AllStudentUsersDataStatusType>;
+export type UPDATE_RECORDS_LOCATION = SpecificActionType<"UPDATE_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
+export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
+export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE", CurrentRecordType>;
 
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   ():AnyActionType
@@ -29,14 +30,14 @@ export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
 }
 
 let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRecordsTriggerType = function updateAllStudentUsersAndSetViewToRecords(){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
-        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS",
+        type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
         payload: null
       });
       dispatch({
-        type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+        type: "UPDATE_RECORDS_LOCATION",
         payload: <TranscriptOfRecordLocationType>"RECORDS"
       });
       
@@ -45,7 +46,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       }
       
       dispatch({
-        type: "UPDATE_ALL_STUDENT_USERS_DATA_STATUS",
+        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"LOADING"
       });
       
@@ -211,17 +212,20 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       
       //and that should do it, it should give us the precious data we need in the order we need it to be
       dispatch({
-        type: "UPDATE_ALL_STUDENT_USERS_DATA",
+        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA",
         payload: resultingData
       });
       dispatch({
-        type: "UPDATE_ALL_STUDENT_USERS_DATA_STATUS",
+        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"READY"
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
       dispatch({
-        type: "UPDATE_ALL_STUDENT_USERS_DATA_STATUS",
+        type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"ERROR"
       });
     }
@@ -229,14 +233,14 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
 }
   
 let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, workspaceId){
-  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>any)=>{
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
-        type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+        type: "UPDATE_RECORDS_LOCATION",
         payload: <TranscriptOfRecordLocationType>"RECORDS"
       });
       dispatch({
-        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
         payload: <CurrentStudentUserAndWorkspaceStatusType>"LOADING"
       });
       
@@ -303,7 +307,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       ]);
       
       dispatch({
-        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS",
+        type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE",
         payload: {
           workspace,
           journals,
@@ -311,14 +315,17 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
         }
       });
       dispatch({
-        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
         payload: <CurrentStudentUserAndWorkspaceStatusType>"READY"
       });
       
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
       dispatch({
-        type: "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS",
+        type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
         payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"
       });
     }
@@ -327,14 +334,14 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
 
 let setLocationToVopsInTranscriptOfRecords:SetLocationToVopsInTranscriptOfRecordsTriggerType = function setLocationToVopsInTranscriptOfRecords(){
   return {
-    type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+    type: "UPDATE_RECORDS_LOCATION",
     payload: <TranscriptOfRecordLocationType>"VOPS"
   };
 }
 
 let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecordsTriggerType = function setLocationToHopsInTranscriptOfRecords(){
   return {
-    type: "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION",
+    type: "UPDATE_RECORDS_LOCATION",
     payload: <TranscriptOfRecordLocationType>"HOPS"
   };
 }
