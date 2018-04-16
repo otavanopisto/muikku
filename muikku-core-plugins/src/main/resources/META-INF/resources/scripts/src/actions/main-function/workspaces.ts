@@ -1,6 +1,6 @@
 import actions from '../base/notifications';
 import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {WorkspaceListType, ShortWorkspaceType} from '~/reducers/main-function/workspaces';
 import { StateType } from '~/reducers';
@@ -23,6 +23,9 @@ let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType = function load
         payload: <WorkspaceListType>(await (promisify(mApi().workspace.workspaces.read({userId}), 'callback')()) || 0)
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
     }
   }
@@ -40,6 +43,9 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
         payload: <ShortWorkspaceType>((await promisify(mApi().user.property.read('last-workspace'), 'callback')()) as any).value
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
     }
   }

@@ -1,6 +1,6 @@
 import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {UserType} from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 
@@ -56,6 +56,9 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, cal
       });
       callback(user);
     } catch(err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
     }
   }
 }
@@ -81,6 +84,9 @@ let loadUserIndexBySchoolData:LoadUserIndexBySchoolDataTriggerType =  function l
       });
       callback(user);
     } catch(err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
     }
   }
 }
@@ -104,6 +110,9 @@ let loadUserGroupIndex:LoadUserGroupIndexTriggerType =  function loadUserGroupIn
         }
       });
     } catch(err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
     }
   }
 }

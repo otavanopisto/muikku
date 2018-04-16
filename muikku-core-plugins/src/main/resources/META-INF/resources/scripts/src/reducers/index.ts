@@ -43,6 +43,7 @@ import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
+import { RecordsType } from '~/reducers/main-function/records/records';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -61,5 +62,6 @@ export interface StateType {
   workspaces?: WorkspacesType,
   courses?: CoursesType,
   discussion?: DiscussionType,
-  guider?: GuiderType
+  guider?: GuiderType,
+  records?: RecordsType
 }

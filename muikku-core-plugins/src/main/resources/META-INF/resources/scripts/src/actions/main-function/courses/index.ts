@@ -1,5 +1,5 @@
 import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import notificationActions from '~/actions/base/notifications';
 import { CoursesActiveFiltersType, CoursesPatchType, CoursesStateType, CourseEducationFilterListType, CourseCurriculumFilterListType } from '~/reducers/main-function/courses';
@@ -45,6 +45,9 @@ let loadAvaliableEducationFiltersFromServer:LoadAvaliableEducationFiltersFromSer
         payload: <CourseEducationFilterListType>(await promisify(mApi().workspace.educationTypes.read(), 'callback')())
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
@@ -60,6 +63,9 @@ let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromS
       });
       callback && callback(curriculums);
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }

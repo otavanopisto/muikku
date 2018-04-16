@@ -42,13 +42,16 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   </div>
 }
 
-function getAssesment(props: RecordsProps, workspace: WorkspaceType){
-  let assesment = workspace.studentAcessment;
+function getAcessment(props: RecordsProps, workspace: WorkspaceType){
+  let acessment = workspace.studentAcessment;
+  if (!acessment){
+    return null;
+  }
   let gradeId = [
-    assesment.gradingScaleSchoolDataSource,
-    assesment.gradingScaleIdentifier,
-    assesment.gradeSchoolDataSource,
-    assesment.gradeIdentifier].join('-');
+    acessment.gradingScaleSchoolDataSource,
+    acessment.gradingScaleIdentifier,
+    acessment.gradeSchoolDataSource,
+    acessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <div className="TODO workspace assesment">
     <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
@@ -60,6 +63,9 @@ function getAssesment(props: RecordsProps, workspace: WorkspaceType){
 }
 
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
+    if (!workspace.studentActivity){
+      return null;
+    }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
     return <div className="TOOD workspace activity">
@@ -144,7 +150,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 {record.workspaces.map((workspace)=>{
                   return <Link as='div' className="link workspace--link" key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
                     <div className="TODO workspace name something???">{workspace.name}</div>
-                    {workspace.studentAcessment ? getAssesment(this.props, workspace) : getActivity(this.props, workspace)}
+                    {workspace.studentAcessment ? getAcessment(this.props, workspace) : getActivity(this.props, workspace)}
                   </Link>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
@@ -180,7 +186,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: (state as any).records
+    records: state.records
   }
 };
 

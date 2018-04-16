@@ -17,12 +17,17 @@
     <script defer="defer" jsf:name="scripts/dist/records.js" />
     
     <!-- TODO PLEASE REMOVE THIS -->
+    <script defer="defer">
+	  $.fn.muikkuWebSocket = function(...args){
+        return this;
+      }
+    </script>
     <script defer="defer" jsf:name="scripts/gui/muikku-field.js"/> 
     <script defer="defer" jsf:name="scripts/gui/muikku-material-loader.js"/>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
-    <h:outputScript name="scripts/gui/lazypdf.js" />
-    <h:outputScript name="scripts/gui/lazyswf.js" />
-    <h:outputScript name="scripts/gui/lazyframe.js" />
+    <script defer="defer" type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
+    <script defer="defer" jsf:name="scripts/gui/lazypdf.js" />
+    <script defer="defer" jsf:name="scripts/gui/lazyswf.js" />
+    <script defer="defer" jsf:name="scripts/gui/lazyframe.js" />
     
   </ui:define>
   

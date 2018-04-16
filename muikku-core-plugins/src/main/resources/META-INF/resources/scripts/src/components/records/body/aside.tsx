@@ -52,7 +52,7 @@ class Navigation extends React.Component<NavigationProps, NavigationState> {
 function mapStateToProps(state: StateType) {
   return {
     i18n: state.i18n,
-    location: (state as any).records.location
+    location: state.records.location
   }
 };
 

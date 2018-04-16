@@ -387,7 +387,7 @@
         //returned error messages are then empty, hence by passing this override we are able to trigger giving
         //an error only in the newer screens
         if (window.MAPI_OVERRIDE_RETURN_ACTUAL_ERRORS){
-          callback(new Error(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : "undefined error"), jqXHR);
+          callback(new window.MAPI_OVERRIDE_RETURN_ACTUAL_ERRORS_W_CLASS(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : "undefined error"), jqXHR);
         } else {
           callback(textStatus ? jqXHR.responseText || jqXHR.statusText || textStatus : null, jqXHR);
         }

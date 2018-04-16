@@ -1,7 +1,7 @@
 import actions from '../base/notifications';
 import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import { HOPSDataType, HOPSStatusType } from '~/reducers/main-function/hops';
 import { StateType } from '~/reducers';
 
@@ -35,6 +35,9 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
         payload: <HOPSStatusType>"READY"
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
       dispatch({
         type: 'UPDATE_HOPS_STATUS',
@@ -52,6 +55,9 @@ let setHopsTo:SetHopsToTriggerType = function setHopsTo(newHops){
         payload: <HOPSDataType>(await promisify(mApi().records.hops.update(newHops), 'callback')())
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
     }
   }
