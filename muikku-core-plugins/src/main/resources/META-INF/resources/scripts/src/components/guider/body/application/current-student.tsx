@@ -194,9 +194,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     return <div className="react-required-container">
       <div className="application-sub-panel">
         {studentBasicHeader}
-        <div className="application-sub-panel__body application-sub-panel__body--labels labels">
+        {this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.length ? <div className="application-sub-panel__body application-sub-panel__body--labels labels">
           {studentLabels}
-        </div>
+        </div> : null}
       </div>
       <div className="application-sub-panel">
         {studentBasicInfo}

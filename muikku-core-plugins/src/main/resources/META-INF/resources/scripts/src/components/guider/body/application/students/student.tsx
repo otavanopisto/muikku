@@ -28,7 +28,8 @@ export default class Student extends React.Component<StudentProps, StudentState>
           <div className="text text--list-item-helper-title">{this.props.student.email}</div>
           <div className="text text--list-item-type-title">{this.props.student.studyProgrammeName}</div>
         </div>
-        <div className="application-list__item-footer application-list__item-footer--student">
+        
+        {this.props.student.flags.length ? <div className="application-list__item-footer application-list__item-footer--student">
           <div className="labels">
           {this.props.student.flags.map((flag: GuiderStudentUserProfileLabelType)=>{
             return <div className="label" key={flag.id}>
@@ -37,7 +38,8 @@ export default class Student extends React.Component<StudentProps, StudentState>
             </div>
           })}
           </div>
-        </div>      
+        </div> : null}   
+          
       </div>
     </div>
   }

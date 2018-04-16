@@ -71,14 +71,14 @@ class Message extends React.Component<MessageProps, MessageState> {
             <span className="text text--communicator-message-created">{this.props.i18n.time.format(this.props.message.created)}</span>
           </div>
         </div>
-        <div className="labels labels--communicator-message">
+        {this.props.labels && this.props.labels.length ? <div className="labels labels--communicator-message">
           {this.props.labels && this.props.labels.map((label)=>{
             return <span className="label" key={label.id}>
               <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
               <span className="text label__text">{label.labelName}</span>
             </span>
           })}
-        </div>
+        </div> : null}
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message">
         <header className="text text--communicator-message-caption">{this.props.message.caption}</header>
