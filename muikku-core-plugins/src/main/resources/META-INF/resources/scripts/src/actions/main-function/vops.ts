@@ -1,7 +1,7 @@
 import actions from '../base/notifications';
 import promisify from '~/util/promisify';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import { VOPSDataType, VOPSStatusType } from '~/reducers/main-function/vops';
 import { StateType } from '~/reducers';
 
@@ -32,6 +32,9 @@ let updateVops:UpdateVopsTriggerType = function updateVops() {
         payload: <VOPSStatusType>"READY"
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(actions.displayNotification(err.message, 'error'));
       dispatch({
         type: 'UPDATE_VOPS_STATUS',
