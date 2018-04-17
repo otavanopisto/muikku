@@ -1,9 +1,12 @@
 import {ActionType} from '~/actions';
 
-export type WorkspaceAssesementState = "UNASSESSED" | "PENDING" | "PENDING_PASS" | "PENDING_FAIL" | "PASS" | "FAIL";
+export type WorkspaceAssessementState = {
+    date: string,
+    state: "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail"
+}
 
 export interface WorkspaceStudentActivityType {
-  assessmentState: WorkspaceAssesementState,
+  assessmentState: WorkspaceAssessementState,
   evaluablesAnswered: number,
   evaluablesAnsweredLastDate: string,
   evaluablesDonePercent: number,
