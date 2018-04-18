@@ -50,10 +50,40 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
   }
   render(){
     let workspace = this.props.workspace;
-    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""}`}>
-        <div className="application-list__item-header" onClick={this.toggleActivitiesVisible}>
+    
+    let stateText;
+    let extraClasses = "";
+    switch (workspace.studentActivity.assessmentState.state){
+      case "pending":
+      case "pending_pass":
+      case "pending_fail":
+        stateText = "plugin.guider.assessmentState.PENDING";
+        extraClasses = "course--assessment-pending";
+        break;
+      case "pass":
+        stateText = "plugin.guider.assessmentState.PASS";
+        extraClasses = "course--assessment-pass";
+        break;
+      case "fail":
+        stateText = "plugin.guider.assessmentState.FAIL";
+        extraClasses = "course--assessment-fail";
+        break;
+      default:
+        stateText = "plugin.guider.assessmentState.UNASSESSED";
+        break;
+    }
+    let resultingStateText = this.props.i18n.text.get(stateText);
+    if (workspace.studentActivity.assessmentState.date){
+      resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
+    }
+    
+    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`} onClick={this.toggleActivitiesVisible}>
+        <div className="application-list__item-header application-list__item-header--course">
           <span className="text text--coursepicker-course-icon icon-books"></span>
-          <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
+          <span className="text text--list-item-title">
+            <span>{workspace.name}</span>
+            {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
+          </span> 
           <span className="text text--list-item-type-title">
             <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
               workspace.studentActivity.evaluablesDonePercent}%
@@ -70,27 +100,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>        
               <div className="application-sub-panel__item-data">
-                <span className="text text--guider-profile-value">{(()=>{
-                  //HAX :D
-                  let text;
-                  switch (workspace.studentActivity.assessmentState){
-                    case "PENDING":
-                    case "PENDING_PASS":
-                    case "PENDING_FAIL":
-                      text = "plugin.guider.assessmentState.PENDING";
-                      break;
-                    case "PASS":
-                      text = "plugin.guider.assessmentState.PASS";
-                      break;
-                    case "FAIL":
-                      text = "plugin.guider.assessmentState.FAIL";
-                      break;
-                    default:
-                      text = "plugin.guider.assessmentState.UNASSESSED";
-                      break;
-                  }
-                  return this.props.i18n.text.get(text);
-                })()}</span></div>
+                <span className="text text--guider-profile-value">{resultingStateText}</span></div>
               </div>              
 
                 

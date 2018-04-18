@@ -12,7 +12,6 @@ div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-
   border-radius: 3px;
   border: solid 1px $color-form-field-border;
   font-size: 14px;
-  height: 34px;
   outline: none;
   padding: 3px 10px;
   resize: none;
@@ -22,6 +21,10 @@ div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-
     border: solid 1px $color-form-field-border-focus;
     box-shadow: 0 0 5px 1px $color-form-field-glow;
   }
+}
+
+input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
+  height: 34px;
 }
 
 input[type="checkbox"].form-field {
@@ -38,7 +41,6 @@ input[type="checkbox"].form-field {
 
 div.form-field-tag-input {
   width: 100%;
-  height: 34px;
   overflow: show;
   
   &.focus .form-field-tag-input__field {

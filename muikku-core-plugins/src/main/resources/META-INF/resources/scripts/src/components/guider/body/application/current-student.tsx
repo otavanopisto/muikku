@@ -141,7 +141,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</div>
         <div className="application-sub-panel__item-data">
-        <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.school || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.school")}</span>
         </div>
       </div>
       {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
@@ -150,6 +150,14 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <span className="text text--guider-profile-value">{this.props.guider.currentStudent.lastLogin.time}</span>
         </div>
       </div>}
+      {this.props.guider.currentStudent.notifications && Object.keys(this.props.guider.currentStudent.notifications).map((notification)=>{
+        <div className="application-sub-panel__item application-sub-panel__item--notification" key={notification}>
+          <div className="application-sub-panel__item-title ">{this.props.i18n.text.get("plugin.guider.user." + notification)}</div>
+          <div className="application-sub-panel__item-data">
+            <span className="text text--guider-profile-value">{this.props.i18n.time.format((this.props.guider.currentStudent.notifications as any)[notification])}</span>
+          </div>
+        </div>
+      })}
     </div>
       
     //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
