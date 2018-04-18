@@ -5,6 +5,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/workspace-activity.scss';
 
 interface StudentWorkspaceProps {
   i18n: i18nType,
@@ -58,15 +59,15 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
       case "pending_pass":
       case "pending_fail":
         stateText = "plugin.guider.assessmentState.PENDING";
-        extraClasses = "course--assessment-pending";
+        extraClasses = "state-PENDING";
         break;
       case "pass":
         stateText = "plugin.guider.assessmentState.PASS";
-        extraClasses = "course--assessment-pass";
+        extraClasses = "state-PASSED";
         break;
       case "fail":
         stateText = "plugin.guider.assessmentState.FAIL";
-        extraClasses = "course--assessment-fail";
+        extraClasses = "state-FAILED";
         break;
       default:
         stateText = "plugin.guider.assessmentState.UNASSESSED";
@@ -80,16 +81,13 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
     return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`} onClick={this.toggleActivitiesVisible}>
         <div className="application-list__item-header application-list__item-header--course">
           <span className="text text--coursepicker-course-icon icon-books"></span>
-          <span className="text text--list-item-title">
-            <span>{workspace.name}</span>
-            {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
-          </span> 
-          <span className="text text--list-item-type-title">
-            <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+          <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
+          <span className="text text--list-item-type-title workspace-activity">
+            <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
               workspace.studentActivity.evaluablesDonePercent}%
             </span>
             <span> / </span>
-            <span title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+            <span className="workspace-activity__exercise-done-percent" title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>

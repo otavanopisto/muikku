@@ -183,17 +183,16 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <span className="text file-uploader__hint">{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
       </FileUploader>
       {this.props.guider.currentStudent.files && (this.props.guider.currentStudent.files.length ?
-        <div className="text application-sub-panel__file-container application-list">
+        <div className="file-uploader__files-container text application-list">
           {this.props.guider.currentStudent.files.map((file)=>{
-            return <Link key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>
-              {file.title}
-              <Link disablePropagation onClick={this.props.removeFileFromCurrentStudent.bind(null, file)}>{
-                this.props.i18n.text.get("plugin.guider.user.details.files.file.remove")
-              }</Link>
-            </Link>
+            return <div className="file-uploader__file application-list__item">
+              <span className="file-uploader__file-attachment-icon icon-attachment"></span>
+              <Link className="file-uploader__file-title" key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+              <span className="file-uploader__file-delete-icon icon-delete" onClick={this.props.removeFileFromCurrentStudent.bind(null, file)}></span>
+            </div>
           })}
         </div> :
-        <div className="text application-sub-panel__file-container">{
+        <div className="file-uploader__files-container text">{
           this.props.i18n.text.get("plugin.guider.user.details.files.empty")
         }</div>
       )}

@@ -101,7 +101,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
           }
         }
       }}
-      strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
       trailWidth={1} svgStyle={{width: "100%", height: "100%"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
       progress={workspace.studentActivity.exercisesDonePercent/100}/>

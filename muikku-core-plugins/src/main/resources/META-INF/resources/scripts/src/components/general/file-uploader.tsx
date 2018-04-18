@@ -51,7 +51,7 @@ export default class FileUploader extends React.Component<FileUploaderProps, Fil
     });
   }
   render(){
-    return <div className={`file-uploader text ${this.props.modifier ? this.props.modifier : ""}`} style={{
+    return <div className={`file-uploader ${this.props.modifier ? this.props.modifier : ""}`} style={{
       position: "relative"
     }}>{this.props.children}<input type="file" multiple style={{
       cursor: "pointer",
