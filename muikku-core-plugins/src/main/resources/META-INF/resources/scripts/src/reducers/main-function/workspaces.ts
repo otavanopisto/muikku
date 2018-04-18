@@ -1,12 +1,12 @@
 import {ActionType} from '~/actions';
 
-export type WorkspaceAssessementState = {
-    date: string,
-    state: "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail"
-}
+export type WorkspaceAssessementState = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail";
 
 export interface WorkspaceStudentActivityType {
-  assessmentState: WorkspaceAssessementState,
+  assessmentState: {
+    date: string,
+    state: WorkspaceAssessementState
+  },
   evaluablesAnswered: number,
   evaluablesAnsweredLastDate: string,
   evaluablesDonePercent: number,
@@ -36,7 +36,7 @@ export interface WorkspaceForumStatisticsType {
   latestMessage: string //represents a date
 }
 
-export interface WorkspaceStudentAccessmentType {
+export interface WorkspaceStudentAssessmentType {
   assessorEntityId: number,
   evaluated: string,
   gradeIdentifier: string,
@@ -47,6 +47,12 @@ export interface WorkspaceStudentAccessmentType {
   passed: boolean,
   verbalAssessment: string,
   workspaceStudentId: string
+}
+
+export interface WorkspaceStudentAssessmentsType {
+  assessmentState: WorkspaceAssessementState,
+  date: string,
+  assessments: Array<WorkspaceStudentAssessmentType>
 }
 
 export interface WorkspaceType {
@@ -68,7 +74,7 @@ export interface WorkspaceType {
   //These are optional addons, and are usually not available
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
-  studentAcessment?: WorkspaceStudentAccessmentType
+  studentAssessments?: WorkspaceStudentAssessmentsType
 }
 
 export interface ShortWorkspaceType {

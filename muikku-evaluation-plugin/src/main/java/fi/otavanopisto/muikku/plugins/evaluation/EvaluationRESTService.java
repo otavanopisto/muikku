@@ -30,6 +30,8 @@ import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.otavanopisto.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment;
@@ -105,6 +107,9 @@ public class EvaluationRESTService extends PluginRESTService {
   
   @Inject
   private LocaleController localeController;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
   
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/students/{STUDENTID}/assessments")
@@ -222,6 +227,13 @@ public class EvaluationRESTService extends PluginRESTService {
         .build();
     }
     
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserIdentifier(workspaceEntity, studentIdentifier);
+    if (workspaceUserEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("WorkspaceUserEntity not found").build();
+    }
+    
+    WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
+    
     UserEntity studentUserEntity = userEntityController.findUserEntityByUserIdentifier(studentIdentifier);
     if (studentUserEntity == null) {
       return Response.status(Status.NOT_FOUND)
@@ -241,7 +253,7 @@ public class EvaluationRESTService extends PluginRESTService {
       assessments = new ArrayList<fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment>();
     }
     
-    return Response.ok(createRestModel(workspaceEntity, assessments.toArray(new fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
+    return Response.ok(createRestModel(workspaceEntity, assessmentState, assessments.toArray(new fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
   }
     
   @PUT
@@ -866,14 +878,18 @@ public class EvaluationRESTService extends PluginRESTService {
     ); 
   }
   
-  private List<fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment> createRestModel(WorkspaceEntity workspaceEntity, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment... entries) {
+  private fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessments createRestModel(WorkspaceEntity workspaceEntity, WorkspaceAssessmentState assessmentState, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment... entries) {
     List<fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment> result = new ArrayList<>();
 
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry : entries) {
       result.add(createRestModel(workspaceEntity, entry));
     }
+    
+    fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessments assesments = 
+    		new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessments(
+    				assessmentState.getState(), assessmentState.getDate(), result);
 
-    return result;
+    return assesments;
   }
 
   private void sendAssessmentNotification(WorkspaceEntity workspaceEntity, WorkspaceAssessment payload, UserEntity evaluator, UserEntity student, Workspace workspace, String grade) {

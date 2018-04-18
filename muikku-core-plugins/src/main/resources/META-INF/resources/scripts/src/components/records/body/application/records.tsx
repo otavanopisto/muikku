@@ -12,7 +12,7 @@ import '~/sass/elements/message.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAccessmentType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 
@@ -42,8 +42,8 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   </div>
 }
 
-function getAcessment(props: RecordsProps, workspace: WorkspaceType){
-  let acessment = workspace.studentAcessment;
+function getAcessments(props: RecordsProps, workspace: WorkspaceType){
+  let acessment = workspace.studentAssessments.assessments[0];
   if (!acessment){
     return null;
   }
@@ -54,9 +54,9 @@ function getAcessment(props: RecordsProps, workspace: WorkspaceType){
     acessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <div className="TODO workspace assesment">
-    <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
+    <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(acessment.evaluated))}</span>
     &nbsp;
-    <span className={`TODO workspace-assesment-score ${workspace.studentAcessment.passed ? "workspace-passed" : "workspace-failed"}`}>
+    <span className={`TODO workspace-assesment-score ${acessment.passed ? "workspace-passed" : "workspace-failed"}`}>
       {grade.grade}
     </span>
   </div>
@@ -144,13 +144,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           return <div key={data.user.id}>
             <h2>{user.studyProgrammeName}</h2>
             {records.map((record, index)=>{
-              //TODO remember to add the curriculum reducer information to give the actual curriculum name somehow, this just gives the id
               return <div key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
                   return <Link as='div' className="link workspace--link" key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
                     <div className="TODO workspace name something???">{workspace.name}</div>
-                    {workspace.studentAcessment ? getAcessment(this.props, workspace) : getActivity(this.props, workspace)}
+                    {workspace.studentAssessments.assessments.length ? getAcessments(this.props, workspace) : getActivity(this.props, workspace)}
                   </Link>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
