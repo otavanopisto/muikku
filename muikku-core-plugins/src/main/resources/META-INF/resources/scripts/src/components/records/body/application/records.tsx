@@ -15,7 +15,7 @@ import '~/sass/elements/workspace-activity.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAccessmentType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 
@@ -31,6 +31,26 @@ interface RecordsState {
 
 let storedCurriculumIndex:any = {};
 
+function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
+  let assesmentState:WorkspaceAssessementState;
+  let assesmentDate:string;
+  if (workspace.studentAssessments && workspace.studentAssessments.assessmentState){
+    assesmentState = workspace.studentAssessments.assessmentState;
+    assesmentDate = workspace.studentAssessments.assessmentStateDate;
+  } else if (workspace.studentActivity && workspace.studentActivity.assessmentState){
+    assesmentState = workspace.studentActivity.assessmentState.state;
+    assesmentDate = workspace.studentActivity.assessmentState.date;
+  }
+  
+  if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
+    return <div className="tr-evalreq" title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}>
+      <span className="icon-assessment-pending"></span>
+    </div>
+  }
+  
+  return null;
+}
+
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
   let gradeId = [
     transferCredit.gradingScaleIdentifier,
@@ -45,8 +65,8 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   </div>
 }
 
-function getAcessment(props: RecordsProps, workspace: WorkspaceType){
-  let acessment = workspace.studentAcessment;
+function getAssessments(props: RecordsProps, workspace: WorkspaceType){
+  let acessment = workspace.studentAssessments.assessments[0];
   if (!acessment){
     return null;
   }
@@ -57,8 +77,8 @@ function getAcessment(props: RecordsProps, workspace: WorkspaceType){
     acessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <span className="text text--list-item-type-title">
-    <span className="text text--workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
-    <span className={`text text--workspace-assesment-grade ${workspace.studentAcessment.passed ? "state-PASSED" : "state-FAILED"}`}>{grade.grade}</span>
+    <span className="text text--workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(acessment.evaluated))}</span>
+    <span className={`text text--workspace-assesment-grade ${acessment.passed ? "state-PASSED" : "state-FAILED"}`}>{grade.grade}</span>
   </span>
 }
 
@@ -152,7 +172,6 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
           <div className="application-sub-panel__body" key={data.user.id}>
             {records.map((record, index)=>{
-              //TODO remember to add the curriculum reducer information to give the actual curriculum name somehow, this just gives the id
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
@@ -160,7 +179,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <span className="text text--coursepicker-course-icon icon-books"></span>
                       <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
-                      {workspace.studentAcessment ? getAcessment(this.props, workspace) : getActivity(this.props, workspace)}
+                      {getEvaluationRequestIfAvailable(this.props, workspace)}
+                      {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : getActivity(this.props, workspace)}
                     </div>
                   </div>
                 })}

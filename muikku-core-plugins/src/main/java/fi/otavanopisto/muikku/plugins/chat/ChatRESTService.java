@@ -38,6 +38,7 @@ import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
 import rocks.xmpp.core.XmppException;
 import rocks.xmpp.core.session.XmppClient;
+import rocks.xmpp.core.session.XmppSessionConfiguration;
 import rocks.xmpp.extensions.httpbind.BoshConnection;
 import rocks.xmpp.extensions.httpbind.BoshConnectionConfiguration;
 
@@ -60,6 +61,9 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private ChatClientHolder chatClientHolder;
 
   @Context
   private HttpServletRequest request;
@@ -88,28 +92,34 @@ public class ChatRESTService extends PluginRESTService {
     
     try {
       XmppCredentials credentials = computeXmppCredentials(privateKey, now, userIdentifierString);
-      BoshConnectionConfiguration config = BoshConnectionConfiguration
+      BoshConnectionConfiguration connectionConfig = BoshConnectionConfiguration
           .builder()
           .secure(true)
           .hostname(request.getServerName())
           .port(443)
           .path("/http-bind/")
           .build();
-      try (XmppClient xmppClient = XmppClient.create(request.getServerName(), config)) {
-        xmppClient.connect();
-        xmppClient.login(credentials.getUsername(), credentials.getPassword());
-        BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
-        String sessionId = boshConnection.getSessionId();
-        long rid = boshConnection.detach();
 
-        ChatPrebindParameters chatPrebindParameters = new ChatPrebindParameters();
-        chatPrebindParameters.setBound(true);
-        chatPrebindParameters.setBindEpochMilli(Instant.now().toEpochMilli());
-        chatPrebindParameters.setJid(credentials.getJid());
-        chatPrebindParameters.setSid(sessionId);
-        chatPrebindParameters.setRid(rid);
-        return Response.ok(chatPrebindParameters).build();
-      }
+      // Initializing cache directory fails if there's non-ascii chars in user name
+      XmppSessionConfiguration sessionConfig = XmppSessionConfiguration.builder()
+          .cacheDirectory(null)
+          .build();
+      XmppClient xmppClient = XmppClient.create(request.getServerName(), sessionConfig, connectionConfig);
+      xmppClient.connect();
+      xmppClient.login(credentials.getUsername(), credentials.getPassword());
+      BoshConnection boshConnection = (BoshConnection) xmppClient.getActiveConnection();
+      String sessionId = boshConnection.getSessionId();
+      long rid = boshConnection.detach();
+      chatClientHolder.addClient(xmppClient);
+
+      ChatPrebindParameters chatPrebindParameters = new ChatPrebindParameters();
+      chatPrebindParameters.setBound(true);
+      chatPrebindParameters.setBindEpochMilli(Instant.now().toEpochMilli());
+      chatPrebindParameters.setJid(credentials.getJid() + "/" + sessionId);
+      chatPrebindParameters.setSid(sessionId);
+      chatPrebindParameters.setRid(rid);
+
+      return Response.ok(chatPrebindParameters).build();
     } catch (InvalidKeyException | SignatureException | NoSuchAlgorithmException | XmppException ex) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(ex.getMessage()).build();
     }

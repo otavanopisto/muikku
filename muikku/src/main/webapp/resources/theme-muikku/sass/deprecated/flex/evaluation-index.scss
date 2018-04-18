@@ -324,6 +324,10 @@ body {
   &.evaluation-requested {
     border: 1px solid $evaluation-requested-color;
     box-shadow: 0 0 2px $evaluation-requested-boxshadow-color;
+    
+    .evaluation-card-button.archive-button {
+      display: inline-block;
+    }
   }
   
   &.frontpage .evaluation-card-data {

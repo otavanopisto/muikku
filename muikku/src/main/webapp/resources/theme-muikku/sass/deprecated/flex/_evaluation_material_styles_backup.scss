@@ -49,6 +49,8 @@ p {
   max-width: 250px;
   padding: 5px 10px;
   position: absolute;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
     
 mark[data-muikku-word-definition] {

@@ -8,10 +8,9 @@
       converse.initialize({
         bosh_service_url : '/http-bind/',
         authentication : "prebind",
-        //authentication : "login",
-        keepalive : false,
+        keepalive : true,
         prebind_url : "/rest/chat/prebind",
-        //credentials_url : "/rest/chat/credentials",
+        jid: MUIKKU_LOGGED_USER_ID,
         auto_login : true,
         muc_domain : 'conference.' + location.hostname,
         muc_nickname : result.mucNickName,
