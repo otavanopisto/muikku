@@ -6,10 +6,19 @@
 .workspace-activity {
 	display: flex;
 	flex-flow: row wrap;
-  padding: 10px 0;
-  
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row nowrap;
+}
+
+.workspace-activity--studies {
+	align-items: center;
+	flex-basis: 100%;
+	flex-grow: 1;
+	flex-shrink: 1;
+	max-width: 100%;
+	padding: 10px 0;
+	
+	@include breakpoint($breakpoint-desktop) {
+	  max-width: 350px;
+	  padding: 0;
   }
 }
 
@@ -19,33 +28,40 @@
 	flex-basis: 100%;
 	flex-grow: 1;
 	flex-shrink: 1;
-	height: 5px;
-	
-	&:nth-child(odd) {
-	  margin: 0 0 5px;
-	}
-	
-	&:nth-child(even) {
-    margin: 5px 0 0;
-  }
+	height: 10px;
+  margin: 5px 0 0;
+  max-width: 100%;
 	
 	@include breakpoint($breakpoint-pad) {
     flex-basis: calc(50% - 10px);
+    max-width: calc(50% - 10px);
     
     &:nth-child(odd) {
-	    margin: 0 10px 0 0;
-	  }
-	  
-	  &:nth-child(even) {
-	    margin: 0 0 0 10px;
-	  }
+      margin: 5px 10px 0 0;
+    }
+    
+    &:nth-child(even) {
+      margin: 5px 0 0 10px;
+    }
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: calc(100%);
+    max-width: calc(100%);
+    
+    &:nth-child(odd) {
+      margin: 0 0 5px;
+    }
+    
+    &:nth-child(even) {
+      margin: 5px 0 0;
+    }
   }
 }
 
 .workspace-activity__progressbar-label {
-  background: $color-default;
-  border-radius: 5px;
-  border: 1px solid $color-default-separator-border;
+  text-align: right;
+  min-width: 40px;
 }
 
  .workspace-activity__assignment-done-percent {

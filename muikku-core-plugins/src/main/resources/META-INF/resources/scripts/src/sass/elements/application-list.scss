@@ -157,7 +157,8 @@
 
 .application-list__item-header {
   align-items: center;
-  display: flex;      
+  display: flex;   
+  flex-flow: row wrap;   
 }
 
 .application-list__item-body {

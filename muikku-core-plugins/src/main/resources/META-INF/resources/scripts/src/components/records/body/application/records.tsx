@@ -68,7 +68,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
     }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
-    return <div className="workspace-activity">
+    return <div className="workspace-activity workspace-activity--studies">
       <ProgressBarLine containerClassName="workspace-activity__progressbar" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
@@ -79,9 +79,6 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         text: {
           className: "text workspace-activity__progressbar-label",
           style: {
-            padding: "4px 8px",
-            position: 'absolute',
-            left: "50%",
             margin: "0"
           }
         }
@@ -101,9 +98,6 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         text: {
           className: "text workspace-activity__progressbar-label",
           style: {
-            padding: "4px 8px",
-            position: 'absolute',
-            left: "50%",
             margin: "0"
           }
         }
@@ -166,12 +160,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <span className="text text--coursepicker-course-icon icon-books"></span>
                       <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
-                      {workspace.studentAcessment ? getAcessment(this.props, workspace) : null}
+                      {workspace.studentAcessment ? getAcessment(this.props, workspace) : getActivity(this.props, workspace)}
                     </div>
-                    {!workspace.studentAcessment ? 
-                      <div className="application-list__item-body"> 
-                        {getActivity(this.props, workspace)}
-                      </div> : null }
                   </div>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
