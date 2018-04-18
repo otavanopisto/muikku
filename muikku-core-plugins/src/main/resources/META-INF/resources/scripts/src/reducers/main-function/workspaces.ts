@@ -51,7 +51,7 @@ export interface WorkspaceStudentAssessmentType {
 
 export interface WorkspaceStudentAssessmentsType {
   assessmentState: WorkspaceAssessementState,
-  date: string,
+  assessmentStateDate: string,
   assessments: Array<WorkspaceStudentAssessmentType>
 }
 

@@ -12,7 +12,7 @@ import '~/sass/elements/message.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
-import { WorkspaceType, WorkspaceStudentAssessmentsType } from '~/reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementState } from '~/reducers/main-function/workspaces';
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 
@@ -28,6 +28,26 @@ interface RecordsState {
 
 let storedCurriculumIndex:any = {};
 
+function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: WorkspaceType){
+  let assesmentState:WorkspaceAssessementState;
+  let assesmentDate:string;
+  if (workspace.studentAssessments && workspace.studentAssessments.assessmentState){
+    assesmentState = workspace.studentAssessments.assessmentState;
+    assesmentDate = workspace.studentAssessments.assessmentStateDate;
+  } else if (workspace.studentActivity && workspace.studentActivity.assessmentState){
+    assesmentState = workspace.studentActivity.assessmentState.state;
+    assesmentDate = workspace.studentActivity.assessmentState.date;
+  }
+  
+  if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
+    return <div className="tr-evalreq" title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}>
+      <span className="icon-assessment-pending"></span>
+    </div>
+  }
+  
+  return null;
+}
+
 function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCreditType){
   let gradeId = [
     transferCredit.gradingScaleIdentifier,
@@ -42,7 +62,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   </div>
 }
 
-function getAcessments(props: RecordsProps, workspace: WorkspaceType){
+function getAssessments(props: RecordsProps, workspace: WorkspaceType){
   let acessment = workspace.studentAssessments.assessments[0];
   if (!acessment){
     return null;
@@ -149,7 +169,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 {record.workspaces.map((workspace)=>{
                   return <Link as='div' className="link workspace--link" key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
                     <div className="TODO workspace name something???">{workspace.name}</div>
-                    {workspace.studentAssessments.assessments.length ? getAcessments(this.props, workspace) : getActivity(this.props, workspace)}
+                    {getEvaluationRequestIfAvailable(this.props, workspace)}
+                    {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : getActivity(this.props, workspace)}
                   </Link>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
