@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.announcer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.inject.Inject;
@@ -69,9 +70,17 @@ public class AnnouncerAttachmentUploadServlet extends HttpServlet {
       return;
     }
     
+    byte[] content = null;
+    InputStream input = file.getInputStream();
+    try {
+      content = IOUtils.toByteArray(input);
+    }
+    finally {
+      IOUtils.closeQuietly(input);
+    }
     AnnouncementAttachment announcementAttachment = announcementController.createAttachement(
         file.getContentType(),
-        IOUtils.toByteArray(file.getInputStream()));
+        content);
     
     if (announcementAttachment == null) {
       sendResponse(resp, "Could not save attachment", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

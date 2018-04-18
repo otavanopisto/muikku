@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+
 @WebServlet (
     name = "DustTemplateServlet",
     urlPatterns = "/resources/dust/*"     
@@ -33,12 +35,12 @@ public class DustTemplateServlet extends HttpServlet {
         connection.setDoOutput(true);
         String contentType = connection.getContentType();
         InputStream resourceStream = connection.getInputStream();
-        int bytesRead = 0;
-        byte[] buff = new byte[1024];
-        while ((bytesRead = resourceStream.read(buff, 0, 1024)) > 0) {
-          outputStream.write(buff, 0, bytesRead);
+        try {
+          IOUtils.copy(resourceStream, outputStream);
         }
-        resourceStream.close();
+        finally {
+          IOUtils.closeQuietly(resourceStream);
+        }
         
         resp.setContentType(contentType);
         outputStream.flush();

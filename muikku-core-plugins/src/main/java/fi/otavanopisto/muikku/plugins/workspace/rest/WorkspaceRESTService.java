@@ -67,7 +67,6 @@ import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.otavanopisto.muikku.plugins.data.FileController;
 import fi.otavanopisto.muikku.plugins.material.MaterialController;
-import fi.otavanopisto.muikku.plugins.material.QueryFieldController;
 import fi.otavanopisto.muikku.plugins.material.model.HtmlMaterial;
 import fi.otavanopisto.muikku.plugins.material.model.Material;
 import fi.otavanopisto.muikku.plugins.material.model.MaterialViewRestrict;
@@ -218,9 +217,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
-  
-  @Inject
-  private QueryFieldController queryFieldController;
   
   @GET
   @Path("/workspaceTypes")
@@ -1711,8 +1707,13 @@ public class WorkspaceRESTService extends PluginRESTService {
             
             ZipEntry ze = new ZipEntry(fileName);
             zout.putNextEntry(ze);
-            InputStream inputStream = new ByteArrayInputStream(file.getContent());
-            IOUtils.copy(inputStream, zout);
+            InputStream input = new ByteArrayInputStream(file.getContent());
+            try {
+              IOUtils.copy(input, zout);
+            }
+            finally {
+              IOUtils.closeQuietly(input);
+            }
             zout.closeEntry();
           }
           zout.flush();
@@ -2579,15 +2580,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     try {
       WorkspaceEntityFile workspaceEntityFile = workspaceEntityFileController.findWorkspaceEntityFile(workspaceEntity, entity.getFileIdentifier());
       ByteArrayInputStream contentStream = new ByteArrayInputStream(content);
-      
-      if (workspaceEntityFile == null) {
-        String diskName = fileController.createFile("workspace", contentStream);
-        workspaceEntityFile = workspaceEntityFileController.createWorkspaceEntityFile(
-            workspaceEntity, entity.getFileIdentifier(), diskName, entity.getContentType(), new Date());
-      } else {
-        fileController.updateFile("workspace", workspaceEntityFile.getDiskName(), contentStream);
-        workspaceEntityFile = workspaceEntityFileController.updateWorkspaceEntityFile(
-            workspaceEntityFile, entity.getContentType(), new Date());
+      try {
+        if (workspaceEntityFile == null) {
+          String diskName = fileController.createFile("workspace", contentStream);
+          workspaceEntityFile = workspaceEntityFileController.createWorkspaceEntityFile(
+              workspaceEntity, entity.getFileIdentifier(), diskName, entity.getContentType(), new Date());
+        } else {
+          fileController.updateFile("workspace", workspaceEntityFile.getDiskName(), contentStream);
+          workspaceEntityFile = workspaceEntityFileController.updateWorkspaceEntityFile(
+              workspaceEntityFile, entity.getContentType(), new Date());
+        }
+      }
+      finally {
+        IOUtils.closeQuietly(contentStream);
       }
       
       return Response.ok(createRestModel(workspaceEntityFile)).build();
