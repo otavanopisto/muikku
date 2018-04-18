@@ -3,11 +3,11 @@ import { UserWithSchoolDataType, UserGroupListType, UserFileType } from '~/reduc
 import { WorkspaceType, WorkspaceListType } from "~/reducers/main-function/workspaces";
 
 //TODO remove or comment out, this is mocking code
-import hops from './mock/hops';
-import vops from './mock/vops';
+//import hops from './mock/hops';
+//import vops from './mock/vops';
+//TODO
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
-//TODO
 
 export interface GuiderUserLabelType {
   id: number,
@@ -150,7 +150,15 @@ export default function guider( state: GuiderType = {
   selectedStudentsIds: [],
   currentStudent: null
 }, action: ActionType ): GuiderType {
-  if (action.type === "UPDATE_GUIDER_ACTIVE_FILTERS"){
+  if (action.type === "LOCK_TOOLBAR"){
+    return Object.assign({}, state, {
+      toolbarLock: true
+    });
+  } else if (action.type === "UNLOCK_TOOLBAR"){
+    return Object.assign({}, state, {
+      toolbarLock: false
+    });
+  } else if (action.type === "UPDATE_GUIDER_ACTIVE_FILTERS"){
     return Object.assign({}, state, {
       activeFilters: action.payload
     });
@@ -186,18 +194,18 @@ export default function guider( state: GuiderType = {
     obj[action.payload.property] = action.payload.value;
 
     //TODO remove or comment out, this is mocking code
-    if (action.payload.property === "vops"){
-      obj[action.payload.property] = vops;
-    } else if (action.payload.property === "hops"){
-      obj[action.payload.property] = hops;
-    }
+//    if (action.payload.property === "vops"){
+//      obj[action.payload.property] = vops;
+//    } else if (action.payload.property === "hops"){
+//      obj[action.payload.property] = hops;
+//    }
     //TODO
 
     return Object.assign( {}, state, {
       currentStudent: Object.assign( {}, state.currentStudent, obj )
     });
   } else if (action.type === "UPDATE_CURRENT_GUIDER_STUDENT_STATE"){
-    return Object.assign( {}, state, {
+    return Object.assign({}, state, {
       currentState: action.payload
     });
   } else if (action.type === "ADD_GUIDER_LABEL_TO_USER" || action.type === "REMOVE_GUIDER_LABEL_FROM_USER"){

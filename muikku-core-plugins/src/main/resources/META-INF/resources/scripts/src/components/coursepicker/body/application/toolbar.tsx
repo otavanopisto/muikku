@@ -23,6 +23,7 @@ interface CoursepickerToolbarState {
 
 class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, CoursepickerToolbarState> {
   private searchTimer:number;
+  private focused:boolean;
   constructor(props: CoursepickerToolbarProps){
     super(props);
     
@@ -32,8 +33,11 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
     
     this.setSearchQuery = this.setSearchQuery.bind(this);
     this.updateSearchWithQuery = this.updateSearchWithQuery.bind(this);
+    this.onInputFocus = this.onInputFocus.bind(this);
+    this.onInputBlur = this.onInputBlur.bind(this);
     
     this.searchTimer = null;
+    this.focused = false;
   }
   
   updateSearchWithQuery(query: string){
@@ -53,18 +57,26 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
   }
   
   componentWillReceiveProps(nextProps: CoursepickerToolbarProps){
-    if ((nextProps.courses.activeFilters.query || "") !== this.state.searchquery){
+    if (!this.focused && (nextProps.courses.activeFilters.query || "") !== this.state.searchquery){
       this.setState({
         searchquery: nextProps.courses.activeFilters.query || ""
       });
     }
+  }
+  
+  onInputFocus(){
+    this.focused = true;
+  }
+  
+  onInputBlur(){
+    this.focused = false;
   }
 
   render(){
       return ( 
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <input className="form-field__input form-field__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
+            <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-field__input form-field__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
             <div className="form-field__input-decoration--main-function-search icon-search"></div>
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>

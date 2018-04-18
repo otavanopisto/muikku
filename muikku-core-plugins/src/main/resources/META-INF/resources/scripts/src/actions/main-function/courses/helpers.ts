@@ -1,7 +1,7 @@
 import notificationActions from '~/actions/base/notifications';
 
 import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
 import { CoursesActiveFiltersType, CoursesStateType, CourseListType, CoursesPatchType, CoursesType } from '~/reducers/main-function/courses';
@@ -101,6 +101,9 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
       payload
     });
   } catch (err){
+    if (!(err instanceof MApiError)){
+      throw err;
+    }
     //Error :(
     dispatch(notificationActions.displayNotification(err.message, 'error'));
     dispatch({

@@ -68,31 +68,31 @@ class Message extends React.Component<MessageProps, MessageState> {
             </span>
           </div>
           <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
-            <span className="text text--communicator-message-created">{this.props.i18n.time.format( this.props.message.created )}</span>
+            <span className="text text--communicator-message-created">{this.props.i18n.time.format(this.props.message.created)}</span>
           </div>
         </div>
-        <div className="container container--communicator-message-labels">
+        {this.props.labels && this.props.labels.length ? <div className="labels labels--communicator-message">
           {this.props.labels && this.props.labels.map((label)=>{
-            return <span className="communicator text communicator-text-tag" key={label.id}>
-              <span className="text__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-              {label.labelName}
+            return <span className="label" key={label.id}>
+              <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+              <span className="text label__text">{label.labelName}</span>
             </span>
           })}
-        </div>
+        </div> : null}
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message">
         <header className="text text--communicator-message-caption">{this.props.message.caption}</header>
-        <section className="text text--communicator-message-content" dangerouslySetInnerHTML={{ __html: this.props.message.content }}></section>
+        <section className="text text--communicator-message-content" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
       </div>
       <div className="application-list__item-footer">
         <div className="container container--communicator-message-links">
           <NewMessage replyThreadId={this.props.message.communicatorMessageId}
             initialSelectedItems={replytarget}>
-            <Link className="link link--application-list-item-footer">{this.props.i18n.text.get( 'plugin.communicator.reply' )}</Link>
+            <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
           </NewMessage>
           <NewMessage replyThreadId={this.props.message.communicatorMessageId}
             initialSelectedItems={replyalltarget}>
-            <Link className="link link--application-list-item-footer">{this.props.i18n.text.get( 'plugin.communicator.replyAll' )}</Link>
+            <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
           </NewMessage>
         </div>
       </div>

@@ -132,7 +132,7 @@ class Vops extends React.Component<VopsProps, VopsState> {
               </div>
               {row.items.map((item, index)=>{
                 if (item.placeholder){
-                  return <div className="vops__row-item" key={index}><div className="vops__item vops__item--placeholder"></div></div>;
+                  return <div className="vops__row-item" key={"PLACEHOLDER" + index}><div className="vops__item vops__item--placeholder"></div></div>;
                 }
               
                 let vopsClassNameSubType = "";

@@ -147,25 +147,25 @@ class Menu extends React.Component<MenuProps, MenuState> {
                           type="image/jpeg">
                           <span className="link__icon icon-user"></span>
                         </object>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profile.profile')}</span>
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.personalInfo')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--instructions">
                         <span className="link__icon icon-forgotpassword"/>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.footer.instructions')}</span>
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--helpdesk">
                         <span className="link__icon icon-helpdesk"></span>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.home.helpdesk')}</span>
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--logout" onClick={this.props.logout}>
                         <span className="link__icon icon-signout"></span>
-                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.logout.logout')}</span>
+                        <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.logout')}</span>
                       </Link>
                     </li> : null}
                   </ul>

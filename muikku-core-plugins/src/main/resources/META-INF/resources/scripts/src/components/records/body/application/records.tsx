@@ -11,6 +11,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import '~/sass/elements/application-sub-panel.scss';
+import '~/sass/elements/workspace-activity.scss';
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
@@ -44,62 +45,66 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
   </div>
 }
 
-function getAssesment(props: RecordsProps, workspace: WorkspaceType){
-  let assesment = workspace.studentAcessment;
+function getAcessment(props: RecordsProps, workspace: WorkspaceType){
+  let acessment = workspace.studentAcessment;
+  if (!acessment){
+    return null;
+  }
   let gradeId = [
-    assesment.gradingScaleSchoolDataSource,
-    assesment.gradingScaleIdentifier,
-    assesment.gradeSchoolDataSource,
-    assesment.gradeIdentifier].join('-');
+    acessment.gradingScaleSchoolDataSource,
+    acessment.gradingScaleIdentifier,
+    acessment.gradeSchoolDataSource,
+    acessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
-  return <div className="TODO workspace assesment">
-    <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
-    <span className={`TODO workspace-assesment-score ${workspace.studentAcessment.passed ? "workspace-passed" : "workspace-failed"}`}>
-      {grade.grade}
-    </span>
-  </div>
+  return <span className="text text--list-item-type-title">
+    <span className="text text--workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAcessment.evaluated))}</span>
+    <span className={`text text--workspace-assesment-grade ${workspace.studentAcessment.passed ? "state-PASSED" : "state-FAILED"}`}>{grade.grade}</span>
+  </span>
 }
 
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
+    if (!workspace.studentActivity){
+      return null;
+    }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
-    return <div className="TOOD workspace activity">
-      <ProgressBarLine containerClassName="progressbar" initialAnimate options={{
-        strokeWidth: 2,
+    return <div className="workspace-activity">
+      <ProgressBarLine containerClassName="workspace-activity__progressbar" initialAnimate options={{
+        strokeWidth: 1,
         duration: 1000,
         color: "#ce01bd",
-        trailColor: "#eee",
+        trailColor: "#f5f5f5",
         trailWidth: 1,
         svgStyle: {width: "100%", height: "100%"},
         text: {
-          className: "progressbar-text",
+          className: "text text--progressbar",
           style: {
-            color: "#222"
+            color: "#000"
           }
         }
       }}
-      strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
-      trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
+      trailWidth={1} svgStyle={{width: "100%", height: "100%"}}
       text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
       progress={workspace.studentActivity.evaluablesDonePercent/100}/>
-      <ProgressBarLine containerClassName="progressbar" initialAnimate options={{
-        strokeWidth: 2,
+      <ProgressBarLine containerClassName="workspace-activity__progressbar" initialAnimate options={{
+        strokeWidth: 1,
         duration: 1000,
         color: "#ff9900",
-        trailColor: "#eee",
+        trailColor: "#f5f5f5",
         trailWidth: 1,
         svgStyle: {width: "100%", height: "100%"},
         text: {
-          className: "progressbar-text",
+          className: "text text--progressbar",
           style: {
-            color: "#222"
+            color: "#000"
           }
         }
       }}
-      strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
-      trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+      trailWidth={1} svgStyle={{width: "100%", height: "100%"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
-      progress={workspace.studentActivity.exercisesDonePercent/100}/>onClick=
+      progress={workspace.studentActivity.exercisesDonePercent/100}/>
     </div>
 }
 
@@ -130,47 +135,33 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       });
     }
     
-    let studentBasicInfo = <div className="container container--student-info application-sub-panel__body--basic-info text">
-      <div className="application-sub-panel__item application-sub-panel__item--guider-basic-info">
-        <span>{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</span>
-        <span><span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.records.studyStartDate)}</span></span>
+    let studentBasicInfo = <div className="application-sub-panel__body text">
+      <div className="application-sub-panel__item">
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
+        <div className="application-sub-panel__item-data"><span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.records.studyStartDate)}</span></div>
       </div>
     </div>  
     
-    let studentRecords = <div className="application-list">
+    let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
           let records = data.records;      
 
-          return <div key={data.user.id}>
-          <div className="application-sub-panel__header text text--guider-header">{user.studyProgrammeName}</div>
+          return <div className="react-required-container">
+          <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
+          <div className="application-sub-panel__body" key={data.user.id}>
             {records.map((record, index)=>{
               //TODO remember to add the curriculum reducer information to give the actual curriculum name somehow, this just gives the id
-              return <div key={record.groupCurriculumIdentifier || index}>
+              return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
-                  return (                                             
-                  <div className="application-list__item course" onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                    <div>   
-                      <div className="application-list__item-header application-list__item-header--course">
-                        <span className="text text--coursepicker-course-icon icon-books"></span>
-                        <span className="text text--list-item-title" >
-                          <span>{workspace.name}</span>
-                          {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
-                        </span> 
-                        <span className="text text--list-item-type-title">
-                          <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
-                            workspace.studentActivity.evaluablesDonePercent}%
-                          </span>
-                          <span> / </span>
-                          <span title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
-                            workspace.studentActivity.exercisesDonePercent}%
-                          </span>
-                        </span>
-                      </div>                                                              
+                  return <div className="application-list__item course" key={workspace.id}>
+                    <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                      <span className="text text--coursepicker-course-icon icon-books"></span>
+                      <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
+                      {workspace.studentAcessment ? getAcessment(this.props, workspace) : getActivity(this.props, workspace)}
                     </div>
-                  </div>                  
-                )  
+                  </div>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
                 {record.transferCredits.map((credit)=>{
@@ -181,6 +172,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                 })}
               </div>
             })}
+          </div>
           </div>
         })}
       </div>  
@@ -193,9 +185,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     <div className="application-sub-panel">
       {studentBasicInfo}
     </div>
-    <div className="application-sub-panel">
-      {studentRecords}
-    </div>
+    {studentRecords}
       
     <div className="application-sub-panel">
       {this.props.records.files.length ?
@@ -218,7 +208,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: (state as any).records
+    records: state.records
   }
 };
 

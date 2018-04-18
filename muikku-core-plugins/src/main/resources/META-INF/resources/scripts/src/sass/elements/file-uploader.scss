@@ -14,3 +14,42 @@
 	justify-content: center;
 }
 
+.file-uploader__files-container {
+  padding: 20px 0;
+}
+
+.file-uploader__file {
+	align-items: center;
+	display: flex;
+	padding: 14px 0;
+}
+
+.file-uploader__file-attachment-icon {
+	display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+.file-uploader__file-title {
+	color: $color-primary;
+	display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+.file-uploader__file-delete-icon {
+	color: $color-fatal;
+	cursor: pointer;
+	display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: 1.25rem;
+  justify-content: flex-end;
+}
+

@@ -5,6 +5,7 @@ import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/workspace-activity.scss';
 
 interface StudentWorkspaceProps {
   i18n: i18nType,
@@ -50,19 +51,43 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
   }
   render(){
     let workspace = this.props.workspace;
-    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""}`}>
-        <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleActivitiesVisible}>
+    
+    let stateText;
+    let extraClasses = "";
+    switch (workspace.studentActivity.assessmentState.state){
+      case "pending":
+      case "pending_pass":
+      case "pending_fail":
+        stateText = "plugin.guider.assessmentState.PENDING";
+        extraClasses = "state-PENDING";
+        break;
+      case "pass":
+        stateText = "plugin.guider.assessmentState.PASS";
+        extraClasses = "state-PASSED";
+        break;
+      case "fail":
+        stateText = "plugin.guider.assessmentState.FAIL";
+        extraClasses = "state-FAILED";
+        break;
+      default:
+        stateText = "plugin.guider.assessmentState.UNASSESSED";
+        break;
+    }
+    let resultingStateText = this.props.i18n.text.get(stateText);
+    if (workspace.studentActivity.assessmentState.date){
+      resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
+    }
+    
+    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`} onClick={this.toggleActivitiesVisible}>
+        <div className="application-list__item-header application-list__item-header--course">
           <span className="text text--coursepicker-course-icon icon-books"></span>
-          <span className="text text--list-item-title">
-            <span>{workspace.name}</span>
-            {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
-          </span> 
-          <span className="text text--list-item-type-title">
-            <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
+          <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
+          <span className="text text--list-item-type-title workspace-activity">
+            <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
               workspace.studentActivity.evaluablesDonePercent}%
             </span>
             <span> / </span>
-            <span title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
+            <span className="workspace-activity__exercise-done-percent" title={this.props.i18n.text.get("plugin.guider.headerExercisesTitle",workspace.studentActivity.exercisesDonePercent)}>{
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>
@@ -73,27 +98,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <div className="application-sub-panel__item">
               <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>        
               <div className="application-sub-panel__item-data">
-                <span className="text text--guider-profile-value">{(()=>{
-                  //HAX :D
-                  let text;
-                  switch (workspace.studentActivity.assessmentState){
-                    case "PENDING":
-                    case "PENDING_PASS":
-                    case "PENDING_FAIL":
-                      text = "plugin.guider.assessmentState.PENDING";
-                      break;
-                    case "PASS":
-                      text = "plugin.guider.assessmentState.PASS";
-                      break;
-                    case "FAIL":
-                      text = "plugin.guider.assessmentState.FAIL";
-                      break;
-                    default:
-                      text = "plugin.guider.assessmentState.UNASSESSED";
-                      break;
-                  }
-                  return this.props.i18n.text.get(text);
-                })()}</span></div>
+                <span className="text text--guider-profile-value">{resultingStateText}</span></div>
               </div>              
 
                 

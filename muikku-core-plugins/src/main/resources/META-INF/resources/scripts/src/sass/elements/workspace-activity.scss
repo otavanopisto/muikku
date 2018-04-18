@@ -1,0 +1,24 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.workspace-activity {
+ 
+}
+
+.workspace-activity__progressbar {
+	
+}
+
+ .workspace-activity__assignment-done-percent {
+  color: $color-assignment;
+  font-size: 0.9rem;
+  padding: 0 5px 0 0;
+}
+ 
+.workspace-activity__exercise-done-percent {
+  color: $color-exercise;
+  font-size: 0.9rem;
+  padding: 0 0 0 5px;
+}

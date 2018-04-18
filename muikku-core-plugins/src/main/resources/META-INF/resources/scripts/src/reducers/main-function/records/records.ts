@@ -133,15 +133,15 @@ export default function records(state: RecordsType={
     currentStatus: "WAIT",
     curriculums: []
 }, action: ActionType): RecordsType {
-  if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA"){
+  if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA"){
     return Object.assign({}, state, {
       userData: action.payload
     });
-  } else if (action.type === "UPDATE_ALL_STUDENT_USERS_DATA_STATUS"){
+  } else if (action.type === "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS"){
     return Object.assign({}, state, {
       userDataStatus: action.payload
     });
-  } else if (action.type === "UPDATE_TRANSCRIPT_OF_RECORDS_LOCATION"){
+  } else if (action.type === "UPDATE_RECORDS_LOCATION"){
     return Object.assign({}, state, {
       location: action.payload
     });
@@ -149,11 +149,11 @@ export default function records(state: RecordsType={
     return Object.assign({}, state, {
       curriculums: action.payload
     });
-  } else if (action.type === "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS_STATUS"){
+  } else if (action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS"){
     return Object.assign({}, state, {
       currentStatus: action.payload
     });
-  } else if (action.type === "UPDATE_CURRENT_STUDENT_AND_WORKSPACE_RECORDS"){
+  } else if (action.type === "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE"){
     return Object.assign({}, state, {
       current: action.payload
     });

@@ -171,6 +171,11 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
       let currentUserSchoolDataIdentifier = getState().status.userSchoolDataIdentifier;
       
       dispatch({
+        type: "LOCK_TOOLBAR",
+        payload: null
+      });
+      
+      dispatch({
         type: "SET_CURRENT_GUIDER_STUDENT_EMPTY_LOAD",
         payload: null
       });
@@ -249,6 +254,11 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         type: "UPDATE_CURRENT_GUIDER_STUDENT_STATE",
         payload: <GuiderCurrentStudentStateType>"READY"
       });
+      
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
+      });
     } catch (err){
       dispatch(notificationActions.displayNotification(err.message, 'error'));
       dispatch({
@@ -256,6 +266,10 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         payload: {
           currentState: <GuiderCurrentStudentStateType>"ERROR"
         }
+      });
+      dispatch({
+        type: "UNLOCK_TOOLBAR",
+        payload: null
       });
      }
   }

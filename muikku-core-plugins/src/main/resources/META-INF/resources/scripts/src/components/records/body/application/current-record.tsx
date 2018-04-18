@@ -52,7 +52,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: (state as any).records
+    records: state.records
   }
 };
 
