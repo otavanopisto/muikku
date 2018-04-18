@@ -90,6 +90,11 @@ import fi.otavanopisto.pyramus.webhooks.WebhookStudentGroupStudentCreatePayload;
  */
 public class PyramusMocksRest extends AbstractPyramusMocks {
   
+  public static final Long WORKSPACE1_ID = 1l;
+  public static final Long WORKSPACE2_ID = 2l;
+  
+  public static final Long USERGROUP1_ID = 2l;
+
   public static void mockDefaults(List<String> payloads) throws JsonProcessingException {
     mockCommons();
     mockRoles(payloads);
@@ -455,7 +460,8 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
   }
 
   public static void mockWorkspaces(List<String> payloads) throws JsonProcessingException {
-    mockWorkspace(1l, payloads);
+    mockWorkspace(WORKSPACE1_ID, payloads);
+    mockWorkspace(WORKSPACE2_ID, payloads);
   }
   
   public static void mockWorkspace(Long id, List<String> payloads) throws JsonProcessingException {
@@ -601,7 +607,7 @@ public class PyramusMocksRest extends AbstractPyramusMocks {
 
     OffsetDateTime begin = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC);
     Long creatorId = 1l;
-    Long groupId = 2l;
+    Long groupId = USERGROUP1_ID;
     
     StudentGroup studentGroup = new StudentGroup(groupId, "Group1", "", begin, creatorId, begin, creatorId, begin, null, false, false);
     StudentGroup[] studentGroups = new StudentGroup[] { studentGroup };

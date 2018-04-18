@@ -6,7 +6,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -149,7 +151,12 @@ public class AnnouncerRESTService extends PluginRESTService {
       announcementController.addAnnouncementWorkspace(announcement, workspaceEntity);
     }
     
-    return Response.noContent().build();
+    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
+    
+    return Response
+        .ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces))
+        .build();
   }
 
   @PUT
@@ -295,13 +302,13 @@ public class AnnouncerRESTService extends PluginRESTService {
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
     }
-
+    
     return Response.ok(restModels).build();
   }
   
   @GET
   @Path("/announcements/{ID}")
-  @RESTPermit(AnnouncerPermissions.FIND_ANNOUNCEMENT)
+  @RESTPermit(handling = Handling.INLINE)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -310,10 +317,46 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
     }
     
+    // Permission checks - either global permission to access all announcements or permission via groups etc
+    if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.FIND_ANNOUNCEMENT)) {
+      if (!canSeeAnnouncement(announcement, userEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
+  }
+
+  private boolean canSeeAnnouncement(Announcement announcement, UserEntity userEntity) {
+    if (Boolean.TRUE.equals(announcement.getPubliclyVisible())) {
+      return true;
+    }
+    
+    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
+    Set<Long> userWorkspaceIds = userWorkspaces.stream().map(userWorkspace -> userWorkspace.getId()).collect(Collectors.toSet());
+    
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
+    Set<Long> announcementWorkspaceIds = announcementWorkspaces.stream().map(announcementWorkspace -> announcementWorkspace.getId()).collect(Collectors.toSet());
+
+    if (CollectionUtils.containsAny(announcementWorkspaceIds, userWorkspaceIds)) {
+      return true;
+    }
+    
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
+    Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
+    
+    List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
+    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getId()).collect(Collectors.toSet());
+
+    if (CollectionUtils.containsAny(announcementGroupIds, userGroupIds)) {
+      return true;
+    }
+    
+    // No common groups nor workspaces, return false
+    return false;
   }
 
   private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces) {
