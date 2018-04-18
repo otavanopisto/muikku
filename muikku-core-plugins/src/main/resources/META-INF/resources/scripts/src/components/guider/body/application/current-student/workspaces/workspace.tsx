@@ -51,12 +51,9 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
   render(){
     let workspace = this.props.workspace;
     return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""}`}>
-        <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleActivitiesVisible}>
+        <div className="application-list__item-header" onClick={this.toggleActivitiesVisible}>
           <span className="text text--coursepicker-course-icon icon-books"></span>
-          <span className="text text--list-item-title">
-            <span>{workspace.name}</span>
-            {workspace.nameExtension && <span className="">( {workspace.nameExtension} )</span>}
-          </span> 
+          <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
           <span className="text text--list-item-type-title">
             <span title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
               workspace.studentActivity.evaluablesDonePercent}%

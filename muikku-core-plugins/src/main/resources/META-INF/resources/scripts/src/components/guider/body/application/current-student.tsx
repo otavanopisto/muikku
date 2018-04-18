@@ -78,7 +78,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </span>
     });
     
-    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body application-sub-panel__body--basic-info text">
+    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body text">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
@@ -210,7 +210,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div> : null}
        <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</div>
-        {studentWorkspaces}
+        <div className="application-sub-panel__body">
+          {studentWorkspaces}
+        </div>
       </div>
       <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>

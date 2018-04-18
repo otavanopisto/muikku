@@ -19,10 +19,6 @@
   padding: 10px 0;
 }
 
-.application-sub-panel__body--basic-info {
-
-}
-
 .application-sub-panel__body--labels {
   padding: 10px 0;
 }
@@ -61,7 +57,7 @@
   }
 } 
 
-.application-sub-panel__item-title--readable {
+.application-sub-panel__item-title--hops-readable {
   flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 0;
@@ -129,15 +125,6 @@
 
 .application-sub-panel__file-container {
   padding: 20px;
-}
-
-.application-sub-panel__item--guider-basic-info {
-  flex-basis: 50%;
-  
-  > span {
-    flex-basis: 50%;
-    flex-grow: 1;
-  }  
 }
 
 .application-sub-panel__item--hops-editable {
