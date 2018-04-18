@@ -75,34 +75,41 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         color: "#ce01bd",
         trailColor: "#f5f5f5",
         trailWidth: 1,
-        svgStyle: {width: "100%", height: "100%"},
+        svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "text text--progressbar",
+          className: "text workspace-activity__progressbar-label",
           style: {
-            color: "#000"
+            padding: "4px 8px",
+            position: 'absolute',
+            left: "50%",
+            margin: "0"
           }
         }
       }}
       strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
-      trailWidth={1} svgStyle={{width: "100%", height: "100%"}}
+      trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
       progress={workspace.studentActivity.evaluablesDonePercent/100}/>
+    
       <ProgressBarLine containerClassName="workspace-activity__progressbar" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
         color: "#ff9900",
         trailColor: "#f5f5f5",
         trailWidth: 1,
-        svgStyle: {width: "100%", height: "100%"},
+        svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "text text--progressbar",
+          className: "text workspace-activity__progressbar-label",
           style: {
-            color: "#000"
+            padding: "4px 8px",
+            position: 'absolute',
+            left: "50%",
+            margin: "0"
           }
         }
       }}
       strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
-      trailWidth={1} svgStyle={{width: "100%", height: "100%"}}
+      trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
       progress={workspace.studentActivity.exercisesDonePercent/100}/>
     </div>
@@ -159,8 +166,12 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <span className="text text--coursepicker-course-icon icon-books"></span>
                       <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
-                      {workspace.studentAcessment ? getAcessment(this.props, workspace) : getActivity(this.props, workspace)}
+                      {workspace.studentAcessment ? getAcessment(this.props, workspace) : null}
                     </div>
+                    {!workspace.studentAcessment ? 
+                      <div className="application-list__item-body"> 
+                        {getActivity(this.props, workspace)}
+                      </div> : null }
                   </div>
                 })}
                 {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
