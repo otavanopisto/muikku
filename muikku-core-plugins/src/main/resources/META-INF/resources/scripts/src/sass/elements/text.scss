@@ -624,8 +624,13 @@ b {
 }
 
 .text--workspace-assesment-text {
-	padding: 0 15px;
+	margin: 0 0 0 20px;
 	text-transform: none;
+}
+
+.text--evaluation-request-text {
+	margin: 0 0 0 20px;
+  text-transform: none;
 }
 
 .text--workspace-assesment-grade {
@@ -636,6 +641,7 @@ b {
 	font-size: 1rem;
 	height: 1.875rem;
 	justify-content: center;
+	margin: 0 0 0 20px;
   text-align: center;
   width: 1.875rem;
 
@@ -646,7 +652,7 @@ b {
 	&.state-FAILED {
     background: $color-grade-failed;
   }
-}
+} 
 
 // Coursepicker
 .text--coursepicker-course-icon {
@@ -667,6 +673,8 @@ b {
   padding: 0 10px 0 0;
 }
 
+
+
 .text--list-item-helper-title {
   color: $color-default-helper;
   padding: 0 0 0 15px;
@@ -680,7 +688,7 @@ b {
 	align-items: center;
   display: inline-flex;
   flex-basis: auto;
-  flex-grow: 1;
+  flex-grow: 0;
   flex-shrink: 1;
   font-size: 0.825rem;
   justify-content: flex-end;

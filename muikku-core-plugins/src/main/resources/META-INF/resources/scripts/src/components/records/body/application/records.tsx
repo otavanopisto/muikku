@@ -45,8 +45,8 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   }
   
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
-    return <div className="tr-evalreq" title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}>
-      <span className="icon-assessment-pending"></span>
+    return <div className="text text--list-item-type-title">
+      <span className="text text--evaluation-request-text">{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
     </div>
   }
   
@@ -187,12 +187,13 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
                 {record.workspaces.map((workspace)=>{
-                  return <div className="application-list__item course" key={workspace.id}>
+                  return <div className="application-list__item course course--studies" key={workspace.id}>
                     <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <span className="text text--coursepicker-course-icon icon-books"></span>
                       <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
                       {getEvaluationRequestIfAvailable(this.props, workspace)}
-                      {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : getActivity(this.props, workspace)}
+                      {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
+                      {getActivity(this.props, workspace)}
                     </div>
                   </div>
                 })}
@@ -223,11 +224,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
       {this.props.records.files.length ?
-        <div className="text application-sub-panel__file-container application-list">
+        <div className="uploaded-files text application-list">
           {this.props.records.files.map((file)=>{
-            return <div className="file-uploader__file application-list__item">
-              <span className="file-uploader__file-attachment-icon icon-attachment"></span>
-              <Link className="file-uploader__file-title" key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+            return <div className="uploaded-files__item application-list__item">
+              <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
+              <Link className="uploaded-files__item-title" key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
             </div>
           })}
         </div> :

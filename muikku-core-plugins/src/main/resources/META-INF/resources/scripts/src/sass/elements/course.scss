@@ -23,8 +23,14 @@
   }
 }
 
+.course--studies {
+	padding: 24px 0;
+}
+
 .course--open .text--list-item-title,
-.course--open .text--list-item-title-extension {
+.course--open .text--list-item-title-extension,
+.course--studies .text--list-item-title,
+.course--studies .text--list-item-title-extension {
   font-weight: 600;  
 }
 

@@ -5,6 +5,7 @@
 
 .file-uploader {
   border: 2px solid $color-tertiary;
+  margin: 0 0 20px;
   padding: 20px;
   position: relative;
 }
@@ -14,17 +15,17 @@
 	justify-content: center;
 }
 
-.file-uploader__files-container {
-  padding: 20px 0;
+.uploaded-files {
+  padding: 0;
 }
 
-.file-uploader__file {
+.uploaded-files__item {
 	align-items: center;
 	display: flex;
 	padding: 14px 0;
 }
 
-.file-uploader__file-attachment-icon {
+.uploaded-files__item-attachment-icon {
 	display: inline-flex;
   flex-basis: auto;
   flex-grow: 0;
@@ -33,7 +34,7 @@
   margin-right: 10px;
 }
 
-.file-uploader__file-title {
+.uploaded-files__item-title {
 	color: $color-primary;
 	display: inline-flex;
   flex-basis: auto;
@@ -42,7 +43,7 @@
   padding: 0 10px 0 0;
 }
 
-.file-uploader__file-delete-icon {
+.uploaded-files__item-delete-icon {
 	color: $color-fatal;
 	cursor: pointer;
 	display: inline-flex;

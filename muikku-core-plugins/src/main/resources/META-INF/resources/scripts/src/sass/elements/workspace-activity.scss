@@ -16,10 +16,10 @@
 	max-width: 100%;
 	padding: 10px 0;
 	
-	@include breakpoint($breakpoint-desktop) {
-	  max-width: 350px;
-	  padding: 0;
-  }
+/* 	@include breakpoint($breakpoint-desktop) { */
+/* 	  max-width: 350px; */
+/* 	  padding: 0; */
+/*   } */
 }
 
 .workspace-activity__progressbar {
@@ -45,18 +45,18 @@
     }
   }
   
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: calc(100%);
-    max-width: calc(100%);
+/*   @include breakpoint($breakpoint-desktop) { */
+/*     flex-basis: calc(100%); */
+/*     max-width: calc(100%); */
     
-    &:nth-child(odd) {
-      margin: 0 0 5px;
-    }
+/*     &:nth-child(odd) { */
+/*       margin: 0 0 5px; */
+/*     } */
     
-    &:nth-child(even) {
-      margin: 5px 0 0;
-    }
-  }
+/*     &:nth-child(even) { */
+/*       margin: 5px 0 0; */
+/*     } */
+/*   } */
 }
 
 .workspace-activity__progressbar-label {
