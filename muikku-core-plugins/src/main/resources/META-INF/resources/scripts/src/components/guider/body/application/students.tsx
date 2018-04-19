@@ -9,7 +9,8 @@ import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/label.scss';
-import '~/sass/elements/message.scss';
+import '~/sass/elements/user.scss';
+import '~/sass/elements/application-list.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';

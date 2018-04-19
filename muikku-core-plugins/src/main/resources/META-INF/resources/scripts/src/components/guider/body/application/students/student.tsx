@@ -2,6 +2,9 @@ import { UserType } from "~/reducers/main-function/user-index";
 import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider";
+
+import '~/sass/elements/text.scss';
+import '~/sass/elements/label.scss';
 import '~/sass/elements/user.scss';
 import '~/sass/elements/application-list.scss';
 
@@ -18,7 +21,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
   render(){
     return <div className="application-list__item-content-wrapper message__content">
       <div className="application-list__item-content application-list__item-content--aside">
-        <div className="message__select-container">
+        <div className="user__select-container">
           {this.props.checkbox}
         </div>
       </div>

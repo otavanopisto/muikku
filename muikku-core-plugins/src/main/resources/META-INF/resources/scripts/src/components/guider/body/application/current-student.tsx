@@ -12,6 +12,9 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
+import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/container.scss';
+
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
@@ -192,14 +195,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
             </div>
           })}
         </div> :
-        <div className="file-uploader__files-container text">{
-          this.props.i18n.text.get("plugin.guider.user.details.files.empty")
-        }</div>
+        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.guider.user.details.files.empty")}</div>
       )}
     </div>
     
     return <div className="react-required-container">
-      <div className="application-sub-panel">
+      <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
         {this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.length ? <div className="application-sub-panel__body application-sub-panel__body--labels labels">
           {studentLabels}

@@ -3,10 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-sub-panel:not(:first-child):not(:last-child) {
+.application-sub-panel {
   border-bottom: 5px solid $color-default-item-separator-border;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
+  padding: 0 0 20px;
+  margin: 0 0 20px;
+  
+  &:last-child {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.application-sub-panel--guider-student-header {
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .application-sub-panel__header {

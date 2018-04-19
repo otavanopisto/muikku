@@ -12,6 +12,8 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/file-uploader.scss';
+
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
@@ -159,7 +161,17 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     let studentBasicInfo = <div className="application-sub-panel__body text">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
-        <div className="application-sub-panel__item-data"><span className="text text--guider-profile-value">{this.props.i18n.time.format(this.props.records.studyStartDate)}</span></div>
+        <div className="application-sub-panel__item-data">
+          <span className="text text--guider-profile-value">{this.props.records.studyStartDate ? 
+            this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
+        </div>
+      </div>
+      <div className="application-sub-panel__item">
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyTimeEndLabel")}</div>
+        <div className="application-sub-panel__item-data">
+          <span className="text text--guider-profile-value">{this.props.records.studyStartDate ? 
+            this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
+        </div>
       </div>
     </div>  
     
@@ -202,25 +214,26 @@ class Records extends React.Component<RecordsProps, RecordsState> {
     
     return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
     
-    <div className="application-sub-panel"></div>        
     <div className="application-sub-panel">
       {studentBasicInfo}
     </div>
-    {studentRecords}
-      
+    {studentRecords}    
+    
     <div className="application-sub-panel">
+      <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
+      <div className="application-sub-panel__body">
       {this.props.records.files.length ?
         <div className="text application-sub-panel__file-container application-list">
           {this.props.records.files.map((file)=>{
-            return <Link key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>
-              {file.title}
-            </Link>
+            return <div className="file-uploader__file application-list__item">
+              <span className="file-uploader__file-attachment-icon icon-attachment"></span>
+              <Link className="file-uploader__file-title" key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+            </div>
           })}
         </div> :
-        <div className="text application-sub-panel__file-container">{
-          this.props.i18n.text.get("plugin.guider.user.details.files.empty")
-        }</div>
+        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.guider.user.details.files.empty")}</div>
       }
+      </div>
     </div>
     </BodyScrollKeeper>
   }

@@ -4,7 +4,11 @@ import { WorkspaceType } from "~/reducers/main-function/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
+
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/application-sub-panel.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/course.scss';
 import '~/sass/elements/workspace-activity.scss';
 
 interface StudentWorkspaceProps {
