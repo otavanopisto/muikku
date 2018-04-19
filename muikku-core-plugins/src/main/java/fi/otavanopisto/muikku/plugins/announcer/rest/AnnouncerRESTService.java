@@ -331,19 +331,12 @@ public class AnnouncerRESTService extends PluginRESTService {
   }
 
   private boolean canSeeAnnouncement(Announcement announcement, UserEntity userEntity) {
-    if (Boolean.TRUE.equals(announcement.getPubliclyVisible())) {
-      return true;
-    }
-    
-    List<WorkspaceEntity> userWorkspaces = workspaceEntityController.listActiveWorkspaceEntitiesByUserEntity(userEntity);
-    Set<Long> userWorkspaceIds = userWorkspaces.stream().map(userWorkspace -> userWorkspace.getId()).collect(Collectors.toSet());
-    
-    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
-    Set<Long> announcementWorkspaceIds = announcementWorkspaces.stream().map(announcementWorkspace -> announcementWorkspace.getId()).collect(Collectors.toSet());
-
-    if (CollectionUtils.containsAny(announcementWorkspaceIds, userWorkspaceIds)) {
-      return true;
-    }
+    /**
+     * This is not very efficient, but things needed to be checked are
+     * - Is the user in a group the announcement is published for
+     * - Is the user member of a workspace the announcement is for
+     * - Is the announcement public
+     */
     
     List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
     Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
@@ -352,6 +345,28 @@ public class AnnouncerRESTService extends PluginRESTService {
     Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getId()).collect(Collectors.toSet());
 
     if (CollectionUtils.containsAny(announcementGroupIds, userGroupIds)) {
+      return true;
+    }
+    
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
+    if (CollectionUtils.isNotEmpty(announcementWorkspaces)) {
+      /**
+       * If announcement is tied to any workspace, the user needs to have access to a workspace to find
+       * the announcement.
+       */
+
+      for (AnnouncementWorkspace announcementWorkspace : announcementWorkspaces) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(announcementWorkspace.getWorkspaceEntityId());
+        
+        if (sessionController.hasWorkspacePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+    
+    if (Boolean.TRUE.equals(announcement.getPubliclyVisible())) {
       return true;
     }
     

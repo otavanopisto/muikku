@@ -141,12 +141,21 @@ public class AnnouncerPermissionsTestsIT extends AbstractAnnouncerRESTTestsIT {
 
   @Test
   public void testNonMemberWorkspaceAnnouncement() throws NoSuchFieldException {
-    // Workspace announcement should be fectchable even though users are not members of it
-    roles(TestRole.ADMIN, TestRole.MANAGER, TestRole.TEACHER, TestRole.STUDENT).forEach(role -> { 
+    // Workspace announcement is fetchable via FIND_ANNOUNCEMENT permission
+    roles(TestRole.ADMIN, TestRole.MANAGER, TestRole.TEACHER).forEach(role -> { 
       Response response = role.getRequest()
         .get("/announcer/announcements/{ID}", workspace2AnnouncementId);
       assertEquals(String.format("Role %s can not see announcement they should", role.getRole()), 200, response.statusCode());
     });
+  }
+
+  @Test
+  public void testNonMemberStudentWorkspaceAnnouncement() throws NoSuchFieldException {
+    // Student that is not member of a workspace cannot see the announcements
+
+    Response response = asStudent()
+      .get("/announcer/announcements/{ID}", workspace2AnnouncementId);
+    assertEquals(String.format("Role %s can not see announcement they should", TestRole.STUDENT), 403, response.statusCode());
   }
 
   @Test
