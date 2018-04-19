@@ -3,7 +3,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
-import { WorkspaceType, WorkspaceStudentAccessmentType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
+import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
 import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
 import { StateType } from '~/reducers';
 
@@ -100,11 +100,11 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
           //and now we need to get the acessment, we are hopefully going to find one, this is the final score, and if this
           //is available we won't use the activity
           //note how it comes from the server as an array, we pick the first one for reference
-          workspace.studentAcessment = (<Array<WorkspaceStudentAccessmentType>>await promisify(mApi().workspace.workspaces
-              .students.assessments.read(workspace.id, user.id), 'callback')())[0];
+          workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
+              .students.assessments.read(workspace.id, user.id), 'callback')();
           
           //if we have nothing there, that means the acessment is undefined then we need to get the activity for that workspsace
-          if (!workspace.studentAcessment){
+          if (!workspace.studentAssessments.assessments.length){
             //And here we get it
             workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
                 .read(workspace.id), 'callback')();
