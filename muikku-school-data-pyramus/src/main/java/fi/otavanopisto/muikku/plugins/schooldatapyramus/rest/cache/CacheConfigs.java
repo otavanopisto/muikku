@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,6 +37,9 @@ public class CacheConfigs {
       config = new ObjectMapper().readValue(settingStream, PyramusCacheConfig.class);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Failed to parse Pyramus cache settings file", e);
+    }
+    finally {
+      IOUtils.closeQuietly(settingStream);
     }
     
     if (settingStream == null) {    
