@@ -109,11 +109,11 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                     <div className="message__select-container">
                       {checkbox}
                     </div>
-                  </div>
+                  </div>              
                   <div className="application-list__item-content application-list__item-content--main">
                     <div className="application-list__item-header application-list__item-header--message">
-                      <div className="text text--communicator-usernames">
-                        <span className="text text--communicator-username">{this.getThreadUserNames(thread, this.props.userId)}</span>
+                      <div className="text text--list-item-title">
+                        <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
                       </div>
                       {thread.messageCountInThread > 1 ? <div className="text text--item-counter">
                       {thread.messageCountInThread}
