@@ -112,6 +112,7 @@ export interface RecordsType {
   userData: AllStudentUsersDataType,
   userDataStatus: AllStudentUsersDataStatusType,
   studyStartDate: string,
+  studyTimeEnd: string,
   grades: RecordsGradesType,
   files: Array<UserFileType>,
   currentStatus: CurrentStudentUserAndWorkspaceStatusType,
@@ -129,6 +130,7 @@ export default function records(state: RecordsType={
     files: (window as any).FILES,
     grades: (window as any).GRADES,
     studyStartDate: (window as any).STUDY_START_DATE || null,
+    studyTimeEnd: (window as any).STUDY_TIME_END || null,
     current: null,
     currentStatus: "WAIT",
     curriculums: []
