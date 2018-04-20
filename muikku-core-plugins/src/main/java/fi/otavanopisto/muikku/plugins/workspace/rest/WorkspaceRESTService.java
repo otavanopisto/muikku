@@ -1216,7 +1216,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       // Access
       
-      if (!sessionController.hasEnvironmentPermission(MuikkuPermissions.COPY_WORKSPACE)) {
+      if (!sessionController.hasWorkspacePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
         return Response.status(Status.FORBIDDEN).build();
       }
 
