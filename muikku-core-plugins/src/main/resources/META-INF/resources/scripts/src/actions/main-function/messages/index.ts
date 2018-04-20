@@ -65,6 +65,10 @@ export interface REMOVE_ONE_LABEL_FROM_ALL_MESSAGE_THREADS extends SpecificActio
 
 let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = function updateUnreadMessageThreadsCount() {
   return async ( dispatch: ( arg: AnyActionType ) => any, getState: () => StateType ) => {
+    if (!getState().status.loggedIn){
+      return;
+    }
+    
     try {
       dispatch( {
         type: "UPDATE_UNREAD_MESSAGE_THREADS_COUNT",
