@@ -11,6 +11,7 @@ import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
 import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { UserType } from 'reducers/main-function/user-index';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
+import { StateType } from '~/reducers';
 
 let store = runApp(reducer, App);
 mainFunctionDefault(store);
@@ -38,12 +39,17 @@ if (currentLocationHasData){
   loadLocation(currentLocationData);
 }
 
-store.dispatch(<Action>loadUserIndexBySchoolData(store.getState().status.userSchoolDataIdentifier, (user:UserType)=>{
-  if (!currentLocationHasData && user.curriculumIdentifier){
-    location.hash = "#?" + queryString.stringify({
-      c: [user.curriculumIdentifier]
-    }, {arrayFormat: 'bracket'});
-  } else if (!currentLocationHasData){
-    loadLocation(currentLocationData);
-  }
-}));
+let state:StateType = store.getState();
+if (state.status.loggedIn){
+  store.dispatch(<Action>loadUserIndexBySchoolData(state.status.userSchoolDataIdentifier, (user:UserType)=>{
+    if (!currentLocationHasData && user.curriculumIdentifier){
+      location.hash = "#?" + queryString.stringify({
+        c: [user.curriculumIdentifier]
+      }, {arrayFormat: 'bracket'});
+    } else if (!currentLocationHasData){
+      loadLocation(currentLocationData);
+    }
+  }));
+} else {
+  loadLocation(currentLocationData);
+}

@@ -7,6 +7,8 @@ import { StateType } from '~/reducers';
 import { Store } from 'redux';
 
 export default function(store: Store<StateType>){
+  let state:StateType = store.getState();
+  
   let websocket = new Websocket(store, {
     "Communicator:newmessagereceived": {
       actions: [updateUnreadMessageThreadsCount],
@@ -23,7 +25,6 @@ export default function(store: Store<StateType>){
   });
   store.dispatch(<Action>updateUnreadMessageThreadsCount());
   
-  let state:StateType = store.getState();
   if (state.status.loggedIn){
     mApi().chat.status.read().callback(function(err:Error, result:{mucNickName:string,enabled:boolean}) {
       if (result && result.enabled) {
