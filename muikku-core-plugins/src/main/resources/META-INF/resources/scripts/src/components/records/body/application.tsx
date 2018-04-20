@@ -10,9 +10,8 @@ import {StateType} from '~/reducers';
 import PrimaryOption from './application/primary';
 import Toolbar from './application/toolbar';
 
-
-
 interface StudiesApplicationProps {
+  aside: React.ReactElement<any>,
   i18n: i18nType
 }
 
@@ -31,7 +30,7 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
 
       
     return (<div className="container container--full">
-      <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption}>
+      <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
         <Records/>
         <CurrentRecord/>
         <Vops/>
