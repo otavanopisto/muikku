@@ -23,14 +23,21 @@
         <div class="gt-course-activity-row">
           <label>{#localize key="plugin.guider.assessmentStateLabel"/}</label>
           <span>
-            {@select key=activity.assessmentState}
-              {@eq value="PENDING"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
-              {@eq value="PENDING_PASS"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
-              {@eq value="PENDING_FAIL"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
-              {@eq value="PASS"}{#localize key="plugin.guider.assessmentState.PASS"/}{/eq}
-              {@eq value="FAIL"}{#localize key="plugin.guider.assessmentState.FAIL"/}{/eq}
+            {@select key=activity.assessmentState.state}
+              {@eq value="pending"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
+              {@eq value="pending_pass"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
+              {@eq value="pending_fail"}{#localize key="plugin.guider.assessmentState.PENDING"/}{/eq}
+              {@eq value="pass"}{#localize key="plugin.guider.assessmentState.PASS"/}{/eq}
+              {@eq value="fail"}{#localize key="plugin.guider.assessmentState.FAIL"/}{/eq}
               {@none}{#localize key="plugin.guider.assessmentState.UNASSESSED"/}{/none}
             {/select}
+          </span>
+          <span>
+          {@gt key=activity.assessmentState value=""}
+           ({activity.assessmentState.date|formatDate})
+           {:else}
+           -
+           {/gt}
           </span>
         </div>
         
