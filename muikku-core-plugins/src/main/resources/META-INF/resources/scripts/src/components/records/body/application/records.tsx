@@ -170,8 +170,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyTimeEndLabel")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.records.studyStartDate ? 
-            this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
+          <span className="text text--guider-profile-value">{this.props.records.studyTimeEnd ? 
+            this.props.i18n.time.format(this.props.records.studyTimeEnd) : "-"}</span>
         </div>
       </div>
     </div>  
@@ -181,9 +181,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           let user = data.user;
           let records = data.records;      
 
-          return <div className="react-required-container">
+          return <div className="react-required-container" key={data.user.id}>
           <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
-          <div className="application-sub-panel__body" key={data.user.id}>
+          <div className="application-sub-panel__body">
             {records.map((record, index)=>{
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
@@ -227,9 +227,9 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       {this.props.records.files.length ?
         <div className="uploaded-files text application-list">
           {this.props.records.files.map((file)=>{
-            return <div className="uploaded-files__item application-list__item">
+            return <div className="uploaded-files__item application-list__item" key={file.id}>
               <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
-              <Link className="uploaded-files__item-title" key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+              <Link className="uploaded-files__item-title" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
             </div>
           })}
         </div> :

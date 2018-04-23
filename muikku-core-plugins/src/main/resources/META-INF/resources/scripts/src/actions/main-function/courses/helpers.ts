@@ -85,7 +85,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
     let actualCourses = nCourses.concat([]);
     if (hasMore){
       //we got to get rid of that extra loaded message
-      nCourses.pop();
+      actualCourses.pop();
     }
     
     //Create the payload for updating all the communicator properties
