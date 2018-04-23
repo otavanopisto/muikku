@@ -37,7 +37,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
         ) : (
           <div className="text text--panel-nothing">
             {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part1')}
-            <Link href="/coursepicker">
+            <Link href="/coursepicker" className="text__panel-link">
               {this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.coursepicker')}
             </Link>
             {" "}{this.props.i18n.text.get('plugin.frontPage.workspaces.noWorkspaces.part2')}
