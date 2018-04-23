@@ -15,11 +15,12 @@ import '~/sass/elements/avatar.scss';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops';
+import FileDeleteDialog from './file-delete-dialog';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
-  addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider';
+  addFileToCurrentStudent} from '~/actions/main-function/guider';
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
 import {UserFileType} from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
@@ -29,7 +30,6 @@ interface CurrentStudentProps {
   i18n: i18nType,
   guider: GuiderType,
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType,
-  removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType,
   displayNotification: DisplayNotificationTriggerType
 }
 
@@ -187,9 +187,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           {this.props.guider.currentStudent.files.map((file)=>{
             return <Link key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>
               {file.title}
-              <Link disablePropagation onClick={this.props.removeFileFromCurrentStudent.bind(null, file)}>{
+              <FileDeleteDialog file={file}><Link disablePropagation>{
                 this.props.i18n.text.get("plugin.guider.user.details.files.file.remove")
-              }</Link>
+              }</Link></FileDeleteDialog>
             </Link>
           })}
         </div> :
@@ -237,7 +237,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({addFileToCurrentStudent, removeFileFromCurrentStudent, displayNotification}, dispatch);
+  return bindActionCreators({addFileToCurrentStudent, displayNotification}, dispatch);
 };
 
 export default connect(

@@ -1,4 +1,4 @@
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import { GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType } from '~/reducers/main-function/guider';
 import { loadStudentsHelper } from './helpers';
@@ -138,6 +138,9 @@ let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = funct
         payload: file
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
@@ -260,6 +263,9 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
         payload: null
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
       dispatch({
         type: "UPDATE_GUIDER_ALL_PROPS",
@@ -289,6 +295,9 @@ async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<
       });
     }
   } catch (err){
+    if (!(err instanceof MApiError)){
+      throw err;
+    }
     dispatch(notificationActions.displayNotification(err.message, 'error'));
   }
 }
@@ -310,6 +319,9 @@ async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<Guide
       });
     }
   } catch (err){
+    if (!(err instanceof MApiError)){
+      throw err;
+    }
     dispatch(notificationActions.displayNotification(err.message, 'error'));
   }
 }
@@ -359,6 +371,9 @@ let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilte
         }), 'callback')()) || []
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
@@ -377,6 +392,9 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
         }), 'callback')()) || []
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
@@ -401,6 +419,9 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
         payload: newLabel
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
@@ -438,6 +459,9 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
         }
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
@@ -456,6 +480,9 @@ let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function remove
         payload: label.id
       });
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
