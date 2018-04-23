@@ -33,11 +33,11 @@
             {/select}
           </span>
           <span>
-          {@gt key=activity.assessmentState value=""}
-           ({activity.assessmentState.date|formatDate})
-           {:else}
-           -
-           {/gt}
+	      {@gt key=activity.assessmentState value=""}
+	        ({activity.assessmentState.date|formatDate})
+	      {:else}
+	        -
+	      {/gt}
           </span>
         </div>
         
