@@ -15,16 +15,6 @@
   flex-shrink: 1;
   max-width: 100%;
   padding: 10px 0 0;
-  
-  &:hover,
-  &.hover,
-  &:active,
-  &.active {
-  
-    svg {
-      opacity: 0.9;
-    }
-  }
 }
 
 .workspace-activity__progressbar {
@@ -41,6 +31,7 @@
 .workspace-activity__progressbar--studies {
   
   svg {
+    @include prefix(transition, webkit ms o moz, opacity 0.2s ease-in-out);
     opacity: 0.3;
   }
 

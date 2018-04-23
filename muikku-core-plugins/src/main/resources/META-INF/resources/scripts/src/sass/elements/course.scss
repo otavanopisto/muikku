@@ -25,6 +25,16 @@
 
 .course--studies {
 	padding: 24px 0;
+	
+	&:hover,
+  &.hover,
+  &:active,
+  &.active {
+  
+    svg {
+      opacity: 0.9;
+    }
+  }
 }
 
 .course--open .text--list-item-title,

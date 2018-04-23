@@ -88,6 +88,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
       background-color: $color-menu-default-header-background;
       
       .menu__header__button--close {
+        @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
         position: absolute;
         height: $menu-header-height;
         width: 45px;

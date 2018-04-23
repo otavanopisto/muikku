@@ -24,10 +24,10 @@
 }
 
 .application-list__item {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   background-color: $color-application-list-item-background;
   cursor: pointer;
   -webkit-touch-callout: none;
-  transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   user-select: none;
   position: relative;
