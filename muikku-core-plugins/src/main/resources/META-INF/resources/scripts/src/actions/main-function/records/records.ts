@@ -96,19 +96,10 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
         
         //Now we need to get into one by one workspace per that specific user
         await Promise.all(workspaceSet.map(async (workspace)=>{
-          
-          //and now we need to get the acessment, we are hopefully going to find one, this is the final score, and if this
-          //is available we won't use the activity
-          //note how it comes from the server as an array, we pick the first one for reference
           workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
               .students.assessments.read(workspace.id, user.id), 'callback')();
-          
-          //if we have nothing there, that means the acessment is undefined then we need to get the activity for that workspsace
-          if (!workspace.studentAssessments.assessments.length){
-            //And here we get it
-            workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
-                .read(workspace.id), 'callback')();
-          }
+          workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
+            .read(workspace.id), 'callback')();
         }));
       }));
       
