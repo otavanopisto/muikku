@@ -102,7 +102,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         text: {
           className: "text workspace-activity__progressbar-label",
           style: {
-            left: workspace.studentActivity.evaluablesDonePercent + "%"
+            right: 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
           }
         }
       }}
@@ -121,7 +121,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         text: {
           className: "text workspace-activity__progressbar-label",
           style: {
-            left: workspace.studentActivity.exercisesDonePercent + "%"
+            right: 100 - workspace.studentActivity.exercisesDonePercent + "%"
           }
         }
       }}

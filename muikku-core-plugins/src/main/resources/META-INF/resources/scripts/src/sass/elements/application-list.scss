@@ -37,16 +37,6 @@
     -webkit-user-select: auto;
     user-select: auto;
   }
-    
-  &:hover, 
-  &.hover {
-    background-color: $color-application-list-item-background-hover;
-  }
-
-  &:active, 
-  &.active {
-    background-color: $color-application-list-item-background-active;
-  }
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
