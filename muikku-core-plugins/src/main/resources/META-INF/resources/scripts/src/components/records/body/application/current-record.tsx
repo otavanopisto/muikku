@@ -29,8 +29,17 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     } else if (this.props.records.currentStatus === "LOADING"){
       return null;
     }
-    return <div>
-      <h2>{this.props.records.current.workspace.name}</h2>
+    return <div className="application-list">
+      <div className="application-list__item course course--studies" key={this.props.records.current.workspace.id}>
+      <div className="application-list__item-header" key={this.props.records.current.workspace.id}>
+        <span className="text text--course-icon icon-books"></span>
+        <span className="text text--list-item-title">{this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--list-item-title-extension">({this.props.records.current.workspace.nameExtension})</span>}</span> 
+        {getEvaluationRequestIfAvailable(this.props, workspace)}
+        {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
+        {getActivity(this.props, workspace)}
+      </div>
+  </div>
+    
       <h3>{this.props.i18n.text.get("plugin.records.tasks.evaluated.topic")}</h3>
       <div className="application-list">
         {this.props.records.current.materials.map((material)=>{
