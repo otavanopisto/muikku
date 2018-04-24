@@ -10,6 +10,11 @@ import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import Material from './current-record/material';
 
+import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/course.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/application-list.scss';
+
 interface CurrentRecordProps {
   i18n: i18nType,
   records: RecordsType
@@ -34,9 +39,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
       <div className="application-list__item-header" key={this.props.records.current.workspace.id}>
         <span className="text text--course-icon icon-books"></span>
         <span className="text text--list-item-title">{this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--list-item-title-extension">({this.props.records.current.workspace.nameExtension})</span>}</span> 
-        {getEvaluationRequestIfAvailable(this.props, workspace)}
-        {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
-        {getActivity(this.props, workspace)}
+
       </div>
   </div>
     
