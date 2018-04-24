@@ -86,6 +86,8 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
     if (!workspace.studentActivity){
       return null;
+    } else if ((workspace.studentActivity.exercisesTotal + workspace.studentActivity.evaluablesTotal) === 0){
+      return null;
     }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
