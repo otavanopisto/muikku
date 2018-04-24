@@ -153,7 +153,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       return <div className="empty"><span>{"ERROR"}</span></div>
     }    
     
-    if (Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
+    if (!Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
       this.props.records.curriculums.forEach((curriculum)=>{
         storedCurriculumIndex[curriculum.identifier] = curriculum.name;
       });
@@ -184,7 +184,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           return <div className="react-required-container" key={data.user.id}>
           <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
           <div className="application-sub-panel__body">
-            {records.map((record, index)=>{
+            {records.length ? records.map((record, index)=>{
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}  
                   {record.workspaces.map((workspace)=>{
@@ -215,7 +215,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </div>
                   </div>
               </div>
-            })}
+            }) : <h4>{this.props.i18n.text.get("TODO no records")}</h4>}
           </div>
           </div>
         })}
