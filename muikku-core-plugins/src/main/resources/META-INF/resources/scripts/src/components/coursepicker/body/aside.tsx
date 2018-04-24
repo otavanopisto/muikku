@@ -30,7 +30,7 @@ class NavigationAside extends React.Component<NavigationAsideProps, NavigationAs
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).filter( ( i: string ) => i !== educationType.identifier ) } ), { arrayFormat: 'bracket' } ) :
             queryString.stringify( Object.assign( {}, locationData, { e: ( locationData.e || [] ).concat( educationType.identifier ) } ), { arrayFormat: 'bracket' } ) )
           return <NavigationElement key={educationType.identifier} isActive={isActive} hash={hash}>{educationType.name}</NavigationElement>
-        } )}
+        })}
       </NavigationTopic>
       <NavigationTopic name={this.props.i18n.text.get('plugin.coursepicker.filters.curriculum')}>
         {this.props.courses.avaliableFilters.curriculums.map( ( curriculum: CourseCurriculumFilterType ) => {
