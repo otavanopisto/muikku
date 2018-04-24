@@ -26,15 +26,7 @@ class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbar
   private searchTimer:number;
   constructor(props: StudiesToolbarProps){
     super(props);
-    this.onGoBackClick = this.onGoBackClick.bind(this);
-    this.getBackByHash = this.getBackByHash.bind(this);    
-  }
-  
-  getBackByHash(): string{
-    let locationData = queryString.parse(document.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
-    delete locationData.c;
-    let newHash = "#?" + queryString.stringify(locationData, {arrayFormat: 'bracket'});
-    return newHash;
+    this.onGoBackClick = this.onGoBackClick.bind(this);   
   }
   
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
@@ -46,11 +38,11 @@ class StudiesToolbar extends React.Component<StudiesToolbarProps, StudiesToolbar
       if (canGoBack){
         history.back();
       } else {
-        history.replaceState('', '', this.getBackByHash());
+        history.replaceState('', '', '#');
         window.dispatchEvent(new HashChangeEvent("hashchange"));
       }
     } else {
-      location.hash = this.getBackByHash();
+      location.hash = "#";
     }
   }
   
