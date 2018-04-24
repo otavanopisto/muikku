@@ -623,7 +623,8 @@ b {
   font-weight: 400;  
 }
 
-.text--workspace-assesment-text {
+.text--workspace-assesment-text,
+.text--workspace-credit-text {
 	margin: 0 0 0 20px;
 	text-transform: none;
 }
@@ -633,7 +634,8 @@ b {
   text-transform: none;
 }
 
-.text--workspace-assesment-grade {
+.text--workspace-assesment-grade,
+.text--workspace-credit-grade {
 	align-items: center;
 	border-radius: 2px;
 	color: $color-default;

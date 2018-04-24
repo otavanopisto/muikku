@@ -58,10 +58,9 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     transferCredit.gradingScaleIdentifier,
     transferCredit.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
-  return <div className="TODO transfer credit value">
-    <span className="TODO transfer-credit-text">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
-    &nbsp;
-    <span className={`TODO workspace-assesment-score ${grade.passing ? "credit-passed" : "credit-failed"}`}>
+  return <div className="text text--list-item-type-title">
+    <span className="text text--workspace-credit-text">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
+    <span className={`text text--workspace-credit-grade ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {grade.grade}
     </span>
   </div>
@@ -186,25 +185,34 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__body">
             {records.map((record, index)=>{
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
-                {record.workspaces.map((workspace)=>{
-                  return <div className="application-list__item course course--studies" key={workspace.id}>
-                    <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                      <span className="text text--coursepicker-course-icon icon-books"></span>
-                      <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
-                      {getEvaluationRequestIfAvailable(this.props, workspace)}
-                      {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
-                      {getActivity(this.props, workspace)}
+                {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}  
+                  {record.workspaces.map((workspace)=>{
+                    return <div className="application-list__item course course--studies" key={workspace.id}>
+                      <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                        <span className="text text--coursepicker-course-icon icon-books"></span>
+                        <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
+                        {getEvaluationRequestIfAvailable(this.props, workspace)}
+                        {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
+                        {getActivity(this.props, workspace)}
+                      </div>
+                    </div>
+                  })}
+                
+                {record.transferCredits.length ? 
+                  <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.transferCredits")}</div> : null}
+                  <div className="application-sub-panel__body">
+                    <div className="application-list">
+                    {record.transferCredits.map((credit)=>{
+                      return <div className="application-list__item course course--studies" key={credit.date}>
+                      <div className="application-list__item-header">
+                          <span className="text text--coursepicker-course-icon icon-books"></span>  
+                          <span className="text text--list-item-title">{credit.courseName}</span>
+                          {getTransferCreditValue(this.props, credit)}
+                      </div>
+                      </div>
+                    })}
                     </div>
                   </div>
-                })}
-                {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
-                {record.transferCredits.map((credit)=>{
-                  return <div key={credit.date}>
-                    <span>{credit.courseName}</span>
-                    {getTransferCreditValue(this.props, credit)}
-                  </div>
-                })}
               </div>
             })}
           </div>
@@ -233,7 +241,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
             </div>
           })}
         </div> :
-        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.guider.user.details.files.empty")}</div>
+        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.records.files.empty")}</div>
       }
       </div>
     </div>
