@@ -186,7 +186,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}  
+                {record.groupCurriculumIdentifier ? <div className="application-list__header text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</div> : null}  
                   {record.workspaces.map((workspace)=>{
                     return <div className="application-list__item course course--studies" key={workspace.id}>
                       <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
@@ -198,22 +198,17 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       </div>
                     </div>
                   })}
-                
                 {record.transferCredits.length ? 
-                  <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.transferCredits")}</div> : null}
-                  <div className="application-sub-panel__body">
-                    <div className="application-list">
+                  <div className="application-list__header text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</div> : null}
                     {record.transferCredits.map((credit)=>{
-                      return <div className="application-list__item course course--studies" key={credit.date}>
-                      <div className="application-list__item-header">
+                      return <div className="application-list__item course course--credits" key={credit.date}>
+                        <div className="application-list__item-header">
                           <span className="text text--transfer-credit-icon icon-books"></span>  
                           <span className="text text--list-item-title">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}
-                      </div>
+                        </div>
                       </div>
                     })}
-                    </div>
-                  </div>
               </div>
             }) : <h4>{this.props.i18n.text.get("TODO no records")}</h4>}
           </div>
