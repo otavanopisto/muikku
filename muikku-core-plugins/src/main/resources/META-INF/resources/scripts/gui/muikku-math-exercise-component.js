@@ -87,12 +87,13 @@
       // Initialize digabi editor
       makeRichText(this.element.find(".muikku-math-exercise-field-editor")[0], {
         screenshot: {
-          saver: ({data}) => {
-            console.log("saver");
-            new Promise(resolve => {
-              const reader = new FileReader()
-              reader.onload = evt => resolve(evt.target.result)
-              reader.readAsDataURL(data)
+          saver: function (image) {
+            return new Promise(function (resolve) {
+              const reader = new FileReader();
+              reader.onload = function (evt) {
+                resolve(evt.target.result);
+              };
+              reader.readAsDataURL(image.data);
             });
           },
           limit: 10
@@ -177,42 +178,40 @@
           MathJax.Hub.Queue(['Text', jax, '\\displaystyle{' + latex + '}']);
   
           // Take the resulting SVG and return it to the callback
-          MathJax.Hub.Queue(() => {
+          MathJax.Hub.Queue($.proxy(function () {
             var svgElement = this.element.find('.muikku-math-exercise-field-result svg');
             if (svgElement.length) {
               var svg = svgElement.attr('xmlns', "http://www.w3.org/2000/svg")
               svg.find('use').each(function () {
-                var use = $(this)
-                if (use[0].outerHTML.indexOf('xmlns:xlink') === -1) {
-                  use.attr('xmlns:xlink', 'http://www.w3.org/1999/xlink') //add these for safari
+                var use = $(this);
+                var useOuterHTML = use[0].outerHTML;
+                
+                if (typeof useOuterHTML === 'undefined') {
+                  // IE fix
+                  useOuterHTML = $('<div>').append(use.clone()).html();
                 }
-              })
-              var svgHtml = svg.prop('outerHTML')
+                
+                if (useOuterHTML.indexOf('xmlns:xlink') === -1) {
+                  use.attr('xmlns:xlink', 'http://www.w3.org/1999/xlink'); //add these for safari
+                }
+              });
+              var svgHtml = svg.prop('outerHTML');
+              
+              if (typeof svgHtml === 'undefined') {
+                // IE fix
+                svgHtml = $('<div>').append($(svg).clone()).html();
+              }
+              
               //firefox fix
-              svgHtml = svgHtml.replace(' xlink=', ' xmlns:xlink=')
+              svgHtml = svgHtml.replace(' xlink=', ' xmlns:xlink=');
               // Safari xlink ns issue fix
-              svgHtml = svgHtml.replace(/ ns\d+:href/gi, ' xlink:href')
-              cb('data:image/svg+xml;base64,' + window.btoa(svgHtml))
+              svgHtml = svgHtml.replace(/ ns\d+:href/gi, ' xlink:href');
+              
+              cb('data:image/svg+xml;charset=utf8,' + encodeURIComponent(svgHtml));
             } else {
-              cb('data:image/svg+xml;base64,' + window.btoa(`<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-                  <svg width="17px" height="15px" viewBox="0 0 17 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                      <title>Group 2</title>
-                      <defs></defs>
-                      <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                          <g transform="translate(-241.000000, -219.000000)">
-                              <g transform="translate(209.000000, 207.000000)">
-                                  <rect x="-1.58632797e-14" y="0" width="80" height="40"></rect>
-                                  <g transform="translate(32.000000, 12.000000)">
-                                      <polygon id="Combined-Shape" fill="#9B0000" fill-rule="nonzero" points="0 15 8.04006 0 16.08012 15"></polygon>
-                                      <polygon id="Combined-Shape-path" fill="#FFFFFF" points="7 11 9 11 9 13 7 13"></polygon>
-                                      <polygon id="Combined-Shape-path" fill="#FFFFFF" points="7 5 9 5 9 10 7 10"></polygon>
-                                  </g>
-                              </g>
-                          </g>
-                      </g>
-                  </svg>`));
+              cb('data:image/svg+xml;charset=utf8,' + window.btoa("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg width=\"17px\" height=\"15px\" viewBox=\"0 0 17 15\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n  <title>Group 2</title>\n  <defs></defs>\n  <g stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n    <g transform=\"translate(-241.000000, -219.000000)\">\n      <g transform=\"translate(209.000000, 207.000000)\">\n        <rect x=\"-1.58632797e-14\" y=\"0\" width=\"80\" height=\"40\"></rect>\n        <g transform=\"translate(32.000000, 12.000000)\">\n          <polygon id=\"Combined-Shape\" fill=\"#9B0000\" fill-rule=\"nonzero\" points=\"0 15 8.04006 0 16.08012 15\"></polygon>\n          <polygon id=\"Combined-Shape-path\" fill=\"#FFFFFF\" points=\"7 11 9 11 9 13 7 13\"></polygon>\n          <polygon id=\"Combined-Shape-path\" fill=\"#FFFFFF\" points=\"7 5 9 5 9 10 7 10\"></polygon>\n        </g>\n      </g>\n    </g>\n  </g>\n</svg>"));
             }
-          });
+          }, this));
         }
       }, this));
     },
