@@ -57,6 +57,7 @@ public class WorkspaceMathExerciseFieldIOHandler implements WorkspaceFieldIOHand
     doc = new Cleaner(Whitelist.relaxed()
         .addAttributes("div", "id", "class")
         .addAttributes("span", "id", "class")
+        .addProtocols("img", "src", "data")
         .removeTags("a"))
         .clean(doc);
     doc.select("a[target]").attr("rel", "noopener noreferer");
