@@ -9,7 +9,6 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
-import '~/sass/elements/message.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/file-uploader.scss';

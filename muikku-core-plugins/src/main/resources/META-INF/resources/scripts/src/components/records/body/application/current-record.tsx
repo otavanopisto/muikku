@@ -10,6 +10,11 @@ import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import Material from './current-record/material';
 
+import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/course.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/application-list.scss';
+
 interface CurrentRecordProps {
   i18n: i18nType,
   records: RecordsType
@@ -29,8 +34,15 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     } else if (this.props.records.currentStatus === "LOADING"){
       return null;
     }
-    return <div>
-      <h2>{this.props.records.current.workspace.name}</h2>
+    return <div className="application-list">
+      <div className="application-list__item course course--studies" key={this.props.records.current.workspace.id}>
+      <div className="application-list__item-header" key={this.props.records.current.workspace.id}>
+        <span className="text text--course-icon icon-books"></span>
+        <span className="text text--list-item-title">{this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--list-item-title-extension">({this.props.records.current.workspace.nameExtension})</span>}</span> 
+
+      </div>
+  </div>
+    
       <h3>{this.props.i18n.text.get("plugin.records.tasks.evaluated.topic")}</h3>
       <div className="application-list">
         {this.props.records.current.materials.map((material)=>{
