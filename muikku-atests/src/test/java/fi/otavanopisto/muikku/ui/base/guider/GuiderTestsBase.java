@@ -45,7 +45,7 @@ public class GuiderTestsBase extends AbstractUITest {
       waitUntilElementCount(".application-list .user--guider", 1);
       waitForPresent(".application-list .user--guider .application-list__item-header--student .text--list-item-title");
       assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-title", "Second User");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-helper-title", "teststudent@example.com");
+      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-helper-title", "te...@example.com");
       assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-type-title", "Test Study Programme");
     } finally {
       deleteWorkspace(workspace.getId());
@@ -86,6 +86,15 @@ public class GuiderTestsBase extends AbstractUITest {
   }
   
   @Test
+  @TestEnvironments (
+    browsers = {
+      TestEnvironments.Browser.CHROME,
+      TestEnvironments.Browser.FIREFOX,
+      TestEnvironments.Browser.INTERNET_EXPLORER,
+      TestEnvironments.Browser.EDGE,
+      TestEnvironments.Browser.SAFARI
+    }
+  )
   public void uploadFileToStudentTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "Person", UserRole.ADMINISTRATOR, "090978-1234", "testadmin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(3l, 3l, "Second", "User", "teststudent@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -104,8 +113,8 @@ public class GuiderTestsBase extends AbstractUITest {
     try {
       navigate("/guider", false);
       waitAndClick(".application-list .user--guider .application-list__item-header--student .text--list-item-title");
+      scrollToEnd();
       waitForPresent(".file-uploader>input");
-      scrollIntoView(".file-uploader>input");
       File testFile = getTestFile();
       sendKeys(".file-uploader>input", testFile.getAbsolutePath());
       waitForPresent(".application-sub-panel__file-container a");
