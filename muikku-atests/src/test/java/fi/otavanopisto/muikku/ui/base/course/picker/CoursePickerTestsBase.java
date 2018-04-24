@@ -92,36 +92,31 @@ public class CoursePickerTestsBase extends AbstractUITest {
     }
   }
   
-//  @Test
-//  public void coursePickerLoadMoreTest() throws Exception {
-//    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-//    Builder mockBuilder = mocker();
-//    try{
-//      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
-//      login();
-//      List<Workspace> workspaces = new ArrayList<>();
-//      for(Long i = (long) 0; i < 30; i++)
-//        workspaces.add(createWorkspace("testcourse: " + i.toString(), "test course for testing " + i.toString(), i.toString(), Boolean.TRUE));
-//      try {
-//        navigate("/coursepicker", false);
-//        waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-////        waitAndClick("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-//        waitForMoreThanSize(".cp-course", 24);
-//        assertCount(".cp-course", 25);
-//        waitForPresent(".mf-paging-tool");
-//        scrollIntoView(".mf-paging-tool");
-//        waitAndClick(".mf-paging-tool");
-//        waitForMoreThanSize(".cp-course", 25);
-//        assertCount(".cp-course", 30);
-//      } finally {
-//        for(Workspace w : workspaces) {
-//          deleteWorkspace(w.getId());        
-//        }
-//      }
-//    }finally{
-//      mockBuilder.wiremockReset();
-//    }
-//  }
+  @Test
+  public void coursePickerLoadMoreTest() throws Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    Builder mockBuilder = mocker();
+    try{
+      mockBuilder.addStaffMember(admin).mockLogin(admin).build();
+      login();
+      List<Workspace> workspaces = new ArrayList<>();
+      for(Long i = (long) 0; i < 35; i++)
+        workspaces.add(createWorkspace("testcourse: " + i.toString(), "test course for testing " + i.toString(), i.toString(), Boolean.TRUE));
+      try {
+        navigate("/coursepicker", false);
+        waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
+        scrollToEnd();
+        waitForMoreThanSize(".application-list__item.course", 27);
+        assertCount(".application-list__item.course", 34);
+      } finally {
+        for(Workspace w : workspaces) {
+          deleteWorkspace(w.getId());        
+        }
+      }
+    }finally{
+      mockBuilder.wiremockReset();
+    }
+  }
   
   @Test
   public void coursePickerSearchTest() throws Exception {
@@ -149,10 +144,9 @@ public class CoursePickerTestsBase extends AbstractUITest {
         refresh();
         waitAndSendKeys("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input", "pot");
         waitAndSendKeys("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input", "ato");
-        waitUntilElementCount("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name", 1);
-        sleep(1000);
-        waitForPresentAndVisible("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name");
-        assertTextIgnoreCase("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name", "potato course");
+        waitUntilElementCount(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", 1);
+        waitForPresentAndVisible(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title");
+        assertTextIgnoreCase(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", "potato course");
       } finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());
@@ -187,11 +181,9 @@ public class CoursePickerTestsBase extends AbstractUITest {
       try {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-        refresh();
-        waitForPresentAndVisible("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name");
-        waitAndClick("div.application-panel__content > div.application-panel__helper-container > div > a:nth-child(3)");
-        waitForPresentAndVisible("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name");
-        assertTextIgnoreCase("div.application-list__item-header.application-list__item-header--course > span.text.text--coursepicker-course-name", "testcourse 7");
+        waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a:nth-child(3)");
+        waitForPresentAndVisible(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title");
+        assertTextIgnoreCase(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", "testcourse 7");
       } finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());

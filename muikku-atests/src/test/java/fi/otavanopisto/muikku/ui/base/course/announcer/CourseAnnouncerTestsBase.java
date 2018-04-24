@@ -194,5 +194,31 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     }
   }
 
+  @SuppressWarnings("deprecation")
+  @Test
+  public void workspaceAnnouncementFrontpageListingForStudentNotEnrolledTest() throws JsonProcessingException, Exception {
+    MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
+    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
+    Long courseId = 1l;
+    Builder mockBuilder = mocker();
+    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
+    login();
+    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
+   
+    Long announcementId = createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", new Date(115, 10, 12), new Date(125, 10, 12), false, true, null);
+    updateAnnouncementWorkspace(announcementId, workspace.getId());
+    logout();
+    mockBuilder
+      .mockLogin(student)
+      .build();
+    try {
+      login();
+      assertNotPresent("#announcements ul>li>div>a");
+    }finally{
+      deleteAnnouncements();
+      deleteWorkspace(workspace.getId());
+      mockBuilder.wiremockReset();
+    }
+  }
   
 }

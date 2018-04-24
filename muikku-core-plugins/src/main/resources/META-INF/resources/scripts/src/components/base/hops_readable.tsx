@@ -10,9 +10,7 @@ import { StateType } from '~/reducers';
 interface HopsProps {
   data?: HOPSDataType,
   defaultData: HOPSDataType,
-  onHopsChange?: ( hops: HOPSDataType ) => any,
-  i18n: i18nType,
-  editable: boolean
+  i18n: i18nType
 }
 
 interface HopsState {
@@ -23,27 +21,9 @@ class Hops extends React.Component<HopsProps, HopsState> {
   constructor( props: HopsProps ) {
     super( props );
 
-    this.set = this.set.bind( this );
-    this.setFromEventValue = this.setFromEventValue.bind( this );
-
     this.state = {
       hops: props.data || props.defaultData
     }
-  }
-
-  set( property: string, value: any ) {
-    let nProp: any = {};
-    nProp[property] = value || null;
-    let nval = Object.assign( {}, this.state.hops, nProp );
-    this.props.onHopsChange && this.props.onHopsChange( nval );
-
-    this.setState( {
-      hops: nval
-    } );
-  }
-
-  setFromEventValue( property: string, e: React.ChangeEvent<HTMLInputElement> ) {
-    return this.set( property, e.target.value );
   }
 
   componentWillReceiveProps( nextProps: HopsProps ) {
@@ -216,7 +196,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
           </span>
         </div>
       </div>
-      {this.props.editable ||  this.state.hops.additionalInfo ?
+      {this.state.hops.additionalInfo ?
         <div className="application-sub-panel__item application-sub-panel__item--hops-readable">
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get("plugin.records.hops.additionalInfo.title")}

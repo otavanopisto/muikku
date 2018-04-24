@@ -18,11 +18,12 @@ import '~/sass/elements/container.scss';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
+import FileDeleteDialog from './file-delete-dialog';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
-  addFileToCurrentStudent, removeFileFromCurrentStudent} from '~/actions/main-function/guider';
+  addFileToCurrentStudent} from '~/actions/main-function/guider';
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
 import {UserFileType} from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
@@ -32,7 +33,6 @@ interface CurrentStudentProps {
   i18n: i18nType,
   guider: GuiderType,
   addFileToCurrentStudent: AddFileToCurrentStudentTriggerType,
-  removeFileFromCurrentStudent: RemoveFileFromCurrentStudentTriggerType,
   displayNotification: DisplayNotificationTriggerType
 }
 
@@ -167,7 +167,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
     let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
-        <Hops data={this.props.guider.currentStudent.hops} editable={false}/> : null;
+        <Hops data={this.props.guider.currentStudent.hops}/> : null;
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
@@ -188,10 +188,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       {this.props.guider.currentStudent.files && (this.props.guider.currentStudent.files.length ?
         <div className="uploaded-files text application-list">
           {this.props.guider.currentStudent.files.map((file)=>{
-            return <div className="uploaded-files__item application-list__item">
+            return <div className="uploaded-files__item application-list__item" key={file.id}>
               <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
               <Link className="uploaded-files__item-title" key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
-              <span className="uploaded-files__item-delete-icon icon-delete" onClick={this.props.removeFileFromCurrentStudent.bind(null, file)}></span>
+              <FileDeleteDialog file={file}>
+                <Link disablePropagation as="span" className="uploaded-files__item-delete-icon icon-delete"/>
+              </FileDeleteDialog>
             </div>
           })}
         </div> :
@@ -239,7 +241,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return bindActionCreators({addFileToCurrentStudent, removeFileFromCurrentStudent, displayNotification}, dispatch);
+  return bindActionCreators({addFileToCurrentStudent, displayNotification}, dispatch);
 };
 
 export default connect(

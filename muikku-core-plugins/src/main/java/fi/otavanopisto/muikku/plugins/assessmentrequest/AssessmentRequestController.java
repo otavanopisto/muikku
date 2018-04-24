@@ -7,10 +7,13 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.plugins.communicator.CommunicatorController;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
+import fi.otavanopisto.muikku.plugins.evaluation.EvaluationController;
+import fi.otavanopisto.muikku.plugins.evaluation.model.SupplementationRequest;
 import fi.otavanopisto.muikku.schooldata.GradingController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
@@ -27,6 +30,9 @@ public class AssessmentRequestController {
 
   @Inject
   private CommunicatorController communicatorController;
+
+  @Inject
+  private EvaluationController evaluationController;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -108,9 +114,24 @@ public class AssessmentRequestController {
       }
     }
     
+    // Workspace supplementation request
+    UserEntity userEntity = workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity();
+    SupplementationRequest supplementationRequest = evaluationController.findSupplementationRequestByStudentAndWorkspaceAndArchived(
+        userEntity.getId(),
+        workspaceEntity.getId(),
+        Boolean.FALSE);
+    
     WorkspaceAssessment latestAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
     WorkspaceAssessmentRequest latestRequest = assessmentRequests.isEmpty() ? null : assessmentRequests.get(0);
       
+    // #4008: Incomplete if supplementation request exists and is newer than latest assessment or assessment request
+    if (supplementationRequest != null) {
+      if (latestAssessment == null || (latestAssessment != null && supplementationRequest.getRequestDate().after(latestAssessment.getDate()))) {
+        if (latestRequest == null || (latestRequest != null && supplementationRequest.getRequestDate().after(latestRequest.getDate()))) {
+          return new WorkspaceAssessmentState(WorkspaceAssessmentState.INCOMPLETE, supplementationRequest.getRequestDate());
+        }
+      }
+    }
     if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
       // Has assessment and no request, or the request is older
       GradingScale gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());

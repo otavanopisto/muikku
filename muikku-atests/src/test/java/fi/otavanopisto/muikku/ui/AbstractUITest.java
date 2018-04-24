@@ -607,6 +607,21 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
     selectField.selectByValue(value);
   }
   
+  protected void selectFinnishLocale() {
+    waitForPresent("a.button-pill--current-language>span");
+    String localeText = getElementText("a.button-pill--current-language>span");
+    if(localeText.equalsIgnoreCase("EN")) {
+      waitAndClick(".button-pill--current-language");
+      waitAndClick("div.dropdown--language-picker div.dropdown__container div:nth-child(2) > a > span");
+      waitUntilContentChanged("a.button-pill--current-language>span", "EN");
+    }  
+  }
+  
+  protected String getElementText(String selector) {
+    WebElement element = getWebDriver().findElement(By.cssSelector(selector));
+    return element.getText();
+  }
+  
   protected void assertText(String selector, String text) {
     WebElement element = getWebDriver().findElement(By.cssSelector(selector));
     assertEquals(text, element.getText());
