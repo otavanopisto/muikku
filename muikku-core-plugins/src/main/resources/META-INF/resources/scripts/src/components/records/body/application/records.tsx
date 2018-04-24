@@ -154,7 +154,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       return <div className="empty"><span>{"ERROR"}</span></div>
     }    
     
-    if (Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
+    if (!Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
       this.props.records.curriculums.forEach((curriculum)=>{
         storedCurriculumIndex[curriculum.identifier] = curriculum.name;
       });
