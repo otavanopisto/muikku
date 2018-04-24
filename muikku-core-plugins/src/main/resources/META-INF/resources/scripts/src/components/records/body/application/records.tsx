@@ -86,12 +86,14 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
     if (!workspace.studentActivity){
       return null;
+    } else if ((workspace.studentActivity.exercisesTotal + workspace.studentActivity.evaluablesTotal) === 0){
+      return null;
     }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
     return <div className="workspace-activity workspace-activity--studies">
     
-      <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+      {workspace.studentActivity.evaluablesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
         color: "#ce01bd",
@@ -101,16 +103,16 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         text: {
           className: "text workspace-activity__progressbar-label",
           style: {
-            right: 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
+            right: workspace.studentActivity.evaluablesDonePercent === 0 ? null : 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
           }
         }
       }}
       strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
       trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
-      progress={workspace.studentActivity.evaluablesDonePercent/100}/>
+      progress={workspace.studentActivity.evaluablesDonePercent/100}/> : null}
     
-      <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+      {workspace.studentActivity.exercisesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
         color: "#ff9900",
@@ -120,14 +122,14 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         text: {
           className: "text workspace-activity__progressbar-label",
           style: {
-            right: 100 - workspace.studentActivity.exercisesDonePercent + "%"
+            right: workspace.studentActivity.exercisesDonePercent === 0 ? null : 100 - workspace.studentActivity.exercisesDonePercent + "%"
           }
         }
       }}
       strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
       trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
-      progress={workspace.studentActivity.exercisesDonePercent/100}/>
+      progress={workspace.studentActivity.exercisesDonePercent/100}/> : null}
     </div>
 }
 
