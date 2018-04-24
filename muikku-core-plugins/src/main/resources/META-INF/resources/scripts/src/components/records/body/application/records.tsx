@@ -189,8 +189,8 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}  
                   {record.workspaces.map((workspace)=>{
-                    return <div className="application-list__item course course--studies" key={workspace.id}>
-                      <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                    return <div className="application-list__item course course--studies" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                      <div className="application-list__item-header" key={workspace.id}>
                         <span className="text text--course-icon icon-books"></span>
                         <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
