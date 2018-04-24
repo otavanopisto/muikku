@@ -1,5 +1,6 @@
 import Link from "~/components/general/link";
 import * as React from "react";
+import { ButtonPill } from "~/components/general/button";
 
 interface NavigationProps {
   
@@ -34,7 +35,13 @@ export class NavigationTopic extends React.Component<NavigationTopicProps, Navig
 interface NavigationElementProps {
   isActive: boolean,
   hash: string,
-  children: string
+  children: string,
+  icon?: string,
+  iconColor?: string,
+  isEditable?: boolean,
+  editableWrapper?: any,
+  editableWrapperArgs?: any,
+  editableAction?: ()=>any
 }
 
 interface NavigationElementState {
@@ -43,10 +50,24 @@ interface NavigationElementState {
 
 export class NavigationElement extends React.Component<NavigationElementProps, NavigationElementState> {
   render(){
+    let editableComponent = null;
+    if (this.props.isEditable && this.props.editableWrapper){
+      let EditableWrapper = this.props.editableWrapper;
+      let args = this.props.editableWrapperArgs || {};
+      editableComponent = <EditableWrapper {...this.props.editableWrapperArgs}>
+        <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label" icon="edit"/>
+      </EditableWrapper>
+    } else if (this.props.isEditable){
+      editableComponent = <ButtonPill disablePropagation as="span" buttonModifiers="navigation-edit-label"
+        icon="edit" onClick={this.props.editableAction}/>
+    }
+    
     return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`} href={"#" + this.props.hash}>
+      {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
       <span className="item-list__text-body text">
         {this.props.children}
       </span>
+      {editableComponent}
     </Link>
   }
 }
