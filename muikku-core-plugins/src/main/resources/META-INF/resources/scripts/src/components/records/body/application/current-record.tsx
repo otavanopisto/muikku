@@ -11,7 +11,7 @@ import { RecordsType } from '~/reducers/main-function/records/records';
 import Material from './current-record/material';
 
 import '~/sass/elements/workspace-activity.scss';
-import '~/sass/elements/course.scss';
+import '~/sass/elements/assignment.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 
@@ -34,29 +34,26 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     } else if (this.props.records.currentStatus === "LOADING"){
       return null;
     }
-    return <div className="application-list">
-      <div className="application-list__item course course--studies" key={this.props.records.current.workspace.id}>
-      <div className="application-list__item-header" key={this.props.records.current.workspace.id}>
-        <span className="text text--course-icon icon-books"></span>
-        <span className="text text--list-item-title">{this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--list-item-title-extension">({this.props.records.current.workspace.nameExtension})</span>}</span> 
-
-      </div>
-  </div>
-    
-      <h3>{this.props.i18n.text.get("plugin.records.tasks.evaluated.topic")}</h3>
-      <div className="application-list">
-        {this.props.records.current.materials.map((material)=>{
-          return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
-        })}
-      </div>
-      {this.props.records.current.journals.length ? <h2>{this.props.i18n.text.get("plugin.records.studydiary.topic")}</h2> : null}
-      {this.props.records.current.journals.map((journal)=>{
-        return <div key={journal.id}>
-          <h2>{journal.title}</h2>
-          <p>{this.props.i18n.time.format(journal.created, "L LT")}</p>
-          <div dangerouslySetInnerHTML={{__html: journal.content}}></div>
+    return <div className="application-sub-panel">
+      <div className="application-sub-panel__header text text--studies-header" key={this.props.records.current.workspace.id}>
+        {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--studies-list-header-title-extension">({this.props.records.current.workspace.nameExtension})</span>}
+      </div>   
+      <div className="application-sub-panel__body">
+        <div className="application-list">
+          <div className="application-list__header text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.evaluated.title")}</div>
+          {this.props.records.current.materials.map((material)=>{
+            return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
+          })}
+          {this.props.records.current.journals.length ? <h2>{this.props.i18n.text.get("plugin.records.studydiary.title")}</h2> : null}
+          {this.props.records.current.journals.map((journal)=>{
+            return <div key={journal.id}>
+              <h2>{journal.title}</h2>
+              <p>{this.props.i18n.time.format(journal.created, "L LT")}</p>
+              <div dangerouslySetInnerHTML={{__html: journal.content}}></div>
+            </div>
+          })}
         </div>
-      })}
+      </div>
     </div>
   }
 }

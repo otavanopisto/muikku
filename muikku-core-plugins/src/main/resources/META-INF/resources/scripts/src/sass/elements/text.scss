@@ -623,6 +623,18 @@ b {
   font-weight: 400;  
 }
 
+.text--studies-list-header {
+  width: 100%;
+  font-family: $text-font-family;
+  font-size: 1.125rem;
+}
+
+.text--studies-list-header-title-extension {
+  font-family: $text-font-family;
+  font-size: 1.5rem;
+  padding: 0 0 0 10px;
+}
+
 .text--evaluation-request {
 	align-items: center;
   background-color: $color-evaluation-request;
@@ -657,7 +669,32 @@ b {
 	&.state-FAILED {
     background: $color-grade-failed;
   }
-} 
+}
+
+.text--assignment-assesment-grade {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 15px 0 0;
+  text-align: center;
+  width: 1.875rem;
+
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+  
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
+  
+  &.state-NO-ASSESSMENT {
+    background: $color-grade-not-assessed;
+  }
+}  
 
 // Text icon
 .text__icon {

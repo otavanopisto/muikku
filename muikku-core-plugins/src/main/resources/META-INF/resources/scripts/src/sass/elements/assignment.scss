@@ -3,7 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.course {
+.assignment {
   border-top: 1px solid $color-message-border;
   margin: 0 0 1px;
   padding: 14px 0;
@@ -12,44 +12,31 @@
     border-top: 1px solid $color-default;
   }
   
-  &.course--open {
+  &.assignment--open {
     background: $color-default;
     border-bottom: solid 1px $color-application-list-item-course-border-selected;
     border-top: solid 1px $color-application-list-item-course-border-selected;
   }
   
-  &.course---open:hover {
+  &.state-NO-ASSESSMENT {
+    cursor: auto;
+  }
+  
+  &.assignment---open:hover {
     background: $color-default;
   }
 }
 
-.course--studies {
-	
-	&:hover,
-  &.hover,
-  &:active,
-  &.active {
-  
-    svg {
-      opacity: 0.9;
-    }
-  }
-}
-
-.course--credits {
-  cursor: auto;
-}
-
-.course--open .text--list-item-title,
-.course--open .text--list-item-title-extension {
+.assignment--open .text--list-item-title,
+.assignment--open .text--list-item-title-extension {
   font-weight: 600;  
 }
 
-.course__content {
+.assignment__content {
   flex-flow: row nowrap;
   padding: 0 0 0 9px;
 }
 
-.course__title {
+.assignment__title {
   padding-left: 5px;   
 }
