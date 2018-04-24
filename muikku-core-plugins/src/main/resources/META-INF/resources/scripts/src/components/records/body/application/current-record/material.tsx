@@ -38,7 +38,7 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
   }
   render(){
     let evaluation = this.props.material.evaluation;
-    return <div className={`application-list__item assignment ${this.props.material.evaluation ? "" : "unselectable"}`}
+    return <div className={`application-list__item assignment ${this.props.material.evaluation ? "" : "state-NO-ASSESSMENT"}`}
       onClick={this.props.material.evaluation ? this.toggleOpened : null}>
       <div className="application-list__item-content application-list__item-content--main">
         <div className="application-list__item-header">
@@ -52,7 +52,7 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
           
           <span className="text text--list-item-title">{this.props.material.assignment.title}</span>
         </div>
-        {this.state.opened ? <div className="application-list__item-body">
+        {this.state.opened ? <div className="application-list__item-body text">
           <MaterialLoader material={this.props.material} workspace={this.props.workspace}/>
         </div> : null}
       </div>
