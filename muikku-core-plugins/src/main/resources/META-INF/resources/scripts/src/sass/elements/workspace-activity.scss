@@ -4,8 +4,8 @@
 @import "../base/breakpoints";
 
 .workspace-activity {
-	display: flex;
-	flex-flow: row wrap;
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .workspace-activity--studies {
@@ -43,7 +43,7 @@
   border-radius: 3px;
   font-size: 0.75rem;
   font-weight: 600;
-  line-height: 1;
+  line-height: 1; 
   padding: 2px 4px;
   position: absolute;
   text-align: center;

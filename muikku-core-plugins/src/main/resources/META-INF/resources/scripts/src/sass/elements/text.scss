@@ -623,15 +623,18 @@ b {
   font-weight: 400;  
 }
 
-.text--workspace-assesment-text,
-.text--workspace-credit-text {
-	margin: 0 0 0 20px;
-	text-transform: none;
-}
-
-.text--evaluation-request-text {
-	margin: 0 0 0 20px;
-  text-transform: none;
+.text--evaluation-request {
+	align-items: center;
+  background-color: $color-evaluation-request;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 0 0 15px;
+  text-align: center;
+  width: 1.875rem;
 }
 
 .text--workspace-assesment-grade,
@@ -643,7 +646,7 @@ b {
 	font-size: 1rem;
 	height: 1.875rem;
 	justify-content: center;
-	margin: 0 0 0 20px;
+	margin: 0 0 0 15px;
   text-align: center;
   width: 1.875rem;
 
@@ -655,47 +658,6 @@ b {
     background: $color-grade-failed;
   }
 } 
-
-// Coursepicker
-.text--coursepicker-course-icon {
-  color: $color-course-icon;
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: 1.25rem;
-  margin-right: 10px;
-}
-
-.text--list-item-title {
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 0 10px 0 0;
-}
-
-
-
-.text--list-item-helper-title {
-  color: $color-default-helper;
-  padding: 0 0 0 15px;
-}
-
-.text--list-item-title-extension {
-  padding: 0 0 0 5px;
-}
-
-.text--list-item-type-title {
-	align-items: center;
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 1;
-  font-size: 0.825rem;
-  justify-content: flex-end;
-  text-transform: uppercase;
-}
 
 // Text icon
 .text__icon {
@@ -728,4 +690,52 @@ b {
   @include breakpoint($breakpoint-pad){
     display: none;
   }
+}
+
+.text--course-icon {
+  color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+.text--transfer-credit-icon {
+  color: $color-transfer-credit-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+.text--list-item-title {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+.text--list-item-helper-title {
+  color: $color-default-helper;
+  padding: 0 0 0 15px;
+}
+
+.text--list-item-title-extension {
+  padding: 0 0 0 5px;
+}
+
+.text--list-item-type-title {
+  align-items: center;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: 0.825rem;
+  justify-content: flex-end;
+  text-transform: uppercase;
 }

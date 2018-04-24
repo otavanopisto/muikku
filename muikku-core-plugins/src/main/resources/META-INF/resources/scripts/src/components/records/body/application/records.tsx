@@ -46,7 +46,7 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
     return <div className="text text--list-item-type-title">
-      <span className="text text--evaluation-request-text">{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="text text--evaluation-request icon-assessment-pending"></span>
     </div>
   }
   
@@ -59,8 +59,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     transferCredit.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <div className="text text--list-item-type-title">
-    <span className="text text--workspace-credit-text">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
-    <span className={`text text--workspace-credit-grade ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
+    <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))} className={`text text--workspace-credit-grade ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {grade.grade}
     </span>
   </div>
@@ -78,8 +77,9 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     acessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <span className="text text--list-item-type-title">
-    <span className="text text--workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(acessment.evaluated))}</span>
-    <span className={`text text--workspace-assesment-grade ${acessment.passed ? "state-PASSED" : "state-FAILED"}`}>{grade.grade}</span>
+    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(acessment.evaluated))} className={`text text--workspace-assesment-grade ${acessment.passed ? "state-PASSED" : "state-FAILED"}`}>
+      {grade.grade}
+    </span>
   </span>
 }
 
@@ -189,7 +189,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   {record.workspaces.map((workspace)=>{
                     return <div className="application-list__item course course--studies" key={workspace.id}>
                       <div className="application-list__item-header" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                        <span className="text text--coursepicker-course-icon icon-books"></span>
+                        <span className="text text--course-icon icon-books"></span>
                         <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
@@ -205,7 +205,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     {record.transferCredits.map((credit)=>{
                       return <div className="application-list__item course course--studies" key={credit.date}>
                       <div className="application-list__item-header">
-                          <span className="text text--coursepicker-course-icon icon-books"></span>  
+                          <span className="text text--transfer-credit-icon icon-books"></span>  
                           <span className="text text--list-item-title">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}
                       </div>

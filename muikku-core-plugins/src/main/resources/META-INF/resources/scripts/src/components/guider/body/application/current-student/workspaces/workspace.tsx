@@ -84,7 +84,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
     
     return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`} onClick={this.toggleActivitiesVisible}>
         <div className="application-list__item-header application-list__item-header--course">
-          <span className="text text--coursepicker-course-icon icon-books"></span>
+          <span className="text text--course-icon icon-books"></span>
           <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
           <span className="text text--list-item-type-title workspace-activity">
             <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
