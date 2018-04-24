@@ -93,7 +93,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
     return <div className="workspace-activity workspace-activity--studies">
     
-      <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+      {workspace.studentActivity.evaluablesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
         color: "#ce01bd",
@@ -110,9 +110,9 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
       strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
       trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
-      progress={workspace.studentActivity.evaluablesDonePercent/100}/>
+      progress={workspace.studentActivity.evaluablesDonePercent/100}/> : null}
     
-      <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+      {workspace.studentActivity.exercisesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
         strokeWidth: 1,
         duration: 1000,
         color: "#ff9900",
@@ -129,7 +129,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
       strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
       trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
-      progress={workspace.studentActivity.exercisesDonePercent/100}/>
+      progress={workspace.studentActivity.exercisesDonePercent/100}/> : null}
     </div>
 }
 
