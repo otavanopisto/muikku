@@ -10,6 +10,7 @@ public class WorkspaceAssessmentState {
   public static final String PENDING_FAIL = "pending_fail";   // active request, earlier failing grade
   public static final String PASS = "pass";                   // no request, passing grade
   public static final String FAIL = "fail";                   // no request, failing grade
+  public static final String INCOMPLETE = "incomplete";       // teacher has requested changes
 
   public WorkspaceAssessmentState() {
 
