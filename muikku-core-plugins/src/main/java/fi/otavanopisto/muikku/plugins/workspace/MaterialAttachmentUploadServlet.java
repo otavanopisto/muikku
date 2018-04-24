@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.workspace;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -111,20 +112,25 @@ public class MaterialAttachmentUploadServlet extends HttpServlet {
     }
     
     String license = null;
-    
-    BinaryMaterial uploadedMaterial = binaryMaterialController.createBinaryMaterial(file.getSubmittedFileName(), 
-        file.getContentType(), 
-        IOUtils.toByteArray(file.getInputStream()),
-        license);
-    
     String uploadedUrl = null;
     
-    List<WorkspaceMaterial> parentWorkspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(parentMaterial);
-    for (WorkspaceMaterial sharedWorkspaceMaterial : parentWorkspaceMaterials) {
-      WorkspaceMaterial uploadedWorkspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(sharedWorkspaceMaterial, uploadedMaterial);
-      if (sharedWorkspaceMaterial.getId().equals(parentWorkspaceMaterial.getId())) {
-        uploadedUrl = uploadedWorkspaceMaterial.getUrlName();
+    InputStream input = file.getInputStream();
+    try {
+      BinaryMaterial uploadedMaterial = binaryMaterialController.createBinaryMaterial(file.getSubmittedFileName(), 
+        file.getContentType(), 
+        IOUtils.toByteArray(input),
+        license);
+    
+      List<WorkspaceMaterial> parentWorkspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(parentMaterial);
+      for (WorkspaceMaterial sharedWorkspaceMaterial : parentWorkspaceMaterials) {
+        WorkspaceMaterial uploadedWorkspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(sharedWorkspaceMaterial, uploadedMaterial);
+        if (sharedWorkspaceMaterial.getId().equals(parentWorkspaceMaterial.getId())) {
+          uploadedUrl = uploadedWorkspaceMaterial.getUrlName();
+        }
       }
+    }
+    finally {
+      IOUtils.closeQuietly(input);
     }
     
     if (StringUtils.isBlank(uploadedUrl)) {

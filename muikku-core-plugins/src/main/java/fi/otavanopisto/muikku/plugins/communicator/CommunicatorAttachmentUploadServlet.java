@@ -1,6 +1,7 @@
 package fi.otavanopisto.muikku.plugins.communicator;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.inject.Inject;
@@ -69,9 +70,17 @@ public class CommunicatorAttachmentUploadServlet extends HttpServlet {
       return;
     }
     
+    byte[] content = null;
+    InputStream input = file.getInputStream();
+    try {
+      content = IOUtils.toByteArray(input);
+    }
+    finally {
+      IOUtils.closeQuietly(input);
+    }
     CommunicatorMessageAttachment communicatorMessageAttachment = communicatorAttachmentController.create(
         file.getContentType(),
-        IOUtils.toByteArray(file.getInputStream()));
+        content);
     
     if (communicatorMessageAttachment == null) {
       sendResponse(resp, "Could not save attachment", HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

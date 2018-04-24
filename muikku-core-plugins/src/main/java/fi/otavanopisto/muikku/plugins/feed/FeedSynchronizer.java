@@ -2,6 +2,7 @@ package fi.otavanopisto.muikku.plugins.feed;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,6 +17,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 
+import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
@@ -65,9 +67,12 @@ public class FeedSynchronizer {
     for (Feed feed : feeds) {
       
       WebTarget target = client.target(feed.getUrl());
-      try (InputStream stream = target.request("*").get(InputStream.class)) {
+      Reader reader = null;
+      try {
+        InputStream stream = target.request("*").get(InputStream.class);
+        reader = new XmlReader(stream);
         SyndFeedInput input = new SyndFeedInput();
-        SyndFeed syndFeed = input.build(new XmlReader(stream));
+        SyndFeed syndFeed = input.build(reader);
         List<SyndEntry> entries = syndFeed.getEntries();
         
         for (SyndEntry entry : entries) {
@@ -82,10 +87,14 @@ public class FeedSynchronizer {
               (String)null,
               feed);
         }
-      } catch (IOException | IllegalArgumentException | FeedException e) {
+      }
+      catch (IOException | IllegalArgumentException | FeedException e) {
         logger.warning(String.format("Error while synchronizing feeds: %s", e.getMessage()));
         
         ejbContext.setRollbackOnly();
+      }
+      finally {
+        IOUtils.closeQuietly(reader);
       }
     }
   }

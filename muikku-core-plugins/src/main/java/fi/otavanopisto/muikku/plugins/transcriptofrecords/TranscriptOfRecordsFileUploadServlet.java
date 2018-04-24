@@ -71,8 +71,12 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       return;
     }
     String userIdentifier = "";
-    try (InputStream is = userIdentifierPart.getInputStream()) {
-      userIdentifier = IOUtils.toString(is, StandardCharsets.UTF_8);
+    InputStream input = userIdentifierPart.getInputStream();
+    try {
+      userIdentifier = IOUtils.toString(input, StandardCharsets.UTF_8);
+    }
+    finally {
+      IOUtils.closeQuietly(input);
     }
 
     SchoolDataIdentifier schoolDataIdentifier = SchoolDataIdentifier.fromId(userIdentifier);
@@ -92,8 +96,12 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       return;
     }
     String title = "";
-    try (InputStream is = titlePart.getInputStream()) {
-      title = IOUtils.toString(is, StandardCharsets.UTF_8);
+    input = titlePart.getInputStream();
+    try {
+      title = IOUtils.toString(input, StandardCharsets.UTF_8);
+    }
+    finally {
+      IOUtils.closeQuietly(input);
     }
 
     Part descriptionPart = req.getPart("description");
@@ -102,8 +110,12 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       return;
     }
     String description = "";
-    try (InputStream is = descriptionPart.getInputStream()) {
-      description = IOUtils.toString(is, StandardCharsets.UTF_8);
+    input = descriptionPart.getInputStream();
+    try {
+      description = IOUtils.toString(input, StandardCharsets.UTF_8);
+    }
+    finally {
+      IOUtils.closeQuietly(input);
     }
     
     Part uploadPart = req.getPart("upload");
@@ -119,15 +131,19 @@ public class TranscriptOfRecordsFileUploadServlet extends HttpServlet {
       return;
     }
     
-    try (InputStream is = uploadPart.getInputStream()){
+    input = uploadPart.getInputStream();
+    try {
       TranscriptOfRecordsFile file = transcriptOfRecordsFileController.attachFile(
           userEntity,
-          is,
+          input,
           contentType,
           title,
           description);
       String result = (new ObjectMapper()).writeValueAsString(file);
       sendResponse(resp, result, HttpServletResponse.SC_OK);
+    }
+    finally {
+      IOUtils.closeQuietly(input);
     }
   }
 
