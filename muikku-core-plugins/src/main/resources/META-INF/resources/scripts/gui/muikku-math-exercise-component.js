@@ -43,10 +43,6 @@
       } else {
         this._initializeEditor();
       }
-
-//      this._editor = CKEDITOR.replace(this.element[0], this.options.ckeditor);
-//      this._editor.on('contentChange', $.proxy(this._onContentChange, this));
-//      this._editor.on('instanceReady', $.proxy(this._onInstanceReady, this));
     },
 
     _initializeReadonly: function (answer) {
