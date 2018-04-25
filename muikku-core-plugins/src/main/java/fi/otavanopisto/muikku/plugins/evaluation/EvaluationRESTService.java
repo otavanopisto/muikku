@@ -878,16 +878,15 @@ public class EvaluationRESTService extends PluginRESTService {
     ); 
   }
   
-  private fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessments createRestModel(WorkspaceEntity workspaceEntity, WorkspaceAssessmentState assessmentState, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment... entries) {
+  private fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments createRestModel(WorkspaceEntity workspaceEntity, WorkspaceAssessmentState assessmentState, fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment... entries) {
     List<fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment> result = new ArrayList<>();
 
     for (fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment entry : entries) {
       result.add(createRestModel(workspaceEntity, entry));
     }
     
-    fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessments assesments = 
-    		new fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessments(
-    				assessmentState.getState(), assessmentState.getDate(), result);
+    fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments assesments = 
+    		new fi.otavanopisto.muikku.plugins.evaluation.WorkspaceAssessments(assessmentState.getState(), assessmentState.getDate(), result);
 
     return assesments;
   }
