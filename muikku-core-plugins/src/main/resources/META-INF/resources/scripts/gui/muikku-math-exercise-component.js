@@ -114,7 +114,7 @@
             var latex = img.attr("alt") || '';
             if (latex) {
               // Add latex formatting so the answer is ready to render as-is
-              latex = '\\(' + latex + '\\)';
+              latex = '\\(\\displaystyle{' + latex + '}\\)';
               img.replaceWith($('<span class="muikku-math-exercise-formula">').text(latex));
             } else {
               // Remove img's that don't have latex
@@ -134,7 +134,7 @@
             var formula = $(formulaElement);
             var latex = formula.text();
             // Remove beginning \( and trailing \) from text
-            latex = latex.replace(/^\\\(|\\\)$/g, '');
+            latex = latex.replace(/^\\\(\\displaystyle{|}\\\)$/g, '');
 
             var img = $('<img alt="' + latex + '" class="muikku-math-exercise-formula"/>');
             formula.replaceWith(img);
