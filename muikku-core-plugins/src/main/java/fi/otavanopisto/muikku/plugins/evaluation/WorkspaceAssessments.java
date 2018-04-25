@@ -1,6 +1,9 @@
-package fi.otavanopisto.muikku.plugins.evaluation.rest.model;
+package fi.otavanopisto.muikku.plugins.evaluation;
 
 import java.util.List;
+
+import fi.otavanopisto.muikku.plugins.evaluation.rest.model.WorkspaceAssessment;
+
 import java.util.Date;
 
 public class WorkspaceAssessments {
