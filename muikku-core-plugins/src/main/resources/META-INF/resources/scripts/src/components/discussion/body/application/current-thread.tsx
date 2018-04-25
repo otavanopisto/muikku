@@ -66,7 +66,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canEditThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.editMessage;
 
         
-    return <DiscussionCurrentThread title={<h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>}>
+    return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
+      title={<h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>}>
         <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
           <DiscussionThreadHeader aside={<span className="text">{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
             <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
