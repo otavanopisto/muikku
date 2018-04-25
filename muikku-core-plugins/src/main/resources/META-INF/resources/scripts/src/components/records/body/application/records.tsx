@@ -188,7 +188,17 @@ class Records extends React.Component<RecordsProps, RecordsState> {
               return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <div className="application-list__header text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</div> : null}  
                   {record.workspaces.map((workspace)=>{
-                    return <div className="application-list__item course course--studies" key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                    //Do we want an special way to display all these different states? passed is very straightforward but failed and
+                    //incomplete might be difficult to understand
+                    let extraClassNameState = "";
+                    if (workspace.studentAssessments.assessmentState === "pass"){
+                      extraClassNameState = "state-PASSED"
+                    } else if (workspace.studentAssessments.assessmentState === "fail"){
+                      extraClassNameState = "state-FAILED"
+                    } else if (workspace.studentAssessments.assessmentState === "incomplete"){
+                      extraClassNameState = "state-INCOMPLETE"
+                    }
+                    return <div className={`application-list__item course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <div className="application-list__item-header" key={workspace.id}>
                         <span className="text text--course-icon icon-books"></span>
                         <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
