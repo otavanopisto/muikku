@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.files;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,11 +45,13 @@ public class TempFileUploadServlet extends HttpServlet {
 
     File tempFile = TempFileUtils.createTempFile();
     FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+    InputStream input = file.getInputStream();
     try {
-      IOUtils.copy(file.getInputStream(), fileOutputStream);
+      IOUtils.copy(input, fileOutputStream);
     } finally {
       fileOutputStream.flush();
       fileOutputStream.close();
+      IOUtils.closeQuietly(input);
     }
 
     Map<String, String> output = new HashMap<>();
