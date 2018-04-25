@@ -1,6 +1,6 @@
 import {ActionType} from '~/actions';
 
-export type WorkspaceAssessementState = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail";
+export type WorkspaceAssessementState = "unassessed" | "pending" | "pending_pass" | "pending_fail" | "pass" | "fail" | "incomplete";
 
 export interface WorkspaceStudentActivityType {
   assessmentState: {
