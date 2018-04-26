@@ -73,6 +73,10 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
         stateText = "plugin.guider.assessmentState.FAIL";
         extraClasses = "state-FAILED";
         break;
+      case "incomplete":
+        stateText = "plugin.guider.assessmentState.INCOMPLETE";
+        extraClasses = "course--assessment-incomplete";
+        break;
       default:
         stateText = "plugin.guider.assessmentState.UNASSESSED";
         break;

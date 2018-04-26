@@ -59,11 +59,21 @@ export class DiscussionThreadFooter extends React.Component<{
 }
 
 export class DiscussionCurrentThread extends React.Component<{
-  title: React.ReactNode
+  title: React.ReactNode,
+  sticky: boolean,
+  locked: boolean
 },{}> {
   render(){
     return <div className="application-list application-list--open">
-      <div className="application-list__item-header">{this.props.title}</div>
+      <div className="application-list__item-header">
+        {this.props.locked ?
+          <div className="discussion__icon icon-lock"/> : null
+        }
+        {this.props.sticky ?
+          <div className="discussion__icon icon-pin"/> : null
+        } 
+        {this.props.title}
+      </div>
       {this.props.children}
     </div>
   }
