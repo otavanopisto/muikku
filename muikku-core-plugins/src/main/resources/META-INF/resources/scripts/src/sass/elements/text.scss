@@ -671,6 +671,28 @@ b {
   }
 }
 
+.text--studies-workspace-literal-assessment {
+  padding: 2px 12px;
+  
+  &.state-PASSED {
+    border-left: 3px solid $color-grade-passed;
+  }
+  
+  &.state-FAILED {
+    border-left: 3px solid $color-grade-failed;
+  }
+  
+  &.state-INCOMPLETE {
+    border-left: 3px solid $color-grade-incomplete;
+  }
+}
+
+.text--studies-assignment-literal-assessment {
+  background: #e2ffe2;
+  border-radius: 3px;
+  padding: 2px 12px; 
+}
+
 .text--assignment-assesment-grade {
   align-items: center;
   border-radius: 2px;

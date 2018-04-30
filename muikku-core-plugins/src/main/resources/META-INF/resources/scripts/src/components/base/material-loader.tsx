@@ -184,7 +184,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     return <div>
       {this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <div className="tr-task-evaluated-verbal" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+            <div className="text text--studies-assignment-literal-assessment" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
       <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"

@@ -38,20 +38,24 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     let assesmentStateClassName = "";
     switch (this.props.records.current.workspace.studentAssessments.assessmentState){
       case "pass":
-        assesmentStateClassName = "PASS";
+        assesmentStateClassName = "PASSED";
+        break;
       case "pending":
       case "pending_pass":
       case "pending_fail":
-        assesmentStateClassName = "PENDING";
+        assesmentStateClassName = "PENDING"; 
+        break;
       case "fail":
-        assesmentStateClassName = "FAIL";
+        assesmentStateClassName = "FAILED"; 
+        break;
       case "incomplete":
-        assesmentStateClassName = "INCOMPLETE";
+        assesmentStateClassName = "INCOMPLETE"; 
+        break;
     }
     
     let workspaceEvaluation = this.props.records.current.workspace.studentAssessments.assessments.length ?
         <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment}} 
-        className={`TODO workspace evaluation state-${assesmentStateClassName}`}/> : null;
+        className={`text text--studies-workspace-literal-assessment state-${assesmentStateClassName}`}/> : null;
     
     return <div className="application-sub-panel">
       <div className="application-sub-panel__header text text--studies-header" key={this.props.records.current.workspace.id}>

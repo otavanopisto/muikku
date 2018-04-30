@@ -65,18 +65,18 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
 }
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
-  let acessment = workspace.studentAssessments.assessments[0];
-  if (!acessment){
+  let assessment = workspace.studentAssessments.assessments[0];
+  if (!assessment){
     return null;
   }
   let gradeId = [
-    acessment.gradingScaleSchoolDataSource,
-    acessment.gradingScaleIdentifier,
-    acessment.gradeSchoolDataSource,
-    acessment.gradeIdentifier].join('-');
+    assessment.gradingScaleSchoolDataSource,
+    assessment.gradingScaleIdentifier,
+    assessment.gradeSchoolDataSource,
+    assessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <span className="text text--list-item-type-title">
-    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(acessment.evaluated))} className={`text text--workspace-assesment-grade ${acessment.passed ? "state-PASSED" : "state-FAILED"}`}>
+    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))} className={`text text--workspace-assesment-grade ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
       {grade.grade}
     </span>
   </span>
