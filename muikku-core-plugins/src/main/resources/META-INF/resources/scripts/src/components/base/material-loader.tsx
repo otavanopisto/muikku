@@ -13,6 +13,7 @@ import { MaterialType } from '~/reducers/main-function/records/records';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
+import promisify from '~/util/promisify';
 
 //Bubble gum scripting needs
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js");
@@ -139,30 +140,57 @@ interface MaterialLoaderProps {
 interface MaterialLoaderState {
 }
 
+let materialRepliesCache:{[key: string]: any} = {};
+
 export default class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   constructor(props: MaterialLoaderProps){
     super(props);
+    
+    this.stopPropagation = this.stopPropagation.bind(this);
   }
   componentDidMount(){
-    mApi().workspace.workspaces.materials.compositeMaterialReplies
-    .read(this.props.workspace.id, this.props.material.id, {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID})
-    .callback($.proxy(function (err: any, replies: any) {
-      var fieldAnswers:any = {};
+    this.create();
+  }
+  stopPropagation(e: React.MouseEvent<HTMLDivElement>){
+    e.stopPropagation();
+  }
+  async create(){
+    let fieldAnswers:any = materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
+    if (!fieldAnswers){
+      fieldAnswers = {};
+      let replies:any = await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
+          .read(this.props.workspace.id, this.props.material.assignment.id, {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID}), 'callback')();
       replies = replies.answers ? replies : {answers: []};
-      for (var i = 0, l = replies.answers.length; i < l; i++) {
-        var answer = replies.answers[i];
-        var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+      for (let i = 0, l = replies.answers.length; i < l; i++) {
+        let answer = replies.answers[i];
+        let answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
         fieldAnswers[answerKey] = answer.value;
       }
-      //I can't start explaining how wrong this is, oh god... XD
-      //get data from the sever, put in in a variable, parse the variable, create a virtual element so that the material loader can
-      //Read it from what it believes is the dom
-      //Why not, eehmmm... pass the data directly? O.O mind blown!!!
-      $('<div/>').attr("data-grades", (window as any).GRADES).muikkuMaterialLoader().muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
-    }, this));
+      
+      materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = fieldAnswers;
+    }
+    
+    //I can't start explaining how wrong this is, oh god... XD
+    //get data from the sever, put in in a variable, parse the variable, create a virtual element so that the material loader can
+    //Read it from what it believes is the dom
+    //Why not, eehmmm... pass the data directly? O.O mind blown!!!
+    $('<div/>').attr("data-grades", JSON.stringify((window as any).GRADES))
+      .muikkuMaterialLoader({
+        readOnlyFields: true,
+        fieldlessMode: true
+      }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
   }
   render(){
-    return <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
-    data-material-id={this.props.material.id} data-workspace-material-id={this.props.workspace.id} data-material-content={this.props.material.html} data-path={this.props.material.assignment.path} data-material-type="html"/>
+    return <div>
+      {this.props.material.evaluation.verbalAssessment ?
+          <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
+            <div className="tr-task-evaluated-verbal" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+          </div>
+       : null}
+      <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
+      data-material-id={this.props.material.id} data-workspace-material-id={this.props.material.assignment.id}
+      data-material-content={this.props.material.html} data-path={this.props.material.assignment.path} data-material-type="html"
+      data-loaded="false" data-workspace-entity-id={this.props.workspace.id} onClick={this.stopPropagation}/>
+    </div>
   }
 }

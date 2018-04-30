@@ -140,7 +140,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   }
   
   goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
-    window.location.hash = "#?u=" + user.userEntityId + "&w=" + workspace.id;
+    window.location.hash = "#?u=" + user.userEntityId + "&i=" + encodeURIComponent(user.id) + "&w=" + workspace.id;
   }
     
   render(){

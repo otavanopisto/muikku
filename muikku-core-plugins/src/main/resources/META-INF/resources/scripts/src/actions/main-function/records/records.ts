@@ -18,7 +18,7 @@ export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
 }
 
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
-  (userEntityId: number, workspaceId: number):AnyActionType
+  (userEntityId: number, userId: string, workspaceId: number):AnyActionType
 }
 
 export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
@@ -223,7 +223,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
   }
 }
   
-let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, workspaceId){
+let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, userId, workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
@@ -255,6 +255,10 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       
         if (!wasFoundInMemory){
           workspace = <WorkspaceType>await promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')();
+          workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
+              .students.assessments.read(workspace.id, userId), 'callback')();
+          workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
+            .read(workspace.id), 'callback')();
         }
         
         return workspace;

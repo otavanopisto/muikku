@@ -34,12 +34,32 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
     } else if (this.props.records.currentStatus === "LOADING"){
       return null;
     }
+    
+    let assesmentStateClassName = "";
+    switch (this.props.records.current.workspace.studentAssessments.assessmentState){
+      case "pass":
+        assesmentStateClassName = "PASS";
+      case "pending":
+      case "pending_pass":
+      case "pending_fail":
+        assesmentStateClassName = "PENDING";
+      case "fail":
+        assesmentStateClassName = "FAIL";
+      case "incomplete":
+        assesmentStateClassName = "INCOMPLETE";
+    }
+    
+    let workspaceEvaluation = this.props.records.current.workspace.studentAssessments.assessments.length ?
+        <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment}} 
+        className={`TODO workspace evaluation state-${assesmentStateClassName}`}/> : null;
+    
     return <div className="application-sub-panel">
       <div className="application-sub-panel__header text text--studies-header" key={this.props.records.current.workspace.id}>
         {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--studies-list-header-title-extension">({this.props.records.current.workspace.nameExtension})</span>}
-      </div>   
+      </div>
       <div className="application-sub-panel__body">
         <div className="application-list">
+          {workspaceEvaluation}
           <div className="application-list__header text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
           {this.props.records.current.materials.map((material)=>{
             return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>

@@ -6,7 +6,7 @@
 .application-list {  
   height: 100%;
   width: 100%;
-  overflow-y: auto;
+  overflow: visible;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;  
   
