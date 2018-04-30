@@ -186,7 +186,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <span className="text file-uploader__hint">{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
       </FileUploader>
       {this.props.guider.currentStudent.files && (this.props.guider.currentStudent.files.length ?
-        <div className="uploaded-files text application-list">
+        <div className="uploaded-files uploaded-files--guider text application-list">
           {this.props.guider.currentStudent.files.map((file)=>{
             return <div className="uploaded-files__item application-list__item" key={file.id}>
               <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
