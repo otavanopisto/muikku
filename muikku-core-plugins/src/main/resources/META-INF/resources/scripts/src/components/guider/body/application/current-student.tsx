@@ -150,7 +150,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.lastLogin.time}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.lastLogin.time ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.lastLogin.time, "LLL") : "-"}</span>
         </div>
       </div>}
       {this.props.guider.currentStudent.notifications && Object.keys(this.props.guider.currentStudent.notifications).map((notification)=>{
