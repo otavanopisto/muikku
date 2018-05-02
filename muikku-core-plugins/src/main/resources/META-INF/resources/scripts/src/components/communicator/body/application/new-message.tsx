@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
@@ -134,7 +134,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
+         <div className="environment-dialog__button-container">
           <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>

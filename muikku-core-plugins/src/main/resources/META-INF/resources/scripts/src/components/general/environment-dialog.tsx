@@ -9,17 +9,17 @@ export default class JumboDialog extends Dialog {
     return (
         
         <Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen} openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-          {(closePortal: ()=>any)=>{return <div className={`jumbo-dialog jumbo-dialog--mainfunction jumbo-dialog--${this.props.modifier} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-            <div className="jumbo-dialog__wrapper">
-               <div className="jumbo-dialog__window">
-                  <div className="jumbo-dialog__header">
+          {(closePortal: ()=>any)=>{return <div className={`environment-dialog environment-dialog--mainfunction environment-dialog--${this.props.modifier} ${this.state.visible ? "visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+            <div className="environment-dialog__wrapper">
+               <div className="environment-dialog__window">
+                  <div className="environment-dialog__header">
                     {this.props.title}
-                    <span className="jumbo-dialog__close icon-close" onClick={closePortal}></span>
+                    <span className="environment-dialog__close icon-close" onClick={closePortal}></span>
                   </div>
-                  <div className="jumbo-dialog__body">
+                  <div className="environment-dialog__body">
                     {this.props.content(closePortal)}
                   </div>
-                  <div className="jumbo-dialog__footer">
+                  <div className="environment-dialog__footer">
                     {this.props.footer && this.props.footer(closePortal)}
                   </div>
                 </div>

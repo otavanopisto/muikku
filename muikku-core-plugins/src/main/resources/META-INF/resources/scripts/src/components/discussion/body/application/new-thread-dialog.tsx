@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionType } from '~/reducers/main-function/discussion';
@@ -130,7 +130,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-        <div className="jumbo-dialog__button-container">
+        <div className="environment-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>

@@ -118,7 +118,7 @@
   justify-content: flex-end;
 }
 
-.jumbo-dialog {
+.environment-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   display: block;
   bottom: 0;
@@ -133,12 +133,12 @@
   &.visible {
     opacity: 1;
     
-    .jumbo-dialog__wrapper {
+    .environment-dialog__wrapper {
       bottom: 0;
     }
   }
 
-  .jumbo-dialog__wrapper {
+  .environment-dialog__wrapper {
   	@include breakpoint-down($breakpoint-landscape-pad) {
       
     }
@@ -160,7 +160,7 @@
       @include prefix(transition, moz ms webkit o, bottom 0.3s);
     }
     
-    .jumbo-dialog__window {
+    .environment-dialog__window {
       max-width: $breakpoint-max-usable-screen;
       font-family: $text-font-family;
       height: 100%;
@@ -171,26 +171,26 @@
       padding-top: 20px;
       
       @media screen and (max-width: $breakpoint-max-usable-screen){
-      	.jumbo-dialog__footer, .jumbo-dialog__body {
+      	.environment-dialog__footer, .environment-dialog__body {
           padding-left: 3px;
           padding-right: 3px;
       	}
       }
      
-      .jumbo-dialog__body {
+      .environment-dialog__body {
         flex-basis: auto;
         flex-grow: 1;
         flex-shrink: 1;
       }
       
-      .jumbo-dialog__footer {
+      .environment-dialog__footer {
       	width: 100%;
       	padding-top: 10px;
       	padding-bottom: 10px;
 
       }
 
-      .jumbo-dialog__button-container {
+      .environment-dialog__button-container {
         align-items: center;
         display: flex;
         justify-content: flex-end;
@@ -201,14 +201,14 @@
         }                  
       }       
       
-      .jumbo-dialog__header {
+      .environment-dialog__header {
         color: $color-dialog-default-title-text;
         margin-bottom: 20px;
         padding: 15px;
         position: relative;
         width: 100%;
   
-        .jumbo-dialog__title {
+        .environment-dialog__title {
           font-weight: 500;
           position: relative;
           text-align: left;
@@ -220,7 +220,7 @@
         }
       }
   
-      .jumbo-dialog__close {
+      .environment-dialog__close {
         @include prefix(transition, moz ms o webkit, background-color 0.3s);
         border-radius: $dialog-button-close-height;
         cursor: pointer;
@@ -238,9 +238,9 @@
     }
   }
  
-  &.jumbo-dialog--new-message, &.jumbo-dialog--update-signature, &.jumbo-dialog--mainfunction {
+  &.environment-dialog--new-message, &.environment-dialog--update-signature, &.environment-dialog--mainfunction {
   
-    .jumbo-dialog__wrapper {
+    .environment-dialog__wrapper {
       min-height: 520px;
       background-color: $color-application-dialog-background-color;
     
@@ -248,7 +248,7 @@
         height: auto;
       }
     
-      .jumbo-dialog__header {
+      .environment-dialog__header {
         background-color: $color-application-dialog-header-background-color;
       }
     }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/main-function/discussion';
@@ -101,7 +101,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
+         <div className="environment-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Link>

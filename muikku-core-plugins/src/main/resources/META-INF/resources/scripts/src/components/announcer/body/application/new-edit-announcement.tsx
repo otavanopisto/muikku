@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcements';
@@ -224,7 +224,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
       
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
+         <div className="environment-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
           </Link>
