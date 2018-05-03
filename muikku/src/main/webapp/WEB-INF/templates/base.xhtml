@@ -20,6 +20,7 @@
     var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
     var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
     var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
+    var MUIKKU_IS_ACTIVE_USER = #{sessionBackingBean.isActiveUser};
 
     var MUIKKU_PERMISSIONS = {
       FORUM_ACCESSENVIRONMENTFORUM: #{sessionBackingBean.hasEnvironmentPermission('FORUM_ACCESSENVIRONMENTFORUM')},

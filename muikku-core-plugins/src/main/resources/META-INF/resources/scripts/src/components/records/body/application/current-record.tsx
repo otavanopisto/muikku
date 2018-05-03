@@ -53,7 +53,8 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         break;
     }
     
-    let workspaceEvaluation = this.props.records.current.workspace.studentAssessments.assessments.length ?
+    let workspaceEvaluation = this.props.records.current.workspace.studentAssessments.assessments.length &&
+      this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment ?
         <div dangerouslySetInnerHTML={{__html: this.props.records.current.workspace.studentAssessments.assessments[0].verbalAssessment}} 
         className={`text text--studies-workspace-literal-assessment state-${assesmentStateClassName}`}/> : null;
     

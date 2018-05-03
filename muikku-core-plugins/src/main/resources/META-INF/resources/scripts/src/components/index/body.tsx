@@ -11,14 +11,20 @@ import * as React from 'react';
 
 import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
+import { StateType } from '~/reducers';
+import { Dispatch, connect } from 'react-redux';
+import { StatusType } from '~/reducers/base/status';
+import StudiesEnded from './body/studies-ended';
 
 //TODO css get rid of ordered container 
-export default class IndexBody extends React.Component<{},{}> {
+class IndexBody extends React.Component<{
+  status: StatusType
+},{}> {
   render(){
     return (<div className="container container--full">
       <MainFunctionNavbar activeTrail="index"/>
       <ScreenContainer>
-        <div className="ordered-container ordered-container--index-panels">
+        {this.props.status.isActiveUser ? <div className="ordered-container ordered-container--index-panels">
           <div className="ordered-container__item ordered-container__item--studies">
             <div className="ordered-container">
               <ContinueStudiesPanel/>
@@ -36,8 +42,23 @@ export default class IndexBody extends React.Component<{},{}> {
               <AnnouncementsPanel/>
             </div>
           </div>
-        </div>
+        </div> : <div className="ordered-container ordered-container--index-panels"><StudiesEnded/></div>}
       </ScreenContainer>
     </div>);
   }
 }
+
+function mapStateToProps(state: StateType){
+  return {
+    status: state.status
+  }
+};
+
+function mapDispatchToProps(dispatch: Dispatch<any>){
+  return {};
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(IndexBody);
