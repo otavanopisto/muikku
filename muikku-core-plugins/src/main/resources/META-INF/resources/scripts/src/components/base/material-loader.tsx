@@ -181,7 +181,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
       }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
   }
   render(){
-    return <div>
+    return <div className="__deprecated">
       {this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
             <div className="text text--studies-assignment-literal-assessment" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
