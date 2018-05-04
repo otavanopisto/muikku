@@ -1120,9 +1120,9 @@ public class AbstractUITest extends AbstractIntegrationTest implements SauceOnDe
       .statusCode(204);
   }
   
-  protected Long createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds) throws Exception {
+  protected Long createAnnouncement(Long publisherUserEntityId, String caption, String content, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible, List<Long> userGroupIds, List<Long> workspaceEntityIds) throws Exception {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JSR310Module()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    Announcement payload = new Announcement(null, publisherUserEntityId, userGroupIds, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);                 
+    Announcement payload = new Announcement(null, publisherUserEntityId, userGroupIds, workspaceEntityIds, caption, content, new Date(), startDate, endDate, archived, publiclyVisible);                 
     Response response = asAdmin()
       .contentType("application/json")
       .body(payload)
