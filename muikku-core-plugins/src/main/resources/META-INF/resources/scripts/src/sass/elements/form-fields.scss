@@ -225,7 +225,8 @@ label {
   }
 }
 
-input {
+input,
+textarea {
   border: 2px solid $color-form-field-border;
   border-radius: 3px;
   display: inline-block;
@@ -237,8 +238,6 @@ input {
     font-size: $text-desktop-font-size;
   }
 }
-
-
 
 .form-field__radio-option-container {
   padding: 5px;

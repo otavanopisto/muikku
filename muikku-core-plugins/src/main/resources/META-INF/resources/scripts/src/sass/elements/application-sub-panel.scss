@@ -67,26 +67,14 @@
     flex-basis: 250px;
     margin: 0 10px 0 0;
   }
-} 
-
-.application-sub-panel__item-title--readable {
-  flex-basis: 100%;
-  flex-grow: 0;
-  flex-shrink: 0;
-  margin: 0 0 5px;
-  
-  @include breakpoint($breakpoint-desktop) {
-    flex-basis: 250px;
-    margin: 0 10px 0 0;
-  }
-}  
+}
 
 .application-sub-panel__item-data {
-	align-items: center;
-	display: flex;
-	flex-basis: auto;
-	flex-flow: column wrap;
-	flex-grow: 0;
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 0;
   flex-shrink: 0;
   
   @include breakpoint($breakpoint-desktop) {
@@ -96,15 +84,12 @@
   }
 } 
 
-// HOPS readonly override for rendering item-title and item-data
-.application-sub-panel__body--hops-readable {
-
+// HOPS in Guider in readable state
+.application-sub-panel__item--hops-readable {
+  flex-flow: row wrap;
+  
   .application-sub-panel__item-title {
-    flex-basis: 100%;
-    flex-grow: 0;
-    flex-shrink: 0;
-    margin: 0 0 5px;
-    
+  
     @include breakpoint($breakpoint-desktop) {
       flex-basis: 60%;
       margin: 0 10px 0 0;
@@ -112,18 +97,37 @@
   }
   
   .application-sub-panel__item-data {
-    display: inline-flex;
-    flex-basis: auto;
-    flex-flow: column wrap;
-    flex-grow: 0;
-    flex-shrink: 0;
-    
+  
     @include breakpoint($breakpoint-desktop) {
-      flex-grow: 1;
-      flex-flow: row wrap;
-      flex-shrink: 1;
+      flex-basis: auto;
     }
-  } 
+  }
+}
+
+// HOPS in Studies in editable state
+.application-sub-panel__item--hops-editable {
+  align-items: flex-start;
+  flex-flow: column wrap;
+  
+  .application-sub-panel__item-title {
+  
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+  }
+  
+  .application-sub-panel__item-data {
+  
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+    
+    textarea {
+      height: 50px;
+      width: 100%;
+    }
+  
+  }
 }
 
 .application-sub-panel__item--label {
@@ -134,26 +138,3 @@
   margin-bottom: 5px;
   margin-right: 10px;
 }
-
-.application-sub-panel__item--hops-editable {
-  flex-direction: column;
-  align-items: flex-start;
-  
-  > span {
-   padding: 10px 0 10px 0;
-  }
-    
-  textarea {
-    height: 100px;
-    width: 100%;
-  }
-}
-
-.application-sub-panel__item--guider-workspace-info {
-
-	> span {
-    flex-basis: 50%;
-    flex-grow: 1;
-  }  
-}
-

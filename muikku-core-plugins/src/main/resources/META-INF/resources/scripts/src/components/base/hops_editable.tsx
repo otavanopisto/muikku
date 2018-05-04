@@ -57,7 +57,10 @@ class Hops extends React.Component<HopsProps, HopsState> {
   //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
   //later once a pattern is defined
   render() {
-    return <div className="text application-sub-panel__body application-sub-panel__body--hops-editable">
+    return <div className="application-sub-panel text">
+    
+    <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
+    <div className="application-sub-panel__body">
 
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">
         <div className="application-sub-panel__item-title">
@@ -232,7 +235,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get( "plugin.records.hops.religion.title" )}
         </div>
-        <div  className="application-sub-panel__item-data">
+        <div className="application-sub-panel__item-data">
           {["UE", "ET", "UX"].map( ( option: string ) => {
             let onEvent = this.set.bind( this, "religion", option );
             return <div className="form-field__radio-option-container" key={option}>
@@ -247,8 +250,11 @@ class Hops extends React.Component<HopsProps, HopsState> {
           <div className="application-sub-panel__item-title">
             {this.props.i18n.text.get( "plugin.records.hops.additionalInfo.title" )}
           </div>
-          <textarea onChange={this.setFromEventValue.bind( this, "additionalInfo" )} value={this.state.hops.additionalInfo || ""} />
+          <div className="application-sub-panel__item-data">
+            <textarea onChange={this.setFromEventValue.bind( this, "additionalInfo" )} value={this.state.hops.additionalInfo || ""} />
+          </div>
       </div>
+    </div>
     </div>
   }
 }
