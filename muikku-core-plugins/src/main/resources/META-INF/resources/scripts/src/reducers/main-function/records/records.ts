@@ -121,7 +121,7 @@ export interface RecordsType {
   curriculums: CourseCurriculumFilterListType
 }
 
-export type TranscriptOfRecordLocationType = "RECORDS" | "HOPS" | "VOPS";
+export type TranscriptOfRecordLocationType = "records" | "hops" | "vops";
 
 export default function records(state: RecordsType={
     userData: [],

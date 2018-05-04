@@ -29,7 +29,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
   }
   
   render(){
-    if (this.props.records.location !== "RECORDS" || !this.props.records.current){
+    if (this.props.records.location !== "records" || !this.props.records.current){
       return null;
     } else if (this.props.records.currentStatus === "LOADING"){
       return null;

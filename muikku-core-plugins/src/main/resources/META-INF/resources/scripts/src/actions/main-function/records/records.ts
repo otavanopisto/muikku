@@ -228,7 +228,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
     try {
       dispatch({
         type: "UPDATE_RECORDS_LOCATION",
-        payload: <TranscriptOfRecordLocationType>"RECORDS"
+        payload: <TranscriptOfRecordLocationType>"records"
       });
       dispatch({
         type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
@@ -330,14 +330,14 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
 let setLocationToVopsInTranscriptOfRecords:SetLocationToVopsInTranscriptOfRecordsTriggerType = function setLocationToVopsInTranscriptOfRecords(){
   return {
     type: "UPDATE_RECORDS_LOCATION",
-    payload: <TranscriptOfRecordLocationType>"VOPS"
+    payload: <TranscriptOfRecordLocationType>"vops"
   };
 }
 
 let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecordsTriggerType = function setLocationToHopsInTranscriptOfRecords(){
   return {
     type: "UPDATE_RECORDS_LOCATION",
-    payload: <TranscriptOfRecordLocationType>"HOPS"
+    payload: <TranscriptOfRecordLocationType>"hops"
   };
 }
 

@@ -21,7 +21,7 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
 
   }
   onSelectChange(e: React.ChangeEvent<HTMLSelectElement>){
-    window.location.hash = e.target.value;
+    window.location.hash = "#" + e.target.value;
   }
 
   render(){
@@ -29,24 +29,21 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
     let sections = [
       {
         name: this.props.i18n.text.get("plugin.records.category.records"),
-        isActive: this.props.location === "RECORDS" as TranscriptOfRecordLocationType,
         hash: ""
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.hops"),
-        isActive: this.props.location === "HOPS" as TranscriptOfRecordLocationType,
         hash: "hops"
       },
       {
         name: this.props.i18n.text.get("plugin.records.category.vops"),
-        isActive: this.props.location === "VOPS" as TranscriptOfRecordLocationType,
         hash: "vops"
       }
     ]    
     return <div className="application-panel__toolbar">
-      <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange}>
+      <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange} value={this.props.location || ""}>
         {sections.map((section, index)=>{
-          return <option key={index} className="" value={"#" + section.hash}>
+          return <option key={index} value={section.hash} >
               {section.name}
           </option>
         })}
@@ -58,7 +55,7 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    location: (state as any).records.location
+    location: state.records.location
   }
 };
 
