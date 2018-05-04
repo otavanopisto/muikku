@@ -580,6 +580,9 @@ b {
 
 .text--guider-profile-student-mail {
   color: #9c9c9c;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 1.3rem;
   font-weight: 200;
   margin-left: 20px;  
