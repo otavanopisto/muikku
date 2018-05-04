@@ -54,7 +54,7 @@ let loadUserIndex:LoadUserIndexTriggerType =  function loadUserIndex(userId, cal
           value: user
         }
       });
-      callback(user);
+      callback && callback(user);
     } catch(err){
       if (!(err instanceof MApiError)){
         throw err;

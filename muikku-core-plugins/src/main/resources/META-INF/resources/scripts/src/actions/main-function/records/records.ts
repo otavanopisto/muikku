@@ -38,7 +38,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       });
       dispatch({
         type: "UPDATE_RECORDS_LOCATION",
-        payload: <TranscriptOfRecordLocationType>"RECORDS"
+        payload: <TranscriptOfRecordLocationType>"records"
       });
       
       if (getState().records.userDataStatus !== "WAIT"){

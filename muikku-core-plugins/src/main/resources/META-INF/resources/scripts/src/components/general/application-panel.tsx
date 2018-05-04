@@ -117,7 +117,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
       });
     }
     
-    this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-width"));
+    this.borderWidth = parseInt(document.defaultView.getComputedStyle(this.refs["body"] as HTMLElement).getPropertyValue("border-left-width"));
     
     this.calculateSides();
     this.setRemainingHeight(false);
