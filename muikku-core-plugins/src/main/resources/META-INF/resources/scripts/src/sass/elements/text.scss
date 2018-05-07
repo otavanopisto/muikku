@@ -568,7 +568,7 @@ b {
 }
 
 .text--discussion-current-thread-title {
-  font-size: 1.6rem;  
+  font-size: 1.4rem;  
   font-weight: 400;  
 }
 
@@ -628,7 +628,7 @@ b {
 
 .text--studies-list-header {
   font-family: $text-font-family;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   width: 100%;
 }
 
@@ -720,6 +720,35 @@ b {
     background: $color-grade-not-assessed;
   }
 }  
+
+.text--studies-journal-entry-title {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.125rem;
+  font-weight: 400;
+  
+  @include breakpoint($breakpoint-pad){
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.text--studies-journal-entry-time {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  font-size: 0.825rem;
+  
+  @include breakpoint($breakpoint-pad){
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    text-align: right;
+  }
+  
+}
 
 // Text icon
 .text__icon {

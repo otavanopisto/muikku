@@ -1,0 +1,58 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+// This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
+
+.rich-text {
+  color: #2c2c2c;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 0.825rem;
+  font-weight: 400;
+  
+  p {
+    margin: 10px 0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    margin: 15px 0;
+  }
+  
+  h1 {
+    font-size: 1.3rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.125rem;
+  }
+  
+  h4 {
+    font-size: 1rem;
+  }
+  
+  h5 {
+    font-size: 0.9375rem;
+  }
+  
+  h6 {
+    font-size: 0.825rem;
+  }
+  
+  b, strong {
+    font-weight: 600;
+  }
+  
+  i {
+    font-style: italc;
+  }
+  
+  img {
+    border: 0;
+  }
+}
