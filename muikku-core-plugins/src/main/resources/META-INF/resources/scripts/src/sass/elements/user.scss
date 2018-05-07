@@ -12,6 +12,12 @@
   }
 }
 
+.user__select-container {
+  align-items: center;
+  display: flex;
+  padding: 2px 8px 2px 2px;
+}
+
 .user--guider {
   
   &:first-child {

@@ -8,6 +8,7 @@
 // Some class names are against BEM also.
 
 div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
+  @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;  
   border-radius: 3px;
   border: solid 1px $color-form-field-border;
@@ -15,7 +16,6 @@ div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-
   outline: none;
   padding: 3px 10px;
   resize: none;
-  transition: box-shadow 0.3, border 0.3;
   
   &:focus, &.focus {
     border: solid 1px $color-form-field-border-focus;
@@ -28,8 +28,8 @@ input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field,
 }
 
 input[type="checkbox"].form-field {
+  @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   border: solid 1px $color-form-field-border;
-  transition: box-shadow 0.3, border 0.3;
   margin-right: 5px;
   display: inline-block;
   
@@ -215,15 +215,18 @@ div.form-field-tag-input {
 }
 
 label {
-  display: block;
   font-family: $text-font-family;
   font-weight: 600;
   overflow: hidden;
   padding: 0 0 5px;
   text-overflow: ellipsis;
+  &:first-child {
+    margin-right: 5px;
+  }
 }
 
-input {
+input,
+textarea {
   border: 2px solid $color-form-field-border;
   border-radius: 3px;
   display: inline-block;
@@ -234,6 +237,18 @@ input {
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+}
+
+.form-field__radio-option-container {
+  padding: 5px;
+  
+  input {
+    margin-right: 5px;
+  }
+}
+
+.form-field__check-option-container {
+  margin-right: 10px;
 }
 
 // Used in forgotpassword dialog

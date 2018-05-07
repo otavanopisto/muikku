@@ -18,7 +18,7 @@ export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
 }
 
 export interface SetCurrentStudentUserViewAndWorkspaceTriggerType {
-  (userEntityId: number, workspaceId: number):AnyActionType
+  (userEntityId: number, userId: string, workspaceId: number):AnyActionType
 }
 
 export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
@@ -38,7 +38,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       });
       dispatch({
         type: "UPDATE_RECORDS_LOCATION",
-        payload: <TranscriptOfRecordLocationType>"RECORDS"
+        payload: <TranscriptOfRecordLocationType>"records"
       });
       
       if (getState().records.userDataStatus !== "WAIT"){
@@ -96,19 +96,10 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
         
         //Now we need to get into one by one workspace per that specific user
         await Promise.all(workspaceSet.map(async (workspace)=>{
-          
-          //and now we need to get the acessment, we are hopefully going to find one, this is the final score, and if this
-          //is available we won't use the activity
-          //note how it comes from the server as an array, we pick the first one for reference
           workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
               .students.assessments.read(workspace.id, user.id), 'callback')();
-          
-          //if we have nothing there, that means the acessment is undefined then we need to get the activity for that workspsace
-          if (!workspace.studentAssessments.assessments.length){
-            //And here we get it
-            workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
-                .read(workspace.id), 'callback')();
-          }
+          workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
+            .read(workspace.id), 'callback')();
         }));
       }));
       
@@ -232,12 +223,12 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
   }
 }
   
-let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, workspaceId){
+let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceTriggerType = function setCurrentStudentUserViewAndWorkspace(userEntityId, userId, workspaceId){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
       dispatch({
         type: "UPDATE_RECORDS_LOCATION",
-        payload: <TranscriptOfRecordLocationType>"RECORDS"
+        payload: <TranscriptOfRecordLocationType>"records"
       });
       dispatch({
         type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
@@ -264,6 +255,10 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       
         if (!wasFoundInMemory){
           workspace = <WorkspaceType>await promisify(mApi().workspace.workspaces.read(workspaceId), 'callback')();
+          workspace.studentAssessments = <WorkspaceStudentAssessmentsType>await promisify(mApi().workspace.workspaces
+              .students.assessments.read(workspace.id, userId), 'callback')();
+          workspace.studentActivity = <WorkspaceStudentActivityType>await promisify(mApi().guider.workspaces.activity
+            .read(workspace.id), 'callback')();
         }
         
         return workspace;
@@ -335,14 +330,14 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
 let setLocationToVopsInTranscriptOfRecords:SetLocationToVopsInTranscriptOfRecordsTriggerType = function setLocationToVopsInTranscriptOfRecords(){
   return {
     type: "UPDATE_RECORDS_LOCATION",
-    payload: <TranscriptOfRecordLocationType>"VOPS"
+    payload: <TranscriptOfRecordLocationType>"vops"
   };
 }
 
 let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecordsTriggerType = function setLocationToHopsInTranscriptOfRecords(){
   return {
     type: "UPDATE_RECORDS_LOCATION",
-    payload: <TranscriptOfRecordLocationType>"HOPS"
+    payload: <TranscriptOfRecordLocationType>"hops"
   };
 }
 

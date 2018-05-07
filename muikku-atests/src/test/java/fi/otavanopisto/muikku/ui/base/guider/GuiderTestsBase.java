@@ -117,15 +117,14 @@ public class GuiderTestsBase extends AbstractUITest {
       waitForPresent(".file-uploader>input");
       File testFile = getTestFile();
       sendKeys(".file-uploader>input", testFile.getAbsolutePath());
-      waitForPresent(".application-sub-panel__file-container a");
-      assertTextStartsWith(".application-sub-panel__file-container a", testFile.getName());
-//TODO: When records is done
-//      logout();
-//      mockBuilder.mockLogin(student);
-//      login();
-//      navigate("/records", false);
-//      waitForPresent(".mf-item .mf-files .mf-file-name a");
-//      assertText(".mf-item .mf-files .mf-file-name a", "img_100x100_3x8bit_RGB_circles_center_0016.png");
+      waitForPresent("a.uploaded-files__item-title");
+      assertTextStartsWith("a.uploaded-files__item-title", testFile.getName());
+      logout();
+      mockBuilder.mockLogin(student);
+      login();
+      navigate("/records", false);
+      waitForPresent("a.uploaded-files__item-title");
+      assertText("a.uploaded-files__item-title", "img_100x100_3x8bit_RGB_circles_center_0016.png");
     } finally {
       deleteWorkspace(workspace.getId());
       mockBuilder.wiremockReset();

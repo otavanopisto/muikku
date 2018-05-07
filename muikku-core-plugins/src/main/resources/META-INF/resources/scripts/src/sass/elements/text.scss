@@ -1,17 +1,3 @@
-//
-// Simple text and text sizing and styles
-//
-//  .text[ | .text-small | .text-medium | .text-large | .text-extra-large | .text-extra-extra-large | .text-banner ]
-//    [ | .text-inline | .text-inline-block]
-//    [ | .text-extra-thin| .text-thin | .text-normal | .text-thick | .text-bold | .text-extra-bold ]
-//    [ COLORMAPPING ]
-//    [ | .text-shadowed | .text-extra-shadowed]
-//    [ | .text-uppercase | .text-lowercase]
-//    [ | .text-left | .text-right | .text-centered | .text-justify ]
-//    [ | .text-full]
-//    [ | .text-responsive ]
-//
-
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
@@ -594,6 +580,9 @@ b {
 
 .text--guider-profile-student-mail {
   color: #9c9c9c;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-size: 1.3rem;
   font-weight: 200;
   margin-left: 20px;  
@@ -629,50 +618,108 @@ b {
   font-weight: 400;  
 }
 
-// Coursepicker
-.text--coursepicker-course-icon {
-  color: $color-course-icon;
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: 1.3rem;
-  margin-right: 10px;
+// Studies
+.text--studies-header {
+  font-family: $text-font-family;
+  font-size: 1.5rem;
+  font-weight: 400;
+  width: 100%;
 }
 
-.text--list-item-title {
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 1;
-  padding: 0 10px 0 0;
+.text--studies-list-header {
+  font-family: $text-font-family;
+  font-size: 1.125rem;
+  width: 100%;
 }
 
-.text--list-item-helper-title {
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  color: #9c9c9c;
-  flex-shrink: 1;
-  padding: 0 10px 0 0;
+.text--studies-list-header-title-extension {
+  font-family: $text-font-family;
+  font-size: 1.5rem;
+  padding: 0 0 0 10px;
 }
 
-.text--list-item-title-extension {
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
+.text--evaluation-request {
+  align-items: center;
+  background-color: $color-evaluation-request;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 0 0 15px;
+  text-align: center;
+  width: 1.875rem;
 }
 
-.text--list-item-type-title {
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  font-size: .825rem;
-  justify-content: flex-end;
-  text-transform: uppercase;
+.text--workspace-assesment-grade,
+.text--workspace-credit-grade {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 0 0 15px;
+  text-align: center;
+  width: 1.875rem;
+
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
 }
+
+.text--studies-workspace-literal-assessment {
+  padding: 2px 12px;
+  
+  &.state-PASSED {
+    border-left: 3px solid $color-grade-passed;
+  }
+
+  &.state-FAILED {
+    border-left: 3px solid $color-grade-failed;
+  }
+
+  &.state-INCOMPLETE {
+    border-left: 3px solid $color-grade-incomplete;
+  }
+}
+
+.text--studies-assignment-literal-assessment {
+  background: #e2ffe2;
+  border-radius: 3px;
+  padding: 2px 12px; 
+}
+
+.text--assignment-assesment-grade {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 15px 0 0;
+  text-align: center;
+  width: 1.875rem;
+
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+  
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
+  
+  &.state-NO-ASSESSMENT {
+    background: $color-grade-not-assessed;
+  }
+}  
 
 // Text icon
 .text__icon {
@@ -705,4 +752,52 @@ b {
   @include breakpoint($breakpoint-pad){
     display: none;
   }
+}
+
+.text--course-icon {
+  color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+.text--transfer-credit-icon {
+  color: $color-transfer-credit-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+.text--list-item-title {
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+}
+
+.text--list-item-helper-title {
+  color: $color-default-helper;
+  padding: 0 0 0 15px;
+}
+
+.text--list-item-title-extension {
+  padding: 0 0 0 5px;
+}
+
+.text--list-item-type-title {
+  align-items: center;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: 0.825rem;
+  justify-content: flex-end;
+  text-transform: uppercase;
 }

@@ -8,7 +8,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/message.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
-import HopsGraph from '~/components/base/hops';
+import HopsGraph from '~/components/base/hops_editable';
 import { SetHopsToTriggerType, setHopsTo } from "~/actions/main-function/hops";
 import { bindActionCreators } from "redux";
 import { HOPSDataType } from '~/reducers/main-function/hops';
@@ -36,7 +36,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
     this.timeout = setTimeout(this.props.setHopsTo.bind(null, hops), 500);
   }
   render(){
-    if (this.props.records.location !== "HOPS"){
+    if (this.props.records.location !== "hops"){
       return null;
     } else if (this.props.hops.status === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error

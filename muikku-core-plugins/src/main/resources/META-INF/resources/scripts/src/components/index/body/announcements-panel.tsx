@@ -27,7 +27,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--basic-announcements">
         <div className="text text--for-panels-title">
           <span className="text__panel-icon text__panel-icon--announcements icon-announcer"></span>
-          <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.announcements')}</span>
+          <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.announcements.title')}</span>
         </div>
         <div className="panel panel--index">
           {this.props.announcements.length !== 0 ?
@@ -49,7 +49,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
             </div>  
           :
             <div className="text text--panel-nothing">
-             {this.props.i18n.text.get("plugin.announcer.empty.title")}
+             {this.props.i18n.text.get("plugin.frontPage.announcements.noAnnouncements")}
             </div>
           }
       </div>

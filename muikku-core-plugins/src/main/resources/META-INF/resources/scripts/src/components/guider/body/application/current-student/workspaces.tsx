@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { i18nType } from '~/reducers/base/i18n';
 import { GuiderCurrentStudentStateType, GuiderStudentUserProfileType, GuiderType } from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
+
 import '~/sass/elements/application-list.scss';
 
 interface CurrentStudentWorkspacesProps {

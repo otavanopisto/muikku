@@ -12,9 +12,12 @@ import '~/sass/elements/course.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
+import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/container.scss';
+
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
-import Hops from '~/components/base/hops';
+import Hops from '~/components/base/hops_readable';
 import FileDeleteDialog from './file-delete-dialog';
 
 import Workspaces from './current-student/workspaces';
@@ -78,7 +81,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </span>
     });
     
-    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body application-sub-panel__body--basic-info text">
+    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body text">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
@@ -147,7 +150,8 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       {this.props.guider.currentStudent.lastLogin && <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.lastLogin")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.lastLogin.time}</span>
+          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.lastLogin.time ? 
+              this.props.i18n.time.format(this.props.guider.currentStudent.lastLogin.time, "LLL") : "-"}</span>
         </div>
       </div>}
       {this.props.guider.currentStudent.notifications && Object.keys(this.props.guider.currentStudent.notifications).map((notification)=>{
@@ -164,7 +168,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
     //later once a pattern is defined
     let studentHops = (this.props.guider.currentStudent.hops && this.props.guider.currentStudent.hops.optedIn) ?
-        <Hops data={this.props.guider.currentStudent.hops} editable={false}/> : null;
+        <Hops data={this.props.guider.currentStudent.hops}/> : null;
     
     //I placed the VOPS in an external file already you can follow it, this is because
     //it is very clear
@@ -183,28 +187,27 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <span className="text file-uploader__hint">{this.props.i18n.text.get("plugin.guider.user.details.files.hint")}</span>
       </FileUploader>
       {this.props.guider.currentStudent.files && (this.props.guider.currentStudent.files.length ?
-        <div className="text application-sub-panel__file-container application-list">
+        <div className="uploaded-files uploaded-files--guider text application-list">
           {this.props.guider.currentStudent.files.map((file)=>{
-            return <Link key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>
-              {file.title}
-              <FileDeleteDialog file={file}><Link disablePropagation>{
-                this.props.i18n.text.get("plugin.guider.user.details.files.file.remove")
-              }</Link></FileDeleteDialog>
-            </Link>
+            return <div className="uploaded-files__item application-list__item" key={file.id}>
+              <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
+              <Link className="uploaded-files__item-title" key={file.id} href={`/rest/guider/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+              <FileDeleteDialog file={file}>
+                <Link disablePropagation as="span" className="uploaded-files__item-delete-icon icon-delete"/>
+              </FileDeleteDialog>
+            </div>
           })}
         </div> :
-        <div className="text application-sub-panel__file-container">{
-          this.props.i18n.text.get("plugin.guider.user.details.files.empty")
-        }</div>
+        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.guider.user.details.files.empty")}</div>
       )}
     </div>
     
     return <div className="react-required-container">
-      <div className="application-sub-panel">
+      <div className="application-sub-panel application-sub-panel--guider-student-header">
         {studentBasicHeader}
-        <div className="application-sub-panel__body application-sub-panel__body--labels labels">
+        {this.props.guider.currentStudent.labels && this.props.guider.currentStudent.labels.length ? <div className="application-sub-panel__body application-sub-panel__body--labels labels">
           {studentLabels}
-        </div>
+        </div> : null}
       </div>
       <div className="application-sub-panel">
         {studentBasicInfo}
@@ -218,7 +221,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </div> : null}
        <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.workspaces")}</div>
-        {studentWorkspaces}
+        <div className="application-sub-panel__body">
+          {studentWorkspaces}
+        </div>
       </div>
       <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>

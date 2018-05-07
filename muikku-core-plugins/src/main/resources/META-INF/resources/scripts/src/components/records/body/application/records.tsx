@@ -5,10 +5,14 @@ import * as queryString from 'query-string';
 
 import {i18nType} from '~/reducers/base/i18n';
 
+import '~/sass/elements/course.scss';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
-import '~/sass/elements/message.scss';
+import '~/sass/elements/application-sub-panel.scss';
+import '~/sass/elements/workspace-activity.scss';
+import '~/sass/elements/file-uploader.scss';
+
 import { RecordsType, TransferCreditType } from '~/reducers/main-function/records/records';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import Link from '~/components/general/link';
@@ -40,8 +44,8 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   }
   
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
-    return <div className="tr-evalreq" title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}>
-      <span className="icon-assessment-pending"></span>
+    return <div className="text text--list-item-type-title">
+      <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="text text--evaluation-request icon-assessment-pending"></span>
     </div>
   }
   
@@ -53,78 +57,78 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     transferCredit.gradingScaleIdentifier,
     transferCredit.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
-  return <div className="TODO transfer credit value">
-    <span className="TODO transfer-credit-text">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
-    &nbsp;
-    <span className={`TODO workspace-assesment-score ${grade.passing ? "credit-passed" : "credit-failed"}`}>
+  return <div className="text text--list-item-type-title">
+    <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))} className={`text text--workspace-credit-grade ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {grade.grade}
     </span>
   </div>
 }
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
-  let acessment = workspace.studentAssessments.assessments[0];
-  if (!acessment){
+  let assessment = workspace.studentAssessments.assessments[0];
+  if (!assessment){
     return null;
   }
   let gradeId = [
-    acessment.gradingScaleSchoolDataSource,
-    acessment.gradingScaleIdentifier,
-    acessment.gradeSchoolDataSource,
-    acessment.gradeIdentifier].join('-');
+    assessment.gradingScaleSchoolDataSource,
+    assessment.gradingScaleIdentifier,
+    assessment.gradeSchoolDataSource,
+    assessment.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
-  return <div className="TODO workspace assesment">
-    <span className="TODO workspace-assesment-text">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(acessment.evaluated))}</span>
-    &nbsp;
-    <span className={`TODO workspace-assesment-score ${acessment.passed ? "workspace-passed" : "workspace-failed"}`}>
+  return <span className="text text--list-item-type-title">
+    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))} className={`text text--workspace-assesment-grade ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
       {grade.grade}
     </span>
-  </div>
+  </span>
 }
 
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
     if (!workspace.studentActivity){
       return null;
+    } else if ((workspace.studentActivity.exercisesTotal + workspace.studentActivity.evaluablesTotal) === 0){
+      return null;
     }
     let evaluablesCompleted = workspace.studentActivity.evaluablesPassed + workspace.studentActivity.evaluablesSubmitted +
       workspace.studentActivity.evaluablesFailed + workspace.studentActivity.evaluablesIncomplete;
-    return <div className="TOOD workspace activity">
-      <ProgressBarLine containerClassName="progressbar" initialAnimate options={{
-        strokeWidth: 2,
+    return <div className="workspace-activity workspace-activity--studies">
+    
+      {workspace.studentActivity.evaluablesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+        strokeWidth: 1,
         duration: 1000,
         color: "#ce01bd",
-        trailColor: "#eee",
+        trailColor: "#f5f5f5",
         trailWidth: 1,
-        svgStyle: {width: "100%", height: "100%"},
+        svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "progressbar-text",
+          className: "text workspace-activity__progressbar-label",
           style: {
-            color: "#222"
+            right: workspace.studentActivity.evaluablesDonePercent === 0 ? null : 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
           }
         }
       }}
-      strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
-      trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#f5f5f5"
+      trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={evaluablesCompleted + "/" + workspace.studentActivity.evaluablesTotal}
-      progress={workspace.studentActivity.evaluablesDonePercent/100}/>
-      <ProgressBarLine containerClassName="progressbar" initialAnimate options={{
-        strokeWidth: 2,
+      progress={workspace.studentActivity.evaluablesDonePercent/100}/> : null}
+    
+      {workspace.studentActivity.exercisesTotal ? <ProgressBarLine containerClassName="workspace-activity__progressbar workspace-activity__progressbar--studies" initialAnimate options={{
+        strokeWidth: 1,
         duration: 1000,
         color: "#ff9900",
-        trailColor: "#eee",
+        trailColor: "#f5f5f5",
         trailWidth: 1,
-        svgStyle: {width: "100%", height: "100%"},
+        svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "progressbar-text",
+          className: "text workspace-activity__progressbar-label",
           style: {
-            color: "#222"
+            right: workspace.studentActivity.exercisesDonePercent === 0 ? null : 100 - workspace.studentActivity.exercisesDonePercent + "%"
           }
         }
       }}
-      strokeWidth={4} easing="easeInOut" duration={1000} color="#ce01bd" trailColor="#eee"
-      trailWidth={2} svgStyle={{width: "100%", height: "100%"}}
+      strokeWidth={1} easing="easeInOut" duration={1000} color="#ff9900" trailColor="#f5f5f5"
+      trailWidth={1} svgStyle={{width: "100%", height: "4px"}}
       text={workspace.studentActivity.exercisesAnswered + "/" + workspace.studentActivity.exercisesTotal}
-      progress={workspace.studentActivity.exercisesDonePercent/100}/>
+      progress={workspace.studentActivity.exercisesDonePercent/100}/> : null}
     </div>
 }
 
@@ -132,73 +136,121 @@ class Records extends React.Component<RecordsProps, RecordsState> {
   constructor(props: RecordsProps){
     super(props);
     
-    this.getWorkspaceLink = this.getWorkspaceLink.bind(this);
+    this.goToWorkspace = this.goToWorkspace.bind(this);
   }
   
-  getWorkspaceLink(user: UserWithSchoolDataType, workspace: WorkspaceType){
-    return "#?u=" + user.userEntityId + "&w=" + workspace.id;
+  goToWorkspace(user: UserWithSchoolDataType, workspace: WorkspaceType) {
+    window.location.hash = "#?u=" + user.userEntityId + "&i=" + encodeURIComponent(user.id) + "&w=" + workspace.id;
   }
-
+    
   render(){
+    
     if (this.props.records.userDataStatus === "LOADING"){
       return null;
     } else if (this.props.records.userDataStatus === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    }
+    }    
     
-    if (Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
+    if (!Object.keys(storedCurriculumIndex).length && this.props.records.curriculums.length){
       this.props.records.curriculums.forEach((curriculum)=>{
         storedCurriculumIndex[curriculum.identifier] = curriculum.name;
       });
     }
     
-    return <BodyScrollKeeper hidden={this.props.records.location !== "RECORDS" || !!this.props.records.current}>
-      <h2>{this.props.i18n.text.get("plugin.records.studyStartDateLabel", this.props.i18n.time.format(this.props.records.studyStartDate))}</h2>
-      <div className="application-list">
+    let studentBasicInfo = <div className="application-sub-panel__body text">
+      <div className="application-sub-panel__item">
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyStartDateLabel")}</div>
+        <div className="application-sub-panel__item-data">
+          <span className="text text--guider-profile-value">{this.props.records.studyStartDate ? 
+            this.props.i18n.time.format(this.props.records.studyStartDate) : "-"}</span>
+        </div>
+      </div>
+      <div className="application-sub-panel__item">
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyTimeEndLabel")}</div>
+        <div className="application-sub-panel__item-data">
+          <span className="text text--guider-profile-value">{this.props.records.studyTimeEnd ? 
+            this.props.i18n.time.format(this.props.records.studyTimeEnd) : "-"}</span>
+        </div>
+      </div>
+    </div>  
+    
+    let studentRecords = <div className="application-sub-panel">
         {this.props.records.userData.map((data)=>{
           let user = data.user;
-          let records = data.records;
-          
-          return <div key={data.user.id}>
-            <h2>{user.studyProgrammeName}</h2>
-            {records.map((record, index)=>{
-              return <div key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <h3>{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3> : null}
-                {record.workspaces.map((workspace)=>{
-                  return <Link as='div' className="link workspace--link" key={workspace.id} href={this.getWorkspaceLink(user, workspace)}>
-                    <div className="TODO workspace name something???">{workspace.name}</div>
-                    {getEvaluationRequestIfAvailable(this.props, workspace)}
-                    {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : getActivity(this.props, workspace)}
-                  </Link>
-                })}
-                {record.transferCredits.length ? <h3>{this.props.i18n.text.get("TODO transfer credits")}</h3> : null}
-                {record.transferCredits.map((credit)=>{
-                  return <div key={credit.date}>
-                    <span>{credit.courseName}</span>
-                    {getTransferCreditValue(this.props, credit)}
-                  </div>
-                })}
+          let records = data.records;      
+
+          return <div className="react-required-container" key={data.user.id}>
+          <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
+          <div className="application-sub-panel__body">
+            {records.length ? records.map((record, index)=>{
+              return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
+                {record.groupCurriculumIdentifier ? <div className="application-list__header text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</div> : null}  
+                  {record.workspaces.map((workspace)=>{
+                    //Do we want an special way to display all these different states? passed is very straightforward but failed and
+                    //incomplete might be difficult to understand
+                    let extraClassNameState = "";
+                    if (workspace.studentAssessments.assessmentState === "pass"){
+                      extraClassNameState = "state-PASSED"
+                    } else if (workspace.studentAssessments.assessmentState === "fail"){
+                      extraClassNameState = "state-FAILED"
+                    } else if (workspace.studentAssessments.assessmentState === "incomplete"){
+                      extraClassNameState = "state-INCOMPLETE"
+                    }
+                    return <div className={`application-list__item course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                      <div className="application-list__item-header" key={workspace.id}>
+                        <span className="text text--course-icon icon-books"></span>
+                        <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
+                        {getEvaluationRequestIfAvailable(this.props, workspace)}
+                        {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
+                        {getActivity(this.props, workspace)}
+                      </div>
+                    </div>
+                  })}
+                {record.transferCredits.length ? 
+                  <div className="application-list__header text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</div> : null}
+                    {record.transferCredits.map((credit)=>{
+                      return <div className="application-list__item course course--credits" key={credit.date}>
+                        <div className="application-list__item-header">
+                          <span className="text text--transfer-credit-icon icon-books"></span>  
+                          <span className="text text--list-item-title">{credit.courseName}</span>
+                          {getTransferCreditValue(this.props, credit)}
+                        </div>
+                      </div>
+                    })}
               </div>
-            })}
+            }) : <h4>{this.props.i18n.text.get("TODO no records")}</h4>}
+          </div>
           </div>
         })}
+      </div>  
+
+    // Todo fix the first sub-panel border-bottom stuff from guider. It should be removed from title only.
+    
+    return <BodyScrollKeeper hidden={this.props.records.location !== "records" || !!this.props.records.current}>
+    
+    <div className="application-sub-panel">
+      {studentBasicInfo}
+    </div>
+    {studentRecords}    
+    
+    <div className="application-sub-panel">
+      <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
+      <div className="application-sub-panel__body">
+      {this.props.records.files.length ?
+        <div className="uploaded-files text application-list">
+          {this.props.records.files.map((file)=>{
+            return <div className="uploaded-files__item application-list__item" key={file.id}>
+              <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
+              <Link className="uploaded-files__item-title" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
+            </div>
+          })}
+        </div> :
+        <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.records.files.empty")}</div>
+      }
       </div>
-      <div className="TODO files">
-        {this.props.records.files.length ?
-          <div>
-            {this.props.records.files.map((file)=>{
-              return <Link key={file.id} href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>
-                {file.title}
-              </Link>
-            })}
-          </div> :
-          <div>{
-            this.props.i18n.text.get("TODO no files")
-          }</div>
-        }
-      </div>
+    </div>
     </BodyScrollKeeper>
   }
 }

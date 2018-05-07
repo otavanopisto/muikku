@@ -10,7 +10,11 @@
   flex-grow: 1;
   flex-flow: row wrap;
   flex-shrink: 1;
-}  
+}
+
+.labels--communicator-message {
+	margin: 0 10px 10px;
+}
   
 .label {
   align-items: center;
