@@ -728,7 +728,7 @@ b {
   font-size: 1.125rem;
   font-weight: 400;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;
@@ -741,7 +741,7 @@ b {
   flex-shrink: 0;
   font-size: 0.825rem;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     flex-basis: auto;
     flex-grow: 1;
     flex-shrink: 1;

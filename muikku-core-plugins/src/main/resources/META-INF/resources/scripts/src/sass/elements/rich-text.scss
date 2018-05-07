@@ -6,7 +6,7 @@
 // This file sets styling for every rich text editors content so they are rendered always the same way regardless where they are created.
 
 .rich-text {
-  color: #2c2c2c;
+  color: $color-text-default;
   font-family: "Open Sans", Arial, sans-serif;
   font-size: 0.825rem;
   font-weight: 400;
@@ -15,7 +15,12 @@
     margin: 10px 0;
   }
   
-  h1, h2, h3, h4, h5, h6 {
+  h1, 
+  h2, 
+  h3, 
+  h4, 
+  h5, 
+  h6 {
     font-weight: 400;
     margin: 15px 0;
   }
@@ -44,7 +49,8 @@
     font-size: 0.825rem;
   }
   
-  b, strong {
+  b, 
+  strong {
     font-weight: 600;
   }
   
