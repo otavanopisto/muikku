@@ -65,21 +65,34 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
 }
 
 function getAssessments(props: RecordsProps, workspace: WorkspaceType){
-  let assessment = workspace.studentAssessments.assessments[0];
-  if (!assessment){
-    return null;
-  }
-  let gradeId = [
-    assessment.gradingScaleSchoolDataSource,
-    assessment.gradingScaleIdentifier,
-    assessment.gradeSchoolDataSource,
-    assessment.gradeIdentifier].join('-');
-  let grade = props.records.grades[gradeId];
-  return <span className="text text--list-item-type-title">
-    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))} className={`text text--workspace-assesment-grade ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
-      {grade.grade}
+  if (workspace.studentAssessments.assessments.length){
+    let assessment = workspace.studentAssessments.assessments[0];
+    if (!assessment){
+      return null;
+    }
+    let gradeId = [
+      assessment.gradingScaleSchoolDataSource,
+      assessment.gradingScaleIdentifier,
+      assessment.gradeSchoolDataSource,
+      assessment.gradeIdentifier].join('-');
+    let grade = props.records.grades[gradeId];
+    return <span className="text text--list-item-type-title">
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))} className={`text text--workspace-assesment-grade ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
+        {grade.grade}
+      </span>
+    </span>
+  } else if (workspace.studentAssessments.assessmentState && 
+    (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
+    let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
+    		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
+    return <span className="text text--list-item-type-title">
+    <span title={status} className={`text text--workspace-assesment-grade ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+      {status[0].toLocaleUpperCase()}
     </span>
   </span>
+  } else {
+    return null;
+  }
 }
 
 function getActivity(props: RecordsProps, workspace: WorkspaceType){
@@ -203,7 +216,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                         <span className="text text--course-icon icon-books"></span>
                         <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension && <span className="text text--list-item-title-extension">({workspace.nameExtension})</span>}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
-                        {workspace.studentAssessments.assessments.length ? getAssessments(this.props, workspace) : null}
+                        {getAssessments(this.props, workspace)}
                         {getActivity(this.props, workspace)}
                       </div>
                     </div>
