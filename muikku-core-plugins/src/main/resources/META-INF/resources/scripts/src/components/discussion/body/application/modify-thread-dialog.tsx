@@ -110,14 +110,14 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <input className="form-field form-field--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
+         <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
        </div>,       
        <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="form-field" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
-         <input type="checkbox" className="form-field" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
        </div>,
        <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>

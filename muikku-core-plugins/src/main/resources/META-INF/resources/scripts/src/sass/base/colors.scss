@@ -192,7 +192,7 @@ $color-card-default-text: $color-inverse;
 $color-dialog-default-background: $color-default;
 $color-dialog-default-text: $color-inverse;
 $color-dialog-default-title-background: $color-primary;
-$color-dialog-default-title-text: $color-default;
+$color-dialog-default-title-text: #000;
 $color-dialog-default-shadow: rgba(0, 0, 0, 0.6);
 
 // Background
@@ -273,6 +273,12 @@ $color-form-field-tag-input-tag-background: $color-default;
 $color-form-field-tag-input-tag-border: #b1e8fe;
 $color-form-field-tag-input-tag-text: $color-default-contrast;
 $color-form-field-tag-input-tag-delete-background-active: rgba(0, 0, 0, 0.2);
+
+// Environment dialog form elements
+
+$color-environment-dialog-form-element-border: #dcdcdc;
+
+
 
 // autocomplete
 $color-autocomplete-list-border: #dcdcdc;

@@ -2,7 +2,7 @@ import Dialog from './dialog';
 import Portal from './portal';
 import * as React from 'react';
 
-import '~/sass/elements/dialog.scss';
+import '~/sass/elements/environment-dialog.scss';
 
 export default class JumboDialog extends Dialog {
   render(){
@@ -14,7 +14,6 @@ export default class JumboDialog extends Dialog {
                <div className="environment-dialog__window">
                   <div className="environment-dialog__header">
                     {this.props.title}
-                    <span className="environment-dialog__close icon-close" onClick={closePortal}></span>
                   </div>
                   <div className="environment-dialog__body">
                     {this.props.content(closePortal)}

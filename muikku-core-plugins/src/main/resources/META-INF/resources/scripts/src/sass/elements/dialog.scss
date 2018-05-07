@@ -139,12 +139,11 @@
   }
 
   .environment-dialog__wrapper {
-  	@include breakpoint-down($breakpoint-landscape-pad) {
-      
-    }
+    background-color: $color-application-dialog-background-color;
+    border-top: 3px solid $color-application-dialog-border-color;
     display: flex;
-    align-items: center;
     justify-content: center;
+    min-height: 520px;
     position: absolute;
     bottom: -100%;
     left: 0;
@@ -154,8 +153,10 @@
       bottom: 0;
       top: 0;
       align-items: flex-start;
+      height: auto
     }
-   
+ 
+ 
     @include breakpoint-up($breakpoint-medium-screen){
       @include prefix(transition, moz ms webkit o, bottom 0.3s);
     }
@@ -168,7 +169,6 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      padding-top: 20px;
       
       @media screen and (max-width: $breakpoint-max-usable-screen){
       	.environment-dialog__footer, .environment-dialog__body {
@@ -181,6 +181,7 @@
         flex-basis: auto;
         flex-grow: 1;
         flex-shrink: 1;
+        margin-top: 10px;
       }
       
       .environment-dialog__footer {
@@ -204,9 +205,7 @@
       .environment-dialog__header {
         color: $color-dialog-default-title-text;
         margin-bottom: 20px;
-        padding: 15px;
-        position: relative;
-        width: 100%;
+        padding: 10px 15px;
   
         .environment-dialog__title {
           font-weight: 500;
@@ -215,6 +214,7 @@
           width: 100%;
           
           @include breakpoint-down($breakpoint-landscape-pad) {
+            width: 100%;
             text-align: center;
           }
         }
@@ -239,18 +239,20 @@
   }
  
   &.environment-dialog--new-message, &.environment-dialog--update-signature, &.environment-dialog--mainfunction {
-  
-    .environment-dialog__wrapper {
-      min-height: 520px;
-      background-color: $color-application-dialog-background-color;
-    
-      @include breakpoint-down($breakpoint-landscape-pad) {
-        height: auto;
-      }
-    
-      .environment-dialog__header {
-        background-color: $color-application-dialog-header-background-color;
-      }
-    }
   }
+}
+
+
+.environment-dialog__header {
+  background-color: $color-application-dialog-background-color;
+  border-top: 3px solid $color-application-dialog-border-color;
+  border-right: 3px solid $color-application-dialog-border-color;
+  border-left: 3px solid $color-application-dialog-border-color;
+  position: absolute;
+  top: -52px;
+  right: 100%;
+  display: inline-block;
+  white-space: nowrap; 
+  border-radius: 3px 3px 0;
+  font-size: 25px;
 }

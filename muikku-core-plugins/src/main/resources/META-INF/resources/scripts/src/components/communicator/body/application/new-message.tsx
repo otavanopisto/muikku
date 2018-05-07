@@ -119,7 +119,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     let content = (closeDialog: ()=>any) => [
       (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
-      (<input key="2" type="text" className="form-field form-field--communicator-new-message-subject"
+      (<input key="2" type="text" className="environment-dialog__form-element"
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
         value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>),
       (<CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
@@ -127,7 +127,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
         })} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
-        <input className="form-field" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        <input className="environment-dialog__form-element" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
       </div> : null)
     ]
