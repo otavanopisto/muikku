@@ -1,6 +1,6 @@
 import promisify from '~/util/promisify';
 import { AnyActionType, SpecificActionType } from '~/actions';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import { StateType } from '~/reducers';
 import { MessageThreadListType, MessageThreadExpandedType, MessagesStateType, MessagesPatchType, MessageThreadLabelType, MessageThreadType, MessageThreadUpdateType, MessageSignatureType, MessageType, MessagesNavigationItemListType, MessageRecepientType, MessagesNavigationItemType, LabelListType, LabelType } from '~/reducers/main-function/messages';
 import { displayNotification } from '~/actions/base/notifications';
@@ -75,7 +75,10 @@ let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = func
         payload: <number>( await ( promisify( mApi().communicator.receiveditemscount.cacheClear().read(), 'callback' )() ) || 0 )
       } );
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when unread messages count couldn't change"), 'error' ) );
     }
   }
 }
@@ -95,7 +98,10 @@ let loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType
         } ), 'callback' )() )
       } );
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when couldn't load last messsage from server"), 'error' ) );
     }
   }
 }
@@ -254,7 +260,9 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
             }
 
           }
-        } catch ( err ) { }
+        } catch ( err ) { if (!(err instanceof MApiError)){
+          throw err;
+        }}
       }
       
       //Also we need to update the specific message in the thread view if it's there
@@ -273,7 +281,10 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
       }
       
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when message failed to send"), 'error' ) );
       message.fail && message.fail();
     }
   }
@@ -366,7 +377,10 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
       }
       dispatch(updateUnreadMessageThreadsCount());
     } catch ( err ) {
-      dispatch(displayNotification(err.message,'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when toggling message read status failed"),'error'));
       dispatch({
         type: "UPDATE_ONE_MESSAGE_THREAD",
         payload: {
@@ -448,7 +462,10 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
           payload: thread
         } );
       } catch ( err ) {
-        dispatch(displayNotification( err.message, 'error' ) );
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(displayNotification( getState().i18n.text.get("TODOERRORMSG when one or many messages couldn't be deleted"), 'error' ) );
       }
     }));
 
@@ -495,7 +512,10 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType = function
         });
       }
     } catch ( err ) {
-      dispatch(displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when deleting a message didn't work"), 'error' ) );
     }
 
     mApi().communicator[getApiId(item)].cacheClear();
@@ -538,7 +558,10 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
         }
       });
     } catch ( err ) {
-      dispatch(displayNotification(err.message,'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a message thread couldn't be loaded"),'error'));
     }
 
     let existantMessage:MessageThreadType = state.messages.threads.find((message)=>{
@@ -551,6 +574,9 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
       try {
         await promisify( mApi().communicator[getApiId( item )].markasread.create( currentThread.messages[0].communicatorMessageId ), 'callback' )();
       } catch ( err ) {
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
       }
     }
   }
@@ -595,7 +621,10 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
           }
         }
       } catch ( err ) {
-        dispatch(displayNotification(err.message, 'error'));
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't load newly received message"), 'error'));
       }
     }
   }
@@ -612,7 +641,10 @@ let loadSignature: LoadSignatureTriggerType = function loadSignature() {
         } );
       }
     } catch ( err ) {
-      dispatch(displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification( getState().i18n.text.get("TODOERRORMSG when a signature failed to load"), 'error' ) );
     }
   }
 }
@@ -643,7 +675,10 @@ let updateSignature: UpdateSignatureTriggerType = function updateSignature( newS
         } );
       }
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when signature failed to update"), 'error' ) );
     }
   }
 }
@@ -683,7 +718,10 @@ let loadMessagesNavigationLabels:LoadMessagesNavigationLabelsTriggerType = funct
       });
       callback && callback();
     } catch (err) {
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when labels couldn't be loaded"), 'error'));
     }
   }
 }
@@ -710,7 +748,10 @@ let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function 
         }
       });
     } catch (err){
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a new label couldn't be added"), 'error'));
     }
   }
 }
@@ -746,7 +787,10 @@ let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = fun
         }
       });
     } catch(err){
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a label failed to update"), 'error'));
     }
   }
 }
@@ -775,7 +819,10 @@ let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = fun
         }
       });
     } catch (err){
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a label couldn't be removed"), 'error'));
     }
   }
 }
@@ -810,7 +857,10 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = fu
           payload: thread
         });
       } catch (err) {
-        dispatch(displayNotification(err.message,'error'));
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when one or many messages couldn't be restored"),'error'));
       }
     }));
 
@@ -857,7 +907,10 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = functi
         });
       }
     } catch ( err ) {
-      dispatch(displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification( getState().i18n.text.get("TODOERRORMSG when the current thread couldn't be restored"), 'error' ) );
     }
 
     mApi().communicator[getApiId(item)].cacheClear();

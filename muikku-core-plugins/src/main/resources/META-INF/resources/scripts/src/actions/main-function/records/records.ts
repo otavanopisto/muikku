@@ -214,7 +214,7 @@ let updateAllStudentUsersAndSetViewToRecords:UpdateAllStudentUsersAndSetViewToRe
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when records couldn't be loaded"), 'error'));
       dispatch({
         type: "UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS",
         payload: <AllStudentUsersDataStatusType>"ERROR"
@@ -318,7 +318,7 @@ let setCurrentStudentUserViewAndWorkspace:SetCurrentStudentUserViewAndWorkspaceT
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when user and workspace failed to load"), 'error'));
       dispatch({
         type: "UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS",
         payload: <CurrentStudentUserAndWorkspaceStatusType>"ERROR"

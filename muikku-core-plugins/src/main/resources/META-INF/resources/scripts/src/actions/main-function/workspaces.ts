@@ -26,7 +26,7 @@ let loadWorkspacesFromServer:LoadWorkspacesFromServerTriggerType = function load
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when workspace didn't load from server"), 'error'));
     }
   }
 }
@@ -46,7 +46,7 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when last workspace couldn't be loaded from server"), 'error'));
     }
   }
 }

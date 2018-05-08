@@ -143,7 +143,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     });
   } catch (err){
     //Error :(
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load messages"), 'error'));
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: <MessagesStateType>"ERROR"
@@ -183,7 +183,7 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
       }
     }
   } catch (err){
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to label the current message"), 'error'));
   }
 }
 
@@ -221,7 +221,7 @@ export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isT
         }
       }
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to label a message"), 'error'));
     }
   });
 }
