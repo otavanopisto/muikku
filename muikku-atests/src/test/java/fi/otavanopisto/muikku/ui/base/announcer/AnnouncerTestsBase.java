@@ -205,17 +205,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
 
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-<<<<<<< HEAD
     login();    
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
-=======
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
-    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
-    
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null, null);
->>>>>>> origin/devel
     try {
       navigate("/announcer", false);
       waitForPresent("div.application-panel__main-container.loader-empty");
@@ -244,19 +235,9 @@ public class AnnouncerTestsBase extends AbstractUITest {
 
     Builder mockBuilder = mocker();
     mockBuilder.addStaffMember(admin).addStaffMember(another).addStudent(student).mockLogin(admin).build();
-<<<<<<< HEAD
     login();    
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
-    createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
-=======
-    login();
-    Workspace workspace = createWorkspace("testcourse", "test course for testing", String.valueOf(courseId), Boolean.TRUE);
-    MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
-    mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
-    
     createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
     createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
->>>>>>> origin/devel
     try {
       navigate("/announcer", false);
       waitForPresent(".text--item-article-header");
