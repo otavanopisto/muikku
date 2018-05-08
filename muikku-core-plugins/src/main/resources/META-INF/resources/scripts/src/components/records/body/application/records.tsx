@@ -81,12 +81,12 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
         {grade.grade}
       </span>
     </span>
-  } else if (workspace.studentAssessments.assessmentState && 
+  } else if (workspace.studentAssessments.assessmentState &&
     (workspace.studentAssessments.assessmentState === "incomplete" || workspace.studentAssessments.assessmentState === "fail")){
     let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span className="text text--list-item-type-title">
-    <span title={status} className={`text text--workspace-assesment-grade ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate))} className={`text text--workspace-assesment-grade ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
       {status[0].toLocaleUpperCase()}
     </span>
   </span>
