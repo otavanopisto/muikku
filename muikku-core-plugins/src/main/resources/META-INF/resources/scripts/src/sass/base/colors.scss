@@ -22,6 +22,9 @@ $color-error-contrast: $color-default;
 $color-success: #24c118;
 $color-success-contrast: $color-default;
 
+$color-execute: #66b43b;
+$color-execute-contrast: $color-default;
+
 $color-cancel: #7391a7;
 $color-cancel-contrast: $color-default;
 
@@ -101,6 +104,8 @@ $color-button-error-text: $color-error-contrast;
 $color-button-success-background: $color-success;
 $color-button-success-text: $color-success-contrast;
 
+$color-button-execute-background : color-execute;
+$color-button-execute-text: color-execute-contrast;
 $color-button-cancel-background: $color-cancel;
 $color-button-cancel-text: $color-cancel-contrast;
 
@@ -276,9 +281,7 @@ $color-form-field-tag-input-tag-delete-background-active: rgba(0, 0, 0, 0.2);
 
 // Environment dialog form elements
 
-$color-environment-dialog-form-element-border: #dcdcdc;
-
-
+$color-environment-dialog-form-element-border: #f8a1ce;
 
 // autocomplete
 $color-autocomplete-list-border: #dcdcdc;

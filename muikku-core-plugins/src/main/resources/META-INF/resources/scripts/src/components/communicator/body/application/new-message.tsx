@@ -135,10 +135,10 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["dialog--cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
+          <Button buttonModifiers="dialog--execute" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
           </Button>
         </div>

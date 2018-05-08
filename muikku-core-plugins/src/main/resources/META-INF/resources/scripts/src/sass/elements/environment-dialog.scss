@@ -157,7 +157,7 @@
 div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
   -webkit-environment-dialog__form-element: none;  
   border-radius: 3px;
-  border: solid 2px $color-form-field-border;
+  border: solid 2px $color-environment-dialog-form-element-border;
   font-size: 14px;
   outline: none;
   padding: 3px 10px;
@@ -165,8 +165,6 @@ div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox
   transition: box-shadow 0.3, border 0.3;
   
   &:focus, &.focus {
-    border: solid 1px $color-form-field-border-focus;
-    box-shadow: 0 0 5px 1px $color-form-field-glow;
   }
 }
 
@@ -175,14 +173,12 @@ input:not([type="checkbox"]).environment-dialog__form-element, .environment-dial
 }
 
 input[type="checkbox"].environment-dialog__form-element {
-  border: solid 1px $color-form-field-border;
+  border: solid 1px $color-environment-dialog-form-element-border;
   transition: box-shadow 0.3, border 0.3;
   margin-right: 5px;
   display: inline-block;
   
   &:focus, &.focus {
-    border: solid 1px $color-form-field-border-focus;
-    box-shadow: 0 0 5px 1px $color-form-field-glow;
   }
 }
 
@@ -222,7 +218,7 @@ div.environment-dialog__form-element-tag-input {
 }
 
 // Needs to be redone with divs
-.environment-dialog__form-element__select--primary-function,
+
 .environment-dialog__form-element--toolbar-selector {    
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -371,7 +367,7 @@ label {
 }
 
 input {
-  border: 2px solid $color-form-field-border;
+  border: 2px solid $color-environment-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
   font-family: $text-font-family;

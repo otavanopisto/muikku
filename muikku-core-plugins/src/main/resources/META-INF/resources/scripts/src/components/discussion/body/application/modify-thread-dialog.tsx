@@ -125,10 +125,10 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Link className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.modifyThread.bind(this, closeDialog)}>
+          <Link className="button button-dialog--execute" onClick={this.modifyThread.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
         </div>
