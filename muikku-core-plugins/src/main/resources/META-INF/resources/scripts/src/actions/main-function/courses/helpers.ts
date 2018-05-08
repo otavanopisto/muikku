@@ -105,7 +105,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
       throw err;
     }
     //Error :(
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when loading courses failed"), 'error'));
     dispatch({
       type: "UPDATE_COURSES_STATE",
       payload: <CoursesStateType>"ERROR"

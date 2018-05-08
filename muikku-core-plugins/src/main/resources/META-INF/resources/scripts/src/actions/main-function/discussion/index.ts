@@ -168,7 +168,7 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
         });
       } catch (err){
         //Error :(
-        dispatch(notificationActions.displayNotification(err.message, 'error'));
+        dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load discussion threads"), 'error'));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
           payload: <DiscussionStateType>"ERROR"
@@ -202,7 +202,7 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
       
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to create a new thread"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -226,7 +226,7 @@ let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDi
       
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to modify a discussion thread"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -313,7 +313,7 @@ let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = f
       data.success && data.success();
     } catch (err){
       //Error :(
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load one single thread"), 'error'));
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
         payload: <DiscussionStateType>"ERROR"
@@ -351,7 +351,7 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
         forceRefresh: true
       }));
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to post a reply to a thread"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -385,7 +385,7 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
         location.hash = splitted[0] + "/" + splitted[1];
       }
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to remove the current discussion thread"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -406,7 +406,7 @@ let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurren
         fail: data.fail
       }));
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to delete a discussion thread reply"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -428,7 +428,7 @@ let modifyReplyFromCurrentThread:ModifyReplyFromCurrentThreadTriggerType = funct
       
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to modify a reply from a current thread"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -447,7 +447,7 @@ let loadDiscussionAreasFromServer:LoadDiscussionAreasFromServerTriggerType = fun
       });
       callback && callback();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't load all areas"), 'error'));
     }
   }
 }
@@ -470,7 +470,7 @@ let createDiscussionArea:CreateDiscussionAreaTriggerType = function createDiscus
       location.hash = "#" + newArea.id;
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't create new discussiona rea"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -499,7 +499,7 @@ let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscus
       });
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't update discussion area"), 'error'));
       data.fail && data.fail();
     }
   }
@@ -520,7 +520,7 @@ let deleteDiscussionArea:DeleteDiscussionAreaTriggerType = function deleteDiscus
       });
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't delete dsicussion area"), 'error'));
       data.fail && data.fail();
     }
   }

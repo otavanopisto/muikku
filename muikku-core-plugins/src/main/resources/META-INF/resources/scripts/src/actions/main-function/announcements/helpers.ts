@@ -2,7 +2,7 @@ import { AnyActionType } from "~/actions";
 import { AnnouncementsType, AnnouncementsStateType, AnnouncementListType, AnnouncementsPatchType, AnnouncerNavigationItemListType, AnnouncerNavigationItemType } from "~/reducers/main-function/announcements";
 import { StatusType } from "~/reducers/base/status";
 import promisify from "~/util/promisify";
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import notificationActions from '~/actions/base/notifications';
 import { StateType } from "~/reducers";
 
@@ -92,8 +92,11 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       payload
     });
   } catch (err){
+    if (!(err instanceof MApiError)){
+      throw err;
+    }
     //Error :(
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when loading announcements failed"), 'error'));
     dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
       payload: <AnnouncementsStateType>"ERROR"
