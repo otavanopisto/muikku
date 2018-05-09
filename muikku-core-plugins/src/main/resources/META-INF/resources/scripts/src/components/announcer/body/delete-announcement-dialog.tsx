@@ -66,12 +66,12 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="dialog__button-set">
-          <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
-            {this.props.i18n.text.get('plugin.announcer.deleteDialog.cancelButton.label')}
-          </Link>
-          <Link className="button button--fatal button--standard-ok"
-            onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Link className="button button-dialog--execute"
+          onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.announcer.deleteDialog.deleteButton.label')}
+          </Link>
+          <Link className="button button-dialog--cancel" onClick={closeDialog}>
+            {this.props.i18n.text.get('plugin.announcer.deleteDialog.cancelButton.label')}
           </Link>
         </div>
       )

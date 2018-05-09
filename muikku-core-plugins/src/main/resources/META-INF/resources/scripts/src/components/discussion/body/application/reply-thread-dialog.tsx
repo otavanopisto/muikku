@@ -92,12 +92,13 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          <Link className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Link>
           <Link className="button button-dialog--execute" onClick={this.createReply.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
+          <Link className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
+          </Link>
+
         </div>
       )
     }
