@@ -362,7 +362,7 @@
                 var assessments = results[0];
                 results[1].evaluablesDone = results[1].evaluablesPassed + results[1].evaluablesSubmitted + results[1].evaluablesFailed + results[1].evaluablesIncomplete;
                 workspaceEntity.progress = results[1];
-                console.log(workspaceEntity.progress.assessmentState);
+
                 if (workspaceEntity.progress.assessmentState.date) {
                   workspaceEntity.progress.assessmentState.date = moment(workspaceEntity.progress.assessmentState.date).format('M.D.YYYY');
                 }

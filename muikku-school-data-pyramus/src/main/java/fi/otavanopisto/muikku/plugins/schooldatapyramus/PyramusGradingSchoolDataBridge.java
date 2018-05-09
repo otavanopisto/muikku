@@ -127,9 +127,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 	}
 
   private GradingScaleItem createGradingScaleItemEntity(Grade grade) {
-		if (grade == null) {
-			return null;
-		}
+	if (grade == null) {
+	  return null;
+	}
     
     return new PyramusGradingScaleItem(grade.getId().toString(), grade.getGradingScaleId().toString(), grade.getName(), grade.getPassingGrade());
   }
