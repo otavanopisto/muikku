@@ -106,7 +106,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -129,7 +129,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
       login();
       try{
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, true, null, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -162,7 +162,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         List<Long> userGroups = new ArrayList<>();
         userGroups.add(2l);
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, false, userGroups);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, false, userGroups, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -188,7 +188,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
       try{
         List<Long> userGroups = new ArrayList<>();
         userGroups.add(2l);
-        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, false, userGroups);
+        createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(125, 10, 12), false, false, userGroups, null);
         logout();
         mockBuilder.mockLogin(student);
         login();
@@ -214,7 +214,7 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
     mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null);
+    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), date(115, 10, 15), false, true, null, null);
     try {
       navigate("/announcer", true);
       waitForPresent("div.mf-content-empty");
@@ -244,8 +244,8 @@ public class AnnouncerTestsBase extends AbstractUITest {
     MockCourseStudent mcs = new MockCourseStudent(2l, courseId, student.getId());
     mockBuilder.addCourseStudent(workspace.getId(), mcs).build();
     
-    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
-    createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null);
+    createAnnouncement(admin.getId(), "Test title", "Announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
+    createAnnouncement(another.getId(), "Another test title", "Another announcer test announcement", date(115, 10, 12), new java.util.Date(), false, true, null, null);
     try {
       navigate("/announcer", true);
       waitForPresent(".an-announcement-topic");
