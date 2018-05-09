@@ -4,6 +4,7 @@ import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 
 import '~/sass/elements/panel.scss';
+import '~/sass/elements/rich-text.scss';
 
 interface StudiesEndedProps {
   i18n: i18nType
@@ -15,7 +16,7 @@ interface StudiesEndedState {
 
 class StudiesEnded extends React.Component<StudiesEndedProps, StudiesEndedState> {
   render(){
-    return <div className="panel panel--studies-ended" dangerouslySetInnerHTML={{__html: this.props.i18n.text.get("plugin.frontpage.inactiveStudent.message")}}/>
+    return <div className="panel panel--studies-ended rich-text" dangerouslySetInnerHTML={{__html: this.props.i18n.text.get("plugin.frontpage.inactiveStudent.message")}}/>
   }
 }
 
