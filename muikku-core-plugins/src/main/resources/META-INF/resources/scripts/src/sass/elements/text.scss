@@ -672,6 +672,10 @@ b {
   &.state-FAILED {
     background: $color-grade-failed;
   }
+  
+  &.state-INCOMPLETE {
+    background: $color-grade-incomplete;
+  }
 }
 
 .text--studies-workspace-literal-assessment {
