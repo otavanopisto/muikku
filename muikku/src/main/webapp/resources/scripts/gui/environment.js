@@ -1,6 +1,33 @@
 (function() {
   'use strict';
   
+<<<<<<< HEAD
+=======
+  /* global converse */
+  
+  mApi().chat.settings.read().callback(function(err, result) {
+    if (result == null || (result && result.visibility == "VISIBLE_TO_ALL")) {
+      mApi().chat.status.read().callback(function(err, result) {
+        if (result && result.enabled) {
+          converse.initialize({
+            bosh_service_url : '/http-bind/',
+            show_controlbox_by_default : true,
+            authentication : "login",
+            keepalive : "true",
+            credentials_url : "/rest/chat/credentials",
+            auto_login : true,
+            muc_domain : 'conference.' + location.hostname,
+            muc_nickname : result.mucNickName,
+            hide_muc_server : true,
+            auto_join_rooms : [ 'muikku@conference.' + location.hostname ],
+            ping_interval : 45
+          });
+        }
+      });
+    }
+  });
+  
+>>>>>>> refs/remotes/origin/FTR-3290-chat-visibility
   function reloadMessageCount() {
     if (MUIKKU_LOGGEDIN) {
       mApi()
@@ -65,5 +92,5 @@
     
   });
   
-  
 }).call(this);
+
