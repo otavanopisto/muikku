@@ -105,6 +105,9 @@ public class GradingController {
   }
 
 	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, SchoolDataIdentifier identifier) {
+		if (identifier == null) {
+			return null;
+	    }	
     return gradingSchoolDataController.findGradingScaleItem(identifier.getDataSource(), gradingScale, identifier.getIdentifier());
   }
 

@@ -67,6 +67,9 @@ public class AssessmentRequestController {
 
   public List<WorkspaceAssessmentRequest> listByWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
     WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+    if (workspaceEntity.getDataSource().getIdentifier() == null) {
+    	return null;
+    }
     return gradingController.listWorkspaceAssessmentRequests(
         workspaceEntity.getDataSource().getIdentifier(), 
         workspaceEntity.getIdentifier(),
@@ -133,9 +136,14 @@ public class AssessmentRequestController {
       }
     }
     if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
+	  if (latestAssessment.getGradeIdentifier().getIdentifier() == null || latestAssessment.getGradingScaleIdentifier().getIdentifier() == null) {
+		  return new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
+	}
       // Has assessment and no request, or the request is older
       GradingScale gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
       GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier());
+      
+   
       return grade.isPassingGrade()
           ? new WorkspaceAssessmentState(WorkspaceAssessmentState.PASS, latestAssessment.getDate())
           : new WorkspaceAssessmentState(WorkspaceAssessmentState.FAIL, latestAssessment.getDate());

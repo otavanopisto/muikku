@@ -362,6 +362,7 @@
                 var assessments = results[0];
                 results[1].evaluablesDone = results[1].evaluablesPassed + results[1].evaluablesSubmitted + results[1].evaluablesFailed + results[1].evaluablesIncomplete;
                 workspaceEntity.progress = results[1];
+                console.log(workspaceEntity.progress.assessmentState);
                 if (workspaceEntity.progress.assessmentState.date) {
                   workspaceEntity.progress.assessmentState.date = moment(workspaceEntity.progress.assessmentState.date).format('M.D.YYYY');
                 }
@@ -370,8 +371,8 @@
                   var grade = this._getGrade(assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier);
                   workspaceEntity.evaluated = formatDate(moment(assessment.evaluated).toDate());
                   workspaceEntity.verbalAssessment = assessment.verbalAssessment;
-                  workspaceEntity.grade = grade.grade;
-                  workspaceEntity.gradingScale = grade.scale;
+                  workspaceEntity.grade = grade ? grade.grade : null;
+                  workspaceEntity.grade = grade ? grade.scale : null;
                   workspaceEntity.passed = assessment.passed;
                 }
               }
@@ -430,8 +431,8 @@
               var grade = this._getGrade(scaleSchoolDataSource, scaleIdentifier, gradeSchoolDataSource, gradeIdentifier);
               return $.extend(transferCredit, {
                 evaluated: formatDate(moment(transferCredit.date).toDate()),
-                grade: grade.grade,
-                gradingScale: grade.scale
+                grade: grade ? grade.grade : null,
+                gradingScale: grade ? grade.scale : null
               });
             }
           }, this));
@@ -472,8 +473,8 @@
                     if (evaluation) {
                       var grade = this._grades[[evaluation.gradingScaleSchoolDataSource, evaluation.gradingScaleIdentifier, evaluation.gradeSchoolDataSource, evaluation.gradeIdentifier].join('-')];
                       workspaceMaterial.verbalAssessment = evaluation.verbalAssessment;
-                      workspaceMaterial.grade = grade.grade;
-                      workspaceMaterial.gradingScale = grade.scale;
+                      workspaceMaterial.grade = grade ? grade.grade : null;
+                      workspaceMaterial.gradingScale = grade ? grade.scale : null;
                       workspaceMaterial.passing = grade.passing;
                     }
                     callback();
