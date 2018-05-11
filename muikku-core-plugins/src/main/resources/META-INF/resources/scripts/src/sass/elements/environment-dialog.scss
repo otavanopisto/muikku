@@ -145,14 +145,21 @@
 
 // Forms
 
-@import "../base/colors";
-@import "../base/mixins";
-@import "../base/vars";
-@import "../base/breakpoints";
 
-// TODO: Refactoring needed for form-field elements
-// Not sure about the naming used here as we should not need classes like form-field-tag-input__field etc.
-// Some class names are against BEM also.
+.environment-dialog__form-element--wrapper {
+  position: relative;
+}
+
+.environment-dialog__form-label {   
+  align-items: center;
+  display: flex;
+  height: 34px; 
+  justify-content: right;
+  left: -200px;
+  padding-right: 10px;
+  position: absolute;
+  width: 200px;
+}
 
 div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
   -webkit-environment-dialog__form-element: none;  
