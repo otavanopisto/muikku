@@ -1,9 +1,9 @@
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderStudentUserProfilePhoneType, GuiderStudentUserProfileEmailType, GuiderStudentUserAddressType, GuiderLastLoginStudentDataType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType } from '~/reducers/main-function/guider';
+import { GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType } from '~/reducers/main-function/guider';
 import { loadStudentsHelper } from './helpers';
 import promisify from '~/util/promisify';
-import { UserGroupListType, UserFileType } from 'reducers/main-function/user-index';
+import { UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
 import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType } from '~/reducers/main-function/guider';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/workspaces';
@@ -199,15 +199,15 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "labels", value: labels}})
           }),
         promisify(mApi().user.students.phoneNumbers.read(id), 'callback')()
-          .then((phoneNumbers:Array<GuiderStudentUserProfilePhoneType>)=>{
+          .then((phoneNumbers:Array<StudentUserProfilePhoneType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "phoneNumbers", value: phoneNumbers}})
           }),
         promisify(mApi().user.students.emails.read(id), 'callback')()
-          .then((emails:Array<GuiderStudentUserProfileEmailType>)=>{
+          .then((emails:Array<StudentUserProfileEmailType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "emails", value: emails}})
           }),
         promisify(mApi().user.students.addresses.read(id), 'callback')()
-          .then((addresses:Array<GuiderStudentUserAddressType>)=>{
+          .then((addresses:Array<StudentUserAddressType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "addresses", value: addresses}})
           }),
         promisify(mApi().guider.users.files.read(id), 'callback')()
@@ -223,7 +223,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "hops", value: hops}})
           }),
         promisify(mApi().user.students.logins.read(id, {maxResults:1}), 'callback')()
-          .then((lastLoginData:Array<GuiderLastLoginStudentDataType>)=>{
+          .then((lastLoginData:Array<LastLoginStudentDataType>)=>{
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "lastLogin", value: lastLoginData[0]}})
           }),
         promisify(mApi().guider.users.latestNotifications.read(id), 'callback')()

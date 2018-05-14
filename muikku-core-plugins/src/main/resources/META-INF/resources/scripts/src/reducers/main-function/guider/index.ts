@@ -1,5 +1,5 @@
 import { ActionType } from '~/actions';
-import { UserWithSchoolDataType, UserGroupListType, UserFileType } from '~/reducers/main-function/user-index';
+import { UserWithSchoolDataType, UserGroupListType, UserFileType, StudentUserProfileEmailType, StudentUserProfilePhoneType, StudentUserAddressType, LastLoginStudentDataType } from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceListType } from "~/reducers/main-function/workspaces";
 
 //TODO remove or comment out, this is mocking code
@@ -52,14 +52,14 @@ export interface GuiderNotificationStudentsDataType {
 export interface GuiderStudentUserProfileType {
   basic: GuiderStudentType,
   labels: Array<GuiderStudentUserProfileLabelType>,
-  emails: Array<GuiderStudentUserProfileEmailType>,
-  phoneNumbers: Array<GuiderStudentUserProfilePhoneType>,
-  addresses: Array<GuiderStudentUserAddressType>,
+  emails: Array<StudentUserProfileEmailType>,
+  phoneNumbers: Array<StudentUserProfilePhoneType>,
+  addresses: Array<StudentUserAddressType>,
   files: Array<UserFileType>,
   usergroups: UserGroupListType,
   vops: VOPSDataType,
   hops: HOPSDataType,
-  lastLogin: GuiderLastLoginStudentDataType,
+  lastLogin: LastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
   workspaces: WorkspaceListType
 }
@@ -96,39 +96,6 @@ export interface GuiderStudentUserProfileLabelType {
   flagName: string,
   flagColor: string,
   studentIdentifier: string
-}
-
-export interface GuiderStudentUserProfileEmailType {
-  studentIdentifier: string,
-  type: string,
-  address: string,
-  defaultAddress: boolean
-}
-
-export interface GuiderStudentUserProfilePhoneType {
-  studentIdentifier: string,
-  type: string,
-  number: string,
-  defaultNumber: boolean
-}
-
-export interface GuiderStudentUserAddressType {
-  identifier: string,
-  studentIdentifier: string,
-  street: string,
-  postalCode: string,
-  city: string,
-  region: string,
-  country: string,
-  type: string,
-  defaultAddress: boolean
-}
-
-export interface GuiderLastLoginStudentDataType {
-  userIdentifier: string,
-  authenticationProvder: string,
-  address: string,
-  time: string
 }
 
 export default function guider( state: GuiderType = {
