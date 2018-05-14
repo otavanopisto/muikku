@@ -22,6 +22,8 @@ interface CheckContactInfoDialogState {
   isOpen: boolean
 }
 
+const FORCE_OPEN = false;
+
 class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps, CheckContactInfoDialogState> {
   constructor(props: CheckContactInfoDialogProps){
     super(props);
@@ -38,7 +40,7 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
   async componentDidMount(){
     try {
       let user:UserWithSchoolDataType = await promisify(mApi().user.students.read(this.props.status.userSchoolDataIdentifier), 'callback')() as UserWithSchoolDataType;
-      if (!user || user.updatedByStudent){
+      if (!user || (user.updatedByStudent && !FORCE_OPEN)){
         return;
       }
     
