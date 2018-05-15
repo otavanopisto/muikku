@@ -120,16 +120,25 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
       (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
+       <div className="container container--communicator-subject">
         <div className="environment-dialog__form-element--wrapper">  
-          <div className="environment-dialog__form-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
           <input key="2" type="text" className="environment-dialog__form-element"         
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
-        </div>  
+        </div> 
+        </div>
         ),
-      (<CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
-         draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
-        })} extraPlugins={extraPlugins}
-       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
+      (
+      <div className="container container--communicator-content">     
+        <div className="environment-dialog__form-element--wrapper">  
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
+          <CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
+           draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
+           })} extraPlugins={extraPlugins}
+          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        </div> 
+      </div>
+      ),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
         <input className="environment-dialog__form-element" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}

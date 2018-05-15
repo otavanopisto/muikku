@@ -148,9 +148,24 @@
 
 .environment-dialog__form-element--wrapper {
   position: relative;
+  
+  &:not(:first-child) {
+    display: inline-flex;
+    
+    .environment-dialog__form-element-label {   
+      align-items: center;
+      display: flex;
+      width: auto;
+      height: 34px; 
+      position: initial;
+      justify-content: right;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
 }
 
-.environment-dialog__form-label {   
+.environment-dialog__form-element-label {   
   align-items: center;
   display: flex;
   height: 34px; 
@@ -160,6 +175,10 @@
   position: absolute;
   width: 200px;
 }
+
+
+
+
 
 div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
   -webkit-environment-dialog__form-element: none;  
@@ -322,7 +341,7 @@ div.environment-dialog__form-element-tag-input {
   margin-bottom: 5px;
 }
 
-.environment-dialog__form-element--label-name {
+.environment-dialog__form-element-label-name {
   display: block;
   margin-bottom: 24px;
   text-align: center;
@@ -355,8 +374,7 @@ div.environment-dialog__form-element-tag-input {
 }
 
 .environment-dialog__form-element--new-discussion-area-description {
-  height: 100px;
-  margin-top: 20px;    
+  height: 100px;    
   width: 100%;
 }
 

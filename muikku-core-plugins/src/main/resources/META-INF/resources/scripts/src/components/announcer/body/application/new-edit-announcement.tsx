@@ -203,25 +203,46 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
     nState[stateLocation] = newDate;
     (this.setState as any)(nState);
   }
+  
+  
   render(){
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="container container--new-announcement-options" key="1">
-         <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+        <div className="environment-dialog__form-element--wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</div>          
+             <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+             locale={this.props.i18n.time.getLocale()}/>
+         </div>
+         <div className="text text--announcer-times-decor">-</div>
+         <div className="environment-dialog__form-element--wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>         
+           <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
-         <div className="text text--announcer-times-decor">-</div>                   
-         <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
-           locale={this.props.i18n.time.getLocale()}/>
+        </div>
       </div>),
       (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
-      (<input key="3" type="text" className="container container--new-announcement-topic form-field form-field--new-announcement-topic"
-        placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}
-        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>),
-      (<CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
-    ]
-      
+      (
+      <div className="container container--announcer-title">    
+       <div className="environment-dialog__form-element--wrapper">  
+         <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
+         <input key="3" type="text" className="environment-dialog__form-element"
+          placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}
+          value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
+       </div>   
+      </div>
+      ),
+      (
+      <div className="container container--announcer-content">    
+        <div className="environment-dialog__form-element--wrapper">  
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
+          <CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        </div>       
+      </div>
+      )
+    ]      
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">

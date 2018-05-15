@@ -111,13 +111,19 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
+         <div className="environment-dialog__form-element--wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
+           <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" 
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
-         <select className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
-           {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
-             {area.name}
-           </option>)}
-         </select>
+         </div>
+         <div className="environment-dialog__form-element--wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>       
+           <select className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
+            {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
+              {area.name}
+             </option>)}
+           </select>
+         </div>
        </div>,
        <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>

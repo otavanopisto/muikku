@@ -64,7 +64,7 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   render(){
     return <div className={`container container--${this.props.modifier} environment-dialog__form-element-tag-input environment-dialog__form-element-tag-input--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
       <div className="environment-dialog__form-element--wrapper" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
-        <div className="environment-dialog__form-label">{this.props.placeholder}</div>
+        <div className="environment-dialog__form-element-label">{this.props.placeholder}</div>
         <input className="environment-dialog__form-element-tag-input__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
         onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />      
       
