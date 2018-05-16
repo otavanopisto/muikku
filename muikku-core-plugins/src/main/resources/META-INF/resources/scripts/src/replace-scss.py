@@ -79,5 +79,5 @@ for file in getFiles('./sass'):
 		with open(file) as old_file:
 			for line in old_file:
 				new_file.write(process(line))
-	#remove(file_path)
-	#move(abs_path, file_path)
+	remove(file)
+	move(abs_path, file)
