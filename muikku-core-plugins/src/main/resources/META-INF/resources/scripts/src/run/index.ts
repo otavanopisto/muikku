@@ -7,6 +7,9 @@ import {logger} from 'redux-logger';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import { StateType } from '~/reducers';
 
+//TODO screw ie11 >:(
+import 'babel-polyfill';
+
 // TODO add a runApp that uses the history Api and takes the following
 // this will speed up the application quite a lot by merging
 
