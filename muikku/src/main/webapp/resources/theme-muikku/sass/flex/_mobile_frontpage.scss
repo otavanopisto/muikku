@@ -364,5 +364,19 @@
   .logo-container {
     display: none;
   }
-
+  
+  .frontpage-footer-plagscan-container {
+    justify-content: center;
+    
+    .footer-plagscan-logo {
+      flex-flow: column nowrap;
+      
+      .plagscan-text,
+      .plagscan-privacy-policy {
+        margin: 10px;
+      }
+      
+    }
+  }
+  
 }

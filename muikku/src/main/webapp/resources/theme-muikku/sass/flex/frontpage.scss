@@ -811,17 +811,16 @@ footer.of-footer {
   
     .plagscan-text {
       display: inline-block;
-      margin: 0 10px;
+      margin: 0 5px 0 10px;
     }
   
-    img {
+    img { 
       height: 30px;
     }
     
     .plagscan-privacy-policy {
       color: $of-footer-text-color;
       text-decoration: none;
-      text-transform: uppercase;
     }
   
   }
