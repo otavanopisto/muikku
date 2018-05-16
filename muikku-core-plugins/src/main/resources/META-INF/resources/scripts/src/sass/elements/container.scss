@@ -3,6 +3,9 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 	
+
+// TODO: This file needs to be refactored out of existence. Containers should be a part of a component, not a component on it self.
+	
 .container {
   width: 100%;
 }
@@ -93,15 +96,19 @@
 
 .container--new-announcement-options {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .container--new-announcement-recipients {
-  margin-bottom: 20px;    
+  margin-bottom: 10px;    
 }
 
-.container--new-announcement-topic {
-  margin-bottom: 20px;    
+.container--new-announcement-title {
+  margin-bottom: 10px;
+}
+
+.container--communicator-subject {
+  margin-bottom: 10px;  
 }
 
 .container--communicator-message-meta {
@@ -117,10 +124,14 @@
   display: flex;
 }
 
+.container--new-discussion-area-title {
+  margin-bottom: 10px;
+}
+
 .container--new-discussion-thread-states {
   background-color: #fff;
   display: flex;
-  padding: 10px;
+  padding: 10px 0;
   align-items: center;
 } 
 

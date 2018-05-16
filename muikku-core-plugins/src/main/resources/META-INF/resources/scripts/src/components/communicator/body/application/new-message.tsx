@@ -123,7 +123,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
        <div className="container container--communicator-subject">
         <div className="environment-dialog__form-element--wrapper">  
           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
-          <input key="2" type="text" className="environment-dialog__form-element"         
+          <input key="2" type="text" className="environment-dialog__input--title"         
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div> 
         </div>

@@ -224,11 +224,10 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
       (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
       (
-      <div className="container container--announcer-title">    
+      <div className="container container--new-announcement-title">    
        <div className="environment-dialog__form-element--wrapper">  
          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
-         <input key="3" type="text" className="environment-dialog__form-element"
-          placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}
+         <input key="3" type="text" className="environment-dialog__input--title"          
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
        </div>   
       </div>

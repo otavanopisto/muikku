@@ -133,8 +133,9 @@
   border-top: 3px solid $color-application-dialog-border-color;
   border-right: 3px solid $color-application-dialog-border-color;
   border-left: 3px solid $color-application-dialog-border-color;
+  border-bottom: 3px solid $color-default;
   position: absolute;
-  top: -52px;
+  top: -54px;
   right: 100%;
   display: inline-block;
   white-space: nowrap; 
@@ -146,8 +147,16 @@
 // Forms
 
 
+// TODO, these environment-dialog form templates and css need to be refactored. These are just inconsistent garbage.
+
 .environment-dialog__form-element--wrapper {
+  display:flex;
   position: relative;
+  flex-wrap: wrap;
+    
+  .cke {
+    flex-grow: 1;
+  }
   
   &:not(:first-child) {
     display: inline-flex;
@@ -176,15 +185,11 @@
   width: 200px;
 }
 
-
-
-
-
 div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
   -webkit-environment-dialog__form-element: none;  
   border-radius: 3px;
   border: solid 2px $color-environment-dialog-form-element-border;
-  font-size: 14px;
+  font-size: .875rem;
   outline: none;
   padding: 3px 10px;
   resize: none;
@@ -271,7 +276,7 @@ div.environment-dialog__form-element-tag-input {
   display: flex;
   font: -moz-field;
   font: -webkit-small-control;
-  font-size: 14px;
+  font-size: .875rem;
   height: auto;
   overflow: hidden;
   padding: 0;
@@ -295,8 +300,6 @@ div.environment-dialog__form-element-tag-input {
 
 .environment-dialog__form-element-tag-input--tag {
   background-color: $color-form-field-tag-input-tag-background;
-  border: solid 1px $color-form-field-tag-input-tag-border;
-  border-radius: 3px;
   color: $color-form-field-tag-input-tag-text;
   display: inline-block;
   height: 34px;
@@ -360,26 +363,31 @@ div.environment-dialog__form-element-tag-input {
 }
 
 .environment-dialog__form-element--new-discussion-thread-title {
-  flex: 4 1 auto;
+  flex-grow: 4;
+  flex-shrink: 1;
+  flex-basis: auto;
   margin-right: 20px;
 }
 
 .environment-dialog__form-element--new-discussion-thread-area {
-  flex: 1 1 auto;
-  min-width: 200px;   
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: auto;
+
 }
 
 .environment-dialog__form-element--new-discussion-area-name {
-  width: 100%;    
 }
 
 .environment-dialog__form-element--new-discussion-area-description {
-  height: 100px;    
-  width: 100%;
 }
 
 .environment-dialog__form-element-tag-input--new-message-recepients {
   margin-bottom: 5px;
+}
+
+
+.environment-dialog__input--title {
 }
 
 label {

@@ -354,12 +354,12 @@ b {
 }
  
 .text--recepient-autocomplete {
-  
-	.icon {
-    display: inline-block;
+  display: flex;
+  .text__icon {
+      display: inline-block;  
 	  margin-right: 5px;
 	}
-	
+		
   i {
     opacity: 0.6;
   }
