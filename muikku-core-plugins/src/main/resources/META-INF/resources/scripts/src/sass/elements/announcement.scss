@@ -16,7 +16,7 @@
 }
 
 .announcement__content {
-  @include vp-flex-flow(row nowrap);
+  flex-flow: row nowrap;
   padding: 0 0 0 9px;
 }
 
