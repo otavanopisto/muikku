@@ -261,8 +261,10 @@ b {
   margin: 12px;
 }
 
-.text--panel-continue-studies-link {
-  padding: 0 5px;
+.text--panel-continue-studies-material-page {
+  display: inline;
+  font-style: italic;
+  font-weight: 600;
 }
 
 .text--item-article {  
@@ -285,6 +287,13 @@ b {
   justify-content: center;
   min-width: 22px;
   padding: 0 4px;
+}
+
+// Check Contatc Info 
+.text--check-contact-info-title {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0 0 20px;
 }
 
 // Communicator
