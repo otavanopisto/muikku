@@ -6,4 +6,7 @@
 <option value="INVISIBLE" {invisible_selected}>
   {#localize key="plugin.profile.chat.invisible"/}
 </option>
+<option value="UNUSED" {unused_selected}>
+  {#localize key="plugin.profile.chat.unused"/}
+</option>
 </select>

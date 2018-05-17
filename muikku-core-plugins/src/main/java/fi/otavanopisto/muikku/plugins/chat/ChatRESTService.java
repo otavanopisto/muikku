@@ -224,5 +224,20 @@ public class ChatRESTService extends PluginRESTService {
       return null;
     }
   }
+  
+  @GET
+  @Path("/settings")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response chatSettings() {
+	  if (!sessionController.isLoggedIn()) {
+	      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+	    }
+	  
+	  
+	
+	  return chatSettings();
+	  
+
+  }
 
 }

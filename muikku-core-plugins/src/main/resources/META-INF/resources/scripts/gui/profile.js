@@ -5,13 +5,14 @@
   
   $.widget("custom.chatVisibility", {
     _create: function() {
-      mApi().chat.status.read({}).callback($.proxy(function (err, status) {
+    	console.log(mApi());
+      mApi().chat.settings.read({}).callback($.proxy(function (err, status) {
         if (err) { 
           $('.notification-queue').notificationQueue('notification', 'error', err);
           return;
         }
         if (status && status.enabled) {
-          mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
+          mApi().chat.status.read({}).callback($.proxy(function (err, settings) {
             if (err && err !== "User settings not found") { 
               $('.notification-queue').notificationQueue('notification', 'error', err);
               return;
@@ -22,6 +23,9 @@
             }
             if (settings && settings.visibility === "INVISIBLE") {
               data.invisible_selected = "selected";
+            }
+            if (settings && settings.visibility === "UNUSED"){
+              data.unused_selected = "selected";
             }
             renderDustTemplate('profile/chat-visibility.dust', data, $.proxy(function (text) {
               this.element.html(text);
