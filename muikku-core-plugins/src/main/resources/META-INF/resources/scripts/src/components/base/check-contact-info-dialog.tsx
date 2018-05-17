@@ -75,11 +75,11 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
     });
   }
   async confirmContactInfo(){
+    this.closeDialog();
     try {
       await promisify(mApi().user.students.addresses.update(this.props.status.userSchoolDataIdentifier,
                               this.state.address.identifier,
                               this.state.address), 'callback')();
-      this.closeDialog();
     } catch (err){
       this.props.displayNotification(err.message, "error");
     }
