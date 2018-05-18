@@ -102,7 +102,7 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog}>
+          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Link>
           <Link className="button button--standard-ok" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>

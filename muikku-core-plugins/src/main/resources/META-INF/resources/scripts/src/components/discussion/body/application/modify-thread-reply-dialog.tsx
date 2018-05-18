@@ -71,6 +71,9 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
       reply: this.props.reply,
       message: this.state.text,
       success: ()=>{
+        this.setState({
+          locked: false
+        });
         closeDialog();
       },
       fail: ()=>{
@@ -91,7 +94,7 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.modifyReply.bind(this, closeDialog)}>
+          <Link className="button button--standard-ok" onClick={this.modifyReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
         </div>

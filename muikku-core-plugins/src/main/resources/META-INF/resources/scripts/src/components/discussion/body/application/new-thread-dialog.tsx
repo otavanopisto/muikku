@@ -134,7 +134,7 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.createThread.bind(this, closeDialog)}>
+          <Link className="button button--standard-ok" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
         </div>

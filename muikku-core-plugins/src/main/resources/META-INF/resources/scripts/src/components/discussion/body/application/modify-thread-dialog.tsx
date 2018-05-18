@@ -128,7 +128,7 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.modifyThread.bind(this, closeDialog)}>
+          <Link className="button button--standard-ok" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
         </div>

@@ -69,6 +69,9 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
       message: this.state.text,
       success: ()=>{
         closeDialog();
+        this.setState({
+          locked: false
+        });
       },
       fail: ()=>{
         this.setState({
@@ -93,9 +96,9 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
       return (          
          <div className="jumbo-dialog__button-container">
           <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
+            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Link>
-          <Link className="button button--standard-ok" onClick={this.createReply.bind(this, closeDialog)}>
+          <Link className="button button--standard-ok" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Link>
         </div>
