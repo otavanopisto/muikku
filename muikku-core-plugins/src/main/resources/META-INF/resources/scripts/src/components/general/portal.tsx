@@ -26,6 +26,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   private portal: any;
   private node: HTMLElement | null;
   private isUnmounted: boolean;
+  private isClosing: boolean;
   
   constructor(props: PortalProps) {
     super(props);
@@ -37,6 +38,7 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     this.portal = null;
     this.node = null;
     this.isUnmounted = false;
+    this.isClosing = false;
   }
 
   componentDidMount() {
@@ -55,12 +57,12 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   }
 
   componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {
-    if (nextState.active){
-      this.renderPortal(nextProps);
-    } else if (nextProps.isOpen === true && !this.props.isOpen && !this.state.active){
+    if (nextProps.isOpen === true && !this.props.isOpen && !this.state.active && !this.isClosing){
       this.openPortal(nextProps);
-    } else if (nextProps.isOpen === false && this.state.active){
+    } else if (nextProps.isOpen === false && this.state.active && !this.isClosing){
       this.closePortal();
+    } else if (nextState.active){
+      this.renderPortal(nextProps);
     }
   }
 
@@ -97,6 +99,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
   }
 
   closePortal() {
+    this.isClosing = true;
+    
     const resetPortalState = () => {
       if (this.node) {
         unmountComponentAtNode(this.node);
@@ -104,6 +108,8 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
       }
       this.portal = null;
       this.node = null;
+      this.isClosing = false;
+      
       if (!this.isUnmounted) {
         this.setState({ active: false });
       }
