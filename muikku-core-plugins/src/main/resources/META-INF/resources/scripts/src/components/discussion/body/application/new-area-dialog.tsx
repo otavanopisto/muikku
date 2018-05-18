@@ -51,7 +51,7 @@ class DiscussionNewArea extends React.Component<DiscussionNewAreaProps, Discussi
       name: this.state.name,
       description: this.state.description,
       success: ()=>{
-        this.setState({locked: false});
+        this.setState({name: "", description: "", locked: false});
         closeDialog();
       },
       fail: ()=>{

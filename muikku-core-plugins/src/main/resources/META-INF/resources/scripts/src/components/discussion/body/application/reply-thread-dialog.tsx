@@ -70,6 +70,7 @@ class ReplyThread extends React.Component<ReplyThreadProps, ReplyThreadState> {
       success: ()=>{
         closeDialog();
         this.setState({
+          text: "",
           locked: false
         });
       },
