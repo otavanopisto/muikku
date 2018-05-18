@@ -12,6 +12,7 @@ import {MessageSignatureType} from '~/reducers/main-function/messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
+import SessionStateComponent from '~/components/general/session-state-component';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -24,7 +25,6 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'communicator-new-message',
   resize_enabled: false
 }
 const extraPlugins = {
@@ -34,7 +34,6 @@ const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
   'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js',
   'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
@@ -58,32 +57,43 @@ interface CommunicatorNewMessageState {
   includesSignature: boolean
 }
 
-class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
+class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
   constructor(props: CommunicatorNewMessageProps){
-    super(props);
+    super(props, "communicator-new-message");
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setSelectedItems = this.setSelectedItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.onSignatureToggleClick = this.onSignatureToggleClick.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       text: "",
       selectedItems: props.initialSelectedItems || [],
       subject: "",
       locked: false,
       includesSignature: true
-    }
+    }, props.replyThreadId);
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      text: "",
+      selectedItems: this.props.initialSelectedItems || [],
+      subject: "",
+      locked: false,
+      includesSignature: true
+    }, this.props.replyThreadId);
   }
   onCKEditorChange(text: string){
-    this.setState({text});
+    this.setStateAndStore({text}, this.props.replyThreadId);
   }
   setSelectedItems(selectedItems: SelectedItemListType){
-    this.setState({selectedItems});
+    this.setStateAndStore({selectedItems}, this.props.replyThreadId);
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({subject: e.target.value});
+    this.setStateAndStore({subject: e.target.value}, this.props.replyThreadId);
   }
   sendMessage(closeDialog: ()=>any){
     this.setState({
@@ -97,12 +107,12 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
         this.state.text),
       success: ()=>{
         closeDialog();
-        this.setState({
+        this.setStateAndClear({
           text: "",
           selectedItems: this.props.initialSelectedItems || [],
           subject: "",
           locked: false
-        });
+        }, this.props.replyThreadId);
       },
       fail: ()=>{
         this.setState({
@@ -115,6 +125,14 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
   onSignatureToggleClick(){
     this.setState({includesSignature: !this.state.includesSignature});
   }
+  clearUp(){
+    this.setStateAndClear({
+      text: "",
+      selectedItems: this.props.initialSelectedItems || [],
+      subject: "",
+      locked: false
+    }, this.props.replyThreadId);
+  }
   render(){
     let content = (closeDialog: ()=>any) => [
       (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
@@ -122,9 +140,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
       (<input key="2" type="text" className="form-field form-field--communicator-new-message-subject"
         placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
         value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>),
-      (<CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
-         draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
-        })} extraPlugins={extraPlugins}
+      (<CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
         <input className="form-field" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
@@ -135,6 +151,9 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="jumbo-dialog__button-container">
+          {this.recovered ? <Button buttonModifiers={["danger"]} onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('clear draft')}
+          </Button> : null}
           <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
@@ -147,7 +166,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }
