@@ -22,144 +22,164 @@
       bottom: 0;
     }
   }
+}
 
-  .environment-dialog__wrapper {
-    background-color: $color-application-dialog-background-color;
-    border-top: 3px solid $color-application-dialog-border-color;
-    display: flex;
-    justify-content: center;
-    min-height: 520px;
-    position: absolute;
-    bottom: -100%;
-    left: 0;
-    right: 0;
-    
-    @include breakpoint-down($breakpoint-landscape-pad) {
-      bottom: 0;
-      top: 0;
-      align-items: flex-start;
-      height: auto
-    }
- 
- 
-    @include breakpoint-up($breakpoint-medium-screen){
-      @include prefix(transition, moz ms webkit o, bottom 0.3s);
-    }
-    
-    .environment-dialog__window {
-      max-width: $breakpoint-max-usable-screen;
-      font-family: $text-font-family;
-      height: 100%;
-      width: 100%;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      
-      @media screen and (max-width: $breakpoint-max-usable-screen){
-      	.environment-dialog__footer, .environment-dialog__body {
-          padding-left: 3px;
-          padding-right: 3px;
-      	}
-      }
-     
-      .environment-dialog__body {
-        flex-basis: auto;
-        flex-grow: 1;
-        flex-shrink: 1;
-        margin-top: 10px;
-      }
-      
-      .environment-dialog__footer {
-      	width: 100%;
-      	padding-top: 10px;
-      	padding-bottom: 10px;
-
-      }
-
-      .environment-dialog__button-container {
-        align-items: center;
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 20px;
-        
-        a:not(:first-child) {
-          margin-left: 10px;         
-        }                  
-      }       
-      
-      .environment-dialog__header {
-        color: $color-dialog-default-title-text;
-        margin-bottom: 20px;
-        padding: 10px 15px;
+.environment-dialog__wrapper {
+  background-color: $color-application-dialog-background-color;
+  border-top: 3px solid $color-application-dialog-border-color;
+  display: flex;
+  justify-content: center;
+  min-height: 520px;
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  right: 0;
   
-        .environment-dialog__title {
-          font-weight: 500;
-          position: relative;
-          text-align: left;
-          width: 100%;
-          
-          @include breakpoint-down($breakpoint-landscape-pad) {
-            width: 100%;
-            text-align: center;
-          }
-        }
-      }
-  
-      .environment-dialog__close {
-        @include prefix(transition, moz ms o webkit, background-color 0.3s);
-        border-radius: $dialog-button-close-height;
-        cursor: pointer;
-        font-size: 18px;
-        height: $dialog-button-close-height;
-        line-height: $dialog-button-close-height;
-        margin-top: -#{$dialog-button-close-height / 2};
-        position: absolute;
-        right: -6px;
-        text-align: center;
-        top: 50%;
-        vertical-align: center;
-        width: $dialog-button-close-height;
-      }
-    }
+  @include breakpoint-down($breakpoint-landscape-pad) {
+    bottom: 0;
+    top: 0;
+    align-items: flex-start;
+    height: auto
   }
- 
-  &.environment-dialog--new-message, &.environment-dialog--update-signature, &.environment-dialog--mainfunction {
+
+  @include breakpoint-up($breakpoint-medium-screen){
+    @include prefix(transition, moz ms webkit o, bottom 0.3s);
+  }
+}
+
+
+.environment-dialog__window {
+  font-family: $text-font-family;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-desktop){
+    max-width: 760px;
+  }
+  
+  @include breakpoint($breakpoint-desktop-xl){ 
+    max-width: 830px;
+  }   
+}
+
+
+.environment-dialog__body {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  margin-top: 10px;
+  padding: 0 15px;         
+
+  @include breakpoint($breakpoint-desktop){
+    padding: 0;
+  }
+}
+
+.environment-dialog__footer {
+	width: 100%;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+
+.environment-dialog__button-container {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+  
+  a:not(:first-child) {
+    margin-left: 10px;         
+  }                  
+
+  padding: 0 15px;         
+
+  @include breakpoint($breakpoint-desktop){
+    padding: 0;
+  }
+}  
+
+.environment-dialog__close {
+  @include prefix(transition, moz ms o webkit, background-color 0.3s);
+  border-radius: $dialog-button-close-height;
+  cursor: pointer;
+  font-size: 18px;
+  height: $dialog-button-close-height;
+  line-height: $dialog-button-close-height;
+  margin-top: -#{$dialog-button-close-height / 2};
+  position: absolute;
+  right: -6px;
+  text-align: center;
+  top: 50%;
+  vertical-align: center;
+  width: $dialog-button-close-height;
+}
+
+
+.environment-dialog__title {
+  font-weight: 500;
+  position: relative;
+  text-align: center;   
+  width: 100%;
+  
+  @include breakpoint($breakpoint-desktop) {
+    text-align: left; 
   }
 }
 
 
 .environment-dialog__header {
   background-color: $color-application-dialog-background-color;
-  border-top: 3px solid $color-application-dialog-border-color;
-  border-right: 3px solid $color-application-dialog-border-color;
-  border-left: 3px solid $color-application-dialog-border-color;
-  border-bottom: 3px solid $color-default;
-  position: absolute;
-  top: -54px;
-  right: 100%;
-  display: inline-block;
-  white-space: nowrap; 
-  border-radius: 3px 3px 0;
+  color: $color-dialog-default-title-text;
+  padding: 10px 15px;
   font-size: 25px;
+
+  @include breakpoint($breakpoint-desktop) {
+    border-top: 3px solid $color-application-dialog-border-color;
+    border-right: 3px solid $color-application-dialog-border-color;
+    border-left: 3px solid $color-application-dialog-border-color;
+    border-bottom: 3px solid $color-default;
+    border-radius: 3px 3px 0;
+    display: inline-block;
+    margin-bottom: 20px;
+    position: absolute;
+    top: -54px;
+    white-space: nowrap; 
+  }
+
+  @include breakpoint($breakpoint-pad) {  
+    left: 0;
+  }
+
+  
+  @include breakpoint($breakpoint-desktop-xl) {  
+    right: 100%;
+    left: auto;
+  }
 }
 
-
 // Forms
-
-
 // TODO, these environment-dialog form templates and css need to be refactored. These are just inconsistent garbage.
 
 .environment-dialog__form-element--wrapper {
-  display:flex;
   position: relative;
   flex-wrap: wrap;
-    
+
+  @include breakpoint($breakpoint-desktop){
+    display:flex;
+  } 
+
   .cke {
     flex-grow: 1;
   }
   
   &:not(:first-child) {
-    display: inline-flex;
+      @include breakpoint($breakpoint-desktop){
+        display: inline-flex;
+      } 
     
     .environment-dialog__form-element-label {   
       align-items: center;
@@ -167,9 +187,16 @@
       width: auto;
       height: 34px; 
       position: initial;
-      justify-content: right;
-      padding-left: 10px;
+      justify-content: left;
       padding-right: 10px;
+
+      @include breakpoint($breakpoint-desktop){
+        position: absolute;
+        width: 200px;
+        left: -200px;
+        justify-content: right;    
+        padding-left: 10px;
+      } 
     }
   }
 }
@@ -178,11 +205,14 @@
   align-items: center;
   display: flex;
   height: 34px; 
-  justify-content: right;
-  left: -200px;
   padding-right: 10px;
-  position: absolute;
-  width: 200px;
+  
+  @include breakpoint($breakpoint-desktop){
+    position: absolute;
+    width: 200px;
+    left: -200px;
+    justify-content: right;    
+  }  
 }
 
 div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
@@ -357,7 +387,7 @@ div.environment-dialog__form-element-tag-input {
   max-width: 150px;
   width: 100%;
   
-@include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-pad) {
     max-width: 250px;
   }
 }
@@ -373,7 +403,6 @@ div.environment-dialog__form-element-tag-input {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
-
 }
 
 .environment-dialog__form-element--new-discussion-area-name {
@@ -385,7 +414,6 @@ div.environment-dialog__form-element-tag-input {
 .environment-dialog__form-element-tag-input--new-message-recepients {
   margin-bottom: 5px;
 }
-
 
 .environment-dialog__input--title {
 }
@@ -413,6 +441,7 @@ input {
 }
 
 // Used in forgotpassword dialog
+
 .text-field--forgotpassword-email {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
