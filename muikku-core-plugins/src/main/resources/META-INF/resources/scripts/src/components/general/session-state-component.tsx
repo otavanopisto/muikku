@@ -68,7 +68,6 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       this.recovered = newRecovered;
       
       this.forceUpdate();
-      console.log("FORCE FUCKING UPDATE");
     }
   }
   setStateAndClear<K extends keyof S>(newState: ((prevState: Readonly<S>, props: P) => (Pick<S, K> | S)) | (Pick<S, K> | S), namespace?: any): void {

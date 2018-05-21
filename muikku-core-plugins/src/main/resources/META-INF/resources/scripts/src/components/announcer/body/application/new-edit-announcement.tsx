@@ -261,7 +261,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     (this.setState as any)(nState);
   }
   render(){
-    console.log("PLEASE RENDER THIS SHIT again", this.recovered);
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="container container--new-announcement-options" key="1">
@@ -281,7 +280,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     ]
       
     let footer = (closeDialog: ()=>any)=>{
-      console.log("PLEASE RENDER THIS SHIT", this, this.recovered);
       return (          
          <div className="jumbo-dialog__button-container">
           {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
