@@ -63,6 +63,14 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       this.forceUpdate();
     }
   }
+  forceRecovered(newRecovered: boolean = true){
+    if (this.recovered !== newRecovered){
+      this.recovered = newRecovered;
+      
+      this.forceUpdate();
+      console.log("FORCE FUCKING UPDATE");
+    }
+  }
   setStateAndClear<K extends keyof S>(newState: ((prevState: Readonly<S>, props: P) => (Pick<S, K> | S)) | (Pick<S, K> | S), namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace){
@@ -74,5 +82,22 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     });
     this.recovered = false;
     this.setState(newState);
+  }
+  justClear<K extends keyof S>(keys: Array<string>, namespace?: any): void {
+    let internalStorage = this.storage;
+    if (namespace){
+      internalStorage = this.storage.namespace(namespace + "");
+    }
+    
+    keys.forEach((key)=>{
+      internalStorage.clear(key);
+    });
+    
+    let newRecovered = false;
+    if (this.recovered !== newRecovered){
+      this.recovered = newRecovered;
+      
+      this.forceUpdate();
+    }
   }
 }
