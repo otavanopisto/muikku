@@ -97,13 +97,8 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
       sticky: this.state.threadPinned,
       locked: this.state.threadLocked,
       success: ()=>{
-        this.setStateAndClear({
-          text: this.props.thread.message,
-          title: this.props.thread.title,
-          threadPinned: this.props.thread.sticky,
-          threadLocked: this.props.thread.locked,
-          locked: false
-        }, this.props.thread.id);
+        this.justClear(["text", "title", "threadPinned", "threadLocked"], this.props.thread.id);
+        this.setState({locked: false});
         closeDialog();
       },
       fail: ()=>{
