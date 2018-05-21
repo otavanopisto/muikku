@@ -125,6 +125,10 @@ public class AssessmentRequestController {
         Boolean.FALSE);
     
     WorkspaceAssessment latestAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
+    // #3927: Assessment without grade are anomalies from Pyramus so treat them as such 
+    if (latestAssessment.getGradeIdentifier() == null || latestAssessment.getGradingScaleIdentifier() == null) {
+      latestAssessment = null;
+    }
     WorkspaceAssessmentRequest latestRequest = assessmentRequests.isEmpty() ? null : assessmentRequests.get(0);
       
     // #4008: Incomplete if supplementation request exists and is newer than latest assessment or assessment request
@@ -136,13 +140,10 @@ public class AssessmentRequestController {
       }
     }
     if (latestAssessment != null && (latestRequest == null || latestRequest.getDate().before(latestAssessment.getDate()))) {
-	  if (latestAssessment.getGradeIdentifier().getIdentifier() == null || latestAssessment.getGradingScaleIdentifier().getIdentifier() == null) {
-		  return new WorkspaceAssessmentState(WorkspaceAssessmentState.UNASSESSED);
-	}
+
       // Has assessment and no request, or the request is older
       GradingScale gradingScale = gradingController.findGradingScale(latestAssessment.getGradingScaleIdentifier());
       GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, latestAssessment.getGradeIdentifier());
-      
    
       return grade.isPassingGrade()
           ? new WorkspaceAssessmentState(WorkspaceAssessmentState.PASS, latestAssessment.getDate())

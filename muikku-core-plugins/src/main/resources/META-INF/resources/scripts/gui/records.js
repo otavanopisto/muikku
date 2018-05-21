@@ -372,7 +372,7 @@
                   workspaceEntity.evaluated = formatDate(moment(assessment.evaluated).toDate());
                   workspaceEntity.verbalAssessment = assessment.verbalAssessment;
                   workspaceEntity.grade = grade ? grade.grade : null;
-                  workspaceEntity.grade = grade ? grade.scale : null;
+                  workspaceEntity.gradingScale = grade ? grade.scale : null;
                   workspaceEntity.passed = assessment.passed;
                 }
               }

@@ -92,45 +92,44 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return localGradingScales;
   }
 
-	@Override
-	public GradingScale findGradingScale(String identifier) {
-		if (!NumberUtils.isNumber(identifier)) {
-			throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-		}
+  @Override
+  public GradingScale findGradingScale(String identifier) {
+    if (!NumberUtils.isNumber(identifier)) {
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
+    }
 
     return createGradingScaleEntity(pyramusClient.get("/common/gradingScales/" + identifier, fi.otavanopisto.pyramus.rest.model.GradingScale.class));
-	}
+  }
 
-	@Override
-	public List<GradingScale> listGradingScales() {
-	  fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
-	  List<GradingScale> gradingScaleEntities = new ArrayList<GradingScale>();
-	  for (int i = 0; i < gradingScales.length; i++) {
+  @Override
+  public List<GradingScale> listGradingScales() {
+    fi.otavanopisto.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.otavanopisto.pyramus.rest.model.GradingScale[].class);
+    List<GradingScale> gradingScaleEntities = new ArrayList<GradingScale>();
+    for (int i = 0; i < gradingScales.length; i++) {
       gradingScaleEntities.add(createGradingScaleEntity(gradingScales[i]));
-	  }
-	  return gradingScaleEntities;
-	}
+    }
+    return gradingScaleEntities;
+  }
 
-	@Override
-	public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier) {
-		if (!NumberUtils.isNumber(identifier) || !NumberUtils.isNumber(gradingScaleIdentifier)) {
-			throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
-		}
+  @Override
+  public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier) {
+    if (!NumberUtils.isNumber(identifier) || !NumberUtils.isNumber(gradingScaleIdentifier)) {
+      throw new SchoolDataBridgeInternalException("Identifier has to be numeric");
+    }
 
     return createGradingScaleItemEntity(pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades/" + identifier, fi.otavanopisto.pyramus.rest.model.Grade.class));
-	}
+  }
 
-	@Override
-	public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) {
+  @Override
+  public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) {
     Grade[] grades = pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades", Grade[].class);
     return createGradingScaleItemEntities(grades);
-	}
+  }
 
   private GradingScaleItem createGradingScaleItemEntity(Grade grade) {
-	if (grade == null) {
-	  return null;
-	}
-    
+    if (grade == null) {
+      return null;
+    }
     return new PyramusGradingScaleItem(grade.getId().toString(), grade.getGradingScaleId().toString(), grade.getName(), grade.getPassingGrade());
   }
 
@@ -513,9 +512,9 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
   
   private OffsetDateTime fromDateToOffsetDateTime(Date date) {
-	  Instant instant = date.toInstant();
-	  ZoneId systemId = ZoneId.systemDefault();
-	  ZoneOffset offset = systemId.getRules().getOffset(instant);
+    Instant instant = date.toInstant();
+    ZoneId systemId = ZoneId.systemDefault();
+    ZoneOffset offset = systemId.getRules().getOffset(instant);
     return date.toInstant().atOffset(offset);
   }
   
