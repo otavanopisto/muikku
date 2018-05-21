@@ -177,9 +177,10 @@
   }
   
   &:not(:first-child) {
-      @include breakpoint($breakpoint-desktop){
-        display: inline-flex;
-      } 
+  
+    @include breakpoint($breakpoint-desktop){
+      display: inline-flex;
+    } 
     
     .environment-dialog__form-element-label {   
       align-items: center;
@@ -191,9 +192,6 @@
       padding-right: 10px;
 
       @include breakpoint($breakpoint-desktop){
-        position: absolute;
-        width: 200px;
-        left: -200px;
         justify-content: right;    
         padding-left: 10px;
       } 
