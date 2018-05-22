@@ -112,7 +112,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
           </Button> : null}
           <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Button>s
+          </Button>
           <Button buttonModifiers="standard-ok" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>

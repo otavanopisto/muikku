@@ -55,8 +55,8 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
       locked: false,
       threadPinned: false,
       threadLocked: false,
-      selectedAreaId: props.discussion.areas[0] && props.discussion.areas[0].id
-    }, props.discussion.areas[0] && props.discussion.areas[0].id);
+      selectedAreaId: props.discussion.areaId || (props.discussion.areas[0] && props.discussion.areas[0].id)
+    }, props.discussion.areaId || (props.discussion.areas[0] && props.discussion.areas[0].id));
     
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
@@ -66,7 +66,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
   }
-  checkAgainstStoredState(){
+  checkAgainstStoredState(){  
     this.checkAgainstDefaultState({
       text: "",
       title: "",
@@ -83,7 +83,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     }, this.state.selectedAreaId);
   }
   onCKEditorChange(text: string){
-    this.setStateAndStore({text});
+    this.setStateAndStore({text}, this.state.selectedAreaId);
   }
   createThread(closeDialog: ()=>any){
     this.setState({
@@ -113,21 +113,38 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     });
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({title: e.target.value});
+    this.setStateAndStore({title: e.target.value}, this.state.selectedAreaId);
   }
   togglePinned(){
-    this.setState({threadPinned: !this.state.threadPinned});
+    this.setStateAndStore({threadPinned: !this.state.threadPinned}, this.state.selectedAreaId);
   }
   toggleLocked(){
-    this.setState({threadLocked: !this.state.threadLocked});
+    this.setStateAndStore({threadLocked: !this.state.threadLocked}, this.state.selectedAreaId);
   }
   componentWillReceiveProps(nextProps: DicussionNewThreadProps){
-    if (nextProps.discussion.areaId !== this.state.selectedAreaId){
-      this.setState({selectedAreaId: nextProps.discussion.areaId || (nextProps.discussion.areas[0] && nextProps.discussion.areas[0].id)});
+    if (nextProps.discussion.areaId !== this.state.selectedAreaId && nextProps.discussion.areaId){
+      this.setState(this.getRecoverStoredState({
+        text: "",
+        title: "",
+        locked: false,
+        threadPinned: false,
+        threadLocked: false,
+        selectedAreaId: nextProps.discussion.areaId
+      }, nextProps.discussion.areaId));
     }
   }
   onAreaChange(e: React.ChangeEvent<HTMLSelectElement>){
-    this.setState({selectedAreaId: parseInt(e.target.value)});
+    let newSelectedAreaId = parseInt(e.target.value);
+    this.justClear(["text", "title", "threadPinned", "threadLocked"], this.state.selectedAreaId);
+    this.setStateAndStore(this.getRecoverStoredState({
+      text: this.state.text,
+      title: this.state.title,
+      threadPinned: this.state.threadPinned,
+      threadLocked: this.state.threadLocked
+    }, newSelectedAreaId), newSelectedAreaId);
+    this.setState({
+      selectedAreaId: newSelectedAreaId
+    });
   }
   render(){
     let content = (closeDialog: ()=>any) => [
