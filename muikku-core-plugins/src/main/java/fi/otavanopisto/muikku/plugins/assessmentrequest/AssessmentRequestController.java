@@ -126,7 +126,7 @@ public class AssessmentRequestController {
     
     WorkspaceAssessment latestAssessment = workspaceAssessments.isEmpty() ? null : workspaceAssessments.get(0);
     // #3927: Assessment without grade are anomalies from Pyramus so treat them as such 
-    if (latestAssessment.getGradeIdentifier() == null || latestAssessment.getGradingScaleIdentifier() == null) {
+    if (latestAssessment != null && (latestAssessment.getGradeIdentifier() == null || latestAssessment.getGradingScaleIdentifier() == null)) {
       latestAssessment = null;
     }
     WorkspaceAssessmentRequest latestRequest = assessmentRequests.isEmpty() ? null : assessmentRequests.get(0);
