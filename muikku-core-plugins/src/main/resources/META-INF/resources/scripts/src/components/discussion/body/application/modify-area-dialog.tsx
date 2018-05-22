@@ -34,7 +34,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
   private area:DiscussionAreaType;
   
   constructor(props: DiscussionModifyAreaProps){
-    super(props, "modify-area-dialog");
+    super(props, "discussion-modify-area-dialog");
     
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
@@ -119,7 +119,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
           {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('clear draft')}
           </Button> : null}
-          <Button buttonModifiers="standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Button>
           <Button buttonModifiers="standard-ok" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>

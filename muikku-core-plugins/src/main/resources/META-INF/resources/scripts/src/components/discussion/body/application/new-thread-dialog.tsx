@@ -9,6 +9,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionType } from '~/reducers/main-function/discussion';
 import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
+import SessionStateComponent from '~/components/general/session-state-component';
+import Button from '~/components/general/button';
 
 const ckEditorConfig = {
   toolbar: [
@@ -20,13 +22,11 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'discussion-new-message',
   resize_enabled: false
 }
 const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js'
+  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js'
 }
 
 interface DicussionNewThreadProps {
@@ -45,29 +45,50 @@ interface DicussionNewThreadState {
   selectedAreaId: number
 }
 
-class DicussionNewThread extends React.Component<DicussionNewThreadProps, DicussionNewThreadState> {
+class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, DicussionNewThreadState> {
   constructor(props: DicussionNewThreadProps){
-    super(props);
+    super(props, "discussion-new-thread");
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       text: "",
       title: "",
       locked: false,
       threadPinned: false,
       threadLocked: false,
       selectedAreaId: props.discussion.areas[0] && props.discussion.areas[0].id
-    }
+    }, props.discussion.areas[0] && props.discussion.areas[0].id);
     
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.onAreaChange = this.onAreaChange.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      text: "",
+      title: "",
+      threadPinned: false,
+      threadLocked: false,
+    }, this.state.selectedAreaId);
+  }
+  clearUp(){
+    this.setStateAndClear({
+      text: "",
+      title: "",
+      threadPinned: false,
+      threadLocked: false,
+    }, this.state.selectedAreaId);
   }
   onCKEditorChange(text: string){
-    this.setState({text});
+    this.setStateAndStore({text});
   }
   createThread(closeDialog: ()=>any){
+    this.setState({
+      locked: true
+    });
     this.props.createDiscussionThread({
       forumAreaId: this.state.selectedAreaId,
       locked: this.state.threadLocked,
@@ -75,13 +96,13 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
       message: this.state.text,
       title: this.state.title,
       success: ()=>{
-        this.setState({
+        this.setStateAndClear({
           text: "",
           title: "",
           locked: false,
           threadLocked: false,
           threadPinned: false
-        });
+        }, this.state.selectedAreaId);
         closeDialog();
       },
       fail: ()=>{
@@ -131,19 +152,22 @@ class DicussionNewThread extends React.Component<DicussionNewThreadProps, Dicuss
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('clear draft')}
+          </Button> : null}
+          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
+          </Button>
+          <Button buttonModifiers="standard-ok" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Link>
+          </Button>
         </div>
       )
     }
     
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }

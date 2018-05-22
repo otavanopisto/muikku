@@ -48,7 +48,7 @@ interface ModifyThreadState {
 
 class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThreadState> {
   constructor(props: ModifyThreadProps){
-    super(props, "modify-thread-dialog");
+    super(props, "discussion-modify-thread-dialog");
     
     this.state = this.getRecoverStoredState({
       text: props.thread.message,
@@ -146,7 +146,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
           {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('clear draft')}
           </Button> : null}
-          <Button buttonModifiers="standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
           <Button buttonModifiers="standard-ok" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
