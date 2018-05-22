@@ -12,20 +12,20 @@
   width: 100%;
 }
 
-.item-list__topic {
+.item-list__title {
   font-weight: 600;
   padding: 12px 0;
 }
   
 // Item-list items BASE
 .item-list__item {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   align-items: center;
   background-color: $color-item-list-item-background;
   cursor: pointer;
   display: flex;
   padding: 12px;
   position: relative;
-  transition: background-color 0.2s ease-in-out;
   
   &:hover, 
   &.hover {

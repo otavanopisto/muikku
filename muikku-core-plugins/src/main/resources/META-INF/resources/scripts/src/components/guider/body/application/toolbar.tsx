@@ -86,7 +86,7 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
   }
   
   componentWillReceiveProps(nextProps: GuiderToolbarProps){
-    if ((nextProps.guider.activeFilters.query || "") !== this.state.searchquery){
+    if (!this.focused && (nextProps.guider.activeFilters.query || "") !== this.state.searchquery){
       this.setState({
         searchquery: nextProps.guider.activeFilters.query || ""
       });

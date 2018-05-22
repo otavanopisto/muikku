@@ -27,7 +27,7 @@ function loadCurrentLocation(){
   if (!givenLocation && !originalData.w){
     store.dispatch(<Action>updateAllStudentUsersAndSetViewToRecords());
   } else if (!givenLocation){
-    store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), parseInt(originalData.w)));
+    store.dispatch(<Action>setCurrentStudentUserViewAndWorkspace(parseInt(originalData.u), originalData.i, parseInt(originalData.w)));
   } else if (givenLocation === "vops"){
     store.dispatch(<Action>setLocationToVopsInTranscriptOfRecords());
     store.dispatch(<Action>updateVops());

@@ -12,6 +12,7 @@ import {MessageSignatureType} from '~/reducers/main-function/messages';
 import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
+import SessionStateComponent from '~/components/general/session-state-component';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -24,7 +25,6 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'communicator-new-message',
   resize_enabled: false
 }
 const extraPlugins = {
@@ -58,32 +58,43 @@ interface CommunicatorNewMessageState {
   includesSignature: boolean
 }
 
-class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
+class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
   constructor(props: CommunicatorNewMessageProps){
-    super(props);
+    super(props, "communicator-new-message");
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setSelectedItems = this.setSelectedItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
     this.onSignatureToggleClick = this.onSignatureToggleClick.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       text: "",
       selectedItems: props.initialSelectedItems || [],
       subject: "",
       locked: false,
       includesSignature: true
-    }
+    }, props.replyThreadId);
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      text: "",
+      selectedItems: this.props.initialSelectedItems || [],
+      subject: "",
+      locked: false,
+      includesSignature: true
+    }, this.props.replyThreadId);
   }
   onCKEditorChange(text: string){
-    this.setState({text});
+    this.setStateAndStore({text}, this.props.replyThreadId);
   }
   setSelectedItems(selectedItems: SelectedItemListType){
-    this.setState({selectedItems});
+    this.setStateAndStore({selectedItems}, this.props.replyThreadId);
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({subject: e.target.value});
+    this.setStateAndStore({subject: e.target.value}, this.props.replyThreadId);
   }
   sendMessage(closeDialog: ()=>any){
     this.setState({
@@ -97,12 +108,12 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
         this.state.text),
       success: ()=>{
         closeDialog();
-        this.setState({
+        this.setStateAndClear({
           text: "",
           selectedItems: this.props.initialSelectedItems || [],
           subject: "",
           locked: false
-        });
+        }, this.props.replyThreadId);
       },
       fail: ()=>{
         this.setState({
@@ -114,6 +125,14 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
   }
   onSignatureToggleClick(){
     this.setState({includesSignature: !this.state.includesSignature});
+  }
+  clearUp(){
+    this.setStateAndClear({
+      text: "",
+      selectedItems: this.props.initialSelectedItems || [],
+      subject: "",
+      locked: false
+    }, this.props.replyThreadId);
   }
   render(){
     let content = (closeDialog: ()=>any) => [
@@ -160,7 +179,7 @@ class CommunicatorNewMessage extends React.Component<CommunicatorNewMessageProps
     
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.communicator.createmessage.label')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }

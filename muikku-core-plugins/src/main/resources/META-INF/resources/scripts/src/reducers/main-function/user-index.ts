@@ -108,6 +108,39 @@ export interface UserFileType {
   archived: boolean
 }
 
+export interface StudentUserProfileEmailType {
+  studentIdentifier: string,
+  type: string,
+  address: string,
+  defaultAddress: boolean
+}
+
+export interface StudentUserProfilePhoneType {
+  studentIdentifier: string,
+  type: string,
+  number: string,
+  defaultNumber: boolean
+}
+
+export interface StudentUserAddressType {
+  identifier: string,
+  studentIdentifier: string,
+  street: string,
+  postalCode: string,
+  city: string,
+  region: string,
+  country: string,
+  type: string,
+  defaultAddress: boolean
+}
+
+export interface LastLoginStudentDataType {
+  userIdentifier: string,
+  authenticationProvder: string,
+  address: string,
+  time: string
+}
+
 export default function userIndex(state:UserIndexType={
   users: {},
   groups: {},

@@ -132,10 +132,10 @@
     flex-grow: 0;
     flex-shrink: 0;
     display: flex;
-    margin: 0 12px;
+    margin: 0;
     overflow: auto;
     overflow: -moz-scrollbars-none;
-    padding: 12px 0;
+    padding: 12px;
     z-index: 1;
     
     &::-webkit-scrollbar { 
@@ -152,11 +152,10 @@
 // Main containers
 .application-panel__main-container {
   -ms-overflow-style: -ms-autohiding-scrollbar;
-  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px 0 10px 0;
+  padding: 10px;
   position: relative;
   margin: 0;
   overflow: -moz-scrollbars-none;
@@ -166,22 +165,16 @@
   }
   
   @include breakpoint($breakpoint-pad) {
-    margin: 0 12px;
-    padding: 12px 0;
+    padding: 12px;
   } 
 }
 
 .application-panel__main-container--actions {
   border-bottom: 1px solid $color-main-function-application-panel-actions-border; 
   flex-direction: row;
-  margin: 0;
-  padding: 10px;
-  position: relative;
   
   @include breakpoint($breakpoint-pad) {
     height: 65px;
-    margin: 0 12px;
-    padding: 12px 0;
   } 
 }
 

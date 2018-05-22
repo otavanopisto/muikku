@@ -45,7 +45,7 @@
 }
 
 .announcement__select-container {
-  align-items: center;
-  display: flex;
+  @include vp-align-items(center);
+  @include vp-flexbox;
   padding: 2px 8px 2px 2px;
 }

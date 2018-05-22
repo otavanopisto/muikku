@@ -163,12 +163,12 @@ public class TranscriptofRecordsBackingBean {
     return transcriptOfRecordsController.shouldShowStudies(user);
   }
   
-  public Date getStudyStartDate() {
-    return studyStartDate != null ? Date.from(studyStartDate.toInstant()) : null;
+  public String getStudyStartDate() {
+    return studyStartDate != null ? studyStartDate.toString() : null;
   }
 
-  public Date getStudyTimeEnd() {
-    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()) : null;
+  public String getStudyTimeEnd() {
+    return studyTimeEnd != null ? studyTimeEnd.toString() : null;
   }
 
   public String getStudyTimeLeftStr() {

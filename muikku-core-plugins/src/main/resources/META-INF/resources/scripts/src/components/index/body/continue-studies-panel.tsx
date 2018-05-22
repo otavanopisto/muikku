@@ -32,19 +32,18 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
       return null;
     }
     
-    //TODO UKKONNEN missing translations over there
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
       <div className="text text--for-panels-title">
         <span className="text__panel-icon text__panel-icon--continue-studies icon-revert"></span>
-        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.lastWorkspace.continueStudiesLink')}</span>
+        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</span>
       </div>
       <Panel modifier="index">
         <h2 className="text text--panel-continue-studies-workspace-name">
           {this.props.lastWorkspace.workspaceName}
         </h2>
         <span className="text text--panel-continue-studies">
-          Olit vimeksi sivulla{" "}<b><i>{this.props.lastWorkspace.materialName}</i></b>{" "}
-          <Link className="text__panel-link" href={this.props.lastWorkspace.url}>Jatka opintoja</Link>
+          {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="text text--panel-continue-studies-material-page">{this.props.lastWorkspace.materialName}.</span>{" "}
+          <Link className="text__panel-link text--panel-continue-studies-link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
         </span>
       </Panel>
     </div>);

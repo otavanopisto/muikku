@@ -9,6 +9,7 @@ import Link from "~/components/general/link";
 import JumboDialog from "~/components/general/environment-dialog";
 import { modifyReplyFromCurrentThread, ModifyReplyFromCurrentThreadTriggerType } from "~/actions/main-function/discussion";
 import {StateType} from '~/reducers';
+import Button from '~/components/general/button';
 
 interface ModifyThreadReplyProps {
   i18n: i18nType,
@@ -71,6 +72,9 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
       reply: this.props.reply,
       message: this.state.text,
       success: ()=>{
+        this.setState({
+          locked: false
+        });
         closeDialog();
       },
       fail: ()=>{
@@ -88,12 +92,12 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          <Link className="button button-dialog--execute" onClick={this.modifyReply.bind(this, closeDialog)}>
+          <Button className="button button-dialog--execute" onClick={this.modifyReply.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Link>
-          <Link className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
+          </Button>
+          <Button className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Link>
+          </Button>
         </div>
       )
     }

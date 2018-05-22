@@ -8,11 +8,13 @@ public class Announcement {
   public Announcement() {
   }
   
-  public Announcement(Long id, Long publisherUserEntityId, List<Long> userGroupIds, String caption, String content, Date created, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible) {
+  public Announcement(Long id, Long publisherUserEntityId, List<Long> userGroupIds, List<Long> workspaceEntityIds, 
+      String caption, String content, Date created, Date startDate, Date endDate, Boolean archived, Boolean publiclyVisible) {
     super();
     this.id = id;
     this.publisherUserEntityId = publisherUserEntityId;
     this.userGroupEntityIds = userGroupIds;
+    this.workspaceEntityIds = workspaceEntityIds;
     this.caption = caption;
     this.content = content;
     this.created = created;
@@ -102,6 +104,14 @@ public class Announcement {
     this.publiclyVisible = publiclyVisible;
   }
   
+  public List<Long> getWorkspaceEntityIds() {
+    return workspaceEntityIds;
+  }
+
+  public void setWorkspaceEntityIds(List<Long> workspaceEntityIds) {
+    this.workspaceEntityIds = workspaceEntityIds;
+  }
+
   private Long id;
   private Long publisherUserEntityId;
   private String caption;
@@ -111,6 +121,7 @@ public class Announcement {
   private Date endDate;
   private Boolean archived;
   private List<Long> userGroupEntityIds;
+  private List<Long> workspaceEntityIds;
   private Boolean publiclyVisible;
 
 }

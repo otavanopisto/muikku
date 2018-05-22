@@ -10,13 +10,13 @@
 }
 
 .discussion-thread {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
 	background-color: #fff;
 	border-top: 1px solid $color-message-border;
 	cursor: pointer;
 	padding: 14px 0;
 	position: relative;
 	-webkit-touch-callout: none;
-	transition: background-color 0.2s ease-in-out;
 	-webkit-user-select: none;
 	user-select: none;
 	

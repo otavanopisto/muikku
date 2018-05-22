@@ -55,7 +55,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.communicator.communicator',
       href: "/communicator",
       icon: "envelope",
-      condition: this.props.status.loggedIn,
+      condition: this.props.status.isActiveUser && this.props.status.loggedIn,
       badge: this.props.messageCount
     }, {
       modifier: "discussion",
@@ -63,7 +63,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.forum.forum',
       href: "/discussion",
       icon: "bubble",
-      condition: this.props.status.loggedIn && this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM
+      condition: this.props.status.isActiveUser && this.props.status.loggedIn && this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM
     }, {
       modifier: "guider",
       trail: "guider",

@@ -69,7 +69,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   if (actualFilters.query){
-    (params as any).search = filters.query;
+    (params as any).search = actualFilters.query;
   }
   
   try {

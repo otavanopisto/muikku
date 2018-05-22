@@ -6,13 +6,17 @@
 .application-list {  
   height: 100%;
   width: 100%;
-  overflow-y: auto;
+  overflow: visible;
   -ms-overflow-style: -ms-autohiding-scrollbar;
   overflow: -moz-scrollbars-none;  
   
   &::-webkit-scrollbar { 
     display: none; 
   } 
+}
+
+.application-list__header {
+  padding: 14px 0;
 }
 
 .application-list_item-wrapper {
@@ -24,10 +28,10 @@
 }
 
 .application-list__item {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   background-color: $color-application-list-item-background;
   cursor: pointer;
   -webkit-touch-callout: none;
-  transition: background-color 0.2s ease-in-out;
   -webkit-user-select: none;
   user-select: none;
   position: relative;
@@ -37,15 +41,13 @@
     -webkit-user-select: auto;
     user-select: auto;
   }
-    
-  &:hover, 
-  &.hover {
-    background-color: $color-application-list-item-background-hover;
+ 
+  &.hover, &:hover {
+  	background-color: $color-application-list-item-background-hover;
   }
-
-  &:active, 
-  &.active {
-    background-color: $color-application-list-item-background-active;
+ 
+  &.active, &:active {
+  	background-color: $color-application-list-item-background-active;
   }
 
   &.selected {
@@ -157,7 +159,8 @@
 
 .application-list__item-header {
   align-items: center;
-  display: flex;      
+  display: flex;   
+  flex-flow: row wrap;   
 }
 
 .application-list__item-body {

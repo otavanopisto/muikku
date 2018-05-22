@@ -23,7 +23,7 @@ interface VopsState {
 
 class Vops extends React.Component<VopsProps, VopsState> {
   render(){
-    if (this.props.records.location !== "VOPS"){
+    if (this.props.records.location !== "vops"){
       return null;
     } else if (this.props.vops.status === "ERROR"){
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error

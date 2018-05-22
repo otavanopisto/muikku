@@ -23,6 +23,23 @@
   }
 }
 
+.course--studies {
+	
+	&:hover,
+  &.hover,
+  &:active,
+  &.active {
+  
+    svg {
+      opacity: 0.9;
+    }
+  }
+}
+
+.course--credits {
+  cursor: auto;
+}
+
 .course--open .text--list-item-title,
 .course--open .text--list-item-title-extension {
   font-weight: 600;  

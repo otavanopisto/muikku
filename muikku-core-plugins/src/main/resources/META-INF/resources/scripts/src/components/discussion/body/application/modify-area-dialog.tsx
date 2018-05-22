@@ -7,6 +7,8 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/main-function/discussion';
 import {DiscussionType} from '~/reducers/main-function/discussion';
+import SessionStateComponent from '~/components/general/session-state-component';
+import Button from '~/components/general/button';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
@@ -28,37 +30,51 @@ interface DiscussionModifyAreaState {
   locked: boolean
 }
 
-class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, DiscussionModifyAreaState> {
+class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaProps, DiscussionModifyAreaState> {
   private area:DiscussionAreaType;
   
   constructor(props: DiscussionModifyAreaProps){
-    super(props);
+    super(props, "modify-area-dialog");
     
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
     this.modifyArea = this.modifyArea.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
     this.area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       name: (this.area && this.area.name) || "",
       description: (this.area && this.area.description) || "",
       locked: false
-    }
+    }, this.props.discussion.areaId)
+  }
+  clearUp(){
+    this.setStateAndClear({
+      name: (this.area && this.area.name) || "",
+      description: (this.area && this.area.description) || ""
+    }, this.props.discussion.areaId)
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      name: (this.area && this.area.name) || "",
+      description: (this.area && this.area.description) || ""
+    }, this.props.discussion.areaId);
   }
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>){
-    this.setState({description: e.target.value});
+    this.setStateAndStore({description: e.target.value}, this.props.discussion.areaId);
   }
   onNameChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({name: e.target.value});
+    this.setStateAndStore({name: e.target.value}, this.props.discussion.areaId);
   }
   componentWillReceiveProps(nextProps: DiscussionModifyAreaProps){
     this.area = nextProps.discussion.areas.find(area=>area.id === nextProps.discussion.areaId);
     
-    this.setState({
+    this.setState(this.getRecoverStoredState({
       name: (this.area && this.area.name) || "",
       description: (this.area && this.area.description) || ""
-    });
+    }, nextProps.discussion.areaId));
   }
   modifyArea(closeDialog: ()=>any){
     this.setState({locked: true});
@@ -79,8 +95,6 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
     if (!this.area){
       return this.props.children;
     }
-
-    
     
     let content = (closeDialog: ()=>any) => [
       (
@@ -109,12 +123,12 @@ class DiscussionModifyArea extends React.Component<DiscussionModifyAreaProps, Di
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          <Link className="button button-dialog--execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button className="button button-dialog--execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.send')}
-          </Link>
-          <Link className="button button-dialog--cancel" onClick={closeDialog}>
+          </Button>
+          <Button className="button button-dialog--cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
-          </Link>
+          </Button>
         </div>
       )
     }

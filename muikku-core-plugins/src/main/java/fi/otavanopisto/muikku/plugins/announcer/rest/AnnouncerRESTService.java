@@ -6,7 +6,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -149,7 +151,12 @@ public class AnnouncerRESTService extends PluginRESTService {
       announcementController.addAnnouncementWorkspace(announcement, workspaceEntity);
     }
     
-    return Response.noContent().build();
+    List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspaces(announcement);
+    
+    return Response
+        .ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces))
+        .build();
   }
 
   @PUT
@@ -295,13 +302,13 @@ public class AnnouncerRESTService extends PluginRESTService {
       AnnouncementRESTModel restModel = createRESTModel(announcement, announcementUserGroups, announcementWorkspaces);
       restModels.add(restModel);
     }
-
+    
     return Response.ok(restModels).build();
   }
   
   @GET
   @Path("/announcements/{ID}")
-  @RESTPermit(AnnouncerPermissions.FIND_ANNOUNCEMENT)
+  @RESTPermit(handling = Handling.INLINE)
   public Response findAnnouncementById(@PathParam("ID") Long announcementId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     
@@ -310,10 +317,61 @@ public class AnnouncerRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Announcement not found").build();
     }
     
+    // Permission checks - either global permission to access all announcements or permission via groups etc
+    if (!sessionController.hasEnvironmentPermission(AnnouncerPermissions.FIND_ANNOUNCEMENT)) {
+      if (!canSeeAnnouncement(announcement, userEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
     List<AnnouncementUserGroup> announcementUserGroups = announcementController.listAnnouncementUserGroups(announcement);
     List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
     
     return Response.ok(createRESTModel(announcement, announcementUserGroups, announcementWorkspaces)).build();
+  }
+
+  private boolean canSeeAnnouncement(Announcement announcement, UserEntity userEntity) {
+    /**
+     * This is not very efficient, but things needed to be checked are
+     * - Is the user in a group the announcement is published for
+     * - Is the user member of a workspace the announcement is for
+     * - Is the announcement public
+     */
+    
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
+    Set<Long> userGroupIds = userGroups.stream().map(userGroup -> userGroup.getId()).collect(Collectors.toSet());
+    
+    List<AnnouncementUserGroup> announcementGroups = announcementController.listAnnouncementUserGroups(announcement);
+    Set<Long> announcementGroupIds = announcementGroups.stream().map(announcementGroup -> announcementGroup.getId()).collect(Collectors.toSet());
+
+    if (CollectionUtils.containsAny(announcementGroupIds, userGroupIds)) {
+      return true;
+    }
+    
+    List<AnnouncementWorkspace> announcementWorkspaces = announcementController.listAnnouncementWorkspacesSortByUserFirst(announcement, userEntity);
+    if (CollectionUtils.isNotEmpty(announcementWorkspaces)) {
+      /**
+       * If announcement is tied to any workspace, the user needs to have access to a workspace to find
+       * the announcement.
+       */
+
+      for (AnnouncementWorkspace announcementWorkspace : announcementWorkspaces) {
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(announcementWorkspace.getWorkspaceEntityId());
+        
+        if (sessionController.hasWorkspacePermission(AnnouncerPermissions.LIST_WORKSPACE_ANNOUNCEMENTS, workspaceEntity)) {
+          return true;
+        }
+      }
+      
+      return false;
+    }
+    
+    if (Boolean.TRUE.equals(announcement.getPubliclyVisible())) {
+      return true;
+    }
+    
+    // No common groups nor workspaces, return false
+    return false;
   }
 
   private AnnouncementRESTModel createRESTModel(Announcement announcement, List<AnnouncementUserGroup> announcementUserGroups, List<AnnouncementWorkspace> announcementWorkspaces) {

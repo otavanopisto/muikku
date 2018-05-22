@@ -100,6 +100,7 @@ public class CommunicatorController {
     Document doc = Jsoup.parseBodyFragment(html);
     doc = new Cleaner(
             Whitelist.relaxed()
+              .addTags("s")
               .addAttributes("a", "target")
               .addAttributes("img", "width", "height", "style")
               .addAttributes("i", "class")

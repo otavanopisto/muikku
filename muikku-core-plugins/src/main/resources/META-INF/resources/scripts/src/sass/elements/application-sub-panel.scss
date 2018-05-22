@@ -3,10 +3,22 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-sub-panel:not(:first-child):not(:last-child) {
+.application-sub-panel {
   border-bottom: 5px solid $color-default-item-separator-border;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
+  padding: 0 0 20px;
+  margin: 0 0 20px;
+  
+  &:last-child {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.application-sub-panel--guider-student-header {
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .application-sub-panel__header {
@@ -19,17 +31,13 @@
   padding: 10px 0;
 }
 
-.application-sub-panel__body--basic-info {
-
-}
-
 .application-sub-panel__body--labels {
   padding: 10px 0;
 }
 
 .application-sub-panel__item {
-	align-items: center;
-	display: flex;
+  align-items: center;
+  display: flex;
   flex-basis: 100%;
   flex-flow: row wrap;
   flex-grow: 1;
@@ -50,23 +58,23 @@
  }
 
 .application-sub-panel__item-title {
-	flex-basis: 100%;
+  flex-basis: 100%;
   flex-grow: 0;
   flex-shrink: 0;
-	margin: 0 0 5px;
-	
-	@include breakpoint($breakpoint-desktop) {
+  margin: 0 0 5px;
+  
+  @include breakpoint($breakpoint-desktop) {
     flex-basis: 250px;
-	  margin: 0 10px 0 0;
+    margin: 0 10px 0 0;
   }
-} 
+}
 
 .application-sub-panel__item-data {
-	align-items: center;
-	display: flex;
-	flex-basis: auto;
-	flex-flow: column wrap;
-	flex-grow: 0;
+  align-items: center;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 0;
   flex-shrink: 0;
   
   @include breakpoint($breakpoint-desktop) {
@@ -76,15 +84,12 @@
   }
 } 
 
-// HOPS readonly override for rendering item-title and item-data
-.application-sub-panel__body--hops {
-
+// HOPS in Guider in readable state
+.application-sub-panel__item--hops-readable {
+  flex-flow: row wrap;
+  
   .application-sub-panel__item-title {
-    flex-basis: 100%;
-    flex-grow: 0;
-    flex-shrink: 0;
-    margin: 0 0 5px;
-    
+  
     @include breakpoint($breakpoint-desktop) {
       flex-basis: 60%;
       margin: 0 10px 0 0;
@@ -92,18 +97,37 @@
   }
   
   .application-sub-panel__item-data {
-    display: inline-flex;
-    flex-basis: auto;
-    flex-flow: column wrap;
-    flex-grow: 0;
-    flex-shrink: 0;
-    
+  
     @include breakpoint($breakpoint-desktop) {
-      flex-grow: 1;
-      flex-flow: row wrap;
-      flex-shrink: 1;
+      flex-basis: auto;
     }
-  } 
+  }
+}
+
+// HOPS in Studies in editable state
+.application-sub-panel__item--hops-editable {
+  align-items: flex-start;
+  flex-flow: column wrap;
+  
+  .application-sub-panel__item-title {
+  
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+  }
+  
+  .application-sub-panel__item-data {
+  
+    @include breakpoint($breakpoint-desktop) {
+      flex-basis: auto;
+    }
+    
+    textarea {
+      height: 50px;
+      width: 100%;
+    }
+  
+  }
 }
 
 .application-sub-panel__item--label {
@@ -113,8 +137,4 @@
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 10px;
-}
-
-.application-sub-panel__file-container {
-  padding: 20px;
 }

@@ -40,7 +40,7 @@ let loadLastWorkspaceFromServer:LoadLastWorkspaceFromServerTriggerType = functio
     try {
       dispatch({
         type: 'UPDATE_LAST_WORKSPACE',
-        payload: <ShortWorkspaceType>((await promisify(mApi().user.property.read('last-workspace'), 'callback')()) as any).value
+        payload: <ShortWorkspaceType>JSON.parse(((await promisify(mApi().user.property.read('last-workspace'), 'callback')()) as any).value)
       });
     } catch (err){
       if (!(err instanceof MApiError)){

@@ -10,6 +10,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
 import { createDiscussionThread, CreateDiscussionThreadTriggerType, modifyDiscussionThread, ModifyDiscussionThreadTriggerType } from '~/actions/main-function/discussion';
 import {StateType} from '~/reducers';
+import SessionStateComponent from '~/components/general/session-state-component';
+import Button from '~/components/general/button';
 
 const ckEditorConfig = {
   toolbar: [
@@ -21,13 +23,11 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'discussion-modify-thread',
   resize_enabled: false
 }
 const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js'
+  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js'
 }
 
 interface ModifyThreadProps {
@@ -46,26 +46,43 @@ interface ModifyThreadState {
   threadLocked: boolean
 }
 
-class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState> {
+class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThreadState> {
   constructor(props: ModifyThreadProps){
-    super(props);
+    super(props, "modify-thread-dialog");
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       text: props.thread.message,
       title: props.thread.title,
       locked: false,
       threadPinned: props.thread.sticky,
       threadLocked: props.thread.locked
-    }
+    }, props.thread.id);
     
     this.togglePinned = this.togglePinned.bind(this);
     this.toggleLocked = this.toggleLocked.bind(this);
     this.onTitleChange = this.onTitleChange.bind(this);
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.modifyThread = this.modifyThread.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      text: this.props.thread.message,
+      title: this.props.thread.title,
+      threadPinned: this.props.thread.sticky,
+      threadLocked: this.props.thread.locked
+    }, this.props.thread.id);
   }
   onCKEditorChange(text: string){
-    this.setState({text});
+    this.setStateAndStore({text}, this.props.thread.id);
+  }
+  clearUp(){
+    this.setStateAndClear({
+      text: this.props.thread.message,
+      title: this.props.thread.title,
+      threadPinned: this.props.thread.sticky,
+      threadLocked: this.props.thread.locked
+    }, this.props.thread.id);
   }
   modifyThread(closeDialog: ()=>any){
     if (this.state.locked){
@@ -80,6 +97,7 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
       sticky: this.state.threadPinned,
       locked: this.state.threadLocked,
       success: ()=>{
+        this.justClear(["text", "title", "threadPinned", "threadLocked"], this.props.thread.id);
         this.setState({locked: false});
         closeDialog();
       },
@@ -89,22 +107,22 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
     });
   }
   onTitleChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({title: e.target.value});
+    this.setStateAndStore({title: e.target.value}, this.props.thread.id);
   }
   togglePinned(){
-    this.setState({threadPinned: !this.state.threadPinned});
+    this.setStateAndStore({threadPinned: !this.state.threadPinned}, this.props.thread.id);
   }
   toggleLocked(){
-    this.setState({threadLocked: !this.state.threadLocked});
+    this.setStateAndStore({threadLocked: !this.state.threadLocked}, this.props.thread.id);
   }
   componentWillReceiveProps(nextProps: ModifyThreadProps){
     if (nextProps.thread.id !== this.props.thread.id){
-      this.setState({
+      this.setState(this.getRecoverStoredState({
         text: nextProps.thread.message,
         title: nextProps.thread.title,
         threadPinned: nextProps.thread.sticky,
         threadLocked: nextProps.thread.locked
-      });
+      }, nextProps.thread.id));
     }
   }
   render(){
@@ -112,7 +130,7 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
        <div key="1" className="container container--new-discussion-options">
          <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
-       </div>,       
+       </div>, 
        <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
          <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadPinned} onChange={this.togglePinned}/>
@@ -125,19 +143,19 @@ class ModifyThread extends React.Component<ModifyThreadProps, ModifyThreadState>
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          <Link className="button button-dialog--execute" onClick={this.modifyThread.bind(this, closeDialog)}>
+          <Button className="button button-dialog--execute" onClick={this.modifyThread.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Link>
-          <Link className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
+          </Button>
+          <Button className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Link>
+          </Button>
         </div>
       )
     }
     
     return <JumboDialog modifier="modify-message"
       title={this.props.i18n.text.get('plugin.discussion.editarea.topic')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }
