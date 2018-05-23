@@ -5,7 +5,9 @@ import Link from '~/components/general/link';
 import JumboDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
+import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
+
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
@@ -25,25 +27,39 @@ interface DiscussionNewAreaState {
   locked: boolean
 }
 
-class DiscussionNewArea extends React.Component<DiscussionNewAreaProps, DiscussionNewAreaState> {
+class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, DiscussionNewAreaState> {
   constructor(props: DiscussionNewAreaProps){
-    super(props);
+    super(props, "discussion-new-area");
     
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
     this.createArea = this.createArea.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       name: "",
       description: "",
       locked: false
-    }
+    })
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      name: "",
+      description: ""
+    });
+  }
+  clearUp(){
+    this.setStateAndClear({
+      name: "",
+      description: ""
+    });
   }
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>){
-    this.setState({description: e.target.value});
+    this.setStateAndStore({description: e.target.value});
   }
   onNameChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setState({name: e.target.value});
+    this.setStateAndStore({name: e.target.value});
   }
   createArea(closeDialog: ()=>any){
     this.setState({locked: true});
@@ -51,7 +67,7 @@ class DiscussionNewArea extends React.Component<DiscussionNewAreaProps, Discussi
       name: this.state.name,
       description: this.state.description,
       success: ()=>{
-        this.setState({name: "", description: "", locked: false});
+        this.setStateAndClear({name: "", description: "", locked: false});
         closeDialog();
       },
       fail: ()=>{
@@ -95,7 +111,7 @@ class DiscussionNewArea extends React.Component<DiscussionNewAreaProps, Discussi
     
     return <JumboDialog modifier="new-area"
       title={this.props.i18n.text.get('plugin.discussion.createarea.topic')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }

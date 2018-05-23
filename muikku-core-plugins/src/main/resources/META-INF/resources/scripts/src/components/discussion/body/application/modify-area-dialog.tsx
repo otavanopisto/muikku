@@ -34,7 +34,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
   private area:DiscussionAreaType;
   
   constructor(props: DiscussionModifyAreaProps){
-    super(props, "modify-area-dialog");
+    super(props, "discussion-modify-area-dialog");
     
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
@@ -109,7 +109,6 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
       
       ),
 
-      
       (
        <div className="container container--new-discussion-area-description">          
          <div className="environment-dialog__form-element--wrapper">  
@@ -129,13 +128,16 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
           <Button className="button button-dialog--cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Button>
+          <Button className="button button-dialog--execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.discussion.createarea.send')}
+          </Button>
         </div>
       )
     }
     
     return <JumboDialog modifier="modify-area"
       title={this.props.i18n.text.get('plugin.discussion.createarea.topic')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }

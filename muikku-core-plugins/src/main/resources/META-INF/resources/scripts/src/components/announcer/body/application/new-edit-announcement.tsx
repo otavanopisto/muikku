@@ -292,7 +292,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('clear draft')}
           </Button> : null}
-          <Button buttonModifiers="standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
           </Button>
           <Button buttonModifiers="standard-ok" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
