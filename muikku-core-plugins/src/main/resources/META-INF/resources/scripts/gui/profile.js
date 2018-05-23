@@ -34,7 +34,7 @@
     
     _setVisibility: function(visibility) {
       var userIdentifier = MUIKKU_LOGGED_USER;
-      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function (settings) {
+      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function () {
       $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
       }, this));
     }
