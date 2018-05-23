@@ -1,8 +1,6 @@
 (function() {
   'use strict';
-  
-<<<<<<< HEAD
-=======
+
   /* global converse */
   
   mApi().chat.settings.read().callback(function(err, result) {
@@ -27,7 +25,7 @@
     }
   });
   
->>>>>>> refs/remotes/origin/FTR-3290-chat-visibility
+
   function reloadMessageCount() {
     if (MUIKKU_LOGGEDIN) {
       mApi()

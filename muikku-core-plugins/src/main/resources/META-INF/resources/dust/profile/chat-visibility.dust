@@ -3,10 +3,7 @@
 <option value="VISIBLE_TO_ALL" {visible_to_all_selected}>
   {#localize key="plugin.profile.chat.visibleToAll"/}
 </option>
-<option value="INVISIBLE" {invisible_selected}>
-  {#localize key="plugin.profile.chat.invisible"/}
-</option>
-<option value="UNUSED" {unused_selected}>
-  {#localize key="plugin.profile.chat.unused"/}
+<option value="DISABLED" {disabled_selected}>
+  {#localize key="plugin.profile.chat.disabled"/}
 </option>
 </select>

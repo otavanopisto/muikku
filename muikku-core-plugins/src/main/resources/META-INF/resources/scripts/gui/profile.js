@@ -5,43 +5,38 @@
   
   $.widget("custom.chatVisibility", {
     _create: function() {
-    	console.log(mApi());
-      mApi().chat.settings.read({}).callback($.proxy(function (err, status) {
+      mApi().chat.status.read({}).callback($.proxy(function (err, status) {
         if (err) { 
           $('.notification-queue').notificationQueue('notification', 'error', err);
           return;
         }
-        if (status && status.enabled) {
-          mApi().chat.status.read({}).callback($.proxy(function (err, settings) {
-            if (err && err !== "User settings not found") { 
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-              return;
-            }
+       
+          mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
             var data = {};
+            data.visible_to_all_selected = "selected";
+            
             if (settings && settings.visibility === "VISIBLE_TO_ALL") {
               data.visible_to_all_selected = "selected";
             }
-            if (settings && settings.visibility === "INVISIBLE") {
-              data.invisible_selected = "selected";
-            }
-            if (settings && settings.visibility === "UNUSED"){
-              data.unused_selected = "selected";
+            if (settings && settings.visibility === "DISABLED"){
+              data.disabled_selected = "selected";
             }
             renderDustTemplate('profile/chat-visibility.dust', data, $.proxy(function (text) {
               this.element.html(text);
-              this.element.find("select").on('change', $.proxy(function() {
+              this.element.find("select").on('change', $.proxy(function(event) {
                 this._setVisibility(event.target.value);
-                location.reload();
+                setTimeout(function(){ location.reload(); }, 1500);
               }, this));
             }, this));
           }, this));
-        }
       }, this));
     },
     
     _setVisibility: function(visibility) {
       var userIdentifier = MUIKKU_LOGGED_USER;
-      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier});
+      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function (settings) {
+      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
+      }, this));
     }
   });
   
