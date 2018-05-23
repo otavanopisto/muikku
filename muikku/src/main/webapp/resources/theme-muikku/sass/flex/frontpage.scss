@@ -868,14 +868,14 @@ footer.of-footer {
     
   }
   
-  .footer-legal-info-container {
-    display: none;
+  .footer-privacy-policy-container {
     margin: 25px 0 0;
     
-    .legal-info {
+    .privacy-policy__link {
       color: $of-footer-text-color;
       display: inline-block;
       margin: 5px 20px 0 5px;
+      text-decoration: none;
       text-transform: uppercase;
     }
     
