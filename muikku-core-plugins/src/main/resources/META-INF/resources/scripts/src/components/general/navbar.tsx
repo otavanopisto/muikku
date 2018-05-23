@@ -48,7 +48,7 @@ export default class Navbar extends React.Component<NavbarProps, NavbarState> {
                   <div className="navbar__logo"></div>
                   <ul className="navbar__items">
                     <li className={`navbar__item navbar__item--menu-button`}>
-                      <a className="link link--icon link--full" onClick={this.openMenu}>
+                      <a className={`link link--icon link--full ${this.props.modifier ? 'link--' + this.props.modifier : ''}`} onClick={this.openMenu}>
                         <span className="link__icon icon-navicon"></span>
                       </a>
                     </li>

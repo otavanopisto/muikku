@@ -129,6 +129,11 @@
   background-color: $color-overlay-background;
   position: fixed;
   z-index: 9;
+  overflow-y: scroll;
+  
+  @include breakpoint-down($breakpoint-landscape-pad) {
+    background-color: $color-application-dialog-background-color;
+  }
   
   &.visible {
     opacity: 1;
@@ -139,9 +144,6 @@
   }
 
   .jumbo-dialog__wrapper {
-  	@include breakpoint-down($breakpoint-landscape-pad) {
-      
-    }
     display: flex;
     align-items: center;
     justify-content: center;
@@ -229,7 +231,7 @@
         line-height: $dialog-button-close-height;
         margin-top: -#{$dialog-button-close-height / 2};
         position: absolute;
-        right: -6px;
+        right: 0;
         text-align: center;
         top: 50%;
         vertical-align: center;
