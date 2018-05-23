@@ -105,10 +105,10 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
         text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>"
       });
     }
-  }
+  }  
   render(){
-    let content = (closeDialog: ()=>any) => [
-      <CKEditor autofocus key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+    let content = (closeDialog: ()=>any) => [                                            
+    <CKEditor autofocus key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{

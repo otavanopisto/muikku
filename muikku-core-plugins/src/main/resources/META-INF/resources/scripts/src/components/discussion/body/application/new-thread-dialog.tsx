@@ -157,30 +157,19 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-<<<<<<< HEAD
         <div className="environment-dialog__button-container">
-          <Button className="button button-dialog--execute" onClick={this.createThread.bind(this, closeDialog)}>
-=======
-        <div className="jumbo-dialog__button-container">
           {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
-          </Button> : null}
-          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
->>>>>>> refs/remotes/origin/FTR-3062_redesign-of-muikku
+              {this.props.i18n.text.get('clear draft')}
+            </Button> : null}
+         <Button className="button button-dialog--execute" onClick={this.createThread.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
-<<<<<<< HEAD
           <Button className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
-=======
->>>>>>> refs/remotes/origin/FTR-3062_redesign-of-muikku
         </div>
       )
-    }
+    }    
     return <JumboDialog modifier="new-message"
       title={this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
