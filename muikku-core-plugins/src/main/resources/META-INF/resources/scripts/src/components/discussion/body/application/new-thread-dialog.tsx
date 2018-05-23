@@ -159,7 +159,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
       return (          
         <div className="environment-dialog__button-container">
           {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-              {this.props.i18n.text.get('clear draft')}
+              {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
             </Button> : null}
          <Button className="button button-dialog--execute" onClick={this.createThread.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
