@@ -289,15 +289,15 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
+          {this.recovered ? <Button className="button button-dialog--execute" onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.clearDraft')}
           </Button> : null}
-          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
+          <Button className="button button-dialog--execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.announcer.createannouncement.button.send')}
           </Button> 
+          <Button className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
+          </Button>            
         </div>
       )
     }
