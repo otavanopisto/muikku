@@ -23,7 +23,6 @@ interface ReplyThreadProps {
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
 }
 
-
 interface ReplyThreadState {
   text: string,
   locked: boolean
