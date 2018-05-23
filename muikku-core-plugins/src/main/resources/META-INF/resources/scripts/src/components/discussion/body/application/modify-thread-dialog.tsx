@@ -143,7 +143,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
+          {this.recovered ? <Button className="button button-dialog--execute" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
           </Button> : null}
           <Button className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
@@ -157,7 +157,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
     }
     
     return <JumboDialog modifier="modify-message"
-      title={this.props.i18n.text.get('plugin.discussion.editarea.topic')}
+      title={this.props.i18n.text.get('plugin.discussion.editmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
