@@ -397,11 +397,15 @@ public class UserRESTService extends AbstractRESTService {
   }
   
   private Date getDateResult(Object value) {
+    Date date = null;
     if (value instanceof Long) {
-      return new Date((Long) value);
+      date = new Date((Long) value);
     }
-    
-    return null;
+    else if (value instanceof Double) {
+      // seconds to ms
+      date = new Date(((Double) value).longValue() * 1000);
+    }
+    return date;
   }
 
   @GET

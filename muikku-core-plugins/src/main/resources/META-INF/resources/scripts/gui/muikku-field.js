@@ -706,7 +706,8 @@
       saveTimeout: 300,
       saveFailedTimeout: 5000,
       trackChange: true,
-      trackKeyUp: true
+      trackKeyUp: true,
+      trackInput: false
     },
     _create : function() {
       this._saveTimeoutId = null;
@@ -721,6 +722,9 @@
         $(this.element).on("keyup", $.proxy(this._onKeyUp, this));
         $(this.element).on("paste", $.proxy(this._onPaste, this));
       }
+      if (this.trackInput()) {
+        $(this.element).on("input", $.proxy(this._onInput, this));
+      }
       
       $(document).on('workspace:field-answer-saved', $.proxy(this._onFieldAnswerSaved, this));
       
@@ -731,6 +735,9 @@
     },
     trackKeyUp: function() {
       return this.options.trackKeyUp;
+    },
+    trackInput: function() {
+      return this.options.trackInput;
     },
     answer: function (val) {
       return this.options.answer.call(this, val)||'';
@@ -850,6 +857,10 @@
       }, this.options.saveTimeout);
     },
     
+    _onInput: function (event) {
+      this._propagateChange();
+    },
+
     _onChange: function (event) {
       this._propagateChange();
     },
