@@ -186,6 +186,19 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       this.setUpGroupEntitiesIds(nextProps);
     }
   }
+  
+  setUpGroupEntitiesIds(props:NewEditAnnouncementProps = this.props){
+    this.setState({
+      currentTarget: props.announcement.userGroupEntityIds
+       .filter(groupId=>props.userIndex.groups[groupId])
+       .map((groupId: number)=>{
+          return {
+            type: "usergroup",
+            value: props.userIndex.groups[groupId]
+          } as UserGroupRecepientType 
+        }).concat(this.baseAnnouncementCurrentTarget as any)
+    });
+  }
   onCKEditorChange(text: string){
     this.setState({text});
   }
@@ -247,8 +260,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     nState[stateLocation] = newDate;
     (this.setState as any)(nState);
   }
-  
-  
   render(){
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
