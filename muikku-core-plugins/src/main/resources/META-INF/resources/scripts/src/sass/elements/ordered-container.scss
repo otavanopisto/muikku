@@ -89,7 +89,7 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    margin: 0 $ordered-container-item-gutter 0 0;
+    padding: 0 $ordered-container-item-gutter 0 0;
     order: 1;
   }
   
@@ -98,7 +98,7 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    margin: 0 0 0 $ordered-container-item-gutter;
+    padding: 0 0 0 $ordered-container-item-gutter;
     order: 2;
   }
   
@@ -108,7 +108,7 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    margin: 0 $ordered-container-item-gutter 0 0;
+    padding: 0 $ordered-container-item-gutter 0 0;
     order: 3;
     overflow: hidden; // This prevents slick carousel to reserve 100% fill entire container some reason!
   }
@@ -118,7 +118,7 @@
     flex-basis: calc(50% - #{$ordered-container-item-gutter});
     flex-grow: 1;
     flex-shrink: 1;
-    margin: 0 0 0 $ordered-container-item-gutter;
+    padding: 0 0 0 $ordered-container-item-gutter;
     order: 4;
   }
 }

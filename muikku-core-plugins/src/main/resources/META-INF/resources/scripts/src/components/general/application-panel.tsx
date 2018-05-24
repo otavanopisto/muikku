@@ -14,9 +14,6 @@ interface ApplicationPanelProps {
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
 }
 
-//{this.props.asideBefore ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
-//{this.props.asideAfter ? <div className="application-panel__helper-container" style={{height: this.state.remainingHeight}}>{this.props.aside}</div> : null}
-
 interface ApplicationPanelState {
   sticky: boolean,
   remainingHeight: number,
