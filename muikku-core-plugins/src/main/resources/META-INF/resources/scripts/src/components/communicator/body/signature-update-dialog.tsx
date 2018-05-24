@@ -1,5 +1,5 @@
 import * as React from 'react';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import Link from '~/components/general/link';
 import CKEditor from '~/components/general/ckeditor';
 import {connect, Dispatch} from 'react-redux';
@@ -77,7 +77,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return (
-        <div className="jumbo-dialog__button-container">
+        <div className="environment-dialog__button-container">
           <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
           </Button>

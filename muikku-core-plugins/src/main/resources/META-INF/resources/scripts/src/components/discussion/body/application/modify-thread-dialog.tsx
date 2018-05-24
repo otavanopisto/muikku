@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
@@ -128,36 +128,36 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <input className="form-field form-field--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
+         <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
-       </div>,       
+       </div>, 
        <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="form-field" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
-         <input type="checkbox" className="form-field" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
        </div>,
        <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
-          </Button> : null}
-          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
+         <div className="environment-dialog__button-container">
+          <Button className="button button--dialog-execute" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
+           {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
+          </Button>          
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Button>
-        </div>
+          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+              {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
+            </Button> : null}
+      </div>
       )
     }
     
     return <JumboDialog modifier="modify-message"
-      title={this.props.i18n.text.get('plugin.discussion.editarea.topic')}
+      title={this.props.i18n.text.get('plugin.discussion.editmessage.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>

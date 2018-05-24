@@ -355,12 +355,13 @@ b {
 }
  
 .text--recepient-autocomplete {
+  display: flex;
   
-	.icon {
-    display: inline-block;
-	  margin-right: 5px;
-	}
-	
+  .text__icon {
+    display: inline-block;  
+    margin-right: 5px;
+  }
+  	
   i {
     opacity: 0.6;
   }

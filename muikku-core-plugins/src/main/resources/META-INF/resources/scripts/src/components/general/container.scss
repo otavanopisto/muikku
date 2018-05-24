@@ -3,17 +3,14 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 	
-
-// TODO: This file needs to be refactored out of existence. Containers should be a part of a component, not a component on it self.
-	
 .container {
   width: 100%;
 }
   
 .container--full {
   height: 100%;
-  position: relative;
-  width: 100%;
+	position: relative;
+	width: 100%;
 }
 
 .container--dialog-buttons {
@@ -29,6 +26,7 @@
   padding: 5px 0;
 }
 
+
 .container--profile-image-in-menu {
   border-radius: 100%;
   height: 35px;
@@ -37,13 +35,13 @@
 }
   
 .container--muikku-logo {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  flex-flow: nowrap;
-  justify-content: center;
+ align-items: center;
+ display: flex;
+ flex-direction: row;
+ flex-flow: nowrap;
+ justify-content: center;
   
-  @include breakpoint ($breakpoint-pad) {
+  @include breakpoint($breakpoint-pad) {
     flex-direction: column;
   }
 }
@@ -52,7 +50,7 @@
   margin-top: 1.5rem;
   padding: 0 $container-mobile-gutter;
 
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint($breakpoint-pad){
     margin-top: 4.375rem;
     padding: 0 $container-desktop-gutter;
   }
@@ -96,28 +94,24 @@
 
 .container--new-announcement-options {
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+
+  div:not(:first-child) {
+    margin-left: 20px;
+  }
 }
 
 .container--new-announcement-recipients {
-  margin-bottom: 10px;    
+  margin-bottom: 20px;    
 }
 
-.container--new-announcement-title {
-  margin-bottom: 10px;
-}
-
-.container--communicator-subject {
-  margin-bottom: 10px;  
+.container--new-announcement-topic {
+  margin-bottom: 20px;    
 }
 
 .container--communicator-message-meta {
   display: flex;
   padding: 10px;
-}
-
-.container--communicator-signature {
-  padding: 10px 0;
 }
   
 .container--communicator-message-links {
@@ -128,16 +122,12 @@
   display: flex;
 }
 
-.container--new-discussion-area-title {
-  margin-bottom: 10px;
-}
-
 .container--new-discussion-thread-states {
-  align-items: center;
-  background-color: $color-default;
+  background-color: #fff;
   display: flex;
-  padding: 10px 0;
-
+  margin: 20px 0;
+  padding: 10px;
+  align-items: center;
 } 
 
 .container--message-actions {
@@ -148,12 +138,10 @@
 .container--guider-profile-image {
   align-items: center;
   border-radius: 100%;
-  color: $color-default;
+  color: #fff;
   display: flex;
   font-family: $text-font-family;
   height: $avatar-size;
   justify-content: center;
   width: $avatar-size;
 }
-
-

@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcements';
@@ -186,6 +186,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       this.setUpGroupEntitiesIds(nextProps);
     }
   }
+  
   setUpGroupEntitiesIds(props:NewEditAnnouncementProps = this.props){
     this.setState({
       currentTarget: props.announcement.userGroupEntityIds
@@ -199,13 +200,13 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     });
   }
   onCKEditorChange(text: string){
-    this.setStateAndStore({text}, this.props.announcement && this.props.announcement.id);
+    this.setState({text});
   }
   setTargetItems(currentTarget: TargetItemsListType){
-    this.setStateAndStore({currentTarget}, this.props.announcement && this.props.announcement.id);
+    this.setState({currentTarget});
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setStateAndStore({subject: e.target.value}, this.props.announcement && this.props.announcement.id);
+    this.setState({subject: e.target.value});
   }
   createOrModifyAnnouncement(closeDialog: ()=>any){
     this.setState({locked: true});
@@ -223,9 +224,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
           workspaceEntityIds: this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id),
         },
         success: ()=>{
-          closeDialog();
-          this.justClear(["subject", "text", "currentTarget", "startDate", "endDate"], this.props.announcement.id)
           this.setState({locked: false});
+          closeDialog();
         },
         fail: ()=>{
           this.setState({locked: false});
@@ -264,33 +264,51 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="container container--new-announcement-options" key="1">
-         <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+        <div className="environment-dialog__form-element-wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</div>          
+             <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+             locale={this.props.i18n.time.getLocale()}/>
+         </div>
+         <div className="text text--announcer-times-decor">-</div>
+         <div className="environment-dialog__form-element-wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>         
+           <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
-         <div className="text text--announcer-times-decor">-</div>                   
-         <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
-           locale={this.props.i18n.time.getLocale()}/>
+        </div>
       </div>),
       (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
-      (<input key="3" type="text" className="container container--new-announcement-topic form-field form-field--new-announcement-topic"
-        placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}
-        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>),
-      (<CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
-    ]
-      
+      (
+      <div className="container container--new-announcement-title">    
+       <div className="environment-dialog__form-element-wrapper">  
+         <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
+         <input key="3" type="text" className="environment-dialog__input--title"          
+          value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
+       </div>   
+      </div>
+      ),
+      (
+      <div className="container container--announcer-content">    
+        <div className="environment-dialog__form-element-wrapper">  
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
+          <CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        </div>       
+      </div>
+      )
+    ]      
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
-          </Button> : null}
-          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
+         <div className="environment-dialog__button-container">
+          <Button className="button button--dialog-execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.announcer.createannouncement.button.send')}
           </Button> 
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
+          </Button>            
+          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+              {this.props.i18n.text.get('plugin.announcer.createannouncement.button.clearDraft')}
+            </Button> : null}            
         </div>
       )
     }
