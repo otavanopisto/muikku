@@ -99,7 +99,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     let content = (closeDialog: ()=>any) => [
       (
       <div className="container container--new-discussion-area-title">    
-      <div className="environment-dialog__form-element--wrapper">  
+      <div className="environment-dialog__form-element-wrapper">  
         <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
           <input key="1" type="text" className="environment-dialog__form-element environment-dialog__form-element--new-discussion-area-name"
           placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
@@ -111,7 +111,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
 
       (
        <div className="container container--new-discussion-area-description">          
-         <div className="environment-dialog__form-element--wrapper">  
+         <div className="environment-dialog__form-element-wrapper">  
            <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createarea.description')}</div>          
            <textarea key="2" className="environment-dialog__form-element environment-dialog__form-element--new-discussion-area-description"
         onChange={this.onDescriptionChange} value={this.state.description}/>

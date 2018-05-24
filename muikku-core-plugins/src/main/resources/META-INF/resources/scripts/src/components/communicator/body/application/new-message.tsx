@@ -140,7 +140,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
        <div className="container container--communicator-subject">
-        <div className="environment-dialog__form-element--wrapper">  
+        <div className="environment-dialog__form-element-wrapper">  
           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
           <input key="2" type="text" className="environment-dialog__input--title"         
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
@@ -149,7 +149,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         ),
       (
       <div className="container container--communicator-content">     
-        <div className="environment-dialog__form-element--wrapper">  
+        <div className="environment-dialog__form-element-wrapper">  
           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
           <CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
            draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`

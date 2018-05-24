@@ -149,12 +149,12 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <div className="environment-dialog__form-element--wrapper">  
+         <div className="environment-dialog__form-element-wrapper">  
            <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
            <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" 
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          </div>
-         <div className="environment-dialog__form-element--wrapper">  
+         <div className="environment-dialog__form-element-wrapper">  
            <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>       
            <select className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
             {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
