@@ -168,7 +168,7 @@
   position: relative;
   flex-wrap: wrap;
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     display:flex;
   } 
 
@@ -178,20 +178,20 @@
   
   &:not(:first-child) {
   
-    @include breakpoint($breakpoint-desktop){
+    @include breakpoint($breakpoint-desktop) {
       display: inline-flex;
     } 
     
     .environment-dialog__form-element-label {   
       align-items: center;
       display: flex;
-      width: auto;
       height: 34px; 
-      position: initial;
       justify-content: left;
       padding-right: 10px;
-
-      @include breakpoint($breakpoint-desktop){
+      position: initial;
+      width: auto;
+      
+      @include breakpoint($breakpoint-desktop) {
         justify-content: right;    
         padding-left: 10px;
       } 
@@ -205,26 +205,23 @@
   height: 34px; 
   padding-right: 10px;
   
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: right;    
+    left: -200px;
     position: absolute;
     width: 200px;
-    left: -200px;
-    justify-content: right;    
   }  
 }
 
 div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
-  -webkit-environment-dialog__form-element: none;  
-  border-radius: 3px;
+  -webkit-appearance: none;  
   border: solid 2px $color-environment-dialog-form-element-border;
-  font-size: .875rem;
+  border-radius: 3px;
+  font-size: 0.875em;
   outline: none;
   padding: 3px 10px;
   resize: none;
   transition: box-shadow 0.3, border 0.3;
-  
-  &:focus, &.focus {
-  }
 }
 
 input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
@@ -242,7 +239,6 @@ input[type="checkbox"].environment-dialog__form-element {
   overflow: show;
   width: 100%;
 
-  
   &.focus .form-field-tag-input__field {
     flex-wrap: wrap;
   }
@@ -260,6 +256,7 @@ input[type="checkbox"].environment-dialog__form-element {
 }
 
 // This does not mostly belong here, mostly
+
 .environment-dialog__form-element__input-decoration--main-function-search {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
@@ -302,7 +299,7 @@ input[type="checkbox"].environment-dialog__form-element {
   display: flex;
   font: -moz-field;
   font: -webkit-small-control;
-  font-size: .875rem;
+  font-size: 0.875rem;
   height: auto;
   overflow: hidden;
   padding: 0;
@@ -434,7 +431,3 @@ input {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
 }
-
-
-
-
