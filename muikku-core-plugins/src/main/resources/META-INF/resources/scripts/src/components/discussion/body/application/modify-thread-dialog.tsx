@@ -143,16 +143,16 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          {this.recovered ? <Button className="button button-dialog--clear" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
-          </Button> : null}
+          <Button className="button button-dialog--execute" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
+           {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
+          </Button>          
           <Button className="button button-dialog--cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
-          <Button className="button button-dialog--execute" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Button>
-        </div>
+          {this.recovered ? <Button className="button button-dialog--clear" onClick={this.clearUp} disabled={this.state.locked}>
+              {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
+            </Button> : null}
+      </div>
       )
     }
     
