@@ -133,10 +133,11 @@
 }
 
 .container--new-discussion-thread-states {
+  align-items: center;
   background-color: $color-default;
   display: flex;
   padding: 10px 0;
-  align-items: center;
+
 } 
 
 .container--message-actions {
@@ -147,7 +148,7 @@
 .container--guider-profile-image {
   align-items: center;
   border-radius: 100%;
-  color:  $color-default;
+  color: $color-default;
   display: flex;
   font-family: $text-font-family;
   height: $avatar-size;
