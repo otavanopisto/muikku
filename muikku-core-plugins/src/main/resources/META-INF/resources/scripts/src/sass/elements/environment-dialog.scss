@@ -42,25 +42,25 @@
     height: auto
   }
 
-  @include breakpoint-up($breakpoint-medium-screen){
+  @include breakpoint-up($breakpoint-medium-screen) {
     @include prefix(transition, moz ms webkit o, bottom 0.3s);
   }
 }
 
 
 .environment-dialog__window {
-  font-family: $text-font-family;
-  height: 100%;
-  width: 100%;
-  position: relative;
   display: flex;
   flex-direction: column;
-  
-  @include breakpoint($breakpoint-desktop){
+  font-family: $text-font-family;
+  height: 100%;
+  position: relative;
+  width: 100%;  
+
+  @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
   }
   
-  @include breakpoint($breakpoint-desktop-xl){ 
+  @include breakpoint($breakpoint-desktop-xl) { 
     max-width: 830px;
   }   
 }
@@ -73,15 +73,15 @@
   margin-top: 10px;
   padding: 0 15px;         
 
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     padding: 0;
   }
 }
 
 .environment-dialog__footer {
-	width: 100%;
-	padding-top: 10px;
-	padding-bottom: 10px;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 
@@ -91,14 +91,14 @@
   justify-content: flex-end;
   margin-bottom: 20px;
   padding: 0 15px;         
-  
-  a:not(:first-child) {
-    margin-left: 10px;         
-  }                  
 
   @include breakpoint($breakpoint-desktop) {
     padding: 0;
   }
+  
+  a:not(:first-child) {
+    margin-left: 10px;         
+  }                  
 }  
 
 .environment-dialog__close {
@@ -165,8 +165,8 @@
 // TODO, these environment-dialog form templates and css need to be refactored. These are just inconsistent garbage.
 
 .environment-dialog__form-element-wrapper {
-  position: relative;
   flex-wrap: wrap;
+  position: relative;
 
   @include breakpoint($breakpoint-desktop) {
     display: flex;
