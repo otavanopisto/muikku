@@ -3,9 +3,9 @@
 
   /* global converse */
   
-  mApi().chat.settings.read().callback(function(err, result) {
+  mApi().chat.status.read().callback(function(err, result) {
     if (result == null || (result && result.visibility == "VISIBLE_TO_ALL")) {
-      mApi().chat.status.read().callback(function(err, result) {
+      mApi().chat.settings.read().callback(function(err, result) {
         if (result && result.enabled) {
           converse.initialize({
             bosh_service_url : '/http-bind/',
