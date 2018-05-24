@@ -356,11 +356,12 @@ b {
  
 .text--recepient-autocomplete {
   display: flex;
+  
   .text__icon {
-      display: inline-block;  
-	  margin-right: 5px;
-	}
-		
+    display: inline-block;  
+    margin-right: 5px;
+  }
+  	
   i {
     opacity: 0.6;
   }
