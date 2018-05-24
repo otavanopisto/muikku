@@ -90,14 +90,13 @@
   display: flex;
   justify-content: flex-end;
   margin-bottom: 20px;
+  padding: 0 15px;         
   
   a:not(:first-child) {
     margin-left: 10px;         
   }                  
 
-  padding: 0 15px;         
-
-  @include breakpoint($breakpoint-desktop){
+  @include breakpoint($breakpoint-desktop) {
     padding: 0;
   }
 }  
@@ -134,15 +133,16 @@
 .environment-dialog__header {
   background-color: $color-application-dialog-background-color;
   color: $color-dialog-default-title-text;
-  padding: 10px 15px;
   font-size: 25px;
+  padding: 10px 15px;
+
 
   @include breakpoint($breakpoint-desktop) {
-    border-top: 3px solid $color-application-dialog-border-color;
-    border-right: 3px solid $color-application-dialog-border-color;
-    border-left: 3px solid $color-application-dialog-border-color;
     border-bottom: 3px solid $color-default;
+    border-left: 3px solid $color-application-dialog-border-color;
     border-radius: 3px 3px 0;
+    border-right: 3px solid $color-application-dialog-border-color;
+    border-top: 3px solid $color-application-dialog-border-color;
     display: inline-block;
     margin-bottom: 20px;
     position: absolute;
@@ -156,8 +156,8 @@
 
   
   @include breakpoint($breakpoint-desktop-xl) {  
-    right: 100%;
     left: auto;
+    right: 100%;
   }
 }
 
@@ -169,7 +169,7 @@
   flex-wrap: wrap;
 
   @include breakpoint($breakpoint-desktop) {
-    display:flex;
+    display: flex;
   } 
 
   .cke {
