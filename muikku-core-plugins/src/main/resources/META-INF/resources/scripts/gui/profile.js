@@ -1,6 +1,44 @@
 /* global moment */
+/* global MUIKKU_LOGGED_USER */
 
 (function() {
+  
+  $.widget("custom.chatVisibility", {
+    _create: function() {
+      mApi().chat.status.read({}).callback($.proxy(function (err, status) {
+        if (err) { 
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+          return;
+        }
+       
+          mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
+            var data = {};
+            data.visible_to_all_selected = "selected";
+            
+            if (settings && settings.visibility === "VISIBLE_TO_ALL") {
+              data.visible_to_all_selected = "selected";
+            }
+            if (settings && settings.visibility === "DISABLED"){
+              data.disabled_selected = "selected";
+            }
+            renderDustTemplate('profile/chat-visibility.dust', data, $.proxy(function (text) {
+              this.element.html(text);
+              this.element.find("select").on('change', $.proxy(function(event) {
+                this._setVisibility(event.target.value);
+                setTimeout(function(){ location.reload(); }, 1500);
+              }, this));
+            }, this));
+          }, this));
+      }, this));
+    },
+    
+    _setVisibility: function(visibility) {
+      var userIdentifier = MUIKKU_LOGGED_USER;
+      mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function () {
+      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
+      }, this));
+    }
+  });
   
   $.widget("custom.profileImage", {
     _create : function() {
@@ -290,6 +328,10 @@
   });
 
   $(document).ready(function() {
+    
+    // Chat visibility
+    
+    $('.profile-chat-visibility').chatVisibility();
     
     // Profile image support
     
