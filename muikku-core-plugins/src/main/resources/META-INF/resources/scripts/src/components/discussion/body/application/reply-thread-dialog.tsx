@@ -6,7 +6,7 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
-import JumboDialog from "~/components/general/jumbo-dialog";
+import JumboDialog from "~/components/general/environment-dialog";
 import { replyToCurrentDiscussionThread, ReplyToCurrentDiscussionThreadTriggerType } from "~/actions/main-function/discussion";
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
@@ -99,23 +99,30 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
       }
     });
   }
+  onDialogOpen(){
+    if (this.props.quote && this.state.text !== this.props.quote){
+      this.setState({
+        text: "<blockquote><p><strong>" + this.props.quoteAuthor + "</strong></p>" + this.props.quote + "</blockquote> <p></p>"
+      });
+    }
+  }  
   render(){
-    let content = (closeDialog: ()=>any) => [
-      <CKEditor autofocus key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+    let content = (closeDialog: ()=>any) => [                                            
+    <CKEditor autofocus key="1" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
-          </Button> : null}
-          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
+         <div className="environment-dialog__button-container">   
+          <Button className="button button--dialog-execute" onClick={this.createReply.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
+          </Button>
+          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+              {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
+            </Button> : null}                  
         </div>
       )
     }

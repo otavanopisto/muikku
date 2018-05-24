@@ -2,7 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionAreaListType, DiscussionAreaType} from '~/reducers/main-function/discussion';
@@ -98,33 +98,39 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     
     let content = (closeDialog: ()=>any) => [
       (
-      <div className="container container--new-discussion-area-title">          
-        <input key="1" type="text" className="form-field form-field--new-discussion-area-name"
-        placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
-        value={this.state.name} onChange={this.onNameChange} autoFocus/>
+      <div className="container container--new-discussion-area-title">    
+      <div className="environment-dialog__form-element-wrapper">  
+        <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
+          <input key="1" type="text" className="environment-dialog__form-element environment-dialog__form-element--new-discussion-area-name"
+          placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
+          value={this.state.name} onChange={this.onNameChange} autoFocus/>
+        </div>
       </div>    
       
       ),
 
       (
        <div className="container container--new-discussion-area-description">          
-         <textarea key="2" className="form-field form-field--new-discussion-area-description"
+         <div className="environment-dialog__form-element-wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createarea.description')}</div>          
+           <textarea key="2" className="environment-dialog__form-element environment-dialog__form-element--new-discussion-area-description"
         onChange={this.onDescriptionChange} value={this.state.description}/>
+         </div>
        </div>
     )]
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers="danger" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
-          </Button> : null}
-          <Button buttonModifiers={["warn", "standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
+        <div className="environment-dialog__button-container">
+          <Button className="button button--dialog-execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.send')}
           </Button>
+          <Button className="button button--dialog-cancel" onClick={closeDialog}>
+            {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
+          </Button>            
+          <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.discussion.createarea.clearDraft')}
+          </Button>            
         </div>
       )
     }

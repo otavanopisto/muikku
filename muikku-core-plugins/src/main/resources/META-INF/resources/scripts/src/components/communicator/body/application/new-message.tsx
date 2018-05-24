@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import {sendMessage, SendMessageTriggerType} from '~/actions/main-function/messages';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
@@ -34,6 +34,7 @@ const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
   'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
+  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js',
   'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
@@ -137,28 +138,40 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     let content = (closeDialog: ()=>any) => [
       (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
-      (<input key="2" type="text" className="form-field form-field--communicator-new-message-subject"
-        placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}
-        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>),
-      (<CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>),
+      (
+       <div className="container container--communicator-subject">
+        <div className="environment-dialog__form-element-wrapper">  
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
+          <input key="2" type="text" className="environment-dialog__input--title"         
+          value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
+        </div> 
+        </div>
+        ),
+      (
+      <div className="container container--communicator-content">     
+        <div className="environment-dialog__form-element-wrapper">  
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
+          <CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
+           draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
+           })} extraPlugins={extraPlugins}
+          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        </div> 
+      </div>
+      ),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
-        <input className="form-field" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        <input className="environment-dialog__form-element" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
       </div> : null)
     ]
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          {this.recovered ? <Button buttonModifiers={["danger"]} onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('clear draft')}
-          </Button> : null}
-          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.sendMessage.bind(this, closeDialog)}>
+         <div className="environment-dialog__button-container">
+          <Button className="button--dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
+         </Button>
+          <Button className="button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
         </div>
       )
