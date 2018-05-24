@@ -37,13 +37,13 @@
 }
   
 .container--muikku-logo {
- align-items: center;
- display: flex;
- flex-direction: row;
- flex-flow: nowrap;
- justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-flow: nowrap;
+  justify-content: center;
   
-  @include breakpoint($breakpoint-pad) {
+  @include breakpoint ($breakpoint-pad) {
     flex-direction: column;
   }
 }
@@ -133,7 +133,7 @@
 }
 
 .container--new-discussion-thread-states {
-  background-color: #fff;
+  background-color: $color-default;
   display: flex;
   padding: 10px 0;
   align-items: center;
@@ -147,7 +147,7 @@
 .container--guider-profile-image {
   align-items: center;
   border-radius: 100%;
-  color: #fff;
+  color:  $color-default;
   display: flex;
   font-family: $text-font-family;
   height: $avatar-size;
