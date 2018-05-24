@@ -114,7 +114,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="environment-dialog__button-container">
-          {this.recovered ? <Button className="button button-dialog--execute" onClick={this.clearUp} disabled={this.state.locked}>
+          {this.recovered ? <Button className="button button-dialog--clear" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
           </Button> : null}         
           <Button className="button button-dialog--execute" onClick={this.createReply.bind(this, closeDialog)}>

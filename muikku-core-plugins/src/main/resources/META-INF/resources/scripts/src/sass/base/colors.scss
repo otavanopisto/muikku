@@ -26,6 +26,9 @@ $color-success-contrast: $color-default;
 $color-execute: #66b43b;
 $color-execute-contrast: $color-default;
 
+$color-clear: #c43c24;
+$color-clear-contrast: $color-default;
+
 $color-cancel: #7391a7;
 $color-cancel-contrast: $color-default;
 
@@ -121,6 +124,9 @@ $color-button-success-text: $color-success-contrast;
 
 $color-button-execute-background: $color-execute;
 $color-button-execute-text: $color-execute-contrast;
+
+$color-button-clear-background: $color-clear;
+$color-button-clear-text: $color-clear-contrast;
 
 $color-button-cancel-background: $color-cancel;
 $color-button-cancel-text: $color-cancel-contrast;
