@@ -233,17 +233,15 @@ input:not([type="checkbox"]).environment-dialog__form-element, .environment-dial
 
 input[type="checkbox"].environment-dialog__form-element {
   border: solid 1px $color-environment-dialog-form-element-border;
-  transition: box-shadow 0.3, border 0.3;
-  margin-right: 5px;
   display: inline-block;
-  
-  &:focus, &.focus {
-  }
+  margin-right: 5px;
+  transition: box-shadow 0.3, border 0.3;
 }
 
-div.environment-dialog__form-element-tag-input {
-  width: 100%;
+.environment-dialog__form-element-tag-input {
   overflow: show;
+  width: 100%;
+
   
   &.focus .form-field-tag-input__field {
     flex-wrap: wrap;
@@ -255,7 +253,7 @@ div.environment-dialog__form-element-tag-input {
   border: 2px solid $color-main-function-input-field-border;
   border-radius: 2px;
   border-right: 0;
-  font-size: .925rem;  
+  font-size: 0.925rem;  
   height: 40px;
   padding: 5px 10px;
   width: 100%;
@@ -287,7 +285,7 @@ div.environment-dialog__form-element-tag-input {
   border: 2px solid $color-main-function-primary-function-dropdown-border;
   border-radius: 2px;
   font-family: $text-font-family;
-  font-size: .925rem;
+  font-size: 0.925rem;
   font-weight: 200;
   height: 40px;
   min-width: 200px;
@@ -403,18 +401,10 @@ div.environment-dialog__form-element-tag-input {
   flex-basis: auto;
 }
 
-.environment-dialog__form-element--new-discussion-area-name {
-}
-
-.environment-dialog__form-element--new-discussion-area-description {
-}
-
 .environment-dialog__form-element-tag-input--new-message-recepients {
   margin-bottom: 5px;
 }
 
-.environment-dialog__input--title {
-}
 
 label {
   display: block;
