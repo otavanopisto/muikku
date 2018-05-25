@@ -97,6 +97,12 @@
 .container--new-announcement-options {
   display: flex;
   margin-bottom: 10px;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: initial;
+  }
+
 }
 
 .container--new-announcement-recipients {
