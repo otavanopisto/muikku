@@ -27,6 +27,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   private currentData:string;
   private width: number | string;
   private height: number | string;
+  private cancelNextChangeTrigger: boolean;
   
   constructor(props: CKEditorProps){
     super(props);
@@ -37,6 +38,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     
     this.width = null;
     this.height = null;
+    
+    this.cancelNextChangeTrigger = false;
   }
   resize(width: number | string, height: number | string){
     let actualHeight:number | string;
@@ -83,9 +86,27 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     }
     getCKEDITOR().replace(this.name, Object.assign(extraConfig, this.props.configuration));
     getCKEDITOR().instances[this.name].on('change', ()=>{
+      if (this.cancelNextChangeTrigger){
+        this.cancelNextChangeTrigger = false;
+        return;
+      }
       let data = getCKEDITOR().instances[this.name].getData();
-      this.currentData = data;
-      this.props.onChange(data);
+      if (data !== this.currentData){
+        let avoidChange = false;
+        if (data[data.length - 1] === "\n" && data.substr(0, data.length - 1) === this.currentData){
+          avoidChange = true;
+        } else if (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === data){
+          avoidChange = true
+        }
+        this.currentData = data;
+        if (!avoidChange){
+          if (data[data.length - 1] !== '\n'){
+            this.props.onChange(data);
+          } else {
+            this.props.onChange(data.substr(0, data.length - 1));
+          }
+        }
+      }
     });
     getCKEDITOR().instances[this.name].on('instanceReady', ()=>{
       let instance = getCKEDITOR().instances[this.name];
@@ -107,11 +128,11 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     }
     
     if (nextProps.children !== this.currentData){
-      getCKEDITOR().instances[this.name].setData(nextProps.children);
-    }
-    
-    if (nextProps.children !== this.currentData){
-      getCKEDITOR().instances[this.name].setData(nextProps.children);
+      if (!((nextProps.children[nextProps.children.length - 1] === "\n" && nextProps.children.substr(0, nextProps.children.length - 1) === this.currentData) ||
+          (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === nextProps.children))){
+        this.cancelNextChangeTrigger = true;
+        getCKEDITOR().instances[this.name].setData(nextProps.children);
+      }
     }
     
     if (nextProps.width !== this.props.width || nextProps.height !== this.props.height){

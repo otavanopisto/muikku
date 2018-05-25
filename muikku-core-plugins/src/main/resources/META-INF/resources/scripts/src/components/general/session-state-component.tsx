@@ -14,7 +14,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     
     this.recovered = false;
   }
-  setStateAndStore<K extends keyof S>(newState: ((prevState: Readonly<S>, props: P) => (Pick<S, K> | S)) | (Pick<S, K> | S), namespace?: any): void {
+  setStateAndStore(newState: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace){
       internalStorage = this.storage.namespace(namespace + "");
@@ -26,7 +26,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     });
     this.setState(nnewState);
   }
-  getRecoverStoredState<K extends keyof S>(base: ((prevState: Readonly<S>, props: P) => (Pick<S, K> | S)) | (Pick<S, K> | S), namespace?: any): S {
+  getRecoverStoredState(base: Partial<S>, namespace?: any): S {
     let internalStorage = this.storage;
     if (namespace){
       internalStorage = this.storage.namespace(namespace + "");
@@ -43,7 +43,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
     
     return result;
   }
-  checkAgainstDefaultState<K extends keyof S>(base: ((prevState: Readonly<S>, props: P) => (Pick<S, K> | S)) | (Pick<S, K> | S), namespace?: any): void {
+  checkAgainstDefaultState(base: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace){
       internalStorage = this.storage.namespace(namespace + "");
@@ -70,7 +70,7 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       this.forceUpdate();
     }
   }
-  setStateAndClear<K extends keyof S>(newState: ((prevState: Readonly<S>, props: P) => (Pick<S, K> | S)) | (Pick<S, K> | S), namespace?: any): void {
+  setStateAndClear(newState: Partial<S>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace){
       internalStorage = this.storage.namespace(namespace + "");
@@ -80,9 +80,9 @@ export default class SessionStateComponent<P, S> extends React.Component<P, S> {
       internalStorage.clear(key);
     });
     this.recovered = false;
-    this.setState(newState);
+    this.setState(newState as S);
   }
-  justClear<K extends keyof S>(keys: Array<string>, namespace?: any): void {
+  justClear(keys: Array<string>, namespace?: any): void {
     let internalStorage = this.storage;
     if (namespace){
       internalStorage = this.storage.namespace(namespace + "");
