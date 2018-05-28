@@ -10,6 +10,9 @@ import Link from "~/components/general/link";
 import Dialog from "~/components/general/dialog";
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
 
+import '~/sass/elements/buttons.scss';
+import '~/sass/elements/text.scss';
+
 interface CheckContactInfoDialogProps {
   i18n: i18nType,
   status: StatusType,
@@ -21,6 +24,8 @@ interface CheckContactInfoDialogState {
   address: StudentUserAddressType,
   isOpen: boolean
 }
+
+const FORCE_OPEN = false;
 
 class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps, CheckContactInfoDialogState> {
   constructor(props: CheckContactInfoDialogProps){
@@ -38,7 +43,7 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
   async componentDidMount(){
     try {
       let user:UserWithSchoolDataType = await promisify(mApi().user.students.read(this.props.status.userSchoolDataIdentifier), 'callback')() as UserWithSchoolDataType;
-      if (!user || user.updatedByStudent){
+      if (!user || (user.updatedByStudent && !FORCE_OPEN)){
         return;
       }
     
@@ -73,18 +78,18 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
     });
   }
   async confirmContactInfo(){
+    this.closeDialog();
     try {
       await promisify(mApi().user.students.addresses.update(this.props.status.userSchoolDataIdentifier,
                               this.state.address.identifier,
                               this.state.address), 'callback')();
-      this.closeDialog();
     } catch (err){
       this.props.displayNotification(err.message, "error");
     }
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        {this.props.i18n.text.get('plugin.frontPage.checkContactInfo.dialog.description')}
+        <div className="text text--check-contact-info-title">{this.props.i18n.text.get('plugin.frontPage.checkContactInfo.dialog.description')}</div>
         <dl>
         <dt>{this.props.i18n.text.get("plugin.frontPage.checkContactInfo.dialog.street")}</dt>
         <dd>{this.state.address.street ? this.state.address.street : "-"}</dd>
@@ -100,11 +105,11 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
       </div>;
       
     let footer = (closeDialog: ()=>any)=>{
-      return <div>
-        <Link className="button button--confirm" onClick={this.confirmContactInfo}>
+      return <div className="dialog__button-set">
+        <Link className="button button--success button--standard-ok" onClick={this.confirmContactInfo}>
           {this.props.i18n.text.get('plugin.frontPage.checkContactInfo.dialog.button.confirmLabel')}
         </Link>
-        <Link className="button button--ok" href="/profile">
+        <Link className="button button--error button--standard-ok" href="/profile">
           {this.props.i18n.text.get('plugin.frontPage.checkContactInfo.dialog.button.okLabel')}
         </Link>
       </div>

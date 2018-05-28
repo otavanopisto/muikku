@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import CKEditor from '~/components/general/ckeditor';
 import Link from '~/components/general/link';
 import InputContactsAutofill from '~/components/base/input-contacts-autofill';
-import JumboDialog from '~/components/general/jumbo-dialog';
+import JumboDialog from '~/components/general/environment-dialog';
 import { UserRecepientType, WorkspaceRecepientType, UserIndexType, UserGroupRecepientType } from '~/reducers/main-function/user-index';
 import { i18nType } from 'reducers/base/i18n';
 import { AnnouncementType } from '~/reducers/main-function/announcements';
@@ -16,6 +16,8 @@ import { loadUserGroupIndex, LoadUserGroupIndexTriggerType } from '~/actions/mai
 import { createAnnouncement, CreateAnnouncementTriggerType,
   updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
 import {StateType} from '~/reducers';
+import SessionStateComponent from '~/components/general/session-state-component';
+import Button from '~/components/general/button';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -28,7 +30,6 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'announcer-new-edit-announcement',
   resize_enabled: false
 }
 const extraPlugins = {
@@ -38,7 +39,6 @@ const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
   'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js',
   'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
@@ -64,17 +64,18 @@ interface NewEditAnnouncementState {
   endDate: any
 }
 
-
-class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewEditAnnouncementState> {
+class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps, NewEditAnnouncementState> {
   private baseAnnouncementCurrentTarget: TargetItemsListType;
   constructor(props: NewEditAnnouncementProps){
-    super(props);
+    super(props, "new-edit-announcement");
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.setTargetItems = this.setTargetItems.bind(this);
     this.onSubjectChange = this.onSubjectChange.bind(this);
     this.handleDateChange = this.handleDateChange.bind(this);
     this.loadUserGroups = this.loadUserGroups.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
     this.baseAnnouncementCurrentTarget = props.announcement ? props.announcement.workspaces.map((w)=>{
       //NOTE this workspace type is incomplete, but should do the job regardless
@@ -84,17 +85,69 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
       } as WorkspaceRecepientType;
     }) : [];
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       text: props.announcement ? props.announcement.content : "",
       currentTarget: props.announcement ? this.baseAnnouncementCurrentTarget : [],
       subject: props.announcement ? props.announcement.caption : "",
       locked: false,
       startDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.startDate) : props.i18n.time.getLocalizedMoment(),
       endDate: props.announcement ? props.i18n.time.getLocalizedMoment(this.props.announcement.endDate) : props.i18n.time.getLocalizedMoment().add(1, "day")
-    }
+    }, props.announcement && props.announcement.id);
   }
   loadUserGroups(announcement: AnnouncementType){
     announcement.userGroupEntityIds.forEach(this.props.loadUserGroupIndex);
+  }
+  checkAgainstStoredState(){
+    if (this.props.announcement){
+      this.checkAgainstDefaultState({
+        subject: this.props.announcement.caption,
+        text: this.props.announcement.content,
+        startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
+        endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
+      }, this.props.announcement.id);
+      
+      let userGroupEntityIds = this.state.currentTarget.filter(w=>w.type==="usergroup").map(w=>(w.value as any).id);
+      let workspaceEntityIds = this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id);
+      
+      if (JSON.stringify(this.props.announcement.userGroupEntityIds) !== JSON.stringify(userGroupEntityIds) ||
+          JSON.stringify(this.props.announcement.workspaceEntityIds) !== JSON.stringify(workspaceEntityIds)){
+        this.forceRecovered();
+      }
+    } else {
+      this.checkAgainstDefaultState({
+        subject: "",
+        text: "",
+        currentTarget: [],
+        startDate: this.props.i18n.time.getLocalizedMoment(),
+        endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
+      });
+    }
+  }
+  clearUp(){
+    if (!this.props.announcement){
+      this.baseAnnouncementCurrentTarget = [];
+      this.setStateAndClear({subject: "", text: "",
+        startDate: this.props.i18n.time.getLocalizedMoment(),
+        endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
+        currentTarget: []});
+    } else {
+      this.baseAnnouncementCurrentTarget = this.props.announcement.workspaces.map(w=>{
+        //NOTE this workspace type is incomplete, but should do the job regardless
+        return {
+          type: "workspace",
+          value: w
+        } as WorkspaceRecepientType
+      });
+      this.setStateAndClear({
+        subject: this.props.announcement.caption,
+        text: this.props.announcement.content,
+        currentTarget: this.baseAnnouncementCurrentTarget,
+        startDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
+        endDate: this.props.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
+      });
+      
+      this.setUpGroupEntitiesIds();
+    }
   }
   componentWillReceiveProps(nextProps: NewEditAnnouncementProps){
     if ((this.props.announcement && nextProps.announcement && nextProps.announcement.id !== this.props.announcement.id) ||
@@ -108,39 +161,43 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
         } as WorkspaceRecepientType
       })
       
-      this.setState({
+      this.setState(this.getRecoverStoredState({
         subject: nextProps.announcement.caption,
         text: nextProps.announcement.content,
         currentTarget: this.baseAnnouncementCurrentTarget,
-        startDate: nextProps.i18n.time.getLocalizedMoment(this.props.announcement.startDate),
-        endDate: nextProps.i18n.time.getLocalizedMoment(this.props.announcement.endDate)
-      });
+        startDate: nextProps.i18n.time.getLocalizedMoment(nextProps.announcement.startDate),
+        endDate: nextProps.i18n.time.getLocalizedMoment(nextProps.announcement.endDate)
+      }, nextProps.announcement && nextProps.announcement.id));
       
       this.loadUserGroups(nextProps.announcement);
     } else if (this.props.announcement && !nextProps.announcement){
       this.baseAnnouncementCurrentTarget = [];
       
-      this.setState({
+      this.setState(this.getRecoverStoredState({
         subject: "",
         text: "",
         currentTarget: [],
         startDate: nextProps.i18n.time.getLocalizedMoment(),
         endDate: nextProps.i18n.time.getLocalizedMoment().add(1, "day"),
-      });
+      }));
     }
     
-    if (nextProps.userIndex.groups !== this.props.userIndex.groups && nextProps.announcement){
-      this.setState({
-        currentTarget: nextProps.announcement.userGroupEntityIds
-         .filter(groupId=>nextProps.userIndex.groups[groupId])
-         .map((groupId: number)=>{
-            return {
-              type: "usergroup",
-              value: nextProps.userIndex.groups[groupId]
-            } as UserGroupRecepientType 
-          }).concat(this.baseAnnouncementCurrentTarget as any)
-      });
+    if (nextProps.userIndex.groups !== this.props.userIndex.groups && nextProps.announcement && !this.recovered){
+      this.setUpGroupEntitiesIds(nextProps);
     }
+  }
+  
+  setUpGroupEntitiesIds(props:NewEditAnnouncementProps = this.props){
+    this.setState({
+      currentTarget: props.announcement.userGroupEntityIds
+       .filter(groupId=>props.userIndex.groups[groupId])
+       .map((groupId: number)=>{
+          return {
+            type: "usergroup",
+            value: props.userIndex.groups[groupId]
+          } as UserGroupRecepientType 
+        }).concat(this.baseAnnouncementCurrentTarget as any)
+    });
   }
   onCKEditorChange(text: string){
     this.setState({text});
@@ -186,7 +243,7 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
           workspaceEntityIds: this.state.currentTarget.filter(w=>w.type==="workspace").map(w=>(w.value as any).id),
         },
         success: ()=>{
-          this.setState({locked: false, subject: "", text: "",
+          this.setStateAndClear({locked: false, subject: "", text: "",
             startDate: this.props.i18n.time.getLocalizedMoment(),
             endDate: this.props.i18n.time.getLocalizedMoment().add(1, "day"),
             currentTarget: []});
@@ -207,36 +264,57 @@ class NewEditAnnouncement extends React.Component<NewEditAnnouncementProps, NewE
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="container container--new-announcement-options" key="1">
-         <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+        <div className="environment-dialog__form-element-wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</div>          
+             <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+             locale={this.props.i18n.time.getLocale()}/>
+         </div>
+         <div className="text text--announcer-times-decor">-</div>
+         <div className="environment-dialog__form-element-wrapper">  
+           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>         
+           <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
-         <div className="text text--announcer-times-decor">-</div>                   
-         <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
-           locale={this.props.i18n.time.getLocale()}/>
+        </div>
       </div>),
       (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
-      (<input key="3" type="text" className="container container--new-announcement-topic form-field form-field--new-announcement-topic"
-        placeholder={this.props.i18n.text.get('plugin.announcer.editannouncement.title.label')}
-        value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>),
-      (<CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-       onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>)
-    ]
-      
+      (
+      <div className="container container--new-announcement-title">    
+       <div className="environment-dialog__form-element-wrapper">  
+         <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
+         <input key="3" type="text" className="environment-dialog__input--title"          
+          value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
+       </div>   
+      </div>
+      ),
+      (
+      <div className="container container--announcer-content">    
+        <div className="environment-dialog__form-element-wrapper">  
+          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
+          <CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+        </div>       
+      </div>
+      )
+    ]      
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
+         <div className="environment-dialog__button-container">
+          <Button className="button button--dialog-execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.announcer.createannouncement.button.send')}
-          </Link> 
+          </Button> 
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.announcer.createannouncement.button.cancel')}
+          </Button>            
+          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+              {this.props.i18n.text.get('plugin.announcer.createannouncement.button.clearDraft')}
+            </Button> : null}            
         </div>
       )
     }
     
     return <JumboDialog modifier="new-edit-announcement"
-      onOpen={this.props.announcement ? this.loadUserGroups.bind(this, this.props.announcement) : null}
+      onOpen={this.props.announcement ? ()=>{this.loadUserGroups(this.props.announcement); this.checkAgainstStoredState()} : this.checkAgainstStoredState}
       title={this.props.announcement ?
         this.props.i18n.text.get('plugin.announcer.editannouncement.topic') :
         this.props.i18n.text.get('plugin.announcer.createannouncement.topic')}

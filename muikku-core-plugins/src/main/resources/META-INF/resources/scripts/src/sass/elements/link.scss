@@ -160,6 +160,12 @@
   }
 }
 
+.link--frontpage {
+  .link__icon {
+    color: $color-environment-link-menu-navicon-icon-color;
+  }
+}
+
 .link--menu--logout {
   
   .link__icon {

@@ -23,10 +23,10 @@ class Feed extends React.Component<FeedProps, FeedState> {
   render(){
     return <ul className="feed">
       {this.props.entries.map((entry, index)=>{
-        return <li className="feed__item">
+        return <li className="feed__item" key={entry.link}>
           <span className="feed__item-description">
             <a href={entry.link} target="top">{entry.title}</a>
-            {entry.description}
+            <span dangerouslySetInnerHTML={{__html: entry.description}}/>
           </span>
           <span className="feed__item-date">{this.props.i18n.time.format(entry.publicationDate)}</span>
         </li>

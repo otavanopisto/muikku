@@ -40,7 +40,7 @@ export class ButtonSocial extends React.Component<ButtonProps, ButtonState> {
     let modifiers:Array<string> = typeof this.props.buttonModifiers === "string" ? [this.props.buttonModifiers] : this.props.buttonModifiers;
     
     return <Element {...elementProps}
-    className={`button-social ${(modifiers || []).map(s=>`button-social--${s}`).join(" ")}`}/>
+    className={`button-social ${this.props.className ? this.props.className : ""} ${(modifiers || []).map(s=>`button-social--${s}`).join(" ")}`}/>
   }
 }
 

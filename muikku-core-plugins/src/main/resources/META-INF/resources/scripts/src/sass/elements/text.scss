@@ -177,14 +177,15 @@ b {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  font-size: 1.2rem;
-  font-weight: 300;
+  font-size: 1.1875rem;
+  font-weight: 400;
   padding: 10px 0 0;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad) {
     background: none;
-    font-size: 1.4rem;
+    font-size: 1.375rem;
+    font-weight: 300;
     padding: 0 2px .4rem;
   }
 }
@@ -251,13 +252,20 @@ b {
 }
 
 .text--panel-continue-studies-workspace-name {
-  font-size: 2rem;
-  font-weight: 300;
-  padding: 10px;
+  font-size: 1.125rem;
+  font-weight: 400;
+  margin: 12px;
 }
 
 .text--panel-continue-studies {
-  padding: 10px;
+  margin: 12px;
+}
+
+.text--panel-continue-studies-material-page {
+  display: inline;
+  font-style: italic;
+  font-weight: 600;
+  margin: 0 5px 0 0;
 }
 
 .text--item-article {  
@@ -280,6 +288,13 @@ b {
   justify-content: center;
   min-width: 22px;
   padding: 0 4px;
+}
+
+// Check Contatc Info 
+.text--check-contact-info-title {
+  font-size: 1rem;
+  font-weight: 400;
+  margin: 0 0 20px;
 }
 
 // Communicator
@@ -340,12 +355,13 @@ b {
 }
  
 .text--recepient-autocomplete {
+  display: flex;
   
-	.icon {
-    display: inline-block;
-	  margin-right: 5px;
-	}
-	
+  .text__icon {
+    display: inline-block;  
+    margin-right: 5px;
+  }
+  	
   i {
     opacity: 0.6;
   }
@@ -568,7 +584,7 @@ b {
 }
 
 .text--discussion-current-thread-title {
-  font-size: 1.6rem;  
+  font-size: 1.4rem;  
   font-weight: 400;  
 }
 
@@ -628,7 +644,7 @@ b {
 
 .text--studies-list-header {
   font-family: $text-font-family;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   width: 100%;
 }
 
@@ -671,6 +687,10 @@ b {
 
   &.state-FAILED {
     background: $color-grade-failed;
+  }
+  
+  &.state-INCOMPLETE {
+    background: $color-grade-incomplete;
   }
 }
 
@@ -720,6 +740,35 @@ b {
     background: $color-grade-not-assessed;
   }
 }  
+
+.text--studies-journal-entry-title {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1.125rem;
+  font-weight: 400;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+}
+
+.text--studies-journal-entry-time {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  font-size: 0.825rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    text-align: right;
+  }
+  
+}
 
 // Text icon
 .text__icon {

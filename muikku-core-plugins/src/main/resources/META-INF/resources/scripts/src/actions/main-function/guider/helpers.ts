@@ -2,7 +2,7 @@ import notificationActions from '~/actions/base/notifications';
 import equals = require("deep-equal");
 
 import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
 import { GuiderType, GuiderActiveFiltersType, GuiderStudentsStateType, GuiderStudentListType, GuiderPatchType } from '~/reducers/main-function/guider';
@@ -95,6 +95,9 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
       payload
     });
   } catch (err){
+    if (!(err instanceof MApiError)){
+      throw err;
+    }
     //Error :(
     dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load the students"), 'error'));
     dispatch({

@@ -23,6 +23,12 @@ $color-error-contrast: $color-default;
 $color-success: #24c118;
 $color-success-contrast: $color-default;
 
+$color-execute: #66b43b;
+$color-execute-contrast: $color-default;
+
+$color-clear: #c43c24;
+$color-clear-contrast: $color-default;
+
 $color-cancel: #7391a7;
 $color-cancel-contrast: $color-default;
 
@@ -116,6 +122,12 @@ $color-button-error-text: $color-error-contrast;
 $color-button-success-background: $color-success;
 $color-button-success-text: $color-success-contrast;
 
+$color-button-execute-background: $color-execute;
+$color-button-execute-text: $color-execute-contrast;
+
+$color-button-clear-background: $color-clear;
+$color-button-clear-text: $color-clear-contrast;
+
 $color-button-cancel-background: $color-cancel;
 $color-button-cancel-text: $color-cancel-contrast;
 
@@ -207,7 +219,7 @@ $color-card-default-text: $color-inverse;
 $color-dialog-default-background: $color-default;
 $color-dialog-default-text: $color-inverse;
 $color-dialog-default-title-background: $color-primary;
-$color-dialog-default-title-text: $color-default;
+$color-dialog-default-title-text: #000;
 $color-dialog-default-shadow: rgba(0, 0, 0, 0.6);
 
 // Background
@@ -289,6 +301,10 @@ $color-form-field-tag-input-tag-border: #b1e8fe;
 $color-form-field-tag-input-tag-text: $color-default-contrast;
 $color-form-field-tag-input-tag-delete-background-active: rgba(0, 0, 0, 0.2);
 
+// Environment dialog form elements
+
+$color-environment-dialog-form-element-border: #f8a1ce;
+
 // autocomplete
 $color-autocomplete-list-border: #dcdcdc;
 $color-autocomplete-list-background-color: $color-default;
@@ -345,6 +361,7 @@ $color-environment-link-menu-heldesk-icon-background: $color-environment-link-me
 $color-environment-link-menu-helpdesk-icon-color: $color-environment-link-menu-instructions-icon-color;
 $color-environment-link-menu-logout-icon-background: #4c4c4c;
 $color-environment-link-menu-logout-icon-color: $color-default;
+$color-environment-link-menu-navicon-icon-color: $color-inverse;
 
 
 //  CATEGORIES

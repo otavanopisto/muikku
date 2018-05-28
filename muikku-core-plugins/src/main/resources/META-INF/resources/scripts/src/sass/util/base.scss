@@ -43,6 +43,19 @@ a {
   font-family: $text-font-family;
 }
 
+dl {
+
+}
+
+dt {
+  font-weight: 600;
+  margin: 5px 0 0;
+}
+
+dd {
+  margin: 0 0 5px;
+}
+
 // Webkit (Chrome, Opera, Safari)
 ::-webkit-input-placeholder { 
   font-style: italic;

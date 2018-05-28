@@ -6,9 +6,11 @@ import { AnyActionType } from "~/actions";
 import { bindActionCreators } from "redux";
 import CKEditor from "~/components/general/ckeditor";
 import Link from "~/components/general/link";
-import JumboDialog from "~/components/general/jumbo-dialog";
+import JumboDialog from "~/components/general/environment-dialog";
 import { modifyReplyFromCurrentThread, ModifyReplyFromCurrentThreadTriggerType } from "~/actions/main-function/discussion";
 import {StateType} from '~/reducers';
+import SessionStateComponent from '~/components/general/session-state-component';
+import Button from '~/components/general/button';
 
 interface ModifyThreadReplyProps {
   i18n: i18nType,
@@ -32,36 +34,46 @@ const ckEditorConfig = {
     { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight'] },
     { name: 'tools', items: [ 'Maximize' ] }
   ],
-  draftKey: 'discussion-reply-modify',
   resize_enabled: false
 }
 const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
-  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js'
+  'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js'
 }
 
-class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyThreadReplyState> {
+class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, ModifyThreadReplyState> {
   constructor(props: ModifyThreadReplyProps){
-    super(props);
+    super(props, "discussion-modify-thread-reply");
     
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.modifyReply = this.modifyReply.bind(this);
+    this.clearUp = this.clearUp.bind(this);
+    this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
-    this.state = {
+    this.state = this.getRecoverStoredState({
       locked: false,
       text: props.reply.message
-    }
+    }, props.reply.id);
+  }
+  checkAgainstStoredState(){
+    this.checkAgainstDefaultState({
+      text: this.props.reply.message
+    }, this.props.reply.id);
+  }
+  clearUp(){
+    this.setStateAndClear({
+      text: this.props.reply.message,
+    }, this.props.reply.id);
   }
   componentWillReceiveProps(nextProps: ModifyThreadReplyProps){
     if (nextProps.reply.id !== this.props.reply.id){
-      this.setState({
+      this.setState(this.getRecoverStoredState({
         text: nextProps.reply.message
-      });
+      }, nextProps.reply.id));
     }
   }
   onCKEditorChange(text: string){
-    this.setState({text});
+    this.setStateAndStore({text}, this.props.reply.id);
   }
   modifyReply(closeDialog: ()=>any){
     this.setState({
@@ -71,6 +83,10 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
       reply: this.props.reply,
       message: this.state.text,
       success: ()=>{
+        this.justClear(["text"], this.props.reply.id);
+        this.setState({
+          locked: false
+        });
         closeDialog();
       },
       fail: ()=>{
@@ -87,20 +103,23 @@ class ModifyThreadReply extends React.Component<ModifyThreadReplyProps, ModifyTh
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="jumbo-dialog__button-container">
-          <Link className="button button--warn button--standard-cancel" onClick={closeDialog} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
-          </Link>
-          <Link className="button button--standard-ok" onClick={this.modifyReply.bind(this, closeDialog)}>
+         <div className="environment-dialog__button-container">       
+          <Button className="button button--dialog-execute" onClick={this.modifyReply.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
-          </Link>
+          </Button>
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
+          </Button>
+          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+              {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
+            </Button> : null}              
         </div>
       )
     }
     
     return <JumboDialog modifier="modify-reply-thread"
       title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
-      content={content} footer={footer}>
+      content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
   }

@@ -1,7 +1,7 @@
 import { AnyActionType, SpecificActionType} from "~/actions";
 import promisify from "~/util/promisify";
 import notificationActions from '~/actions/base/notifications';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {DiscussionAreaListType, DiscussionAreaType, DiscussionPatchType, DiscussionStateType, DiscussionThreadType, DiscussionType,
   DiscussionThreadListType, DiscussionThreadReplyListType, DiscussionThreadReplyType, DiscussionAreaUpdateType} from "~/reducers/main-function/discussion";
 import { loadUserIndex } from "~/actions/main-function/user-index";
@@ -167,8 +167,11 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
           payload
         });
       } catch (err){
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
         //Error :(
-        dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load discussion threads"), 'error'));
+        dispatch(notificationActions.displayNotification(err.message, 'error'));
         dispatch({
           type: "UPDATE_DISCUSSION_THREADS_STATE",
           payload: <DiscussionStateType>"ERROR"
@@ -181,7 +184,9 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
 let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDiscussionThread(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     try {
-      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.create(data.forumAreaId, data), 'callback')();
+      let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.create(data.forumAreaId, {
+        forumAreaId: data.forumAreaId, locked: data.locked, message: data.message, sticky: data.sticky, title: data.title
+      }), 'callback')();
       
       let discussion:DiscussionType = getState().discussion;
       window.location.hash = newThread.forumAreaId + "/" + 
@@ -202,7 +207,10 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
       
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to create a new thread"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -226,7 +234,10 @@ let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDi
       
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to modify a discussion thread"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -312,8 +323,11 @@ let loadDiscussionThreadFromServer:LoadDiscussionThreadFromServerTriggerType = f
       
       data.success && data.success();
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       //Error :(
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load one single thread"), 'error'));
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       dispatch({
         type: "UPDATE_DISCUSSION_CURRENT_THREAD_STATE",
         payload: <DiscussionStateType>"ERROR"
@@ -351,7 +365,10 @@ let replyToCurrentDiscussionThread:ReplyToCurrentDiscussionThreadTriggerType = f
         forceRefresh: true
       }));
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to post a reply to a thread"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -385,7 +402,10 @@ let deleteCurrentDiscussionThread:DeleteCurrentDiscussionThreadTriggerType = fun
         location.hash = splitted[0] + "/" + splitted[1];
       }
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to remove the current discussion thread"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -406,6 +426,9 @@ let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurren
         fail: data.fail
       }));
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to delete a discussion thread reply"), 'error'));
       data.fail && data.fail();
     }
@@ -428,7 +451,10 @@ let modifyReplyFromCurrentThread:ModifyReplyFromCurrentThreadTriggerType = funct
       
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to modify a reply from a current thread"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -447,7 +473,10 @@ let loadDiscussionAreasFromServer:LoadDiscussionAreasFromServerTriggerType = fun
       });
       callback && callback();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't load all areas"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
     }
   }
 }
@@ -470,7 +499,10 @@ let createDiscussionArea:CreateDiscussionAreaTriggerType = function createDiscus
       location.hash = "#" + newArea.id;
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't create new discussiona rea"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -499,7 +531,10 @@ let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscus
       });
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't update discussion area"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }
@@ -520,7 +555,10 @@ let deleteDiscussionArea:DeleteDiscussionAreaTriggerType = function deleteDiscus
       });
       data.success && data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't delete dsicussion area"), 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(err.message, 'error'));
       data.fail && data.fail();
     }
   }

@@ -362,10 +362,10 @@
                        </configuration>
                    </execution>
                    <execution>
-                       <id>npm install</id>
-                       <goals>
-                           <goal>npm</goal>
-                       </goals>
+                     <id>npm install</id>
+                     <goals>
+                       <goal>npm</goal>
+                     </goals>
                    </execution>
                 </executions>
             </plugin>
@@ -376,8 +376,10 @@
             <excludes>
 	            <exclude>META-INF/resources/scripts/src/**/*</exclude>
 	            <exclude>META-INF/resources/scripts/src/*</exclude>
-<!--               <exclude>META-INF/resources/scripts/src/node/**/*</exclude>
-              <exclude>META-INF/resources/scripts/src/node/*</exclude> -->
+              <!--
+              <exclude>META-INF/resources/scripts/src/node/**/*</exclude>
+              <exclude>META-INF/resources/scripts/src/node/*</exclude> 
+              -->
 	          </excludes>
             <filtering>false</filtering>
         </resource>
