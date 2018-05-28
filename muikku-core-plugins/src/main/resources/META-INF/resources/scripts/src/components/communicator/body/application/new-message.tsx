@@ -34,7 +34,6 @@ const extraPlugins = {
   'notification' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notification/4.5.9/',
   'notificationaggregator' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/notificationaggregator/4.5.9/',
   'change' : '//cdn.muikkuverkko.fi/libs/coops-ckplugins/change/0.1.2/plugin.min.js',
-  'draft' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/draft/0.0.3/plugin.min.js',
   'uploadwidget' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadwidget/4.5.9/',
   'uploadimage' : '//cdn.muikkuverkko.fi/libs/ckeditor-plugins/uploadimage/4.5.9/'
 }
@@ -151,9 +150,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       <div className="container container--communicator-content">     
         <div className="environment-dialog__form-element-wrapper">  
           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
-          <CKEditor key="3" width="100%" height="grow" configuration={Object.assign({}, ckEditorConfig, {
-           draftKey: `communicator-new-message-${this.props.replyThreadId ? this.props.replyThreadId : "default"}`
-           })} extraPlugins={extraPlugins}
+          <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>

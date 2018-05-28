@@ -122,15 +122,15 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     this.setStateAndStore({threadLocked: !this.state.threadLocked}, this.state.selectedAreaId);
   }
   componentWillReceiveProps(nextProps: DicussionNewThreadProps){
-    if (nextProps.discussion.areaId !== this.state.selectedAreaId && nextProps.discussion.areaId){
+    if ((nextProps.discussion.areaId !== this.state.selectedAreaId && nextProps.discussion.areaId) || !this.state.selectedAreaId){
       this.setState(this.getRecoverStoredState({
         text: "",
         title: "",
         locked: false,
         threadPinned: false,
         threadLocked: false,
-        selectedAreaId: nextProps.discussion.areaId
-      }, nextProps.discussion.areaId));
+        selectedAreaId: nextProps.discussion.areaId || (nextProps.discussion.areas[0] && nextProps.discussion.areas[0].id)
+      }, nextProps.discussion.areaId || (nextProps.discussion.areas[0] && nextProps.discussion.areas[0].id)));
     }
   }
   onAreaChange(e: React.ChangeEvent<HTMLSelectElement>){

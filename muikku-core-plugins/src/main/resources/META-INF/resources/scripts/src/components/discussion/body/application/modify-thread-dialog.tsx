@@ -64,6 +64,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
     this.onCKEditorChange = this.onCKEditorChange.bind(this);
     this.modifyThread = this.modifyThread.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
+    this.clearUp = this.clearUp.bind(this);
   }
   checkAgainstStoredState(){
     this.checkAgainstDefaultState({
