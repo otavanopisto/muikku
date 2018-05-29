@@ -38,11 +38,11 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when hops failed to load"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.hops.errormessage.hopsLoadFailed"), 'error'));
       dispatch({
         type: 'UPDATE_HOPS_STATUS',
         payload: <HOPSStatusType>"ERROR"
-      });
+      });plugin.records.hops.errormessage.hopsUpdateFailed
     }
   }
 }
@@ -58,7 +58,7 @@ let setHopsTo:SetHopsToTriggerType = function setHopsTo(newHops){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when hops didn't update"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.hops.errormessage.hopsUpdateFailed"), 'error'));
     }
   }
 }

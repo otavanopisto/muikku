@@ -99,7 +99,7 @@ export async function loadStudentsHelper(filters:GuiderActiveFiltersType | null,
       throw err;
     }
     //Error :(
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when failed to load the students"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.users"), 'error'));
     dispatch({
       type: "UPDATE_GUIDER_STATE",
       payload: <GuiderStudentsStateType>"ERROR"

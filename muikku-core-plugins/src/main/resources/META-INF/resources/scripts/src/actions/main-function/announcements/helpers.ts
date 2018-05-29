@@ -96,7 +96,7 @@ export async function loadAnnouncementsHelper(location:string | null, workspaceI
       throw err;
     }
     //Error :(
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when loading announcements failed"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.loadAnnouncements"), 'error'));
     dispatch({
       type: "UPDATE_ANNOUNCEMENTS_STATE",
       payload: <AnnouncementsStateType>"ERROR"

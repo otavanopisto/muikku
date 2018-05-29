@@ -112,7 +112,7 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when loading one announement failed"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.loadAnnouncement"), 'error'));
     }
   }
 }
@@ -158,7 +158,7 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when updating announcements failed"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.updateAnnouncement"), 'error'));
       data.fail();
     }
   }
@@ -201,7 +201,7 @@ let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = functio
         if (!(err instanceof MApiError)){
           throw err;
         }
-        dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when deleting selected announcements failed"), 'error'));
+        dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.deleteAnnouncement"), 'error'));
       }
     }));
   }
@@ -230,7 +230,7 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when creating an announcement failed"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement"), 'error'));
       data.fail();
     }
   }
@@ -249,7 +249,7 @@ let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function 
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when loading announcements failed"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.loadAnnouncements"), 'error'));
     }
   }
 }

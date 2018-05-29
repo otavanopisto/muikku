@@ -35,7 +35,7 @@ let updateVops:UpdateVopsTriggerType = function updateVops() {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG when vops failed to load"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.vops.errormessage.vopsLoadFailed"), 'error'));
       dispatch({
         type: 'UPDATE_VOPS_STATUS',
         payload: <VOPSStatusType>"ERROR"

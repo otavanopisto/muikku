@@ -141,7 +141,7 @@ let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = funct
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't remove a file from the current student"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.fileRemoveFailed"), 'error'));
     }
   }
 }
@@ -266,7 +266,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't load current student"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
       dispatch({
         type: "UPDATE_GUIDER_ALL_PROPS",
         payload: {
@@ -298,7 +298,7 @@ async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<
     if (!(err instanceof MApiError)){
       throw err;
     }
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't remove label a given user"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.remove"), 'error'));
   }
 }
 
@@ -322,7 +322,7 @@ async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<Guide
     if (!(err instanceof MApiError)){
       throw err;
     }
-    dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't add a label to a given user"), 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.add"), 'error'));
   }
 }
 
@@ -374,7 +374,7 @@ let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilte
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't receive label filters from server"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.labels"), 'error'));
     }
   }
 }
@@ -395,7 +395,7 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't receive workspace filters from server"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.workspaces"), 'error'));
     }
   }
 }
@@ -422,7 +422,7 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't create a new label filter"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.create"), 'error'));
     }
   }
 }
@@ -462,7 +462,7 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't update a label filter"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.update"), 'error'));
     }
   }
 }
@@ -483,7 +483,7 @@ let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function remove
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't remove a label filter"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.remove"), 'error'));
     }
   }
 }

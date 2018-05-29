@@ -48,7 +48,7 @@ let loadAvaliableEducationFiltersFromServer:LoadAvaliableEducationFiltersFromSer
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldnt load available education filters for courses"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.coursepicker.errormessage.educationFilters"), 'error'));
     }
   }
 }
@@ -66,7 +66,7 @@ let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromS
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG when couldnt load available curriculum filters for courses"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.coursepicker.errormessage.curriculumFilters"), 'error'));
     }
   }
 }

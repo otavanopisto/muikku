@@ -78,7 +78,7 @@ let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = func
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when unread messages count couldn't change"), 'error' ) );
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.unreadMessageCount"), 'error' ) );
     }
   }
 }
@@ -101,7 +101,7 @@ let loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when couldn't load last messsage from server"), 'error' ) );
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.lastMessageLoad"), 'error' ) );
     }
   }
 }
@@ -284,7 +284,7 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when message failed to send"), 'error' ) );
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.sendFailed"), 'error' ) );
       message.fail && message.fail();
     }
   }
@@ -351,7 +351,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
     } );
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"),'error'));
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -380,7 +380,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when toggling message read status failed"),'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.changeStatusFailed"),'error'));
       dispatch({
         type: "UPDATE_ONE_MESSAGE_THREAD",
         payload: {
@@ -446,7 +446,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch(displayNotification("plugin.communicator.errormessage.badLocation",'error'));
       dispatch( {
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -465,7 +465,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
         if (!(err instanceof MApiError)){
           throw err;
         }
-        dispatch(displayNotification( getState().i18n.text.get("TODOERRORMSG when one or many messages couldn't be deleted"), 'error' ) );
+        dispatch(displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.deleteFailed"), 'error' ) );
       }
     }));
 
@@ -492,7 +492,7 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType = function
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification( "Invalid navigation location", 'error' ) );
+      dispatch(displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.badLocation") , 'error' ) );
       dispatch( {
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -515,7 +515,7 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType = function
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when deleting a message didn't work"), 'error' ) );
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.deleteFailed"), 'error' ) );
     }
 
     mApi().communicator[getApiId(item)].cacheClear();
@@ -543,7 +543,7 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location", 'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"), 'error'));
       return;
     }
 
@@ -561,7 +561,7 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a message thread couldn't be loaded"),'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.threadLoadFailed"),'error'));
     }
 
     let existantMessage:MessageThreadType = state.messages.threads.find((message)=>{
@@ -624,7 +624,7 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
         if (!(err instanceof MApiError)){
           throw err;
         }
-        dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when couldn't load newly received message"), 'error'));
+        dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.receivedFailed"), 'error'));
       }
     }
   }
@@ -644,7 +644,7 @@ let loadSignature: LoadSignatureTriggerType = function loadSignature() {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification( getState().i18n.text.get("TODOERRORMSG when a signature failed to load"), 'error' ) );
+      dispatch(displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.signatureLoadFailed"), 'error' ) );
     }
   }
 }
@@ -678,7 +678,7 @@ let updateSignature: UpdateSignatureTriggerType = function updateSignature( newS
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch( displayNotification( getState().i18n.text.get("TODOERRORMSG when signature failed to update"), 'error' ) );
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.signatureUpdateFailed"), 'error' ) );
     }
   }
 }
@@ -721,7 +721,7 @@ let loadMessagesNavigationLabels:LoadMessagesNavigationLabelsTriggerType = funct
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when labels couldn't be loaded"), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelsLoadFailed"), 'error'));
     }
   }
 }
@@ -751,7 +751,7 @@ let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function 
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a new label couldn't be added"), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.createFailed"), 'error'));
     }
   }
 }
@@ -790,7 +790,7 @@ let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = fun
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a label failed to update"), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.updateFailed"), 'error'));
     }
   }
 }
@@ -822,7 +822,7 @@ let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = fun
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when a label couldn't be removed"), 'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.deleteFailed"), 'error'));
     }
   }
 }
@@ -841,7 +841,7 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = fu
     });
     if (!item) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"),'error'));
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -860,7 +860,7 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = fu
         if (!(err instanceof MApiError)){
           throw err;
         }
-        dispatch(displayNotification(getState().i18n.text.get("TODOERRORMSG when one or many messages couldn't be restored"),'error'));
+        dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.msgRestoreFailed"),'error'));
       }
     }));
 
@@ -886,8 +886,7 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = functi
       return item.location === state.messages.location;
     });
     if ( !item ) {
-      //TODO translate this
-      dispatch(displayNotification( "Invalid navigation location", 'error' ) );
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"), 'error' ) );
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -910,7 +909,7 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = functi
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(displayNotification( getState().i18n.text.get("TODOERRORMSG when the current thread couldn't be restored"), 'error' ) );
+      dispatch(displayNotification( getState().i18n.text.get("currentThreadRestoreFailed"), 'error' ) );
     }
 
     mApi().communicator[getApiId(item)].cacheClear();
