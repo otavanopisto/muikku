@@ -38,7 +38,7 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.hops.errormessage.hopsLoadFailed"), 'error'));
       dispatch({
         type: 'UPDATE_HOPS_STATUS',
         payload: <HOPSStatusType>"ERROR"
@@ -58,7 +58,7 @@ let setHopsTo:SetHopsToTriggerType = function setHopsTo(newHops){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(actions.displayNotification(err.message, 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("plugin.records.hops.errormessage.hopsUpdateFailed"), 'error'));
     }
   }
 }

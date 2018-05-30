@@ -143,7 +143,7 @@ export async function loadMessagesHelper(location:string | null, initial:boolean
     });
   } catch (err){
     //Error :(
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.msgsLoadFailed"), 'error'));
     dispatch({
       type: "UPDATE_MESSAGES_STATE",
       payload: <MessagesStateType>"ERROR"
@@ -170,7 +170,7 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
       });
     } else if (!isToAddLabel){
       if (!messageLabel){
-        dispatch(notificationActions.displayNotification("Label does not exist", 'error'));
+        dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelDoesNotExist"), 'error'));
       } else {
         await promisify(mApi().communicator.messages.labels.del(communicatorMessageId, messageLabel.id), 'callback')();
         dispatch({
@@ -183,7 +183,7 @@ export async function setLabelStatusCurrentMessage(label: MessageThreadLabelType
       }
     }
   } catch (err){
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelingFailed"), 'error'));
   }
 }
 
@@ -208,7 +208,7 @@ export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isT
       } else if (!isToAddLabel){
         if (!threadLabel){
           //TODO translate this
-          dispatch(notificationActions.displayNotification("Label does not exist", 'error'));
+          dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelDoesNotExist"), 'error'));
         } else {
           await promisify(mApi().communicator.messages.labels.del(thread.communicatorMessageId, threadLabel.id), 'callback')();
           dispatch({
@@ -221,7 +221,7 @@ export function setLabelStatusSelectedMessages(label:MessageThreadLabelType, isT
         }
       }
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelingFailed"), 'error'));
     }
   });
 }

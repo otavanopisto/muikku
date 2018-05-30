@@ -1,6 +1,6 @@
 import promisify from '~/util/promisify';
 import { AnyActionType, SpecificActionType } from '~/actions';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import { StateType } from '~/reducers';
 import { MessageThreadListType, MessageThreadExpandedType, MessagesStateType, MessagesPatchType, MessageThreadLabelType, MessageThreadType, MessageThreadUpdateType, MessageSignatureType, MessageType, MessagesNavigationItemListType, MessageRecepientType, MessagesNavigationItemType, LabelListType, LabelType } from '~/reducers/main-function/messages';
 import { displayNotification } from '~/actions/base/notifications';
@@ -75,7 +75,10 @@ let updateUnreadMessageThreadsCount: UpdateMessageThreadsCountTriggerType = func
         payload: <number>( await ( promisify( mApi().communicator.receiveditemscount.cacheClear().read(), 'callback' )() ) || 0 )
       } );
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.unreadMessageCount"), 'error' ) );
     }
   }
 }
@@ -95,7 +98,10 @@ let loadLastMessageThreadsFromServer: LoadLastMessageThreadsFromSeverTriggerType
         } ), 'callback' )() )
       } );
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.lastMessageLoad"), 'error' ) );
     }
   }
 }
@@ -254,7 +260,9 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
             }
 
           }
-        } catch ( err ) { }
+        } catch ( err ) { if (!(err instanceof MApiError)){
+          throw err;
+        }}
       }
       
       //Also we need to update the specific message in the thread view if it's there
@@ -273,7 +281,10 @@ let sendMessage: SendMessageTriggerType = function sendMessage( message ) {
       }
       
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.sendFailed"), 'error' ) );
       message.fail && message.fail();
     }
   }
@@ -340,7 +351,7 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
     } );
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"),'error'));
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -366,7 +377,10 @@ let toggleMessageThreadReadStatus: ToggleMessageThreadReadStatusTriggerType = fu
       }
       dispatch(updateUnreadMessageThreadsCount());
     } catch ( err ) {
-      dispatch(displayNotification(err.message,'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.changeStatusFailed"),'error'));
       dispatch({
         type: "UPDATE_ONE_MESSAGE_THREAD",
         payload: {
@@ -432,7 +446,7 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch(displayNotification("plugin.communicator.errormessage.badLocation",'error'));
       dispatch( {
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -448,7 +462,10 @@ let deleteSelectedMessageThreads: DeleteSelectedMessageThreadsTriggerType = func
           payload: thread
         } );
       } catch ( err ) {
-        dispatch(displayNotification( err.message, 'error' ) );
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.deleteFailed"), 'error' ) );
       }
     }));
 
@@ -475,7 +492,7 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType = function
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification( "Invalid navigation location", 'error' ) );
+      dispatch(displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.badLocation") , 'error' ) );
       dispatch( {
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -495,7 +512,10 @@ let deleteCurrentMessageThread: DeleteCurrentMessageThreadTriggerType = function
         });
       }
     } catch ( err ) {
-      dispatch(displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.deleteFailed"), 'error' ) );
     }
 
     mApi().communicator[getApiId(item)].cacheClear();
@@ -523,7 +543,7 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
     });
     if ( !item ) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location", 'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"), 'error'));
       return;
     }
 
@@ -538,7 +558,10 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
         }
       });
     } catch ( err ) {
-      dispatch(displayNotification(err.message,'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.threadLoadFailed"),'error'));
     }
 
     let existantMessage:MessageThreadType = state.messages.threads.find((message)=>{
@@ -551,6 +574,9 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
       try {
         await promisify( mApi().communicator[getApiId( item )].markasread.create( currentThread.messages[0].communicatorMessageId ), 'callback' )();
       } catch ( err ) {
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
       }
     }
   }
@@ -595,7 +621,10 @@ let loadNewlyReceivedMessage: LoadNewlyReceivedMessageTriggerType = function loa
           }
         }
       } catch ( err ) {
-        dispatch(displayNotification(err.message, 'error'));
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.receivedFailed"), 'error'));
       }
     }
   }
@@ -612,7 +641,10 @@ let loadSignature: LoadSignatureTriggerType = function loadSignature() {
         } );
       }
     } catch ( err ) {
-      dispatch(displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.signatureLoadFailed"), 'error' ) );
     }
   }
 }
@@ -643,7 +675,10 @@ let updateSignature: UpdateSignatureTriggerType = function updateSignature( newS
         } );
       }
     } catch ( err ) {
-      dispatch( displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch( displayNotification( getState().i18n.text.get("plugin.communicator.errormessage.signatureUpdateFailed"), 'error' ) );
     }
   }
 }
@@ -683,7 +718,10 @@ let loadMessagesNavigationLabels:LoadMessagesNavigationLabelsTriggerType = funct
       });
       callback && callback();
     } catch (err) {
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.labelsLoadFailed"), 'error'));
     }
   }
 }
@@ -710,7 +748,10 @@ let addMessagesNavigationLabel:AddMessagesNavigationLabelTriggerType = function 
         }
       });
     } catch (err){
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.createFailed"), 'error'));
     }
   }
 }
@@ -746,7 +787,10 @@ let updateMessagesNavigationLabel:UpdateMessagesNavigationLabelTriggerType = fun
         }
       });
     } catch(err){
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.updateFailed"), 'error'));
     }
   }
 }
@@ -775,7 +819,10 @@ let removeMessagesNavigationLabel:RemoveMessagesNavigationLabelTriggerType = fun
         }
       });
     } catch (err){
-      dispatch(displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.label.deleteFailed"), 'error'));
     }
   }
 }
@@ -794,7 +841,7 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = fu
     });
     if (!item) {
       //TODO translate this
-      dispatch(displayNotification("Invalid navigation location",'error'));
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"),'error'));
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -810,7 +857,10 @@ let restoreSelectedMessageThreads: RestoreSelectedMessageThreadsTriggerType = fu
           payload: thread
         });
       } catch (err) {
-        dispatch(displayNotification(err.message,'error'));
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.msgRestoreFailed"),'error'));
       }
     }));
 
@@ -836,8 +886,7 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = functi
       return item.location === state.messages.location;
     });
     if ( !item ) {
-      //TODO translate this
-      dispatch(displayNotification( "Invalid navigation location", 'error' ) );
+      dispatch(displayNotification(getState().i18n.text.get("plugin.communicator.errormessage.badLocation"), 'error' ) );
       dispatch({
         type: "UNLOCK_TOOLBAR",
         payload: null
@@ -857,7 +906,10 @@ let restoreCurrentMessageThread: RestoreCurrentMessageThreadTriggerType = functi
         });
       }
     } catch ( err ) {
-      dispatch(displayNotification( err.message, 'error' ) );
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(displayNotification( getState().i18n.text.get("currentThreadRestoreFailed"), 'error' ) );
     }
 
     mApi().communicator[getApiId(item)].cacheClear();

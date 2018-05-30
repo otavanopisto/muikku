@@ -1,6 +1,6 @@
 import notificationActions from '~/actions/base/notifications';
 import promisify from '~/util/promisify';
-import mApi from '~/lib/mApi';
+import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import {AnnouncementsStateType, AnnouncementsPatchType,
   AnnouncementListType, AnnouncementType, AnnouncementUpdateType, AnnouncementsType} from '~/reducers/main-function/announcements';
@@ -109,7 +109,10 @@ let loadAnnouncement:LoadAnnouncementTriggerType = function loadAnnouncement(loc
         }
       });
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.loadAnnouncement"), 'error'));
     }
   }
 }
@@ -152,7 +155,10 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
       }
       data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.updateAnnouncement"), 'error'));
       data.fail();
     }
   }
@@ -171,6 +177,9 @@ let deleteAnnouncement:DeleteAnnouncementTriggerType = function deleteAnnounceme
       });
       data.success();
     } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
       data.fail();
     }
   }
@@ -189,7 +198,10 @@ let deleteSelectedAnnouncements:DeleteSelectedAnnouncementsTriggerType = functio
           payload: announcement
         });
       } catch(err){
-        dispatch(notificationActions.displayNotification(err.message, 'error'));
+        if (!(err instanceof MApiError)){
+          throw err;
+        }
+        dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.deleteAnnouncement"), 'error'));
       }
     }));
   }
@@ -215,7 +227,10 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
       }
       data.success();
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.createAnnouncement"), 'error'));
       data.fail();
     }
   }
@@ -231,7 +246,10 @@ let loadAnnouncementsAsAClient:LoadAnnouncementsAsAClientTriggerType = function 
       });
       callback && callback(announcements);
     } catch (err){
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.loadAnnouncements"), 'error'));
     }
   }
 }
