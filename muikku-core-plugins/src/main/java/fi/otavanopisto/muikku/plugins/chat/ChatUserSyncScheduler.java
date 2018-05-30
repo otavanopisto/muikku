@@ -21,8 +21,11 @@ import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
+import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserController;
 
 @Stateless
@@ -39,16 +42,21 @@ public class ChatUserSyncScheduler {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserChatSettingsDAO userChatSettingsDao;
 
   @Schedule(second = "0", minute = "*/15", hour = "*", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatUsers() {
-    
-    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-    if (enabledUsersCsv == null) {
+
+	List<UserChatSettings> listUsers = userChatSettingsDao.listAll();
+	  
+  
+    if (listUsers == null) {
       return;
     }
-    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
+   // List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
@@ -77,22 +85,22 @@ public class ChatUserSyncScheduler {
     
     SecureRandom random = new SecureRandom();
     
-    for (String enabledUser : enabledUsers) {
+    for (UserChatSettings listUser : listUsers) {
       try {
         // Checking before creating is subject to a race condition, but in the worst case
         // the creation just fails, resulting in a log entry
-        UserEntity userEntity = client.getUser(enabledUser);
+        UserEntity userEntity = client.getUser(listUser.getUserIdentifier());
         if (userEntity == null) {
-          logger.log(Level.INFO, "Syncing chat user " + enabledUser);
-          SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(enabledUser);
+          logger.log(Level.INFO, "Syncing chat user " + listUser.getUserIdentifier());
+          SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(listUser.getUserIdentifier());
           if (identifier == null) {
-            logger.log(Level.WARNING, "Invalid user identifier " + enabledUser + ", skipping...");
-            continue;
+            logger.log(Level.WARNING, "Invalid user identifier " + listUser.getUserIdentifier() + ", skipping...");
+
           }
           User user = userController.findUserByIdentifier(identifier);
           if (user == null) {
-            logger.log(Level.WARNING, "No user found for identifier " + enabledUser + ", skipping...");
-            continue;
+            logger.log(Level.WARNING, "No user found for identifier " + listUser + ", skipping...");
+
           }
           
           // Can't leave the password empty, so next best thing is random passwords
@@ -101,12 +109,12 @@ public class ChatUserSyncScheduler {
           random.nextBytes(passwordBytes);
           String password = Base64.encodeBase64String(passwordBytes);
 
-          userEntity = new UserEntity(enabledUser, user.getDisplayName(), "", password);
+          userEntity = new UserEntity(listUser.getUserIdentifier(), user.getDisplayName(), "", password);
           client.createUser(userEntity);
         }
       } catch (Exception e) {
-        logger.log(Level.INFO, "Exception when syncing user " + enabledUser, e);
+        logger.log(Level.INFO, "Exception when syncing user " + listUser, e);
       }
-    }
+    
   }
-}
+}}
