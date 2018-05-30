@@ -466,14 +466,14 @@ b {
   position: absolute;
   left: 0;
   bottom: 0;
-  background: linear-gradient(transparent 1rem, white);
+  background: linear-gradient(rgba(255, 255, 255, 0) 1rem, white);
   
   .message:hover & {
-  	background: linear-gradient(transparent 1rem, $color-application-list-item-background-hover);
+  	background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-application-list-item-background-hover);
   }
  
   .message:active & {
-  	background: linear-gradient(transparent 1rem, $color-application-list-item-background-active);
+  	background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-application-list-item-background-active);
   }
 }
 
