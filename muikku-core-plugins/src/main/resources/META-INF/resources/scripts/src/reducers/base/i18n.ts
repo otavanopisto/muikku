@@ -31,16 +31,16 @@ export default function i18n(state={
   },
   time: {
     format(date=new Date(), format="L"){
-      return moment(new Date(date)).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(format);
+      return moment(date).locale((window as any)._MUIKKU_LOCALE.toLowerCase()).format(format);
     },
     fromNow(date=new Date()){
-      return moment(new Date(date)).fromNow();
+      return moment(date).fromNow();
     },
     subtract(date=new Date(), input=1, value="days"){
-      return moment(new Date(date)).subtract(input, value).calendar();
+      return moment(date).subtract(input, value).calendar();
     },
     add(date=new Date(), input=1, value="days"){
-      return moment(new Date(date)).add(input, value).calendar();
+      return moment(date).add(input, value).calendar();
     },
     getLocalizedMoment(...args:any[]){
       return moment(...args).locale((window as any)._MUIKKU_LOCALE.toLowerCase());
