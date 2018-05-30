@@ -16,7 +16,7 @@
             if (settings == null || settings.visibility == null){
               settings.visibility === "DISABLED"
               data.disabled_selected = "selected";
-            	this._setVisibility(event.target.value);
+              this._setVisibility("DISABLED");
             }
             if (settings && settings.visibility === "VISIBLE_TO_ALL") {
               data.visible_to_all_selected = "selected";
