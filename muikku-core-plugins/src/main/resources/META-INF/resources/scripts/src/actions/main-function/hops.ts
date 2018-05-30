@@ -42,7 +42,7 @@ let updateHops:UpdateHopsTriggerType = function updateHops() {
       dispatch({
         type: 'UPDATE_HOPS_STATUS',
         payload: <HOPSStatusType>"ERROR"
-      });plugin.records.hops.errormessage.hopsUpdateFailed
+      });
     }
   }
 }
