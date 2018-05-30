@@ -12,7 +12,7 @@
         }
        
           mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
-            var data = {}; 
+            var data = {};
             if (settings == null || settings.visibility == null){
               settings.visibility === "DISABLED"
               data.disabled_selected = "selected";
