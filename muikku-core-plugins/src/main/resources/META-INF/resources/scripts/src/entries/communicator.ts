@@ -35,7 +35,7 @@ window.addEventListener("hashchange", ()=>{
 if (!window.location.hash){
   window.location.hash = "#inbox";
 } else {
-  if (!currentLocation[0].includes("labels")) {
+  if (!currentLocation[0].includes("label")) {
     loadLocation(currentLocation);
   }
 }
