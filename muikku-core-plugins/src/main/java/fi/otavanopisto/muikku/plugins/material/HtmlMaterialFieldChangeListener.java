@@ -17,6 +17,7 @@ import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldConnectionM
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.FileFieldMeta;
+import fi.otavanopisto.muikku.plugins.material.fieldmeta.MathExerciseFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
 import fi.otavanopisto.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
@@ -30,6 +31,7 @@ import fi.otavanopisto.muikku.plugins.material.model.QueryConnectField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.otavanopisto.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.otavanopisto.muikku.plugins.material.model.QueryField;
+import fi.otavanopisto.muikku.plugins.material.model.QueryMathExerciseField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMemoField;
 import fi.otavanopisto.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.otavanopisto.muikku.plugins.material.model.QuerySelectField;
@@ -65,6 +67,9 @@ public class HtmlMaterialFieldChangeListener {
   
   @Inject
   private QueryConnectFieldController queryConnectFieldController;
+  
+  @Inject
+  private QueryMathExerciseFieldController queryMathExerciseFieldController;
   
   // Create
 
@@ -264,6 +269,26 @@ public class HtmlMaterialFieldChangeListener {
       }
       for (ConnectFieldConnectionMeta connection : connectFieldMeta.getConnections()) {
         terms.get(connection.getField()).setCounterpart(counterparts.get(connection.getCounterpart()));
+      }
+    }
+  }
+  
+  // Math exercise field
+  public void onHtmlMaterialMathExerciseFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.mathexercise")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      MathExerciseFieldMeta fieldMeta;
+      try {
+        fieldMeta = objectMapper.readValue(event.getField().getContent(), MathExerciseFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse math exercise field meta", e);
+      }
+      
+      QueryMathExerciseField mathExerciseField = queryMathExerciseFieldController.findQueryMathExerciseFieldByMaterialAndName(event.getMaterial(), fieldMeta.getName());
+      if (mathExerciseField == null) {
+        queryMathExerciseFieldController.createQueryMathExerciseField(event.getMaterial(), fieldMeta.getName());
+      } else {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
       }
     }
   }

@@ -172,6 +172,9 @@ class GradingSchoolDataController {
   
   // TODO Deprecate after new evaluation
   public GradingScale findGradingScale(SchoolDataSource schoolDataSource, String identifier) {
+    if (identifier == null){
+      return null;
+    }
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
       return schoolDataBridge.findGradingScale(identifier);
@@ -184,6 +187,9 @@ class GradingSchoolDataController {
 
   // TODO Deprecate after new evaluation
   public GradingScale findGradingScale(String schoolDataSource, String identifier) {
+    if (identifier == null){
+      return null;
+    }
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
        return findGradingScale(dataSource, identifier);
@@ -216,6 +222,10 @@ class GradingSchoolDataController {
   // TODO Deprecate after new evaluation
   public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, GradingScale gradingScale, String identifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    
+    if (identifier == null) {
+      return null;
+    }
     if (schoolDataBridge != null) {
       return schoolDataBridge.findGradingScaleItem(gradingScale.getIdentifier(), identifier);
     } else {
@@ -226,7 +236,11 @@ class GradingSchoolDataController {
   }
 
   // TODO Deprecate after new evaluation
-  public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
+  public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale,
+      String identifier) {
+    if (identifier == null) {
+      return null;
+    }
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
        return findGradingScaleItem(dataSource, gradingScale, identifier);
