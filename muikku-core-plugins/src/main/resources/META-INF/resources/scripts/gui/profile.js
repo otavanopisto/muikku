@@ -24,7 +24,7 @@
           if (settings && settings.visibility === "DISABLED"){
             data.disabled_selected = "selected";
           }
-          renderDustTemplate('profile/profile-chat-visibility.dust', data, $.proxy(function (text) {
+          renderDustTemplate('profile/chat-visibility.dust', data, $.proxy(function (text) {
             this.element.html(text);
             this.element.find("select").on('change', $.proxy(function(event) {
               this._setVisibility(event.target.value);
