@@ -11,28 +11,28 @@
           return;
         }
        
-          mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
-            var data = {};
-            if (settings == null || settings.visibility == null){
-              settings.visibility === "DISABLED"
-              data.disabled_selected = "selected";
-              this._setVisibility("DISABLED");
-            }
-            if (settings && settings.visibility === "VISIBLE_TO_ALL") {
-              data.visible_to_all_selected = "selected";
-            }
-            if (settings && settings.visibility === "DISABLED"){
-              data.disabled_selected = "selected";
-            }
-            renderDustTemplate('profile/chat-visibility.dust', data, $.proxy(function (text) {
-              this.element.html(text);
-              this.element.find("select").on('change', $.proxy(function(event) {
-                this._setVisibility(event.target.value);
-                setTimeout(function(){ location.reload(); }, 1500);
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
-              }, this));
+        mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
+          var data = {};
+          if (settings == null || settings.visibility == null){
+            settings.visibility === "DISABLED"
+            data.disabled_selected = "selected";
+            this._setVisibility("DISABLED");
+          }
+          if (settings && settings.visibility === "VISIBLE_TO_ALL") {
+            data.visible_to_all_selected = "selected";
+          }
+          if (settings && settings.visibility === "DISABLED"){
+            data.disabled_selected = "selected";
+          }
+          renderDustTemplate('profile/profile-chat-visibility.dust', data, $.proxy(function (text) {
+            this.element.html(text);
+            this.element.find("select").on('change', $.proxy(function(event) {
+              this._setVisibility(event.target.value);
+              setTimeout(function(){ location.reload(); }, 1500);
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
             }, this));
           }, this));
+        }, this));
       }, this));
     },
     
