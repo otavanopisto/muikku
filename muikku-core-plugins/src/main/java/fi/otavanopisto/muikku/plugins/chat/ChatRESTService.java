@@ -173,9 +173,20 @@ public class ChatRESTService extends PluginRESTService {
     if (identifier == null) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
       }
+	  
+    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
+    
+    if (enabledUsersCsv == null) {
+      return null;
+    }
+    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
+    boolean chatEnabled = false;
+
+    if (!enabledUsers.contains(identifier.toId())) {
+      return Response.ok(new StatusRESTModel(false, false, null)).build();
+    }
     
     UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
-    boolean chatEnabled = false;
     
     if (userChatSettings != null) {
       UserChatVisibility visibility = userChatSettings.getVisibility();
@@ -192,9 +203,9 @@ public class ChatRESTService extends PluginRESTService {
     }
 
     if (chatEnabled) {
-      return Response.ok(new StatusRESTModel(true, user.getDisplayName())).build();
+      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName())).build();
     } else {
-      return Response.ok(new StatusRESTModel(false, null)).build();
+      return Response.ok(new StatusRESTModel(false, true, null)).build();
     }
   }
 

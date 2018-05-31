@@ -10,7 +10,11 @@
           $('.notification-queue').notificationQueue('notification', 'error', err);
           return;
         }
-       
+        
+        if (!status.chatSettingsVisible) { 
+          return; 
+        }
+        
         mApi().chat.settings.read({}).callback($.proxy(function (err, settings) {
           var data = {};
           if (settings == null || settings.visibility == null){
