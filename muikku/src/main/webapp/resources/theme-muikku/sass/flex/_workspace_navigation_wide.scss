@@ -97,6 +97,20 @@
   
   // Evaluation of Workspace - Fail
   &[data-state='fail'] { 
+    background: #4c4c4c;
+    
+    a:hover {
+      background: #2c2c2c;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        background: #2c2c2c;
+      }
+      
+    }
+  }
+  
+  // Evaluation of Workspace - Fail
+  &[data-state='incomplete'] { 
     background: #ea7401;
     
     a:hover {
