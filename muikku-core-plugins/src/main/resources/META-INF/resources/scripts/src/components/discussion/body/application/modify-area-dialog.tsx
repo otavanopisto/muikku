@@ -124,7 +124,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
           <Button className="button button--dialog-execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.send')}
           </Button>
-          <Button className="button button--dialog-cancel" onClick={closeDialog}>
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Button>            
           <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>

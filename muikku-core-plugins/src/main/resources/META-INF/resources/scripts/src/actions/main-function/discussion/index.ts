@@ -429,7 +429,7 @@ let deleteDiscussionThreadReplyFromCurrent:DeleteDiscussionThreadReplyFromCurren
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.discussion.errormessage.deleteReply"), 'error'));
       data.fail && data.fail();
     }
   }

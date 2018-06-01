@@ -104,7 +104,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="env-dialog__actions">       
-          <Button className="button button--dialog-execute" onClick={this.modifyReply.bind(this, closeDialog)}>
+          <Button className="button button--dialog-execute" onClick={this.modifyReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
           <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>

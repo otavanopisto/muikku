@@ -112,8 +112,13 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
+<<<<<<< HEAD
          <div className="env-dialog__actions">   
           <Button className="button button--dialog-execute" onClick={this.createReply.bind(this, closeDialog)}>
+=======
+         <div className="environment-dialog__button-container">   
+          <Button className="button button--dialog-execute" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
+>>>>>>> refs/heads/FTR-3062_redesign-of-muikku
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
           <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>

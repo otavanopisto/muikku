@@ -141,7 +141,7 @@ let removeFileFromCurrentStudent:RemoveFileFromCurrentStudentTriggerType = funct
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.fileRemoveFailed"), 'error'));
     }
   }
 }
@@ -266,7 +266,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.user"), 'error'));
       dispatch({
         type: "UPDATE_GUIDER_ALL_PROPS",
         payload: {
@@ -281,7 +281,7 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
   }
 }
 
-async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any){
+async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   try {
     let relationLabel:GuiderStudentUserProfileLabelType = flags.find((flag)=>flag.flagId === label.id);
     if (relationLabel){
@@ -298,11 +298,11 @@ async function removeLabelFromUserUtil(student: GuiderStudentType, flags: Array<
     if (!(err instanceof MApiError)){
       throw err;
     }
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.remove"), 'error'));
   }
 }
 
-async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any){
+async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<GuiderStudentUserProfileLabelType>, label: GuiderUserLabelType, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   try {
     let relationLabel:GuiderStudentUserProfileLabelType = flags.find((flag)=>flag.flagId === label.id);
     if (!relationLabel){
@@ -322,7 +322,7 @@ async function addLabelToUserUtil(student: GuiderStudentType, flags: Array<Guide
     if (!(err instanceof MApiError)){
       throw err;
     }
-    dispatch(notificationActions.displayNotification(err.message, 'error'));
+    dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.add"), 'error'));
   }
 }
 
@@ -330,7 +330,7 @@ let addGuiderLabelToCurrentUser:AddGuiderLabelToCurrentUserTriggerType = functio
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let guider:GuiderType = getState().guider;
     let student = guider.currentStudent;
-    addLabelToUserUtil(student.basic, student.labels, label, dispatch);
+    addLabelToUserUtil(student.basic, student.labels, label, dispatch, getState);
   }
 }
 
@@ -338,7 +338,7 @@ let removeGuiderLabelFromCurrentUser:RemoveGuiderLabelFromCurrentUserTriggerType
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let guider:GuiderType = getState().guider;
     let student = guider.currentStudent;
-    removeLabelFromUserUtil(student.basic, student.labels, label, dispatch);
+    removeLabelFromUserUtil(student.basic, student.labels, label, dispatch, getState);
   }
 }
 
@@ -346,7 +346,7 @@ let addGuiderLabelToSelectedUsers:AddGuiderLabelToSelectedUsersTriggerType = fun
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let guider:GuiderType = getState().guider;
     guider.selectedStudents.forEach((student:GuiderStudentType)=>{
-      addLabelToUserUtil(student, student.flags, label, dispatch);
+      addLabelToUserUtil(student, student.flags, label, dispatch, getState);
     });
   }
 }
@@ -355,7 +355,7 @@ let removeGuiderLabelFromSelectedUsers:RemoveGuiderLabelFromSelectedUsersTrigger
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let guider:GuiderType = getState().guider;
     guider.selectedStudents.forEach((student:GuiderStudentType)=>{
-      removeLabelFromUserUtil(student, student.flags, label, dispatch);
+      removeLabelFromUserUtil(student, student.flags, label, dispatch, getState);
     });
   }
 }
@@ -374,7 +374,7 @@ let updateLabelFilters:UpdateLabelFiltersTriggerType = function updateLabelFilte
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.labels"), 'error'));
     }
   }
 }
@@ -395,7 +395,7 @@ let updateWorkspaceFilters:UpdateWorkspaceFiltersTriggerType = function updateWo
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.workspaces"), 'error'));
     }
   }
 }
@@ -422,7 +422,7 @@ let createGuiderFilterLabel:CreateGuiderFilterLabelTriggerType = function create
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.create"), 'error'));
     }
   }
 }
@@ -462,7 +462,7 @@ let updateGuiderFilterLabel:UpdateGuiderFilterLabelTriggerType = function update
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.update"), 'error'));
     }
   }
 }
@@ -483,7 +483,7 @@ let removeGuiderFilterLabel:RemoveGuiderFilterLabelTriggerType = function remove
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(err.message, 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.guider.errormessage.label.remove"), 'error'));
     }
   }
 }
