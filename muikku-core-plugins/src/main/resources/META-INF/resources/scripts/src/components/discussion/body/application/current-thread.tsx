@@ -122,8 +122,8 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                   <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
                   <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
               </DiscussionThreadBody>
-                <DiscussionThreadFooter>
-                  <ReplyThread reply={reply}>
+              {!reply.deleted ? <DiscussionThreadFooter>
+                <ReplyThread reply={reply}>
                   <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.message")}</Link>
                 </ReplyThread>
                 <ReplyThread reply={reply}
@@ -136,7 +136,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 {canRemoveMessage ? <DeleteThreadComponent reply={reply}>
                   <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>
                 </DeleteThreadComponent> : null} 
-              </DiscussionThreadFooter> 
+              </DiscussionThreadFooter> : null}
             </DiscussionCurrentThreadElement>                 
           )})
       }
