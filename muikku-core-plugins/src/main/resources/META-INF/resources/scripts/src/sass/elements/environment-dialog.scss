@@ -18,13 +18,13 @@
   &.visible {
     opacity: 1;
     
-    .environment-dialog__wrapper {
+    .env-dialog__wrapper {
       bottom: 0;
     }
   }
 }
 
-.environment-dialog__wrapper {
+.env-dialog__wrapper {
   background-color: $color-application-dialog-background-color;
   border-top: 3px solid $color-application-dialog-border-color;
   display: flex;
@@ -48,7 +48,7 @@
 }
 
 
-.environment-dialog__window {
+.env-dialog__content {
   display: flex;
   flex-direction: column;
   font-family: $text-font-family;
@@ -66,7 +66,7 @@
 }
 
 
-.environment-dialog__body {
+.env-dialog__body {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -78,14 +78,14 @@
   }
 }
 
-.environment-dialog__footer {
+.env-dialog__footer {
   width: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
 
-.environment-dialog__button-container {
+.env-dialog__actions {
   align-items: center;
   display: flex;
   justify-content: flex-end;
@@ -130,7 +130,7 @@
 }
 
 
-.environment-dialog__header {
+.env-dialog__header {
   background-color: $color-application-dialog-background-color;
   color: $color-dialog-default-title-text;
   font-size: 25px;
@@ -164,7 +164,7 @@
 // Forms
 // TODO, these environment-dialog form templates and css need to be refactored. These are just inconsistent garbage.
 
-.environment-dialog__form-element-wrapper {
+.env-dialog__form-element-container {
   flex-wrap: wrap;
   position: relative;
 
@@ -182,7 +182,7 @@
       display: inline-flex;
     } 
     
-    .environment-dialog__form-element-label {   
+    .env-dialog__label {   
       align-items: center;
       display: flex;
       height: 34px; 
@@ -199,7 +199,7 @@
   }
 }
 
-.environment-dialog__form-element-label {   
+.env-dialog__label {   
   align-items: center;
   display: flex;
   height: 34px; 
@@ -213,72 +213,18 @@
   }  
 }
 
-div.environment-dialog__form-element--tag-input-field, input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
-  -webkit-appearance: none;  
-  border: solid 2px $color-environment-dialog-form-element-border;
-  border-radius: 3px;
-  font-size: 0.875em;
-  outline: none;
-  padding: 3px 10px;
-  resize: none;
-  transition: box-shadow 0.3, border 0.3;
-}
-
-input:not([type="checkbox"]).environment-dialog__form-element, .environment-dialog__form-element input, textarea.environment-dialog__form-element, .environment-dialog__form-element textarea {
+input:not([type="checkbox"]).env-dialog__input, .env-dialog__input input, textarea.env-dialog__input, .env-dialog__input textarea {
   height: 34px;
-}
-
-input[type="checkbox"].environment-dialog__form-element {
-  border: solid 1px $color-environment-dialog-form-element-border;
-  display: inline-block;
-  margin-right: 5px;
-  transition: box-shadow 0.3, border 0.3;
-}
-
-.environment-dialog__form-element-tag-input {
-  overflow: show;
-  width: 100%;
-
-  &.focus .form-field-tag-input__field {
-    flex-wrap: wrap;
-  }
-}
-
-.environment-dialog__form-element-input--main-function-search {
-  background-color: transparent;
-  border: 2px solid $color-main-function-input-field-border;
-  border-radius: 2px;
-  border-right: 0;
-  font-size: 0.925rem;  
-  height: 40px;
-  padding: 5px 10px;
-  width: 100%;
-}
-
-// This does not mostly belong here, mostly
-
-.environment-dialog__form-element__input-decoration--main-function-search {
-  background-color: $color-main-function-input-field-decoration-background;
-  border-radius: 2px;
-  
-  &::before {
-    align-items: center;
-    color: $color-main-function-search-icon;
-    display: flex;
-    height: 40px;
-    justify-content: center;
-    width: 40px;
-  }
 }
 
 // Needs to be redone with divs
 
-.environment-dialog__form-element--toolbar-selector {    
+.env-dialog__input--toolbar-selector {    
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
-  background-color: transparent;
+  background-color: transparent;a
   border: 2px solid $color-main-function-primary-function-dropdown-border;
   border-radius: 2px;
   font-family: $text-font-family;
@@ -291,39 +237,10 @@ input[type="checkbox"].environment-dialog__form-element {
   width: 100%;
 }
 
-.environment-dialog__form-element--tag-input-field {
-  -moz-appearance: textfield;
-  -webkit-appearance: textfield;
-  background-color: $color-form-field-tag-input-tag-background;
-  background-color: -moz-field;
-  display: flex;
-  font: -moz-field;
-  font: -webkit-small-control;
-  font-size: 0.875rem;
-  height: auto;
-  overflow: hidden;
-  padding: 0;
-  position: relative;
-}
 
-.environment-dialog__form-element--tag-input-input {
-  background: none;
-  border: 0;
-  box-shadow: none;
-  flex: 1 0 200px;
-  height: 34px;
-  outline: none;
-  padding: 3px 10px;
-
-  &:focus {
-    border: 0;
-    box-shadow: none;
-  }
-}
-
-.environment-dialog__form-element-tag-input--tag {
-  background-color: $color-form-field-tag-input-tag-background;
-  color: $color-form-field-tag-input-tag-text;
+.env-dialog__selected-item {
+  background-color: $color-form-field-selected-item-background;
+  color: $color-form-field-selected-item -text;
   display: inline-block;
   height: 34px;
   margin-right: 8px;
@@ -334,12 +251,12 @@ input[type="checkbox"].environment-dialog__form-element {
 }
 
 // Naming is wrong
-.environment-dialog__form-element-tag-input--text {
+.env-dialog__selected-item-label {
   vertical-align: top;
 }
 
 // Naming is wrong
-.environment-dialog__form-element-tag-input--delete {
+.env-dialog__selected-item-action {
   background-position: center center;
   background-repeat: no-repeat;
   border-radius: 32px;  
@@ -359,21 +276,21 @@ input[type="checkbox"].environment-dialog__form-element {
   
   &.active, 
   &:active {
-    background-color: $color-form-field-tag-input-tag-delete-background-active;
+    background-color: $color-form-field-selected-item-delete-background-active;
   }
 }
 
-.environment-dialog__form-element--communicator-new-message-subject {
+.env-dialog__input--communicator-new-message-subject {
   margin-bottom: 5px;
 }
 
-.environment-dialog__form-element-label-name {
+.env-dialog__label-name {
   display: block;
   margin-bottom: 24px;
   text-align: center;
 }
 
-.environment-dialog__form-element--toolbar-selector {
+.env-dialog__input--toolbar-selector {
   display: inline-block;
   margin-right: 20px;
   vertical-align: top;
@@ -385,23 +302,15 @@ input[type="checkbox"].environment-dialog__form-element {
   }
 }
 
-.environment-dialog__form-element--new-discussion-thread-title {
-  flex-grow: 4;
-  flex-shrink: 1;
-  flex-basis: auto;
+.env-dialog__input--new-discussion-thread-title {
   margin-right: 20px;
 }
 
-.environment-dialog__form-element--new-discussion-thread-area {
+.env-dialog__input--new-discussion-thread-area {
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: auto;
 }
-
-.environment-dialog__form-element-tag-input--new-message-recepients {
-  margin-bottom: 5px;
-}
-
 
 label {
   display: block;
@@ -412,7 +321,7 @@ label {
   text-overflow: ellipsis;
 }
 
-input {
+.env-dialog__input {
   border: 2px solid $color-environment-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;

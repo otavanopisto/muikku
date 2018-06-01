@@ -62,19 +62,17 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
     this.props.onDelete(tag.value);
   }
   render(){
-    return <div className={`container container--${this.props.modifier} environment-dialog__form-element-tag-input environment-dialog__form-element-tag-input--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
-      <div className="environment-dialog__form-element-wrapper" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
-        <div className="environment-dialog__form-element-label">{this.props.placeholder}</div>
-        <input className="environment-dialog__form-element-tag-input__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
-        onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />      
-      
+    return <div className={`container container--${this.props.modifier} ${this.props.isFocused?  "focus" : ""}`}>
+      <div className="env-dialog__form-element-container" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
+        <div className="env-dialog__label">{this.props.placeholder}</div>
+        <input className="env-dialog__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
+        onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />            
         {this.props.tags.map((tag, index)=>{
-          return <span key={index} className="environment-dialog__form-element-tag-input--tag">
-            <span className="environment-dialog__form-element-tag-input--text">{tag.node}</span>
-            <span className="environment-dialog__form-element-tag-input--delete icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
+          return <span key={index} className="env-dialog__selected-item">
+            <span className="env-dialog__selected-item-label">{tag.node}</span>
+            <span className="env-dialog__selected-item-action icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
           </span>
         })}
-
       </div>
     </div>
   }

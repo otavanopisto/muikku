@@ -96,7 +96,7 @@ div.form-field-tag-input {
 .form-field-tag-input__field {
   -moz-appearance: textfield;
   -webkit-appearance: textfield;
-  background-color: $color-form-field-tag-input-tag-background;
+  background-color: $color-form-field-selected-item-background;
   background-color: -moz-field;
   display: flex;
   font: -moz-field;
@@ -124,10 +124,10 @@ div.form-field-tag-input {
 }
 
 .form-field-tag-input__tag {
-  background-color: $color-form-field-tag-input-tag-background;
+  background-color: $color-form-field-selected-item-background;
   border: solid 2px $color-form-field-tag-input-tag-border;
   border-radius: 3px;
-  color: $color-form-field-tag-input-tag-text;
+  color: $color-form-field-selected-item -text;
   display: inline-block;
   height: 34px;
   margin-right: 8px;
@@ -163,7 +163,7 @@ div.form-field-tag-input {
   
   &.active, 
   &:active {
-    background-color: $color-form-field-tag-input-tag-delete-background-active;
+    background-color: $color-form-field-selected-item-delete-background-active;
   }
 }
 

@@ -77,7 +77,7 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return (
-        <div className="environment-dialog__button-container">
+        <div className="env-dialog__actions">
           <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
           </Button>
