@@ -3,7 +3,7 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.environment-dialog {
+.env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   background-color: $color-overlay-background;
   bottom: 0;
@@ -101,7 +101,7 @@
   }                  
 }  
 
-.environment-dialog__close {
+.env-dialog__close {
   @include prefix(transition, moz ms o webkit, background-color 0.3s);
   border-radius: $dialog-button-close-height;
   cursor: pointer;
@@ -118,7 +118,7 @@
 }
 
 
-.environment-dialog__title {
+.env-dialog__title {
   font-weight: 500;
   position: relative;
   text-align: center;   
@@ -162,7 +162,7 @@
 }
 
 // Forms
-// TODO, these environment-dialog form templates and css need to be refactored. These are just inconsistent garbage.
+// TODO, these env-dialog form templates and css need to be refactored. These are just inconsistent garbage.
 
 .env-dialog__form-element-container {
   flex-wrap: wrap;
@@ -322,7 +322,7 @@ label {
 }
 
 .env-dialog__input {
-  border: 2px solid $color-environment-dialog-form-element-border;
+  border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
   font-family: $text-font-family;
