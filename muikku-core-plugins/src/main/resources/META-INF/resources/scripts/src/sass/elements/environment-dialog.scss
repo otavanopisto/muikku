@@ -240,7 +240,7 @@ input:not([type="checkbox"]).env-dialog__input, .env-dialog__input input, textar
 
 .env-dialog__selected-item {
   background-color: $color-form-field-selected-item-background;
-  color: $color-form-field-selected-item -text;
+  color: $color-form-field-selected-item-text;
   display: inline-block;
   height: 34px;
   margin-right: 8px;
