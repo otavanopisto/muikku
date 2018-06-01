@@ -44,7 +44,11 @@ export interface CourseType {
   canSignup: boolean,
   isCourseMember: boolean,
   educationTypeName: string,
-  hasCustomImage: boolean
+  hasCustomImage: boolean,
+  
+  feeInfo?: {
+    evaluationHasFee: boolean
+  }
 }
 export type CourseListType = Array<CourseType>;
 

@@ -13,6 +13,9 @@ const MAX_LOADED_AT_ONCE = 26;
 export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
   let courses:CoursesType = state.courses;
+  let hasEvaluationFees:boolean = state.userIndex && 
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
   
   //Avoid loading courses again for the first time if it's the same location
   if (initial && filters === courses.activeFilters && courses.state === "READY"){
@@ -88,7 +91,15 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
       actualCourses.pop();
     }
     
-    //Create the payload for updating all the communicator properties
+    //Create the payload for updating all the coursepicker properties
+    if (hasEvaluationFees){
+      actualCourses = await Promise.all(actualCourses.map(async (course)=>{
+        return Object.assign(course, {
+          feeInfo: await promisify(mApi().workspace.workspaces.feeInfo.read(course.id), 'callback')()
+        });
+      }));
+    }
+    
     let payload:CoursesPatchType = {
       state: "READY",
       courses: (concat ? courses.courses.concat(actualCourses) : actualCourses),
