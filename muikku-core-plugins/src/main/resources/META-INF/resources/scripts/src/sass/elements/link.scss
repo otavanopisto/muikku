@@ -61,6 +61,10 @@
 
 .link--forgot-password {
   margin: 0 10px;
+  
+  &.link--forgot-password-main-function {
+  	color: $color-main-function-label-forgot-password;
+  }
 }
 
 .link--icon {

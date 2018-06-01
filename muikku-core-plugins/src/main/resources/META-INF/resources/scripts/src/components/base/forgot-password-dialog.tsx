@@ -12,7 +12,7 @@ import '~/sass/elements/buttons.scss';
 interface ForgotPasswordDialogProps {
   i18n: i18nType,
   children: React.ReactElement<any>,
-  modifier: string
+  modifier?: string
 }
 
 interface ForgotPasswordDialogState {
@@ -44,7 +44,7 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
       </div>
     }
     return <Dialog title={this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.title')}
-      content={content} footer={footer} modifier={this.props.modifier}>
+      content={content} footer={footer} modifier={this.props.modifier ? ["forgot-password", this.props.modifier] : "forgot-password"}>
         {this.props.children}
     </Dialog>
   }

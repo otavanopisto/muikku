@@ -196,6 +196,21 @@
   &.active {
     background-color: darken($color-frontpage-button-login-background, 20%);
   }
+ 
+  &.button--login-main-function {
+  	background-color: $color-main-function-button-login-background;
+    color: $color-main-function-button-login-text;
+  
+    &:hover, 
+    &.hover {
+      background-color: darken($color-main-function-button-login-background, 10%);
+    }
+  
+    &:active, 
+    &.active {
+      background-color: darken($color-main-function-button-login-background, 20%);
+    }
+  }
 }
 
 .button--frontpage-upper-secondary-school-readmore {

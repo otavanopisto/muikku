@@ -6,7 +6,7 @@ import '~/sass/elements/dialog.scss';
 interface DialogProps {
   children?: React.ReactElement<any>,
   title: string,
-  modifier: string,
+  modifier?: string | Array<string>,
   content: any,
   footer?: (closePortal: ()=>any)=>any,
   onOpen?: (e?: HTMLElement)=>any,
@@ -60,8 +60,10 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
-        {(closePortal: ()=>any)=>{return <div className={`dialog dialog--${this.props.modifier} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
-          <div className="dialog__window">
+        {(closePortal: ()=>any)=>{
+          let modifiers:Array<string> = typeof this.props.modifier === "string" ? [this.props.modifier] : this.props.modifier;
+          return <div className={`dialog ${(modifiers || []).map(s=>`dialog--${s}`).join(" ")} ${this.state.visible ? "dialog--visible" : ""}`} onClick={this.onOverlayClick.bind(this, closePortal)}>
+            <div className="dialog__window">
               <div className="dialog__header">
                 <div className="dialog__title">
                     {this.props.title}
