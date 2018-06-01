@@ -74,6 +74,9 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
           </DiscussionThreadHeader>
           <DiscussionThreadBody>
             <article className="text text--item-article" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
+            {this.props.discussion.current.created !== this.props.discussion.current.lastModified ? <span className="text text--discussion-last-modifier">
+              {this.props.i18n.text.get("plugin.discussion.content.isEdited", this.props.i18n.time.format(this.props.discussion.current.lastModified))}
+            </span> : null}
           </DiscussionThreadBody>
           <DiscussionThreadFooter hasActions>
             <ReplyThread>
@@ -86,7 +89,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             {canRemoveThread ? 
             <DeleteThreadComponent>
               <Link as="span" className="link link--application-list-item-footer">{this.props.i18n.text.get("plugin.discussion.reply.delete")}</Link>            
-            </DeleteThreadComponent> : null}  
+            </DeleteThreadComponent> : null}
           </DiscussionThreadFooter>
         </DiscussionCurrentThreadElement>
             
@@ -121,6 +124,9 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
                 {reply.deleted ? 
                   <article className="text text--item-article">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
                   <article className="text text--item-article" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
+                {reply.created !== reply.lastModified ? <span className="text text--discussion-last-modifier">
+                  {this.props.i18n.text.get("plugin.discussion.content.isEdited", this.props.i18n.time.format(reply.lastModified))}
+                </span> : null}
               </DiscussionThreadBody>
               {!reply.deleted ? <DiscussionThreadFooter>
                 <ReplyThread reply={reply}>

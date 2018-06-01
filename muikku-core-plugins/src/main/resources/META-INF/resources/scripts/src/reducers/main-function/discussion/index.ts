@@ -21,7 +21,7 @@ export interface DiscussionThreadReplyType {
   deleted: boolean,
   forumAreaId: number,
   id: number,
-  lasModified: string,
+  lastModified: string,
   message: string,
   parentReplyId: number
 }
