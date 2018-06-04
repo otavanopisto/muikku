@@ -117,8 +117,11 @@
                     </form>
                   </ui:fragment>
                   
-                  <div class="profile-chat-visibility">
-                  </div>
+                  <ui:fragment rendered="#{profileBackingBean.chatEnabled}">#{i18n.text['plugin.profile.chat.visibility']} 
+                    <div class="profile-chat-visibility">
+                    </div>
+                  </ui:fragment>
+                  
                   
                 </div>
               </div>

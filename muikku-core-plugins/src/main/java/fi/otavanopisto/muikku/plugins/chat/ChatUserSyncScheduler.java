@@ -56,7 +56,6 @@ public class ChatUserSyncScheduler {
     if (listUsers == null) {
       return;
     }
-   // List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {

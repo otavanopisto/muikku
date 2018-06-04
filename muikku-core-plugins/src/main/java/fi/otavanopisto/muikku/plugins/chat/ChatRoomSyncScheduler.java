@@ -52,12 +52,7 @@ public class ChatRoomSyncScheduler {
   @Schedule(second = "0", minute = "*/15", hour = "*", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatRooms() {
-//    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-//    if (enabledUsersCsv == null) {
-//      return;
-//    }
-//    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
-//
+
     String enabledWorkspacesCsv = pluginSettingsController.getPluginSetting("chat", "enabledWorkspaces");
     if (enabledWorkspacesCsv == null) {
      return;

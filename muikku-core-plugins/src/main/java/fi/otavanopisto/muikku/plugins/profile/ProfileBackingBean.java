@@ -3,6 +3,7 @@ package fi.otavanopisto.muikku.plugins.profile;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -11,12 +12,18 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.core.Response;
 
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.plugins.chat.ChatController;
+import fi.otavanopisto.muikku.plugins.chat.ChatRESTService;
+import fi.otavanopisto.muikku.plugins.chat.StatusRESTModel;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
@@ -43,6 +50,12 @@ public class ProfileBackingBean {
 
   @Inject
   private LocaleController localeController;
+  
+  @Inject
+  private ChatRESTService chatRESTService;
+  
+  @Inject 
+  PluginSettingsController pluginSettingsController;
 
   @RequestAction
   @LoggedIn
@@ -99,7 +112,19 @@ public class ProfileBackingBean {
     
     SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
     emails = userEmailEntityController.getUserEmailAddresses(identifier);
+   
+    chatEnabled = false;
+    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
     
+    if (enabledUsersCsv == null) {
+      return null;
+    }
+    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
+    
+      if (enabledUsers.contains(identifier.toId())) {
+    	  chatEnabled = true;
+      }
+      
     return null;
   }
   
@@ -130,6 +155,10 @@ public class ProfileBackingBean {
   public String getStudyTimeLeftStr() {
     return studyTimeLeftStr;
   }
+  
+  public boolean isChatEnabled() {
+	  return chatEnabled;
+  }
 
   private String displayName;
   private List<String> emails;
@@ -138,4 +167,5 @@ public class ProfileBackingBean {
   private OffsetDateTime studyStartDate;
   private OffsetDateTime studyTimeEnd;
   private String studyTimeLeftStr;
+  private boolean chatEnabled;
 }
