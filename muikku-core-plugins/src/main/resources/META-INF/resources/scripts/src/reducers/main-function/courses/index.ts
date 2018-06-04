@@ -31,7 +31,8 @@ export interface CoursesActiveFiltersType {
   query: string,
   baseFilter: CoursesBaseFilterType
 }
-export interface CourseType {
+
+export interface WorkspaceCourseType {
   id: number,
   urlName: string,
   archived: boolean,
@@ -50,13 +51,13 @@ export interface CourseType {
     evaluationHasFee: boolean
   }
 }
-export type CourseListType = Array<CourseType>;
+export type WorkspaceCourseListType = Array<WorkspaceCourseType>;
 
 export interface CoursesPatchType {
   avaliableFilters?: CoursesAvaliableFiltersType,
   state?: CoursesStateType,
   activeFilters?: CoursesActiveFiltersType,
-  courses?: CourseListType,
+  courses?: WorkspaceCourseListType,
   hasMore?: boolean,
   toolbarLock?: boolean
 }
@@ -65,7 +66,7 @@ export interface CoursesType {
   avaliableFilters: CoursesAvaliableFiltersType,
   state: CoursesStateType,
   activeFilters: CoursesActiveFiltersType,
-  courses: CourseListType,
+  courses: WorkspaceCourseListType,
   hasMore: boolean,
   toolbarLock: boolean
 }

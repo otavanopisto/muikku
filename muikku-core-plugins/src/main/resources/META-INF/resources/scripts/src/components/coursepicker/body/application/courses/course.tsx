@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
 
 import {i18nType} from '~/reducers/base/i18n';
-import { CourseType } from '~/reducers/main-function/courses';
+import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 
 import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
@@ -12,11 +12,13 @@ import '~/sass/elements/course.scss';
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
+import Button from '~/components/general/button';
+import WorkspaceSignupDialog from '../workspace-signup-dialog';
 
 interface CourseProps {
   i18n: i18nType,
   status: StatusType,
-  course: CourseType
+  course: WorkspaceCourseType
 }
 
 interface CourseState {
@@ -52,11 +54,15 @@ class Course extends React.Component<CourseProps, CourseState>{
             <article className="text text--coursepicker-course-description" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
-            <Link className="button button--primary-function-content" href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
+            <Button buttonModifiers="primary-function-content" href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
               {this.props.course.isCourseMember ?
                this.props.i18n.text.get("plugin.coursepicker.course.goto") :
                this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
-            </Link>
+            </Button>
+            {this.props.course.canSignup && this.props.status.loggedIn ?
+              <WorkspaceSignupDialog course={this.props.course}><Button buttonModifiers="primary-function-content">
+                {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
+              </Button></WorkspaceSignupDialog> : null}
           </ApplicationListItemFooter>
         </div>
       : null}
