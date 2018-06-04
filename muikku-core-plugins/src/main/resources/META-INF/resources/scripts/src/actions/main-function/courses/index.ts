@@ -2,7 +2,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import notificationActions from '~/actions/base/notifications';
-import { CoursesActiveFiltersType, CoursesPatchType, CoursesStateType, CourseEducationFilterListType, CourseCurriculumFilterListType } from '~/reducers/main-function/courses';
+import { CoursesActiveFiltersType, CoursesPatchType, CoursesStateType, CourseEducationFilterListType, CourseCurriculumFilterListType, WorkspaceCourseType } from '~/reducers/main-function/courses';
 import { loadCoursesHelper } from './helpers';
 import { StateType } from '~/reducers';
 
@@ -23,6 +23,14 @@ export interface LoadMoreCoursesFromServerTriggerType {
 }
 export interface LoadAvaliableEducationFiltersFromServerTriggerType {
   ():AnyActionType
+}
+export interface SignupIntoCourseTriggerType {
+  (data: {
+    success: ()=>any,
+    fail: ()=>any,
+    course: WorkspaceCourseType,
+    message: string,
+  }):AnyActionType
 }
 
 export interface LoadAvaliableCurriculumFiltersFromServerTriggerType {
@@ -55,8 +63,8 @@ let loadAvaliableEducationFiltersFromServer:LoadAvaliableEducationFiltersFromSer
   
 let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromServerTriggerType = function loadAvaliableCurriculumFiltersFromServer(callback){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
-    let curriculums = <CourseCurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
     try {
+      let curriculums = <CourseCurriculumFilterListType>(await promisify(mApi().coursepicker.curriculums.read(), 'callback')())
       dispatch({
         type: "UPDATE_COURSES_AVALIABLE_FILTERS_CURRICULUMS",
         payload: curriculums
@@ -71,5 +79,23 @@ let loadAvaliableCurriculumFiltersFromServer:LoadAvaliableCurriculumFiltersFromS
   }
 }
 
-export {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer};
-export default {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer};
+let signupIntoCourse:SignupIntoCourseTriggerType = function signupIntoCourse(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    try {
+      await promisify(mApi().coursepicker.workspaces.signup.create(data.course.id, {
+        message: data.message
+      }), 'callback')();
+      window.location.href = `${getState().status.contextPath}/workspace/${data.course.urlName}`;
+      data.success();
+    } catch (err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG error for when signing up to the course failed"), 'error'));
+      data.fail();
+    }
+  }
+}
+
+export {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};
+export default {loadAvaliableCurriculumFiltersFromServer, loadAvaliableEducationFiltersFromServer, loadCoursesFromServer, loadMoreCoursesFromServer, signupIntoCourse};

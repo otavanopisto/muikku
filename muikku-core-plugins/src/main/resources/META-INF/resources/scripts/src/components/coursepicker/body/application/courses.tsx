@@ -11,7 +11,7 @@ import '~/sass/elements/message.scss';
 
 import BodyScrollLoader from '~/components/general/body-scroll-loader';
 import SelectableList from '~/components/general/selectable-list';
-import {CoursesStateType, CourseListType, CourseType} from '~/reducers/main-function/courses';
+import {CoursesStateType, WorkspaceCourseListType, WorkspaceCourseType} from '~/reducers/main-function/courses';
 import { loadMoreCoursesFromServer, LoadMoreCoursesFromServerTriggerType } from '~/actions/main-function/courses';
 import Course from './courses/course';
 import {StateType} from '~/reducers';
@@ -22,7 +22,7 @@ interface CoursepickerWorkspacesProps {
   coursepickerCoursesState: CoursesStateType,
   coursepickerHasMore: boolean,
   loadMoreCoursesFromServer: LoadMoreCoursesFromServerTriggerType,
-  coursepickerCoursesCourses: CourseListType
+  coursepickerCoursesCourses: WorkspaceCourseListType
 }
 
 interface CoursepickerWorkspacesState {
@@ -51,7 +51,7 @@ class CoursepickerWorkspaces extends BodyScrollLoader<CoursepickerWorkspacesProp
       return <div className="empty"><span>{this.props.i18n.text.get("TODO it's empty")}</span></div>
     }    
     return (<ApplicationList>
-      {this.props.coursepickerCoursesCourses.map((course: CourseType)=>{
+      {this.props.coursepickerCoursesCourses.map((course: WorkspaceCourseType)=>{
         return <Course key={course.id} course={course}/>
       })}
       {this.props.coursepickerCoursesState === "LOADING_MORE" ? <ApplicationListItem className="loader-empty"/> : null}

@@ -4,7 +4,7 @@ import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 
 import {AnyActionType} from '~/actions';
-import { CoursesActiveFiltersType, CoursesStateType, CourseListType, CoursesPatchType, CoursesType } from '~/reducers/main-function/courses';
+import { CoursesActiveFiltersType, CoursesStateType, WorkspaceCourseListType, CoursesPatchType, CoursesType } from '~/reducers/main-function/courses';
 import { StateType } from '~/reducers';
 
 //HELPERS
@@ -13,6 +13,9 @@ const MAX_LOADED_AT_ONCE = 26;
 export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null, initial:boolean, dispatch:(arg:AnyActionType)=>any, getState:()=>StateType){
   let state: StateType = getState();
   let courses:CoursesType = state.courses;
+  let hasEvaluationFees:boolean = state.userIndex && 
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier] &&
+    state.userIndex.usersBySchoolData[state.status.userSchoolDataIdentifier].hasEvaluationFees
   
   //Avoid loading courses again for the first time if it's the same location
   if (initial && filters === courses.activeFilters && courses.state === "READY"){
@@ -73,7 +76,7 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
   }
   
   try {
-    let nCourses:CourseListType = <CourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
+    let nCourses:WorkspaceCourseListType = <WorkspaceCourseListType>await promisify(mApi().coursepicker.workspaces.cacheClear().read(params), 'callback')();
   
     //TODO why in the world does the server return nothing rather than an empty array?
     //remove this hack fix the server side
@@ -88,7 +91,15 @@ export async function loadCoursesHelper(filters:CoursesActiveFiltersType | null,
       actualCourses.pop();
     }
     
-    //Create the payload for updating all the communicator properties
+    //Create the payload for updating all the coursepicker properties
+    if (hasEvaluationFees){
+      actualCourses = await Promise.all(actualCourses.map(async (course)=>{
+        return Object.assign(course, {
+          feeInfo: await promisify(mApi().workspace.workspaces.feeInfo.read(course.id), 'callback')()
+        });
+      }));
+    }
+    
     let payload:CoursesPatchType = {
       state: "READY",
       courses: (concat ? courses.courses.concat(actualCourses) : actualCourses),

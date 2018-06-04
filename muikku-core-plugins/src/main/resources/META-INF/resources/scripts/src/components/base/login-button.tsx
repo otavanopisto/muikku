@@ -10,7 +10,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
 interface LoginButtonProps {
-  i18n: i18nType
+  i18n: i18nType,
+  modifier?: string
 }
 
 interface LoginButtonState {
@@ -28,7 +29,7 @@ class LoginButton extends React.Component<LoginButtonProps, LoginButtonState> {
     window.location.replace($("#login").attr("href"));
   }
   render(){
-    return (<Link className="button button--login" onClick={this.login}>
+    return (<Link className={`button button--login ${this.props.modifier ? "button--" + this.props.modifier : ""}`} onClick={this.login}>
       <span>{this.props.i18n.text.get('plugin.login.buttonLabel')}</span>
     </Link>);
   }

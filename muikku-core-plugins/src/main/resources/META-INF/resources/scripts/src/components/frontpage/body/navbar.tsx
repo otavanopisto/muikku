@@ -46,7 +46,7 @@ class FrontpageNavbar extends React.Component<FrontpageNavbarProps, FrontpageNav
       }
     ]} defaultOptions={[
       (<LoginButton key="0"/>),
-      (<ForgotPasswordDialog modifier="forgot-password" key="1"><Link className="link link--forgot-password">
+      (<ForgotPasswordDialog key="1"><Link className="link link--forgot-password">
          <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
        </Link></ForgotPasswordDialog>)
     ]} menuItems={[

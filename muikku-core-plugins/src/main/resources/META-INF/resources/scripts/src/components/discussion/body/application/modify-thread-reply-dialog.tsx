@@ -105,7 +105,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
       return (          
          <div className="env-dialog__actions">       
           <Button className="button button--dialog-execute" onClick={this.modifyReply.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
+            {this.props.reply ? this.props.i18n.text.get('plugin.discussion.reply.edit') : this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
           <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
@@ -118,7 +118,7 @@ class ModifyThreadReply extends SessionStateComponent<ModifyThreadReplyProps, Mo
     }
     
     return <JumboDialog modifier="modify-reply-thread"
-      title={this.props.i18n.text.get('plugin.discussion.reply.topic')}
+      title={this.props.reply ? this.props.i18n.text.get('plugin.discussion.reply.edit.topic') : this.props.i18n.text.get('plugin.discussion.reply.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>

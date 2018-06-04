@@ -1,5 +1,7 @@
 import Navbar from '~/components/general/navbar';
 import Link from '~/components/general/link';
+import LoginButton from '../login-button';
+import ForgotPasswordDialog from '../forgot-password-dialog';
 
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
@@ -107,7 +109,12 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
           {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
         </Link>)
       }
-    })} defaultOptions={[]} menuItems={itemData.map((item: ItemDataElement)=>{
+    })} defaultOptions={this.props.status.loggedIn ? null : [
+      (<LoginButton modifier="login-main-function" key="0"/>),
+      (<ForgotPasswordDialog key="1"><Link className="link link--forgot-password link--forgot-password-main-function">
+        <span>{this.props.i18n.text.get('plugin.forgotpassword.forgotLink')}</span>
+      </Link></ForgotPasswordDialog>)
+    ]} menuItems={itemData.map((item: ItemDataElement)=>{
       if (!item.condition){
         return null;
       }

@@ -76,7 +76,12 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   componentDidMount(){
     let extraConfig: any = {
       height: 0,
-      startupFocus: this.props.autofocus
+      startupFocus: this.props.autofocus,
+      allowedContent: true,
+      entities_latin: false,
+      entities_greek: false,
+      entities: false,
+      basicEntities: false
     };
     if (this.props.extraPlugins){
       for (let [plugin, url] of (Object as any).entries(this.props.extraPlugins)){

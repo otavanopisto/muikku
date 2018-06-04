@@ -813,6 +813,17 @@ b {
   margin-right: 10px;
 }
 
+.text--course-has-fees {
+  color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+
 .text--transfer-credit-icon {
   color: $color-transfer-credit-icon;
   display: inline-flex;
