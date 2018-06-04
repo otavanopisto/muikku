@@ -53,7 +53,6 @@
   flex-direction: column;
   font-family: $text-font-family;
   height: 100%;
-  position: relative;
   width: 100%;  
 
   @include breakpoint($breakpoint-desktop) {
@@ -151,13 +150,7 @@
   }
 
   @include breakpoint($breakpoint-pad) {  
-    left: 0;
-  }
-
-  
-  @include breakpoint($breakpoint-desktop-xl) {  
-    left: auto;
-    right: 100%;
+    left: 15px;
   }
 }
 
