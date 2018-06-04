@@ -570,7 +570,7 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
 
     if ( existantMessage && existantMessage.unreadMessagesInThread ) {
       dispatch( toggleMessageThreadReadStatus(existantMessage, true) );
-    } else if ( !existantMessage ) {
+    } else if ( !existantMessage && item.location !== "sent") {
       try {
         await promisify( mApi().communicator[getApiId( item )].markasread.create( currentThread.messages[0].communicatorMessageId ), 'callback' )();
       } catch ( err ) {

@@ -46,7 +46,8 @@ interface CommunicatorNewMessageProps {
   initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
   signature: MessageSignatureType,
-  sendMessage: SendMessageTriggerType
+  sendMessage: SendMessageTriggerType,
+  initialSubject?: string
 }
 
 interface CommunicatorNewMessageState {
@@ -72,7 +73,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.state = this.getRecoverStoredState({
       text: "",
       selectedItems: props.initialSelectedItems || [],
-      subject: "",
+      subject: props.initialSubject || "",
       locked: false,
       includesSignature: true
     }, props.replyThreadId);
@@ -110,7 +111,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         this.setStateAndClear({
           text: "",
           selectedItems: this.props.initialSelectedItems || [],
-          subject: "",
+          subject: this.props.initialSubject || "",
           locked: false
         }, this.props.replyThreadId);
       },
@@ -129,7 +130,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
     this.setStateAndClear({
       text: "",
       selectedItems: this.props.initialSelectedItems || [],
-      subject: "",
+      subject: this.props.initialSubject || "",
       locked: false
     }, this.props.replyThreadId);
   }
