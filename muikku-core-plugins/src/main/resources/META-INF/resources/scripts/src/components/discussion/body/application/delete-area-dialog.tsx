@@ -2,6 +2,7 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Link from '~/components/general/link';
+import Button from '~/components/general/button';
 import Dialog from '~/components/general/dialog';
 import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
@@ -61,12 +62,12 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="dialog__button-set">
-          <Link className="button button--dialog-execute" onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-execute" onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.send')}
-          </Link>
-          <Link className="button button--dialog-cancel" onClick={closeDialog}>
+          </Button>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.cancel')}
-          </Link>
+          </Button>
         </div>
       )
     }
