@@ -772,6 +772,7 @@
   background-color: $color-button-clear-background;
   color: $color-button-execute-text;
   order: 1;    
+  
   @include breakpoint($breakpoint-desktop) {
     order: 3;
   }
