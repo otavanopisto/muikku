@@ -18,6 +18,11 @@ store.dispatch(<Action>updateLabelFilters());
 store.dispatch(<Action>updateWorkspaceFilters());
 
 function loadCurrentLocation(){
+  //This code allows you to use the weird deprecated #userprofile/PYRAMUS-STUDENT-30055%22%3EJuhana type of links
+  if (window.location.hash.replace("#","").indexOf("userprofile") === 0) {
+    store.dispatch(<Action>loadStudent(decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]))
+    return;
+  }
   let originalData:any = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
 
   if (!originalData.c){
