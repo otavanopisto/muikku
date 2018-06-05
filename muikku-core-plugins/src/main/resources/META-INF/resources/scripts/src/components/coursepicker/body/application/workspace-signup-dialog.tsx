@@ -57,10 +57,10 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
     let content = (closeDialog: ()=>any) => <div>
       <div className="text text--workspace-signup-dialog">
         {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ?
-          <React.Fragment>
+          <div>
             <b>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</b>
             <span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span>
-          </React.Fragment> : null}
+          </div> : null}
         <b>{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</b>
         <textarea value={this.state.message} onChange={this.updateMessage}/>
       </div>
