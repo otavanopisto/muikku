@@ -54,10 +54,12 @@
   font-family: $text-font-family;
   height: 100%;
   position: relative;
-  width: 100%;  
+  width: 100%; 
+  overflow: auto;  
 
   @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
+    overflow: initial; 
   }
   
   @include breakpoint($breakpoint-desktop-xl) { 
@@ -96,7 +98,7 @@
     padding: 0;
   }
   
-  a:not(:first-child) {
+  a {
     margin-left: 10px;         
   }                  
 }  
