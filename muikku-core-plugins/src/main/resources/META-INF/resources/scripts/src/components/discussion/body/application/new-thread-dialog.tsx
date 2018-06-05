@@ -11,6 +11,7 @@ import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/act
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
+import { StatusType } from '~/reducers/base/status';
 
 const ckEditorConfig = {
   toolbar: [
@@ -33,6 +34,7 @@ interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
   i18n: i18nType,
   discussion: DiscussionType,
+  status: StatusType,
   createDiscussionThread: CreateDiscussionThreadTriggerType
 }
 
@@ -159,15 +161,16 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
            <select className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
             {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
               {area.name}
-             </option>)} buttonModifiers="danger"
+             </option>)}
            </select>
          </div>
        </div>,
        <div key="2" className="container container--new-discussion-thread-states">
-         <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-         <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
-         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+         {this.props.status.permissions.LOCK_STICKY_PERMISSION ? [
+         <span className="text text--new-discussion-create-state" key="1">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>,
+         <input type="checkbox" className="environment-dialog__form-element" key="2" checked={this.state.threadPinned} onChange={this.togglePinned}/>,
+         <span className="text text--new-discussion-create-state" key="3">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>,
+         <input type="checkbox" className="environment-dialog__form-element" key="4" checked={this.state.threadLocked} onChange={this.toggleLocked}/>] : null}
        </div>,
        <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
@@ -198,7 +201,8 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussion: state.discussion
+    discussion: state.discussion,
+    status: state.status
   }
 };
 
