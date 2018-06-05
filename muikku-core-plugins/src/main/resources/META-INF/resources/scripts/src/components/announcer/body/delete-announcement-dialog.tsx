@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { AnyActionType } from '~/actions';
 import { i18nType } from '~/reducers/base/i18n';
 import Link from '~/components/general/link';
+import Button from '~/components/general/button';
 import Dialog from '~/components/general/dialog';
 import { deleteSelectedAnnouncements, deleteAnnouncement,
   DeleteSelectedAnnouncementsTriggerType, DeleteAnnouncementTriggerType } from '~/actions/main-function/announcements';
@@ -66,13 +67,13 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="dialog__button-set">
-          <Link className="button button--dialog-execute"
+          <Button buttonModifiers="dialog-execute"
           onClick={this.deleteAnnouncement.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.announcer.deleteDialog.deleteButton.label')}
-          </Link>
-          <Link className="button button--dialog-cancel" onClick={closeDialog}>
+          </Button>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.announcer.deleteDialog.cancelButton.label')}
-          </Link>
+          </Button>
         </div>
       )
     }
