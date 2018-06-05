@@ -4,6 +4,7 @@ import { RecordsGradesType, MaterialType } from "~/reducers/main-function/record
 import { WorkspaceType } from "~/reducers/main-function/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
+import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
 
 interface MaterialProps {
   material: MaterialType,
@@ -47,7 +48,8 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
               evaluation.gradingScaleSchoolDataSource,
               evaluation.gradingScaleIdentifier,
               evaluation.gradeSchoolDataSource,
-              evaluation.gradeIdentifier].join("-")].scale} className={`text text--assignment-assesment-grade ${evaluation.grade ? "state-PASSED" : "state-FAILED"}`}>{evaluation.grade}</span>
+              evaluation.gradeIdentifier].join("-")].scale + getShortenGradeExtension(evaluation.grade)}
+              className={`text text--assignment-assesment-grade ${evaluation.grade ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
             : <span className={`text text--assignment-assesment-grade state-NO-ASSESSMENT`}>N</span>}
           
           <span className="text text--list-item-title">{this.props.material.assignment.title}</span>

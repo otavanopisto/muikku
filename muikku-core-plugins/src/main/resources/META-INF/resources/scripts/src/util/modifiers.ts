@@ -136,3 +136,17 @@ export function getUserImageUrl(user: UserType | number){
   }
   return `/rest/user/files/user/${id}/identifier/profile-image-96`
 }
+
+export function shortenGrade(grade: string){
+  if ("" + parseInt(grade) === grade){
+    return grade;
+  }
+  return grade[0];
+}
+
+export function getShortenGradeExtension(grade: string){
+  if ("" + parseInt(grade) === grade){
+    return ""
+  }
+  return " - " + grade;
+}
