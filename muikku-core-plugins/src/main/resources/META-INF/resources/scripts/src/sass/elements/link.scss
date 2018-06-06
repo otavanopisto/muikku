@@ -60,7 +60,23 @@
 }
 
 .link--forgot-password {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
   margin: 0 10px;
+  white-space: normal;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: auto;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 0;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
   
   &.link--forgot-password-main-function {
   	color: $color-main-function-label-forgot-password;
