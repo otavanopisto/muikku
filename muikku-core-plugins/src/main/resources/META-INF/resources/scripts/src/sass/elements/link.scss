@@ -197,21 +197,24 @@
 .link--icon {
   color: $color-environment-link-icon-color;
 
-  &:hover, &.hover {
-    color: $color-environment-link-icon-color-hover;
-  }
-  
-  &:active, &.active {
-    color: $color-environment-link-icon-color-active;
-  
-    &::before {
-      content: " ";
-      height: $main-function-link-icon-active-border-size;
-      background-color: $color-environment-link-icon-border-top-color-active;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      left: 0;
+  @include breakpoint($breakpoint-pad) {
+
+    &:hover, &.hover {
+      color: $color-environment-link-icon-color-hover;
+    }
+    
+    &:active, &.active {
+      color: $color-environment-link-icon-color-active;
+    
+      &::before {
+        content: " ";
+        height: $main-function-link-icon-active-border-size;
+        background-color: $color-environment-link-icon-border-top-color-active;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+      }
     }
   }
 }
