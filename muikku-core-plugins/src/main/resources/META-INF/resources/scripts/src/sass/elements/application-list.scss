@@ -158,9 +158,9 @@
 }
 
 .application-list__item-header {
-  align-items: center;
+  align-items: flex-start;
   display: flex;   
-  flex-flow: row wrap;   
+  flex-flow: row nowrap;   
 }
 
 .application-list__item-body {
