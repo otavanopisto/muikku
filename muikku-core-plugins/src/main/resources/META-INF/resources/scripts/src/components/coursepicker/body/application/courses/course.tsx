@@ -55,13 +55,13 @@ class Course extends React.Component<CourseProps, CourseState>{
             <article className="text text--coursepicker-course-description rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
-            <Button buttonModifiers="primary-function-content" href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
+            <Button buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
               {this.props.course.isCourseMember ?
                this.props.i18n.text.get("plugin.coursepicker.course.goto") :
                this.props.i18n.text.get("plugin.coursepicker.course.checkout")}
             </Button>
             {this.props.course.canSignup && this.props.status.loggedIn ?
-              <WorkspaceSignupDialog course={this.props.course}><Button buttonModifiers="primary-function-content">
+              <WorkspaceSignupDialog course={this.props.course}><Button buttonModifiers={["primary-function-content", "coursepicker-course-action"]}>
                 {this.props.i18n.text.get("plugin.coursepicker.course.signup")}
               </Button></WorkspaceSignupDialog> : null}
           </ApplicationListItemFooter>
