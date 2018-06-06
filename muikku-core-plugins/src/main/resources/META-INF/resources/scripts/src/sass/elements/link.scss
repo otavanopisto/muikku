@@ -146,6 +146,13 @@
 .link--menu {
   overflow: hidden;
   
+  &.active,
+  &:active {
+    background-color: $color-default;
+    color: $color-default-contrast;
+    font-weight: 600;
+  }
+  
   .link__icon {
     background-color: $color-environment-link-menu-icon-background;
     color: $color-environment-link-menu-icon-color;
