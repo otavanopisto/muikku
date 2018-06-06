@@ -61,9 +61,9 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
     let arrowLeft = null;
     let arrowRight = null;
     if (moreSpaceInTheLeftSide){
-      arrowRight = ($target.outerWidth() / 2) + ($arrow.width()/2);
+      arrowRight = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
     } else {
-      arrowLeft = ($target.outerWidth() / 2) + ($arrow.width()/2);
+      arrowLeft = ($target.outerWidth() / 2) - ($arrow.outerWidth()/2);
     }
     
     this.setState({top, left, arrowLeft, arrowRight, visible: true});
