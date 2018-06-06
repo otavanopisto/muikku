@@ -8,6 +8,8 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
+import '~/sass/elements/rich-text.scss';
+
 import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
 interface MessageViewProps {
@@ -43,7 +45,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
           </div>
           <div className="application-list__item-body">
             <header className="text text--announcer-announcement-caption">{this.props.announcements.current.caption}</header>
-            <section className="text text--announcer-announcement-content" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
+            <section className="text text--announcer-announcement-content rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>  
           <div className="application-list__item-meta">
             {this.props.announcements.current.workspaces ? 

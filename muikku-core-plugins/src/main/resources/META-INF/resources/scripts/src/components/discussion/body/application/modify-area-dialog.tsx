@@ -121,13 +121,13 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="env-dialog__actions">
-          <Button className="button button--dialog-execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.send')}
           </Button>
-          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Button>            
-          <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.clearDraft')}
           </Button>            
         </div>

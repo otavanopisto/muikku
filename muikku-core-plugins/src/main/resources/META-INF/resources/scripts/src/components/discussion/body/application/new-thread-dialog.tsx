@@ -11,6 +11,7 @@ import { createDiscussionThread, CreateDiscussionThreadTriggerType } from '~/act
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
+import { StatusType } from '~/reducers/base/status';
 
 const ckEditorConfig = {
   toolbar: [

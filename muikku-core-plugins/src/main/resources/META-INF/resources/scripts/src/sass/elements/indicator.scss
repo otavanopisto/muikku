@@ -1,9 +1,7 @@
 @import "../base/colors";
 @import "../base/mixins";
-
-$indicator-font-family: "Exo 2", Arial, sans-serif;
-$indicator-padding: 2;
-$indicator-font-size: 12;
+@import "../base/vars";
+@import "../base/breakpoints";
 
 .indicator {
   display: block;

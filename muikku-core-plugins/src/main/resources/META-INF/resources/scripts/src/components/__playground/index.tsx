@@ -5,6 +5,9 @@ import brace from 'brace';
 import 'brace/mode/html';
 import 'brace/theme/github';
 
+import '~/sass/elements/rich-text.scss';
+
+
 interface PlaygroundProps {
   
 }
@@ -87,7 +90,7 @@ export default class Playground extends React.Component<PlaygroundProps, Playgro
       zIndex: 99999999999
     }
     return <div style={Object.assign(style, {zIndex: 99999999999})}>
-      <div style={style} dangerouslySetInnerHTML={{__html: this.state.html}}></div>
+      <div style={style} className="rich-text" dangerouslySetInnerHTML={{__html: this.state.html}}></div>
       <div style={codeThingStyle}>
         <AceEditor
           focus

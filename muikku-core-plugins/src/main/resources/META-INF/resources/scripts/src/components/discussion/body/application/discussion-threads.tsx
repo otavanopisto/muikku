@@ -97,7 +97,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
               {thread.sticky ?
                 <DiscussionThreadBody>
                   <OverflowDetector as="div" classNameWhenOverflown="text--discussion-thread-item-body--overflown"
-                    className="text text--discussion-thread-item-body" dangerouslySetInnerHTML={{ __html: thread.message }} />
+                    className="text text--discussion-thread-item-body rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
                 </DiscussionThreadBody> : null
               }
               <DiscussionThreadFooter>

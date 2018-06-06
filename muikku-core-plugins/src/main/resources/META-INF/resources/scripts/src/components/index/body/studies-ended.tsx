@@ -5,6 +5,8 @@ import { i18nType } from "~/reducers/base/i18n";
 
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/rich-text.scss';
+
 
 interface StudiesEndedProps {
   i18n: i18nType
