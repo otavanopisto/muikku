@@ -16,6 +16,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/journal.scss';
+import '~/sass/elements/rich-text.scss';
 
 interface CurrentRecordProps {
   i18n: i18nType,

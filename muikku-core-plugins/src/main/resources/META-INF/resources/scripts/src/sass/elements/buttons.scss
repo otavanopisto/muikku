@@ -15,17 +15,24 @@
   color: $color-button-default-text;
   display: flex;
   font-family: $button-font-family;
-  font-size: $button-default-font-size;
-  height: $button-default-height;
+  font-size: $button-mobile-font-size;
   justify-content: center;
   overflow: hidden;
-  padding: 0 $button-default-font-size;
+  padding: 5px 10px;
   text-decoration: none;
   text-overflow: ellipsis;
   text-transform: uppercase; 
   white-space: nowrap;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-desktop-font-size;  
+  }
+}
+
+.button--coursepicker-course-action {
+  margin: 0 10px 0 0;
 }
 
 .button--branded {

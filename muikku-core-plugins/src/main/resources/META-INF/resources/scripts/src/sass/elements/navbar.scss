@@ -74,7 +74,7 @@
 .navbar__items {
   display: block;
   flex-basis: auto;
-  flex-grow: 1;
+  flex-grow: 0;
   flex-shrink: 0;
   height: $navbar-height;
   line-height: $navbar-height;
@@ -84,6 +84,10 @@
   padding: 0;
   position: relative;
   white-space: nowrap;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 1;
+  }
 }
  
 // NAVBAR ITEMS
@@ -152,9 +156,23 @@
 .navbar__default-options {
   align-items: center;
   display: flex;
-  flex-basis: auto;
-  flex-grow: 0;
+  flex-basis: 0;
+  flex-grow: 1;
   flex-shrink: 0;
   height: $navbar-height;
-  justify-content: center;
+  justify-content: flex-end;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-grow: 1;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-grow: 0;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+    flex-grow: 1;
+  }
+  
 }

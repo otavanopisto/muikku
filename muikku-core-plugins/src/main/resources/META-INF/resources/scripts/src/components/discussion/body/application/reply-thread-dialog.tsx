@@ -18,8 +18,7 @@ interface ReplyThreadProps {
   reply?: DiscussionThreadReplyType,
   quote?: string,
   quoteAuthor?: string,
-  currentId: number,
-      
+  currentId: number,      
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
 }
 
@@ -113,7 +112,7 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="environment-dialog__button-container">   
+         <div className="env-dialog__actions">   
           <Button buttonModifiers="dialog-execute" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>

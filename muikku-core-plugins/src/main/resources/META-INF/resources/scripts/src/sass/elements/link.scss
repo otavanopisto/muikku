@@ -60,7 +60,23 @@
 }
 
 .link--forgot-password {
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 1;
   margin: 0 10px;
+  white-space: normal;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: auto;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: 0;
+  }
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+  }
   
   &.link--forgot-password-main-function {
   	color: $color-main-function-label-forgot-password;
@@ -130,6 +146,13 @@
 .link--menu {
   overflow: hidden;
   
+  &.active,
+  &:active {
+    background-color: $color-default;
+    color: $color-default-contrast;
+    font-weight: 600;
+  }
+  
   .link__icon {
     background-color: $color-environment-link-menu-icon-background;
     color: $color-environment-link-menu-icon-color;
@@ -181,21 +204,24 @@
 .link--icon {
   color: $color-environment-link-icon-color;
 
-  &:hover, &.hover {
-    color: $color-environment-link-icon-color-hover;
-  }
-  
-  &:active, &.active {
-    color: $color-environment-link-icon-color-active;
-  
-    &::before {
-      content: " ";
-      height: $main-function-link-icon-active-border-size;
-      background-color: $color-environment-link-icon-border-top-color-active;
-      position: absolute;
-      top: 0;
-      width: 100%;
-      left: 0;
+  @include breakpoint($breakpoint-pad) {
+
+    &:hover, &.hover {
+      color: $color-environment-link-icon-color-hover;
+    }
+    
+    &:active, &.active {
+      color: $color-environment-link-icon-color-active;
+    
+      &::before {
+        content: " ";
+        height: $main-function-link-icon-active-border-size;
+        background-color: $color-environment-link-icon-border-top-color-active;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        left: 0;
+      }
     }
   }
 }
