@@ -264,15 +264,15 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     let content = (closeDialog: ()=>any) => [
       //FOR DESIGN CHECK https://github.com/Hacker0x01/react-datepicker
       (<div className="container container--new-announcement-options" key="1">
-        <div className="environment-dialog__form-element-wrapper">  
-           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</div>          
-             <DatePicker selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
+        <div className="env-dialog__form-element-container">  
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.startdate.label')}</div>          
+             <DatePicker className="env-dialog__input" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
              locale={this.props.i18n.time.getLocale()}/>
          </div>
          <div className="text text--announcer-times-decor">-</div>
-         <div className="environment-dialog__form-element-wrapper">  
-           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>         
-           <DatePicker selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
+         <div className="env-dialog__form-element-container">  
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>         
+           <DatePicker className="env-dialog__input" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
            locale={this.props.i18n.time.getLocale()}/>
         </div>
       </div>),
@@ -280,17 +280,17 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
       (
       <div className="container container--new-announcement-title">    
-       <div className="environment-dialog__form-element-wrapper">  
-         <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
-         <input key="3" type="text" className="environment-dialog__input--title"          
+       <div className="env-dialog__form-element-container">  
+         <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
+         <input key="3" type="text" className="env-dialog__input"          
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
        </div>   
       </div>
       ),
       (
       <div className="container container--announcer-content">    
-        <div className="environment-dialog__form-element-wrapper">  
-          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
+        <div className="env-dialog__form-element-container">  
+          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
           <CKEditor key="4" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>       
@@ -299,8 +299,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
     ]      
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="environment-dialog__button-container">
-          <Button buttonModifiers="dialog-execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
+         <div className="env-dialog__actions">
+          <Button className="button button--dialog-execute" onClick={this.createOrModifyAnnouncement.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.announcer.createannouncement.button.send')}
           </Button> 
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>

@@ -34,7 +34,6 @@ interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
   i18n: i18nType,
   discussion: DiscussionType,
-  status: StatusType,
   createDiscussionThread: CreateDiscussionThreadTriggerType
 }
 
@@ -151,40 +150,39 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <div className="environment-dialog__form-element-wrapper">  
-           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
-           <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" 
+         <div className="env-dialog__form-element-container">  
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
+           <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" 
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
          </div>
-         <div className="environment-dialog__form-element-wrapper">  
-           <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>       
-           <select className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-area" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
+         <div className="env-dialog__form-element-container">  
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.area')}</div>       
+           <select className="env-dialog__select" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
             {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
               {area.name}
-             </option>)}
+             </option>)} buttonModifiers="danger"
            </select>
          </div>
        </div>,
        <div key="2" className="container container--new-discussion-thread-states">
-         {this.props.status.permissions.LOCK_STICKY_PERMISSION ? [
-         <span className="text text--new-discussion-create-state" key="1">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>,
-         <input type="checkbox" className="environment-dialog__form-element" key="2" checked={this.state.threadPinned} onChange={this.togglePinned}/>,
-         <span className="text text--new-discussion-create-state" key="3">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>,
-         <input type="checkbox" className="environment-dialog__form-element" key="4" checked={this.state.threadLocked} onChange={this.toggleLocked}/>] : null}
+         <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
+         <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+         <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
        </div>,
        <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-        <div className="environment-dialog__button-container">
-         <Button buttonModifiers="dialog-execute" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
+        <div className="env-dialog__actions">
+         <Button className="button button--dialog-execute" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
-          <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
-          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
             </Button> : null}            
         </div>
@@ -201,8 +199,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussion: state.discussion,
-    status: state.status
+    discussion: state.discussion
   }
 };
 
