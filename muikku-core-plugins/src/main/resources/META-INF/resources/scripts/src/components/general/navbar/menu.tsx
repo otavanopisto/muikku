@@ -39,7 +39,9 @@ interface MenuState {
 
 class Menu extends React.Component<MenuProps, MenuState> {
   private touchCordX: number;
+  private touchCordY: number;
   private touchMovementX: number;
+  private preventXMovement: boolean;
   constructor(props: MenuProps){
     super(props);
     
@@ -68,18 +70,33 @@ class Menu extends React.Component<MenuProps, MenuState> {
   onTouchStart(e: React.TouchEvent<any>){
     this.setState({'dragging': true});
     this.touchCordX = e.changedTouches[0].pageX;
+    this.touchCordY = e.changedTouches[0].pageY;
     this.touchMovementX = 0;
+    this.preventXMovement = false;
     e.preventDefault();
   }
   onTouchMove(e: React.TouchEvent<any>){
     let diffX = e.changedTouches[0].pageX - this.touchCordX;
+    let diffY = e.changedTouches[0].pageY - this.touchCordY;
     let absoluteDifferenceX = Math.abs(diffX - this.state.drag);
     this.touchMovementX += absoluteDifferenceX;
 
     if (diffX > 0) {
       diffX = 0;
     }
-    this.setState({drag: diffX});
+    
+    if (diffX >= -3){
+      if (diffY >= 5 || diffY <= -5){
+        diffX = 0;
+        this.preventXMovement = true;
+      } else {
+        this.preventXMovement = false;
+      }
+    }
+    
+    if (!this.preventXMovement){
+      this.setState({drag: diffX});
+    }
     e.preventDefault();
   }
   onTouchEnd(e: React.TouchEvent<any>){
