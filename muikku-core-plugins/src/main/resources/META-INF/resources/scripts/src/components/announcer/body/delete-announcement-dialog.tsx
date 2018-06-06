@@ -43,8 +43,13 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
       this.props.deleteAnnouncement({
         announcement: this.props.announcement,
         success: ()=>{
-          this.setState({locked: false});
           this.props.onDeleteAnnouncementSuccess && this.props.onDeleteAnnouncementSuccess();
+          
+          //announcement is deleted, which is its parent, setState triggers an error
+          if (this.props.announcement){
+            return;
+          }
+          this.setState({locked: false});
           closeDialog();
         },
         fail: ()=>{
