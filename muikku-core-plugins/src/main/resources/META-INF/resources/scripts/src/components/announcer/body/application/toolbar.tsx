@@ -14,6 +14,7 @@ import '~/sass/elements/form-fields.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 
 import DeleteAnnouncementDialog from '../delete-announcement-dialog';
+import NewEditAnnouncement from './new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
 
@@ -85,6 +86,9 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
 
             </div>
 
+            <NewEditAnnouncement announcement={this.props.announcements.current}>
+              <ButtonPill buttonModifiers="edit" icon="edit" />
+            </NewEditAnnouncement>
             <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
               <ButtonPill buttonModifiers="delete" icon="delete" />
             </DeleteAnnouncementDialog>

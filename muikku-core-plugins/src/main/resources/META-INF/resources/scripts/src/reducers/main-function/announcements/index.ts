@@ -140,6 +140,10 @@ export default function announcements(state: AnnouncementsType={
     let update: AnnouncementUpdateType = action.payload.update;
     let oldAnnouncement: AnnouncementType = action.payload.announcement;
     let newAnnouncement: AnnouncementType = Object.assign({}, oldAnnouncement, update);
+    let newCurrent = state.current;
+    if (newCurrent && newCurrent.id === newAnnouncement.id){
+      newCurrent = newAnnouncement;
+    }
     return Object.assign({}, state, {selected: state.selected.map((selected: AnnouncementType)=>{
       if (selected.id === oldAnnouncement.id){
         return newAnnouncement
@@ -150,7 +154,7 @@ export default function announcements(state: AnnouncementsType={
         return newAnnouncement
       }
       return announcement;
-    })});
+    }), current: newCurrent});
   } else if (action.type === "LOCK_TOOLBAR"){
     return Object.assign({}, state, {toolbarLock: true});
   } else if (action.type === "UNLOCK_TOOLBAR"){
