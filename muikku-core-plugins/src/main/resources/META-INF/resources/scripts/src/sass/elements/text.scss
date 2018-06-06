@@ -179,7 +179,7 @@ b {
   align-items: center;
   font-size: 1.1875rem;
   font-weight: 400;
-  padding: 10px 0 0;
+  padding: 10px 0 0 5px;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad) {
@@ -191,19 +191,19 @@ b {
 }
   
 .text__panel-icon {
-  display: none;
+  border: 2px solid $color-default;
+  border-radius: 100%;
+  display: inline-block;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1rem;
+  padding: 7px;
+  text-align: center;
+  vertical-align: middle;
   
   @include breakpoint($breakpoint-pad) {
-    border: 2px solid $color-default;
-    border-radius: 100%;
-    display: inline-block;
-    flex-basis: auto;
-    flex-grow: 0;
-    flex-shrink: 0;
     font-size: 1.25rem;
-    padding: .35rem;
-    text-align: center;
-    vertical-align: middle;
   }
 }
 
