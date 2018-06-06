@@ -15,6 +15,9 @@ import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
 import promisify from '~/util/promisify';
 
+import '~/sass/elements/rich-text.scss';
+
+
 //Bubble gum scripting needs
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js");
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js");
@@ -184,7 +187,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     return <div className="__deprecated">
       {this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <div className="text text--studies-assignment-literal-assessment" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+            <div className="text text--studies-assignment-literal-assessment rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
       <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
