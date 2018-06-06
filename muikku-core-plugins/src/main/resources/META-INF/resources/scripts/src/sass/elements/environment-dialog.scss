@@ -53,9 +53,9 @@
   flex-direction: column;
   font-family: $text-font-family;
   height: 100%;
-  width: 100%; 
   overflow: auto;  
-
+  width: 100%; 
+  
   @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
     overflow: initial; 
