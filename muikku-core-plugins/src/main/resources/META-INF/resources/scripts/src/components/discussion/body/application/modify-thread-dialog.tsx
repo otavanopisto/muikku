@@ -129,21 +129,21 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
   render(){
     let content = (closeDialog: ()=>any) => [
        <div key="1" className="container container--new-discussion-options">
-         <input className="environment-dialog__form-element environment-dialog__form-element--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
+         <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
        </div>, 
        <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
-         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadPinned} onChange={this.togglePinned}/>
+         <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
-         <input type="checkbox" className="environment-dialog__form-element" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
+         <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
        </div>,
        <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="environment-dialog__button-container">
+        <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.modifyThread.bind(this, closeDialog)} disabled={this.state.locked}>
            {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>          
@@ -153,7 +153,7 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
           {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
             </Button> : null}
-      </div>
+      	</div>
       )
     }
     
