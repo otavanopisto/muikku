@@ -140,35 +140,35 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
        <div className="container container--communicator-subject">
-        <div className="environment-dialog__form-element-wrapper">  
-          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
-          <input key="2" type="text" className="environment-dialog__input--title"         
+        <div className="env-dialog__form-element-container">  
+          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
+          <input key="2" type="text" className="env-dialog__input"         
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div> 
         </div>
         ),
       (
       <div className="container container--communicator-content">     
-        <div className="environment-dialog__form-element-wrapper">  
-          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
+        <div className="env-dialog__form-element-container">  
+          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
           <CKEditor key="3" width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>
       ),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
-        <input className="environment-dialog__form-element" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
+        <input className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
       </div> : null)
     ]
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="environment-dialog__button-container">
-          <Button className="button--dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
+         <div className="env-dialog__actions">
+          <Button buttonModifiers="dialog-execute" onClick={this.sendMessage.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.send')}
          </Button>
-          <Button className="button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
         </div>

@@ -79,17 +79,17 @@ class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, Di
     let content = (closeDialog: ()=>any) => [
       (   
        <div className="container container--new-discussion-area-title">
-        <div className="environment-dialog__form-element-wrapper">  
-          <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
-            <input key="1" type="text" className="environment-dialog__form-element environment-dialog__form-element--new-discussion-area-name"          
+        <div className="env-dialog__form-element-container">  
+          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
+            <input key="1" type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"          
             value={this.state.name} onChange={this.onNameChange} autoFocus/>
           </div>
        </div>
       ),(          
          <div className="container container--new-discussion-area-description">   
-           <div className="environment-dialog__form-element-wrapper">  
-             <div className="environment-dialog__form-element-label">{this.props.i18n.text.get('plugin.discussion.createarea.description')}</div>          
-             <textarea key="2" className="environment-dialog__form-element environment-dialog__form-element--new-discussion-area-description"
+           <div className="env-dialog__form-element-container">  
+             <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.description')}</div>          
+             <textarea key="2" className="env-dialog__input env-dialog__input--new-discussion-area-description"
              onChange={this.onDescriptionChange} value={this.state.description}/>            
            </div> 
          </div>
@@ -98,11 +98,11 @@ class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, Di
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="environment-dialog__button-container">
-          <Button className="button button--dialog-execute" onClick={this.createArea.bind(this, closeDialog)} disabled={this.state.locked}>
+         <div className="env-dialog__actions">
+          <Button buttonModifiers="dialog-execute" onClick={this.createArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.send')}
           </Button>
-          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Button>
         </div>

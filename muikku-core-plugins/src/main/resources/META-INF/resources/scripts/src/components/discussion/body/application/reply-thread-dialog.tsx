@@ -18,8 +18,7 @@ interface ReplyThreadProps {
   reply?: DiscussionThreadReplyType,
   quote?: string,
   quoteAuthor?: string,
-  currentId: number,
-      
+  currentId: number,      
   replyToCurrentDiscussionThread: ReplyToCurrentDiscussionThreadTriggerType,
 }
 
@@ -113,14 +112,14 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          
-         <div className="environment-dialog__button-container">   
-          <Button className="button button--dialog-execute" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
+         <div className="env-dialog__actions">   
+          <Button buttonModifiers="dialog-execute" onClick={this.createReply.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
-          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
-          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
             </Button> : null}                  
         </div>

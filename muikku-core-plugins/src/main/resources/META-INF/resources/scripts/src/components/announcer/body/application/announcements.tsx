@@ -14,6 +14,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
+import '~/sass/elements/rich-text.scss';
 
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
@@ -77,7 +78,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     <div className="application-list__item-body">
                       <article className="text text--item-article">
                         <header className="text text--item-article-header">{announcement.caption}</header>
-                        <p dangerouslySetInnerHTML={{__html:announcement.content}}></p>
+                        <p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>
                       </article>
                     </div>
                     {/* This should be shown only if announcement has workspaces set */}    

@@ -77,12 +77,12 @@ class CommunicatorSignatureUpdateDialog extends React.Component<CommunicatorSign
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return (
-        <div className="environment-dialog__button-container">
-          <Button buttonModifiers={["warn","standard-cancel"]} onClick={closeDialog}>
-            {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
-          </Button>
-          <Button buttonModifiers="standard-ok" onClick={this.update.bind(this, closeDialog)}>
+        <div className="env-dialog__actions">
+          <Button buttonModifiers="dialog-execute" onClick={this.update.bind(this, closeDialog)}>
             {this.props.i18n.text.get('plugin.communicator.settings.signatures.create')}
+          </Button>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
+            {this.props.i18n.text.get('plugin.communicator.confirmSignatureRemovalDialog.cancelButton')}
           </Button>
         </div>
       )    
