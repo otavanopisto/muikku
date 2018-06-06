@@ -8,6 +8,7 @@ import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 
 import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
+import '~/sass/elements/rich-text.scss';
 
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
@@ -51,7 +52,7 @@ class Course extends React.Component<CourseProps, CourseState>{
       {this.state.expanded ?
         <div>
           <ApplicationListItemBody className="application-list__item-body--course">
-            <article className="text text--coursepicker-course-description" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
+            <article className="text text--coursepicker-course-description rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
             <Button buttonModifiers="primary-function-content" href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>

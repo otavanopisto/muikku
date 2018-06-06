@@ -9,6 +9,8 @@ import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } fro
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex } from '~/util/modifiers';
 
+import '~/sass/elements/rich-text.scss';
+
 interface MessageProps {
   message: MessageType,
   status: StatusType,
@@ -82,7 +84,7 @@ class Message extends React.Component<MessageProps, MessageState> {
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message">
         <header className="text text--communicator-message-caption">{this.props.message.caption}</header>
-        <section className="text text--communicator-message-content" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
+        <section className="text text--communicator-message-content rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
       </div>
       <div className="application-list__item-footer">
         <div className="container container--communicator-message-links">
