@@ -8,8 +8,12 @@
 .rich-text {
   color: $color-text-default;
   font-family: "Open Sans", Arial, sans-serif;
-  font-size: 0.875rem;
+  font-size: $text-mobile-font-size;
   font-weight: 400;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size; 
+  }
   
   p {
     margin: 10px 0;
