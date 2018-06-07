@@ -16,7 +16,7 @@ interface AutocompleteProps {
 }
 
 interface AutocompleteState {
-  
+  maxHeight: number
 }
 
 export default class Autocomplete extends React.Component<AutocompleteProps, AutocompleteState> {
@@ -24,18 +24,32 @@ export default class Autocomplete extends React.Component<AutocompleteProps, Aut
     super(props);
     
     this.onItemClick = this.onItemClick.bind(this);
+    
+    this.state = {
+        maxHeight: null
+    }
   }
   onItemClick(value: any, selected: boolean, e: Event){
     e.stopPropagation();
     this.props.onItemClick(value, selected);
   }
+  componentWillReceiveProps(nextProps: AutocompleteProps){
+    if (nextProps.opened && !this.props.opened){
+      let autocomplete:HTMLDivElement = (this.refs["autocomplete"] as HTMLDivElement);
+      this.setState({
+        maxHeight: window.innerHeight - (autocomplete.getBoundingClientRect().top + autocomplete.offsetHeight)
+      })
+    }
+  }
   render(){
-    let style:any = {};
+    let style:any = {
+        maxHeight: this.state.maxHeight
+    };
     if (this.props.pixelsOffset){
       style.top = this.props.pixelsOffset;
     }
     
-    return <div className={`autocomplete autocomplete--${this.props.modifier}`}>
+    return <div className={`autocomplete autocomplete--${this.props.modifier}`} ref="autocomplete">
       {this.props.items.length && this.props.opened ? <div className="autocomplete__list" style={style}>{this.props.items.map((item, index)=>{
         return <div key={typeof item.value.id === "undefined" ? index : item.value.id}
           className={`autocomplete__list__item ${item.selected ? "selected" : ""}`}
