@@ -856,6 +856,7 @@ b {
   flex-shrink: 1;
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
+  padding: 1px 0;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad){
