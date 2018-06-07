@@ -93,13 +93,18 @@ div.form-field-tag-input {
   border: 2px solid $color-main-function-primary-function-dropdown-border;
   border-radius: 2px;
   font-family: $text-font-family;
-  font-size: .925rem;
+  font-size: $text-mobile-font-size;
   font-weight: 200;
-  height: 40px;
+  height: 35px;
   min-width: 200px;
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
   width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: 40px;
+  }
 }
 
 .form-field-tag-input__field {
