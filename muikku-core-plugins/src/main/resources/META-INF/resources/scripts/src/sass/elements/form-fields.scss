@@ -48,14 +48,18 @@ div.form-field-tag-input {
 }
 
 .form-field__input--main-function-search {
-  background-color: transparent;
+  background-color: $color-default;
   border: 2px solid $color-main-function-input-field-border;
   border-radius: 2px;
   border-right: 0;
   font-size: .925rem;  
-  height: 40px;
+  height: 35px;
   padding: 5px 10px;
   width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
 }
 
 // This does not mostly belong here, mostly
@@ -67,9 +71,14 @@ div.form-field-tag-input {
     align-items: center;
     color: $color-main-function-search-icon;
     display: flex;
-    height: 40px;
+    height: 35px;
     justify-content: center;
-    width: 40px;
+    width: 35px;
+    
+    @include breakpoint($breakpoint-pad){
+      height: 40px;
+      width: 40px;
+    }
   }
 }
 

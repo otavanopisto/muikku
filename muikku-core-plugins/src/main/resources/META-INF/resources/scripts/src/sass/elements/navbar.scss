@@ -23,10 +23,14 @@
   align-items: stretch;
   display: flex;
   flex-flow: row nowrap;
-  height: $navbar-height;
+  height: $navbar-mobile-height;
   margin: 0 auto;
   max-width: $breakpoint-max-usable-screen;
   padding: 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+  }
 }
   
 // NAVBAR LOGO
@@ -35,7 +39,11 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  height: $navbar-height;
+  height: $navbar-mobile-height;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+  }
 }
   
 .navbar--frontpage .navbar__logo {
@@ -61,13 +69,18 @@
   color: $color-environment-navbar-title;
   font-size: 1.5rem;
   font-weight: 200;
-  height: $navbar-height;
+  height: $navbar-mobile-height;
   left: 55px;
-  line-height: $navbar-height;
+  line-height: $navbar-mobile-height;
   overflow: hidden;
   position: absolute;
   text-overflow: ellipsis;
   top: 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+    line-height: $navbar-desktop-height;
+  }
 }
 
 // NAVBAR ITEMS CONTAINER
@@ -76,8 +89,8 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
-  height: $navbar-height;
-  line-height: $navbar-height;
+  height: $navbar-mobile-height;
+  line-height: $navbar-mobile-height;
   list-style-type: none;
   margin: 0;
   overflow: hidden;
@@ -87,6 +100,8 @@
   
   @include breakpoint($breakpoint-pad) {
     flex-grow: 1;
+    height: $navbar-desktop-height;
+    line-height: $navbar-desktop-height;
   }
 }
  
@@ -94,10 +109,15 @@
 .navbar__item {
   display: none;
   float: left;
-  height: $navbar-height;
-  line-height: $navbar-height;
+  height: $navbar-mobile-height;
+  line-height: $navbar-mobile-height;
   margin: 0;
   vertical-align: top;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $navbar-desktop-height;
+    line-height: $navbar-desktop-height;
+  }
 }
 
 .navbar__item--menu-button {
@@ -127,7 +147,7 @@
   .navbar__item--evaluation,
   .navbar__item--announcer  {
     display: inline-block;
-    width: $navbar-item-width;
+    width: $navbar-desktop-item-width;
   }
 }
 
@@ -159,7 +179,7 @@
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 0;
-  height: $navbar-height;
+  height: $navbar-mobile-height;
   justify-content: flex-end;
   
   @include breakpoint($breakpoint-mobile-xl) {
@@ -168,6 +188,7 @@
   
   @include breakpoint($breakpoint-pad) {
     flex-grow: 0;
+    height: $navbar-desktop-height;
   }
   
   @include breakpoint($breakpoint-desktop) {
