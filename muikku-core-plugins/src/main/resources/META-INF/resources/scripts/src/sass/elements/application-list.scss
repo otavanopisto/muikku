@@ -7,8 +7,6 @@
   height: 100%;
   width: 100%;
   overflow: visible;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow: -moz-scrollbars-none;  
   
   &::-webkit-scrollbar { 
     display: none; 
