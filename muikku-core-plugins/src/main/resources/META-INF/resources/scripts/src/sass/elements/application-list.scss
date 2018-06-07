@@ -160,7 +160,7 @@
 .application-list__item-header {
   align-items: flex-start;
   display: flex;   
-  flex-flow: row nowrap;   
+  flex-flow: row wrap;   
 }
 
 .application-list__item-body {
