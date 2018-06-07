@@ -15,6 +15,11 @@
   top: 0;
   z-index: 9;
   
+  @include breakpoint-down($breakpoint-landscape-pad) {
+    overflow: auto;
+    background-color: $color-application-dialog-background-color;
+  }
+  
   &.visible {
     opacity: 1;
     
