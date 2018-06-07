@@ -33,17 +33,17 @@
 .ordered-container--index-panels {
   flex-flow: column nowrap;
   height: 100%;
-  padding: calc(#{$navbar-height} * 1.2) 0 10px;
+  padding: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
   
   @include breakpoint($breakpoint-pad){
     flex-flow: row wrap;
     height: auto;
-    padding: calc(#{$navbar-height} * 1.5) 0 10px;
+    padding: calc(#{$navbar-desktop-height} * 1.5) 0 10px;
   }
   
   @include breakpoint($breakpoint-desktop){
     flex-flow: row nowrap;
-    padding: calc(#{$navbar-height} * 1.5) 10px 10px;
+    padding: calc(#{$navbar-desktop-height} * 1.5) 10px 10px;
   }
 }
 

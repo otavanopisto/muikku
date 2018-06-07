@@ -1,7 +1,9 @@
 // Navbar
 $navbar-font: 'Exo 2', Arial, sans-serif;
-$navbar-height: 4.2rem;
-$navbar-item-width: 4.2rem;
+$navbar-mobile-height: 3.5rem;
+$navbar-desktop-height: 4.2rem;
+$navbar-mobile-item-width: 3.5rem;
+$navbar-desktop-item-width: 4.2rem;
 
 // Link
 $link-icon-font-size: 1.8rem;
@@ -52,8 +54,10 @@ $button-social-size: 2.5rem;
 $button-primary-height: 2.5rem;
 $button-mobile-font-size: 0.75rem;
 $button-desktop-font-size: 0.8125rem;
-$button-pill-size: 2.5rem;
-$button-pill-font-size: 1.25rem;
+$button-pill-mobile-size: 2rem;
+$button-pill-desktop-size: 2.5rem;
+$button-pill-mobile-font-size: 1.125rem;
+$button-pill-desktop-font-size: 1.25rem;
 $button-pill-floating-size: 2.6rem;
 $button-pill-floating-font-size: 1.25rem;
 $button-pill-navbar-size: 2.5rem;

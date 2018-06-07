@@ -281,12 +281,11 @@ b {
 .text--item-counter {
   align-items: center;
   background-color: $color-main-function-item-counter-background;
-  border: 1px solid $color-default;
   border-radius: 3px;
   display: flex;
-  height: 22px;
+  height: 20px;
   justify-content: center;
-  min-width: 22px;
+  min-width: 20px;
   padding: 0 4px;
 }
 
@@ -796,7 +795,7 @@ b {
   flex-shrink: 1;
   display: flex;
   font-size: 1rem;
-  font-weight: 300;
+  font-weight: 400;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
