@@ -23,7 +23,8 @@
     background-color: $color-autocomplete-list-background-color;
     border: solid 1px $color-autocomplete-list-border;
     border-top: none;
-    
+    z-index: 10;
+        
     .autocomplete__list__item {
       @include prefix(transition, moz o ms webkit, background-color 0.3s);
       border-top: solid 1px $color-autocomplete-list-border;
