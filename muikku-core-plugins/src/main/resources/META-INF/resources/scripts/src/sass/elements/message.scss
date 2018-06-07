@@ -5,7 +5,7 @@
 
 .message {
   border-top: 1px solid $color-message-border;
-  padding: 14px 0;
+  padding: 14px 10px;
   
   &.selected {
     border-top: 1px solid $color-default;
@@ -40,9 +40,11 @@
 }
 
 .message--unread {
+  background: $color-message-unread-background;
+  border-top: 1px solid $color-default;
   
   .text--list-item-title {
-    font-weight: 600;
+    font-weight: 700;
   }
 }
 

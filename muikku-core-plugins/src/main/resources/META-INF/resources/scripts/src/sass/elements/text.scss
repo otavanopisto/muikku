@@ -299,12 +299,16 @@ b {
 
 // Communicator
 .text--communicator-message-caption {
-  font-size: 1.125rem;
-  padding: 10px; 
+  font-size: 1rem;
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem; 
+  }
 }  
 
 .text--communicator-message-content {
-  padding: 10px;  
+  padding: 0 10px;  
 }
 
 .text--communicator-usernames {
@@ -836,19 +840,16 @@ b {
 
 .text--list-item-title {
   display: inline-flex;
-  flex-basis: auto;
+  flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
   padding: 1px 10px 1px 0;
+  word-wrap: break-word;
 }
 
 .text--list-item-helper-title {
   color: $color-default-helper;
   padding: 0 0 0 15px;
-}
-
-.text--list-item-title-extension {
-  padding: 0 0 0 5px;
 }
 
 .text--list-item-type-title {
@@ -857,7 +858,13 @@ b {
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 1;
-  font-size: 0.825rem;
+  font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
+  padding: 1px 0;
   text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad){
+    font-size: $text-capitalized-desktop-font-size;
+  }
+  
 }

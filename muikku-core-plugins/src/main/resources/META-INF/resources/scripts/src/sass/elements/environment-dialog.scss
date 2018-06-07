@@ -58,17 +58,18 @@
   flex-direction: column;
   font-family: $text-font-family;
   height: 100%;
-  width: 100%;  
-
+  overflow: auto;  
+  width: 100%; 
+  
   @include breakpoint($breakpoint-desktop) {
     max-width: 760px;
+    overflow: initial; 
   }
   
   @include breakpoint($breakpoint-desktop-xl) { 
     max-width: 830px;
   }   
 }
-
 
 .env-dialog__body {
   flex-basis: auto;
@@ -100,7 +101,7 @@
     padding: 0;
   }
   
-  a:not(:first-child) {
+  a {
     margin-left: 10px;         
   }                  
 }  
@@ -223,12 +224,12 @@
   white-space: nowrap;
 }
 
-// Naming is wrong
+
 .env-dialog__selected-item-label {
   vertical-align: top;
 }
 
-// Naming is wrong
+
 .env-dialog__selected-item-action {
   background-position: center center;
   background-repeat: no-repeat;

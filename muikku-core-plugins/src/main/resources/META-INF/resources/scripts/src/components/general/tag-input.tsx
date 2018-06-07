@@ -45,11 +45,12 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   focus(){
     (this.refs["input"] as HTMLElement).focus();
   }
+  
   blur(){
     (this.refs["input"] as HTMLElement).blur();
   }
   getHeight(){
-    return (this.refs["inputbody"] as HTMLElement).offsetHeight;
+    return (this.refs["input"] as HTMLElement).offsetHeight;
   }
   componentDidUpdate(){
     if (this.props.isFocused){

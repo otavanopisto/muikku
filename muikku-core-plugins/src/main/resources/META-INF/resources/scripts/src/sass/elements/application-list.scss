@@ -7,8 +7,6 @@
   height: 100%;
   width: 100%;
   overflow: visible;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow: -moz-scrollbars-none;  
   
   &::-webkit-scrollbar { 
     display: none; 
@@ -160,7 +158,7 @@
 .application-list__item-header {
   align-items: flex-start;
   display: flex;   
-  flex-flow: row nowrap;   
+  flex-flow: row wrap;   
 }
 
 .application-list__item-body {
