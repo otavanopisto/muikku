@@ -246,6 +246,9 @@
   border-top: 1px solid $color-default;
   justify-content: flex-start;
   text-transform: none;
+  max-width: 204.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
   
   &:hover,
   &.hover {
