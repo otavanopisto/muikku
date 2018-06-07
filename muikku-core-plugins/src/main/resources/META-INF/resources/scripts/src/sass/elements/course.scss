@@ -8,18 +8,14 @@
   margin: 0 0 1px;
   padding: 14px 10px;
   
-  @include breakpoint($breakpoint-pad) {
-    padding: 14px 0;
-  }
-  
   &:first-child {
     border-top: 1px solid $color-default;
   }
   
   &.course--open {
     background: $color-default;
-    border-bottom: solid 1px $color-application-list-item-course-border-selected;
-    border-top: solid 1px $color-application-list-item-course-border-selected;
+    box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
+    z-index: 2;
   }
   
   &.course---open:hover {

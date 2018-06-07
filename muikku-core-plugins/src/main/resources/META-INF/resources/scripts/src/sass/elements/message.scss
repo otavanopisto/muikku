@@ -7,10 +7,6 @@
   border-top: 1px solid $color-message-border;
   padding: 14px 10px;
   
-  @include breakpoint($breakpoint-pad) {
-    padding: 14px 0;
-  }
-  
   &.selected {
     border-top: 1px solid $color-default;
   }
@@ -45,6 +41,7 @@
 
 .message--unread {
   background: $color-message-unread-background;
+  border-top: 1px solid $color-default;
   
   .text--list-item-title {
     font-weight: 700;
