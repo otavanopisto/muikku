@@ -122,20 +122,20 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
       return (          
         <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createarea.send')}
+            {this.props.i18n.text.get('plugin.discussion.editarea.send')}
           </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
+            {this.props.i18n.text.get('plugin.discussion.editarea.cancel')}
           </Button>            
-          <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.clearDraft')}
-          </Button>            
+          </Button> : null}   
         </div>
       )
     }
     
     return <JumboDialog modifier="modify-area"
-      title={this.props.i18n.text.get('plugin.discussion.createarea.topic')}
+      title={this.props.i18n.text.get('plugin.discussion.editarea.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
