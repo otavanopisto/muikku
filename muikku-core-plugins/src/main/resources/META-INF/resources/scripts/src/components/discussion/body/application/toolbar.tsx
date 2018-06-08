@@ -83,7 +83,7 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
           <NewArea><ButtonPill icon="add" buttonModifiers={["discussion-toolbar"]}/></NewArea> : null}
       {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM ?
           <ModifyArea><ButtonPill icon="edit" buttonModifiers={["discussion-toolbar"]}/></ModifyArea> : null}
-      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM ? 
+      {this.props.status.permissions.FORUM_DELETEENVIRONMENTFORUM && this.props.discussion.areaId ? 
           <DeleteArea><ButtonPill icon="delete" buttonModifiers={["discussion-toolbar"]}/></DeleteArea> : null}
     </ApplicationPanelToolbar>
   }
