@@ -18,9 +18,9 @@ export class DiscussionThread extends React.Component<{
 }, {}> {
   render(){
     return <div className="application-list__item message message--discussion" onClick={this.props.onClick}>
-      <div className="application-list__item-content-wrapper message__content">
-        <div className="application-list__item-content--aside message__content-aside--discussion">{this.props.avatar}</div>
-        <div className="application-list__item-content--main">{this.props.children}</div>
+      <div className="application-list__item-content-wrapper">
+        <div className="application-list__item-content-aside application-list__item-content-aside--discussion">{this.props.avatar}</div>
+        <div className="application-list__item-content-main">{this.props.children}</div>
       </div>
     </div>
   }
@@ -40,7 +40,7 @@ export class DiscussionThreadHeader extends React.Component<{
         </div>
       </div>
     }
-    return <div className="application-list__item-header application-list__item-header--discussion-item-header">{this.props.children}</div>
+    return <div className="application-list__item-header application-list__item-header--message">{this.props.children}</div>
   }
 }
 
@@ -93,8 +93,8 @@ export class DiscussionCurrentThreadElement extends React.Component<{
     let baseClass = this.props.isOpMessage ? "application-list__item application-list__item--discussion-message" : "application-list__item application-list__item--discussion-message-reply";
     return <div className={baseClass}>
       <div className={internalClass}>
-        <div className="application-list__item-content-wrapper message__content">
-          <div className="application-list__item-content--aside message__content-aside--discussion">
+        <div className="application-list__item-content-wrapper">
+          <div className="application-list__item-content--aside application-list__item-content--discussion">
             {this.props.avatar}
           </div>
           <div className="application-list__item-content--main">
