@@ -82,7 +82,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
       //TODO: put a translation here please! this happens when messages fail to load, a notification shows with the error
       //message but here we got to put something
       return <div className="empty"><span>{"ERROR"}</span></div>
-    } else if (this.props.state.length === 0){
+    } else if (this.props.threads.length === 0){
       return <div className="empty"><span>{this.props.i18n.text.get("plugin.communicator.empty.topic")}</span></div>
     }
     
