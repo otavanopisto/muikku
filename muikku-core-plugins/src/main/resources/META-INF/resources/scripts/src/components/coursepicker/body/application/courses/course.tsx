@@ -9,6 +9,7 @@ import { WorkspaceCourseType } from '~/reducers/main-function/courses';
 import '~/sass/elements/course-description.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/application-list.scss';
 
 import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';

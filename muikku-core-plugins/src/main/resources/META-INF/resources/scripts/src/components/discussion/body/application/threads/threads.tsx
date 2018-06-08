@@ -6,7 +6,7 @@ import Pager from '~/components/general/pager';
 
 export class DiscussionThreads extends React.Component<{}, {}> {
   render(){
-    return <div className="application-list application-list__items">
+    return <div className="application-list">
       {this.props.children}
     </div>
   }
@@ -64,8 +64,8 @@ export class DiscussionCurrentThread extends React.Component<{
   locked: boolean
 },{}> {
   render(){
-    return <div className="application-list application-list--open">
-      <div className="application-list__item-header">
+    return <div className="application-list">
+      <div className="application-list__header">
         {this.props.locked ?
           <div className="discussion__icon icon-lock"/> : null
         }
@@ -90,7 +90,7 @@ export class DiscussionCurrentThreadElement extends React.Component<{
         this.props.isReplyOfReply ? "application-list__item-content-container message message--discussion message--discussion-reply-of-reply" :
           "application-list__item-content-container message message--discussion message--discussion-reply-of-op"
     )
-    let baseClass = this.props.isOpMessage ? "application-list__item--discussion-current-thread" : "application-list--open application-list__item--discussion-reply";
+    let baseClass = this.props.isOpMessage ? "application-list__item application-list__item--discussion-message" : "application-list__item application-list__item--discussion-message-reply";
     return <div className={baseClass}>
       <div className={internalClass}>
         <div className="application-list__item-content-wrapper message__content">
