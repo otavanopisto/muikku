@@ -176,7 +176,12 @@
   }
   
   &:not(:first-child) {
-  
+
+
+    @include breakpoint($breakpoint-pad) {
+      margin-left: 20px;
+    }  
+
     @include breakpoint($breakpoint-desktop) {
       display: inline-flex;
     } 
@@ -192,7 +197,6 @@
       
       @include breakpoint($breakpoint-desktop) {
         justify-content: right;    
-        padding-left: 10px;
       } 
     }
   }
@@ -291,10 +295,42 @@ label {
   font-size: $text-mobile-font-size;
   height: 34px;  
   padding: 8px;
+  width: 100%;
+  
+  &[type="checkbox"] {
+    width: auto;
+  }
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
+  
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }  
+}
+
+.env-dialog__input--date-picker {
+  width: 100%;  
+}
+
+.env-dialog__textarea {
+  border: 2px solid $color-env-dialog-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  height: 100px;  
+  padding: 8px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }    
 }
 
 // Used in forgotpassword dialog
