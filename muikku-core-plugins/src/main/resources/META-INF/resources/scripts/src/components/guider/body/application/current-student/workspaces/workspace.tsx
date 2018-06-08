@@ -21,19 +21,23 @@ interface StudentWorkspaceState {
 }
 
 function CourseActivityRow(props: {
-  i18n: i18nType,
+  i18n: i18nType,  
   workspace: WorkspaceType,
   labelTranslationString: string,
   conditionalAttribute: string,
+  conditionalAttributeLocale?: string,
   givenDateAttribute?: string,
+  givenDateAttributeLocale?: string,
   mainAttribute: string
 }){
   return <div className="application-sub-panel__item">
     <div className="application-sub-panel__item-title">{props.i18n.text.get(props.labelTranslationString)}</div>
     <div className="application-sub-panel__item-data">
-      <span className="text text--guider-profile-value">{((props.workspace as any)[props.mainAttribute][props.conditionalAttribute] as number) > 0 ? 
-        (props.workspace as any)[props.mainAttribute][props.conditionalAttribute] + (props.givenDateAttribute ? ", " + 
-        props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]) : "") :
+      <span className="text text--guider-profile-value">{((props.workspace as any)[props.mainAttribute][props.conditionalAttribute] as number) > 0 ? (props.conditionalAttributeLocale ? 
+          props.i18n.text.get(props.conditionalAttributeLocale, (props.workspace as any)[props.mainAttribute][props.conditionalAttribute]) :  
+        (props.workspace as any)[props.mainAttribute][props.conditionalAttribute]) +  
+        
+        (props.givenDateAttribute ? ", " + (props.givenDateAttributeLocale ? props.i18n.text.get(props.givenDateAttributeLocale, props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute])) : props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute])) : "") :
     "-"}</span></div>
   </div>
 }
@@ -109,7 +113,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
                 <span className="text text--guider-profile-value">{resultingStateText}</span></div>
               </div>              
                 
-            <CourseActivityRow labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits" givenDateAttributeLocale="plugin.guider.user.details.lastVisit" labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
               givenDateAttribute="lastVisit" mainAttribute="studentActivity" {...this.props}/>  
             
             <CourseActivityRow labelTranslationString="plugin.guider.journalEntriesLabel" conditionalAttribute="journalEntryCount"
