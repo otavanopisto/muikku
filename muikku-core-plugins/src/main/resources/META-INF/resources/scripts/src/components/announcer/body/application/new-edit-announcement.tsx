@@ -269,7 +269,6 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
            <DatePicker className="env-dialog__input" selected={this.state.startDate} onChange={this.handleDateChange.bind(this, "startDate")}
              locale={this.props.i18n.time.getLocale()}/>
          </div>
-         <div className="text text--announcer-times-decor">-</div>
          <div className="env-dialog__form-element-container">  
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.enddate.label')}</div>         
            <DatePicker className="env-dialog__input" selected={this.state.endDate} onChange={this.handleDateChange.bind(this, "endDate")}
@@ -291,7 +290,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
       <div className="container container--announcer-content" key="4">    
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.content.label')}</div>          
-          <CKEditor width="100%" height="grow" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+          <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div>       
       </div>

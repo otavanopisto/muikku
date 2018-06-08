@@ -1,6 +1,7 @@
 import equals = require("deep-equal");
 import * as React from 'react';
 import getCKEDITOR from '~/lib/ckeditor';
+import $ from '~/lib/jquery';
 
 //TODO this ckeditor depends externally on CKEDITOR we got to figure out a way to represent an internal dependency
 //Right now it doesn't make sense to but once we get rid of all the old js code we should get rid of these
@@ -15,7 +16,8 @@ interface CKEditorProps {
   height?: number | string,
   onChange(arg: string):any,
   children?: string,
-  autofocus?: boolean
+  autofocus?: boolean,
+  growReference?: string
 }
 
 interface CKEditorState {
@@ -44,24 +46,22 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   resize(width: number | string, height: number | string){
     let actualHeight:number | string;
     if (height === "grow"){
-      let nActualHeight:number;
-      let computedStyle = getComputedStyle((this.refs["ckeditor"] as HTMLElement).parentNode as HTMLElement, null);
-      nActualHeight = parseInt(computedStyle.getPropertyValue("height")) -
+      let computedStyle = getComputedStyle(getCKEDITOR().instances[this.name].container.$, null);
+      let ckeditorHeight = parseInt(computedStyle.getPropertyValue("height")) -
           parseInt(computedStyle.getPropertyValue("padding-top")) -
           parseInt(computedStyle.getPropertyValue("padding-top"));
       
-      Array.from((this.refs["ckeditor"] as HTMLElement).parentNode.childNodes).forEach((node: HTMLElement)=>{
-        if (node === this.refs["ckeditor"] || node.id === ("cke_" + this.name)){
-          return;
-        }
-        
+      let growReference:HTMLElement = $(this.refs["ckeditor"]).closest(this.props.growReference)[0];
+      let wholeHeight = growReference.offsetHeight;
+      let remainingHeight = wholeHeight;
+      Array.from(growReference.childNodes).forEach((node: HTMLElement)=>{
         let nComputedStyle = getComputedStyle(node, null);
-        nActualHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
+        remainingHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
           parseInt(nComputedStyle.getPropertyValue("margin-top")) +
           parseInt(nComputedStyle.getPropertyValue("margin-bottom"));
       });
       
-      actualHeight = nActualHeight;
+      actualHeight = remainingHeight + ckeditorHeight - 9;
     } else {
       actualHeight = height;
     }

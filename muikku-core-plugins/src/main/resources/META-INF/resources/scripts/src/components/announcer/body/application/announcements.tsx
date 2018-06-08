@@ -96,9 +96,9 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       <NewEditAnnouncement announcement={announcement}>
                         <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
                       </NewEditAnnouncement>
-                      <DeleteAnnouncementDialog announcement={announcement}>
+                      {this.props.announcements.location !== "archived" ? <DeleteAnnouncementDialog announcement={announcement}>
                         <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
-                      </DeleteAnnouncementDialog>
+                      </DeleteAnnouncementDialog> : null}
                     </div>
                   </div>
                 </div>

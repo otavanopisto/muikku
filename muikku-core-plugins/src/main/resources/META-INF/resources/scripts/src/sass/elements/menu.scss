@@ -22,7 +22,7 @@
 
 $menu-width-pad: 350px;
 $menu-width-mobile: 250px;
-$menu-header-height: $navbar-height;
+$menu-header-height: $navbar-mobile-height;
 $menu-font: 'Exo 2', Arial, sans-serif;
 
 .menu {
@@ -41,7 +41,7 @@ $menu-font: 'Exo 2', Arial, sans-serif;
   .menu__logo {
     background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
     display: inline-block;
-    height: $navbar-height;
+    height: $navbar-mobile-height;
     width: 175px;
   }
 

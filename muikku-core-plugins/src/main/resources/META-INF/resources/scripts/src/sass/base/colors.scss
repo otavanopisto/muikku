@@ -46,7 +46,7 @@ $color-tertiary-contrast: $color-default;
 
 $color-list-hover-background: #E7FFFC;
 $color-list-active-background: rgba(208, 255, 249, 1);
-$color-list-selected-background: #bff3fb;
+$color-list-selected-background: #29b0c4;
 
 // Workspace
 $color-workspace: #43cd80;
@@ -159,9 +159,6 @@ $color-label-loading: $color-loading;
 $color-label-secondary: $color-secondary;
 $color-label-inverse: $color-default;
 
-// Labels
-$color-label-background: #f7f7f7;
-
 // Text
 $color-text-default: $color-inverse;
 $color-text-link: $color-primary;
@@ -261,6 +258,7 @@ $color-item-list-item-background-active: $color-list-active-background;
 $color-item-list-item-aside-background: #f7f7f7;
 $color-item-list-item-aside-background-hover: rgba(208, 255, 249, 0.5);
 $color-item-list-item-aside-background-active: rgb(98, 174, 193);
+$color-item-list-icon-font-color: #4c4c4c;
 
 // indicator
 $color-indicator-background: $color-fatal;
@@ -365,7 +363,6 @@ $color-environment-link-menu-navicon-icon-color: $color-inverse;
 
 
 //  CATEGORIES
-
 $color-category-1: #0099ff; 
 $color-category-2: #ff9900;
 $color-category-3: #ff008d;
