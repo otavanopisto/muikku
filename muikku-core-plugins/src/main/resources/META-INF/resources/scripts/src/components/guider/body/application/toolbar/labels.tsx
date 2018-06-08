@@ -1,7 +1,7 @@
 import Link from "~/components/general/link";
 import * as React from "react";
 import Dropdown from "~/components/general/dropdown";
-import { filterHighlight, filterMatch, intersect, difference } from "~/util/modifiers";
+import { filterHighlight, filterMatch, intersect, difference, flatten } from "~/util/modifiers";
 import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 import { createGuiderFilterLabel, CreateGuiderFilterLabelTriggerType } from "~/actions/main-function/guider";
@@ -77,7 +77,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         return student.flags.map(l=>l.flagId)}
       );
       allInCommon = intersect(...partialIds);
-      onlyInSome = difference(...partialIds);
+      onlyInSome = difference(allInCommon, flatten(...partialIds));
     }
   
     return <Dropdown modifier="guider-labels" items={
