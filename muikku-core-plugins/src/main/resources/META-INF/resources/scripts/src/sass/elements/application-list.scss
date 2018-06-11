@@ -217,6 +217,7 @@
 }  
 
 .application-list__item-footer--discussion {
+  flex-flow: row wrap;
   padding: 7px 0 0;
 }
 
@@ -249,7 +250,6 @@
 
 // Generic Message
 .application-list__item-header--message {
-  height: 22px;
   margin: 0 0 2px;
 }
 

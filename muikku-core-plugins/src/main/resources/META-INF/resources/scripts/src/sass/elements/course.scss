@@ -4,16 +4,17 @@
 @import "../base/breakpoints";
 
 .course {
-  border-top: 1px solid $color-message-border;
+  border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
   padding: 14px 10px;
   
   &:first-child {
-    border-top: 1px solid $color-default;
+    border-top: 3px solid $color-default;
   }
   
   &.course--open {
     background: $color-default;
+    border-top: 3px solid transparent;
     box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
     z-index: 10;
   }

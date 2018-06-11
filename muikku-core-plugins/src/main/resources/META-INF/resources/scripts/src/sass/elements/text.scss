@@ -470,14 +470,6 @@ b {
   left: 0;
   bottom: 0;
   background: linear-gradient(rgba(255, 255, 255, 0) 1rem, white);
-  
-  .message:hover & {
-  	background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-application-list-item-background-hover);
-  }
- 
-  .message:active & {
-  	background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-application-list-item-background-active);
-  }
 }
 
 .text--discussion-thread-meta {
@@ -485,18 +477,37 @@ b {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    justify-content: flex-end;
+  }
 }
 
 .text--discussion-thread-user {
   font-size: 0.8125rem;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  padding: 0 0 7px;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
 }
 
 .text--discussion-thread-meta-counter {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    justify-content: flex-end;
+  }
 }
 
 .text--discussion-thread-meta-counter-title {

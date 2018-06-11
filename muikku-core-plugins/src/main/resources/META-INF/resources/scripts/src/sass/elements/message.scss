@@ -4,11 +4,15 @@
 @import "../base/breakpoints";
 
 .message {
-  border-top: 1px solid $color-message-border;
+  border-top: 3px solid $color-message-border;
   padding: 14px 10px;
   
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+  }
+  
   &.selected {
-    border-top: 1px solid $color-default;
+    border-top: 3px solid $color-default;
   }
 }
 
@@ -41,7 +45,11 @@
 
 .message--unread {
   background: $color-message-unread-background;
-  border-top: 1px solid $color-default;
+  border-top: 3px solid $color-default;
+  
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+  }
   
   .text--list-item-title {
     font-weight: 700;
