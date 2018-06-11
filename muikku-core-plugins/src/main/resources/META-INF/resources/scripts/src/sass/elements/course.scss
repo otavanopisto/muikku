@@ -6,7 +6,7 @@
 .course {
   border-top: 3px solid $color-message-border;
   margin: 0 0 1px;
-  padding: 14px 10px;
+  padding: 0 10px; // Use to be 14px 10px
   
   &:first-child {
     border-top: 3px solid $color-default;

@@ -280,8 +280,17 @@
 }
 
 // Coursepicker
+.application-list__item-header--course {
+  cursor: pointer;
+  padding: 14px 0;
+} 
+
 .application-list__item-body--course {
-  padding: 12px 0;
+  padding: 0 0 12px;
+}
+
+.application-list__item-footer--course {
+  padding: 0 0 14px;
 }
 
 // Guider

@@ -5,6 +5,7 @@
 
 .message {
   border-top: 3px solid $color-message-border;
+  cursor: pointer;
   padding: 14px 10px;
   
   @include breakpoint($breakpoint-pad) {
