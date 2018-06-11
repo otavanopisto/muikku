@@ -333,7 +333,7 @@ b {
   width: 5.2rem;
 }
   
-.text--communicator-body {
+.text--communicator-item-body {
   display: inline-block;
 }
 
@@ -451,7 +451,7 @@ b {
 }
 
 // Discussion
-.text--discussion-thread-item-body {
+.text--discussion-item-body {
   font-style: italic;
   width: 100%;
   padding: 12px 0 0;
@@ -462,7 +462,7 @@ b {
   position: relative;
 }
 
-.text--discussion-thread-item-body--overflown:before {
+.text--discussion-item-body-overflown:before {
   content: '';
   width: 100%;
   height: 4rem;    
@@ -470,14 +470,6 @@ b {
   left: 0;
   bottom: 0;
   background: linear-gradient(rgba(255, 255, 255, 0) 1rem, white);
-  
-  .message:hover & {
-  	background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-application-list-item-background-hover);
-  }
- 
-  .message:active & {
-  	background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-application-list-item-background-active);
-  }
 }
 
 .text--discussion-thread-meta {
@@ -485,21 +477,41 @@ b {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    justify-content: flex-end;
+  }
 }
 
 .text--discussion-thread-user {
   font-size: 0.8125rem;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  padding: 0 0 7px;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+  }
 }
 
 .text--discussion-thread-meta-counter {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    justify-content: flex-end;
+  }
 }
 
 .text--discussion-thread-meta-counter-title {
+  font-size: 0.8125rem;
   padding: 0 3px 0 0;
 }
 
@@ -507,9 +519,14 @@ b {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
+  flex-grow: 1;
+  font-size: 0.8125rem;
   justify-content: flex-end;
   text-align: right;
-  width: 250px;
+  
+  @include breakpoint($breakpoint-mobile-xl) {
+    width: 250px;
+  }
 }
 
 .text--discussion-thread-item-title {
@@ -519,11 +536,12 @@ b {
 
 .text--discussion-current-thread {
   display: flex;
-  align-items: center;  
+  align-items: center;
+  white-space: nowrap; // This prevents mobile wrapping for long topic titles in thread reading view
 }
 
 .text__discussion-breadcrumb-item {
-  padding: 0 7px;
+  padding: 0 5px;
 }
 
 .text__discussion-breadcrumb-arrow {
@@ -587,8 +605,15 @@ b {
 }
 
 .text--discussion-current-thread-title {
-  font-size: 1.4rem;  
-  font-weight: 400;  
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+  }
 }
 
 // Guider
@@ -842,7 +867,7 @@ b {
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 1px 10px 1px 0;
+  padding: 0 10px 0 0;
   word-wrap: break-word;
 }
 
@@ -859,7 +884,6 @@ b {
   flex-shrink: 1;
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
-  padding: 1px 0;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad){

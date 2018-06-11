@@ -63,7 +63,6 @@ class Message extends React.Component<MessageProps, MessageState> {
     .concat(userGroupObject as any).concat(workspaceObject as any).filter((t)=>t.value.id !== senderObject.value.id)
     .concat(senderObject as any).filter((t)=>t.value.id !== this.props.status.userId);
 
-
     return <div className="application-list__item application-list__item--communicator-message">
       <div className="application-list__item-header application-list__item-header--communicator-message">
         <div className="container container--communicator-message-meta">

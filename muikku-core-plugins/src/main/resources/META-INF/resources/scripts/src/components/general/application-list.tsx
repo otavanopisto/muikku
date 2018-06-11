@@ -12,9 +12,9 @@ interface ApplicationListState {
 
 export default class ApplicationList extends React.Component<ApplicationListProps, ApplicationListState> {
   render() {
-    return <div className={`application-list ${this.props.modifiers ? this.props.modifiers.map( m => `application-list--${m}` ).join( " " ) : ""}`}><div className="application-list_item-wrapper">
+    return <div className={`application-list ${this.props.modifiers ? this.props.modifiers.map( m => `application-list--${m}` ).join( " " ) : ""}`}>
       {this.props.children}
-    </div></div>
+    </div>
   }
 }
 

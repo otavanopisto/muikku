@@ -69,7 +69,7 @@
   position: fixed;
   right: 0;
   top: $navbar-mobile-height;
-  z-index: 8;
+  z-index: 998;
   
   @include breakpoint($breakpoint-pad) {
     align-items: center;
@@ -88,6 +88,7 @@
 .application-panel__toolbar {
   align-items: center;
   display: flex;
+  overflow: hidden;
   width: 100%;
 }  
   
@@ -157,13 +158,14 @@
 
 .application-panel__main-container--actions {
   background: $color-default;
-  border-bottom: 1px solid $color-main-function-application-panel-actions-border; 
+  border-bottom: 2px solid $color-main-function-application-panel-actions-border; 
   flex-direction: row;
   height: $navbar-mobile-height;
   padding: 10px;
   
   @include breakpoint($breakpoint-pad) {
     background: transparent;
+    border-width: 1px;
     height: $navbar-desktop-height;
     padding: 12px;
   }

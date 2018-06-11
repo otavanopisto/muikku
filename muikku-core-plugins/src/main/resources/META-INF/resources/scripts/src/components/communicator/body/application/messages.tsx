@@ -104,13 +104,13 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
             isSelected,
             key: thread.communicatorMessageId,
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <div className="application-list__item-content-wrapper message__content">
-                  <div className="application-list__item-content application-list__item-content--aside">
+              return <div className="application-list__item-content-wrapper">
+                  <div className="application-list__item-content-aside">
                     <div className="message__select-container">
                       {checkbox}
                     </div>
                   </div>              
-                  <div className="application-list__item-content application-list__item-content--main">
+                  <div className="application-list__item-content-main">
                     <div className="application-list__item-header application-list__item-header--message">
                       <div className="text text--list-item-title">
                         <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
@@ -123,7 +123,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                       </div>                
                     </div>
                     <div className="application-list__item-body">
-                      <span className="text text--communicator-body">{thread.caption}</span>
+                      <span className="text text--communicator-item-body">{thread.caption}</span>
                     </div>
                     {thread.labels.length ? <div className="application-list__item-footer application-list__item-footer--message">
                       <div className="labels">{thread.labels.map((label)=>{

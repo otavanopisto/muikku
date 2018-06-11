@@ -14,31 +14,25 @@
 }
 
 .application-list__header {
-  padding: 14px 0;
-}
-
-.application-list_item-wrapper {
-  width: 100%;
+  align-items: flex-start;
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 14px 0;
+  }
 }
 
 .application-list__item-content-wrapper {
   display: flex;
+  flex-flow: row nowrap;
 }
 
 .application-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   background-color: $color-application-list-item-background;
-  cursor: pointer;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
   position: relative;
-  
-  @include breakpoint($breakpoint-desktop) {
-    -webkit-touch-callout: default;
-    -webkit-user-select: auto;
-    user-select: auto;
-  }
  
   &.hover, 
   &:hover {
@@ -57,26 +51,18 @@
       border-radius: 3px;
     }
     
-    .text {
+    .text,
+    .label__text {
       color: $color-default;
     }
     
-    .label {
-      background: $color-default;
-    }
-    
-    .label__text,
     .text--item-counter {
       color: $color-default-contrast;
     }
   }
 }
 
-.application-list__item-content {
-  
-}
-
-.application-list__item-content--aside {
+.application-list__item-content-aside {
   display: none;
   
   input {
@@ -113,7 +99,11 @@
   }
 }
 
-.application-list__item-content--main {
+.application-list__item-content-aside--discussion {
+  padding: 0 12px 0 0;
+}
+
+.application-list__item-content-main {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
@@ -172,8 +162,8 @@
 
 .application-list__item-header {
   align-items: flex-start;
-  display: flex;   
-  flex-flow: row wrap;   
+  display: flex;
+  flex-flow: row wrap;
 }
 
 .application-list__item-body {
@@ -229,15 +219,9 @@
 .application-list__item-header--discussion-current-thread-title {
   font-size: 2 rem;
 }  
-  
-.application-list__item-header--discussion-item-header {
- 
-  div:not(:first-child) {
-    margin: 0 0 0 10px; 
-  }
-} 
 
 .application-list__item-footer--discussion {
+  flex-flow: row wrap;
   padding: 7px 0 0;
 }
 
@@ -268,9 +252,8 @@
   }
 }
 
-// Communicator
+// Generic Message
 .application-list__item-header--message {
-  height: 22px;
   margin: 0 0 2px;
 }
 
@@ -278,15 +261,9 @@
   margin: 5px 0 0;
 }
 
-.application-list--communicator-message-view {
-  padding: 10px 20px 10px 30px;
-  height: 100%;
-  width: 100%;
-}
-
+// Communicator
 .application-list__item--communicator-message {  
   border-bottom: 5px solid $color-message-border;
-  cursor: default;
   padding: 0 0 10px;
   
   &:last-child {
@@ -307,8 +284,29 @@
 }
 
 // Coursepicker
+.application-list__item-header--course {
+  cursor: pointer;
+  padding: 10px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
+  }
+} 
+
 .application-list__item-body--course {
-  padding: 12px 0;
+  padding: 0 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 15px;
+  }
+}
+
+.application-list__item-footer--course {
+  padding: 0 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 15px;
+  }
 }
 
 // Guider

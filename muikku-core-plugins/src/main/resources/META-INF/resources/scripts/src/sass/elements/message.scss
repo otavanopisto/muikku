@@ -4,26 +4,25 @@
 @import "../base/breakpoints";
 
 .message {
-  border-top: 1px solid $color-message-border;
-  padding: 14px 10px;
-  
-  &.selected {
-    border-top: 1px solid $color-default;
-  }
-}
-
-.message--communicator {
+  border-top: 3px solid $color-message-border;
+  cursor: pointer;
+  padding: 10px;
   
   &:first-child {
-    border: 0;
+    border-color: transparent;
   }
+  
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+    padding: 15px 10px;
+  }
+  
+  &.selected {
+    border-top: 3px solid $color-default;
+  } 
 }
 
 .message--discussion {
-  
-  &:first-child {
-    border: 0;
-  }
   
   // This has to be this specific as :first-child overrides border rules if we put this outside of .message-discussion scope
   &.message--discussion-reply-of-op {
@@ -41,19 +40,15 @@
 
 .message--unread {
   background: $color-message-unread-background;
-  border-top: 1px solid $color-default;
+  border-top: 3px solid $color-default;
+  
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+  }
   
   .text--list-item-title {
     font-weight: 700;
   }
-}
-
-.message__content {
-  flex-flow: row nowrap;
-}
-
-.message__content-aside--discussion {
-  padding: 0 16px 0 0;
 }
 
 .message__select-container {

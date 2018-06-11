@@ -90,14 +90,14 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 {thread.sticky ?
                   <div className="discussion__icon icon-pin"></div> : null
                 }
-                <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
-                  <span className="text">{thread.title}</span>
+                <div className={`text text--list-item-title discussion-category discussion-category--category-${thread.forumAreaId}`}>
+                  <span>{thread.title}</span>
                 </div>
               </DiscussionThreadHeader>
               {thread.sticky ?
                 <DiscussionThreadBody>
-                  <OverflowDetector as="div" classNameWhenOverflown="text--discussion-thread-item-body--overflown"
-                    className="text text--discussion-thread-item-body rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
+                  <OverflowDetector as="div" classNameWhenOverflown="text--discussion-item-body-overflown"
+                    className="text text--discussion-item-body rich-text" dangerouslySetInnerHTML={{ __html: thread.message }} />
                 </DiscussionThreadBody> : null
               }
               <DiscussionThreadFooter>
