@@ -24,10 +24,13 @@ interface MessageState {
 
 class Message extends React.Component<MessageProps, MessageState> {
   render() {
+    //This is the sender of the message
     let senderObject: UserRecepientType = {
       type: "user",
       value: this.props.message.sender
     };
+  
+    //These are the receipients of the message
     let recipientsObject: Array<UserRecepientType> = this.props.message.recipients.map( ( r ): UserRecepientType => ( {
       type: "user",
       value: {
@@ -36,20 +39,29 @@ class Message extends React.Component<MessageProps, MessageState> {
         lastName: r.lastName,
         nickName: r.nickName
       }
-    } ) ).filter( user => user.value.id !== this.props.status.userId );
-    let userGroupObject: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map( ( ug: any ): UserGroupRecepientType => ( {
+    })).filter(user => user.value.id !== this.props.status.userId); //we are filtering the sender from the recepient, just in case
+  
+    //These are the usergroup recepients
+    let userGroupObject: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
       type: "usergroup",
       value: ug
-    } ) );
-    let workspaceObject: Array<WorkspaceRecepientType> = this.props.message.workspaceRecipients.map( ( w: any ): WorkspaceRecepientType => ( {
+    }));
+  
+    //And the workspace recepients
+    let workspaceObject: Array<WorkspaceRecepientType> = this.props.message.workspaceRecipients.map((w: any): WorkspaceRecepientType => ({
       type: "workspace",
       value: w
-    } ) );
+    }));
+  
+    //The basic reply target is the sender
     let replytarget = [senderObject];
-    if ( senderObject.value.id === this.props.status.userId ) {
-      replytarget = [senderObject].concat( recipientsObject as any ).concat( userGroupObject as any ).concat( workspaceObject as any );
+    if (senderObject.value.id === this.props.status.userId) {
+      replytarget = [senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)
+      .filter((t)=>t.value.id !== this.props.status.userId);
     }
-    let replyalltarget = [senderObject].concat( recipientsObject as any ).concat( userGroupObject as any ).concat( workspaceObject as any ).filter( ( t ) => { t.value.id === senderObject.value.id } ).concat( senderObject as any );
+    let replyalltarget = [senderObject].concat(recipientsObject as any)
+    .concat(userGroupObject as any).concat(workspaceObject as any).filter((t)=>t.value.id !== senderObject.value.id)
+    .concat(senderObject as any).filter((t)=>t.value.id !== this.props.status.userId);
 
 
     return <div className="application-list__item application-list__item--communicator-message">
