@@ -111,8 +111,8 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
       (
        <div className="container container--new-discussion-area-description">          
          <div className="env-dialog__form-element-container">  
-           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.description')}</div>          
-           <textarea key="2" className="env-dialog__input env-dialog__input--new-discussion-area-description"
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.editArea.description')}</div>          
+           <textarea key="2" className="env-dialog__textarea"
         onChange={this.onDescriptionChange} value={this.state.description}/>
          </div>
        </div>
@@ -122,20 +122,20 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
       return (          
         <div className="env-dialog__actions">
           <Button buttonModifiers="dialog-execute" onClick={this.modifyArea.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createarea.send')}
+            {this.props.i18n.text.get('plugin.discussion.editArea.send')}
           </Button>
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
+            {this.props.i18n.text.get('plugin.discussion.editArea.cancel')}
           </Button>            
           <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.createarea.clearDraft')}
+            {this.props.i18n.text.get('plugin.discussion.editArea.clearDraft')}
           </Button>            
         </div>
       )
     }
     
     return <JumboDialog modifier="modify-area"
-      title={this.props.i18n.text.get('plugin.discussion.createarea.topic')}
+      title={this.props.i18n.text.get('plugin.discussion.editArea.topic')}
       content={content} footer={footer} onOpen={this.checkAgainstStoredState}>
       {this.props.children}
     </JumboDialog>
