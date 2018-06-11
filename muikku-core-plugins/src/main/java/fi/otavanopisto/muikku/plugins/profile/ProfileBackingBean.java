@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
@@ -51,11 +52,8 @@ public class ProfileBackingBean {
   @Inject
   private LocaleController localeController;
   
-  @Inject
-  private ChatRESTService chatRESTService;
-  
   @Inject 
-  PluginSettingsController pluginSettingsController;
+  private PluginSettingsController pluginSettingsController;
 
   @RequestAction
   @LoggedIn
@@ -116,16 +114,18 @@ public class ProfileBackingBean {
     chatEnabled = false;
     String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
     
-    if (enabledUsersCsv == null) {
+    if (StringUtils.isEmpty(enabledUsersCsv)) {
       return null;
     }
+    
     List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
     
+    if (StringUtils.isNotBlank(enabledUsersCsv)) { 
       if (enabledUsers.contains(identifier.toId())) {
-    	  chatEnabled = true;
+        chatEnabled = true;
       }
-      
-    return null;
+    }
+      return null;
   }
   
   public String getDisplayName() {

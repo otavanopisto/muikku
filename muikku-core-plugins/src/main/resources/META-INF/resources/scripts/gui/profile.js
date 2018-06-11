@@ -32,7 +32,6 @@
             this.element.html(text);
             this.element.find("select").on('change', $.proxy(function(event) {
               this._setVisibility(event.target.value);
-              setTimeout(function(){ location.reload(); }, 1500);
               $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.chat.visibilityChange"));
             }, this));
           }, this));
@@ -43,7 +42,7 @@
     _setVisibility: function(visibility) {
       var userIdentifier = MUIKKU_LOGGED_USER;
       mApi().chat.settings.update({visibility: visibility, userIdentifier: userIdentifier}).callback($.proxy(function () {
-     
+        location.reload();
       }, this));
     }
   });

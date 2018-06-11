@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.configuration.global.ShutdownHookBehavior;
 
@@ -61,7 +62,7 @@ public class ChatRoomSyncScheduler {
 	  
 	List<UserChatSettings> listUsers = userChatSettingsDao.listAll();
 	  
-	  if (listUsers == null) {
+	  if (CollectionUtils.isEmpty(listUsers)) {
 	    return;
 	  }
 
@@ -112,15 +113,14 @@ public class ChatRoomSyncScheduler {
 
           List<WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
           List<WorkspaceUser> workspaceStaffs = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
-          boolean found = false;
           for (WorkspaceUser workspaceStaff : workspaceStaffs) {
 
             SchoolDataIdentifier memberIdentifier = workspaceStaff.getUserIdentifier();
             
             for (UserChatSettings listUser : listUsers) {
               if (listUser.getUserIdentifier().equals(memberIdentifier.toId())) {
-            	found = true;
             	client.addAdmin(enabledWorkspace, memberIdentifier.toId());
+              break;
               }
             }
           }
@@ -131,8 +131,8 @@ public class ChatRoomSyncScheduler {
             
             for (UserChatSettings listUser : listUsers) {
               if (listUser.getUserIdentifier().equals(memberIdentifier.toId())) {
-            	found = true;
                 client.addMember(enabledWorkspace, memberIdentifier.toId());
+                break;
               }
             }
           }

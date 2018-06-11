@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
@@ -53,7 +54,7 @@ public class ChatUserSyncScheduler {
 	List<UserChatSettings> listUsers = userChatSettingsDao.listAll();
 	  
   
-    if (listUsers == null) {
+    if (CollectionUtils.isEmpty(listUsers)) {
       return;
     }
 
@@ -98,7 +99,7 @@ public class ChatUserSyncScheduler {
           }
           User user = userController.findUserByIdentifier(identifier);
           if (user == null) {
-            logger.log(Level.WARNING, "No user found for identifier " + listUser + ", skipping...");
+            logger.log(Level.WARNING, "No user found for identifier " + listUser.getUserIdentifier() + ", skipping...");
 
           }
           
@@ -112,7 +113,7 @@ public class ChatUserSyncScheduler {
           client.createUser(userEntity);
         }
       } catch (Exception e) {
-        logger.log(Level.INFO, "Exception when syncing user " + listUser, e);
+        logger.log(Level.INFO, "Exception when syncing user " + listUser.getUserIdentifier(), e);
       }
     
   }

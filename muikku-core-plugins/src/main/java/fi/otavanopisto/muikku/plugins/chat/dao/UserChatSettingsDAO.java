@@ -54,8 +54,8 @@ public class UserChatSettingsDAO extends CorePluginsDAO<UserChatSettings> {
   }
   
   @Override
-  public void delete(UserChatSettings messageSignature) {
-    super.delete(messageSignature);
+  public void delete(UserChatSettings userChatSettings) {
+    super.delete(userChatSettings);
   }
 
   public UserChatSettings updateVisibility(UserChatSettings settings, UserChatVisibility visibility) {

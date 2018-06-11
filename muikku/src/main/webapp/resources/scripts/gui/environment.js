@@ -4,7 +4,7 @@
   /* global converse */
   
   mApi().chat.status.read().callback(function(err, result) {
-    if (result == null || (result && result.visibility == "VISIBLE_TO_ALL")) {
+    if (result && result.visibility == "VISIBLE_TO_ALL") {
       mApi().chat.settings.read().callback(function(err, result) {
         if (result && result.enabled) {
           converse.initialize({
