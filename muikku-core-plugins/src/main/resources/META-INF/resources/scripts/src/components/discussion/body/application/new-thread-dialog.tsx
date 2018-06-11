@@ -34,7 +34,8 @@ interface DicussionNewThreadProps {
   children: React.ReactElement<any>,
   i18n: i18nType,
   discussion: DiscussionType,
-  createDiscussionThread: CreateDiscussionThreadTriggerType
+  createDiscussionThread: CreateDiscussionThreadTriggerType,
+  status: StatusType
 }
 
 interface DicussionNewThreadState {
@@ -160,16 +161,16 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
            <select className="env-dialog__select" value={this.state.selectedAreaId} onChange={this.onAreaChange}>
             {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
               {area.name}
-             </option>)} buttonModifiers="danger"
+             </option>)}
            </select>
          </div>
        </div>,
-       <div key="2" className="container container--new-discussion-thread-states">
+       (this.props.status.permissions.LOCK_STICKY_PERMISSION ? <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-       </div>,
+       </div> : <div key="2" className="container container--new-discussion-thread-states"/>),
        <CKEditor key="3" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
     ]
@@ -199,7 +200,8 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussion: state.discussion
+    discussion: state.discussion,
+    status: state.status
   }
 };
 
