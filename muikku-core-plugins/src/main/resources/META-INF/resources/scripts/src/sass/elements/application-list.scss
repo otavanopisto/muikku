@@ -14,10 +14,14 @@
 }
 
 .application-list__header {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
-  flex-flow: row wrap;
-  padding: 14px 0;
+  flex-flow: row nowrap;
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 14px 0;
+  }
 }
 
 .application-list__item-content-wrapper {
@@ -157,7 +161,7 @@
 }
 
 .application-list__item-header {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
   flex-flow: row wrap;
 }
@@ -282,15 +286,27 @@
 // Coursepicker
 .application-list__item-header--course {
   cursor: pointer;
-  padding: 14px 0;
+  padding: 10px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
+  }
 } 
 
 .application-list__item-body--course {
-  padding: 0 0 12px;
+  padding: 0 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 15px;
+  }
 }
 
 .application-list__item-footer--course {
-  padding: 0 0 14px;
+  padding: 0 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 15px;
+  }
 }
 
 // Guider

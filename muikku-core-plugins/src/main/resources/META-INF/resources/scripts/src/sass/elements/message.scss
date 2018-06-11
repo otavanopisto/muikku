@@ -6,29 +6,23 @@
 .message {
   border-top: 3px solid $color-message-border;
   cursor: pointer;
-  padding: 14px 10px;
+  padding: 10px;
+  
+  &:first-child {
+    border-color: transparent;
+  }
   
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
+    padding: 15px 10px;
   }
   
   &.selected {
     border-top: 3px solid $color-default;
-  }
-}
-
-.message--communicator {
-  
-  &:first-child {
-    border: 0;
-  }
+  } 
 }
 
 .message--discussion {
-  
-  &:first-child {
-    border: 0;
-  }
   
   // This has to be this specific as :first-child overrides border rules if we put this outside of .message-discussion scope
   &.message--discussion-reply-of-op {

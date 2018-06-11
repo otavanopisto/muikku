@@ -217,7 +217,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                       extraClassNameState = "state-INCOMPLETE"
                     }
                     return <div className={`application-list__item course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                      <div className="application-list__item-header" key={workspace.id}>
+                      <div className="application-list__item-header application-list__item-header--course" key={workspace.id}>
                         <span className="text text--course-icon icon-books"></span>
                         <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? (workspace.nameExtension) : null}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
@@ -230,7 +230,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                   <div className="application-list__header"><h3 className="text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
                     {record.transferCredits.map((credit)=>{
                       return <div className="application-list__item course course--credits" key={credit.date}>
-                        <div className="application-list__item-header">
+                        <div className="application-list__item-header application-list__item-header--course">
                           <span className="text text--transfer-credit-icon icon-books"></span>  
                           <span className="text text--list-item-title">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}

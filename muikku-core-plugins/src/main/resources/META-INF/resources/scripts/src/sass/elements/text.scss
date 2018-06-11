@@ -536,7 +536,8 @@ b {
 
 .text--discussion-current-thread {
   display: flex;
-  align-items: center;  
+  align-items: center;
+  white-space: nowrap; // This prevents mobile wrapping for long topic titles in thread reading view
 }
 
 .text__discussion-breadcrumb-item {
@@ -604,7 +605,15 @@ b {
 }
 
 .text--discussion-current-thread-title {
-  font-size: 1.25rem;    
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+  }
 }
 
 // Guider
@@ -823,7 +832,6 @@ b {
 }
 
 .text--course-icon {
-  align-self: center;
   color: $color-course-icon;
   display: inline-flex;
   flex-basis: auto;
@@ -859,7 +867,7 @@ b {
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 1px 10px 1px 0;
+  padding: 0 10px 0 0;
   word-wrap: break-word;
 }
 
@@ -876,7 +884,6 @@ b {
   flex-shrink: 1;
   font-size: $text-capitalized-mobile-font-size;
   justify-content: flex-end;
-  padding: 1px 0;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad){
