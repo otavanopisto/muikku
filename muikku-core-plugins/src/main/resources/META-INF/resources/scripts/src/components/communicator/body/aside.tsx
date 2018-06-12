@@ -13,7 +13,8 @@ import Navigation, { NavigationTopic, NavigationElement } from '~/components/gen
 
 interface NavigationProps {
   i18n: i18nType,
-  messages: MessagesType
+  messages: MessagesType,
+  openSignatureDialog: ()=>any
 }
 
 interface NavigationState {
@@ -30,6 +31,9 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
             editableWrapper={LabelUpdateDialog} editableWrapperArgs={item.type === "label" ? {label:item} : null}
             isEditable={item.type === "label"}>{item.text(this.props.i18n)}</NavigationElement>
         })}
+      </NavigationTopic>
+      <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")}>
+        <NavigationElement icon="settings" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signatures')}</NavigationElement>
       </NavigationTopic>
     </Navigation>
 //    return <div className="item-list item-list--aside-navigation">

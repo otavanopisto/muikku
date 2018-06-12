@@ -19,7 +19,8 @@ export default class Navigation extends React.Component<NavigationProps, Navigat
 }
 
 interface NavigationTopicProps {
-  name?: string
+  name?: string,
+  className?: string
 }
 
 interface NavigationTopicState {
@@ -28,13 +29,14 @@ interface NavigationTopicState {
 
 export class NavigationTopic extends React.Component<NavigationTopicProps, NavigationTopicState> {
   render(){
-    return <div>{this.props.name ? <span className="text item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
+    return <div className={this.props.className}>{this.props.name ? <span className="text item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
   }
 }
 
 interface NavigationElementProps {
   isActive: boolean,
-  hash: string,
+  hash?: string,
+  onClick?: ()=>any,
   children: string,
   icon?: string,
   iconColor?: string,
@@ -62,7 +64,8 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
         icon="edit" onClick={this.props.editableAction}/>
     }
     
-    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`} href={"#" + this.props.hash}>
+    return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`}
+      href={this.props.hash ? "#" + this.props.hash : null} onClick={this.props.onClick}>
       {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
       <span className="item-list__text-body text">
         {this.props.children}

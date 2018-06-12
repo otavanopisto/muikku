@@ -15,11 +15,19 @@ interface CommunicatorBodyState {
 }
 
 export default class CommunicatorBody extends React.Component<CommunicatorBodyProps,CommunicatorBodyState> {
+  constructor(props: CommunicatorBodyProps){
+    super(props);
+    
+    this.openSignatureDialog = this.openSignatureDialog.bind(this);
+  }
+  openSignatureDialog(){
+    return (this.refs["application"] as any).getWrappedInstance().openDialogSignature();
+  }
   render(){
-    let aside = <Aside />
+    let aside = <Aside openSignatureDialog={this.openSignatureDialog}/>
     return (<div className="container container--full">
       <MainFunctionNavbar activeTrail="communicator" navigation={aside}/>
-      <Application aside={aside}/>
+      <Application aside={aside} ref="application"/>
     </div>);
   }
 }
