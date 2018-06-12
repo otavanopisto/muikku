@@ -32,7 +32,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
             isEditable={item.type === "label"}>{item.text(this.props.i18n)}</NavigationElement>
         })}
       </NavigationTopic>
-      <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")}>
+      <NavigationTopic name={this.props.i18n.text.get("plugin.communicator.settings.topic")} className="item-list--settings">
         <NavigationElement icon="settings" isActive={false} onClick={this.props.openSignatureDialog}>{this.props.i18n.text.get('plugin.communicator.settings.signatures')}</NavigationElement>
       </NavigationTopic>
     </Navigation>
