@@ -25,6 +25,7 @@
 }
 
 .application-list__item-content-wrapper {
+  align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
 }
@@ -47,10 +48,6 @@
   &.selected {
     background-color: $color-application-list-item-background-selected;
     
-    @include breakpoint($breakpoint-pad) {
-      border-radius: 3px;
-    }
-    
     .text,
     .label__text {
       color: $color-default;
@@ -58,6 +55,16 @@
     
     .text--item-counter {
       color: $color-default-contrast;
+    }
+    
+    @include breakpoint($breakpoint-pad) {
+      background-color: $color-default;
+      border-radius: 3px;
+      
+      .text,
+      .label__text {
+        color: $color-default-contrast;
+      }
     }
   }
 }
@@ -97,10 +104,6 @@
     flex-grow: 0;
     flex-shrink: 0;
   }
-}
-
-.application-list__item-content-aside--discussion {
-  padding: 0 12px 0 0;
 }
 
 .application-list__item-content-main {
@@ -161,7 +164,7 @@
 }
 
 .application-list__item-header {
-  align-items: flex-start;
+  align-items: center;
   display: flex;
   flex-flow: row wrap;
 }
@@ -216,13 +219,63 @@
 }
 
 // Discussion 
+.application-list__header--discussion {
+  padding: 14px 10px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 14px 0 0;
+  }
+}
+
+.application-list__item--discussion-message {  
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 20px 0;
+  }
+}
+
+.application-list__item--discussion-reply {  
+  border-top: 5px solid $color-message-border;
+  margin: 10px 0 0;
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+    padding: 20px 0;
+  }
+}
+
+.application-list__item--discussion-reply-of-reply {
+  padding: 10px 10px 10px 30px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0 20px 55px;
+  }
+}
+
+.application-list__item-content-aside--discussion {
+  padding: 0 16px 0 0;
+}
+
+.application-list__item-content-main--discussion {
+  align-self: center;
+}
+
+.application-list__item-header--discussion {
+  
+  @include breakpoint($breakpoint-pad) {
+    height: $avatar-size;
+  }
+}
+
 .application-list__item-header--discussion-current-thread-title {
   font-size: 2 rem;
-}  
+}
 
-.application-list__item-footer--discussion {
+.application-list__item-footer--discussion-message {
   flex-flow: row wrap;
-  padding: 7px 0 0;
+  margin: 10px 0 0;
 }
 
 // Announcer
@@ -252,35 +305,38 @@
   }
 }
 
-// Generic Message
-.application-list__item-header--message {
-  margin: 0 0 2px;
-}
-
-.application-list__item-footer--message {
-  margin: 5px 0 0;
-}
-
 // Communicator
 .application-list__item--communicator-message {  
   border-bottom: 5px solid $color-message-border;
-  padding: 0 0 10px;
+  padding: 10px 0;
   
   &:last-child {
     border: 0;
   }
 }
 
-.application-list__item-header--communicator-message {
+.application-list__item-header--communicator-message-thread {
 	align-items: flex-start;
   flex-direction: column;
 }
 
-.application-list__item--communicator-message:first-child {
+.application-list__item:first-child {
   
-  .application-list__item-header {
+  .application-list__item-header--communicator-message-thread {
     background-color: $color-message-open-header-background;
   }
+}
+
+.application-list__item-body--communicator-message {
+  padding: 5px 0; 
+}
+
+.application-list__item-footer--communicator-message-labels {
+  
+}
+
+.application-list__item-footer--communicator-message-thread-actions {
+  padding: 10px;
 }
 
 // Coursepicker

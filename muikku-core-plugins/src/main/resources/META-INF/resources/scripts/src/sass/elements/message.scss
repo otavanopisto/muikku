@@ -14,28 +14,8 @@
   
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
-    padding: 15px 10px;
+    padding: 15px 0;
   }
-  
-  &.selected {
-    border-top: 3px solid $color-default;
-  } 
-}
-
-.message--discussion {
-  
-  // This has to be this specific as :first-child overrides border rules if we put this outside of .message-discussion scope
-  &.message--discussion-reply-of-op {
-    border-top: 5px solid $color-message-border;
-  }
-}
-
-.message--discussion-thread-op {
-  padding: 25px 12px 14px 4px;
-}
-
-.message--discussion-reply-of-reply {
-  margin: 0 0 0 63px;
 }
 
 .message--unread {

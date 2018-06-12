@@ -111,7 +111,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                     </div>
                   </div>              
                   <div className="application-list__item-content-main">
-                    <div className="application-list__item-header application-list__item-header--message">
+                    <div className="application-list__item-header application-list__item-header--communicator-message">
                       <div className="text text--list-item-title">
                         <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
                       </div>
@@ -122,10 +122,10 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                         {this.props.i18n.time.format(thread.threadLatestMessageDate)}
                       </div>                
                     </div>
-                    <div className="application-list__item-body">
+                    <div className="application-list__item-body application-list__item-body--communicator-message">
                       <span className="text text--communicator-item-body">{thread.caption}</span>
                     </div>
-                    {thread.labels.length ? <div className="application-list__item-footer application-list__item-footer--message">
+                    {thread.labels.length ? <div className="application-list__item-footer application-list__item-footer--communicator-message-labels">
                       <div className="labels">{thread.labels.map((label)=>{
                         return <span className="label" key={label.id}>
                           <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>

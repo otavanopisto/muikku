@@ -6,19 +6,16 @@
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
   background-color: $color-overlay-background;
+  // background-color: $color-application-dialog-background-color;
   bottom: 0;
   display: block;
   left: 0;
   opacity: 0;
+  overflow: auto;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 9;
-  
-  @include breakpoint-down($breakpoint-landscape-pad) {
-    overflow: auto;
-    background-color: $color-application-dialog-background-color;
-  }
+  z-index: 99999;
   
   &.visible {
     opacity: 1;
@@ -39,19 +36,11 @@
   bottom: -100%;
   left: 0;
   right: 0;
-  
-  @include breakpoint-down($breakpoint-landscape-pad) {
-    align-items: flex-start;
-    bottom: 0;
-    height: auto;
-    top: 0;
-  }
 
-  @include breakpoint-up($breakpoint-medium-screen) {
+  @include breakpoint($breakpoint-pad) {
     @include prefix(transition, moz ms webkit o, bottom 0.3s);
   }
 }
-
 
 .env-dialog__content {
   display: flex;

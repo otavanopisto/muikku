@@ -92,7 +92,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                       </div>
                       })}    
                     </div> : null}
-                    <div className="application-list__item-footer">  
+                    <div className="application-list__item-footer application-list__item-footer--announcement-actions">  
                       <NewEditAnnouncement announcement={announcement}>
                         <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
                       </NewEditAnnouncement>

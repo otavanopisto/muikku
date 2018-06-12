@@ -4,13 +4,23 @@
 
 .pager {
   border-top: 1px solid $color-default-separator-border;
+  margin: 10px 0 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0;
+  }
+  
 }
 
 .pager__body {
   align-items: center;
   display:flex;
   justify-content: center;
-  padding: 24px 0 12px;
+  padding: 12px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 24px 0 12px;
+  }
 }
 
 .pager__first {

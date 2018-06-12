@@ -270,7 +270,6 @@ b {
 
 .text--item-article {  
   padding: 10px 0;
-  font-weight: 300;
 }
 
 .text--item-article-header {
@@ -525,7 +524,7 @@ b {
   text-align: right;
   
   @include breakpoint($breakpoint-mobile-xl) {
-    width: 250px;
+    max-width: 250px;
   }
 }
 
@@ -614,6 +613,11 @@ b {
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
   }
+}
+
+.text--discussion-last-modifier {
+  font-weight: 600;
+  font-style: italic;
 }
 
 // Guider

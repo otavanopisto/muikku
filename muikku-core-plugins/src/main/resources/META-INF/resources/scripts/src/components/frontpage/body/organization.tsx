@@ -6,6 +6,7 @@ import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/logo.scss';
 import '~/sass/elements/buttons.scss';
+import '~/sass/elements/rich-text.scss';
 
 interface FrontpageOrganizationProps {
   i18n: i18nType
