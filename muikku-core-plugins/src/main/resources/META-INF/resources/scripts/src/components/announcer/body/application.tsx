@@ -49,6 +49,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
             <Announcements/>
             <AnnouncementView/>
           </ApplicationPanel>
+          <NewEditAnnouncement><HoverButton icon="edit" modifier="new-announcement"/></NewEditAnnouncement>
         </div>);
   }
 }
