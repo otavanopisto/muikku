@@ -17,10 +17,12 @@ import DeleteAnnouncementDialog from '../delete-announcement-dialog';
 import NewEditAnnouncement from './new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
+import { updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
 
 interface AnnouncerToolbarProps {
   i18n: i18nType,
-  announcements: AnnouncementsType
+  announcements: AnnouncementsType,
+  updateAnnouncement: UpdateAnnouncementTriggerType
 }
 
 interface AnnouncerToolbarState {
@@ -33,6 +35,15 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
 
     this.go = this.go.bind( this );
     this.onGoBackClick = this.onGoBackClick.bind( this );
+    this.restoreCurrentAnnouncement = this.restoreCurrentAnnouncement.bind(this);
+  }
+  restoreCurrentAnnouncement(){
+    this.props.updateAnnouncement({
+      announcement: this.props.announcements.current,
+      update: {
+        archived: false
+      }
+    });
   }
   go( announcement: AnnouncementType ) {
     if ( !announcement ) {
@@ -92,6 +103,8 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
               <ButtonPill buttonModifiers="delete" icon="delete" />
             </DeleteAnnouncementDialog>
+            {this.props.announcements.current && this.props.announcements.location === "archived" ? 
+                <ButtonPill buttonModifiers="restore" icon="restore" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
             <ButtonPill buttonModifiers="prev-page" disabled={!prev} onClick={this.go.bind( this, prev )} icon="arrow-left" />
@@ -126,7 +139,7 @@ function mapStateToProps( state: StateType ) {
 };
 
 function mapDispatchToProps( dispatch: Dispatch<any> ) {
-  return {}
+  return bindActionCreators({updateAnnouncement}, dispatch);
 };
 
 export default connect(

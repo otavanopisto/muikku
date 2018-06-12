@@ -47,8 +47,8 @@ export interface UpdateAnnouncementTriggerType {
   (data:{
     announcement: AnnouncementType,
     update: AnnouncementUpdateType,
-    success: ()=>any,
-    fail: ()=>any
+    success?: ()=>any,
+    fail?: ()=>any
   }):AnyActionType
 }
 
@@ -137,9 +137,10 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
     let announcements:AnnouncementsType = state.announcements;
     
     try {
-      await promisify(mApi().announcer.announcements.update(data.announcement.id, data.update), 'callback')();
+      let nAnnouncement:AnnouncementType = Object.assign({}, data.announcement, data.update);
+      await promisify(mApi().announcer.announcements.update(data.announcement.id, nAnnouncement), 'callback')();
       
-      let diff = moment(data.update.endDate).diff(moment(), 'days');
+      let diff = moment(nAnnouncement.endDate).diff(moment(), 'days');
       if (announcements.location !== "active" && diff >= 0){
         location.hash = "#active";
       } else if (announcements.location !== "past" && diff < 0){
@@ -153,13 +154,13 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
           }
         });
       }
-      data.success();
+      data.success && data.success();
     } catch (err){
       if (!(err instanceof MApiError)){
         throw err;
       }
       dispatch(notificationActions.displayNotification(getState().i18n.text.get("plugin.announcer.errormessage.updateAnnouncement"), 'error'));
-      data.fail();
+      data.fail && data.fail();
     }
   }
 }

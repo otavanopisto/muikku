@@ -139,19 +139,19 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
-       <div className="container container--communicator-subject">
+       <div className="container container--communicator-subject" key="2">
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
-          <input key="2" type="text" className="env-dialog__input"         
+          <input type="text" className="env-dialog__input"         
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div> 
         </div>
         ),
       (
-      <div className="container container--communicator-content">     
+      <div className="container container--communicator-content" key="3">     
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
-          <CKEditor key="3" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+          <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
       </div>

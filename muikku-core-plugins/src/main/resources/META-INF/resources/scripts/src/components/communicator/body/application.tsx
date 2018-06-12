@@ -39,11 +39,11 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
       updateSignatureDialogOpened: false
     }
   }
-  openDialogSignature(closeDropdown: ()=>any){
+  openDialogSignature(closeDropdown?: ()=>any){
     this.setState({
       updateSignatureDialogOpened: true
     });
-    closeDropdown();
+    closeDropdown && closeDropdown();
   }
   closeDialogSignature(){
     this.setState({
@@ -88,5 +88,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>){
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  null,
+  { withRef: true }
 )(CommunicatorApplication);

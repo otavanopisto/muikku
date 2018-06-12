@@ -38,6 +38,12 @@
   }
 }
 
+.item-list--settings {
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+}
+
 // Item-list items in workspaces panel
 .item-list--panel-workspaces .item-list__item {
 
