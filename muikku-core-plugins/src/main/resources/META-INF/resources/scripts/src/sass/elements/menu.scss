@@ -1,29 +1,7 @@
-//
-// In order for menu to work properly you need to include the js for menu in the interactions
-// folder otherwise it'll be always hidden
-// for it to display
-//
-//  div.menu
-//    div.menu-container
-//      div.menu-header?
-//        (BODY)
-//      div.menu-body
-//        (BODY)
-//      div.menu-footer?
-//        (BODY)
-//
-//    {BODY} div.menu-logo
-//
-
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/vars";
 @import "../base/breakpoints";
-
-$menu-width-pad: 350px;
-$menu-width-mobile: 250px;
-$menu-header-height: $navbar-mobile-height;
-$menu-font: 'Exo 2', Arial, sans-serif;
 
 .menu {
   @include prefix(transition, moz webkit ms o, opacity 0.3s);
@@ -36,113 +14,13 @@ $menu-font: 'Exo 2', Arial, sans-serif;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 99;
-
-  .menu__logo {
-    background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
-    display: inline-block;
-    height: $navbar-mobile-height;
-    width: 175px;
-  }
-
-  &.menu--hidden {
-    left: -$menu-width-mobile;
-  }
-
-  .menu__container {
-    @include prefix(transition, webkit moz o ms, left 0.3s);
-    align-items: center;
-    background-color: $color-menu-default-background;
-    border-right: solid 1px darken($color-menu-default-background, 30%);
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+  z-index: 9999;
+  
+  @include breakpoint($breakpoint-pad) {
     left: -$menu-width-pad;
-    position: absolute;
-    top: 0;
     width: $menu-width-pad;
-    
-    .menu__extras {
-      padding: 0 10px 10px;
-      width: 100%;
-      border-bottom: solid 5px $color-default-separator-border;
-      margin: 0 0 20px;
-      
-      &:empty {
-        display: none;
-      }
-    }
-
-    @include breakpoint-down($breakpoint-medium-mobile) {
-      left: -$menu-width-mobile;
-      width: $menu-width-mobile;
-    }
-
-    >.menu__body {
-      padding: 10px 0;
-    }
-
-    .menu__header {
-      position: relative;
-      height: $menu-header-height;
-      width: 100%;
-      background-color: $color-menu-default-header-background;
-      
-      .menu__header__button--close {
-        @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-        position: absolute;
-        height: $menu-header-height;
-        width: 45px;
-        right: 0;
-        top: 0;
-        color: $color-menu-default-header-button-close;
-        vertical-align: middle;
-        line-height: $menu-header-height;
-        transition: background-color .3s;
-        font-size: 24px;
-        font-weight: 700;
-        text-align: center;
-        padding-right: 5px;
-        cursor: pointer;
-        
-        &:active, &.active {
-          background-color: $color-menu-default-header-button-close-background-active;
-        }
-      }
-    }
-
-    .menu__body {
-      position: relative;
-      width: 100%;
-      overflow-y: auto;
-    }
-
-    .menu__items {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
-      width: 100%;
-
-      .menu__item {
-        display: block;
-        height: 70px;
-        
-        &.menu__item--space {
-          height: 45px;
-        }
-
-        @include breakpoint-down($breakpoint-small-mobile) {
-          height: 45px;
-          
-          &.menu__item--space {
-            height: 20px;
-          }
-        }
-      }
-    }
   }
-
+  
   &.displayed {
     display: block;
   }
@@ -158,28 +36,117 @@ $menu-font: 'Exo 2', Arial, sans-serif;
   &.dragging {
     transition: none;
 
-    >.menu__container {
+    .menu__container {
       transition: none;
     }
   }
+}
+
+.menu--hidden {
+  left: -$menu-width-mobile;
+}
+
+.menu__logo {
+  background: url("/gfx/oo-branded-site-logo-text.png") no-repeat center center;
+  display: inline-block;
+  height: $navbar-mobile-height;
+  width: 175px;
+}
+
+.menu__container {
+  @include prefix(transition, webkit moz o ms, left 0.3s);
+  align-items: center;
+  background-color: $color-menu-default-background;
+  border-right: solid 1px darken($color-menu-default-background, 30%);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  left: -$menu-width-mobile;
+  position: absolute;
+  top: 0;
+  width: $menu-width-mobile;    
+}
+
+.menu__extras {
+  padding: 0 10px 10px;
+  width: 100%;
+  border-bottom: solid 5px $color-default-separator-border;
+  margin: 0 0 20px;
+  
+  &:empty {
+    display: none;
+  }
+}    
+
+.menu__header {
+  background-color: $color-menu-default-header-background;
+  height: $navbar-mobile-height;
+  position: relative;
+  width: 100%;
+}
+
+.menu__body {
+  overflow-y: auto;
+  padding: 10px 0;
+  position: relative;
+  width: 100%;
+}
+
+.menu__header__button--close {
+  @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+  position: absolute;
+  height: $navbar-mobile-height;
+  width: 45px;
+  right: 0;
+  top: 0;
+  color: $color-menu-default-header-button-close;
+  vertical-align: middle;
+  line-height: $navbar-mobile-height;
+  transition: background-color .3s;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  padding-right: 5px;
+  cursor: pointer;
+  
+  &:active, &.active {
+    background-color: $color-menu-default-header-button-close-background-active;
+  }
+}
+
+.menu__items {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
  
-  &.menu--main-function {
-    .menu__header {
-      background-color: $color-environment-menu-header-background;
-    }
-    .menu__logo {
-      background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat center center;
-    }
-    .menu__container .menu__items .menu__item {
-      height: 50px;
-      
-      .link.link--menu {
-        justify-content: flex-start;
-      }
-    
-      &.menu__item--space {
-        height: 30px;
-      }
-    }
+.menu__item {
+  display: block;
+  height: 50px;
+  text-transform: uppercase;
+}
+        
+.menu__item--space {
+  height: 30px;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: 45px;
+  }
+}
+
+.menu--main-function {
+
+  .menu__header {
+    background-color: $color-environment-menu-header-background;
+  }
+
+  .menu__logo {
+    background: url("/gfx/oo-branded-site-logo-text-white.png") no-repeat center center;
+  }
+
+  .menu__item {
+    text-transform: none;  
   }
 }
