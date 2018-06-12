@@ -177,7 +177,7 @@ public class ChatRESTService extends PluginRESTService {
     String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
     
     if (enabledUsersCsv == null) {
-      Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
     boolean chatEnabled = false;
@@ -265,11 +265,11 @@ public class ChatRESTService extends PluginRESTService {
   @PUT
   @Path("/settings")
   @RESTPermit(handling = Handling.INLINE)
-  public Response chatSettings(UserChatSettings createOrUpdateUserChatSettings) {
+  public Response createOrUpdateUserChatSettings(UserChatSettings userChatSettings) {
 	if (!sessionController.isLoggedIn()) {
 	  return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
 	}
-  UserChatVisibility visibility = createOrUpdateUserChatSettings.getVisibility();
+  UserChatVisibility visibility = userChatSettings.getVisibility();
 	SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
 	UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);
 	  
@@ -279,6 +279,6 @@ public class ChatRESTService extends PluginRESTService {
 	} else {
 	  chatController.updateUserChatSettings(findUserChatSettings, visibility);
 	}
-	return Response.ok(createOrUpdateUserChatSettings).build();
+	return Response.ok(userChatSettings).build();
   }
 }
