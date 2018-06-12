@@ -279,6 +279,6 @@ public class ChatRESTService extends PluginRESTService {
 	} else {
 	  chatController.updateUserChatSettings(findUserChatSettings, visibility);
 	}
-	return Response.ok(userChatSettings).build();
+	return Response.ok(userChatSettings).build(); 
   }
 }
