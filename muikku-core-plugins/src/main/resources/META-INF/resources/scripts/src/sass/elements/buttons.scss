@@ -440,10 +440,16 @@
 .button-pill--current-language {
   background-color: $color-environment-button-pill-language-background;
   color: $color-environment-button-pill-language-text;
-  font-size: $button-pill-navbar-font-size;
-  height: $button-pill-navbar-size;
+  font-size: $button-pill-navbar-mobile-font-size;
+  height: $button-pill-navbar-mobile-size;
   margin-right: 10px;
-  width: $button-pill-navbar-size;
+  width: $button-pill-navbar-mobile-size;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $button-pill-navbar-desktop-font-size;
+    height: $button-pill-navbar-desktop-size;
+    width: $button-pill-navbar-desktop-size;
+  }
   
   &:hover, 
   &.hover {
@@ -463,10 +469,10 @@
     background: $color-default;
     box-shadow: 0 0 5px $color-button-pill-shadow;
     display: inline-flex;
-    font-size: $button-pill-navbar-font-size;
-    height: $button-pill-navbar-size;
+    font-size: $button-pill-navbar-desktop-font-size;
+    height: $button-pill-navbar-desktop-size;
     margin-right: 15px;
-    width: $button-pill-navbar-size;
+    width: $button-pill-navbar-desktop-size;
     
     &:hover, 
 	  &.hover {

@@ -124,9 +124,12 @@
   padding: 0 10px;
   width: 100%;
 }
+
+.link--menu {
+  justify-content: flex-start;
+}
  
 .link--language {
-  font-size: 14px;
   background-color: $color-environment-link-language-background;
   color: $color-environment-link-language-text;
 
