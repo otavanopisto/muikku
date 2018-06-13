@@ -41,7 +41,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
         <DiscussionThreads/>
         <CurrentThread/>
       </ApplicationPanel>
-      <HoverButton icon="edit" modifier="new-message"/>
+      <NewThread><HoverButton icon="edit" modifier="new-message"/></NewThread>
     </div>
   }
 }
