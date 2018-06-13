@@ -165,7 +165,8 @@
 
 // List item dates
 .item-list__latest-message-date,
-.item-list__announcement-date {
+.item-list__announcement-date,
+.item-list__announcement-caption-workspace {
   color: $color-index-text-panels-date-color;
   font-size: calc(#{$text-mobile-font-size} / 1.1);
   font-style: italic;
@@ -176,3 +177,7 @@
   }
 }
 
+.item-list__announcement-caption-workspace {
+  padding: 0;
+  float: right;
+}

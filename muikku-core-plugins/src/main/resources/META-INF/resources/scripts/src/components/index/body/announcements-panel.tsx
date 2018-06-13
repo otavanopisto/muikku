@@ -39,6 +39,9 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                   <span className="text item-list__text-body item-list__text-body--multiline">
                     <span className="text item-list__announcement-caption">
                       {announcement.caption}
+                      {announcement.workspaces.length ? <span className="item-list__announcement-caption-workspace">
+                        {announcement.workspaces[0].name}
+                      </span> : null}
                     </span>
                     <span className="text item-list__announcement-date">
                       {this.props.i18n.time.format(announcement.startDate)}
