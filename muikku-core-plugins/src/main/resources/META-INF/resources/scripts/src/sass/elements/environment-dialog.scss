@@ -65,8 +65,7 @@
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  margin-top: 10px;
-  padding: 0 15px;         
+  padding: 10px 15px;         
 
   @include breakpoint($breakpoint-desktop) {
     padding: 0;
@@ -75,8 +74,7 @@
 
 .env-dialog__footer {
   width: 100%;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding: 10px 15px;
 }
 
 
@@ -84,14 +82,8 @@
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
-  padding: 0 15px;         
-
-  @include breakpoint($breakpoint-desktop) {
-    padding: 0;
-  }
   
-  a {
+  .button {
     margin-left: 10px;         
   }                  
 }  
@@ -123,7 +115,6 @@
     text-align: left; 
   }
 }
-
 
 .env-dialog__header {
   background-color: $color-application-dialog-background-color;
