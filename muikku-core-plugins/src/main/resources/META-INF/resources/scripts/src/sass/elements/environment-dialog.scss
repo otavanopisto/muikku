@@ -31,14 +31,16 @@
   border-top: 3px solid $color-application-dialog-border-color;
   display: flex;
   justify-content: center;
-  min-height: 420px;
+//   min-height: 420px;
   position: absolute;
   bottom: -100%;
   left: 0;
   right: 0;
+  top: 0;
 
   @include breakpoint($breakpoint-pad) {
     @include prefix(transition, moz ms webkit o, bottom 0.3s);
+    top: auto;
   }
 }
 
