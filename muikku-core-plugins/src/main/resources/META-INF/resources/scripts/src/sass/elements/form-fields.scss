@@ -96,7 +96,7 @@ div.form-field-tag-input {
   font-size: $text-mobile-font-size;
   font-weight: 200;
   height: 35px;
-  min-width: 200px;
+  min-width: 150px;
   padding: 5px 25px 5px 5px;
   text-transform: uppercase;
   width: 100%;
@@ -194,8 +194,8 @@ div.form-field-tag-input {
 .form-field--toolbar-selector {
   display: inline-block;
   margin-right: 20px;
+  max-width: 200px;
   vertical-align: top;
-  max-width: 150px;
   width: 100%;
   
 @include breakpoint($breakpoint-pad) {
