@@ -17,7 +17,8 @@ interface TagInputProps {
   onBlur?: (e: React.FocusEvent<any>)=>any,
   onFocus?: (e: React.FocusEvent<any>)=>any,
   tags: Tag[],
-  autofocus?: boolean
+  autofocus?: boolean,
+  deleteByBackKey?: boolean
 }
 
 interface TagInputState {
@@ -38,8 +39,10 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
     this.onDeleteTag = this.onDeleteTag.bind(this);
   }
   onKeyDown(e: React.KeyboardEvent<any>){
-    if (e.keyCode === 8 && this.props.inputValue === "" && this.props.tags.length > 0){
-      this.props.onDelete(this.props.tags[this.props.tags.length -1].value);
+    if (this.props.deleteByBackKey){
+      if (e.keyCode === 8 && this.props.inputValue === "" && this.props.tags.length > 0){
+        this.props.onDelete(this.props.tags[this.props.tags.length -1].value);
+      }
     }
   }
   focus(){
