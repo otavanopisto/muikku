@@ -177,13 +177,13 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="env-dialog__actions">
-         <Button className="button button--dialog-execute" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
+         <Button buttonModifiers="dialog-execute" onClick={this.createThread.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.send')}
           </Button>
-          <Button className="button button--dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
+          <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
-          {this.recovered ? <Button className="button button--dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
               {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
             </Button> : null}            
         </div>
