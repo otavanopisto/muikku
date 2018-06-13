@@ -33,7 +33,7 @@
   top: 0;
   width: 100%; 
   
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-pad) {
     border-radius: 2px;
     bottom: auto;
     font-size: $text-desktop-font-size;
@@ -50,15 +50,15 @@
 }
 
 .dialog__header {
-  background-color: $color-dialog-default-background;
-  color: $color-dialog-default-text;
+  background-color: $color-dialog-mobile-background;
+  color: $color-dialog-mobile-text;
   padding: 15px 20px;
   position: relative;
   width: 100%;
   
-  @include breakpoint($breakpoint-mobile-xl) {
-    background-color: $color-dialog-default-title-background;
-    color: $color-dialog-default-title-text;
+  @include breakpoint($breakpoint-pad) {
+    background-color: $color-dialog-desktop-background;
+    color: $color-dialog-desktop-text;
     font-size: 1.1rem;
   }
 }
@@ -70,7 +70,7 @@
   text-transform: uppercase;
   width: 100%;
   
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-pad) {
     font-size: 1.1rem;
   }
 }
@@ -105,7 +105,7 @@
   right: 0;
   text-align: right;
   
-  @include breakpoint($breakpoint-mobile-xl) {
+  @include breakpoint($breakpoint-pad) {
     position: relative;
     width: 100%;
   }
