@@ -86,7 +86,8 @@
     background-color: $color-item-list-item-aside-background-active;
     color: $color-item-list-item-font-color-active;
   
-    .text {
+    .text,
+    .item-list__icon {
       color: $color-item-list-item-font-color-active;            
     }
   }

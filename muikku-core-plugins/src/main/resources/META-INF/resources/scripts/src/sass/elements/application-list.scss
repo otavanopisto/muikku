@@ -220,7 +220,7 @@
 
 // Discussion 
 .application-list__header--discussion {
-  padding: 14px 10px 0;
+  padding: 14px 10px 10px;
   
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0 0;
@@ -309,6 +309,10 @@
 .application-list__item--communicator-message {  
   border-bottom: 5px solid $color-message-border;
   padding: 10px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
+  }
   
   &:last-child {
     border: 0;

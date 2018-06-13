@@ -600,7 +600,13 @@ b {
 }
 
 .text--discussion-message-creator {
-  font-size: 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 400;
+  }
 }
 
 .text--discussion-current-thread-title {
@@ -609,9 +615,11 @@ b {
   flex-grow: 1;
   flex-shrink: 1;
   font-size: 1rem;
+  font-weight: 600;
   
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
+    font-weight: 400;
   }
 }
 
