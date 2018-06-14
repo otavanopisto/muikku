@@ -66,7 +66,10 @@ if (process.env.NODE_ENV !== "production") {
   }));
 }
 
-let entries = {};
+//I have absolutely no idea how this worked
+let entries = {
+  "rich-text": "./sass/elements/rich-text.scss"
+};
 let filenames = fs.readdirSync('./entries');
 for (let file of filenames) {
   let actualFileName = file.split(".");

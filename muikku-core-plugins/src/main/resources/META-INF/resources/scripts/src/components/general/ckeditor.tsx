@@ -89,7 +89,8 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       }
       extraConfig.extraPlugins = Object.keys(this.props.extraPlugins).join(',');
     }
-    getCKEDITOR().replace(this.name, Object.assign(extraConfig, this.props.configuration));
+    getCKEDITOR().replace(this.name, Object.assign(extraConfig, {...this.props.configuration, 
+      contentsCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"}));
     getCKEDITOR().instances[this.name].on('change', ()=>{
       if (this.cancelNextChangeTrigger){
         this.cancelNextChangeTrigger = false;
@@ -128,10 +129,10 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     getCKEDITOR().instances[this.name].destroy();
   }
   componentWillReceiveProps(nextProps: CKEditorProps){
-    if (!equals(nextProps.configuration, this.props.configuration)){
-      getCKEDITOR().replace(this.name, this.props.configuration)
-    }
-    
+//    if (!equals(nextProps.configuration, this.props.configuration)){
+//      getCKEDITOR().replace(this.name, {...this.props.configuration,
+//        contentCss: (window as any).CONTEXTPATH + "/javax.faces.resource/scripts/dist/rich-text.css.jsf"})
+//    }    
     if (nextProps.children !== this.currentData){
       if (!((nextProps.children[nextProps.children.length - 1] === "\n" && nextProps.children.substr(0, nextProps.children.length - 1) === this.currentData) ||
           (this.currentData[this.currentData.length - 1] === "\n" && this.currentData.substr(0, this.currentData.length - 1) === nextProps.children))){
