@@ -34,6 +34,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.Curriculum;
+import fi.otavanopisto.muikku.schooldata.entity.SchoolDataEntity;
+import fi.otavanopisto.muikku.schooldata.entity.Subject;
 import fi.otavanopisto.muikku.schooldata.entity.Workspace;
 import fi.otavanopisto.muikku.schooldata.entity.WorkspaceUser;
 import fi.otavanopisto.muikku.search.SearchProvider;
@@ -66,7 +68,7 @@ public class ChatRoomSyncScheduler {
   @Any
   private Instance<SearchProvider> searchProviders;
 
-  @Schedule(second = "0", minute = "*/30", hour = "*", persistent = false)
+  @Schedule(second = "0", minute = "0", hour = "*/24", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatRooms() {
 		
@@ -157,9 +159,11 @@ public class ChatRoomSyncScheduler {
         		      logger.log(Level.WARNING, "No workspace entity found for identifier " + identifier + ", skipping...");
         		      continue;
         		    }
-
         		    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-        		      chatRoomEntity = new MUCRoomEntity(identifier, workspace.getName(), workspace.getDescription());
+                String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+                
+        		      String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+        		      chatRoomEntity = new MUCRoomEntity(identifier, roomName, workspace.getDescription());
         		      client.createChatRoom(chatRoomEntity);
 
         		      List<WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
