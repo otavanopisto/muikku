@@ -95,7 +95,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
 
             <div className="text text--main-function-current-folder">
               <span className="text__icon text__icon--current-folder icon-new-section"></span>
-              {this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}
+              <span className="text__current-folder-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
 
             <NewEditAnnouncement announcement={this.props.announcements.current}>
@@ -120,7 +120,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
           <ApplicationPanelToolbarActionsMain>
             <div className="text text--main-function-current-folder">
               <span className="text__icon text__icon--current-folder icon-new-section"></span>
-              {this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}
+              <span className="text__current-folder-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
             <DeleteAnnouncementDialog>
               <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="delete"/>
