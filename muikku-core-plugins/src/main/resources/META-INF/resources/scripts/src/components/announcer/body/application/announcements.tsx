@@ -15,6 +15,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
 import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/label.scss';
 
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
@@ -78,20 +79,18 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     <div className="application-list__item-body">
                       <article className="text text--item-article">
                         <header className="text text--item-article-header">{announcement.caption}</header>
-                        <p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>
+                        {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
                       </article>
                     </div>
-                    {/* This should be shown only if announcement has workspaces set */}    
-                    {announcement.workspaces ? <div className="application-list__item-meta">
-                      {announcement.workspaces.map((workspace)=>{
-                      return <div className="text text--announcement-workspace" key={workspace.id}> 
-                        <span className="text__icon text__icon--announcement-workspace icon-books"></span>
-                        <span className="text text--announcement-workspace-name">
-                          {workspace.name}
+                    {announcement.workspaces && announcement.workspaces.length ? 
+                      <div className="labels item-list__announcement-workspaces">
+                      {announcement.workspaces.map((workspace)=>{ 
+                        return <span className="label">
+                          <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                          <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                         </span>
-                      </div>
-                      })}    
-                    </div> : null}
+                      })}
+                      </div> : null}
                     <div className="application-list__item-footer application-list__item-footer--announcement-actions">  
                       <NewEditAnnouncement announcement={announcement}>
                         <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>

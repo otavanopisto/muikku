@@ -45,12 +45,12 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                       {this.props.i18n.time.format(announcement.startDate)}
                     </span>
                     {announcement.workspaces && announcement.workspaces.length ? 
-                      <span className="labels labels--announcer-announcement item-list__announcement-workspaces">
+                      <div className="labels item-list__announcement-workspaces">
                         <span className="label">
                           <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                           <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
                         </span>
-                      </span> : null}
+                      </div> : null}
                   </span>
                 </Link>
               })}

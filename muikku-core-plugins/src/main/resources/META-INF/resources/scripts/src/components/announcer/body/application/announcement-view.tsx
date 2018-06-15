@@ -9,6 +9,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/label.scss';
 
 import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
@@ -42,25 +43,20 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                 </div>
               </div>
             </div>
+            {this.props.announcements.current.workspaces && this.props.announcements.current.workspaces.length ? 
+                <div className="labels labels--announcer-announcement item-list__announcement-workspaces">
+                {this.props.announcements.current.workspaces.map((workspace)=>{ 
+                  return <span className="label">
+                    <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                    <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                  </span>
+                })}
+                </div> : null}
           </div>
           <div className="application-list__item-body">
             <header className="text text--announcer-announcement-caption">{this.props.announcements.current.caption}</header>
             <section className="text text--announcer-announcement-content rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>  
-          <div className="application-list__item-meta">
-            {this.props.announcements.current.workspaces ? 
-              <div className="text text--announcer-announcement-workspaces">
-                {this.props.announcements.current.workspaces.map((workspace)=>{
-                  return (                         
-                    <div className="text text--announcement-workspace" key={workspace.id}> 
-                      <span className="text__icon text__icon--announcement-workspace icon-books"></span>
-                      <span className="text text--announcement-workspace-name">{workspace.name}</span>
-                    </div>
-                  )
-                })}                      
-              </div> : null}
-          </div>
-            
         </div>                 
       </div>
     )
