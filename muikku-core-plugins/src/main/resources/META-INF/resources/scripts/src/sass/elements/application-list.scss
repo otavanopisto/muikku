@@ -52,7 +52,9 @@
       background-color: $color-label-mobile-selected-background;
     }
 
-    .text {
+    .text,
+    .text__icon,
+    .link {
       color: $color-default;
     }
     
