@@ -887,6 +887,7 @@ b {
   display: flex;
   flex-basis: 0;
   flex-grow: 1;
+  flex-flow: row wrap;
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
@@ -894,7 +895,14 @@ b {
 
 .text--list-item-helper-title {
   color: $color-default-helper;
-  padding: 0 0 0 15px;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    padding: 0 0 0 15px;
+  }
 }
 
 .text--list-item-type-title {
