@@ -61,12 +61,12 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               notSelectableModifier: "archived",
               contents: (checkbox: React.ReactElement<any>)=>{
                 return <div className="application-list__item-content-wrapper announcement__content">
-                  <div className="application-list__item-content application-list__item-content--aside">
+                  <div className="application-list__item-content-aside">
                     <div className="announcement__select-container">
                       {checkbox}
                     </div>
                   </div>
-                  <div className="application-list__item-content application-list__item-content--main">
+                  <div className="application-list__item-content-main">
                     <div className="application-list__item-header">
                       <div className="text text--announcer-announcement-header">
                         <span className="text__icon icon-clock"></span>

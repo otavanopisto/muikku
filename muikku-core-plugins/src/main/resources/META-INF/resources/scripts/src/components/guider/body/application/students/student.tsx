@@ -19,14 +19,14 @@ interface StudentState {
 
 export default class Student extends React.Component<StudentProps, StudentState> {
   render(){
-    return <div className="application-list__item-content-wrapper message__content">
-      <div className="application-list__item-content application-list__item-content--aside">
+    return <div className="application-list__item-content-wrapper">
+      <div className="application-list__item-content-aside">
         <div className="user__select-container">
           {this.props.checkbox}
         </div>
       </div>
-      <div className="application-list__item-content application-list__item-content--main">
-        <div className="application-list__item-header application-list__item-header--student">
+      <div className="application-list__item-content-main">
+        <div className="application-list__item-header">
           <span className="text text--list-item-title">{getName(this.props.student as any as UserType)} <span className="text text--list-item-helper-title">{this.props.student.email}</span></span>
           <span className="text text--list-item-type-title">{this.props.student.studyProgrammeName}</span>
         </div>

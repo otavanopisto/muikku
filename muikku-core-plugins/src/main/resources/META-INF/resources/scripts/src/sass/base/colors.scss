@@ -48,6 +48,10 @@ $color-list-hover-background: #e7fffc;
 $color-list-active-background: rgba(208, 255, 249, 1);
 $color-list-selected-background: #29b0c4;
 
+// Labels
+$color-label-background: #f5f5f5;
+$color-label-mobile-selected-background: #97e1ef;
+
 // Workspace
 $color-workspace: #43cd80;
 
@@ -294,7 +298,6 @@ $color-form-field-border: #dcdcdc;
 $color-form-field-border-focus: #707070;
 $color-form-field-glow: $color-primary;
 
-
 // form field input tag
 $color-form-field-selected-item-background: $color-default;
 $color-form-field-tag-input-tag-border: #b1e8fe;
@@ -302,7 +305,6 @@ $color-form-field-selected-item-text: $color-default-contrast;
 $color-form-field-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
 
 // Environment dialog form elements
-
 $color-env-dialog-form-element-border: #f8a1ce;
 
 // autocomplete

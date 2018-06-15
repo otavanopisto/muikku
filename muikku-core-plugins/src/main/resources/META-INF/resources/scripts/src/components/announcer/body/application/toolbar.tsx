@@ -94,7 +94,8 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick} />
 
             <div className="text text--main-function-current-folder">
-
+              <span className="text__icon text__icon--current-folder icon-new-section"></span>
+              {this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}
             </div>
 
             <NewEditAnnouncement announcement={this.props.announcements.current}>
@@ -118,6 +119,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="text text--main-function-current-folder">
+              <span className="text__icon text__icon--current-folder icon-new-section"></span>
               {this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}
             </div>
             <DeleteAnnouncementDialog>

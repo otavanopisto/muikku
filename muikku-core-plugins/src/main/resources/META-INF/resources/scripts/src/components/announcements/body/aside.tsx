@@ -7,7 +7,12 @@ import {AnnouncementType, AnnouncementsType} from '~/reducers/main-function/anno
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
 import {StateType} from '~/reducers';
+
 import '~/sass/elements/toc.scss';
+import '~/sass/elements/label.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/item-list.scss';
+
 
 interface AnnouncementsAsideProps {
   i18n: i18nType,
@@ -36,6 +41,13 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
                     <span className="text item-list__announcement-date">
                       {this.props.i18n.time.format(announcement.startDate)}
                     </span>
+                    {announcement.workspaces && announcement.workspaces.length ? 
+                      <span className="labels labels--announcer-announcement item-list__announcement-workspaces">
+                        <span className="label">
+                          <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
+                        </span>
+                      </span> : null}
                   </span>
                 </Link>
               })}

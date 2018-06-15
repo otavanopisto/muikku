@@ -219,7 +219,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     return <div className={`application-list__item course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
                       <div className="application-list__item-header application-list__item-header--course" key={workspace.id}>
                         <span className="text text--course-icon icon-books"></span>
-                        <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? (workspace.nameExtension) : null}</span> 
+                        <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {getAssessments(this.props, workspace)}
                         {getActivity(this.props, workspace)}

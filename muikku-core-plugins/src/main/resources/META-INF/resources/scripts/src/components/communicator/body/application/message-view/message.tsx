@@ -10,6 +10,10 @@ import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex } from '~/util/modifiers';
 
 import '~/sass/elements/rich-text.scss';
+import '~/sass/elements/label.scss';
+import '~/sass/elements/application-list.scss';
+import '~/sass/elements/text.scss';
+import '~/sass/elements/link.scss';
 
 interface MessageProps {
   message: MessageType,

@@ -10,6 +10,7 @@ import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/panel.scss';
+import '~/sass/elements/label.scss';
 
 interface AnnouncementsPanelProps {
   i18n: i18nType,
@@ -39,17 +40,21 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                   <span className="text item-list__text-body item-list__text-body--multiline">
                     <span className="text item-list__announcement-caption">
                       {announcement.caption}
-                      {announcement.workspaces.length ? <span className="item-list__announcement-caption-workspace">
-                        {announcement.workspaces[0].name}
-                      </span> : null}
                     </span>
                     <span className="text item-list__announcement-date">
                       {this.props.i18n.time.format(announcement.startDate)}
                     </span>
+                    {announcement.workspaces && announcement.workspaces.length ? 
+                      <span className="labels labels--announcer-announcement item-list__announcement-workspaces">
+                        <span className="label">
+                          <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
+                        </span>
+                      </span> : null}
                   </span>
                 </Link>
               })}
-            </div>  
+            </div>
           :
             <div className="text text--panel-nothing">
              {this.props.i18n.text.get("plugin.frontPage.announcements.noAnnouncements")}

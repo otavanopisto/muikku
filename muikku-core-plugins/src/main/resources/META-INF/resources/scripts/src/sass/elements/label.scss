@@ -18,10 +18,11 @@
   
 .label {
   align-items: center;
+  background: $color-label-background;
   border-radius: 4px; 
   display: flex;
   font-weight: 300;
-  margin: 0 10px 0 0;
+  margin: 2px 5px 2px 0;
   padding: 2px 4px;
 }
 
@@ -32,10 +33,22 @@
   padding: 0 5px 0 0;
 }
 
+.label__icon--announcement-workspace {
+  color: $color-workspace;
+}
+
 .label__text {
 	font-size: 0.75rem;
 	
 	@include breakpoint($breakpoint-pad) {
     font-size: 0.8125rem;
+  }
+}
+
+.label__text--announcement-workspace {
+  font-size: calc(#{$text-mobile-font-size} / 1.1);
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: calc(#{$text-desktop-font-size} / 1.1);
   }
 }

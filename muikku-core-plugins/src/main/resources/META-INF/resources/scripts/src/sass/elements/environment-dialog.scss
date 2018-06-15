@@ -28,7 +28,7 @@
 
 .env-dialog__wrapper {
   background-color: $color-application-dialog-background-color;
-  border-top: 3px solid $color-application-dialog-border-color;
+  border-top: 1px solid $color-application-dialog-border-color;
   display: flex;
   justify-content: center;
   position: absolute;
@@ -117,22 +117,25 @@
 }
 
 .env-dialog__header {
-  background-color: $color-application-dialog-background-color;
   color: $color-dialog-default-title-text;
-  font-size: 25px;
+  font-size: $dialog-title-mobile-font-size;
   padding: 10px 15px;
+  text-transform: uppercase;
 
-
-  @include breakpoint($breakpoint-desktop) {
-    border-bottom: 3px solid $color-default;
-    border-left: 3px solid $color-application-dialog-border-color;
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    background-color: $color-application-dialog-background-color;
+    border-bottom: 1px solid $color-default;
+    border-left: 1px solid $color-application-dialog-border-color;
     border-radius: 3px 3px 0;
-    border-right: 3px solid $color-application-dialog-border-color;
-    border-top: 3px solid $color-application-dialog-border-color;
-    display: inline-block;
-    margin-bottom: 20px;
+    border-right: 1px solid $color-application-dialog-border-color;
+    border-top: 1px solid $color-application-dialog-border-color;
+    display: flex;
+    font-size: $dialog-title-desktop-font-size;
+    height: 3rem;
+    padding: 0 15px;
     position: absolute;
-    top: -54px;
+    top: -3rem;
     white-space: nowrap; 
   }
 
@@ -168,14 +171,10 @@
     } 
     
     .env-dialog__label {   
-      align-items: center;
-      display: flex;
-      height: 34px; 
       justify-content: left;
-      padding-right: 10px;
       position: initial;
       width: auto;
-      
+          
       @include breakpoint($breakpoint-desktop) {
         justify-content: right;    
       } 
@@ -185,9 +184,16 @@
 
 .env-dialog__label {   
   align-items: center;
+  color: $color-text-default;
   display: flex;
-  height: 34px; 
-  padding-right: 10px;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  padding: 5px 10px 5px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
   
   @include breakpoint($breakpoint-desktop) {
     justify-content: right;    

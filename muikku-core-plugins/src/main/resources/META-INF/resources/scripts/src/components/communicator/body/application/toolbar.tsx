@@ -100,7 +100,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           
             <div className="text text--main-function-current-folder">
               <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
-              {"  " + currentLocation.text(this.props.i18n)}
+              <span className="text__current-folder-title">{"  " + currentLocation.text(this.props.i18n)}</span>
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
                 <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
               </LabelUpdateDialog> : null}
@@ -156,7 +156,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     return <ApplicationPanelToolbar>
       <div className="text text--main-function-current-folder">
         <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
-        {"  " + currentLocation.text(this.props.i18n)}
+        <span className="text__current-folder-title">{"  " + currentLocation.text(this.props.i18n)}</span>
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
           <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
          </LabelUpdateDialog> : null}
