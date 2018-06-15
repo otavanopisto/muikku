@@ -78,18 +78,18 @@ class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, Di
   render(){
     let content = (closeDialog: ()=>any) => [
       (   
-       <div className="container container--new-discussion-area-title">
+       <div className="container container--new-discussion-area-title" key="1">
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
-            <input key="1" type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"          
+            <input type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"          
             value={this.state.name} onChange={this.onNameChange} autoFocus/>
           </div>
        </div>
       ),(          
-         <div className="container container--new-discussion-area-description">   
+         <div className="container container--new-discussion-area-description" key="2">   
            <div className="env-dialog__form-element-container">  
              <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.description')}</div>          
-             <textarea key="2" className="env-dialog__textarea"
+             <textarea className="env-dialog__textarea"
              onChange={this.onDescriptionChange} value={this.state.description}/>            
            </div> 
          </div>

@@ -26,8 +26,6 @@ interface DiscussionDeleteAreaState {
 }
 
 class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, DiscussionDeleteAreaState> {
-  private area:DiscussionAreaType;
-
   constructor(props: DiscussionDeleteAreaProps){
     super(props);
     this.state = {
@@ -37,7 +35,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
   deleteArea(closeDialog: ()=>any){
     this.setState({locked: true});
     this.props.deleteDiscussionArea({
-      id: this.area.id,
+      id: this.props.discussion.areaId,
       success: ()=>{
         this.setState({locked: false});
         closeDialog();
@@ -47,11 +45,9 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
       }
     });
   }
-  componentWillReceiveProps(nextProps: DiscussionDeleteAreaProps){
-    this.area = nextProps.discussion.areas.find(area=>area.id === nextProps.discussion.areaId);
-  }
   render(){
-    if (!this.area){
+    let area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
+    if (!area){
       return this.props.children;
     }
     
