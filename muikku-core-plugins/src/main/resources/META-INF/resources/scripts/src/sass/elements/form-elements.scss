@@ -60,6 +60,15 @@
   }
 }
 
+.form-element__input--forgotpassword {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
+}
+.form-element__input--forgotpassword {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
+}
+
 .form-element__input--label {
   display: block;
   margin-bottom: 24px;
@@ -169,7 +178,3 @@
 
 
 
-.text-field--forgotpassword-email {
-  font-size: $text-forgotpassword-font-size;
-  width: 100%;
-}
