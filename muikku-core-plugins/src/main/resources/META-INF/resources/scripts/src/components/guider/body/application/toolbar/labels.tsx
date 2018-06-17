@@ -9,7 +9,7 @@ import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuide
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import { bindActionCreators } from "redux";
 import {StateType} from '~/reducers';
 import { GuiderType, GuiderStudentType } from "~/reducers/main-function/guider";
@@ -47,8 +47,11 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
     if (this.props.guider.currentStudent){
       return <Dropdown modifier="guider-labels" items={
           [
-          <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-            type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
+          <div className="form-element">
+            <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
+              type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
+          </div>
+          ,
           <Link className="link link--full link--new"
             onClick={this.props.createGuiderFilterLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
@@ -82,8 +85,11 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
   
     return <Dropdown modifier="guider-labels" items={
       [
-        <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-          type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
+        <div className="form-element">
+          <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
+          type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
+        </div>
+        ,
         <span className="link link--full" onClick={this.props.createGuiderFilterLabel.bind(null, this.state.labelFilter)}>
           {this.props.i18n.text.get("plugin.communicator.label.create")}
         </span>

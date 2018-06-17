@@ -13,7 +13,7 @@ import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/container.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import Button from '~/components/general/button';
 
 const KEYCODES = {
@@ -107,10 +107,12 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
           <div className="text text--label-update-dialog-icon">
             <span className={`text__icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
           </div>
-          <input value={this.state.name}
-            className="form-field form-field--label-name"
-            disabled={this.state.removed}
-            onChange={this.onNameChange}/>
+          <div className="form-element">
+            <input value={this.state.name}
+              className="form-element__input form-element__input--label"
+              disabled={this.state.removed}
+              onChange={this.onNameChange}/>
+          </div>
           {sliderPicker}
           <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
             {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}

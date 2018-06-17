@@ -45,12 +45,13 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
-    let primaryOption = <select className="form-field__select form-field__select--primary-function" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
-      {this.props.courses.avaliableFilters.baseFilters.map((filter: CoursesBaseFilterType)=>{
-        return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
-      })} 
-    </select>
-    
+    let primaryOption = <div className="form-element"> 
+      <select className="form-element__select" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+        {this.props.courses.avaliableFilters.baseFilters.map((filter: CoursesBaseFilterType)=>{
+          return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
+        })} 
+      </select>
+    </div>    
     return (<div className="container container--full">
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>

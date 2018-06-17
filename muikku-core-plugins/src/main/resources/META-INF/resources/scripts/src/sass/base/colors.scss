@@ -290,16 +290,16 @@ $color-loader-empty-ring: #f3f3f3;
 $color-loader-empty-rotating-piece: #3498db;
 
 // form fields
-$color-form-field-border: #dcdcdc;
-$color-form-field-border-focus: #707070;
-$color-form-field-glow: $color-primary;
+$color-form-element-border: #dcdcdc;
+$color-form-element-border-focus: #707070;
+$color-form-element-glow: $color-primary;
 
 
 // form field input tag
-$color-form-field-selected-item-background: $color-default;
-$color-form-field-tag-input-tag-border: #b1e8fe;
-$color-form-field-selected-item-text: $color-default-contrast;
-$color-form-field-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
+$color-form-element-selected-item-background: $color-default;
+$color-form-element-tag-input-tag-border: #b1e8fe;
+$color-form-element-selected-item-text: $color-default-contrast;
+$color-form-element-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);
 
 // Environment dialog form elements
 

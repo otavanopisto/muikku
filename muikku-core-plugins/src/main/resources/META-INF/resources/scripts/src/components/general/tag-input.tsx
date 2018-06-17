@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 
 interface Tag {
   node: React.ReactElement<any>,

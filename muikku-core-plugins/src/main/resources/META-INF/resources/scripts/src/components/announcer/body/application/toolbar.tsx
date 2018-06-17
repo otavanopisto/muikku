@@ -10,7 +10,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 
 import DeleteAnnouncementDialog from '../delete-announcement-dialog';

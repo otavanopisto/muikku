@@ -198,8 +198,8 @@
 }
 
 .env-dialog__selected-item {
-  background-color: $color-form-field-selected-item-background;
-  color: $color-form-field-selected-item-text;
+  background-color: $color-form-element-selected-item-background;
+  color: $color-form-element-selected-item-text;
   display: inline-block;
   height: 34px;
   margin-right: 8px;
@@ -235,7 +235,7 @@
   
   &.active, 
   &:active {
-    background-color: $color-form-field-selected-item-delete-background-active;
+    background-color: $color-form-element-selected-item-delete-background-active;
   }
 }
 

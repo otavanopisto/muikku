@@ -27,10 +27,10 @@ class GuiderApplication extends React.Component<GuiderApplicationProps, GuiderAp
   render(){
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.guider.guider')}</h2>
     let toolbar = <Toolbar/>
-    let primaryOption = <select className="form-field__select form-field__select--primary-function" disabled>
+    let primaryOption = <div className="form-element"><select className="form-element__select" disabled>
       <option>{this.props.i18n.text.get("plugin.guider.students.all")}</option>
-    </select>
-  
+      </select>
+    </div>
     return (<div className="container container--full">
       <ApplicationPanel modifier="coursepicker" primaryOption={primaryOption} toolbar={toolbar} title={title} asideBefore={this.props.aside}>
         <Students/>

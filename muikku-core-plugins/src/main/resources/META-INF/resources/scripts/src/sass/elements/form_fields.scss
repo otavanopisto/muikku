@@ -3,51 +3,52 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// TODO: Refactoring needed for form-field elements
-// Not sure about the naming used here as we should not need classes like form-field-tag-input__field etc.
+// TODO: Refactoring needed for form-element elements
+// Not sure about the naming used here as we should not need classes like form-element-tag-input__field etc.
 // Some class names are against BEM also.
 
-div.form-field-tag-input__field, input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
+.form-element-tag-input__field, input:not([type="checkbox"]).form-element, .form-element input, textarea.form-element, .form-element textarea {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;  
   border-radius: 3px;
-  border: solid 2px $color-form-field-border;
+  border: solid 2px $color-form-element-border;
   font-size: 16px;
   outline: none;
   padding: 3px 10px;
   resize: none;
   
   &:focus, &.focus {
-    border: solid 2px $color-form-field-border-focus;
+    border: solid 2px $color-form-element-border-focus;
   }
 }
 
-input:not([type="checkbox"]).form-field, .form-field input, textarea.form-field, .form-field textarea {
+
+input:not([type="checkbox"]).form-element, .form-element input, textarea.form-element, .form-element textarea {
   height: 34px;
 }
 
-input[type="checkbox"].form-field {
+input[type="checkbox"].form-element {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
-  border: solid 1px $color-form-field-border;
+  border: solid 1px $color-form-element-border;
   margin-right: 5px;
   display: inline-block;
   
   &:focus, &.focus {
-    border: solid 1px $color-form-field-border-focus;
-    box-shadow: 0 0 5px 1px $color-form-field-glow;
+    border: solid 1px $color-form-element-border-focus;
+    box-shadow: 0 0 5px 1px $color-form-element-glow;
   }
 }
 
-div.form-field-tag-input {
+.form-element-tag-input {
   width: 100%;
   overflow: show;
   
-  &.focus .form-field-tag-input__field {
+  &.focus .form-element-tag-input__field {
     flex-wrap: wrap;
   }
 }
 
-.form-field__input--main-function-search {
+.form-element__input--main-function-search {
   background-color: $color-default;
   border: 2px solid $color-main-function-input-field-border;
   border-radius: 2px;
@@ -63,7 +64,7 @@ div.form-field-tag-input {
 }
 
 // This does not mostly belong here, mostly
-.form-field__input-decoration--main-function-search {
+.form-element__input-decoration--main-function-search {
   background-color: $color-main-function-input-field-decoration-background;
   border-radius: 2px;
   
@@ -83,8 +84,8 @@ div.form-field-tag-input {
 }
 
 // Needs to be redone with divs
-.form-field__select--primary-function,
-.form-field--toolbar-selector {    
+.form-element__select,
+.form-element--toolbar-selector {    
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -107,10 +108,10 @@ div.form-field-tag-input {
   }
 }
 
-.form-field-tag-input__field {
+.form-element-tag-input__field {
   -moz-appearance: textfield;
   -webkit-appearance: textfield;
-  background-color: $color-form-field-selected-item-background;
+  background-color: $color-form-element-selected-item-background;
   background-color: -moz-field;
   display: flex;
   font: -moz-field;
@@ -122,7 +123,7 @@ div.form-field-tag-input {
   position: relative;
 }
 
-.form-field-tag-input__input {
+.form-element-tag-input__input {
   background: none;
   border: 0;
   box-shadow: none;
@@ -137,11 +138,11 @@ div.form-field-tag-input {
   }
 }
 
-.form-field-tag-input__tag {
-  background-color: $color-form-field-selected-item-background;
-  border: solid 2px $color-form-field-tag-input-tag-border;
+.form-element-tag-input__tag {
+  background-color: $color-form-element-selected-item-background;
+  border: solid 2px $color-form-element-tag-input-tag-border;
   border-radius: 3px;
-  color: $color-form-field-selected-item-text;
+  color: $color-form-element-selected-item-text;
   display: inline-block;
   height: 34px;
   margin-right: 8px;
@@ -152,12 +153,12 @@ div.form-field-tag-input {
 }
 
 // Naming is wrong
-.form-field-tag-input__tag__text {
+.form-element-tag-input__tag__text {
   vertical-align: top;
 }
 
 // Naming is wrong
-.form-field-tag-input__tag__delete {
+.form-element-tag-input__tag__delete {
   background-position: center center;
   background-repeat: no-repeat;
   border-radius: 32px;  
@@ -177,21 +178,21 @@ div.form-field-tag-input {
   
   &.active, 
   &:active {
-    background-color: $color-form-field-selected-item-delete-background-active;
+    background-color: $color-form-element-selected-item-delete-background-active;
   }
 }
 
-.form-field--communicator-new-message-subject {
+.form-element--communicator-new-message-subject {
   margin-bottom: 5px;
 }
 
-.form-field--label-name {
+.form-element__input--label {
   display: block;
   margin-bottom: 24px;
   text-align: center;
 }
 
-.form-field--toolbar-selector {
+.form-element--toolbar-selector {
   display: inline-block;
   margin-right: 20px;
   max-width: 200px;
@@ -203,27 +204,27 @@ div.form-field-tag-input {
   }
 }
 
-.form-field--new-discussion-thread-title {
+.form-element--new-discussion-thread-title {
   flex: 4 1 auto;
   margin-right: 20px;
 }
 
-.form-field--new-discussion-thread-area {
+.form-element--new-discussion-thread-area {
   flex: 1 1 auto;
   min-width: 200px;   
 }
 
-.form-field--new-discussion-area-name {
+.form-element--new-discussion-area-name {
   width: 100%;    
 }
 
-.form-field--new-discussion-area-description {
+.form-element--new-discussion-area-description {
   height: 100px;
   margin-top: 20px;    
   width: 100%;
 }
 
-.form-field-tag-input__new-message-recepients {
+.form-element-tag-input__new-message-recepients {
   margin-bottom: 5px;
 }
 
@@ -240,7 +241,7 @@ label {
 
 input,
 textarea {
-  border: 2px solid $color-form-field-border;
+  border: 2px solid $color-form-element-border;
   border-radius: 3px;
   display: inline-block;
   font-family: $text-font-family;
@@ -252,7 +253,7 @@ textarea {
   }
 }
 
-.form-field__radio-option-container {
+.form-element__radio-option-container {
   padding: 5px;
   
   input {
@@ -260,7 +261,7 @@ textarea {
   }
 }
 
-.form-field__check-option-container {
+.form-element__check-option-container {
   margin-right: 10px;
 }
 

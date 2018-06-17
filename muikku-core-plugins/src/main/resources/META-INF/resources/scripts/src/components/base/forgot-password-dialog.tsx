@@ -4,9 +4,7 @@ import {connect, Dispatch} from 'react-redux';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-
-import '~/sass/elements/form.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/buttons.scss';
 
 interface ForgotPasswordDialogProps {
@@ -26,8 +24,8 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
         <br/>
         <br/>
         <form className="form">
-          <div className="form__row">
-            <label htmlFor="forgotpassword-email">{this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.email')}</label>
+          <div className="form_element">
+            <label className="form-element__label" htmlFor="forgotpassword-email">{this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.email')}</label>
             <input type="text" name="email" className="text-field--forgotpassword-email"/>
             <input type="submit" className="form__hidden" id="form-reset-password-submit"/>
           </div>
