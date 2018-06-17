@@ -29,7 +29,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
               return <Link key={workspace.id} className="item-list__item item-list__item--workspaces" href={`/workspace/${workspace.urlName}`}>
                 <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
                 <span className="item-list__text-body text">
-                  {`${workspace.name} ${workspace.nameExtension ? workspace.nameExtension : ""}`}
+                  {`${workspace.name} ${workspace.nameExtension ? "(" + workspace.nameExtension + ")" : ""}`}
                 </span>
               </Link>
             })}

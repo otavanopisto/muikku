@@ -18,6 +18,7 @@ import { createAnnouncement, CreateAnnouncementTriggerType,
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
+import { StatusType } from '~/reducers/base/status';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -52,7 +53,8 @@ interface NewEditAnnouncementProps {
   loadUserGroupIndex: LoadUserGroupIndexTriggerType,
   userIndex: UserIndexType,
   createAnnouncement: CreateAnnouncementTriggerType,
-  updateAnnouncement: UpdateAnnouncementTriggerType
+  updateAnnouncement: UpdateAnnouncementTriggerType,
+  status: StatusType
 }
 
 interface NewEditAnnouncementState {
@@ -275,7 +277,11 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
            locale={this.props.i18n.time.getLocale()}/>
         </div>
       </div>),
-      (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false} placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-announcement-recipients" key="2" hasUserPermission={false}
+          hasGroupPermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_GROUPS}
+          hasWorkspacePermission={this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_WORKSPACES}
+          workspacePermissionIsOnlyMyWorkspaces={!this.props.status.permissions.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT}
+          placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
       (
       <div className="container container--new-announcement-title" key="3">    
@@ -327,7 +333,8 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    userIndex: state.userIndex
+    userIndex: state.userIndex,
+    status: state.status
   }
 };
 

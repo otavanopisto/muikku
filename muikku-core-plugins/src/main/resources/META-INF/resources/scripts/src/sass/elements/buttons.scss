@@ -731,6 +731,10 @@
 	background-color: $color-main-function-button-pill-toolbar-edit-label-background;
   color: $color-main-function-button-pill-toolbar-edit-label-text;
   display: inline-flex;
+  font-size: 1rem;
+  height: auto;
+  padding: 0 0 0 5px;
+  width: 22px;
   
   &:hover, 
   &.hover {

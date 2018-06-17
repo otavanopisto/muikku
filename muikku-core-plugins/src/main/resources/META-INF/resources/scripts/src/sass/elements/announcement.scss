@@ -3,29 +3,25 @@
 @import "../base/breakpoints";
 
 .announcement {
-  border-top: 1px solid $color-announcement-border;
-  padding: 14px 12px 14px 4px;
-  
-  &.selected {
-    border-top: 1px solid $color-default;
-  }
+  border-top: 3px solid $color-message-border;
+  cursor: pointer;
+  padding: 10px;
   
   &:first-child {
-    border: 0;
+    border-color: transparent;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+    padding: 15px 0;
   }
 }
 
 .announcement__content {
   flex-flow: row nowrap;
-  padding: 0 0 0 9px;
 }
 
 .announcement--environment {
-  
-  .announcement__content {
-    border-left: solid 3px $color-announcement-environment-border;
-    padding: 0 0 0 6px;
-  }
   
   .text__icon {
     color: $color-announcement-environment;
@@ -33,12 +29,7 @@
 }
 
 .announcement--workspace {
-  
-  .announcement__content {
-    border-left: solid 3px $color-announcement-workspace-border;
-    padding: 0 0 0 6px;
-  }
-  
+   
   .text__icon {
     color: $color-announcement-workspace;
   }

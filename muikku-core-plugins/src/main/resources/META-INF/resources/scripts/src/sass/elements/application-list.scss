@@ -47,12 +47,21 @@
 
   &.selected {
     background-color: $color-application-list-item-background-selected;
-    
+
+    .label {
+      background-color: $color-label-mobile-selected-background;
+    }
+
     .text,
-    .label__text {
+    .text__icon,
+    .link {
       color: $color-default;
     }
     
+    .label__text {
+      color: $color-default-contrast;
+    }
+  
     .text--item-counter {
       color: $color-default-contrast;
     }
@@ -65,6 +74,11 @@
       .label__text {
         color: $color-default-contrast;
       }
+      
+      .label {
+        background: $color-label-background;
+      }
+      
     }
   }
 }
@@ -279,7 +293,13 @@
 }
 
 // Announcer
-.application-list__item--workspace-announcement {
+.application-list__item--workspace-announcement,
+.application-list__item--environment-announcement {
+  padding: 10px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 15px 0;
+  }
     
   .text__icon::before {
     color: $color-announcement-workspace-icon;
@@ -294,6 +314,7 @@
 }
 
 .application-list__item-header--announcer-announcement {
+  align-items: flex-start;
   flex-direction: column;
 }
 
@@ -303,6 +324,10 @@
   .application-list__item-header {
     background-color: $color-announcement-open-header-background;
   }
+}
+
+.application-list__item-footer--announcement-actions {
+  margin: 10px 0 0;
 }
 
 // Communicator
@@ -332,7 +357,7 @@
 }
 
 .application-list__item-body--communicator-message {
-  padding: 5px 0; 
+  margin: 5px 0; 
 }
 
 .application-list__item-footer--communicator-message-labels {
@@ -370,11 +395,6 @@
 }
 
 // Guider
-.application-list__item-header--student {
-  height: 22px;
-  margin: 0 0 2px;
-}
-
 .application-list__item-footer--student {
   margin: 5px 0 0;
 }

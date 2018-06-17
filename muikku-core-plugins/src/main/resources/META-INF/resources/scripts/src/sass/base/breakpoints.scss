@@ -1,10 +1,3 @@
-$breakpoint-small-mobile: (false, 320);
-$breakpoint-medium-mobile: (320, 450);
-$breakpoint-portrait-pad: (450, 768);
-$breakpoint-landscape-pad: (768, 1024);
-$breakpoint-medium-screen: (1024, 1199);
-$breakpoint-wide-screen: (1199, false);
-
 // Based on min-width (mobile-first) so these breakpoints fires when resolution exceeds given value.
 // Em values are calculated as 1em = 16px by default. If user has increased browser's font size 
 // break points will scale properly (threshold to fire break point increases as well) without breaking the
@@ -24,42 +17,6 @@ $breakpoint-desktop-xl: 75em;
 
 // This has to be set in absolute pixel value so our max screen width doesn't increase when user increases browser's font size 
 $breakpoint-max-usable-screen: 1280px;
-
-@mixin breakpoint-only($breakpoint) {
-  @if (nth($breakpoint, 1) == false){
-    @media screen and (max-width: #{nth($breakpoint, 2)}px) {
-      @content;
-    }
-  } @else if (nth($breakpoint, 2) == false) {
-    @media screen and (min-width: #{nth($breakpoint, 1) + 1}px) {
-      @content;
-    }
-  } @else {
-    @media screen and (min-width: #{nth($breakpoint, 1) + 1}px) and (max-width: #{nth($breakpoint, 2)}px) {
-      @content;
-    }
-  }
-}
-
-@mixin breakpoint-down($breakpoint){
-  @if (nth($breakpoint, 2) == false){
-    @content;
-  } @else {
-    @media screen and (max-width: #{nth($breakpoint, 2)}px) {
-      @content;
-    }
-  }
-}
-
-@mixin breakpoint-up($breakpoint){
-  @if (nth($breakpoint, 1) == false){
-    @content;
-  } @else {
-    @media screen and (min-width: #{nth($breakpoint, 1) + 1}px) {
-      @content;
-    }
-  }
-}
 
 @mixin breakpoint($breakpoint){
   @media screen and (min-width: $breakpoint) {

@@ -269,12 +269,11 @@ b {
 }
 
 .text--item-article {  
-  padding: 10px 0;
+  padding: 10px 0 0;
 }
 
 .text--item-article-header {
   font-weight: 600;
-  padding: 0 0 10px;
 }
 
 .text--item-counter {
@@ -413,15 +412,15 @@ b {
 
 .text--announcer-announcement-caption {
   font-weight: 600;  
-  padding: 10px; 
+  padding: 10px 10px 0; 
 }  
 
 .text--announcer-announcement-content {
-  padding: 10px;  
+  padding: 0 10px;  
 }
 
 .text--announcer-announcement-workspaces {
-  padding: 10px; 
+  padding: 0 10px; 
 }
 
 .text--announcement-workspace {
@@ -453,7 +452,6 @@ b {
 .text--discussion-item-body {
   font-style: italic;
   width: 100%;
-  padding: 12px 0 0;
   line-height: 1rem;
   max-height: 5rem;
   overflow: hidden;
@@ -821,7 +819,10 @@ b {
 }
 
 .text__icon--current-folder {
+  font-size: 1rem;
+  height: auto;
   padding: 0 5px 0 0;
+  width: 22px;
 }
 
 // Generic Main function 
@@ -831,7 +832,6 @@ b {
   flex-grow: 1;
   flex-shrink: 1;
   display: flex;
-  font-size: 1rem;
   font-weight: 400;
   overflow: hidden;
   position: relative;
@@ -841,6 +841,15 @@ b {
   @include breakpoint($breakpoint-pad){
     display: none;
   }
+}
+
+.text__current-folder-title {
+  display: inline-block;
+  font-size: 1rem;
+  max-width: calc(100% - 44px); // 44px is sum of folders icon and label edit icon widths 
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .text--course-icon {
@@ -875,9 +884,10 @@ b {
 }
 
 .text--list-item-title {
-  display: inline-flex;
+  display: flex;
   flex-basis: 0;
   flex-grow: 1;
+  flex-flow: row wrap;
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
@@ -885,7 +895,14 @@ b {
 
 .text--list-item-helper-title {
   color: $color-default-helper;
-  padding: 0 0 0 15px;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    padding: 0 0 0 15px;
+  }
 }
 
 .text--list-item-type-title {
