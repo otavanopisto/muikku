@@ -34,6 +34,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
           {this.props.announcements.length !== 0 ?
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.map((announcement: AnnouncementType)=>{
+                let extraWorkspaces = announcement.workspaces && announcement.workspaces.length ? announcement.workspaces.length - 1 : 0;
                 return <Link key={announcement.id} className={`item-list__item item-list__item--announcements ${announcement.workspaces.length ? "item-list__item--has-workspaces" : ""}`}
                   href={`/announcements?announcementId=${announcement.id}`}>
                   <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
@@ -48,7 +49,9 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                       <div className="labels item-list__announcement-workspaces">
                         <span className="label">
                           <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
+                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" + (
+                            extraWorkspaces ? "(+" + extraWorkspaces + ")" : ""    
+                          ) : null }</span>
                         </span>
                       </div> : null}
                   </span>
