@@ -139,6 +139,7 @@
   margin-right: 5px;
   width: auto;
 }
+
 .form-element__select--toolbar-selector {
   display: inline-block;
   margin-right: 20px;
@@ -146,7 +147,7 @@
   vertical-align: top;
   
   @include breakpoint($breakpoint-pad) {
-      max-width: 250px;
+    max-width: 250px;
   }
 }
 
