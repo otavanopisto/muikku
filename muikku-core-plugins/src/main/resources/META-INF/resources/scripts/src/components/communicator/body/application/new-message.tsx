@@ -171,6 +171,9 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
+          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.communicator.createmessage.button.clearDraft')}
+          </Button> : null}
         </div>
       )
     }
