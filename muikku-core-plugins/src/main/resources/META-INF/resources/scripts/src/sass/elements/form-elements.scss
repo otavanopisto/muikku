@@ -16,17 +16,20 @@
     overflow: hidden;
     padding: 0 0 5px;
     text-overflow: ellipsis;
+    
     &:first-child {
       margin-right: 5px;
     }
   }
+  
   input[type="checkbox"] {
     @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
     border: solid 1px $color-form-element-border;
-    margin-right: 5px;
     display: inline-block;
+    margin-right: 5px;
     
-    &:focus, &.focus {
+    &:focus, 
+    &.focus {
       border: solid 1px $color-form-element-border-focus;
       box-shadow: 0 0 5px 1px $color-form-element-glow;
     }
@@ -34,22 +37,23 @@
 }
 
 .form-element--guider-toolbar {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    display: flex;  
+  display: flex;  
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .form-element__input {
   @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
   -webkit-appearance: none;  
-  border-radius: 3px;
   border: solid 2px $color-form-element-border;
+  border-radius: 3px;
   font-size: 16px;
+  height: 34px;
   outline: none;
   padding: 3px 10px;
   resize: none;
-  height: 34px;
+
   
   &:focus, &.focus {
     border: solid 2px $color-form-element-border-focus;
@@ -80,7 +84,7 @@
   border: 2px solid $color-main-function-input-field-border;
   border-radius: 2px;
   border-right: 0;
-  font-size: .925rem;  
+  font-size: 0.925rem;  
   height: 35px;
   padding: 5px 10px;
   width: 100%;
@@ -103,7 +107,7 @@
     justify-content: center;
     width: 35px;
     
-    @include breakpoint($breakpoint-pad){
+    @include breakpoint($breakpoint-pad) {
       height: 40px;
       width: 40px;
     }
