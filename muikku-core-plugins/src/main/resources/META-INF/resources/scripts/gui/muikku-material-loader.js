@@ -589,7 +589,33 @@
       }
     }
   });
-  
+
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.mathexercise') {
+      var userAgent = window.navigator.userAgent || "";
+      var isIE = !!userAgent.match(/MSIE|Trident/);
+
+      if (isIE) {
+        var browserInfo = $('<div>').text(getLocaleText("plugin.workspace.materialsLoader.mathExerciseNonSupportedBrowser"));
+        $(object).replaceWith(browserInfo);
+      } else {
+        var mathExerciseField = $('<div>').muikkuMathExerciseField({
+          pageElement: data.pageElement,
+          fieldName: data.name,
+          materialId: data.materialId,
+          embedId: data.embedId,
+          meta: data.meta,
+          readonly: data.readOnlyFields||false
+        });
+        if (data.value) {
+          mathExerciseField.muikkuField('answer', data.value);
+        }
+        $(object).replaceWith(mathExerciseField);
+      }
+    }
+  });
+
   $(document).on('taskFieldDiscovered', function (event, data) {
     
     function concatText(text, length){    
