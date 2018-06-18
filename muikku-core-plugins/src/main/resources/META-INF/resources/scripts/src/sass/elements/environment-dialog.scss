@@ -216,14 +216,10 @@
   border-radius: 4px; 
   display: inline-flex;
   font-weight: 300;
-  margin: 2px 5px 2px 0;
+  margin: 4px 4px 0 0;
   padding: 2px 4px;
    position: relative;
   white-space: nowrap;
-  
-  @include breakpoint($breakpoint-mobile-xl) {
-    margin: 4px 8px 4px 0;
-  }
 }
 
 .env-dialog__selected-item-label {
