@@ -49,10 +49,9 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                       <div className="labels item-list__announcement-workspaces">
                         <span className="label">
                           <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" + (
-                            extraWorkspaces ? "(+" + extraWorkspaces + ")" : ""    
-                          ) : null }</span>
+                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
                         </span>
+                        {extraWorkspaces ? <span className="label">{"(+" + extraWorkspaces + ")"}</span> : null}
                       </div> : null}
                   </span>
                 </Link>
