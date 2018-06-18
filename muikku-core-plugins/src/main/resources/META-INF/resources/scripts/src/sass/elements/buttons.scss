@@ -781,8 +781,6 @@
 }
 
 // Environment dialog
-
-
 .button--dialog-execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
@@ -791,8 +789,6 @@
   @include breakpoint($breakpoint-desktop) {
     order: 1;
   }
-  
-
 }
 
 .button--dialog-clear {
@@ -803,7 +799,6 @@
   @include breakpoint($breakpoint-desktop) {
     order: 3;
   }
-
 }
 
 .button--dialog-cancel {
