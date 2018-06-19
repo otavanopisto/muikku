@@ -31,8 +31,6 @@ interface DiscussionModifyAreaState {
 }
 
 class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaProps, DiscussionModifyAreaState> {
-  private area:DiscussionAreaType;
-  
   constructor(props: DiscussionModifyAreaProps){
     super(props, "discussion-modify-area-dialog");
     
@@ -42,24 +40,25 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     this.clearUp = this.clearUp.bind(this);
     this.checkAgainstStoredState = this.checkAgainstStoredState.bind(this);
     
-    this.area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
-    
+    let area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
     this.state = this.getRecoverStoredState({
-      name: (this.area && this.area.name) || "",
-      description: (this.area && this.area.description) || "",
+      name: (area && area.name) || "",
+      description: (area && area.description) || "",
       locked: false
     }, this.props.discussion.areaId)
   }
   clearUp(){
+    let area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
     this.setStateAndClear({
-      name: (this.area && this.area.name) || "",
-      description: (this.area && this.area.description) || ""
+      name: (area && area.name) || "",
+      description: (area && area.description) || ""
     }, this.props.discussion.areaId)
   }
   checkAgainstStoredState(){
+    let area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
     this.checkAgainstDefaultState({
-      name: (this.area && this.area.name) || "",
-      description: (this.area && this.area.description) || ""
+      name: (area && area.name) || "",
+      description: (area && area.description) || ""
     }, this.props.discussion.areaId);
   }
   onDescriptionChange(e: React.ChangeEvent<HTMLTextAreaElement>){
@@ -69,17 +68,17 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     this.setStateAndStore({name: e.target.value}, this.props.discussion.areaId);
   }
   componentWillReceiveProps(nextProps: DiscussionModifyAreaProps){
-    this.area = nextProps.discussion.areas.find(area=>area.id === nextProps.discussion.areaId);
+    let area = nextProps.discussion.areas.find(area=>area.id === nextProps.discussion.areaId);
     
     this.setState(this.getRecoverStoredState({
-      name: (this.area && this.area.name) || "",
-      description: (this.area && this.area.description) || ""
+      name: (area && area.name) || "",
+      description: (area && area.description) || ""
     }, nextProps.discussion.areaId));
   }
   modifyArea(closeDialog: ()=>any){
     this.setState({locked: true});
     this.props.updateDiscussionArea({
-      id: this.area.id,
+      id: this.props.discussion.areaId,
       name: this.state.name,
       description: this.state.description,
       success: ()=>{
@@ -92,7 +91,8 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     })
   }
   render(){
-    if (!this.area){
+    let area = this.props.discussion.areas.find(area=>area.id === this.props.discussion.areaId);
+    if (!area){
       return this.props.children;
     }
     

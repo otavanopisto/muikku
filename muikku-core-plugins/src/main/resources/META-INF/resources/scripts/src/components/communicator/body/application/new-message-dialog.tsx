@@ -43,6 +43,8 @@ type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | U
 interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
   replyThreadId?: number,
+  replyToAll?: boolean,
+  messageId?: number,
   initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
   signature: MessageSignatureType,
@@ -56,6 +58,14 @@ interface CommunicatorNewMessageState {
   subject: string,
   locked: boolean,
   includesSignature: boolean
+}
+
+function getStateIdentifier(props: CommunicatorNewMessageProps){
+  if (!props.replyThreadId){
+    return;
+  }
+  
+  return props.replyThreadId + (props.replyToAll ? "a" : "b") + props.messageId;
 }
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
@@ -76,7 +86,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       subject: props.initialSubject || "",
       locked: false,
       includesSignature: true
-    }, props.replyThreadId);
+    }, getStateIdentifier(props));
   }
   checkAgainstStoredState(){
     this.checkAgainstDefaultState({
@@ -85,16 +95,16 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       subject: "",
       locked: false,
       includesSignature: true
-    }, this.props.replyThreadId);
+    }, getStateIdentifier(this.props));
   }
   onCKEditorChange(text: string){
-    this.setStateAndStore({text}, this.props.replyThreadId);
+    this.setStateAndStore({text}, getStateIdentifier(this.props));
   }
   setSelectedItems(selectedItems: SelectedItemListType){
-    this.setStateAndStore({selectedItems}, this.props.replyThreadId);
+    this.setStateAndStore({selectedItems}, getStateIdentifier(this.props));
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setStateAndStore({subject: e.target.value}, this.props.replyThreadId);
+    this.setStateAndStore({subject: e.target.value}, getStateIdentifier(this.props));
   }
   sendMessage(closeDialog: ()=>any){
     this.setState({
@@ -113,7 +123,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           selectedItems: this.props.initialSelectedItems || [],
           subject: this.props.initialSubject || "",
           locked: false
-        }, this.props.replyThreadId);
+        }, getStateIdentifier(this.props));
       },
       fail: ()=>{
         this.setState({
@@ -132,7 +142,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",
       locked: false
-    }, this.props.replyThreadId);
+    }, getStateIdentifier(this.props));
   }
   render(){
     let content = (closeDialog: ()=>any) => [
