@@ -153,7 +153,7 @@
 .env-dialog__form-element-container {
   display: flex;
   flex-basis: auto;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
   position: relative;
@@ -175,6 +175,9 @@
   align-items: center;
   color: $color-text-default;
   display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;

@@ -168,7 +168,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       ),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
         <input className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
-        {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
+        <span className="text text--new-message-signature">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</span>
       </div> : null)
     ]
        
