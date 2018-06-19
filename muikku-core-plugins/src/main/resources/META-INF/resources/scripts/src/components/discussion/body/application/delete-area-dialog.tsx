@@ -58,10 +58,10 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="dialog__button-set">
-          <Button buttonModifiers="dialog-execute" onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteArea.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.send')}
           </Button>
-          <Button buttonModifiers="dialog-cancel" onClick={closeDialog}>
+          <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.deletearea.cancel')}
           </Button>
         </div>

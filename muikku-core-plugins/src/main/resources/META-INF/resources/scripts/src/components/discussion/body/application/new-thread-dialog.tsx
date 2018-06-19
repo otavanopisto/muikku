@@ -171,8 +171,13 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
        </div> : <div key="2" className="container container--new-discussion-thread-states"/>),
-       <CKEditor key="3" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-         onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+       <div className="container container--discussion-content" key="3">     
+         <div className="env-dialog__form-element-container">
+           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
+           <CKEditor key="3" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+         </div>
+       </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          

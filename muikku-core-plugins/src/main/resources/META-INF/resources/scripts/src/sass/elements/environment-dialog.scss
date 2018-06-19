@@ -97,7 +97,7 @@
   
   @include breakpoint($breakpoint-pad) {
     padding: 10px 10px 0;
-  }    
+  }   
 }
 
 .env-dialog__footer {
@@ -150,16 +150,13 @@
   }
 }
 
-// Forms
-// TODO, these env-dialog form templates and css need to be refactored. These are just inconsistent garbage.
-
 .env-dialog__form-element-container {
-  flex-wrap: wrap;
+  display: flex;
+  flex-basis: auto;
+  flex-flow: column wrap;
+  flex-grow: 1;
+  flex-shrink: 1;
   position: relative;
-
-  @include breakpoint($breakpoint-desktop) {
-    display: flex;
-  } 
 
   .cke {
     flex-grow: 1;
@@ -171,20 +168,6 @@
     @include breakpoint($breakpoint-pad) {
       margin-left: 20px;
     }  
-
-    @include breakpoint($breakpoint-desktop) {
-      display: inline-flex;
-    } 
-    
-    .env-dialog__label {   
-      justify-content: left;
-      position: initial;
-      width: auto;
-          
-      @include breakpoint($breakpoint-desktop) {
-        justify-content: right;    
-      } 
-    }
   }
 }
 
@@ -199,13 +182,6 @@
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
-  }
-  
-  @include breakpoint($breakpoint-desktop) {
-    justify-content: right;    
-    left: -200px;
-    position: absolute;
-    width: 200px;
   }
 }
 
@@ -250,10 +226,6 @@
   text-align: center;
 }
 
-.env-dialog__input--new-discussion-thread-title {
-  margin-right: 20px;
-}
-
 .env-dialog__input--new-discussion-thread-area {
   flex-grow: 1;
   flex-shrink: 1;
@@ -275,13 +247,8 @@ label {
   display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
-  height: 34px;  
-  padding: 8px;
+  padding: 4px 8px;
   width: 100%;
-  
-  &[type="checkbox"] {
-    width: auto;
-  }
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
@@ -289,12 +256,51 @@ label {
   
   @include breakpoint($breakpoint-desktop) {
     margin: 0 4px 0 0;
-    width: 50%;
   }  
 }
 
+.env-dialog__input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  align-items: center;
+  appearance: none;
+  border: solid 2px $color-application-dialog-border-color;
+  border-radius: 3px;
+  display: flex;
+  height: 1rem;
+  justify-content: center;
+  padding: 8px;
+  width: 1rem;
+}
+
+.env-dialog__input[type="checkbox"]:checked {
+  background-color: $color-application-dialog-border-color;
+  border: solid 2px $color-application-dialog-border-color;
+}
+
+.env-dialog__input[type="checkbox"]:checked::after {
+  color: $color-default;
+  content: "\e639";
+  font-family: muikku;
+  font-size: .875rem;
+} 
+
 .env-dialog__input--date-picker {
   width: 100%;  
+}
+
+.env-dialog__select {
+  border: 2px solid $color-env-dialog-form-element-border;
+  border-radius: 3px;
+  display: inline-block;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  padding: 3px 6px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
 }
 
 .env-dialog__textarea {
@@ -310,10 +316,6 @@ label {
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
-
-  @include breakpoint($breakpoint-desktop) {
-    width: 50%;
-  }    
 }
 
 // Used in forgotpassword dialog
