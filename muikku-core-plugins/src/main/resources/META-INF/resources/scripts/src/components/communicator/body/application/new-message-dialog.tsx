@@ -44,6 +44,7 @@ interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
   replyThreadId?: number,
   replyToAll?: boolean,
+  messageId?: number,
   initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
   signature: MessageSignatureType,
@@ -64,7 +65,7 @@ function getStateIdentifier(props: CommunicatorNewMessageProps){
     return;
   }
   
-  return props.replyThreadId + (props.replyToAll ? "a" : "b");
+  return props.replyThreadId + (props.replyToAll ? "a" : "b") + props.messageId;
 }
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
