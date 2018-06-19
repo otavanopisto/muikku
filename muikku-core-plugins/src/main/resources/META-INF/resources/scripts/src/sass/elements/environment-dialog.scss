@@ -206,7 +206,7 @@
     left: -200px;
     position: absolute;
     width: 200px;
-  }  
+  }
 }
 
 .env-dialog__selected-item {
@@ -216,22 +216,27 @@
   border-radius: 4px; 
   display: inline-flex;
   font-weight: 300;
+  height: 24px;
   margin: 4px 4px 0 0;
   padding: 2px 4px;
-   position: relative;
+  position: relative;
   white-space: nowrap;
+  
+  @include breakpoint($breakpoint-desktop) {
+    height: 32px;
+    margin: 2px 4px 2px 0;  
+  }
 }
 
 .env-dialog__selected-item-label {
-  
-    
+ 
 }
 
 .env-dialog__selected-item-action {
   background-position: center center;
   background-repeat: no-repeat;
   cursor: pointer;
-  font-size: 0.74rem; // Will be same size for mobile and desktop
+  font-size: 0.75rem; // Will be same size for mobile and desktop
   margin: 0 0 0 10px;
 }
 
@@ -283,6 +288,7 @@ label {
   }
   
   @include breakpoint($breakpoint-desktop) {
+    margin: 0 4px 0 0;
     width: 50%;
   }  
 }
