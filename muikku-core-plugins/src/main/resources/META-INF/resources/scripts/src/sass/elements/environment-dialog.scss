@@ -61,31 +61,65 @@
   }   
 }
 
+.env-dialog__header {
+  color: $color-dialog-default-title-text;
+  font-size: $dialog-title-mobile-font-size;
+  padding: 10px;
+  text-transform: uppercase;
+
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    background-color: $color-application-dialog-background-color;
+    border-bottom: 1px solid $color-default;
+    border-left: 1px solid $color-application-dialog-border-color;
+    border-radius: 3px 3px 0;
+    border-right: 1px solid $color-application-dialog-border-color;
+    border-top: 1px solid $color-application-dialog-border-color;
+    display: flex;
+    font-size: $dialog-title-desktop-font-size;
+    height: 2.5rem;
+    padding: 0 10px;
+    position: absolute;
+    top: -2.5rem;
+    white-space: nowrap; 
+  }
+
+  @include breakpoint($breakpoint-pad) {  
+    left: 15px;
+  }
+}
+
 .env-dialog__body {
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px 15px;         
-
-  @include breakpoint($breakpoint-desktop) {
-    padding: 0;
-  }
+  padding: 0 10px;     
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 10px 0;
+  }    
 }
 
 .env-dialog__footer {
-  width: 100%;
-  padding: 10px 15px;
+  padding: 10px;
 }
-
 
 .env-dialog__actions {
   align-items: center;
   display: flex;
   justify-content: flex-end;
-  
+
   .button {
-    margin-left: 10px;         
-  }                  
+    margin: 0 0 0 10px;         
+  } 
+  
+  @include breakpoint($breakpoint-desktop) {
+    justify-content: flex-start;
+    
+    .button {
+      margin: 0 10px 0 0;         
+    }
+  }
 }  
 
 .env-dialog__close {
@@ -113,34 +147,6 @@
   
   @include breakpoint($breakpoint-desktop) {
     text-align: left; 
-  }
-}
-
-.env-dialog__header {
-  color: $color-dialog-default-title-text;
-  font-size: $dialog-title-mobile-font-size;
-  padding: 10px 15px;
-  text-transform: uppercase;
-
-  @include breakpoint($breakpoint-pad) {
-    align-items: center;
-    background-color: $color-application-dialog-background-color;
-    border-bottom: 1px solid $color-default;
-    border-left: 1px solid $color-application-dialog-border-color;
-    border-radius: 3px 3px 0;
-    border-right: 1px solid $color-application-dialog-border-color;
-    border-top: 1px solid $color-application-dialog-border-color;
-    display: flex;
-    font-size: $dialog-title-desktop-font-size;
-    height: 3rem;
-    padding: 0 15px;
-    position: absolute;
-    top: -3rem;
-    white-space: nowrap; 
-  }
-
-  @include breakpoint($breakpoint-pad) {  
-    left: 15px;
   }
 }
 
@@ -200,49 +206,38 @@
     left: -200px;
     position: absolute;
     width: 200px;
-  }  
+  }
 }
 
 .env-dialog__selected-item {
+  align-items: center;
   background-color: $color-form-field-selected-item-background;
   color: $color-form-field-selected-item-text;
-  display: inline-block;
-  height: 34px;
-  margin-right: 8px;
-  padding: 8.5px;
-  padding-right: 40px;
+  border-radius: 4px; 
+  display: inline-flex;
+  font-weight: 300;
+  height: 24px;
+  margin: 4px 4px 0 0;
+  padding: 2px 4px;
   position: relative;
   white-space: nowrap;
+  
+  @include breakpoint($breakpoint-desktop) {
+    height: 32px;
+    margin: 2px 4px 2px 0;  
+  }
 }
-
 
 .env-dialog__selected-item-label {
-  vertical-align: top;
+ 
 }
-
 
 .env-dialog__selected-item-action {
   background-position: center center;
   background-repeat: no-repeat;
-  border-radius: 32px;  
   cursor: pointer;
-  display: inline-block;
-  height: 32px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 32px;
-  
-  &::before {
-    left: 9px;
-    position: absolute;
-    top: 9px;    
-  }
-  
-  &.active, 
-  &:active {
-    background-color: $color-form-field-selected-item-delete-background-active;
-  }
+  font-size: 0.75rem; // Will be same size for mobile and desktop
+  margin: 0 0 0 10px;
 }
 
 .env-dialog__input--communicator-new-message-subject {
@@ -293,6 +288,7 @@ label {
   }
   
   @include breakpoint($breakpoint-desktop) {
+    margin: 0 4px 0 0;
     width: 50%;
   }  
 }

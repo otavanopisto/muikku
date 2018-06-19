@@ -90,7 +90,7 @@ export interface ModifyReplyFromCurrentThreadTriggerType {
 let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType = function loadDiscussionThreadsFromServer(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     
-    //Remove the current messsage
+    //Remove the current message
     dispatch({
       type: "SET_CURRENT_DISCUSSION_THREAD",
       payload: null

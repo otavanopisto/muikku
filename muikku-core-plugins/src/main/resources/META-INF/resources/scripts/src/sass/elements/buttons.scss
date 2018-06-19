@@ -360,16 +360,29 @@
   
   
 .button--communicator-remove-label {
-	margin-top: 48px;
-	margin-bottom: 24px;
+  order: 1;
+  
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+  
+  &.disabled,
+  &.disabled:hover {
+    background-color: $color-button-disabled-background;
+    cursor: default;
+  }
 }
 
 .button--standard-ok {
-  margin: 0 5px;
+  order: 3;
+  
+  @include breakpoint($breakpoint-desktop) {
+    order: 1;
+  }
 }
 
 .button--standard-cancel {
-  margin: 0 5px;
+  order: 2;
 }
 
 .button-pill {
@@ -522,7 +535,9 @@
   }
 }
 
-.button-pill--delete, .button-pill--restore, .button-pill--edit {
+.button-pill--delete, 
+.button-pill--restore, 
+.button-pill--edit {
   background-color: $color-main-function-button-pill-delete-background;
   color: $color-main-function-button-pill-delete-text;
   flex-basis: auto;
@@ -781,8 +796,6 @@
 }
 
 // Environment dialog
-
-
 .button--dialog-execute {
   background-color: $color-button-execute-background;
   color: $color-button-execute-text;
@@ -791,8 +804,6 @@
   @include breakpoint($breakpoint-desktop) {
     order: 1;
   }
-  
-
 }
 
 .button--dialog-clear {
@@ -803,7 +814,6 @@
   @include breakpoint($breakpoint-desktop) {
     order: 3;
   }
-
 }
 
 .button--dialog-cancel {

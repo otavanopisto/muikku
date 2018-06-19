@@ -144,6 +144,8 @@ $color-button-secondary-text: $color-secondary-contrast;
 $color-button-inverse-background: $color-inverse;
 $color-button-inverse-text: $color-inverse-contrast;
 
+$color-button-disabled-background: #ccc;
+
 // Button pill theme
 $color-button-pill-background: $color-primary;
 $color-button-pill-text: $color-default-contrast;
@@ -299,7 +301,7 @@ $color-form-field-border-focus: #707070;
 $color-form-field-glow: $color-primary;
 
 // form field input tag
-$color-form-field-selected-item-background: $color-default;
+$color-form-field-selected-item-background: $color-label-background;
 $color-form-field-tag-input-tag-border: #b1e8fe;
 $color-form-field-selected-item-text: $color-default-contrast;
 $color-form-field-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);

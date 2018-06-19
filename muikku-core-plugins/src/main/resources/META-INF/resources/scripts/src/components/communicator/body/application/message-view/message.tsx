@@ -1,4 +1,4 @@
-import NewMessage from '../new-message';
+import NewMessage from '../new-message-dialog';
 import * as React from 'react';
 import { MessageType, MessageThreadLabelListType } from '~/reducers/main-function/messages';
 import Link from '~/components/general/link';
