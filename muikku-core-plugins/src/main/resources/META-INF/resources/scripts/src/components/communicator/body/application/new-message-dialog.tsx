@@ -13,6 +13,7 @@ import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } fro
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
+import { StatusType } from '~/reducers/base/status';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -49,7 +50,8 @@ interface CommunicatorNewMessageProps {
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
-  initialSubject?: string
+  initialSubject?: string,
+  status: StatusType
 }
 
 interface CommunicatorNewMessageState {
@@ -146,7 +148,9 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill modifier="new-message" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-message" key="1" hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+          hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+          placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
        <div className="container container--communicator-subject" key="2">
@@ -199,7 +203,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: state.messages.signature
+    signature: state.messages.signature,
+    status: state.status
   }
 };
 

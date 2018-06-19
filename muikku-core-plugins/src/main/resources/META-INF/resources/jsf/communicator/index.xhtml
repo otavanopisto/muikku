@@ -5,6 +5,9 @@
   template="/WEB-INF/templates/base.xhtml">
   
   <ui:define name="scripts">
+    <script defer="defer">
+      MUIKKU_PERMISSIONS.COMMUNICATOR_GROUP_MESSAGING = #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')};
+    </script>
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
     <script defer="defer" jsf:name="scripts/dist/communicator.js" />
     <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
