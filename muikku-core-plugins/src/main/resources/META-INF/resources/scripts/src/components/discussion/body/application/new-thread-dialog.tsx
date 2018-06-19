@@ -189,8 +189,8 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
             {this.props.i18n.text.get('plugin.discussion.createmessage.cancel')}
           </Button>
           {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
-              {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
-            </Button> : null}            
+            {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
+          </Button> : null}
         </div>
       )
     }    
