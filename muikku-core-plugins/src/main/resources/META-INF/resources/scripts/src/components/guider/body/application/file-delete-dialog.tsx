@@ -42,11 +42,11 @@ class FileDeleteDialog extends React.Component<FileDeleteDialogProps, FileDelete
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
+        <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteFile.bind(this, closeDialog)}>
+          {this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.yes')}
+        </Button>
         <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.no')}
-        </Button>
-        <Button buttonModifiers={["success", "standard-ok"]} onClick={this.deleteFile.bind(this, closeDialog)}>
-          {this.props.i18n.text.get('plugin.guider.flags.deleteAttachmentDialog.yes')}
         </Button>
       </div>
     }

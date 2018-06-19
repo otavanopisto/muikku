@@ -108,12 +108,15 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
-         {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
-        </Button>
         <Button buttonModifiers={["success", "standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.save')}
         </Button>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
+         {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
+        </Button>
+        <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+         {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
+       </Button>
       </div>
     }
     let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
@@ -134,9 +137,6 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
               onChange={this.onDescriptionChange}/>
           </div>
           {sliderPicker}
-          <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
-            {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
-          </Button>
           <GuiderLabelShareDialog label={this.props.label}>
             <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
               {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
