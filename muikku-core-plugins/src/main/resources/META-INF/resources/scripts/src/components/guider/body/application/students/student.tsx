@@ -27,7 +27,7 @@ export default class Student extends React.Component<StudentProps, StudentState>
       </div>
       <div className="application-list__item-content-main">
         <div className="application-list__item-header">
-          <span className="text text--list-item-title">{getName(this.props.student as any as UserType)} <span className="text text--list-item-helper-title">{this.props.student.email}</span></span>
+          <span className="text text--list-item-title"><span className="text text--student-name">{getName(this.props.student as any as UserType)}</span> <span className="text text--list-item-helper-title">{this.props.student.email}</span></span>
           <span className="text text--list-item-type-title">{this.props.student.studyProgrammeName}</span>
         </div>
         
