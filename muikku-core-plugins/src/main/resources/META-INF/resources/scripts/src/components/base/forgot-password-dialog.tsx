@@ -25,7 +25,7 @@ class ForgotPasswordDialog extends React.Component<ForgotPasswordDialogProps, Fo
         <br/>
         <br/>
         <form className="form">
-          <div className="form_element">
+          <div className="form-element">
             <label className="form-element__label" htmlFor="forgotpassword-email">{this.props.i18n.text.get('plugin.forgotpassword.forgotPasswordDialog.email')}</label>
             <input type="text" name="email" className="form-element__input form-element__input--forgotpassword"/>
             <input type="submit" className="form__hidden" id="form-reset-password-submit"/>

@@ -53,9 +53,6 @@ class Hops extends React.Component<HopsProps, HopsState> {
     }
   }
 
-  //TODO: this was stolen from the dust template, please replace all the classNames, these are for just reference
-  //I don't want this file to become too complex, remember anyway that I will be splitting all these into simpler components
-  //later once a pattern is defined
   render() {
     return <div className="application-sub-panel text">
     
@@ -66,7 +63,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
         <div className="application-sub-panel__item-title">
           {this.props.i18n.text.get( "plugin.records.hops.goals.upperSecondary" )}
         </div>    
-        <div className="application-sub-panel__item-data form__element">
+        <div className="application-sub-panel__item-data form-element">
           {["yes", "no", "maybe"].map( ( option: string ) => {
               let onEvent = this.set.bind( this, "goalSecondarySchoolDegree", option );
               return <div className="form-element__radio-option-container" key={option}>

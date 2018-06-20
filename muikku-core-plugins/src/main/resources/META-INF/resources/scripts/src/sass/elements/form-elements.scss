@@ -3,10 +3,6 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-// TODO: Refactoring needed for form-element elements
-// Not sure about the naming used here as we should not need classes like form-element-tag-input__field etc.
-// Some class names are against BEM also.
-
 .form-element {
   width: 100%;
   
@@ -162,7 +158,6 @@
   @include breakpoint($breakpoint-desktop) {
     width: 50%;
   }
-  
 }
 
 .form-element__radio-option-container {
@@ -177,7 +172,3 @@
   margin-right: 10px;
   padding: 10px;
 }
-
-
-
-
