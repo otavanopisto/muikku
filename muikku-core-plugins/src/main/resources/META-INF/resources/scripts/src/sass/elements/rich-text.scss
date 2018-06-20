@@ -65,4 +65,35 @@
   img {
     border: 0;
   }
+  
+  ul,
+  ol {
+    display: block;
+    margin: 10px 0;
+    padding: 0 0 0 30px;
+  }
+  
+  ul ul,
+  ol ol,
+  ul ol,
+  ol ul {
+    margin: 0;
+  }
+  
+  ul {
+    list-style-type: disc;
+
+    ul {
+      list-style-type: circle;
+    }
+  }
+  
+  ol {
+    list-style-type: decimal;
+  }
+  
+  li {
+    display: list-item;
+  }
+  
 }
