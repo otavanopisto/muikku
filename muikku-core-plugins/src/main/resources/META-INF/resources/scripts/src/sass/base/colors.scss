@@ -26,7 +26,7 @@ $color-success-contrast: $color-default;
 $color-execute: #66b43b;
 $color-execute-contrast: $color-default;
 
-$color-clear: #c43c24;
+$color-clear: #ff6600;
 $color-clear-contrast: $color-default;
 
 $color-cancel: #7391a7;
@@ -143,6 +143,8 @@ $color-button-secondary-text: $color-secondary-contrast;
 
 $color-button-inverse-background: $color-inverse;
 $color-button-inverse-text: $color-inverse-contrast;
+
+$color-button-disabled-background: #ccc;
 
 // Button pill theme
 $color-button-pill-background: $color-primary;
@@ -299,7 +301,7 @@ $color-form-element-border-focus: #707070;
 $color-form-element-glow: $color-primary;
 
 // form field input tag
-$color-form-element-selected-item-background: $color-default;
+$color-form-element-selected-item-background:  $color-label-background;
 $color-form-element-tag-input-tag-border: #b1e8fe;
 $color-form-element-selected-item-text: $color-default-contrast;
 $color-form-element-selected-item-delete-background-active: rgba(0, 0, 0, 0.2);

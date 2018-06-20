@@ -106,9 +106,14 @@ class ReplyThread extends SessionStateComponent<ReplyThreadProps, ReplyThreadSta
     }
   }  
   render(){
-    let content = (closeDialog: ()=>any) => [                                            
-    <CKEditor autofocus key="1" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-        onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+    let content = (closeDialog: ()=>any) => [    
+    <div className="container container--discussion-content" key="1">     
+      <div className="env-dialog__form-element-container">
+        <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div> 
+        <CKEditor autofocus key="1" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+          onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
+      </div>
+    </div>
     ]
     let footer = (closeDialog: ()=>any)=>{
       return (          

@@ -5,7 +5,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ColorResult} from 'react-color';
 //Another weird typescript bug, won't import properly
-const SliderPicker:any = require('react-color').SliderPicker;
+const ChromePicker:any = require('react-color').ChromePicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 
@@ -108,15 +108,18 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
-        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
-         {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
-        </Button>
         <Button buttonModifiers={["success", "standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
           {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.save')}
         </Button>
+        <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
+         {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
+        </Button>
+        <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+         {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
+       </Button>
       </div>
     }
-    let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
+    let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
@@ -138,9 +141,6 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
             </div>
           </div>
           {sliderPicker}
-          <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
-            {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
-          </Button>
           <GuiderLabelShareDialog label={this.props.label}>
             <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
               {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}

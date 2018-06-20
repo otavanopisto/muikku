@@ -33,50 +33,50 @@ public class GradingController {
   @Inject
   private Logger logger;
   
-	@Inject
-	private GradingSchoolDataController gradingSchoolDataController;
+  @Inject
+  private GradingSchoolDataController gradingSchoolDataController;
 
-	@Inject
-	private GradingScaleEntityDAO gradingScaleEntityDAO;
-	
-	@Inject
-	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
-	
-	/* CompositeGradingScale */
-	
-	public List<CompositeGradingScale> listCompositeGradingScales() {
-	  return gradingSchoolDataController.listCompositeGradingScales();
-	}
+  @Inject
+  private GradingScaleEntityDAO gradingScaleEntityDAO;
+  
+  @Inject
+  private GradingScaleItemEntityDAO gradingScaleItemEntityDAO;
+  
+  /* CompositeGradingScale */
+  
+  public List<CompositeGradingScale> listCompositeGradingScales() {
+    return gradingSchoolDataController.listCompositeGradingScales();
+  }
 
-	/* GradingScaleEntity */
+  /* GradingScaleEntity */
 
-	public GradingScaleEntity findGradingScaleEntityById(Long id) {
-		return gradingScaleEntityDAO.findById(id);
-	}
-	
-	public GradingScaleEntity findGradingScaleEntityById(SchoolDataSource schoolDataSource, String identifier) {
-		return gradingScaleEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-	}
-	
-	public List<GradingScaleEntity> listGradingScaleEntities() {
-		return gradingScaleEntityDAO.listAll();
-	}
+  public GradingScaleEntity findGradingScaleEntityById(Long id) {
+    return gradingScaleEntityDAO.findById(id);
+  }
+  
+  public GradingScaleEntity findGradingScaleEntityById(SchoolDataSource schoolDataSource, String identifier) {
+    return gradingScaleEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+  
+  public List<GradingScaleEntity> listGradingScaleEntities() {
+    return gradingScaleEntityDAO.listAll();
+  }
 
-	/* GradingScaleItemEntity */
+  /* GradingScaleItemEntity */
 
-	public GradingScaleItemEntity findGradingScaleItemEntityById(Long id) {
-		return gradingScaleItemEntityDAO.findById(id);
-	}
-	
-	public GradingScaleItemEntity findGradingScaleItemEntityById(SchoolDataSource schoolDataSource, String identifier) {
-		return gradingScaleItemEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
-	}
-	
-	public List<GradingScaleItemEntity> listGradingScaleItemEntities() {
-		return gradingScaleItemEntityDAO.listAll();
-	}
+  public GradingScaleItemEntity findGradingScaleItemEntityById(Long id) {
+    return gradingScaleItemEntityDAO.findById(id);
+  }
+  
+  public GradingScaleItemEntity findGradingScaleItemEntityById(SchoolDataSource schoolDataSource, String identifier) {
+    return gradingScaleItemEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+  
+  public List<GradingScaleItemEntity> listGradingScaleItemEntities() {
+    return gradingScaleItemEntityDAO.listAll();
+  }
 
-	/* GradingScale */
+  /* GradingScale */
 
   public GradingScale findGradingScale(GradingScaleEntity entity) {
     return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
@@ -90,45 +90,48 @@ public class GradingController {
     return gradingSchoolDataController.findGradingScale(identifier.getDataSource(), identifier.getIdentifier());
   }
 
-	public List<GradingScale> listGradingScales() {
-		return gradingSchoolDataController.listGradingScales();
-	}
-	
-	/* GradingScaleItem */
+  public List<GradingScale> listGradingScales() {
+    return gradingSchoolDataController.listGradingScales();
+  }
+  
+  /* GradingScaleItem */
 
-	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
-		return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
-	}
-	
-	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
+  public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
+    return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
+  }
+  
+  public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
     return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
   }
 
-	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, SchoolDataIdentifier identifier) {
+  public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, SchoolDataIdentifier identifier) {
+    if (identifier == null) {
+      return null;
+    }  
     return gradingSchoolDataController.findGradingScaleItem(identifier.getDataSource(), gradingScale, identifier.getIdentifier());
   }
 
-	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
-		return gradingSchoolDataController.listGradingScaleItems(gradingScale);
-	}
-	
-	/* Workspace assessment */
-	
-	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
-	  return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
-	      workspaceUser.getIdentifier().getIdentifier(), 
-	      workspaceUser.getIdentifier().getDataSource(),
-	      workspaceUser.getWorkspaceIdentifier().getIdentifier(), 
-	      workspaceUser.getUserIdentifier().getIdentifier(),
-	      assessingUser.getIdentifier(), 
-	      assessingUser.getSchoolDataSource(), 
-	      grade.getIdentifier(), 
-	      grade.getSchoolDataSource(),
-	      grade.getGradingScaleIdentifier(),
-	      grade.getSchoolDataSource(),
-	      verbalAssessment,
-	      date);
-	}
+  public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
+    return gradingSchoolDataController.listGradingScaleItems(gradingScale);
+  }
+  
+  /* Workspace assessment */
+  
+  public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
+    return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
+        workspaceUser.getIdentifier().getIdentifier(), 
+        workspaceUser.getIdentifier().getDataSource(),
+        workspaceUser.getWorkspaceIdentifier().getIdentifier(), 
+        workspaceUser.getUserIdentifier().getIdentifier(),
+        assessingUser.getIdentifier(), 
+        assessingUser.getSchoolDataSource(), 
+        grade.getIdentifier(), 
+        grade.getSchoolDataSource(),
+        grade.getGradingScaleIdentifier(),
+        grade.getSchoolDataSource(),
+        verbalAssessment,
+        date);
+  }
 
   public fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessment findWorkspaceAssessment(
       SchoolDataIdentifier workspaceIdentifier, SchoolDataIdentifier studentIdentifier,

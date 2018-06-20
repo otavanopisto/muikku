@@ -13,6 +13,7 @@ import { WorkspaceRecepientType, UserRecepientType, UserGroupRecepientType } fro
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 import SessionStateComponent from '~/components/general/session-state-component';
+import { StatusType } from '~/reducers/base/status';
 
 const ckEditorConfig = {
   uploadUrl: '/communicatorAttachmentUploadServlet',
@@ -43,11 +44,14 @@ type SelectedItemListType = Array<WorkspaceRecepientType | UserRecepientType | U
 interface CommunicatorNewMessageProps {
   children: React.ReactElement<any>,
   replyThreadId?: number,
+  replyToAll?: boolean,
+  messageId?: number,
   initialSelectedItems?: SelectedItemListType,
   i18n: i18nType,
   signature: MessageSignatureType,
   sendMessage: SendMessageTriggerType,
-  initialSubject?: string
+  initialSubject?: string,
+  status: StatusType
 }
 
 interface CommunicatorNewMessageState {
@@ -56,6 +60,14 @@ interface CommunicatorNewMessageState {
   subject: string,
   locked: boolean,
   includesSignature: boolean
+}
+
+function getStateIdentifier(props: CommunicatorNewMessageProps){
+  if (!props.replyThreadId){
+    return;
+  }
+  
+  return props.replyThreadId + (props.replyToAll ? "a" : "b") + props.messageId;
 }
 
 class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessageProps, CommunicatorNewMessageState> {
@@ -76,7 +88,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       subject: props.initialSubject || "",
       locked: false,
       includesSignature: true
-    }, props.replyThreadId);
+    }, getStateIdentifier(props));
   }
   checkAgainstStoredState(){
     this.checkAgainstDefaultState({
@@ -85,16 +97,16 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       subject: "",
       locked: false,
       includesSignature: true
-    }, this.props.replyThreadId);
+    }, getStateIdentifier(this.props));
   }
   onCKEditorChange(text: string){
-    this.setStateAndStore({text}, this.props.replyThreadId);
+    this.setStateAndStore({text}, getStateIdentifier(this.props));
   }
   setSelectedItems(selectedItems: SelectedItemListType){
-    this.setStateAndStore({selectedItems}, this.props.replyThreadId);
+    this.setStateAndStore({selectedItems}, getStateIdentifier(this.props));
   }
   onSubjectChange(e: React.ChangeEvent<HTMLInputElement>){
-    this.setStateAndStore({subject: e.target.value}, this.props.replyThreadId);
+    this.setStateAndStore({subject: e.target.value}, getStateIdentifier(this.props));
   }
   sendMessage(closeDialog: ()=>any){
     this.setState({
@@ -113,7 +125,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           selectedItems: this.props.initialSelectedItems || [],
           subject: this.props.initialSubject || "",
           locked: false
-        }, this.props.replyThreadId);
+        }, getStateIdentifier(this.props));
       },
       fail: ()=>{
         this.setState({
@@ -132,11 +144,13 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       selectedItems: this.props.initialSelectedItems || [],
       subject: this.props.initialSubject || "",
       locked: false
-    }, this.props.replyThreadId);
+    }, getStateIdentifier(this.props));
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-      (<InputContactsAutofill modifier="new-messsage" key="1" hasGroupPermission placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
+      (<InputContactsAutofill modifier="new-message" key="1" hasGroupPermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+          hasWorkspacePermission={this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING}
+          placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
        <div className="container container--communicator-subject" key="2">
@@ -150,7 +164,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       (
       <div className="container container--communicator-content" key="3">     
         <div className="env-dialog__form-element-container">  
-          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>          
+          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
           <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
           onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
         </div> 
@@ -158,7 +172,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
       ),
       (this.props.signature ? <div key="4" className="container container--communicator-signature">
         <input className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
-        {this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}
+        <span className="text text--new-message-signature">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</span>
       </div> : null)
     ]
        
@@ -171,6 +185,9 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.communicator.createmessage.button.cancel')}
           </Button>
+          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.communicator.createmessage.button.clearDraft')}
+          </Button> : null}
         </div>
       )
     }
@@ -186,7 +203,8 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    signature: state.messages.signature
+    signature: state.messages.signature,
+    status: state.status
   }
 };
 

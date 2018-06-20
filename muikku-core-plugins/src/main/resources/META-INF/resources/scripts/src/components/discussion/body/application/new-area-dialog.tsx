@@ -105,6 +105,9 @@ class DiscussionNewArea extends SessionStateComponent<DiscussionNewAreaProps, Di
           <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.discussion.createarea.cancel')}
           </Button>
+          {this.recovered ? <Button buttonModifiers="dialog-clear" onClick={this.clearUp} disabled={this.state.locked}>
+            {this.props.i18n.text.get('plugin.discussion.createmessage.clearDraft')}
+          </Button> : null}
         </div>
       )
     }

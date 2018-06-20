@@ -5,7 +5,7 @@ import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 import {StateType} from '~/reducers';
 
-import NewEditAnnouncement from './new-edit-announcement';
+import NewEditAnnouncement from './new-edit-announcement-dialog';
 
 import {i18nType} from '~/reducers/base/i18n';
 

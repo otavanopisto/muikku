@@ -1,11 +1,11 @@
-import NewMessage from '../new-message';
+import NewMessage from '../new-message-dialog';
 import * as React from 'react';
 import { MessageType, MessageThreadLabelListType } from '~/reducers/main-function/messages';
 import Link from '~/components/general/link';
 import { StateType } from '~/reducers';
 import { i18nType } from '~/reducers/base/i18n';
 import { connect, Dispatch } from 'react-redux';
-import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType } from '~/reducers/main-function/user-index';
+import { UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserGroupType } from '~/reducers/main-function/user-index';
 import { StatusType } from '~/reducers/base/status';
 import { colorIntToHex } from '~/util/modifiers';
 
@@ -14,6 +14,7 @@ import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
+import { WorkspaceType } from '~/reducers/main-function/workspaces';
 
 interface MessageProps {
   message: MessageType,
@@ -46,16 +47,16 @@ class Message extends React.Component<MessageProps, MessageState> {
     })).filter(user => user.value.id !== this.props.status.userId); //we are filtering the sender from the recepient, just in case
   
     //These are the usergroup recepients
-    let userGroupObject: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
+    let userGroupObject: Array<UserGroupRecepientType> = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
       type: "usergroup",
       value: ug
-    }));
+    })) : [];
   
     //And the workspace recepients
-    let workspaceObject: Array<WorkspaceRecepientType> = this.props.message.workspaceRecipients.map((w: any): WorkspaceRecepientType => ({
+    let workspaceObject: Array<WorkspaceRecepientType> = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? this.props.message.workspaceRecipients.map((w: any): WorkspaceRecepientType => ({
       type: "workspace",
       value: w
-    }));
+    })) : [];
   
     //The basic reply target is the sender
     let replytarget = [senderObject];
@@ -75,13 +76,27 @@ class Message extends React.Component<MessageProps, MessageState> {
               {this.props.message.sender.firstName ? this.props.message.sender.firstName + " " : ""} {this.props.message.sender.lastName ? this.props.message.sender.lastName : ""}
             </span>
             <span className="text text--communicator-message-recipients">
-              {this.props.message.recipients.map( ( recipient ) => {
+              {this.props.message.recipients.map((recipient)=>{
                 return (
                   <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
                     {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
                   </span>
                 )
-              } )}
+              })}
+              {this.props.message.userGroupRecipients.map((userGroupRecepient: UserGroupType)=>{
+                return (
+                  <span className="text text--communicator-message-recipient" key={userGroupRecepient.id}>
+                    {userGroupRecepient.name}
+                  </span>
+                )
+              })}
+              {this.props.message.workspaceRecipients.map((workspaceRecepient: WorkspaceType)=>{
+                return (
+                  <span className="text text--communicator-message-recipient" key={workspaceRecepient.id}>
+                    {workspaceRecepient.name}
+                  </span>
+                )
+              })}
             </span>
           </div>
           <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
@@ -102,13 +117,13 @@ class Message extends React.Component<MessageProps, MessageState> {
         <section className="text text--communicator-message-content rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
       </div>
       <div className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
-        <NewMessage replyThreadId={this.props.message.communicatorMessageId}
+        <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
           initialSelectedItems={replytarget}
           initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
           <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.reply')}</Link>
         </NewMessage>
-        <NewMessage replyThreadId={this.props.message.communicatorMessageId}
-          initialSelectedItems={replyalltarget}
+        <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}
+          initialSelectedItems={replyalltarget} replyToAll
           initialSubject={this.props.i18n.text.get('plugin.communicator.createmessage.title.replySubject', this.props.message.caption)}>
           <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.communicator.replyAll')}</Link>
         </NewMessage>

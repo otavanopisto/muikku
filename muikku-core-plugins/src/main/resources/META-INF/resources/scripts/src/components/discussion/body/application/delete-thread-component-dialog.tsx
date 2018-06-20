@@ -9,6 +9,7 @@ import { i18nType } from '~/reducers/base/i18n';
 import { DiscussionThreadType, DiscussionThreadReplyType } from '~/reducers/main-function/discussion';
 import Link from '~/components/general/link';
 import Dialog from '~/components/general/dialog';
+import Button from '~/components/general/button';
 import {DeleteCurrentDiscussionThreadTriggerType,
   DeleteDiscussionThreadReplyFromCurrentTriggerType,
   deleteCurrentDiscussionThread,
@@ -74,12 +75,12 @@ class DiscussionDeleteThreadComponent extends React.Component<DiscussionDeleteTh
     let footer = (closeDialog: ()=>any)=>{
       return (          
          <div className="dialog__button-set">
-          <Link className="button button--fatal button--standard-ok" onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
-            {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.confirmButton')}
-          </Link>
-          <Link className="button button--cancel button--standard-cancel" onClick={closeDialog}>
+          <Button buttonModifiers={["fatal", "standard-ok"]} onClick={this.deleteComponent.bind(this, closeDialog)} disabled={this.state.locked}>
+          {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.confirmButton')}
+          </Button>
+          <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
             {this.props.i18n.text.get('plugin.discussion.confirmThreadRemovalDialog.cancelButton')}
-          </Link>
+          </Button>
         </div>
       )
     }

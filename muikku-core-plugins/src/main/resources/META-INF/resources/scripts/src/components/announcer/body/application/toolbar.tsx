@@ -14,7 +14,7 @@ import '~/sass/elements/form-elements.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 
 import DeleteAnnouncementDialog from '../delete-announcement-dialog';
-import NewEditAnnouncement from './new-edit-announcement';
+import NewEditAnnouncement from './new-edit-announcement-dialog';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';

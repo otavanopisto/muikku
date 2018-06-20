@@ -345,12 +345,26 @@ b {
 }
  
 .text--recepient-tag {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  
+  font-size: 0.75rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 0.8125rem;
+  }
+  
   .text__icon {
     display: inline-block;
-	margin-right: 5px;
+    flex-basis: 0;
+    flex-grow: 0;
+    flex-shrink: 0;
+	  margin-right: 5px;
   }
 	
   i {
+    margin: 0 0 0 5px;
     opacity: 0.6;
   }
 }
@@ -388,6 +402,10 @@ b {
   &:not(:last-child):after {
     content: ",";
   }
+}
+
+.text--new-message-signature {
+  margin: 0 0 0 10px;
 }
 
 // Announcer
@@ -446,6 +464,10 @@ b {
 .text--announcement-content {
   line-height: 1.5rem;
   margin: 20px 0 0;
+}
+
+.text-announcement-date {
+  margin: 10px 0 0;
 }
 
 // Discussion

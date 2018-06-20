@@ -100,6 +100,7 @@ public class TranscriptofRecordsBackingBean {
     User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
     
     studyStartDate = user.getStudyStartDate();
+    studyEndDate = user.getStudyEndDate();
     studyTimeEnd = user.getStudyTimeEnd();
     studyTimeLeftStr = "";
     
@@ -175,9 +176,14 @@ public class TranscriptofRecordsBackingBean {
     return studyTimeLeftStr;
   }
   
+  public Date getStudyEndDate() {
+    return studyEndDate != null ? Date.from(studyEndDate.toInstant()) : null;
+  }
+
   private String grades;
   private String files;
   private OffsetDateTime studyStartDate;
+  private OffsetDateTime studyEndDate;
   private OffsetDateTime studyTimeEnd;
   private String studyTimeLeftStr;
 	

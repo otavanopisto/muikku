@@ -31,6 +31,7 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
           {this.props.announcements.announcements.length !== 0 ?
             <div className="item-list item-list--panel-announcements">
               {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
+                let extraWorkspaces = announcement.workspaces && announcement.workspaces.length ? announcement.workspaces.length - 1 : 0;
                 return <Link key={announcement.id} className={`item-list__item item-list__item--announcements ${announcement.workspaces.length ? "item-list__item--has-workspaces" : ""}`}
                   href={`/announcements?announcementId=${announcement.id}`}>
                   <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
@@ -47,6 +48,7 @@ class AnnouncementsAside extends React.Component<AnnouncementsAsideProps, Announ
                           <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                           <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
                         </span>
+                        {extraWorkspaces ? <span className="label">{"(+" + extraWorkspaces + ")"}</span> : null}
                       </div> : null}
                   </span>
                 </Link>

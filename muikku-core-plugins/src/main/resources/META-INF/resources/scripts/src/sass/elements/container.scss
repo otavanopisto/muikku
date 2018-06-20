@@ -120,11 +120,19 @@
 }
 
 .container--communicator-signature {
+  align-items: center;
+  background-color: #fff;
+  display: flex;
   padding: 10px 0;
 }
   
 .container--new-discussion-options {
   display: flex;
+  flex-flow: column wrap;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
 }
 
 .container--new-discussion-area-title {

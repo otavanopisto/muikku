@@ -7,7 +7,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ColorResult} from 'react-color';
 //Another weird typescript bug, won't import properly
-const SliderPicker:any = require('react-color').SliderPicker;
+const ChromePicker:any = require('react-color').ChromePicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
@@ -91,16 +91,18 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
   render(){
     let footer = (closeDialog: ()=>any)=>{
       return <div className="dialog__button-set">
+        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
+          {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
+        </Button>
         <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.communicator.label.edit.button.cancel')}
         </Button>
-        <Button buttonModifiers={["success","standard-ok"]} onClick={this.update.bind(this, closeDialog)}>
-          {/*TODO this should be OK but instead it says edit, please fix*/}
-          {this.props.i18n.text.get('plugin.communicator.label.edit.button.send')}
-        </Button>
+         <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
+           {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
+         </Button>
       </div>
     }
-    let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
+    let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
@@ -114,9 +116,6 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
               onChange={this.onNameChange}/>
           </div>
           {sliderPicker}
-          <Button buttonModifiers={["fatal","communicator-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
-            {this.state.removed ? this.props.i18n.text.get('plugin.communicator.label.edit.button.removed') : this.props.i18n.text.get('plugin.communicator.label.edit.button.remove')}
-          </Button>
         </div>
       )
     }
