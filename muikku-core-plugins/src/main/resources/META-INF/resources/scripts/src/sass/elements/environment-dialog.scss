@@ -81,10 +81,6 @@
   flex-grow: 1;
   flex-shrink: 1;
   padding: 0 10px;     
-  
-  @include breakpoint($breakpoint-pad) {
-    padding: 10px 10px 0;
-  }   
 }
 
 .env-dialog__footer {
@@ -237,16 +233,13 @@ label {
   display: inline-block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
+  margin: 0 4px 0 0;
   padding: 4px 8px;
   width: 100%;
   
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
+  @include breakpoint($breakpoint-pad) { 
+    font-size: $text-desktop-font-size; 
   }
-  
-  @include breakpoint($breakpoint-desktop) {
-    margin: 0 4px 0 0;
-  }  
 }
 
 .env-dialog__input[type="checkbox"] {
@@ -254,7 +247,7 @@ label {
   -moz-appearance: none;
   align-items: center;
   appearance: none;
-  border: solid 2px $color-application-dialog-border-color;
+  border: solid 2px $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: flex;
   height: 1rem;
