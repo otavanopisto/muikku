@@ -44,6 +44,7 @@ import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
 import { RecordsType } from '~/reducers/main-function/records/records';
+import { ErrorType } from '~/reducers/base/error';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -63,5 +64,6 @@ export interface StateType {
   courses?: CoursesType,
   discussion?: DiscussionType,
   guider?: GuiderType,
-  records?: RecordsType
+  records?: RecordsType,
+  error?: ErrorType
 }
