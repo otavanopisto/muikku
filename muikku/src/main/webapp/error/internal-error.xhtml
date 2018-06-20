@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition 
-  xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd" 
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  template="/WEB-INF/templates/deprecated/main-view.xhtml">
-
-  <ui:define name="content.center.widget">
-    <h2>#{i18n.text['error.internalError.descriptionTitle']}</h2>
-    <p>#{i18n.text['error.internalError.descriptionText']}</p>
-  </ui:define>
-  
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/error.xhtml">
+  <ui:param name="errorTitle" value="#{i18n.text['error.internalError.descriptionTitle']}" />
+  <ui:param name="errorDescription" value="#{i18n.text['error.internalError.descriptionText']}" />
 </ui:composition>

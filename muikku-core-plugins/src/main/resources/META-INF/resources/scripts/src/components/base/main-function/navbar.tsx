@@ -23,7 +23,7 @@ interface ItemDataElement {
 }
 
 interface MainFunctionNavbarProps {
-  activeTrail: string,
+  activeTrail?: string,
   i18n: i18nType,
   navigation?: React.ReactElement<any>,
   status: StatusType,
