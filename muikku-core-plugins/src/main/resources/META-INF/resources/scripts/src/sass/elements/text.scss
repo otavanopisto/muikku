@@ -405,7 +405,7 @@ b {
 }
 
 .text--new-message-signature {
-  margin: 0 0 0 10px;
+  margin: 0 0 0 3px;
 }
 
 // Announcer
@@ -612,11 +612,7 @@ b {
 }
 
 .text--new-discussion-create-state {
-  margin-right: 10px;
-  
-  &:not(:first-child) {
-    margin-left: 20px;
-  }
+  margin: 0 20px 0 3px;
 }
 
 .text--discussion-message-creator {
