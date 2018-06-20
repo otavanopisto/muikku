@@ -54,6 +54,10 @@ export default class Portal extends React.Component<PortalProps, PortalState> {
     if (this.props.closeOnScroll) {
       document.addEventListener('scroll', this.handleOutsideMouseClick);
     }
+    
+    if (this.props.isOpen === true){
+      this.openPortal();
+    }
   }
 
   componentWillUpdate(nextProps: PortalProps, nextState: PortalState) {

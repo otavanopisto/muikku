@@ -5,6 +5,7 @@ import {AnyActionType} from '~/actions';
 import {bindActionCreators} from 'redux';
 import {NotificationListType, NotificationType} from '~/reducers/base/notifications';
 import {StateType} from '~/reducers';
+import Portal from '~/components/general/portal';
 
 import '~/sass/elements/notification-queue.scss';
 
@@ -20,18 +21,20 @@ interface NotificationsState {
 class Notifications extends React.Component<NotificationsProps, NotificationsState> {
   render(){
     return (
-      <div className="notification-queue">
-        <div className="notification-queue__items">
-          {this.props.notifications.map((notification: NotificationType)=>{
-            return (
-              <div key={notification.id} className={"notification-queue__items__item notification-queue__items__item--" + notification.severity}>
-                <span>{notification.message}</span>
-                <a className="notification-queue__items__item__close" onClick={this.props.hideNotification.bind(this, notification)}></a>
-              </div>
-            );
-          })}
+      <Portal isOpen>
+        <div className="notification-queue">
+          <div className="notification-queue__items">
+            {this.props.notifications.map((notification: NotificationType)=>{
+              return (
+                <div key={notification.id} className={"notification-queue__items__item notification-queue__items__item--" + notification.severity}>
+                  <span>{notification.message}</span>
+                  <a className="notification-queue__items__item__close" onClick={this.props.hideNotification.bind(this, notification)}></a>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </Portal>
     );
   }
 }
