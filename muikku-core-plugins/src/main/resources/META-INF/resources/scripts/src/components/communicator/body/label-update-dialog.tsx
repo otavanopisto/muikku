@@ -7,7 +7,7 @@ import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {ColorResult} from 'react-color';
 //Another weird typescript bug, won't import properly
-const SliderPicker:any = require('react-color').SliderPicker;
+const ChromePicker:any = require('react-color').ChromePicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
@@ -102,7 +102,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
          </Button>
       </div>
     }
-    let sliderPicker = <SliderPicker color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
+    let sliderPicker = <ChromePicker disableAlpha color={this.state.removed ? "#aaa" : this.state.color} onChange={this.onColorChange}/>
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
