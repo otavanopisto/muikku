@@ -26,9 +26,9 @@ class Notifications extends React.Component<NotificationsProps, NotificationsSta
           <div className="notification-queue__items">
             {this.props.notifications.map((notification: NotificationType)=>{
               return (
-                <div key={notification.id} className={"notification-queue__items__item notification-queue__items__item--" + notification.severity}>
+                <div key={notification.id} className={"notification-queue__item notification-queue__item--" + notification.severity}>
                   <span>{notification.message}</span>
-                  <a className="notification-queue__items__item__close" onClick={this.props.hideNotification.bind(this, notification)}></a>
+                  <a className="notification-queue__close" onClick={this.props.hideNotification.bind(this, notification)}></a>
                 </div>
               );
             })}
