@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <sql>
+    create table UserChatSettings (
+      id bigint not null auto_increment, 
+      userIdentifier varchar(255) not null, 
+      visibility varchar(255) not null,
+      primary key (id),
+      constraint UserChatSettings_unique_userIdentifier
+      unique (userIdentifier)
+    );
+  </sql>
+  
+</update>
