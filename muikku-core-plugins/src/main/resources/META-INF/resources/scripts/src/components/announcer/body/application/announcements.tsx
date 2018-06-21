@@ -5,7 +5,7 @@ import {colorIntToHex} from '~/util/modifiers';
 import equals = require("deep-equal");
 import {StateType} from '~/reducers';
 
-import NewEditAnnouncement from './new-edit-announcement-dialog';
+import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
 
 import {i18nType} from '~/reducers/base/i18n';
 
@@ -23,7 +23,8 @@ import SelectableList from '~/components/general/selectable-list';
 import Link from '~/components/general/link';
 import { AddToAnnouncementsSelectedTriggerType, RemoveFromAnnouncementsSelectedTriggerType,
   removeFromAnnouncementsSelected, addToAnnouncementsSelected } from '~/actions/main-function/announcements';
-import DeleteAnnouncementDialog from '../delete-announcement-dialog';
+import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
+import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemFooter, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
 
 interface AnnouncementsProps {
   i18n: i18nType,
@@ -45,13 +46,13 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
       return null;
     }
     return (<BodyScrollKeeper hidden={!!this.props.announcements.current}>
-        <SelectableList className="application-list"
-          selectModeClassAddition="application-list--select-mode" dataState={this.props.announcements.state}>
+        <SelectableList as={ApplicationList} selectModeModifiers="select-mode" dataState={this.props.announcements.state}>
           {this.props.announcements.announcements.map((announcement: AnnouncementType)=>{
             let className = announcement.workspaces.length ? 
-                'application-list__item announcement announcement--workspace' :
-                'application-list__item announcement announcement--environment';
+                'announcement announcement--workspace' :
+                'announcement announcement--environment';
             return {
+              as: ApplicationListItem,
               className,
               onSelect: this.props.addToAnnouncementsSelected.bind(null, announcement),
               onDeselect: this.props.removeFromAnnouncementsSelected.bind(null, announcement),
@@ -61,46 +62,41 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               notSelectable: announcement.archived,
               notSelectableModifier: "archived",
               contents: (checkbox: React.ReactElement<any>)=>{
-                return <div className="application-list__item-content-wrapper announcement__content">
-                  <div className="application-list__item-content-aside">
-                    <div className="announcement__select-container">
-                      {checkbox}
-                    </div>
-                  </div>
-                  <div className="application-list__item-content-main">
-                    <div className="application-list__item-header">
-                      <div className="text text--announcer-announcement-header">
-                        <span className="text__icon icon-clock"></span>
-                        <span className="text text--announcer-times">
-                          {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
-                        </span>
-                      </div> 
-                    </div>                  
-                    <div className="application-list__item-body">
-                      <article className="text text--item-article">
-                        <header className="text text--item-article-header">{announcement.caption}</header>
-                        {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
-                      </article>
-                    </div>
-                    {announcement.workspaces && announcement.workspaces.length ? 
-                      <div className="labels item-list__announcement-workspaces">
-                      {announcement.workspaces.map((workspace)=>{ 
-                        return <span className="label">
-                          <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                          <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
-                        </span>
-                      })}
-                      </div> : null}
-                    <div className="application-list__item-footer application-list__item-footer--announcement-actions">  
-                      <NewEditAnnouncement announcement={announcement}>
-                        <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
-                      </NewEditAnnouncement>
-                      {this.props.announcements.location !== "archived" ? <DeleteAnnouncementDialog announcement={announcement}>
-                        <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
-                      </DeleteAnnouncementDialog> : null}
-                    </div>
-                  </div>
-                </div>
+                return <ApplicationListItemContentWrapper className="announcement__content" aside={<div className="announcement__select-container">
+                  {checkbox}
+                </div>}>
+                  <ApplicationListItemHeader>
+                    <div className="text text--announcer-announcement-header">
+                      <span className="text__icon icon-clock"></span>
+                      <span className="text text--announcer-times">
+                        {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
+                      </span>
+                    </div> 
+                  </ApplicationListItemHeader>                  
+                  <ApplicationListItemBody>
+                    <article className="text text--item-article">
+                      <header className="text text--item-article-header">{announcement.caption}</header>
+                      {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
+                    </article>
+                  </ApplicationListItemBody>
+                  {announcement.workspaces && announcement.workspaces.length ? 
+                    <div className="labels item-list__announcement-workspaces">
+                    {announcement.workspaces.map((workspace)=>{ 
+                      return <span className="label">
+                        <span className="label__icon label__icon--announcement-workspace icon-books"></span>
+                        <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                      </span>
+                    })}
+                    </div> : null}
+                  <ApplicationListItemFooter modifiers="announcement-actions">  
+                    <NewEditAnnouncement announcement={announcement}>
+                      <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.edit')}</Link>
+                    </NewEditAnnouncement>
+                    {this.props.announcements.location !== "archived" ? <DeleteAnnouncementDialog announcement={announcement}>
+                      <Link className="link link--application-list-item-footer">{this.props.i18n.text.get('plugin.announcer.link.delete')}</Link>
+                    </DeleteAnnouncementDialog> : null}
+                  </ApplicationListItemFooter>
+                </ApplicationListItemContentWrapper>
              }
             }
           })}

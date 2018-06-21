@@ -10,15 +10,21 @@ interface SelectableItem {
   key: any,
   contents: (checkbox: React.ReactElement<any>)=>any,
   notSelectable?: boolean,
-  notSelectableModifier?: string
+  notSelectableModifier?: string,
+  notSelectableClassName?: string,
+  as?: any,
+  modifiers?: string | Array<string>
 }
 
 interface SelectableListProps {
-  className: string,
-  selectModeClassAddition: string,
+  className?: string,
+  selectModeClassAddition?: string,
   children: Array<SelectableItem>,
   extra?: any,
-  dataState: string
+  dataState: string,
+  as?: any,
+  modifiers?: string | Array<string>
+  selectModeModifiers?: string | Array<string>,
 }
 
 interface SelectableListState {
@@ -141,17 +147,41 @@ export default class SelectableList extends React.Component<SelectableListProps,
     }
   }
   render(){
-    return <div className={`${this.props.className} ${this.state.touchMode ? this.props.selectModeClassAddition : ""}`}>
+    let RootElement = this.props.as || 'div';
+    let modifiers = this.props.as ? 
+        (this.props.modifiers ? (this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers]) : []).concat(
+          this.state.touchMode && this.props.selectModeModifiers ? (this.props.selectModeModifiers instanceof Array ? this.props.selectModeModifiers : [this.props.selectModeModifiers]) : []
+        )
+        : null
+    let rootProps:any = {};
+    if (modifiers){
+      rootProps.modifiers = modifiers;
+    }
+    return <RootElement {...rootProps}
+      className={`${this.props.className || ""} ${this.state.touchMode && this.props.selectModeClassAddition ? this.props.selectModeClassAddition : ""}`}>
       {this.props.children.map((child: SelectableItem)=>{
-        return <div key={child.key}
-        className={`${child.className} ${child.isSelected ? "selected" : ""} ${child.notSelectable ? (child.className + "--" + child.notSelectableModifier) : ""}`}
+        let GivenElement = child.as || 'div';
+        let givenModifiers = child.as ? 
+            (child.modifiers ? (child.modifiers instanceof Array ? child.modifiers : [child.modifiers]) : []).concat(
+                child.notSelectable ? [child.notSelectableModifier] : []
+              )
+              : null
+              
+        let givenElementProps:any = {};
+        if (modifiers){
+          givenElementProps.modifiers = modifiers;
+        }
+        
+        return <GivenElement key={child.key}
+        className={`${child.className || ""} ${child.isSelected ? "selected" : ""} ${child.notSelectable && child.notSelectableClassName ? child.notSelectableClassName : ""}`}
+        {...givenElementProps}
         onTouchStart={this.onTouchStartItem.bind(this, child)} onTouchEnd={this.onTouchEndItem.bind(this, child)}
         onTouchMove={this.onTouchMoveItem.bind(this, child)} 
         onClick={this.onItemClick.bind(this, child)} onContextMenu={this.onContextMenu}>
           {child.contents(child.notSelectable ? null : <input type="checkbox" className={child.checkboxClassName} checked={child.isSelected} onChange={this.onCheckBoxItemChange.bind(this, child)} onClick={this.onCheckBoxItemClick}/>)}
-        </div>
+        </GivenElement>
       })}
       {this.props.extra}
-    </div>
+    </RootElement>
   }
 }
