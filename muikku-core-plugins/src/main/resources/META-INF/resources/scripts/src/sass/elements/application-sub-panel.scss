@@ -121,12 +121,6 @@
     @include breakpoint($breakpoint-desktop) {
       flex-basis: auto;
     }
-    
-    textarea {
-      height: 50px;
-      width: 100%;
-    }
-  
   }
 }
 

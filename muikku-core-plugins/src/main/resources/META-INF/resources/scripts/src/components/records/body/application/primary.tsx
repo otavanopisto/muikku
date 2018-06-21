@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
 import {StateType} from '~/reducers';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 
 interface StudiesPrimaryOptionProps {
   i18n: i18nType,
@@ -40,8 +40,8 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
         hash: "vops"
       }
     ]    
-    return <div className="application-panel__toolbar">
-      <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange} value={this.props.location || ""}>
+    return <div className="application-panel__toolbar form-element">
+      <select className="form-element__select" onChange={this.onSelectChange} value={this.props.location || ""}>
         {sections.map((section, index)=>{
           return <option key={index} value={section.hash} >
               {section.name}

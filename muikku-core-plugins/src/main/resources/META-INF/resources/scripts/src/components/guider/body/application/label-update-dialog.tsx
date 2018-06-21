@@ -10,7 +10,7 @@ import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/container.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
 import GuiderLabelShareDialog from './label-share-dialog';
@@ -130,14 +130,19 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
           </div>
           {sliderPicker}
           <div className="container container--update-label-dialog-fields">
+            <div className="form-element">
             <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
-              className="form-field form-field--guider-label-name"
+              className="form-element__input form-element--guider-label-name"
+
               disabled={this.state.removed}
               onChange={this.onNameChange}/>
-            <textarea placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-field form-field--guider-label-description"
+            </div>
+            <div className="form-element">
+              <textarea placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.description')} className="form-element__textarea"
               value={this.state.description}
               disabled={this.state.removed}
               onChange={this.onDescriptionChange}/>
+            </div>
           </div>
           <GuiderLabelShareDialog label={this.props.label}>
             <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
