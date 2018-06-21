@@ -123,7 +123,7 @@
 
 .container--communicator-signature {
   align-items: center;
-  background-color: #fff;
+  background-color: $color-default;
   display: flex;
   padding: 10px 0;
 }
@@ -166,5 +166,7 @@
 }
 
 .container--error {
-  padding-top: calc(4.2rem * 1.25);
+  background-color: $color-default;
+  height: 100%;
+  padding: calc(4.2rem * 1.25) 10px 10px 10px;
 }

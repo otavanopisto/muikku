@@ -344,3 +344,31 @@
     margin: 0 0 1.5rem;
   }
 }
+
+// Error panels
+.ordered-container--error-panels {
+  flex-flow: column nowrap;
+  height: 100%;
+  padding: calc(#{$navbar-mobile-height} * 1.35) 0 10px;
+  
+  @include breakpoint($breakpoint-pad){
+    flex-flow: row wrap;
+    height: auto;
+    padding: calc(#{$navbar-desktop-height} * 1.5) 0 10px;
+  }
+  
+  @include breakpoint($breakpoint-desktop){
+    flex-flow: row nowrap;
+    padding: calc(#{$navbar-desktop-height} * 1.5) 10px 10px;
+  }
+}
+
+.ordered-container__item--error {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  
+  @include breakpoint($breakpoint-pad){
+    padding: 0 10px;
+  }
+}

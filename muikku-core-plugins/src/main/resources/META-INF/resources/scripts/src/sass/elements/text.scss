@@ -247,6 +247,11 @@ b {
   color: $color-index-text-for-panels-title-announcements-icon-color;
 }
 
+.text__panel-icon--error {
+  background-color: $color-fatal;
+  color: $color-default;
+}
+
 .text--panel-nothing {
   padding: 10px;
 }
@@ -936,5 +941,34 @@ b {
   @include breakpoint($breakpoint-pad){
     font-size: $text-capitalized-desktop-font-size;
   }
+}
+
+// Error pages
+.text--error-title {
+  background-color: $color-panel-background;
+  color: $color-index-text-for-panels-title;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  font-size: 1.1875rem;
+  font-weight: 400;
+  padding: 10px 0 0 5px;
+  text-transform: uppercase;
   
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-size: 1.375rem;
+    font-weight: 300;
+    padding: 0 2px .4rem;
+  }
+}
+
+.text--error-body {
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-weight: 300;
+    padding: 20px;
+  }
 }
