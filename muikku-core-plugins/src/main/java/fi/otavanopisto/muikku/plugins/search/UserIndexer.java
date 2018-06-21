@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -20,10 +19,8 @@ import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.search.SearchIndexer;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEmailEntityController;
-import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -43,13 +40,7 @@ public class UserIndexer {
   private UserController userController;
 
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
   private UserEmailEntityController userEmailEntityController;
-  
-  @Inject
-  private EnvironmentUserController environmentUserController;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -65,18 +56,12 @@ public class UserIndexer {
     try {
       User user = userController.findUserByDataSourceAndIdentifier(dataSource, identifier);
       if (user != null) {
-        EnvironmentRoleArchetype archetype = null;
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
+        EnvironmentRoleArchetype archetype = ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRole() != null)) ? 
+            userSchoolDataIdentifier.getRole().getArchetype() : null;
         
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(user.getSchoolDataSource(), user.getIdentifier());
-        
-        if (userEntity != null) {
-          EnvironmentUser eu = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-          
-          if ((eu != null) && (eu.getRole() != null))
-            archetype = eu.getRole().getArchetype();
-        }
-        
-        if ((archetype != null) && (userEntity != null)) {
+        if ((archetype != null) && (userSchoolDataIdentifier != null)) {
+          UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
           SchoolDataIdentifier userIdentifier = new SchoolDataIdentifier(user.getIdentifier(), user.getSchoolDataSource());
           
           boolean isDefaultIdentifier = (userEntity.getDefaultIdentifier() != null && userEntity.getDefaultSchoolDataSource() != null) ?

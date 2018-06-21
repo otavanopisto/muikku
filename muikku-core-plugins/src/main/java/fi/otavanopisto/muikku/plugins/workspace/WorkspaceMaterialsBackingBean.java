@@ -18,15 +18,15 @@ import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.jsf.NavigationController;
 import fi.otavanopisto.muikku.jsf.NavigationRules;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
-import fi.otavanopisto.muikku.model.users.UserEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @Named
 @Stateful
@@ -41,6 +41,9 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   private String workspaceUrlName;
 
   @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
+  @Inject
   private WorkspaceController workspaceController;
 
   @Inject
@@ -52,9 +55,6 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   
   @Inject
   private SessionController sessionController;
-
-  @Inject
-  private EnvironmentUserController environmentUserController;
 
   @Inject
   private SystemSettingsController systemSettingsController;
@@ -171,11 +171,13 @@ public class WorkspaceMaterialsBackingBean extends AbstractWorkspaceBackingBean 
   }
 
   private Boolean resolveMaySignUp() {
-    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    SchoolDataIdentifier loggedUser = sessionController.getLoggedUser();
     if (loggedUser != null) {
-      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
-      if ((environmentUser != null) && (environmentUser.getRole() != null)) {
-        return EnvironmentRoleArchetype.STUDENT.equals(environmentUser.getRole().getArchetype());
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(
+          loggedUser.getDataSource(), loggedUser.getIdentifier());
+      
+      if ((userSchoolDataIdentifier != null) && (userSchoolDataIdentifier.getRole() != null)) {
+        return EnvironmentRoleArchetype.STUDENT.equals(userSchoolDataIdentifier.getRole().getArchetype());
       }
     }
     

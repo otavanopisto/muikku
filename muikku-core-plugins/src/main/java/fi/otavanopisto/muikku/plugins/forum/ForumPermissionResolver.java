@@ -6,9 +6,7 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.controller.ResourceRightsController;
 import fi.otavanopisto.muikku.dao.security.PermissionDAO;
 import fi.otavanopisto.muikku.dao.security.ResourceRolePermissionDAO;
-import fi.otavanopisto.muikku.dao.users.EnvironmentUserDAO;
 import fi.otavanopisto.muikku.model.security.Permission;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
@@ -26,14 +24,15 @@ import fi.otavanopisto.security.User;
 @RequestScoped
 public class ForumPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
+  /**
+   * TODO: Check if this class is needed at all anymore
+   */
+  
   @Inject
   private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
-  
-  @Inject
-  private EnvironmentUserDAO environmentUserDAO;
   
   @Inject
   private ForumResourcePermissionCollection permissionCollection;
@@ -58,42 +57,44 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
-    ForumArea forumArea = getForumArea(contextReference);
-    Permission perm = permissionDAO.findByName(permission);
-    UserEntity userEntity = getUserEntity(user);
+    throw new RuntimeException("ForumPermissionResolver NOT IMPLEMENTED");
     
-    if (forumArea == null) {
-      return false;
-    }
-    
-    RoleEntity userRole;
-    
-    // TODO: typecasts
-    if (forumArea instanceof WorkspaceForumArea) {
-      WorkspaceForumArea workspaceForum = (WorkspaceForumArea) forumArea;
-      
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForum.getWorkspace());
-      
-      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
-      if (workspaceUserEntity != null) {
-        userRole = workspaceUserEntity.getWorkspaceUserRole();
-        if (resourceUserRolePermissionDAO.hasResourcePermissionAccess(
-            resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
-            hasEveryonePermission(permission, forumArea) ||
-            userEntity.getId().equals(forumArea.getOwner()))
-          return true;
-      }
-    } 
+//    ForumArea forumArea = getForumArea(contextReference);
+//    Permission perm = permissionDAO.findByName(permission);
+//    UserEntity userEntity = getUserEntity(user);
+//    
+//    if (forumArea == null) {
+//      return false;
+//    }
+//    
+//    RoleEntity userRole;
+//    
+//    // TODO: typecasts
+//    if (forumArea instanceof WorkspaceForumArea) {
+//      WorkspaceForumArea workspaceForum = (WorkspaceForumArea) forumArea;
+//      
+//      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForum.getWorkspace());
+//      
+//      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findActiveWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+//      if (workspaceUserEntity != null) {
+//        userRole = workspaceUserEntity.getWorkspaceUserRole();
+//        if (resourceUserRolePermissionDAO.hasResourcePermissionAccess(
+//            resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
+//            hasEveryonePermission(permission, forumArea) ||
+//            userEntity.getId().equals(forumArea.getOwner()))
+//          return true;
+//      }
+//    } 
 
-    EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
-    userRole = environmentUser.getRole();
-    
-    boolean isOwner = userEntity != null ? userEntity.getId().equals(forumArea.getOwner()) : false;
-    
-    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(
-        resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
-        hasEveryonePermission(permission, forumArea) ||
-        isOwner;
+//    EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
+//    userRole = environmentUser.getRole();
+//    
+//    boolean isOwner = userEntity != null ? userEntity.getId().equals(forumArea.getOwner()) : false;
+//    
+//    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(
+//        resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
+//        hasEveryonePermission(permission, forumArea) ||
+//        isOwner;
   }
 
   @Override

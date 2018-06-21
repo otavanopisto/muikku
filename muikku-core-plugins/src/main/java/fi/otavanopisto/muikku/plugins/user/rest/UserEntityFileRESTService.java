@@ -24,14 +24,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.otavanopisto.muikku.files.TempFileUtils;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityFile;
 import fi.otavanopisto.muikku.model.users.UserEntityFileVisibility;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
 import fi.otavanopisto.muikku.plugins.user.UserEntityFileController;
 import fi.otavanopisto.muikku.session.SessionController;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
 import fi.otavanopisto.security.rest.RESTPermit.Handling;
@@ -44,9 +43,6 @@ public class UserEntityFileRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 8589224539219569240L;
   
-  @Inject
-  private EnvironmentUserController environmentUserController;
-
   @Inject
   private UserEntityController userEntityController;
 
@@ -134,8 +130,8 @@ public class UserEntityFileRESTService extends PluginRESTService {
       }
       else if (!userEntityFile.getUserEntity().getId().equals(loggedUserEntity.getId())) {
         if (userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF) {
-          EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUserEntity);
-          if (environmentUser == null || environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+          EnvironmentRoleEntity defaultIdentifierRole = userEntityController.getDefaultIdentifierRole(loggedUserEntity);
+          if (defaultIdentifierRole == null || defaultIdentifierRole.getArchetype() == EnvironmentRoleArchetype.STUDENT) {
             return Response.status(Status.NOT_FOUND).build();
           }
         }

@@ -15,8 +15,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
 
 @Entity
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "dataSource_id", "identifier" }) })
-public class UserSchoolDataIdentifier {
+@Table (
+  uniqueConstraints = {
+    @UniqueConstraint (columnNames = { "dataSource_id", "identifier" } )   
+  }    
+)
+public class OrganizationEntity {
 
   public Long getId() {
     return id;
@@ -30,14 +34,6 @@ public class UserSchoolDataIdentifier {
     this.dataSource = dataSource;
   }
 
-  public UserEntity getUserEntity() {
-    return userEntity;
-  }
-
-  public void setUserEntity(UserEntity userEntity) {
-    this.userEntity = userEntity;
-  }
-
   public String getIdentifier() {
     return identifier;
   }
@@ -46,52 +42,28 @@ public class UserSchoolDataIdentifier {
     this.identifier = identifier;
   }
 
-  public Boolean getArchived() {
-    return archived;
+  public String getName() {
+    return name;
   }
 
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
-  }
-
-  public EnvironmentRoleEntity getRole() {
-    return role;
-  }
-
-  public void setRole(EnvironmentRoleEntity role) {
-    this.role = role;
-  }
-
-  public OrganizationEntity getOrganization() {
-    return organization;
-  }
-
-  public void setOrganization(OrganizationEntity organization) {
-    this.organization = organization;
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @ManyToOne
+  private SchoolDataSource dataSource;
+
   @NotEmpty
   @NotNull
   @Column(nullable = false)
   private String identifier;
 
-  @ManyToOne
-  private SchoolDataSource dataSource;
-
-  @ManyToOne
-  private UserEntity userEntity;
-
-  @ManyToOne
-  private EnvironmentRoleEntity role;
-
-  @ManyToOne
-  private OrganizationEntity organization;
-
   @NotNull
-  @Column(nullable = false)
-  private Boolean archived;
+  @Column (nullable = false)
+  @NotEmpty
+  private String name;
 }
