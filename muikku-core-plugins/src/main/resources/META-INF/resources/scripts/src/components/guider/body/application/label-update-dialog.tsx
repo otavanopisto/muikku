@@ -123,10 +123,13 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
-          <div className="text text--label-update-dialog-icon">
-            <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+          <div className="container container--update-label-dialog-picker">
+            <div className="text text--label-update-dialog-icon">
+              <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+            </div>
           </div>
-          <div className="container container--dialog-fields">
+          {sliderPicker}
+          <div className="container container--update-label-dialog-fields">
             <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
               className="form-field form-field--guider-label-name"
               disabled={this.state.removed}
@@ -136,7 +139,6 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
               disabled={this.state.removed}
               onChange={this.onDescriptionChange}/>
           </div>
-          {sliderPicker}
           <GuiderLabelShareDialog label={this.props.label}>
             <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
               {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
