@@ -20,7 +20,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
 
@@ -110,8 +110,10 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <ButtonPill buttonModifiers="delete" icon="delete" onClick={this.props.deleteCurrentMessageThread}/>
             <Dropdown modifier="communicator-labels" items={
               [
-                <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-                  type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
+                <div className="form-element">
+                  <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
+                  type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
+                </div>,
                 <Link className="link link--full link--new" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
                   {this.props.i18n.text.get("plugin.communicator.label.create")}
                 </Link>
@@ -166,11 +168,13 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
         disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.restoreSelectedMessageThreads}/> : null}
       <ButtonPill buttonModifiers="delete" icon="delete"
        disabled={this.props.messages.selectedThreads.length == 0} onClick={this.props.deleteSelectedMessageThreads}/>
-               
+       
       <Dropdown modifier="communicator-labels" items={
         [
-          <input className="form-field" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-            type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />,
+          <div className="form-element">
+            <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
+            type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
+          </div>,
           <span className="link link--full" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </span>

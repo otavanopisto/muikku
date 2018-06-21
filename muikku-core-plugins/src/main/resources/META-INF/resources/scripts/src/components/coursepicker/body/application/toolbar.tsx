@@ -7,7 +7,7 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import { CoursesType } from '~/reducers/main-function/courses';
 import {StateType} from '~/reducers';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain } from '~/components/general/application-panel';
@@ -76,8 +76,10 @@ class CoursepickerToolbar extends React.Component<CoursepickerToolbarProps, Cour
       return ( 
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-field__input form-field__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
-            <div className="form-field__input-decoration--main-function-search icon-search"></div>
+            <div className="form-element">
+              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" placeholder={this.props.i18n.text.get('plugin.coursepicker.search.placeholder')} value={this.state.searchquery}  onChange={this.setSearchQuery}/>
+              <div className="form-element__input-decoration--main-function-search icon-search"></div>
+            </div>
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       )

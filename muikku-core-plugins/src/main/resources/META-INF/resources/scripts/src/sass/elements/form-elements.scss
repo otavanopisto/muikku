@@ -1,0 +1,174 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.form-element {
+  width: 100%;
+  
+  label {
+    font-family: $text-font-family;
+    font-weight: 600;
+    overflow: hidden;
+    padding: 0 0 5px;
+    text-overflow: ellipsis;
+    
+    &:first-child {
+      margin-right: 5px;
+    }
+  }
+  
+  input[type="checkbox"] {
+    @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
+    border: solid 1px $color-form-element-border;
+    display: inline-block;
+    margin-right: 5px;
+    
+    &:focus, 
+    &.focus {
+      border: solid 1px $color-form-element-border-focus;
+      box-shadow: 0 0 5px 1px $color-form-element-glow;
+    }
+  }
+}
+
+.form-element--guider-toolbar {
+  display: flex;  
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.form-element__input {
+  @include prefix(transition, webkit ms o moz, box-shadow 0.2s ease-in-out, border 0.2s ease-in-out);
+  -webkit-appearance: none;  
+  border: solid 2px $color-form-element-border;
+  border-radius: 3px;
+  font-size: 16px;
+  height: 34px;
+  outline: none;
+  padding: 3px 10px;
+  resize: none;
+
+  
+  &:focus, 
+  &.focus {
+    border: solid 2px $color-form-element-border-focus;
+  }
+  
+  &:focus, 
+  &.focus {
+    border: solid 2px $color-form-element-border-focus;
+  }
+}
+
+.form-element__input--forgotpassword {
+  font-size: $text-forgotpassword-font-size;
+  width: 100%;
+}
+
+.form-element__input--label {
+  display: block;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.form-element__input--main-function-search {
+  background-color: $color-default;
+  border: 2px solid $color-main-function-input-field-border;
+  border-radius: 2px;
+  border-right: 0;
+  font-size: 0.925rem;  
+  height: 35px;
+  padding: 5px 10px;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    height: 40px;
+  }
+}
+
+
+.form-element__input-decoration--main-function-search {
+  background-color: $color-main-function-input-field-decoration-background;
+  border-radius: 2px;
+  
+  &::before {
+    align-items: center;
+    color: $color-main-function-search-icon;
+    display: flex;
+    height: 35px;
+    justify-content: center;
+    width: 35px;
+    
+    @include breakpoint($breakpoint-pad) {
+      height: 40px;
+      width: 40px;
+    }
+  }
+}
+
+
+.form-element__select {    
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10' fill='skyblue'><polygon points='0,0 3,0 8,7 12,0 15,0 8,10 0,0' /></svg>") no-repeat right 5px center;
+  background-color: transparent;
+  border: 2px solid $color-main-function-primary-function-dropdown-border;
+  border-radius: 2px;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 200;
+  height: 35px;
+  min-width: 150px;
+  padding: 5px 25px 5px 5px;
+  text-transform: uppercase;
+  width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+    height: 40px;
+  }
+}
+
+.form-element__select--hops-selector {
+  margin-left: 5px;
+  margin-right: 5px;
+  width: auto;
+}
+
+.form-element__select--toolbar-selector {
+  display: inline-block;
+  margin-right: 20px;
+  max-width: 200px;
+  vertical-align: top;
+  
+  @include breakpoint($breakpoint-pad) {
+    max-width: 250px;
+  }
+}
+
+.form-element__textarea {
+  margin-top: 10px;  
+  min-height: 150px;
+  width: 100%;
+  
+
+  @include breakpoint($breakpoint-desktop) {
+    width: 50%;
+  }
+}
+
+.form-element__radio-option-container {
+  padding: 10px;
+  
+  input {
+    margin-right: 5px;
+  }
+}
+
+.form-element__check-option-container {
+  margin-right: 10px;
+  padding: 10px;
+}

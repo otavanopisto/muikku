@@ -5,7 +5,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {DiscussionType} from '~/reducers/main-function/discussion';
@@ -72,13 +72,15 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       </div>
     }
     
-    return <ApplicationPanelToolbar>
-      <select className="form-field form-field--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
-        <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
-        {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
-          {area.name}
-        </option>)}
-      </select>
+    return <ApplicationPanelToolbar>   
+      <div className="form-element">
+        <select className="form-element__select form-element__select--toolbar-selector" onChange={this.onSelectChange} value={this.props.discussion.areaId || ""}>
+          <option value="">{this.props.i18n.text.get("plugin.discussion.browseareas.all")}</option>
+          {this.props.discussion.areas.map((area)=><option key={area.id} value={area.id}>
+            {area.name}
+          </option>)}
+        </select>
+      </div>  
       {this.props.status.permissions.FORUM_CREATEENVIRONMENTFORUM ?
           <NewArea><ButtonPill icon="add" buttonModifiers={["discussion-toolbar"]}/></NewArea> : null}
       {this.props.status.permissions.FORUM_UPDATEENVIRONMENTFORUM && this.props.discussion.areaId ?

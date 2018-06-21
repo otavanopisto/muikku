@@ -10,7 +10,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/form-fields.scss';
+import '~/sass/elements/form-elements.scss';
 import { GuiderType } from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolsContainer } from '~/components/general/application-panel';
@@ -108,9 +108,11 @@ class GuiderToolbar extends React.Component<GuiderToolbarProps, GuiderToolbarSta
             {this.props.guider.currentStudent ? <ButtonPill icon="goback" buttonModifiers="go-back" onClick={this.onGoBackClick} disabled={this.props.guider.toolbarLock}/> : null}
             <GuiderToolbarLabels/>          
             {this.props.guider.currentStudent ? null : 
-            <ApplicationPanelToolsContainer>
-              <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-field__input form-field__input--main-function-search" value={this.state.searchquery} disabled={this.props.guider.toolbarLock} onChange={this.setSearchQuery}/>
-              <div className="form-field__input-decoration--main-function-search icon-search"></div>              
+            <ApplicationPanelToolsContainer>              
+              <div className="form-element form-element--guider-toolbar">
+                <input onFocus={this.onInputFocus} onBlur={this.onInputBlur} className="form-element__input form-element__input--main-function-search" value={this.state.searchquery} disabled={this.props.guider.toolbarLock} onChange={this.setSearchQuery}/>
+                <div className="form-element__input-decoration--main-function-search icon-search"></div>
+              </div>
             </ApplicationPanelToolsContainer>}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
