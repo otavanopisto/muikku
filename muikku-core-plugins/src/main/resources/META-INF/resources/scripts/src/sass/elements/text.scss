@@ -341,11 +341,9 @@ b {
 }
 
 .text--label-update-dialog-icon {
-  display: block;
-  width: 100%;
-  min-width: 350px;
-  height: 112px;
-  text-align: center;
+  align-items: center;
+  display: flex;
+  
   font-size: 92px;
 }
  
