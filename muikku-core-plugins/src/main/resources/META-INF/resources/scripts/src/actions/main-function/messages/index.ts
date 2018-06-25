@@ -549,7 +549,11 @@ let loadMessageThread: LoadMessageThreadTriggerType = function loadMessageThread
 
     let currentThread: MessageThreadExpandedType;
     try {
-      currentThread = <MessageThreadExpandedType>await promisify( mApi().communicator[getApiId( item, true )].read( messageId ), 'callback' )();
+      if (item.type !== "label"){
+        currentThread = <MessageThreadExpandedType>await promisify( mApi().communicator[getApiId(item, true)].read(messageId), 'callback' )();
+      } else {
+        currentThread = <MessageThreadExpandedType>await promisify( mApi().communicator.userLabels.messages.read(item.id, messageId), 'callback' )();
+      }
       dispatch({
         type: "UPDATE_MESSAGES_ALL_PROPERTIES",
         payload: {
