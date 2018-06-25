@@ -31,28 +31,28 @@ public class CommunicatorTestsBase extends AbstractUITest {
         login();
         navigate("/communicator", false);
         waitAndClick("a.button.button--primary-function");
-        waitForPresent("div.jumbo-dialog__body > div.autocomplete.autocomplete--new-messsage input.form-field-tag-input__input");
-        sendKeys("div.jumbo-dialog__body > div.autocomplete.autocomplete--new-messsage input.form-field-tag-input__input", "Test");
+        waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
+        sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
         waitAndClick(".text--recepient-autocomplete");
-        waitForPresentAndVisible(".form-field--communicator-new-message-subject");
+        waitForPresentAndVisible(".container--communicator-subject input.env-dialog__input");
 //      TODO: Recipient input hijacks input after first letter. What do?  
-        sendKeys(".form-field--communicator-new-message-subject", "T");
+        sendKeys(".container--communicator-subject input.env-dialog__input", "T");
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
-        waitAndClick(".button--standard-ok");
-        waitForNotVisible(".jumbo-dialog__wrapper");
+        waitAndClick(".button--dialog-execute");
+        waitForNotVisible(".env-dialog__wrapper");
         getWebDriver().get("about:blank");
         navigate("/communicator#sent", false);
-        waitForPresent(".application-list__item-content--main .text--communicator-body");
-        assertText(".application-list__item-content--main .text--communicator-body", "T");
+        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
+        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "T");
         logout();
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
-        waitForPresent("span.text--communicator-username");
-        assertText("span.text--communicator-username", "Admin User");
-        waitForPresent("span.text--communicator-body");
-        assertText("span.text--communicator-body", "T");
+        waitForPresent(".application-list__item-header--communicator-message .text--list-item-title>span");
+        assertText(".application-list__item-header--communicator-message .text--list-item-title>span", "Admin User");
+        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
+        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "T");
       }finally{
         deleteCommunicatorMessages();
       }
@@ -166,11 +166,11 @@ public class CommunicatorTestsBase extends AbstractUITest {
         mockBuilder.mockLogin(student);
         login();
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container input");
         
         waitAndClick(".icon-delete");
-        waitForPresent(".application-list__item-content--aside");
-        assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content--aside .message__select-container input:first-child") == false);
+        waitForPresent(".application-panel__main-container .empty");
+        assertPresent(".application-panel__main-container .empty");
       }finally{
         deleteCommunicatorMessages(); 
       }
@@ -192,13 +192,12 @@ public class CommunicatorTestsBase extends AbstractUITest {
       long recipient = getUserIdByEmail("student@example.com");
       createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
       navigate("/communicator#sent", false);
-      waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+      waitAndClick(".application-list__item-content-aside .message__select-container input");
       waitAndClick(".icon-delete");
       
-      waitForPresent(".application-list__item-content--aside");
+      waitForPresent(".application-panel__main-container .empty");
       String currentUrl = getWebDriver().getCurrentUrl();
-      assertTrue("Communicator does not stay in sent messages box.", currentUrl.equals("http://dev.muikku.fi:" + getPortHttp() + "/communicator#sent"));
-      assertTrue("Element found even though it shouldn't be there", isElementPresent(".application-list__item-content--aside .message__select-container input:first-child") == false);      
+      assertPresent(".application-panel__main-container .empty");
       }finally{
         deleteCommunicatorMessages(); 
       }
@@ -220,8 +219,8 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
         waitAndClick(".dropdown--communicator-labels span.link--full");
-        waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] > span.item-list__text-body.text");
-        assertText("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] > span.item-list__text-body.text", "Test");
+        waitForPresent(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body");
+        assertText(".application-panel__helper-container a[href^='#label-'] span.item-list__text-body", "Test");
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
       }
@@ -245,18 +244,19 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Another one", "Another content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+
+        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label span.text");
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer--message .label__text");
-        assertTextIgnoreCase(".application-list__item-footer--message .label__text", "test");
+        waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
+        assertTextIgnoreCase(".application-list__item-footer--communicator-message-labels .label__text", "test");
         
-        waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
-        waitForPresent("span.text--communicator-username");
-        assertText("span.text--communicator-username", "Student Tester");
-        waitForPresent("span.text--communicator-body");
-        assertText("span.text--communicator-body", "Another one");
+        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
+        waitForPresent(".application-list__item-header--communicator-message .text--list-item-title");
+        assertText(".application-list__item-header--communicator-message .text--list-item-title", "Student Tester");
+        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
+        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "Another one");
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
         deleteCommunicatorMessages();
@@ -266,7 +266,7 @@ public class CommunicatorTestsBase extends AbstractUITest {
     }
   }
   
-  @Test
+  @Test 
   public void communicatorEditLabelTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
     MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
@@ -280,15 +280,15 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
-        waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] .icon-edit");
+        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-edit");
 
-        waitForPresentAndVisible(".form-field--label-name");
-        clearElement(".form-field--label-name");
-        sendKeys(".form-field--label-name", "Dun dun duun");
+        waitForPresentAndVisible(".form-element__input--label");
+        clearElement(".form-element__input--label");
+        sendKeys(".form-element__input--label", "Dun dun duun");
         waitAndClick(".button--standard-ok");
         waitForNotVisible(".dialog--communicator");
-        waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
-        assertText("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] > span.item-list__text-body.text", "Dun dun duun");
+        waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
+        assertText("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .item-list__text-body", "Dun dun duun");
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
         deleteCommunicatorMessages();
@@ -312,13 +312,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         createCommunicatorUserLabel(admin.getId(), "test");
         navigate("/communicator", false);
-        waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] .icon-edit");
+        waitAndClick("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] .icon-edit");
         waitForPresentAndVisible(".dialog--communicator.dialog--visible");
         waitAndClick(".button--communicator-remove-label");
         assertClassPresent(".button--communicator-remove-label", "disabled");
         waitAndClick(".button--standard-ok");
-        waitForNotVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
-        assertNotPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-']");
+        waitForNotVisible("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
+        assertNotPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-'] ");
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
         deleteCommunicatorMessages();
@@ -346,16 +346,16 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresentAndVisible(".dropdown--communicator-labels input");
         sendKeys(".dropdown--communicator-labels input", "Test");
         waitAndClick(".dropdown--communicator-labels span.link--full");
-        waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a[href^='#label-'] > span.item-list__text-body.text");
+        waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
     
-        waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label span.text");
         waitAndClick(".button-pill--label");
-        waitForPresentAndVisible(".application-list__item-footer--message .label__text");
+        waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
         waitAndClick(".button-pill--label");
         waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label.selected");
-        assertGoesAway(".application-list__item-footer--message .label__text", 5);
+        assertGoesAway(".application-list__item-footer--communicator-message-labels .label__text", 5);
       }finally{
         deleteCommunicatorUserLabels(admin.getId());
         deleteCommunicatorMessages();
@@ -378,13 +378,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         long sender = getUserIdByEmail("student@example.com");
         createCommunicatorMesssage("Test caption", "Test content.", sender, recipient);
         navigate("/communicator", false);
-        waitAndClick(".application-list__item-content--aside .message__select-container input:first-child");
+        waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
         
         waitAndClick(".button-pill__icon.icon-delete");
-        assertGoesAway(".application-list__item-content--aside .message__select-container input:first-child", 5);
+        assertGoesAway(".application-list__item-content-aside .message__select-container input:first-child", 5);
         navigate("/communicator#trash", false);
-        waitForPresent(".application-list__item-body .text--communicator-body");
-        assertText(".application-list__item-body .text--communicator-body", "Test caption");
+        waitForPresent(".application-list__item-body--communicator-message .text--communicator-item-body");
+        assertText(".application-list__item-body--communicator-message .text--communicator-item-body", "Test caption");
       }finally{
         deleteCommunicatorMessages();
       }
