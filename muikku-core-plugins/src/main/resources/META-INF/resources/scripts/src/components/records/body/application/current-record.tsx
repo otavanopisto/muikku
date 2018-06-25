@@ -61,20 +61,20 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
         className={`text rich-text text--studies-workspace-literal-assessment state-${assesmentStateClassName}`}/> : null;
     
     return <div className="application-sub-panel">
-      <div className="application-sub-panel__header text text--studies-header" key={this.props.records.current.workspace.id}>
-        {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && <span className="text text--studies-list-header-title-extension">({this.props.records.current.workspace.nameExtension})</span>}
+      <div className="application-sub-panel__header application-sub-panel__header--studies-detailed-info text text--studies-header" key={this.props.records.current.workspace.id}>
+        {this.props.records.current.workspace.name} {this.props.records.current.workspace.nameExtension && "(" + this.props.records.current.workspace.nameExtension + ")"}
       </div>
-      <div className="application-sub-panel__body">
+      <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
         <div className="application-list">
           {workspaceEvaluation}
-          <div className="application-list__header text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
+          <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
           {this.props.records.current.materials.map((material)=>{
             return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
           })}
         </div>
           
           {this.props.records.current.journals.length ? <div className="application-list">
-          <div className="application-list__header text text--studies-list-header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
+          <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
             <div className="application-list_item-wrapper">
               {this.props.records.current.journals.map((journal)=>{
                 return <div className="application-list__item journal journal--studies" key={journal.id}>
