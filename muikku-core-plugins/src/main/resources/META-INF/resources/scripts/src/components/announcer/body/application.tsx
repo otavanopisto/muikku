@@ -8,7 +8,7 @@ import HoverButton from '~/components/general/hover-button';
 import Dropdown from '~/components/general/dropdown';
 import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
-import NewEditAnnouncement from './application/new-edit-announcement-dialog';
+import NewEditAnnouncement from '../dialogs/new-edit-announcement';
 import {StateType} from '~/reducers';
 
 import {i18nType} from '~/reducers/base/i18n';

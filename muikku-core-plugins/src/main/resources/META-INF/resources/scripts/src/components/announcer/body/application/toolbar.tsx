@@ -13,8 +13,8 @@ import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
 
-import DeleteAnnouncementDialog from '../delete-announcement-dialog';
-import NewEditAnnouncement from './new-edit-announcement-dialog';
+import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
+import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
 import { updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
