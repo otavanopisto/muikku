@@ -16,7 +16,11 @@
 }
 
 .uploaded-files {
-  padding: 0;
+  padding: 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
 }
 
 .uploaded-files__item {

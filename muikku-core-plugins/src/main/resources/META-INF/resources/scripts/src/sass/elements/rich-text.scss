@@ -96,4 +96,18 @@
     display: list-item;
   }
   
+  // Communicator signature
+  .mf-signature {
+    background: $color-signature-background;
+    border-left: 5px solid $color-signature-border;
+    display: block;
+    font-style: italic;
+    margin: 20px 0 10px;
+    padding: 10px 15px;
+    
+    p {
+      margin: 0;
+    }
+  }
+  
 }
