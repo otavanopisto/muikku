@@ -127,13 +127,12 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
             <div className="text text--label-update-dialog-icon">
               <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
+            {sliderPicker}
           </div>
-          {sliderPicker}
           <div className="container container--update-label-dialog-fields">
             <div className="form-element">
             <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
               className="form-element__input form-element--guider-label-name"
-
               disabled={this.state.removed}
               onChange={this.onNameChange}/>
             </div>
