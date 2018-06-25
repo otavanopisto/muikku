@@ -45,16 +45,16 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitForPresentAndVisible("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action");
 //      Course selector
         refresh();
-        waitForPresent("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action > select > option:nth-child(1)");
-        waitForPresent("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action > select > option:nth-child(2)");
-        waitForPresent("div.application-panel__actions > div.application-panel__helper-container.application-panel__helper-container--main-action > select > option:nth-child(3)");
+        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(1)");
+        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(2)");
+        waitForPresent(".application-panel__helper-container--main-action select > option:nth-child(3)");
 //      Search field
-        waitForPresentAndVisible("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input");
+        waitForPresentAndVisible(".application-panel__toolbar-actions-main input");
 //      Side navigation
-        waitForPresentAndVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container");
+        waitForPresentAndVisible(".application-panel__helper-container");
 //      Course list and course
-        waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
-        boolean elementExists = getWebDriver().findElements(By.cssSelector("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course")).size() > 0;
+        waitForPresentAndVisible(".application-panel__main-container .application-list__item.course");
+        boolean elementExists = getWebDriver().findElements(By.cssSelector(".application-panel__main-container .application-list__item.course")).size() > 0;
         assertTrue(elementExists);
       } finally {
         deleteWorkspace(workspace.getId());
@@ -142,11 +142,11 @@ public class CoursePickerTestsBase extends AbstractUITest {
         navigate("/coursepicker", false);
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course"); 
         refresh();
-        waitAndSendKeys("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input", "pot");
-        waitAndSendKeys("div.application-panel__actions > div.application-panel__main-container.application-panel__main-container--actions > div > div > input", "ato");
-        waitUntilElementCount(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", 1);
-        waitForPresentAndVisible(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title");
-        assertTextIgnoreCase(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", "potato course");
+        waitAndSendKeys(".application-panel__toolbar-actions-main input", "pot");
+        waitAndSendKeys(".application-panel__toolbar-actions-main input", "ato");
+        waitUntilElementCount(".application-list__item-header--course", 1);
+        waitForPresentAndVisible(".application-list__item-header--course .text--list-item-title");
+        assertTextIgnoreCase(".application-list__item-header--course .text--list-item-title", "potato course (test extension)");
       } finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());
@@ -183,7 +183,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
         waitForPresentAndVisible("div.application-panel__content > div.application-panel__main-container.loader-empty .application-list__item-header--course");
         waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > div:nth-child(1) > a:nth-child(3)");
         waitForPresentAndVisible(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title");
-        assertTextIgnoreCase(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", "testcourse 7");
+        assertTextIgnoreCase(".application-panel__main-container .application-list__item .application-list__item-header--course .text--list-item-title", "testcourse 7 (test extension)");
       } finally {
         deleteWorkspace(workspace1.getId());
         deleteWorkspace(workspace2.getId());
