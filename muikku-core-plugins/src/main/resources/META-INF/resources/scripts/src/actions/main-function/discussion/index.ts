@@ -183,6 +183,13 @@ let loadDiscussionThreadsFromServer:loadDiscussionThreadsFromServerTriggerType =
 
 let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDiscussionThread(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    
+    if (!data.title){
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a title"), 'error'));
+    } else if (!data.message){
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a message"), 'error'));
+    }
+    
     try {
       let newThread = <DiscussionThreadType>await promisify(mApi().forum.areas.threads.create(data.forumAreaId, {
         forumAreaId: data.forumAreaId, locked: data.locked, message: data.message, sticky: data.sticky, title: data.title
@@ -218,6 +225,15 @@ let createDiscussionThread:CreateDiscussionThreadTriggerType = function createDi
 
 let modifyDiscussionThread:ModifyDiscussionThreadTriggerType = function modifyDiscussionThread(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    
+    if (!data.title){
+      data.fail && data.fail();
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a title"), 'error'));
+    } else if (!data.message){
+      data.fail && data.fail();
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion message needs a message"), 'error'));
+    }
+    
     try {
       let payload:DiscussionThreadType = Object.assign({}, data.thread, {
         title: data.title,
@@ -487,6 +503,11 @@ export interface CreateDiscussionAreaTriggerType {
 
 let createDiscussionArea:CreateDiscussionAreaTriggerType = function createDiscussionArea(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    if (!data.name){
+      data.fail && data.fail();
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion area needs a name"), 'error'));
+    }
+    
     try {
       let newArea = <DiscussionAreaType>await promisify(mApi().forum.areas.create({
         name: data.name,
@@ -514,6 +535,11 @@ export interface UpdateDiscussionAreaTriggerType {
 
 let updateDiscussionArea:UpdateDiscussionAreaTriggerType = function updateDiscussionArea(data){
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    if (!data.name){
+      data.fail && data.fail();
+      return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG discussion area needs a name"), 'error'));
+    }
+    
     try {
       await promisify(mApi().forum.areas.update(data.id, {
         name: data.name,
