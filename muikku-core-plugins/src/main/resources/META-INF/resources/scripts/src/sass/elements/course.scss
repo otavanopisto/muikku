@@ -21,7 +21,7 @@
     border-color: transparent;
     box-shadow: 0 0 0 2px $color-application-list-item-course-border-selected;
     z-index: 10;
-  } 
+  }   
 }
 
 .course--studies {
@@ -39,6 +39,10 @@
 
 .course--credits {
   cursor: auto;
+  
+  .application-list__item-header--course {
+    cursor: auto;
+  }
 }
 
 .course--open .text--list-item-title {

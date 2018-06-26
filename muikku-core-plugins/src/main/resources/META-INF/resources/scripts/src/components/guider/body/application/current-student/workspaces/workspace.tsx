@@ -30,15 +30,29 @@ function CourseActivityRow(props: {
   givenDateAttributeLocale?: string,
   mainAttribute: string
 }){
+  let output = "-";
+  if (((props.workspace as any)[props.mainAttribute][props.conditionalAttribute] as number) > 0) {
+    if (props.conditionalAttributeLocale){
+      output = props.i18n.text.get(props.conditionalAttributeLocale, (props.workspace as any)[props.mainAttribute][props.conditionalAttribute]);
+    } else {
+      output = (props.workspace as any)[props.mainAttribute][props.conditionalAttribute];
+    }
+    
+    if (props.givenDateAttribute){
+      output += ", ";
+      
+      if (props.givenDateAttributeLocale){
+        output += props.i18n.text.get(props.givenDateAttributeLocale, props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]));
+      } else {
+        output += props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute]);
+      }
+    }
+  }
   return <div className="application-sub-panel__item">
     <div className="application-sub-panel__item-title">{props.i18n.text.get(props.labelTranslationString)}</div>
     <div className="application-sub-panel__item-data">
-      <span className="text text--guider-profile-value">{((props.workspace as any)[props.mainAttribute][props.conditionalAttribute] as number) > 0 ? (props.conditionalAttributeLocale ? 
-          props.i18n.text.get(props.conditionalAttributeLocale, (props.workspace as any)[props.mainAttribute][props.conditionalAttribute]) :  
-        (props.workspace as any)[props.mainAttribute][props.conditionalAttribute]) +  
-        
-        (props.givenDateAttribute ? ", " + (props.givenDateAttributeLocale ? props.i18n.text.get(props.givenDateAttributeLocale, props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute])) : props.i18n.time.format((props.workspace as any)[props.mainAttribute][props.givenDateAttribute])) : "") :
-    "-"}</span></div>
+      <span className="text text--guider-profile-value">{output}</span>
+    </div>
   </div>
 }
 
@@ -90,8 +104,8 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
       resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
     }
     
-    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`} onClick={this.toggleActivitiesVisible}>
-        <div className="application-list__item-header application-list__item-header--course">
+    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
+        <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleActivitiesVisible}>
           <span className="text text--course-icon icon-books"></span>
           <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
           <span className="text text--list-item-type-title workspace-activity">
