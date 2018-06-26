@@ -40,13 +40,13 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", false);
-      waitAndClick(".application-panel__tools-container>input");
-      sendKeys(".application-panel__tools-container>input", "Second User");
+      waitAndClick(".application-panel__toolbar .form-element--guider-toolbar input.form-element__input--main-function-search");
+      sendKeys(".application-panel__toolbar .form-element--guider-toolbar input.form-element__input--main-function-search", "Second User");
       waitUntilElementCount(".application-list .user--guider", 1);
-      waitForPresent(".application-list .user--guider .application-list__item-header--student .text--list-item-title");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-title", "Second User");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-helper-title", "te...@example.com");
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-type-title", "Test Study Programme");
+      waitForPresent(".application-list .user--guider .application-list__item-header .text--student-name");
+      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header .text--student-name", "Second User");
+      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header .text--list-item-helper-title", "te...@example.com");
+      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header .text--list-item-type-title", "Test Study Programme");
     } finally {
       deleteWorkspace(workspace.getId());
       deleteWorkspace(workspace2.getId());
@@ -75,9 +75,9 @@ public class GuiderTestsBase extends AbstractUITest {
       .build();
     try {
       navigate("/guider", false);
-      waitAndClick("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container > div > a");
+      waitAndClick("div.application-panel__helper-container a.item-list__item");
       waitUntilElementCount(".application-list .user--guider", 1);
-      assertTextIgnoreCase(".application-list .user--guider .application-list__item-header--student .text--list-item-title", "Test Student");
+      assertTextIgnoreCase(".application-list .user--guider .application-list__item-content-main .text--student-name", "Test Student");
     } finally {
       deleteWorkspace(workspace2.getId());
       deleteWorkspace(workspace.getId());

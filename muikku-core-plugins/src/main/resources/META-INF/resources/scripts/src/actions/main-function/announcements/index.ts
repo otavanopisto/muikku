@@ -48,7 +48,8 @@ export interface UpdateAnnouncementTriggerType {
     announcement: AnnouncementType,
     update: AnnouncementUpdateType,
     success?: ()=>any,
-    fail?: ()=>any
+    fail?: ()=>any,
+    cancelRedirect?: boolean
   }):AnyActionType
 }
 
@@ -160,8 +161,22 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
       
       let diff = moment(nAnnouncement.endDate).diff(moment(), 'days');
       if (announcements.location !== "active" && diff >= 0){
+        if (data.cancelRedirect){
+          dispatch({
+            type: "DELETE_ANNOUNCEMENT",
+            payload: data.announcement
+          });
+          return;
+        }
         location.hash = "#active";
       } else if (announcements.location !== "past" && diff < 0){
+        if (data.cancelRedirect){
+          dispatch({
+            type: "DELETE_ANNOUNCEMENT",
+            payload: data.announcement
+          });
+          return;
+        }
         location.hash = "#past";
       } else {
         dispatch({

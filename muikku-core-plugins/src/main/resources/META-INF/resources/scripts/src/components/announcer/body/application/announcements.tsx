@@ -59,8 +59,6 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
               onEnter: this.setCurrentAnnouncement.bind(this, announcement),
               isSelected: this.props.announcements.selectedIds.includes(announcement.id),
               key: announcement.id,
-              notSelectable: announcement.archived,
-              notSelectableModifier: "archived",
               contents: (checkbox: React.ReactElement<any>)=>{
                 return <ApplicationListItemContentWrapper className="announcement__content" aside={<div className="announcement__select-container">
                   {checkbox}
@@ -82,7 +80,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                   {announcement.workspaces && announcement.workspaces.length ? 
                     <div className="labels item-list__announcement-workspaces">
                     {announcement.workspaces.map((workspace)=>{ 
-                      return <span className="label">
+                      return <span className="label" key={workspace.id}>
                         <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                         <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                       </span>
