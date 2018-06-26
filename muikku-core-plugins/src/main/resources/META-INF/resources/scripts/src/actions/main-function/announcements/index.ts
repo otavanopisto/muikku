@@ -64,20 +64,36 @@ export interface DeleteSelectedAnnouncementsTriggerType {
   ():AnyActionType
 }
 
+interface AnnouncementGeneratorType {
+  caption: string,
+  content: string,
+  endDate: string,
+  publiclyVisible: boolean,
+  startDate: string,
+  userGroupEntityIds: Array<number>,
+  workspaceEntityIds: Array<number>
+}
+
 export interface CreateAnnouncementTriggerType {
   (data: {
-    announcement: {
-      caption: string,
-      content: string,
-      endDate: string,
-      publiclyVisible: boolean,
-      startDate: string,
-      userGroupEntityIds: Array<number>,
-      workspaceEntityIds: Array<number>
-    },
+    announcement: AnnouncementGeneratorType,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
+}
+
+function validateAnnouncement(dispatch:(arg:AnyActionType)=>any, getState:()=>StateType, announcement: AnnouncementGeneratorType){
+  if (!announcement.caption){
+    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs a caption"), 'error'));
+  } else if (!announcement.content){
+    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs content"), 'error'));
+  } else if (!announcement.endDate){
+    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an end date"), 'error'));
+  } else if (!announcement.startDate){
+    return dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODO ERRORMSG announcement needs an start date"), 'error'));
+  }
+  
+  return true;
 }
 
 let loadAnnouncements:LoadAnnouncementsTriggerType = function loadAnnouncements(location, workspaceId, notOverrideCurrent, force){
@@ -135,6 +151,8 @@ let updateAnnouncement:UpdateAnnouncementTriggerType = function updateAnnounceme
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let announcements:AnnouncementsType = state.announcements;
+    
+    if (!validateAnnouncement(dispatch, getState, data.announcement)){return data.fail && data.fail()};
     
     try {
       let nAnnouncement:AnnouncementType = Object.assign({}, data.announcement, data.update);
@@ -212,6 +230,8 @@ let createAnnouncement:CreateAnnouncementTriggerType = function createAnnounceme
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
     let state = getState();
     let announcements:AnnouncementsType = state.announcements;
+    
+    if (!validateAnnouncement(dispatch, getState, data.announcement)){return data.fail && data.fail()};
     
     try {
       await promisify(mApi().announcer.announcements.create(data.announcement), 'callback')();
