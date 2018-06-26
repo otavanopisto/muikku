@@ -90,8 +90,8 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
       resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
     }
     
-    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`} onClick={this.toggleActivitiesVisible}>
-        <div className="application-list__item-header application-list__item-header--course">
+    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
+        <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleActivitiesVisible}>
           <span className="text text--course-icon icon-books"></span>
           <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
           <span className="text text--list-item-type-title workspace-activity">
