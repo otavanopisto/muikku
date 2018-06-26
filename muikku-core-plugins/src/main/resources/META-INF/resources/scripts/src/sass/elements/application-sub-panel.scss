@@ -75,13 +75,12 @@
   align-items: center;
   display: flex;
   flex-basis: auto;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   flex-grow: 0;
   flex-shrink: 0;
   
   @include breakpoint($breakpoint-desktop) {
     flex-grow: 1;
-    flex-flow: row wrap;
     flex-shrink: 1;
   }
 } 
@@ -137,6 +136,15 @@
 
 // Studies
 .application-sub-panel__header--studies-detailed-info {
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+}
+
+.application-sub-panel__header--studies-hops,
+.application-sub-panel__header--studies-vops {
   padding: 10px;
   
   @include breakpoint($breakpoint-pad) {
