@@ -17,12 +17,13 @@ import DeleteAnnouncementDialog from '../../dialogs/delete-announcement';
 import NewEditAnnouncement from '../../dialogs/new-edit-announcement';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
-import { updateAnnouncement, UpdateAnnouncementTriggerType } from '~/actions/main-function/announcements';
+import { updateAnnouncement, UpdateAnnouncementTriggerType, RemoveFromAnnouncementsSelectedTriggerType, removeFromAnnouncementsSelected } from '~/actions/main-function/announcements';
 
 interface AnnouncerToolbarProps {
   i18n: i18nType,
   announcements: AnnouncementsType,
-  updateAnnouncement: UpdateAnnouncementTriggerType
+  updateAnnouncement: UpdateAnnouncementTriggerType,
+  removeFromAnnouncementsSelected: RemoveFromAnnouncementsSelectedTriggerType
 }
 
 interface AnnouncerToolbarState {
@@ -36,6 +37,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
     this.go = this.go.bind( this );
     this.onGoBackClick = this.onGoBackClick.bind( this );
     this.restoreCurrentAnnouncement = this.restoreCurrentAnnouncement.bind(this);
+    this.restoreSelectedAnnouncements = this.restoreSelectedAnnouncements.bind(this);
   }
   restoreCurrentAnnouncement(){
     this.props.updateAnnouncement({
@@ -43,6 +45,18 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       update: {
         archived: false
       }
+    });
+  }
+  restoreSelectedAnnouncements(){
+    this.props.announcements.selected.map((announcement)=>{
+      this.props.updateAnnouncement({
+        announcement,
+        update: {
+          archived: false
+        },
+        cancelRedirect: true,
+      });
+      this.props.removeFromAnnouncementsSelected(announcement);
     });
   }
   go( announcement: AnnouncementType ) {
@@ -104,7 +118,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
               <ButtonPill buttonModifiers="delete" icon="delete" />
             </DeleteAnnouncementDialog>
-            {this.props.announcements.current && this.props.announcements.location === "archived" ? 
+            {this.props.announcements.location === "archived" ? 
                 <ButtonPill buttonModifiers="restore" icon="restore" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
@@ -125,6 +139,9 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <DeleteAnnouncementDialog>
               <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="delete"/>
             </DeleteAnnouncementDialog>
+            {this.props.announcements.location === "archived" ? 
+              <ButtonPill buttonModifiers="restore" disabled={this.props.announcements.selected.length === 0} 
+                icon="restore" onClick={this.restoreSelectedAnnouncements}/> : null}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       )
@@ -141,7 +158,7 @@ function mapStateToProps( state: StateType ) {
 };
 
 function mapDispatchToProps( dispatch: Dispatch<any> ) {
-  return bindActionCreators({updateAnnouncement}, dispatch);
+  return bindActionCreators({updateAnnouncement, removeFromAnnouncementsSelected}, dispatch);
 };
 
 export default connect(

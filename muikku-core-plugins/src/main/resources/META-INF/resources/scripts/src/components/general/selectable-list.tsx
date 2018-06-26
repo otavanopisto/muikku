@@ -140,7 +140,9 @@ export default class SelectableList extends React.Component<SelectableListProps,
     e.stopPropagation();
   }
   componentWillReceiveProps(nextProps: SelectableListProps){
-    if (nextProps.dataState === "LOADING"){
+    //if the next state is loading or if the elements that are selected have dissapeared
+    if (nextProps.dataState === "LOADING" || 
+        (this.state.touchMode && !this.props.children.find((child: SelectableItem)=>child.isSelected))){
       this.setState({
         touchMode: false
       });
