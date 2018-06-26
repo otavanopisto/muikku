@@ -46,7 +46,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
     let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.coursepicker.pageTitle')}</h2>
     let toolbar = <Toolbar/>
     let primaryOption = <div className="form-element"> 
-      <select className="form-element__select" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
+      <select className="form-element__select form-element__select--main-action" value={this.props.courses.activeFilters.baseFilter} onChange={this.onCoursepickerFilterChange}>
         {this.props.courses.avaliableFilters.baseFilters.map((filter: CoursesBaseFilterType)=>{
           return <option key={filter} value={filter}>{this.props.i18n.text.get(filterTranslationString[filter])}</option> 
         })} 

@@ -56,7 +56,7 @@ class Hops extends React.Component<HopsProps, HopsState> {
   render() {
     return <div className="application-sub-panel text">
     
-    <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
+    <div className="application-sub-panel__header application-sub-panel__header--studies-hops text text--studies-header">{this.props.i18n.text.get("plugin.records.hops.title")}</div>  
     <div className="application-sub-panel__body">
 
       <div className="application-sub-panel__item application-sub-panel__item--hops-editable">

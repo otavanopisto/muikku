@@ -40,14 +40,16 @@ class StudiesPrimaryOption extends React.Component<StudiesPrimaryOptionProps, St
         hash: "vops"
       }
     ]    
-    return <div className="application-panel__toolbar form-element">
-      <select className="form-element__select" onChange={this.onSelectChange} value={this.props.location || ""}>
-        {sections.map((section, index)=>{
-          return <option key={index} value={section.hash} >
-              {section.name}
-          </option>
-        })}
-      </select>
+    return <div className="application-panel__toolbar">
+      <div className="form-element form-element--studies-toolbar">
+        <select className="form-element__select form-element__select--main-action" onChange={this.onSelectChange} value={this.props.location || ""}>
+          {sections.map((section, index)=>{
+            return <option key={index} value={section.hash} >
+                {section.name}
+            </option>
+          })}
+        </select>
+      </div>
     </div>
   }
 }
