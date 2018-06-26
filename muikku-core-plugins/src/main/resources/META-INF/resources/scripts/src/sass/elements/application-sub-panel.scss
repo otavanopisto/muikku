@@ -14,12 +14,6 @@
   }
 }
 
-.application-sub-panel--guider-student-header {
-  border: 0;
-  padding: 0;
-  margin: 0;
-}
-
 .application-sub-panel__header {
   align-items: center;
   display: flex;
@@ -139,4 +133,28 @@
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 10px;
+}
+
+// Studies
+.application-sub-panel__header--studies-detailed-info {
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+}
+
+.application-sub-panel__body--studies-detailed-info {
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+// Guider
+.application-sub-panel--guider-student-header {
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
