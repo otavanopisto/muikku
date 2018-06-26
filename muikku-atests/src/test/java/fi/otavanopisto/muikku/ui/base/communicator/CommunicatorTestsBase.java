@@ -349,10 +349,13 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent("div.application-panel__content div.application-panel__helper-container a[href^='#label-']");
     
         waitAndClick(".application-list__item-content-aside .message__select-container input:first-child");
+        sleep(500);
         waitAndClick(".button-pill--label");
         waitAndClick("a.link--communicator-label span.text");
+        sleep(500);
         waitAndClick(".button-pill--label");
         waitForPresentAndVisible(".application-list__item-footer--communicator-message-labels .label__text");
+        sleep(500);
         waitAndClick(".button-pill--label");
         waitAndClick(".dropdown--communicator-labels .dropdown__container .link--communicator-label.selected");
         assertGoesAway(".application-list__item-footer--communicator-message-labels .label__text", 5);
