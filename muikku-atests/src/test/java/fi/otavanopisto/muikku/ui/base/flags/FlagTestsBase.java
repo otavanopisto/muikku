@@ -128,18 +128,18 @@ public class FlagTestsBase extends AbstractUITest {
       waitForPresent("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       click("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container a > span.button-pill.button-pill--navigation-edit-label > span");
       
-      waitForPresentAndVisible(".container--dialog-fields input");
-      click(".container--dialog-fields input");
-      selectAllAndClear(".container--dialog-fields input");
-      sendKeys(".container--dialog-fields input", "Edited title");
-      waitForPresentAndVisible(".container--dialog-fields textarea");
-      click(".container--dialog-fields textarea");
-      selectAllAndClear(".container--dialog-fields textarea");
-      sendKeys(".container--dialog-fields textarea", "Edited description");
+      waitForPresentAndVisible("input.form-element--guider-label-name");
+      click("input.form-element--guider-label-name");
+      selectAllAndClear("input.form-element--guider-label-name");
+      sendKeys("input.form-element--guider-label-name", "Edited title");
+      waitForPresentAndVisible("textarea.form-element__textarea");
+      click("textarea.form-element__textarea");
+      selectAllAndClear("textarea.form-element__textarea");
+      sendKeys("textarea.form-element__textarea", "Edited description");
 
       waitAndClick(".button--standard-ok");
       
-      waitForNotVisible(".container--dialog");
+      waitForNotVisible(".dialog--guider dialog--visible");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag");
       waitForPresentAndVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
       assertTextIgnoreCase(".application-panel__helper-container .icon-flag + span.item-list__text-body", "Edited title");      

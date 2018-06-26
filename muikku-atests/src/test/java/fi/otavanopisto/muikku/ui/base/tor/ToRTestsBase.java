@@ -83,14 +83,16 @@ public class ToRTestsBase extends AbstractUITest {
       mockBuilder.mockLogin(student);
       login();
       
-      navigate("/records/", false);
-      waitForPresent("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-      assertText("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long", "testcourses (test extension)");
-      waitAndClick("div.tr-study-programme-accomplishments .tr-item-header-name .tr-item-long");
-      waitForPresent(".tr-evaluation-verbal .content");
-      assertText(".tr-evaluation-verbal .content", "Test evaluation.");
-      waitForPresent(".tr-item-details .tr-item-description-title .grade");
-      assertText(".tr-item-details .tr-item-description-title .grade", "Excellent");
+      navigate("/records", false);
+      waitForPresent(".application-list__item-header--course .text--list-item-title");
+      assertText(".application-list__item-header--course .text--list-item-title", "testcourses (test extension)");
+      
+      waitForPresent(".application-list__item-header--course .text--workspace-assesment-grade");
+      assertText(".application-list__item-header--course .text--workspace-assesment-grade", "E");
+      
+      waitAndClick(".application-list__item-header--course .text--list-item-title");
+      waitForPresent(".text--studies-workspace-literal-assessment");
+      assertText(".text--studies-workspace-literal-assessment", "Test evaluation.");
       } finally {
         deleteWorkspaceHtmlMaterial(workspace.getId(), htmlMaterial.getId());
         deleteWorkspace(workspace.getId());
