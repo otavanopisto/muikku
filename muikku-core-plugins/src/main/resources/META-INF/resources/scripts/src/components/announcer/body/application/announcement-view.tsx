@@ -46,7 +46,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
             {this.props.announcements.current.workspaces && this.props.announcements.current.workspaces.length ? 
                 <div className="labels labels--announcer-announcement item-list__announcement-workspaces">
                 {this.props.announcements.current.workspaces.map((workspace)=>{ 
-                  return <span className="label">
+                  return <span className="label" key={workspace.id}>
                     <span className="label__icon label__icon--announcement-workspace icon-books"></span>
                     <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                   </span>
