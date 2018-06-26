@@ -763,6 +763,15 @@ b {
   }
 }
 
+.text--workspace-assesment-description {
+  display: none;
+  text-transform: none;
+  
+  @include breakpoint($breakpoint-desktop) {
+    display: flex;
+  }
+}
+
 .text--studies-workspace-literal-assessment {
   padding: 2px 12px;
   

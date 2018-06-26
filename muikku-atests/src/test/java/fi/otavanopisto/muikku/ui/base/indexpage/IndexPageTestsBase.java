@@ -89,7 +89,7 @@ public class IndexPageTestsBase extends AbstractUITest {
       try{
         assertVisible(".navbar .button-pill--profile");
         assertVisible("div.container.container--full > div.screen-container.screen-container--full-height div.ordered-container__item.ordered-container__item--studies span.item-list__text-body.text");
-        assertTextIgnoreCase("div.container.container--full > div.screen-container.screen-container--full-height div.ordered-container__item.ordered-container__item--studies span.item-list__text-body.text", "testcourse test extension");
+        assertTextIgnoreCase("div.container.container--full > div.screen-container.screen-container--full-height div.ordered-container__item.ordered-container__item--studies span.item-list__text-body.text", "testcourse (test extension)");
       } finally {
         deleteWorkspace(workspace.getId());
       }

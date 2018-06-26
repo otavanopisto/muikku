@@ -46,6 +46,7 @@ function getEvaluationRequestIfAvailable(props: RecordsProps, workspace: Workspa
   
   if (assesmentState === "pending" || assesmentState === "pending_pass" || assesmentState === "pending_fail"){
     return <div className="text text--list-item-type-title">
+      <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.pending",props.i18n.time.format(assesmentDate))} className="text text--evaluation-request icon-assessment-pending"></span>
     </div>
   }
@@ -59,6 +60,7 @@ function getTransferCreditValue(props: RecordsProps, transferCredit: TransferCre
     transferCredit.gradeIdentifier].join('-');
   let grade = props.records.grades[gradeId];
   return <div className="text text--list-item-type-title">
+    <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date))}</span>
     <span title={props.i18n.text.get("plugin.records.transferCreditsDate", props.i18n.time.format(transferCredit.date)) +
       getShortenGradeExtension(grade.grade)} className={`text text--workspace-credit-grade ${grade.passing ? "state-PASSED" : "state-FAILED"}`}>
       {shortenGrade(grade.grade)}
@@ -79,6 +81,7 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
       assessment.gradeIdentifier].join('-');
     let grade = props.records.grades[gradeId];
     return <span className="text text--list-item-type-title">
+      <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated))}</span>
       <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(assessment.evaluated)) +
         getShortenGradeExtension(grade.grade)} className={`text text--workspace-assesment-grade ${assessment.passed ? "state-PASSED" : "state-FAILED"}`}>
         {shortenGrade(grade.grade)}
@@ -89,7 +92,8 @@ function getAssessments(props: RecordsProps, workspace: WorkspaceType){
     let status = props.i18n.text.get(workspace.studentAssessments.assessmentState === "incomplete" ?
     		"plugin.records.workspace.incomplete" : "plugin.records.workspace.failed");
     return <span className="text text--list-item-type-title">
-    <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`text text--workspace-assesment-grade ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
+      <span className="text text--workspace-assesment-description">{props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate))}</span>
+      <span title={props.i18n.text.get("plugin.records.workspace.evaluated", props.i18n.time.format(workspace.studentAssessments.assessmentStateDate)) + " - " + status} className={`text text--workspace-assesment-grade ${workspace.studentAssessments.assessmentState === "incomplete" ? "state-INCOMPLETE" : "state-FAILED"}`}>
       {status[0].toLocaleUpperCase()}
     </span>
   </span>
