@@ -116,30 +116,35 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits" givenDateAttributeLocale="plugin.guider.user.details.lastVisit" labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
               givenDateAttribute="lastVisit" mainAttribute="studentActivity" {...this.props}/>  
             
-            <CourseActivityRow labelTranslationString="plugin.guider.journalEntriesLabel" conditionalAttribute="journalEntryCount"
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfJournalEntries" givenDateAttributeLocale="plugin.guider.user.details.lastJournalEntry" labelTranslationString="plugin.guider.journalEntriesLabel" conditionalAttribute="journalEntryCount"
               givenDateAttribute="lastJournalEntry" mainAttribute="studentActivity" {...this.props}/>
                       
-            <CourseActivityRow labelTranslationString="plugin.guider.discussionMessagesLabel" conditionalAttribute="messageCount"
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfMessages" givenDateAttributeLocale="plugin.guider.user.details.lastMessage" labelTranslationString="plugin.guider.discussionMessagesLabel" conditionalAttribute="messageCount"
               givenDateAttribute="latestMessage" mainAttribute="forumStatistics" {...this.props}/>
             
             <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.assignmentsTitle")}</h4>  
             
             <CourseActivityRow labelTranslationString="plugin.guider.unansweredAssignmentsLabel" conditionalAttribute="evaluablesUnanswered"
               mainAttribute="studentActivity" {...this.props}/>
-            <CourseActivityRow labelTranslationString="plugin.guider.answeredAssignmentsLabel" conditionalAttribute="evaluablesAnswered"
+            
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredAssignments" givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredAssignment" labelTranslationString="plugin.guider.answeredAssignmentsLabel" conditionalAttribute="evaluablesAnswered"
               givenDateAttribute="evaluablesAnsweredLastDate" mainAttribute="studentActivity" {...this.props}/>
-            <CourseActivityRow labelTranslationString="plugin.guider.submittedAssignmentsLabel" conditionalAttribute="evaluablesSubmitted"
+            
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfSubmittedAssignments" givenDateAttributeLocale="plugin.guider.user.details.lastSubmittedAssignment" labelTranslationString="plugin.guider.submittedAssignmentsLabel" conditionalAttribute="evaluablesSubmitted"
               givenDateAttribute="evaluablesSubmittedLastDate" mainAttribute="studentActivity" {...this.props}/>
-            <CourseActivityRow labelTranslationString="plugin.guider.failedAssingmentsLabel" conditionalAttribute="evaluablesFailed"
+            
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationFailed" givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationFailed" labelTranslationString="plugin.guider.failedAssingmentsLabel" conditionalAttribute="evaluablesFailed"
               givenDateAttribute="evaluablesFailedLastDate" mainAttribute="studentActivity" {...this.props}/>
-            <CourseActivityRow labelTranslationString="plugin.guider.passedAssingmentsLabel" conditionalAttribute="evaluablesPassed"
+            
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfEvaluationPassed" givenDateAttributeLocale="plugin.guider.user.details.lastEvaluationPassed" labelTranslationString="plugin.guider.passedAssingmentsLabel" conditionalAttribute="evaluablesPassed"
               givenDateAttribute="evaluablesPassedLastDate" mainAttribute="studentActivity" {...this.props}/>
             
             <h4 className="application-sub-panel__item-header">{this.props.i18n.text.get("plugin.guider.exercisesTitle")}</h4>
             
             <CourseActivityRow labelTranslationString="plugin.guider.unansweredExercisesLabel" conditionalAttribute="exercisesUnanswered"
               mainAttribute="studentActivity" {...this.props}/>
-            <CourseActivityRow labelTranslationString="plugin.guider.answeredExercisesLabel" conditionalAttribute="exercisesAnswered"
+            
+            <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfAnsweredExercises" givenDateAttributeLocale="plugin.guider.user.details.lastAnsweredExercise" labelTranslationString="plugin.guider.answeredExercisesLabel" conditionalAttribute="exercisesAnswered"
             givenDateAttribute="exercisesAnsweredLastDate" mainAttribute="studentActivity" {...this.props}/>
 
           </div>
