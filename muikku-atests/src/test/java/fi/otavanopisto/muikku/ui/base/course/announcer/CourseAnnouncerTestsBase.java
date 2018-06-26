@@ -28,10 +28,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".icon-cogs");
-      hoverOverElement(".icon-cogs");
-      waitAndClick(".icon-announcer");
+      navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".an-new-announcement");
       
       waitForPresent(".cke_wysiwyg_frame");
@@ -64,10 +61,7 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
     login();
     Workspace workspace = createWorkspace("testcourse", "test course for testing", "1", Boolean.TRUE);
     try{
-      navigate(String.format("/workspace/%s", workspace.getUrlName()), false);
-      waitForPresent(".icon-cogs");
-      hoverOverElement(".icon-cogs");
-      waitAndClick(".icon-announcer");
+      navigate(String.format("/workspace/%s/announcer", workspace.getUrlName()), false);
       waitAndClick(".an-new-announcement");
       
       waitForPresent("*[name='endDate']");
@@ -183,10 +177,10 @@ public class CourseAnnouncerTestsBase extends AbstractUITest {
       .build();
     try {
       login();
-      waitForPresent("#announcements ul>li>div>a");
-      assertTextIgnoreCase("#announcements ul>li>div>a", "Test title");
-      waitForPresent("#announcements ul>li>div.fp-announcement-info-workspace");
-      assertTextIgnoreCase("#announcements ul>li>div.fp-announcement-info-workspace", "testcourse");        
+      waitForPresent(".ordered-container__item--basic-announcements .item-list--panel-announcements .item-list__item--announcements");
+      assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-caption", "Test title");
+      waitForPresent(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace");
+      assertTextIgnoreCase(".item-list--panel-announcements .item-list__item--announcements .item-list__announcement-workspaces .label__text--announcement-workspace", "testcourse (test extension)");
     }finally{
       deleteAnnouncements();
       deleteWorkspace(workspace.getId());

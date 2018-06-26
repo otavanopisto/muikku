@@ -36,18 +36,17 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitAndClick("div.application-panel__helper-container.application-panel__helper-container--main-action > a.button--primary-function");
         
         waitForPresent(".cke_wysiwyg_frame");
-        waitForPresent("div.jumbo-dialog__body > div.container.container--new-announcement-options > div:nth-child(3) > div.react-datepicker-wrapper > div > input");
-        selectAllAndClear("div.jumbo-dialog__body > div.container.container--new-announcement-options > div:nth-child(3) > div.react-datepicker-wrapper > div > input");
-        sendKeys("div.jumbo-dialog__body > div.container.container--new-announcement-options > div:nth-child(3) > div.react-datepicker-wrapper > div > input", "21.12.2025");
-        waitAndClick(".jumbo-dialog__header");
+        waitForPresent("div.env-dialog__body div.container.container--new-announcement-options div.react-datepicker-wrapper input");
+        selectAllAndClear("div.env-dialog__body div.container.container--new-announcement-options div.react-datepicker-wrapper input");
+        sendKeys("div.env-dialog__body div.container.container--new-announcement-options div.react-datepicker-wrapper input", "21.12.2025");
+        waitAndClick(".env-dialog__header");
         waitForNotVisible(".react-datepicker");
-        sendKeys(".form-field--new-announcement-topic", "Test title");
+        sendKeys(".container--new-announcement-title .env-dialog__input", "Test title");
         addTextToCKEditor("Announcer test announcement");
-        waitAndClick(".button--standard-ok");
-        waitForNotVisible(".jumbo-dialog");
+        waitAndClick(".button--dialog-execute");
+        waitForNotVisible(".env-dialog");
         waitForPresent(".text--item-article-header");
         assertTextIgnoreCase(".text--item-article-header", "Test title");
-        assertTextIgnoreCase(".text--item-article>p", "Announcer test announcement");
       }finally{
         deleteAnnouncements();
       }
@@ -71,13 +70,13 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitAndClick("span.button-pill__icon.icon-delete");
         waitAndClick("a.button--standard-ok");
         reloadCurrentPage();
+        waitForPresent(".application-panel__main-container");
         assertTrue("Element found even though it shouldn't be there", isElementPresent(".text--item-article-header") == false);
         navigate("/", false);
         navigate("/announcer#archived", false);
         
         waitForPresent(".text--item-article-header");
         assertTextIgnoreCase(".text--item-article-header", "Test title");
-        assertTextIgnoreCase(".text--item-article>p", "Announcer test announcement");
       }finally{
         deleteAnnouncements();
       }
@@ -215,7 +214,6 @@ public class AnnouncerTestsBase extends AbstractUITest {
       
       waitForPresent(".text--item-article-header");
       assertTextIgnoreCase(".text--item-article-header", "Test title");
-      assertTextIgnoreCase(".text--item-article>p", "Announcer test announcement");       
       navigate("/", false);
       
       waitForPresentAndVisible("div.ordered-container__item--announcements");
