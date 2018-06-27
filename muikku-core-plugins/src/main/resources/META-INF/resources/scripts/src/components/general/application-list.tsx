@@ -68,7 +68,9 @@ interface ApplicationListItemBodyState {
 export class ApplicationListItemBody extends React.Component<ApplicationListItemBodyProps, ApplicationListItemBodyState> {
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    return <div {...this.props} className={`application-list__item-body ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m=>`application-list__item-body--${m}` ).join( " " ) : ""}`}>
+    let newProps: ApplicationListItemHeaderProps = Object.assign( {}, this.props );
+    delete newProps["modifiers"];
+    return <div {...newProps} className={`application-list__item-body ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map(m=>`application-list__item-body--${m}` ).join( " " ) : ""}`}>
       {this.props.children}
     </div>
   }
