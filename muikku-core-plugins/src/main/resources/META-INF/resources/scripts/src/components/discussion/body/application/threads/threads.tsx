@@ -3,26 +3,26 @@ import '~/sass/elements/message.scss';
 
 import * as React from 'react';
 import Pager from '~/components/general/pager';
+import ApplicationList, { ApplicationListItem, ApplicationListItemContentWrapper, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 
 export class DiscussionThreads extends React.Component<{}, {}> {
   render(){
-    return <div className="application-list">
+    return <ApplicationList>
       {this.props.children}
-    </div>
+    </ApplicationList>
   }
 }
 
 export class DiscussionThread extends React.Component<{
   onClick: (event: React.MouseEvent<HTMLDivElement>)=>any,
-  avatar: React.ReactNode
+  avatar: any
 }, {}> {
   render(){
-    return <div className="application-list__item message message--discussion" onClick={this.props.onClick}>
-      <div className="application-list__item-content-wrapper">
-        <div className="application-list__item-content-aside application-list__item-content-aside--discussion">{this.props.avatar}</div>
-        <div className="application-list__item-content-main application-list__item-content-main--discussion">{this.props.children}</div>
-      </div>
-    </div>
+    return <ApplicationListItem className="message message--discussion" onClick={this.props.onClick}>
+      <ApplicationListItemContentWrapper asideModifiers="discussion" mainModifiers="discussion" aside={this.props.avatar}>
+        {this.props.children}
+      </ApplicationListItemContentWrapper>
+    </ApplicationListItem>
   }
 }
 
@@ -31,22 +31,22 @@ export class DiscussionThreadHeader extends React.Component<{
 },{}> {
   render(){
     if (this.props.aside){
-      return <div className="application-list__item-header application-list__item-header--discussion">
+      return <ApplicationListItemHeader modifiers="discussion">
         <div className="application-list__item-header-main">
           {this.props.children}
         </div>
         <div className="application-list__item-header-aside">
           {this.props.aside}
         </div>
-      </div>
+      </ApplicationListItemHeader>
     }
-    return <div className="application-list__item-header application-list__item-header--message">{this.props.children}</div>
+    return <ApplicationListItemHeader modifiers="message">{this.props.children}</ApplicationListItemHeader>
   }
 }
 
 export class DiscussionThreadBody extends React.Component<{},{}> {
   render(){
-    return <div className="application-list__item__body">{this.props.children}</div>
+    return <ApplicationListItemBody>{this.props.children}</ApplicationListItemBody>
   }
 }
 
@@ -54,7 +54,7 @@ export class DiscussionThreadFooter extends React.Component<{
   hasActions?: boolean
 },{}> {
   render(){
-    return <div className="application-list__item-footer application-list__item-footer--discussion-message">{this.props.children}</div>
+    return <ApplicationListItemFooter modifiers="discussion-message">{this.props.children}</ApplicationListItemFooter>
   }
 }
 
@@ -64,7 +64,7 @@ export class DiscussionCurrentThread extends React.Component<{
   locked: boolean
 },{}> {
   render(){
-    return <div className="application-list">
+    return <ApplicationList>
       <div className="application-list__header application-list__header--discussion">
         {this.props.locked ?
           <div className="discussion__icon icon-lock"/> : null
@@ -75,7 +75,7 @@ export class DiscussionCurrentThread extends React.Component<{
         {this.props.title}
       </div>
       {this.props.children}
-    </div>
+    </ApplicationList>
   }
 }
 
@@ -83,23 +83,18 @@ export class DiscussionCurrentThreadElement extends React.Component<{
   isOpMessage?: boolean,
   isReplyOfReply?: boolean,
   isReply?: boolean,
-  avatar: React.ReactNode
+  avatar: any
 }, {}> {
   render(){
-    let baseClass = this.props.isOpMessage ? "application-list__item--discussion-message" : (
-        this.props.isReplyOfReply ?  "application-list__item--discussion-reply-of-reply" :
-          "application-list__item--discussion-reply"
+    let baseMod = this.props.isOpMessage ? "discussion-message" : (
+        this.props.isReplyOfReply ?  "discussion-reply-of-reply" :
+          "discussion-reply"
     );
     
-    return <div className={`application-list__item ${baseClass}`}>
-      <div className="application-list__item-content-wrapper">
-        <div className="application-list__item-content-aside application-list__item-content-aside--discussion">
-          {this.props.avatar}
-        </div>
-        <div className="application-list__item-content-main application-list__item-content-main--discussion">
-          {this.props.children}
-        </div>
-      </div>
-    </div>
+    return <ApplicationListItem modifiers={baseMod}>
+      <ApplicationListItemContentWrapper asideModifiers="discussion" mainModifiers="discussion" aside={this.props.avatar}>
+        {this.props.children}
+      </ApplicationListItemContentWrapper>
+    </ApplicationListItem>
   }
 }

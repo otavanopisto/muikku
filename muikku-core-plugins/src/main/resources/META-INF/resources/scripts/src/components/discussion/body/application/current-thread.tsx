@@ -5,10 +5,10 @@ import { DiscussionType, DiscussionThreadReplyType } from "~/reducers/main-funct
 import { Dispatch, connect } from "react-redux";
 import Pager from "~/components/general/pager";
 import Link from "~/components/general/link";
-import ReplyThread from './reply-thread-dialog';
-import ModifyThread from './modify-thread-dialog';
-import DeleteThreadComponent from './delete-thread-component-dialog';
-import ModifyThreadReply from './modify-thread-reply-dialog';
+import ReplyThread from '../../dialogs/reply-thread';
+import ModifyThread from '../../dialogs/modify-thread';
+import DeleteThreadComponent from '../../dialogs/delete-thread-component';
+import ModifyThreadReply from '../../dialogs/modify-thread-reply';
 import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
