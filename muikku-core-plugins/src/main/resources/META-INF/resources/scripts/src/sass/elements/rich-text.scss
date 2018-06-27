@@ -66,6 +66,13 @@
     border: 0;
   }
   
+  blockquote {
+    background: $color-signature-background;
+    border-left: 5px solid $color-signature-border;
+    margin: 10px;
+    padding: 0.01em 10px;
+  }
+  
   ul,
   ol {
     display: block;
