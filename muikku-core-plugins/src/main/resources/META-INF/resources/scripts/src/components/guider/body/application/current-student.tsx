@@ -130,7 +130,6 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.nationality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.nationality")}</span>
         </div>
       </div>
-      */}
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.language")}</div>
         <div className="application-sub-panel__item-data">
@@ -143,6 +142,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
           <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.municipality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.municipality")}</span>
         </div>
       </div>
+      */}
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</div>
         <div className="application-sub-panel__item-data">
