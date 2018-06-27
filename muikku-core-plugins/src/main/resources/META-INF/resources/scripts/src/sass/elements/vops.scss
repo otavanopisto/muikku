@@ -8,18 +8,23 @@
 }
 
 .vops__title {
-  width: 100%;
-  font-family: $text-font-family;
-  font-size: $vops-title-font-size;
-  font-weight: 400;
-  margin: 0 0 10px;
+  padding: 0 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 10px;
+    padding: 0;
+  }
 }
 
 .vops__legend-header {
   align-items: center;
   display: flex;
-  padding-bottom: 10px;
+  padding: 0 10px 10px;
   width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0 0 10px;
+  }
 }
 
 .vops__legend-arrow {
@@ -76,8 +81,12 @@
 .vops__data {
   font-family: $text-font-family;
   font-size: $vops-data-text-font-size;
-  padding: 10px 0;
+  padding: 10px;
   width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
   
   > span:not(:first-child) {
     margin-left: 15px;
@@ -134,8 +143,12 @@
   justify-content: center;
   overflow-x: auto;
   overflow-y: hidden;
-  padding: 5px 0;
+  padding: 5px 10px;
   width: 100%;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 5px 0;
+  }
 }
 
 .vops__table-wrapper {

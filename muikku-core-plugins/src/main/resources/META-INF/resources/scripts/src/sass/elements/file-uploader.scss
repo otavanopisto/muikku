@@ -5,9 +5,13 @@
 
 .file-uploader {
   border: 2px solid $color-tertiary;
-  margin: 0 0 20px;
+  margin: 0 10px 20px;
   padding: 20px;
   position: relative;
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 0 20px;
+  }
 }
 
 .file-uploader__hint {
