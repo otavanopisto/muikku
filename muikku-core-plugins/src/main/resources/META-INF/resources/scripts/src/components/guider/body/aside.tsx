@@ -6,7 +6,7 @@ import * as queryString from 'query-string';
 
 import '~/sass/elements/item-list.scss';
 import { GuiderUserLabelListType, GuiderUserLabelType, GuiderWorkspaceType, GuiderType } from '~/reducers/main-function/guider';
-import LabelUpdateDialog from './application/label-update-dialog';
+import LabelUpdateDialog from '../dialogs/label-update';
 import {StateType} from '~/reducers';
 import { ButtonPill } from '~/components/general/button';
 import Navigation, { NavigationTopic, NavigationElement } from '~/components/general/navigation';

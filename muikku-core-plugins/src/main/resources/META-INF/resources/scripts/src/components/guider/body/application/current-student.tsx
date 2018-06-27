@@ -18,7 +18,7 @@ import '~/sass/elements/container.scss';
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
 import Hops from '~/components/base/hops_readable';
-import FileDeleteDialog from './file-delete-dialog';
+import FileDeleteDialog from '../../dialogs/file-delete';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
