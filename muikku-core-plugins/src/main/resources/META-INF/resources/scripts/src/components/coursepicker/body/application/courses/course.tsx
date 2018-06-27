@@ -15,7 +15,7 @@ import { StatusType } from '~/reducers/base/status';
 import {StateType} from '~/reducers';
 import { ApplicationListItem, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter } from '~/components/general/application-list';
 import Button from '~/components/general/button';
-import WorkspaceSignupDialog from '../workspace-signup-dialog';
+import WorkspaceSignupDialog from '../../../dialogs/workspace-signup';
 
 interface CourseProps {
   i18n: i18nType,
