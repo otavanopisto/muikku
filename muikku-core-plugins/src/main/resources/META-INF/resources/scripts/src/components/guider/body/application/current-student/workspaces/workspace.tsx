@@ -48,7 +48,7 @@ function CourseActivityRow(props: {
       }
     }
   }
-  return <div className="application-sub-panel__item">
+  return <div className="application-sub-panel__item application-sub-panel__item--course-activity">
     <div className="application-sub-panel__item-title">{props.i18n.text.get(props.labelTranslationString)}</div>
     <div className="application-sub-panel__item-data">
       <span className="text text--guider-profile-value">{output}</span>
@@ -121,7 +121,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
               
         {this.state.activitiesVisible ? <div className="application-sub-panel text">      
           <div className="application-sub-panel__body">  
-            <div className="application-sub-panel__item">
+            <div className="application-sub-panel__item application-sub-panel__item--course-activity">
               <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>        
               <div className="application-sub-panel__item-data">
                 <span className="text text--guider-profile-value">{resultingStateText}</span></div>

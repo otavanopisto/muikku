@@ -65,9 +65,9 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
          type="image/jpeg">
           <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>
         </object>
-        <div className="text text--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic)}</div>
-        <div className="text text--guider-profile-student-mail">
-          <span>{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</span>
+        <div className="text text--guider-profile-student-header">
+          <div className="text text--guider-profile-student-name">{getName(this.props.guider.currentStudent.basic)}</div>
+          <div className="text text--guider-profile-student-email">{(defaultEmailAddress && defaultEmailAddress.address) || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.email")}</div>
         </div>
         <div className="text text--list-item-type-title">
            {this.props.guider.currentStudent.basic.studyProgrammeName}
