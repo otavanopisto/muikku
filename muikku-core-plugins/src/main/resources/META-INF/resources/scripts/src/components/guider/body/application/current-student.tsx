@@ -123,26 +123,6 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         }) : <span className="text text--guider-profile-value">{this.props.i18n.text.get("plugin.guider.user.details.label.unknown.phoneNumber")}</span>}
         </div>
       </div>}
-      {/*
-      <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.nationality")}</div>
-        <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.nationality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.nationality")}</span>
-        </div>
-      </div>
-      */}
-      <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.language")}</div>
-        <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.language || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.language")}</span>
-        </div>
-      </div>
-      <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.municipality")}</div>
-        <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.guider.currentStudent.basic.municipality || this.props.i18n.text.get("plugin.guider.user.details.label.unknown.municipality")}</span>
-        </div>
-      </div>
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.school")}</div>
         <div className="application-sub-panel__item-data">
