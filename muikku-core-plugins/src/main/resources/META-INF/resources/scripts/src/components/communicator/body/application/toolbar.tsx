@@ -11,7 +11,7 @@ import {deleteCurrentMessageThread, addLabelToCurrentMessageThread, removeLabelF
   RemoveLabelFromCurrentMessageThreadTriggerType, restoreCurrentMessageThread, RestoreCurrentMessageThreadTriggerType,
   restoreSelectedMessageThreads, RestoreSelectedMessageThreadsTriggerType} from '~/actions/main-function/messages';
 import {filterMatch, filterHighlight, intersect, difference, flatten} from '~/util/modifiers';
-import LabelUpdateDialog from '~/components/communicator/body/label-update-dialog';
+import LabelUpdateDialog from '../../dialogs/label-update';
 import {MessagesType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';

@@ -19,6 +19,7 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import { loadMoreMessageThreads, removeFromMessagesSelectedThreads, addToMessagesSelectedThreads, LoadMoreMessageThreadsTriggerType, RemoveFromMessagesSelectedThreadsTriggerType, AddToMessagesSelectedThreadsTriggerType } from '~/actions/main-function/messages';
 import { MessageThreadListType, MessagesStateType, MessageThreadExpandedType, MessageThreadType, MessagesType } from '~/reducers/main-function/messages';
+import { ApplicationListItemContentWrapper, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter, ApplicationListItem } from '~/components/general/application-list';
 
 
 interface CommunicatorMessagesProps {
@@ -97,44 +98,40 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
         {this.props.threads.map((thread, index: number)=>{
           let isSelected:boolean = this.props.selectedThreadsIds.includes(thread.communicatorMessageId);
           return {
-            className: `application-list__item message message--communicator ${thread.unreadMessagesInThread ? "message--unread" : ""}`,
+            as: ApplicationListItem,
+            className: `message message--communicator ${thread.unreadMessagesInThread ? "message--unread" : ""}`,
             onSelect: this.props.addToMessagesSelectedThreads.bind(null, thread),
             onDeselect: this.props.removeFromMessagesSelectedThreads.bind(null, thread),
             onEnter: this.setCurrentThread.bind(this, thread),
             isSelected,
             key: thread.communicatorMessageId,
             contents: (checkbox: React.ReactElement<any>)=>{
-              return <div className="application-list__item-content-wrapper">
-                  <div className="application-list__item-content-aside">
-                    <div className="message__select-container">
-                      {checkbox}
-                    </div>
-                  </div>              
-                  <div className="application-list__item-content-main">
-                    <div className="application-list__item-header application-list__item-header--communicator-message">
-                      <div className="text text--list-item-title">
-                        <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
-                      </div>
-                      {thread.messageCountInThread > 1 ? <div className="text text--item-counter">
-                      {thread.messageCountInThread}
-                      </div> : null}
-                      <div className="text text--communicator-date">
-                        {this.props.i18n.time.format(thread.threadLatestMessageDate)}
-                      </div>                
-                    </div>
-                    <div className="application-list__item-body application-list__item-body--communicator-message">
-                      <span className="text text--communicator-item-body">{thread.caption}</span>
-                    </div>
-                    {thread.labels.length ? <div className="application-list__item-footer application-list__item-footer--communicator-message-labels">
-                      <div className="labels">{thread.labels.map((label)=>{
-                        return <span className="label" key={label.id}>
-                          <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                          <span className="text label__text">{label.labelName}</span>
-                        </span>
-                      })}</div>
-                    </div> : null}
-                  </div>    
-                </div>
+              return <ApplicationListItemContentWrapper aside={<div className="message__select-container">
+                {checkbox}
+              </div>}>
+                <ApplicationListItemHeader modifiers="communicator-message">
+                  <div className="text text--list-item-title">
+                    <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
+                  </div>
+                  {thread.messageCountInThread > 1 ? <div className="text text--item-counter">
+                    {thread.messageCountInThread}
+                  </div> : null}
+                  <div className="text text--communicator-date">
+                    {this.props.i18n.time.format(thread.threadLatestMessageDate)}
+                  </div> 
+                </ApplicationListItemHeader>
+                <ApplicationListItemBody modifiers="communicator-message">
+                  <span className="text text--communicator-item-body">{thread.caption}</span>
+                </ApplicationListItemBody>
+                {thread.labels.length ? <ApplicationListItemFooter modifiers="communicator-message-labels">
+                  <div className="labels">{thread.labels.map((label)=>{
+                    return <span className="label" key={label.id}>
+                      <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
+                      <span className="text label__text">{label.labelName}</span>
+                    </span>
+                  })}</div>
+                </ApplicationListItemFooter> : null}
+              </ApplicationListItemContentWrapper>
               }
             }
           })

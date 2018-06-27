@@ -9,8 +9,8 @@ import Link from '~/components/general/link';
 import Toolbar from './application/toolbar';
 import CommunicatorMessages from './application/messages';
 import MessageView from './application/message-view';
-import NewMessage from './application/new-message-dialog';
-import SignatureUpdateDialog from './signature-update-dialog';
+import NewMessage from '../dialogs/new-message';
+import SignatureUpdateDialog from '../dialogs/signature-update';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
