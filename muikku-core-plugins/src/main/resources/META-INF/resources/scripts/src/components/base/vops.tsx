@@ -64,8 +64,8 @@ class Vops extends React.Component<VopsProps, VopsState> {
     return <div className="vops">
       <div className="vops__title text text--guider-header">{this.props.i18n.text.get("plugin.records.studyplan.title")}</div>
       <div className="vops__data">
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>&nbsp;
-        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", this.props.data.numCourses)}</span>&nbsp;
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.info")}</span>
+        <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.all", this.props.data.numCourses)}</span>
         <span>{this.props.i18n.text.get("plugin.records.studyplan.progress.title.courses.mandatory", this.props.data.numMandatoryCourses)}</span>
       </div>    
       <div className="vops__legend-header" onClick={this.toggleLegend}>

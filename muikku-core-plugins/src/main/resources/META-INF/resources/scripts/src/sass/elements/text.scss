@@ -648,19 +648,50 @@ b {
 }
 
 // Guider
-.text--guider-profile-student-name {
-  font-size: 1.3rem;
-  margin-left: 15px;
-}
-
-.text--guider-profile-student-mail {
-  color: #9c9c9c;
+.text--guider-profile-student-header {
+  align-items: flex-start;
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
+  flex-flow: column wrap;
   flex-shrink: 1;
-  font-size: 1.3rem;
-  font-weight: 200;
-  margin-left: 20px;  
+  margin-left: 15px;
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-flow: row wrap;
+  }
+}
+
+.text--guider-profile-student-name {
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: 0;
+    flex-grow: 0;
+    flex-shrink: 1;
+    font-size: 1.25rem;
+    margin: 0 10px 0 0;
+    white-space: nowrap;
+  }
+}
+
+.text--guider-profile-student-email {
+  color: $color-default-helper;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1rem;
+  word-wrap: break-all;
+  
+  @include breakpoint($breakpoint-desktop) {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 1.25rem;    
+  }
 }
 
 .text--guider-profile-value {

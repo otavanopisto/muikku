@@ -119,13 +119,12 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
               <ButtonPill buttonModifiers="delete" icon="delete" />
             </DeleteAnnouncementDialog>
             {this.props.announcements.location === "archived" ? 
-                <ButtonPill buttonModifiers="restore" icon="restore" onClick={this.restoreCurrentAnnouncement}/> : null}
+                <ButtonPill buttonModifiers="restore" icon="put-back" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
           <ApplicationPanelToolbarActionsAside>
             <ButtonPill buttonModifiers="prev-page" disabled={!prev} onClick={this.go.bind( this, prev )} icon="arrow-left" />
             <ButtonPill buttonModifiers="next-page" disabled={!next} onClick={this.go.bind( this, next )} icon="arrow-right" />
           </ApplicationPanelToolbarActionsAside>
-
         </ApplicationPanelToolbar>
       )
     } else {
@@ -140,8 +139,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
               <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="delete"/>
             </DeleteAnnouncementDialog>
             {this.props.announcements.location === "archived" ? 
-              <ButtonPill buttonModifiers="restore" disabled={this.props.announcements.selected.length === 0} 
-                icon="restore" onClick={this.restoreSelectedAnnouncements}/> : null}
+              <ButtonPill buttonModifiers="restore" icon="put-back" disabled={this.props.announcements.selected.length === 0} onClick={this.restoreSelectedAnnouncements}/> : null}
           </ApplicationPanelToolbarActionsMain>
         </ApplicationPanelToolbar>
       )

@@ -17,6 +17,7 @@
 .application-sub-panel__header {
   align-items: center;
   display: flex;
+  flex-flow: row wrap;
   padding: 0 10px;
   
   @include breakpoint($breakpoint-pad) {
@@ -29,10 +30,6 @@
   padding: 10px 0;
 }
 
-.application-sub-panel__body--labels {
-  padding: 10px 0;
-}
-
 .application-sub-panel__item {
   align-items: center;
   display: flex;
@@ -40,7 +37,7 @@
   flex-flow: row wrap;
   flex-grow: 1;
   flex-shrink: 1;
-  padding: 10px 10px; 
+  padding: 10px; 
   
   &:not(:last-child) {
     border-bottom: 1px solid $color-default-item-separator-border;
@@ -125,15 +122,6 @@
   }
 }
 
-.application-sub-panel__item--label {
-  display: flex;
-  flex-basis: auto;
-  flex-shrink: 1;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  margin-right: 10px;
-}
-
 // Studies
 .application-sub-panel__header--studies-detailed-info {
   padding: 10px;
@@ -163,6 +151,31 @@
 // Guider
 .application-sub-panel--guider-student-header {
   border: 0;
-  padding: 0;
+  padding: 10px 0 0;
   margin: 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 0;
+  }
+}
+
+.application-sub-panel__body--labels {
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    padding: 10px 0;
+  }
+}
+
+.application-sub-panel__item--label {
+  display: flex;
+  flex-basis: auto;
+  flex-shrink: 1;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 10px;
+}
+
+.application-sub-panel__item--course-activity {
+  padding: 10px 0;
 }

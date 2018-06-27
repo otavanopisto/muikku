@@ -62,14 +62,26 @@
 }
 
 .vops__legend-items {
+  margin: 0 0 10px;
   width: 100%;
+  
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .vops__legend-item {
   align-items: center;
-  display: inline-flex;
-  justify-content: center;
-  padding: 20px;
+  display: flex;
+  justify-content: start;
+  padding: 5px 5px 5px 0;
+  
+  @include breakpoint($breakpoint-pad) {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    padding: 20px;
+  }
 }
 
 .vops__legend-item-text {
@@ -88,8 +100,23 @@
     padding: 10px 0;
   }
   
+  > span {
+    display: block;
+    font-size: $text-mobile-font-size;
+    padding: 2px 0;
+    
+    @include breakpoint($breakpoint-pad) {
+      display: inline-block;
+      font-size: $text-mobile-font-size;
+    }
+  }
+  
   > span:not(:first-child) {
-    margin-left: 15px;
+    margin: 0;
+    
+    @include breakpoint($breakpoint-pad) {
+      margin: 0 0 0 15px; 
+    }
   }
 }
 
