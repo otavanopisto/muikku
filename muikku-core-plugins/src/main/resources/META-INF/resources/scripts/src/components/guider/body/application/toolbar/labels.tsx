@@ -67,7 +67,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           </Link>);
         }))
       }>
-        <ButtonPill buttonModifiers="label" icon="flag" disabled={this.props.guider.toolbarLock}/>
+        <ButtonPill buttonModifiers="flag" icon="flag" disabled={this.props.guider.toolbarLock}/>
       </Dropdown>
     }
   
@@ -108,7 +108,7 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
         </Link>);
       }))
     }>
-      <ButtonPill buttonModifiers="label" icon="flag"/>
+      <ButtonPill buttonModifiers="flag" icon="flag"/>
     </Dropdown>;
   }
 }
