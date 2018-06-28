@@ -136,10 +136,10 @@ export class ApplicationListItemContentWrapper extends React.Component<Applicati
     delete (newProps as any)["mainModifiers"];
     delete (newProps as any)["aside"];
     return <div {...newProps} className={`application-list__item-content-wrapper ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list__item-content-wrapper--${m}` ).join( " " ) : ""}`}>
-      <div className={`application-list__item-content-aside ${this.props.modifiers ? asideModifiers.map( m => `application-list__item-content-aside--${m}` ).join( " " ) : ""}`}>
+      <div className={`application-list__item-content-aside ${this.props.asideModifiers ? asideModifiers.map( m => `application-list__item-content-aside--${m}` ).join( " " ) : ""}`}>
         {this.props.aside}
       </div>
-      <div className={`application-list__item-content-main ${this.props.modifiers ? asideModifiers.map( m => `application-list__item-content-main--${m}` ).join( " " ) : ""}`}>
+      <div className={`application-list__item-content-main ${this.props.mainModifiers ? asideModifiers.map( m => `application-list__item-content-main--${m}` ).join( " " ) : ""}`}>
         {this.props.children}
       </div>
     </div>

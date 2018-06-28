@@ -40,7 +40,7 @@ export class DiscussionThreadHeader extends React.Component<{
         </div>
       </ApplicationListItemHeader>
     }
-    return <ApplicationListItemHeader modifiers="message">{this.props.children}</ApplicationListItemHeader>
+    return <ApplicationListItemHeader modifiers="discussion">{this.props.children}</ApplicationListItemHeader>
   }
 }
 
