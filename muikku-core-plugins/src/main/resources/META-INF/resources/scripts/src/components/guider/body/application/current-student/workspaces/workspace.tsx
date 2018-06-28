@@ -10,6 +10,7 @@ import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/workspace-activity.scss';
+import { ApplicationListItem, ApplicationListItemHeader } from "~/components/general/application-list";
 
 interface StudentWorkspaceProps {
   i18n: i18nType,
@@ -104,8 +105,8 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
       resultingStateText += " - " + this.props.i18n.time.format(workspace.studentActivity.assessmentState.date);
     }
     
-    return <div className={`application-list__item course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
-        <div className="application-list__item-header application-list__item-header--course" onClick={this.toggleActivitiesVisible}>
+    return <ApplicationListItem className={`course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
+        <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
           <span className="text text--course-icon icon-books"></span>
           <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
           <span className="text text--list-item-type-title workspace-activity">
@@ -117,7 +118,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>
-        </div>               
+        </ApplicationListItemHeader>               
               
         {this.state.activitiesVisible ? <div className="application-sub-panel text">      
           <div className="application-sub-panel__body">  
@@ -163,7 +164,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
 
           </div>
         </div> : null }
-    </div>
+    </ApplicationListItem>
   }
 }
 

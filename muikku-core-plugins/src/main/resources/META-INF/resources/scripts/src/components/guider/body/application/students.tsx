@@ -22,6 +22,7 @@ import Student from './students/student';
 import { UserType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { GuiderStudentsStateType, GuiderStudentUserProfileType, GuiderStudentType, GuiderType } from '~/reducers/main-function/guider';
+import ApplicationList, { ApplicationListItem } from '~/components/general/application-list';
 
 interface GuiderStudentsProps {
   i18n: i18nType,
@@ -71,14 +72,15 @@ class GuiderStudents extends BodyScrollLoader<GuiderStudentsProps, GuiderStudent
     }
         
     return <BodyScrollKeeper hidden={!!this.props.guiderStudentsCurrent}>
-      <SelectableList className="application-list" selectModeClassAddition="application-list--select-mode"
+      <SelectableList as={ApplicationList} selectModeModifiers="select-mode"
         extra={this.props.guiderStudentsState === "LOADING_MORE" ?
           <div className="application-list__item loader-empty"/>
          : null} dataState={this.props.guiderStudentsState}>
       {this.props.guider.students.map((student: GuiderStudentType, index: number)=>{
         let isSelected = this.props.guider.selectedStudentsIds.includes(student.id);
         return {
-            className: "application-list__item user user--guider",
+            as: ApplicationListItem,
+            className: "user user--guider",
             onSelect: this.props.addToGuiderSelectedStudents.bind(null, student),
             onDeselect: this.props.removeFromGuiderSelectedStudents.bind(null, student),
             onEnter: this.onStudentClick.bind(this, student),

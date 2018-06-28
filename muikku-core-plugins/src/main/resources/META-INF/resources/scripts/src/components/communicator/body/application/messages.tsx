@@ -19,7 +19,7 @@ import BodyScrollKeeper from '~/components/general/body-scroll-keeper';
 import SelectableList from '~/components/general/selectable-list';
 import { loadMoreMessageThreads, removeFromMessagesSelectedThreads, addToMessagesSelectedThreads, LoadMoreMessageThreadsTriggerType, RemoveFromMessagesSelectedThreadsTriggerType, AddToMessagesSelectedThreadsTriggerType } from '~/actions/main-function/messages';
 import { MessageThreadListType, MessagesStateType, MessageThreadExpandedType, MessageThreadType, MessagesType } from '~/reducers/main-function/messages';
-import { ApplicationListItemContentWrapper, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter, ApplicationListItem } from '~/components/general/application-list';
+import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter, ApplicationListItem } from '~/components/general/application-list';
 
 
 interface CommunicatorMessagesProps {
@@ -91,7 +91,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
     //VERY CRITICAL CODE
     //REMOVAL WILL CAUSE EXPLOSION
     return <BodyScrollKeeper hidden={!!this.props.currentThread}>
-      <SelectableList className="application-list" selectModeClassAddition="application-list--select-mode"
+      <SelectableList as={ApplicationList} selectModeModifiers="select-mode"
         extra={this.props.state === "LOADING_MORE" ?
           <div className="application-list__item loader-empty"/>
          : null} dataState={this.props.state}>
