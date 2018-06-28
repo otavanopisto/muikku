@@ -87,6 +87,13 @@
         background: $color-label-background;
       }
       
+      &.announcement--environment .text__icon {
+        color: $color-announcement-environment;
+      }
+      
+      &.announcement--workspace .text__icon {
+        color: $color-announcement-workspace;
+      }
     }
   }
 }

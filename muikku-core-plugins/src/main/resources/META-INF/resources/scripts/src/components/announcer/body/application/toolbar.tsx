@@ -115,9 +115,12 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <NewEditAnnouncement announcement={this.props.announcements.current}>
               <ButtonPill buttonModifiers="edit" icon="edit" />
             </NewEditAnnouncement>
-            <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
-              <ButtonPill buttonModifiers="delete" icon="delete" />
-            </DeleteAnnouncementDialog>
+            {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
+            {this.props.announcements.location !== "archived" ?
+              <DeleteAnnouncementDialog announcement={this.props.announcements.current} onDeleteAnnouncementSuccess={this.onGoBackClick}>
+                <ButtonPill buttonModifiers="delete" icon="delete" />
+              </DeleteAnnouncementDialog>
+            : null}
             {this.props.announcements.location === "archived" ? 
                 <ButtonPill buttonModifiers="restore" icon="put-back" onClick={this.restoreCurrentAnnouncement}/> : null}
           </ApplicationPanelToolbarActionsMain>
@@ -135,9 +138,12 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
               <span className="text__icon text__icon--current-folder icon-new-section"></span>
               <span className="text__current-folder-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
-            <DeleteAnnouncementDialog>
-              <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="delete"/>
-            </DeleteAnnouncementDialog>
+            {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
+            {this.props.announcements.location !== "archived" ?
+              <DeleteAnnouncementDialog>
+                <ButtonPill buttonModifiers="delete" disabled={this.props.announcements.selected.length === 0} icon="delete"/>
+              </DeleteAnnouncementDialog>
+            : null }
             {this.props.announcements.location === "archived" ? 
               <ButtonPill buttonModifiers="restore" icon="put-back" disabled={this.props.announcements.selected.length === 0} onClick={this.restoreSelectedAnnouncements}/> : null}
           </ApplicationPanelToolbarActionsMain>

@@ -596,6 +596,36 @@
   flex-basis: auto;
   flex-grow: 0;
   flex-shrink: 0;
+  margin: 0 0 0 10px;
+  vertical-align: top;
+  
+  &:hover, 
+  &.hover {
+    background-color: darken($color-main-function-button-pill-label-background, 10%);
+  }
+  
+  &:active, 
+  &.active {
+    background-color: darken($color-main-function-button-pill-label-background, 20%);
+  }
+  
+  &.disabled, 
+  &:disabled {
+    background-color: $color-button-pill-background-disabled;
+    color: $color-button-pill-text-disabled;
+  }
+  
+  @include breakpoint($breakpoint-pad) {
+    margin: 0 10px 0 0;
+  }
+}
+
+.button-pill--flag {
+  background-color: $color-main-function-button-pill-label-background;
+  color: $color-main-function-button-pill-label-text;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
   margin: 0 10px 0 0;
   vertical-align: top;
   
