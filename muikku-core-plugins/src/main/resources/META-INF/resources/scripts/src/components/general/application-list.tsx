@@ -3,7 +3,8 @@ import * as React from "react";
 import '~/sass/elements/application-list.scss';
 
 interface ApplicationListProps {
-  modifiers?: string | Array<string>
+  modifiers?: string | Array<string>,
+  className?: string
 }
 
 interface ApplicationListState {
@@ -13,7 +14,7 @@ interface ApplicationListState {
 export default class ApplicationList extends React.Component<ApplicationListProps, ApplicationListState> {
   render() {
     let modifiers = this.props.modifiers && this.props.modifiers instanceof Array ? this.props.modifiers : [this.props.modifiers];
-    return <div className={`application-list ${this.props.modifiers ? modifiers.map( m => `application-list--${m}` ).join( " " ) : ""}`}>
+    return <div className={`application-list ${this.props.className ? this.props.className : ""} ${this.props.modifiers ? modifiers.map( m => `application-list--${m}` ).join( " " ) : ""}`}>
       {this.props.children}
     </div>
   }

@@ -20,6 +20,7 @@ import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceAssessementSta
 import { UserWithSchoolDataType } from '~/reducers/main-function/user-index';
 import {StateType} from '~/reducers';
 import { shortenGrade, getShortenGradeExtension } from '~/util/modifiers';
+import ApplicationList, { ApplicationListItem, ApplicationListItemHeader } from '~/components/general/application-list';
 
 let ProgressBarLine = require('react-progressbar.js').Line;
 
@@ -207,7 +208,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__header text text--studies-header">{user.studyProgrammeName}</div>
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
-              return <div className="application-list" key={record.groupCurriculumIdentifier || index}>
+              return <ApplicationList key={record.groupCurriculumIdentifier || index}>
                 {record.groupCurriculumIdentifier ? <div className="application-list__header"><h3 className="text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
                   {record.workspaces.map((workspace)=>{
                     //Do we want an special way to display all these different states? passed is very straightforward but failed and
@@ -220,28 +221,28 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     } else if (workspace.studentAssessments.assessmentState === "incomplete"){
                       extraClassNameState = "state-INCOMPLETE"
                     }
-                    return <div className={`application-list__item course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
-                      <div className="application-list__item-header application-list__item-header--course" key={workspace.id}>
+                    return <ApplicationListItem className={`course course--studies ${extraClassNameState}`} key={workspace.id} onClick={this.goToWorkspace.bind(this, user, workspace)}>
+                      <ApplicationListItemHeader modifiers="course" key={workspace.id}>
                         <span className="text text--course-icon icon-books"></span>
                         <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
                         {getEvaluationRequestIfAvailable(this.props, workspace)}
                         {getAssessments(this.props, workspace)}
                         {getActivity(this.props, workspace)}
-                      </div>
-                    </div>
+                      </ApplicationListItemHeader>
+                    </ApplicationListItem>
                   })}
                 {record.transferCredits.length ? 
                   <div className="application-list__header"><h3 className="text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
                     {record.transferCredits.map((credit)=>{
-                      return <div className="application-list__item course course--credits" key={credit.date}>
-                        <div className="application-list__item-header application-list__item-header--course">
+                      return <ApplicationListItem className="course course--credits" key={credit.date}>
+                        <ApplicationListItemHeader modifiers="course">
                           <span className="text text--transfer-credit-icon icon-books"></span>  
                           <span className="text text--list-item-title">{credit.courseName}</span>
                           {getTransferCreditValue(this.props, credit)}
-                        </div>
-                      </div>
+                        </ApplicationListItemHeader>
+                      </ApplicationListItem>
                     })}
-              </div>
+              </ApplicationList>
             }) : <h4>{this.props.i18n.text.get("TODO no records")}</h4>}
           </div>
           </div>
@@ -261,14 +262,14 @@ class Records extends React.Component<RecordsProps, RecordsState> {
       <div className="application-sub-panel__header text text--studies-header">{this.props.i18n.text.get("plugin.records.files.title")}</div>
       <div className="application-sub-panel__body">
       {this.props.records.files.length ?
-        <div className="uploaded-files text application-list">
+        <ApplicationList className="uploaded-files text">
           {this.props.records.files.map((file)=>{
-            return <div className="uploaded-files__item application-list__item" key={file.id}>
+            return <ApplicationListItem className="uploaded-files__item" key={file.id}>
               <span className="uploaded-files__item-attachment-icon icon-attachment"></span>
               <Link className="uploaded-files__item-title" href={`/rest/records/files/${file.id}/content`} openInNewTab={file.title}>{file.title}</Link>
-            </div>
+            </ApplicationListItem>
           })}
-        </div> :
+        </ApplicationList> :
         <div className="file-uploader__files-container text">{this.props.i18n.text.get("plugin.records.files.empty")}</div>
       }
       </div>
