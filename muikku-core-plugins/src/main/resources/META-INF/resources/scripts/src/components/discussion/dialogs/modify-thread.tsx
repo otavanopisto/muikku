@@ -12,6 +12,7 @@ import { createDiscussionThread, CreateDiscussionThreadTriggerType, modifyDiscus
 import {StateType} from '~/reducers';
 import SessionStateComponent from '~/components/general/session-state-component';
 import Button from '~/components/general/button';
+import { StatusType } from '~/reducers/base/status';
 
 const ckEditorConfig = {
   toolbar: [
@@ -35,7 +36,8 @@ interface ModifyThreadProps {
   i18n: i18nType,
   discussion: DiscussionType,
   thread: DiscussionThreadType,
-  modifyDiscussionThread: ModifyDiscussionThreadTriggerType
+  modifyDiscussionThread: ModifyDiscussionThreadTriggerType,
+  status: StatusType
 }
 
 interface ModifyThreadState {
@@ -132,12 +134,12 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
          <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" placeholder={this.props.i18n.text.get('plugin.discussion.createmessage.title')}
            value={this.state.title} onChange={this.onTitleChange} autoFocus/>
        </div>, 
-       <div key="2" className="container container--new-discussion-thread-states">
+       (this.props.status.permissions.LOCK_STICKY_PERMISSION ? <div key="2" className="container container--new-discussion-thread-states">
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-       </div>,
+       </div> : null),
        <div className="container container--discussion-content" key="3">     
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
@@ -173,7 +175,8 @@ class ModifyThread extends SessionStateComponent<ModifyThreadProps, ModifyThread
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    discussion: state.discussion
+    discussion: state.discussion,
+    status: state.status
   }
 };
 
