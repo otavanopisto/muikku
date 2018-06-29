@@ -45,6 +45,7 @@
   	// background-color: $color-application-list-item-background-active;
   }
 
+  // Selected application-list item with separate styles for mobile and desktop
   &.selected {
     background-color: $color-application-list-item-background-selected;
 
