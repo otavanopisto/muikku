@@ -4,7 +4,7 @@
 @import "../base/breakpoints";
 
 .application-sub-panel {
-  border-bottom: 5px solid $color-default-item-separator-border;
+  border-bottom: 1px solid $color-default-contrast;
   margin: 0 0 20px;
   
   &:last-child {
