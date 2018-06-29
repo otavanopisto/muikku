@@ -56,20 +56,23 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
   render(){
     let content = (closeDialog: ()=>any) => <div>
       <div className="text text--workspace-signup-dialog">
+        <div className="text text--course-signup-fee">{this.props.i18n.text.get('plugin.workspaceSignUp.courseDescription', this.props.course.name, this.props.course.nameExtension || "")}</div>
         {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ?
-          <div>
-            <b>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</b>
-            <span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span>
+          <div className="form-element text text--course-signup-fee">
+            <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.label')}</label></p>
+            <p><span>{this.props.i18n.text.get('plugin.workspaceSignUp.fee.content')}</span></p>
           </div> : null}
-        <b>{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</b>
-        <textarea value={this.state.message} onChange={this.updateMessage}/>
+        <div className="form-element text text--course-signup-fee">
+          <p><label>{this.props.i18n.text.get('plugin.workspaceSignUp.messageLabel')}</label></p>
+          <p><textarea className="form-element__textarea" value={this.state.message} onChange={this.updateMessage}/></p>
+        </div>
       </div>
     </div>
        
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="dialog__button-set">
-          <Button buttonModifiers="workspace-signup" onClick={this.signup.bind(this, closeDialog)} disabled={this.state.locked}>
+          <Button buttonModifiers={["standard-ok", "info"]} onClick={this.signup.bind(this, closeDialog)} disabled={this.state.locked}>
             {this.props.i18n.text.get('plugin.workspaceSignUp.signupButtonLabel')}
           </Button>  
         </div>
@@ -77,7 +80,7 @@ class WorkspaceSignupDialog extends React.Component<WorkspaceSignupDialogProps, 
     }
     
     return <Dialog modifier="workspace-signup-dialog"
-      title={this.props.i18n.text.get('plugin.workspaceSignUp.title', this.props.course.name, this.props.course.nameExtension || "")}
+      title={this.props.i18n.text.get('plugin.workspaceSignUp.title')}
       content={content} footer={footer}>
       {this.props.children}
     </Dialog>
