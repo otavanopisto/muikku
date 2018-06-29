@@ -51,11 +51,18 @@ class Message extends React.Component<MessageProps, MessageState> {
       type: "usergroup",
       value: ug
     })) : [];
+    
+    let workspaceRecepientsFiltered = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? this.props.message.workspaceRecipients.filter((w, pos, self)=>{
+      return self.findIndex((w2)=>w2.workspaceEntityId === w.workspaceEntityId) === pos;
+    }) : [];
   
-    //And the workspace recepients
-    let workspaceObject: Array<WorkspaceRecepientType> = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? this.props.message.workspaceRecipients.map((w: any): WorkspaceRecepientType => ({
+    //And the workspace recepients, sadly has to force it
+    let workspaceObject: Array<WorkspaceRecepientType> = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
       type: "workspace",
-      value: w
+      value: ({
+        id: w.workspaceEntityId,
+        name: w.workspaceName,
+      } as WorkspaceType)
     })) : [];
   
     //The basic reply target is the sender
@@ -90,10 +97,10 @@ class Message extends React.Component<MessageProps, MessageState> {
                   </span>
                 )
               })}
-              {this.props.message.workspaceRecipients.map((workspaceRecepient: WorkspaceType)=>{
+              {workspaceRecepientsFiltered.map((workspaceRecepient)=>{
                 return (
-                  <span className="text text--communicator-message-recipient" key={workspaceRecepient.id}>
-                    {workspaceRecepient.name}
+                  <span className="text text--communicator-message-recipient" key={workspaceRecepient.workspaceEntityId}>
+                    {workspaceRecepient.workspaceName}
                   </span>
                 )
               })}

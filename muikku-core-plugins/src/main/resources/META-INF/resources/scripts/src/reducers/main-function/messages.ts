@@ -79,7 +79,11 @@ export interface MessageType {
   senderId: number,
   tags: any,
   userGroupRecipients: UserGroupListType,
-  workspaceRecipients: WorkspaceListType
+  workspaceRecipients: Array<{
+    archetype: string,
+    workspaceEntityId: number,
+    workspaceName: string
+  }>
 }
 export interface MessageRecepientType {
   communicatorMessageId: number,
