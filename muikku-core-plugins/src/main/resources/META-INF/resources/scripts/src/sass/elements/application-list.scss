@@ -293,10 +293,7 @@
 }
 
 .application-list__item-header--discussion {
-  
-  @include breakpoint($breakpoint-pad) {
-    height: $avatar-size;
-  }
+
 }
 
 .application-list__item-header--discussion-current-thread-title {
