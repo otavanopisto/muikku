@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.configuration.global.ShutdownHookBehavior;
 
@@ -30,6 +31,9 @@ import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.MUCRoomEntity;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
+import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
@@ -68,20 +72,24 @@ public class ChatRoomSyncScheduler {
   @Any
   private Instance<SearchProvider> searchProviders;
 
+  @Inject
+  private UserChatSettingsDAO userChatSettingsDao;
+
+
   @Schedule(second = "0", minute = "0", hour = "*/24", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatRooms() {
-		
-    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-    if (enabledUsersCsv == null) {
-      return;
-    }
-    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
 
 	List<Curriculum> curriculums = courseMetaController.listCurriculums();
     
     curriculums.removeIf((curriculum) -> "OPS2005".equals(curriculum.getName()));
-        
+
+	List<UserChatSettings> listUsers = userChatSettingsDao.listAll();
+	  
+	  if (CollectionUtils.isEmpty(listUsers)) {
+	    return;
+	  }
+
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
       logger.log(Level.INFO, "No openfire token set, skipping room sync");
@@ -120,7 +128,7 @@ public class ChatRoomSyncScheduler {
           if (curriculumIdentifier != null && !"OPS2005".equals(curriculum.getName())) {
             curriculumIdentifiers.add(curriculumIdentifier);
           } 
-        }
+
       }
       
       String searchString = null;
@@ -167,25 +175,31 @@ public class ChatRoomSyncScheduler {
         		      client.createChatRoom(chatRoomEntity);
 
         		      List<WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
-        		      List<WorkspaceUser> workspaceStaffs = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
+                  List<WorkspaceUser> workspaceStaffs = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
+                  
+                  for (WorkspaceUser workspaceStaff : workspaceStaffs) {
 
-        		      for (WorkspaceUser workspaceStaff : workspaceStaffs) {
+                    SchoolDataIdentifier memberIdentifier = workspaceStaff.getUserIdentifier();
+                    
+                    for (UserChatSettings listUser : listUsers) {
+                      if (listUser.getUserIdentifier().equals(memberIdentifier.toId())) {
+                      client.addAdmin(identifier, memberIdentifier.toId());
+                      break;
+                      }
+                    }
+                  }
 
-        		        SchoolDataIdentifier memberIdentifier = workspaceStaff.getUserIdentifier();
+                  for (WorkspaceUser workspaceUser : workspaceUsers) {
 
-        		        if (enabledUsers.contains(memberIdentifier.toId())) {
-        		          client.addAdmin(identifier, memberIdentifier.toId());
-        		        }
-        		      }
-
-        		      for (WorkspaceUser workspaceUser : workspaceUsers) {
-
-        		        SchoolDataIdentifier memberIdentifier = workspaceUser.getUserIdentifier();
-
-        		        if (enabledUsers.contains(memberIdentifier.toId())) {
-        		          client.addMember(identifier, memberIdentifier.toId());
-        		        }
-        		      }
+                    SchoolDataIdentifier memberIdentifier = workspaceUser.getUserIdentifier();
+                    
+                    for (UserChatSettings listUser : listUsers) {
+                      if (listUser.getUserIdentifier().equals(memberIdentifier.toId())) {
+                        client.addMember(identifier, memberIdentifier.toId());
+                        break;
+                      }
+                    }
+                  }
         		    }
 
         		    } catch (Exception e) {
@@ -193,7 +207,9 @@ public class ChatRoomSyncScheduler {
         		    }
             }
           }
-      }
-    } 
+        }
+      } 
+    }
   }
 }
+

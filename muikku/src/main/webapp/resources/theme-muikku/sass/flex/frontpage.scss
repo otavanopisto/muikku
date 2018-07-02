@@ -782,6 +782,10 @@ footer.of-footer {
   background: $of-footer-background-color;
 }
 
+.frontpage-footer-plagscan-wrapper {
+  background: $of-footer-background-alt-color;
+}
+
 .frontpage-footer-container {
   @include flexbox;
   align-items: stretch;
@@ -789,6 +793,38 @@ footer.of-footer {
   flex-flow: row nowrap;
   margin: 0 auto;
   max-width: 1260px;
+}
+
+.frontpage-footer-plagscan-container {
+  @include flexbox;
+  align-items: stretch;
+  box-sizing: border-box;
+  flex-flow: row nowrap;
+  margin: 0 auto;
+  max-width: 1260px;
+  padding: 20px 30px;
+  
+  .footer-plagscan-logo {
+    @include flexbox;
+    align-items: center;
+    color: $of-footer-text-color;
+  
+    .plagscan-text {
+      display: inline-block;
+      margin: 0 5px 0 10px;
+    }
+  
+    img { 
+      height: 30px;
+    }
+    
+    .plagscan-privacy-policy {
+      color: $of-footer-text-color;
+      text-decoration: none;
+    }
+  
+  }
+  
 }
 
 .contact-info-container {
@@ -832,14 +868,14 @@ footer.of-footer {
     
   }
   
-  .footer-legal-info-container {
-    display: none;
+  .footer-privacy-policy-container {
     margin: 25px 0 0;
     
-    .legal-info {
+    .privacy-policy__link {
       color: $of-footer-text-color;
       display: inline-block;
       margin: 5px 20px 0 5px;
+      text-decoration: none;
       text-transform: uppercase;
     }
     
@@ -860,6 +896,15 @@ footer.of-footer {
     margin: 40px 0;
   }
   
+  .footer-logo.plagscan {
+    
+    img {
+      height: 52px;
+      width: 200px;
+    }
+
+  }
+
 }
 
 // CAROUSEL

@@ -159,7 +159,7 @@
             { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
             { name: 'colors', items : [ 'TextColor','BGColor' ] },
             '/',
-            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-audiofield', 'muikku-connectfield', 'muikku-organizerfield', 'muikku-sorterfield']},
+            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-audiofield', 'muikku-connectfield', 'muikku-organizerfield', 'muikku-sorterfield', 'muikku-mathexercisefield']},
             { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },          
             { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] }
           ],
