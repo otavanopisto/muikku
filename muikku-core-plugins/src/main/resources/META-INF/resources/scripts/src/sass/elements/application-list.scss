@@ -45,6 +45,7 @@
   	// background-color: $color-application-list-item-background-active;
   }
 
+  // Selected application-list item with separate styles for mobile and desktop
   &.selected {
     background-color: $color-application-list-item-background-selected;
 
@@ -292,10 +293,7 @@
 }
 
 .application-list__item-header--discussion {
-  
-  @include breakpoint($breakpoint-pad) {
-    height: $avatar-size;
-  }
+
 }
 
 .application-list__item-header--discussion-current-thread-title {
