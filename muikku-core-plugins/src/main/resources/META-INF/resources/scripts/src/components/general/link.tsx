@@ -1,5 +1,6 @@
 import * as React from 'react';
 import $ from '~/lib/jquery';
+import { Redirect } from "react-router-dom";
 
 import '~/sass/elements/link.scss';
 
@@ -34,12 +35,14 @@ interface LinkProps extends React.DetailedHTMLProps<React.AnchorHTMLAttributes<H
   disabled?: boolean,
   as?: string,
   href?: string,
+  to?: string,
   className?: string,
   openInNewTab?: string
 }
 
 interface LinkState {
-  active: boolean
+  active: boolean,
+  redirect: boolean
 }
 
 export default class Link extends React.Component<LinkProps, LinkState> {
@@ -55,7 +58,8 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     this.onTouchMove = this.onTouchMove.bind(this);
     
     this.state = {
-      active: false
+      active: false,
+      redirect: false
     }
     
     this.touchCordX = null;
@@ -70,14 +74,19 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     if (this.props.disabled){
       return;
     }
-    if (this.props.href && this.props.href[0] === '#'){
-      scrollToSection(this.props.href);
-    } else if (this.props.href){
-      if (this.props.openInNewTab){
-        window.open(this.props.href, this.props.openInNewTab).focus();
-      } else {
-        location.href = this.props.href;
+    
+    if (!this.props.to){
+      if (this.props.href && this.props.href[0] === '#'){
+        scrollToSection(this.props.href);
+      } else if (this.props.href){
+        if (this.props.openInNewTab){
+          window.open(this.props.href, this.props.openInNewTab).focus();
+        } else {
+          location.href = this.props.href;
+        }
       }
+    } else {
+      this.setState({redirect: true});
     }
     
     if (this.props.onClick){
@@ -127,6 +136,10 @@ export default class Link extends React.Component<LinkProps, LinkState> {
     }
   }
   render(){
+    if (this.state.redirect){
+      return <Redirect push to={this.props.to}/>
+    }
+    
     let Element = this.props.as || 'a';
     let elementProps:LinkProps  = Object.assign({}, this.props);
     delete elementProps["disablePropagation"];

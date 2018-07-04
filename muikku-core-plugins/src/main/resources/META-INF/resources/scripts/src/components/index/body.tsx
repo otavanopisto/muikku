@@ -16,6 +16,8 @@ import { Dispatch, connect } from 'react-redux';
 import { StatusType } from '~/reducers/base/status';
 import StudiesEnded from './body/studies-ended';
 
+import CheckContactInfoDialog from '~/components/base/check-contact-info-dialog';
+
 //TODO css get rid of ordered container 
 class IndexBody extends React.Component<{
   status: StatusType
@@ -44,6 +46,7 @@ class IndexBody extends React.Component<{
           </div>
         </div> : <div className="ordered-container ordered-container--index-panels"><StudiesEnded/></div>}
       </ScreenContainer>
+      <CheckContactInfoDialog/>
     </div>);
   }
 }

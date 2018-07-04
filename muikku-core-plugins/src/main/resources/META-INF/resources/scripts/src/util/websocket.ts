@@ -20,6 +20,7 @@ export default class MuikkuWebsocket {
   private pinging:boolean;
   private pingTime:number;
   private listeners:ListenerType;
+  private baseListeners:ListenerType;
   private store: Store<any>;
   private reconnectTimeout: number;
   
@@ -38,6 +39,7 @@ export default class MuikkuWebsocket {
     this.pinging = false;
     this.pingTime = 0;
     this.listeners = listeners;
+    this.baseListeners = listeners;
     this.store = store;
     
     this.getTicket((ticket: any)=> {
@@ -87,6 +89,10 @@ export default class MuikkuWebsocket {
     };
     evtListeners.callbacks.push(action);
     this.listeners[event] = evtListeners;
+    return this;
+  }
+  restoreEventListeners(){
+    this.listeners = this.baseListeners;
     return this;
   }
   trigger(event: any, data: any=null){

@@ -10,39 +10,13 @@ import { StateType } from '~/reducers';
 //TODO screw ie11 >:(
 import 'babel-polyfill';
 
-// TODO add a runApp that uses the history Api and takes the following
-// this will speed up the application quite a lot by merging
-
-// let store = runApp(reducer, {
-//    '/index': {
-//      app: IndexApp,
-//      callback(store){
-//        ...
-//      }
-//    }
-//    '/communicator': {
-//      app: CommunicatorApp
-//      callback(store){
-//         ...
-//      }
-//    }
-// })
-
-export default function runApp(reducer: Reducer<any>, App: any, existentStore: Store<StateType>=null): Store<StateType> {
-  let store = existentStore;
-  if (!store){
-    if (process.env["NODE_ENV"] !== "production"){
-      store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk, logger)));
-    } else {
-      store = createStore(reducer, applyMiddleware(thunk));
-    }
+export default function runApp(reducer: Reducer<any>, App: any, beforeCreateApp?: (store: Store<StateType>)=>any): Store<StateType> {
+  let store: Store<StateType>;
+  if (process.env["NODE_ENV"] !== "production"){
+    store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk, logger)));
+  } else {
+    store = createStore(reducer, applyMiddleware(thunk));
   }
-  
-  render(React.createElement(
-      Provider,
-      { store: store },
-      React.createElement(App, null)
-  ), document.querySelector("#app"));
   
   let newStore:Store<StateType> = {
     dispatch(action: any){
@@ -71,6 +45,13 @@ export default function runApp(reducer: Reducer<any>, App: any, existentStore: S
   if (process.env["NODE_ENV"] !== "production"){
     (window as any).STORE_DEBUG = store;
   }
+  
+  let props:any = beforeCreateApp ? beforeCreateApp(newStore) : {};
+  render(React.createElement(
+      Provider,
+      { store: store },
+      React.createElement(App, { store: store, ...props })
+  ), document.querySelector("#app"));
   
   return newStore;
 }
