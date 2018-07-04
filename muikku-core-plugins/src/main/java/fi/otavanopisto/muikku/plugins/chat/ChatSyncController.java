@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -75,6 +76,8 @@ public class ChatSyncController {
   
   @Inject
   private WorkspaceUserEntity workspaceUserEntity;
+  
+  private Workspace workspace;
   
   @Inject
   private SessionController sessionController;
@@ -160,33 +163,54 @@ public class ChatSyncController {
 
         for (WorkspaceEntity usersWorkspace : usersWorkspaces) {
           MUCRoomEntity chatRoomEntity = client.getChatRoom(usersWorkspace.getIdentifier());
-          if (chatRoomEntity == null) {
-            logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
-            if (identifier == null) {
-              logger.log(Level.WARNING, "Invalid workspace identifier " + identifier + ", skipping...");
-              continue;
-            }
+          Workspace workspace1 = workspaceController.findWorkspace(usersWorkspace);
+          Set<SchoolDataIdentifier> curriculumIdentifiers = workspace1.getCurriculumIdentifiers();
+          boolean hasCorrectCurriculums = true;
           
-            Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
-            String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+          for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
+            curriculumIdentifier.getIdentifier();
             
-            String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+            Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
             
-            chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
-            chatRoomEntity.setPersistent(true);
-            chatRoomEntity.setLogEnabled(true);
-            chatRoomEntity.setPublicRoom(true);
-            client.createChatRoom(chatRoomEntity);
+            String curriculumName = curriculum.getName();
             
-            EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
-            EnvironmentRoleEntity role = workspaceUserRole.getRole();
-              if (role.toString().equals("ADMINISTRATOR") || role.toString().equals("PROGRAMME-STUDY-LEADER")) {
-                client.addAdmin(workspace.getIdentifier(), identifier.toId());
-              } else {
-                client.addMember(workspace.getIdentifier(), identifier.toId());
+            if (curriculumName.equals("OPS2005")) {
+              hasCorrectCurriculums = false;
+              break;
+            } 
+             
+          }
+            
+          if (hasCorrectCurriculums) {
+            if (chatRoomEntity == null) {
+              logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
+              if (identifier == null) {
+                logger.log(Level.WARNING, "Invalid workspace identifier " + identifier + ", skipping...");
+                continue;
               }
-           }
-        }  
+            
+              Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
+              String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+              
+              String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+              
+              chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
+              chatRoomEntity.setPersistent(true);
+              chatRoomEntity.setLogEnabled(true);
+              chatRoomEntity.setPublicRoom(true);
+              client.createChatRoom(chatRoomEntity);
+              
+              EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
+              EnvironmentRoleEntity role = workspaceUserRole.getRole();
+                if (role.toString().equals("ADMINISTRATOR") || role.toString().equals("PROGRAMME-STUDY-LEADER")) {
+                  client.addAdmin(workspace.getIdentifier(), identifier.toId());
+                } else {
+                  client.addMember(workspace.getIdentifier(), identifier.toId());
+                }
+             }  
+          }
+         
+        }
       } catch (Exception e) {
         logger.log(Level.INFO, "Exception when syncing user " + studentIdentifier.getIdentifier(), e);
       } 
