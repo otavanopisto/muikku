@@ -132,88 +132,87 @@ public class ChatSyncController {
 
     String userSchoolDataSource = user.getSchoolDataSource();
     String userIdentifier = user.getIdentifier();
-      try {
-        // Checking before creating is subject to a race condition, but in the worst case
-        // the creation just fails, resulting in a log entry
-        String datasource = studentIdentifier.getDataSource();
-        UserEntity userEntity = client.getUser(studentIdentifier.toId());
-        if (userEntity == null) {
-          logger.log(Level.INFO, "Syncing chat user " + datasource+ "/" + userIdentifier);
-          if (identifier == null) {
-            logger.log(Level.WARNING, "Invalid user identifier " + studentIdentifier.getIdentifier() + ", skipping...");
+    
+    try {
+      // Checking before creating is subject to a race condition, but in the worst case
+      // the creation just fails, resulting in a log entry
+      String datasource = studentIdentifier.getDataSource();
+      UserEntity userEntity = client.getUser(studentIdentifier.toId());
+      if (userEntity == null) {
+        logger.log(Level.INFO, "Syncing chat user " + datasource+ "/" + userIdentifier);
+        if (identifier == null) {
+          logger.log(Level.WARNING, "Invalid user identifier " + studentIdentifier.getIdentifier() + ", skipping...");
 
-          }
-
-          
-          // Can't leave the password empty, so next best thing is random passwords
-          // The passwords are not actually used
-          byte[] passwordBytes = new byte[20];
-          random.nextBytes(passwordBytes);
-          String password = Base64.encodeBase64String(passwordBytes);
-
-          userEntity = new UserEntity(studentIdentifier.toId(), user.getDisplayName(), "", password);
-          client.createUser(userEntity);
-
-          if (userSchoolDataSource == null || userIdentifier == null) {
-            logger.log(Level.WARNING, "No user entity found for identifier " + studentIdentifier.getIdentifier() + ", skipping...");
-          }
         }
+          
+        // Can't leave the password empty, so next best thing is random passwords
+        // The passwords are not actually used
+        byte[] passwordBytes = new byte[20];
+        random.nextBytes(passwordBytes);
+        String password = Base64.encodeBase64String(passwordBytes);
+
+        userEntity = new UserEntity(studentIdentifier.toId(), user.getDisplayName(), "", password);
+        client.createUser(userEntity);
+
+        if (userSchoolDataSource == null || userIdentifier == null) {
+          logger.log(Level.WARNING, "No user entity found for identifier " + studentIdentifier.getIdentifier() + ", skipping...");
+        }
+      }
         
-        List<WorkspaceEntity> usersWorkspaces = workspaceController.listWorkspaceEntitiesByUser(userEntityController.findUserEntityByUser(user), true);
+      List<WorkspaceEntity> usersWorkspaces = workspaceController.listWorkspaceEntitiesByUser(userEntityController.findUserEntityByUser(user), true);
 
-        for (WorkspaceEntity usersWorkspace : usersWorkspaces) {
-          MUCRoomEntity chatRoomEntity = client.getChatRoom(usersWorkspace.getIdentifier());
-          Workspace workspace1 = workspaceController.findWorkspace(usersWorkspace);
-          Set<SchoolDataIdentifier> curriculumIdentifiers = workspace1.getCurriculumIdentifiers();
-          boolean hasCorrectCurriculums = true;
+      for (WorkspaceEntity usersWorkspace : usersWorkspaces) {
+        MUCRoomEntity chatRoomEntity = client.getChatRoom(usersWorkspace.getIdentifier());
+        Workspace workspace1 = workspaceController.findWorkspace(usersWorkspace);
+        Set<SchoolDataIdentifier> curriculumIdentifiers = workspace1.getCurriculumIdentifiers();
+        boolean hasCorrectCurriculums = true;
           
-          for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
-            curriculumIdentifier.getIdentifier();
+        for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
+          curriculumIdentifier.getIdentifier();
+          
+          Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
             
-            Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
+          String curriculumName = curriculum.getName();
             
-            String curriculumName = curriculum.getName();
-            
-            if (curriculumName.equals("OPS2005")) {
-              hasCorrectCurriculums = false;
-              break;
-            } 
+          if (curriculumName.equals("OPS2005")) {
+            hasCorrectCurriculums = false;
+            break;
+          } 
              
-          }
-            
-          if (hasCorrectCurriculums) {
-            if (chatRoomEntity == null) {
-              logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
-              if (identifier == null) {
-                logger.log(Level.WARNING, "Invalid workspace identifier " + identifier + ", skipping...");
-                continue;
-              }
-            
-              Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
-              String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
-              
-              String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
-              
-              chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
-              chatRoomEntity.setPersistent(true);
-              chatRoomEntity.setLogEnabled(true);
-              chatRoomEntity.setPublicRoom(true);
-              client.createChatRoom(chatRoomEntity);
-              
-              EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
-              EnvironmentRoleEntity role = workspaceUserRole.getRole();
-                if (role.toString().equals("ADMINISTRATOR") || role.toString().equals("PROGRAMME-STUDY-LEADER")) {
-                  client.addAdmin(workspace.getIdentifier(), identifier.toId());
-                } else {
-                  client.addMember(workspace.getIdentifier(), identifier.toId());
-                }
-             }  
-          }
-         
         }
-      } catch (Exception e) {
-        logger.log(Level.INFO, "Exception when syncing user " + studentIdentifier.getIdentifier(), e);
-      } 
+            
+        if (hasCorrectCurriculums) {
+          if (chatRoomEntity == null) {
+            logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
+            if (identifier == null) {
+              logger.log(Level.WARNING, "Invalid workspace identifier " + identifier + ", skipping...");
+              continue;
+            }
+            
+            Workspace workspace = workspaceController.findWorkspace(usersWorkspace);
+            String subjectCode = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier()).getCode();
+              
+            String roomName = subjectCode + workspace.getCourseNumber() + " - " + workspace.getNameExtension();
+              
+            chatRoomEntity = new MUCRoomEntity(workspace.getIdentifier(), roomName, workspace.getDescription());
+            chatRoomEntity.setPersistent(true);
+            chatRoomEntity.setLogEnabled(true);
+            chatRoomEntity.setPublicRoom(true);
+            client.createChatRoom(chatRoomEntity);
+              
+            EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
+            EnvironmentRoleEntity role = workspaceUserRole.getRole();
+            if (role.toString().equals("ADMINISTRATOR") || role.toString().equals("PROGRAMME-STUDY-LEADER")) {
+              client.addAdmin(workspace.getIdentifier(), identifier.toId());
+            } else {
+              client.addMember(workspace.getIdentifier(), identifier.toId());
+            }
+          }  
+        }
+      }
+    } catch (Exception e) {
+      logger.log(Level.INFO, "Exception when syncing user " + studentIdentifier.getIdentifier(), e);
+    } 
   }
-}
+}   
 
