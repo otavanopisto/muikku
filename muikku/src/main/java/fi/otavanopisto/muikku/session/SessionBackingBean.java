@@ -1,6 +1,9 @@
 package fi.otavanopisto.muikku.session;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -10,12 +13,18 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.muikku.plugins.forum.ForumController;
+import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
@@ -47,6 +56,9 @@ public class SessionBackingBean {
   
   @Inject
   private WorkspaceBackingBean workspaceBackingBean;
+  
+  @Inject
+  private ForumController forumController;
 
   @PostConstruct
   public void init() {
@@ -84,6 +96,26 @@ public class SessionBackingBean {
 
       this.loggedUserId = sessionController.getLoggedUserEntity().getId();
       this.loggedUser = sessionController.getLoggedUser().toId();
+      
+      if (!sessionController.hasEnvironmentPermission(ForumResourcePermissionCollection.FORUM_ACCESSENVIRONMENTFORUM) || !sessionController.isActiveUser()) {
+        this.areaPermissions = null;
+      } else {
+        List<EnvironmentForumArea> forumAreas = forumController.listEnvironmentForums();
+        Map<Long, AreaPermission> areaPermissions = new HashMap<>();
+        
+        for (EnvironmentForumArea forumArea : forumAreas) {
+          AreaPermission areaPermission = new AreaPermission(
+              sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_EDIT_ENVIRONMENT_MESSAGES, forumArea),
+              sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETE_ENVIRONMENT_MESSAGES, forumArea));
+          areaPermissions.put(forumArea.getId(), areaPermission );
+        }
+        
+        try {
+          this.areaPermissions = new ObjectMapper().writeValueAsString(areaPermissions);
+        } catch (JsonProcessingException e) {
+          this.areaPermissions = null;
+        }
+      }
     }
   }
 
@@ -201,5 +233,29 @@ public class SessionBackingBean {
   private boolean testsRunning;
   private String bugsnagApiKey;
   private boolean bugsnagEnabled;
+  
+  public String getAreaPermissions() {
+    return areaPermissions;
+  }
+	  
+  private String areaPermissions;
+	  
+	  public static class AreaPermission {
+	    
+	    public AreaPermission(Boolean editMessages, Boolean removeThread) {
+	      this.editMessages = editMessages;
+	      this.removeThread = removeThread;
+	    }
 
+	    public Boolean getRemoveThread() {
+	      return removeThread;
+	    }
+	    
+	    public Boolean getEditMessages() {
+	      return editMessages;
+	    }
+
+	    private final Boolean editMessages;
+	    private final Boolean removeThread;
+	  }
 }

@@ -22,6 +22,12 @@ import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAva
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
 
+import CommunicatorBody from '../components/communicator/body';
+import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMessagesNavigationLabels, loadSignature } from '~/actions/main-function/messages';
+
+import DiscussionBody from '../components/discussion/body';
+import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
+
 interface MainFunctionProps {
   store: Store<StateType>,
   websocket: Websocket
@@ -30,24 +36,65 @@ interface MainFunctionProps {
 export default class MainFunction extends React.Component<MainFunctionProps,{}> {
   private prevPathName:string;
   private itsFirstTime:boolean;
+  private loadedLibs:Array<string>;
+
   constructor(props: MainFunctionProps){
     super(props);
     
     this.renderIndexBody = this.renderIndexBody.bind(this);
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
+    this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
+    this.renderDiscussionBody = this.renderDiscussionBody.bind(this);
     
     this.itsFirstTime = true;
+    this.loadedLibs = [];
     
     window.addEventListener("hashchange", this.onHashChange.bind(this));
+  }
+  loadlib(url: string){
+    if (this.loadedLibs.indexOf(url) !== -1){
+      return;
+    }
+    this.loadedLibs.push(url);
+    
+    let script = document.createElement("script");
+    script.src = url;
+    document.head.appendChild(script);
   }
   onHashChange(){ 
     if (window.location.pathname.includes("/coursepicker")){
       this.loadCoursePickerData(queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'}));
+    } else if (window.location.pathname.includes("/communicator")){
+      this.loadCommunicatorData(window.location.hash.replace("#","").split("/"));
+    } else if (window.location.pathname.includes("/discussion")){
+      this.loadDiscussionData(window.location.hash.replace("#","").split("/"));
     }
   }
   updateFirstTime(){
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
+  }
+  //NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
+  loadDiscussionData(location: string[]){
+    if (location.length <= 2){
+      //The link is expected to be like # none, in this case it will collapse to null, page 1
+      //Else it can be #1 in that case it will collapse to area 1, page 1
+      //Or otherwise #1/2 in that case it will collapse to area 1 page 2
+      
+      this.props.store.dispatch(loadDiscussionThreadsFromServer({
+        areaId: parseInt(location[0]) || null,
+        page: parseInt(location[1]) || 1
+      }) as Action);
+    } else {
+      //There will always be an areaId and page designed #1/2/3 where then 3 is the threaid
+      //and there can be a page as #1/2/3/4
+      this.props.store.dispatch(loadDiscussionThreadFromServer({
+        areaId: parseInt(location[0]),
+        page: parseInt(location[1]),
+        threadId: parseInt(location[2]),
+        threadPage: parseInt(location[3]) || 1
+      }) as Action);
+    }
   }
   loadCoursePickerData(originalData:any){
     let filters:CoursesActiveFiltersType = {
@@ -57,6 +104,13 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       baseFilter: originalData.b || "ALL_COURSES"
     }
     this.props.store.dispatch(loadCoursesFromServer(filters) as Action);
+  }
+  loadCommunicatorData(location: string[]){
+    if (location.length === 1){
+      this.props.store.dispatch(loadMessageThreads(location[0]) as Action);
+    } else {
+      this.props.store.dispatch(loadMessageThread(location[0], parseInt(location[1])) as Action);
+    }
   }
   renderCoursePickerBody(){
     this.updateFirstTime();
@@ -106,11 +160,62 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     
     return <IndexBody/>
   }
+  renderCommunicatorBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners().addEventListener("Communicator:newmessagereceived", loadNewlyReceivedMessage);
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.communicator.pageTitle')));
+      this.props.store.dispatch(loadSignature() as Action);
+      
+      let currentLocation = window.location.hash.replace("#","").split("/");
+      this.props.store.dispatch(loadMessagesNavigationLabels(()=>{
+        if (currentLocation[0].includes("label")){
+          this.loadCommunicatorData(currentLocation);
+        }
+      }) as Action);
+      
+      if (!window.location.hash){
+        window.location.hash = "#inbox";
+      } else {
+        if (!currentLocation[0].includes("label")) {
+          this.loadCommunicatorData(currentLocation);
+        }
+      }
+    }
+    
+    return <CommunicatorBody/>
+  }
+  renderDiscussionBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.forum.pageTitle')));
+      
+      this.props.store.dispatch(loadDiscussionAreasFromServer(()=>{
+        //here in the callback
+        let currentLocation = window.location.hash.replace("#","").split("/");
+        this.loadDiscussionData(currentLocation);
+      }) as Action);
+    }
+    return <DiscussionBody/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
       <Route exact path="/" render={this.renderIndexBody}/>
       <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
+      <Route path="/communicator" render={this.renderCommunicatorBody}/>
+      <Route path="/discussion" render={this.renderDiscussionBody}/>
     </div></BrowserRouter>);
   }
 }

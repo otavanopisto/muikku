@@ -13,6 +13,8 @@ import courses from './main-function/courses';
 
 import userIndex from './main-function/user-index';
 
+import discussion from '~/reducers/main-function/discussion';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -28,5 +30,6 @@ export default combineReducers({
   announcements,
   workspaces,
   messages,
-  courses
+  courses,
+  discussion
 });

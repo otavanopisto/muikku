@@ -1,156 +1,3 @@
-<!-- <ui:composition xmlns="http://www.w3.org/1999/xhtml" 
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:jsf="http://xmlns.jcp.org/jsf"
-  template="/WEB-INF/templates/deprecated/flex-main-functionality.xhtml">
-  
-  <ui:param name="activeTrail" value="discussion"/>
-  
-  <ui:define name="scripts">
-    <script defer="defer" type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{sessionBackingBean.locale}"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/locales.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js"/>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/dustloader.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/webshim/1.15.10/minified/polyfiller.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/lodash/4.12.0/lodash.min.js"></script>
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/mainfunctions.js"/>
-    <script defer="defer" type="text/javascript" src="/scripts/gui/socialnavigation.js"/>   
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/discussion.js"/>    
-    <script defer="defer" type="text/javascript" jsf:name="/scripts/gui/environment-discussion.js"/>    
-  </ui:define>
-  
-  <ui:define name="main-functionality-styles">
-    <link rel="stylesheet" type="text/css" href="/css/deprecated/flex/discussion.css"/>
-  </ui:define>  
-  
-  <ui:define name="mf-content-master"> 
-    <input type="hidden" name="userId" value="#{sessionBackingBean.loggedUserId}"/>
-    <input type="hidden" name="areaPermissions" value="#{discussionBackingBean.areaPermissions}"/>
-    <input type="hidden" name="lockStickyPermission" value="#{discussionBackingBean.lockStickyPermission}"/>
-    <input type="hidden" name="showFullNamePermission" value="#{discussionBackingBean.showFullNamePermission}"/>
-    <div id="discussion">
-      <h2 class="main-functionality-page-title">#{i18n.text['plugin.forum.pageTitle']}</h2>
-      <ui:insert name="mf-content-functions">
-        <div class="mf-content-functions flex-row flex-align-items-center">
-          <div class="mf-button-container lg-flex-cell-4 md-flex-cell-4 sm-flex-cell-6 sm-flex-order-1 sm-flex-cell-first">
-            <div class="mf-primary-function">
-              <div class="di-new-message-button mf-primary-function-content">
-                <span class="mf-primary-function-text">#{i18n.text['plugin.communicator.newMessage']}</span>
-              </div>
-            </div>            
-          </div>
-          <div class="mf-controls-container lg-flex-cell-12 md-flex-cell-12 sm-flex-cell-10 sm-flex-order-2 sm-flex-cell-last">
-            <div class="di-content-functions flex-row flex-align-items-center">
-              <div class="di-browse-areas-container lg-flex-cell-5 md-flex-cell-5 sm-flex-cell-16 flex-cell-first">
-                <select id="discussionAreaSelect" name="areas"> 
-                </select>
-              </div>
-              
-              <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM,FORUM_UPDATEENVIRONMENTFORUM,FORUM_DELETEENVIRONMENTFORUM')}">
-                <div class="di-admin-tools lg-flex-hide md-flex-hide flex-left">
-                  <div class="mf-tools-mobile">
-                    <div class="mf-tools-mobile-activate icon-navicon">
-                      <div class="mf-tools-mobile-list">
-                        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')}">
-                          <div class="mf-tool-container default di-new-area-container">
-                            <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>
-                          </div>
-                        </ui:fragment>
-                        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')}">
-                          <div class="mf-tool-container default di-edit-area-container">
-                            <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>
-                          </div>
-                        </ui:fragment>
-                        <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')}">
-                          <div class="mf-tool-container default di-delete-area-container">
-                            <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>
-                          </div>
-                        </ui:fragment>
-                      </div>                  
-                    </div>                  
-                  </div>
-                </div>       
-                
-                <div class="di-admin-tools lg-flex-cell-11 md-flex-cell-11 sm-flex-cell-11 sm-flex-hide flex-left">
-                  <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')}">
-                    <div class="mf-tool-container default di-new-area-container">
-                      <div class="mf-tool di-new-area-button icon-add" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>    
-                    </div>             
-                  </ui:fragment>
-                  <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')}">
-                    <div class="mf-tool-container default di-edit-area-container">
-                      <div class="mf-tool di-edit-area-button icon-edit" title="#{i18n.text['plugin.discussion.editarea.topic']}"></div>    
-                    </div>
-                  </ui:fragment>
-                  <ui:fragment rendered="#{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')}">
-                    <div class="mf-tool-container default di-delete-area-container">
-                      <div class="mf-tool di-delete-area-button icon-delete" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>    
-                    </div>               
-                  </ui:fragment>
-                </div>
-              </ui:fragment>
-              
-waiting for backend & scripts to make this work 
-
-              <div class="di-gen-tools lg-flex-cell-7 md-flex-cell-6 sm-flex-hide flex-left" >
-                <div class="mf-tool-container default di-search-container toolset-1">
-                  <div class="mf-tool di-search-button icon-search" title="#{i18n.text['plugin.discussion.deletearea.topic']}"></div>
-                    <div class="di-search-result-container">
-                      <div class="di-search-form-container">
-                        <input type="text" name="searchField" placeholder="Hae käyttäjistä, viesteistä "></input>
-                      </div>    
-                      <div class="di-search-result-discussions">
-                        <div class="di-search-result-discussion">
-                          <div class="di-search-result-topic">dd.mm.yyy hh:mm - Discussion topic 1</div>
-                          <div class="di-search-result-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta hendrerit nunc. Proin eget enim vulputate, scelerisque ex non, ullamcorper nibh. Nam odio quam, interdum nec consequat non, dapibus nec magna. Sed at ornare justo. Nunc interdum dapibus sem eu iaculis. Quisque pellentesque, quam sed posuere cursus, odio neque tempor tellus, ac tempor magna ipsum eu sapien. Curabitur cursus dignissim elit, sagittis congue ex dapibus eu. Suspendisse iaculis lectus ut purus mollis ullamcorper. Nulla luctus tincidunt urna. Sed et massa sagittis, aliquet nisi sed, sodales felis. Nullam dapibus metus eget lobortis interdum.</div>
-                        </div>  
-                        <div class="di-search-result-discussion">
-                          <div class="di-search-result-topic">dd.mm.yyy hh:mm - Discussion topic 2</div>
-                          <div class="di-search-result-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porta hendrerit nunc. Proin eget enim vulputate, scelerisque ex non, ullamcorper nibh. Nam odio quam, interdum nec consequat non, dapibus nec magna. Sed at ornare justo. Nunc interdum dapibus sem eu iaculis. Quisque pellentesque, quam sed posuere cursus, odio neque tempor tellus, ac tempor magna ipsum eu sapien. Curabitur cursus dignissim elit, sagittis congue ex dapibus eu. Suspendisse iaculis lectus ut purus mollis ullamcorper. Nulla luctus tincidunt urna. Sed et massa sagittis, aliquet nisi sed, sodales felis. Nullam dapibus metus eget lobortis interdum.</div>
-                        </div>                      
-                      </div>
-                      <div class="di-search-result-users">  
-                        <div class="di-search-result-user">
-                          <div class="di-user-picture default usr-6">U</div>
-                          <div class="di-user-name"><span>User Username</span></div>
-                        </div>
-                        <div class="di-search-result-user">
-                          <div class="di-user-picture default usr-6">J</div>
-                          <div class="di-user-name"><span>Juser Jusername</span></div>
-                        </div>
-                      </div>  
-                    </div>  
-                </div>                          
-              </div>
-
-            </div>
-          </div>      
-        </div>
-      </ui:insert>
-      <ui:insert name="mf-content-area">
-        <div class="mf-content-area flex-row">
-          <div class="lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <div class="di-content-main">
-              <div class="di-thread-description-container mf-item flex-row">
-                <div class="di-thread-description lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-                </div>
-              </div>        
-              <div class="di-threads flex-row">
-              </div>
-              <div class="di-thread flex-row"></div>
-            </div>          
-          </div>
-        </div>
-      </ui:insert>
-    </div>
-  </ui:define>
-  
-</ui:composition> -->
-
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -158,24 +5,22 @@ waiting for backend & scripts to make this work
   template="/WEB-INF/templates/base.xhtml">
   
   <ui:define name="scripts">
-    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
-    <script defer="defer" jsf:name="scripts/dist/discussion.js" />
-    
     <script defer="defer">
-  	  MUIKKU_PERMISSIONS.AREA_PERMISSIONS = #{discussionBackingBean.areaPermissions};
-  	  MUIKKU_PERMISSIONS.LOCK_STICKY_PERMISSION = #{discussionBackingBean.lockStickyPermission};
-  	  MUIKKU_PERMISSIONS.SHOW_FULL_NAME_PERMISSION = #{discussionBackingBean.showFullNamePermission};
+      MUIKKU_PERMISSIONS.COMMUNICATOR_GROUP_MESSAGING = #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')};
+
+      MUIKKU_PERMISSIONS.AREA_PERMISSIONS = #{sessionBackingBean.areaPermissions};
+  	  MUIKKU_PERMISSIONS.LOCK_STICKY_PERMISSION = #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')};
+  	  MUIKKU_PERMISSIONS.SHOW_FULL_NAME_PERMISSION = #{sessionBackingBean.hasEnvironmentPermission('FORUM_SHOW_FULL_NAMES')};
   	  MUIKKU_PERMISSIONS.FORUM_CREATEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')};
   	  MUIKKU_PERMISSIONS.FORUM_UPDATEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')};
   	  MUIKKU_PERMISSIONS.FORUM_DELETEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')};
-  	</script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js"></script>
-    <script defer="defer" type="text/javascript" src="//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js"/>
+    </script>
+    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/dist/main-function.js" />
   </ui:define>
   
   <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/scripts/dist/discussion.css" />
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/main-function.css" />
   </ui:define>
 
 </ui:composition>
