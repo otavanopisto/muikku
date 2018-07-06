@@ -28,10 +28,23 @@ import { loadNewlyReceivedMessage, loadMessageThreads, loadMessageThread, loadMe
 import DiscussionBody from '../components/discussion/body';
 import {loadDiscussionAreasFromServer, loadDiscussionThreadsFromServer, loadDiscussionThreadFromServer} from '~/actions/main-function/discussion';
 
+import {loadAnnouncement, loadAnnouncements} from '~/actions/main-function/announcements';
+import AnnouncementsBody from '../components/announcements/body';
+import { AnnouncementListType } from '~/reducers/main-function/announcements';
+
+import AnnouncerBody from '../components/announcer/body';
+
+import { updateLabelFilters, updateWorkspaceFilters } from '~/actions/main-function/guider';
+import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
+import { loadStudents, loadStudent } from '~/actions/main-function/guider';
+import GuiderBody from '../components/guider/body';
+
 interface MainFunctionProps {
   store: Store<StateType>,
   websocket: Websocket
 }
+
+(window as any).USES_HISTORY_API = true;
 
 export default class MainFunction extends React.Component<MainFunctionProps,{}> {
   private prevPathName:string;
@@ -45,6 +58,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderCoursePickerBody = this.renderCoursePickerBody.bind(this);
     this.renderCommunicatorBody = this.renderCommunicatorBody.bind(this);
     this.renderDiscussionBody = this.renderDiscussionBody.bind(this);
+    this.renderAnnouncementsBody = this.renderAnnouncementsBody.bind(this);
+    this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
+    this.renderGuiderBody = this.renderGuiderBody.bind(this);
     
     this.itsFirstTime = true;
     this.loadedLibs = [];
@@ -68,11 +84,47 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.loadCommunicatorData(window.location.hash.replace("#","").split("/"));
     } else if (window.location.pathname.includes("/discussion")){
       this.loadDiscussionData(window.location.hash.replace("#","").split("/"));
+    } else if (window.location.pathname.includes("/announcements")){
+      this.loadAnnouncementsData(parseInt(window.location.hash.replace("#","")));
+    } else if (window.location.pathname.includes("/announcer")){
+      this.loadAnnouncerData(window.location.hash.replace("#","").split("/"));
+    } else if (window.location.pathname.includes("/guider")){
+      this.loadGuiderData();
     }
   }
   updateFirstTime(){
     this.itsFirstTime = window.location.pathname !== this.prevPathName;
     this.prevPathName = window.location.pathname;
+  }
+  loadGuiderData(){
+    //This code allows you to use the weird deprecated #userprofile/PYRAMUS-STUDENT-30055%22%3EJuhana type of links
+    if (window.location.hash.replace("#","").indexOf("userprofile") === 0) {
+      this.props.store.dispatch(loadStudent(decodeURIComponent(window.location.hash.split("/")[1]).split('"')[0]) as Action)
+      return;
+    }
+    let originalData:any = queryString.parse(window.location.hash.split("?")[1] || "", {arrayFormat: 'bracket'});
+
+    if (!originalData.c){
+      let filters:GuiderActiveFiltersType = {
+        "workspaceFilters": (originalData.w || []).map((num:string)=>parseInt(num)),
+        "labelFilters": (originalData.l || []).map((num:string)=>parseInt(num)),
+        "query": originalData.q || ""
+      }
+      this.props.store.dispatch(loadStudents(filters) as Action);
+      return;
+    }
+
+    this.props.store.dispatch(loadStudent(originalData.c) as Action)
+  }
+  loadAnnouncerData(location: string[]){
+    if (location.length === 1){
+      this.props.store.dispatch(loadAnnouncements(location[0]) as Action);
+    } else {
+      this.props.store.dispatch(loadAnnouncement(location[0], parseInt(location[1])) as Action);
+    }
+  }
+  loadAnnouncementsData(announcementId: number){
+    this.props.store.dispatch(loadAnnouncement(null, announcementId) as Action);
   }
   //NOTE because loadDiscussionThreadsFromServer can only run after areas have been loaded, this needs to be so
   loadDiscussionData(location: string[]){
@@ -209,6 +261,49 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     return <DiscussionBody/>
   }
+  renderAnnouncementsBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.props.store.dispatch(loadAnnouncementsAsAClient({hideWorkspaceAnnouncements: "false"}, (announcements:AnnouncementListType)=>{}) as Action);
+      this.loadAnnouncementsData(parseInt(window.location.hash.replace("#","")));
+    }
+    return <AnnouncementsBody/>
+  }
+  renderAnnouncerBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jssha/2.0.2/sha.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/jszip/3.0.0/jszip.min.js");
+      this.loadlib("//cdn.muikkuverkko.fi/libs/ckeditor/4.5.9/ckeditor.js");
+      
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.announcer.pageTitle')));
+      
+      if (!window.location.hash){
+        window.location.hash = "#active";
+      } else {
+        this.loadAnnouncerData(window.location.hash.replace("#","").split("/"));
+      }
+    }
+    
+    return <AnnouncerBody/>
+  }
+  renderGuiderBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.guider.guider')));
+      this.props.store.dispatch(updateLabelFilters() as Action);
+      this.props.store.dispatch(updateWorkspaceFilters() as Action);
+      
+      this.loadGuiderData();
+    }
+    return <GuiderBody/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -216,6 +311,9 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       <Route path="/coursepicker" render={this.renderCoursePickerBody}/>
       <Route path="/communicator" render={this.renderCommunicatorBody}/>
       <Route path="/discussion" render={this.renderDiscussionBody}/>
+      <Route path="/announcements" render={this.renderAnnouncementsBody}/>
+      <Route path="/announcer" render={this.renderAnnouncerBody}/>
+      <Route path="/guider" render={this.renderGuiderBody}/>
     </div></BrowserRouter>);
   }
 }

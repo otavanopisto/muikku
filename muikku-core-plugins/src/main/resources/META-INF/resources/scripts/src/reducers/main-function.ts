@@ -15,6 +15,8 @@ import userIndex from './main-function/user-index';
 
 import discussion from '~/reducers/main-function/discussion';
 
+import guider from './main-function/guider';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -31,5 +33,6 @@ export default combineReducers({
   workspaces,
   messages,
   courses,
-  discussion
+  discussion,
+  guider
 });

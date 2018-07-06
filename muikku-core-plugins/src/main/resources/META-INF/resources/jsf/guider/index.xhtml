@@ -5,12 +5,26 @@
   template="/WEB-INF/templates/base.xhtml">
   
   <ui:define name="scripts">
+    <script defer="defer">
+      MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_ENVIRONMENT = #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')};
+	  MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_WORKSPACES = true;
+	  MUIKKU_PERMISSIONS.ANNOUNCER_CAN_PUBLISH_GROUPS = #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')};
+    
+      MUIKKU_PERMISSIONS.COMMUNICATOR_GROUP_MESSAGING = #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')};
+
+      MUIKKU_PERMISSIONS.AREA_PERMISSIONS = #{sessionBackingBean.areaPermissions};
+  	  MUIKKU_PERMISSIONS.LOCK_STICKY_PERMISSION = #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')};
+  	  MUIKKU_PERMISSIONS.SHOW_FULL_NAME_PERMISSION = #{sessionBackingBean.hasEnvironmentPermission('FORUM_SHOW_FULL_NAMES')};
+  	  MUIKKU_PERMISSIONS.FORUM_CREATEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_CREATEENVIRONMENTFORUM')};
+  	  MUIKKU_PERMISSIONS.FORUM_UPDATEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_UPDATEENVIRONMENTFORUM')};
+  	  MUIKKU_PERMISSIONS.FORUM_DELETEENVIRONMENTFORUM = #{sessionBackingBean.hasEnvironmentPermission('FORUM_DELETEENVIRONMENTFORUM')};
+    </script>
     <script defer="defer" jsf:name="scripts/dist/vendor.js" />
-    <script defer="defer" jsf:name="scripts/dist/guider.js" />
+    <script defer="defer" jsf:name="scripts/dist/main-function.js" />
   </ui:define>
   
   <ui:define name="styles">
-    <link rel="stylesheet" type="text/css" href="/scripts/dist/guider.css" />
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/main-function.css" />
   </ui:define>
 
 </ui:composition>

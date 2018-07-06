@@ -17,6 +17,7 @@ interface ItemDataElement {
   trail: string,
   text: string,
   href: string,
+  to?: boolean,
   icon: string,
   condition?: boolean,
   badge?: number
@@ -43,6 +44,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.home.home',
       href: "/",
       icon: "home",
+      to: true,
       condition: true
     }, {
       modifier: "coursepicker",
@@ -50,6 +52,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.coursepicker.coursepicker',
       href: "/coursepicker",
       icon: "books",
+      to: true,
       condition: true
     }, {
       modifier: "communicator",
@@ -58,6 +61,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       href: "/communicator",
       icon: "envelope",
       condition: this.props.status.isActiveUser && this.props.status.loggedIn,
+      to: true,
       badge: this.props.messageCount
     }, {
       modifier: "discussion",
@@ -65,6 +69,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.forum.forum',
       href: "/discussion",
       icon: "bubble",
+      to: true,
       condition: this.props.status.isActiveUser && this.props.status.loggedIn && this.props.status.permissions.FORUM_ACCESSENVIRONMENTFORUM
     }, {
       modifier: "guider",
@@ -72,8 +77,10 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.guider.guider',
       href: "/guider",
       icon: "members",
+      to: true,
       condition: this.props.status.permissions.GUIDER_VIEW
     }, {
+      //Transcript of records is way too heavy and crazy to be its own thing, let it be here until it is refactored
       modifier: "records",
       trail: "records",
       text: 'plugin.records.records',
@@ -81,6 +88,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       icon: "profile",
       condition: this.props.status.permissions.TRANSCRIPT_OF_RECORDS_VIEW
     }, {
+      //Evaluation is also an external
       modifier: "evaluation",
       trail: "evaluation",
       text: 'plugin.evaluation.evaluation',
@@ -93,6 +101,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       text: 'plugin.announcer.announcer',
       href: "/announcer",
       icon: "announcer",
+      to: true,
       condition: this.props.status.permissions.ANNOUNCER_TOOL
     }];
     
@@ -103,7 +112,7 @@ class MainFunctionNavbar extends React.Component<MainFunctionNavbarProps, MainFu
       }
       return {
         modifier: item.modifier,
-        item: (<Link to={this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
+        item: (<Link href={item.href} to={item.to && this.props.activeTrail !== item.trail ? item.href : null} className={`link link--icon link--full link--main-function-navbar ${this.props.activeTrail === item.trail ? 'active' : ''}`}
           title={this.props.i18n.text.get(item.text)}>
           <span className={`link__icon icon-${item.icon}`}/>
           {item.badge ? <span className="indicator indicator--main-function">{(item.badge >= 100 ? "99+" : item.badge)}</span> : null}
