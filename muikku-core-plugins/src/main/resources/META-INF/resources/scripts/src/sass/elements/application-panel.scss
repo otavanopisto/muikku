@@ -181,3 +181,15 @@
     padding-left: 0;
   }
 } 
+
+.application-panel--profile {
+  .application-panel__helper-container {
+    display: block;
+    
+    @include breakpoint($breakpoint-pad) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}

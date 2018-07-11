@@ -1,5 +1,9 @@
 package fi.otavanopisto.muikku.session;
 
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,10 +30,14 @@ import fi.otavanopisto.muikku.plugins.forum.ForumController;
 import fi.otavanopisto.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.otavanopisto.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
+import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
+import fi.otavanopisto.muikku.schooldata.entity.UserAddress;
+import fi.otavanopisto.muikku.schooldata.entity.UserPhoneNumber;
 import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEmailEntityController;
 
 @RequestScoped
 @Named
@@ -59,6 +67,9 @@ public class SessionBackingBean {
   
   @Inject
   private ForumController forumController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
   @PostConstruct
   public void init() {
@@ -116,6 +127,79 @@ public class SessionBackingBean {
           this.areaPermissions = null;
         }
       }
+    } else {
+      this.areaPermissions = null;
+    }
+    
+    if (sessionController.isLoggedIn()) {
+    	UserEntity userEntity = sessionController.getLoggedUserEntity();
+        User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(), sessionController.getLoggedUserIdentifier());
+        List<UserAddress> userAddresses = userController.listUserAddresses(user);
+        List<UserPhoneNumber> userPhoneNumbers = userController.listUserPhoneNumbers(user);
+        
+        displayName = user.getNickName() == null ? user.getDisplayName() : String.format("%s %s (%s)", user.getNickName(), user.getLastName(), user.getStudyProgrammeName());
+        
+        studyStartDate = user.getStudyStartDate();
+        studyTimeEnd = user.getStudyTimeEnd();
+        studyTimeLeftStr = "";
+
+        if (studyTimeEnd != null) {
+          OffsetDateTime now = OffsetDateTime.now();
+          Locale locale = sessionController.getLocale();
+          
+          if (now.isBefore(studyTimeEnd)) {
+            long studyTimeLeftYears = now.until(studyTimeEnd, ChronoUnit.YEARS);
+            now = now.plusYears(studyTimeLeftYears);
+            if (studyTimeLeftYears > 0) {
+              studyTimeLeftStr += studyTimeLeftYears + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.y");
+            }
+            
+            long studyTimeLeftMonths = now.until(studyTimeEnd, ChronoUnit.MONTHS);
+            now = now.plusMonths(studyTimeLeftMonths);
+            if (studyTimeLeftMonths > 0) {
+              if (studyTimeLeftStr.length() > 0)
+                studyTimeLeftStr += " ";
+              studyTimeLeftStr += studyTimeLeftMonths + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.m");
+            }
+            
+            long studyTimeLeftDays = now.until(studyTimeEnd, ChronoUnit.DAYS);
+            now = now.plusDays(studyTimeLeftDays);
+            if (studyTimeLeftDays > 0) {
+              if (studyTimeLeftStr.length() > 0)
+                studyTimeLeftStr += " ";
+              studyTimeLeftStr += studyTimeLeftDays + " " + localeController.getText(locale, "plugin.profile.studyTimeEndShort.d");
+            }
+          }
+        }
+        
+        ArrayList<String> foundAddresses = new ArrayList<>();
+        for (UserAddress userAddress : userAddresses) {
+          foundAddresses.add(String.format("%s %s %s %s", userAddress.getStreet(), userAddress.getPostalCode(), userAddress.getCity(), userAddress.getCountry()));
+        }
+        try {
+          this.addresses = new ObjectMapper().writeValueAsString(foundAddresses);
+        } catch (JsonProcessingException e) {
+          this.addresses = null;
+        }
+        
+        ArrayList<String> foundPhoneNumbers = new ArrayList<>();
+        for (UserPhoneNumber userPhoneNumber : userPhoneNumbers) {
+          foundPhoneNumbers.add(userPhoneNumber.getNumber());
+        }
+        
+        try {
+            this.phoneNumbers = new ObjectMapper().writeValueAsString(foundPhoneNumbers);
+          } catch (JsonProcessingException e) {
+            this.phoneNumbers = null;
+          }
+        
+        SchoolDataIdentifier identifier = new SchoolDataIdentifier(userEntity.getDefaultIdentifier(), userEntity.getDefaultSchoolDataSource().getIdentifier());
+        List<String> foundEmails = userEmailEntityController.getUserEmailAddresses(identifier);
+        try {
+            this.emails = new ObjectMapper().writeValueAsString(foundEmails);
+          } catch (JsonProcessingException e) {
+            this.emails = null;
+          }
     }
   }
 
@@ -235,7 +319,7 @@ public class SessionBackingBean {
   private boolean bugsnagEnabled;
   
   public String getAreaPermissions() {
-    return areaPermissions;
+    return areaPermissions != null ? areaPermissions : "null";
   }
 	  
   private String areaPermissions;
@@ -258,4 +342,40 @@ public class SessionBackingBean {
 	    private final Boolean editMessages;
 	    private final Boolean removeThread;
 	  }
+	  
+	  public String getDisplayName() {
+		    return displayName != null ? displayName : "";
+		  }
+
+		  public String getAddresses() {
+		    return addresses != null ? addresses : "[]";
+		  }
+		  
+		  public String getEmails() {
+		    return emails != null ? emails : "[]";
+		  }
+		  
+		  public String getPhoneNumbers() {
+		    return phoneNumbers != null ? phoneNumbers : "[]";
+		  }
+		  
+		  public String getStudyStartDate() {
+		    return studyStartDate != null ? Date.from(studyStartDate.toInstant()).toString() : "";
+		  }
+
+		  public String getStudyTimeEnd() {
+		    return studyTimeEnd != null ? Date.from(studyTimeEnd.toInstant()).toString() : "";
+		  }
+
+		  public String getStudyTimeLeftStr() {
+		    return studyTimeLeftStr != null ? studyTimeLeftStr : "";
+		  }
+	  
+	  private String displayName;
+	  private String emails;
+	  private String addresses;
+	  private String phoneNumbers;
+	  private OffsetDateTime studyStartDate;
+	  private OffsetDateTime studyTimeEnd;
+	  private String studyTimeLeftStr;
 }

@@ -33,7 +33,8 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       {
         icon: "user",
         text: 'plugin.profileBadge.links.personalInfo',
-        href: "/profile"
+        href: "/profile",
+        to: true
       },
       {
         icon: "forgotpassword",
@@ -50,7 +51,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       }
     ]
     return <Dropdown modifier="profile" items={items.map((item)=>{
-        return (closeDropdown: ()=>any)=>{return <Link href={item.href}
+        return (closeDropdown: ()=>any)=>{return <Link href={item.href} to={item.to ? item.href : null}
          className={`link link--full link--profile`}
          onClick={(...args:any[])=>{closeDropdown(); item.onClick && item.onClick(...args)}}>
           <span className={`link__icon icon-${item.icon}`}></span>

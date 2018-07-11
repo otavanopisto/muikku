@@ -39,6 +39,8 @@ import { GuiderActiveFiltersType } from '~/reducers/main-function/guider';
 import { loadStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 
+import ProfileBody from '../components/profile/body';
+
 interface MainFunctionProps {
   store: Store<StateType>,
   websocket: Websocket
@@ -61,6 +63,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     this.renderAnnouncementsBody = this.renderAnnouncementsBody.bind(this);
     this.renderAnnouncerBody = this.renderAnnouncerBody.bind(this);
     this.renderGuiderBody = this.renderGuiderBody.bind(this);
+    this.renderProfileBody = this.renderProfileBody.bind(this);
     
     this.itsFirstTime = true;
     this.loadedLibs = [];
@@ -304,6 +307,16 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
     }
     return <GuiderBody/>
   }
+  renderProfileBody(){
+    this.updateFirstTime();
+    if (this.itsFirstTime){
+      this.props.websocket.restoreEventListeners();
+      
+      this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.profile.profile')));
+    }
+    
+    return <ProfileBody/>
+  }
   render(){
     return (<BrowserRouter><div id="root">
       <Notifications></Notifications>
@@ -314,6 +327,7 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       <Route path="/announcements" render={this.renderAnnouncementsBody}/>
       <Route path="/announcer" render={this.renderAnnouncerBody}/>
       <Route path="/guider" render={this.renderGuiderBody}/>
+      <Route path="/profile" render={this.renderProfileBody}/>
     </div></BrowserRouter>);
   }
 }
