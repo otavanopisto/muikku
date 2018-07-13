@@ -17,6 +17,8 @@ import discussion from '~/reducers/main-function/discussion';
 
 import guider from './main-function/guider';
 
+import profile from './main-function/profile';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -34,5 +36,6 @@ export default combineReducers({
   messages,
   courses,
   discussion,
-  guider
+  guider,
+  profile
 });

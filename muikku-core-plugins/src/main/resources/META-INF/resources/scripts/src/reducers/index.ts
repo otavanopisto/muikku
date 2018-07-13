@@ -14,8 +14,9 @@ import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
-import { RecordsType } from '~/reducers/main-function/records/records';
-import { ErrorType } from '~/reducers/base/error';
+import { RecordsType } from './main-function/records/records';
+import { ErrorType } from './base/error';
+import { ProfileType } from './main-function/profile';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -36,5 +37,6 @@ export interface StateType {
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,
-  error?: ErrorType
+  error?: ErrorType,
+  profile?: ProfileType
 }

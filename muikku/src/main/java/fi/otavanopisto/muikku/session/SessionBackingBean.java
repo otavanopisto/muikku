@@ -267,7 +267,7 @@ public class SessionBackingBean {
   }
 
   public String getLoggedUserName() {
-    return loggedUserName;
+    return loggedUserName != null ? loggedUserName : "";
   }
 
   public Locale getLocale() {

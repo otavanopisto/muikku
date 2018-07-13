@@ -17,6 +17,7 @@ export interface StatusType {
   isStudent: boolean,
   profile: {
     displayName: string,
+    loggedUserName: string,
     emails: Array<string>,
     addresses: Array<string>,
     phoneNumbers: Array<string>,

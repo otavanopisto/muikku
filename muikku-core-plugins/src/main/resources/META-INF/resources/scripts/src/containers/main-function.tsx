@@ -40,6 +40,7 @@ import { loadStudents, loadStudent } from '~/actions/main-function/guider';
 import GuiderBody from '../components/guider/body';
 
 import ProfileBody from '../components/profile/body';
+import { loadProfilePropertiesSet, loadProfileUsername, loadProfileAddress } from '~/actions/main-function/profile';
 
 interface MainFunctionProps {
   store: Store<StateType>,
@@ -313,6 +314,14 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.websocket.restoreEventListeners();
       
       this.props.store.dispatch(titleActions.updateTitle(this.props.store.getState().i18n.text.get('plugin.profile.profile')));
+      
+      this.props.store.dispatch(loadProfileUsername() as Action);
+      
+      if (!this.props.store.getState().status.isStudent){
+        this.props.store.dispatch(loadProfilePropertiesSet() as Action)
+      } else {
+        this.props.store.dispatch(loadProfileAddress() as Action)
+      }
     }
     
     return <ProfileBody/>
