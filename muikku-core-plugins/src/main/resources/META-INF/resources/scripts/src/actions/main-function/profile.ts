@@ -1,7 +1,8 @@
 import promisify from '~/util/promisify';
+import actions from '../base/notifications';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
-import {UserType, StudentUserAddressType} from '~/reducers/main-function/user-index';
+import {UserType, StudentUserAddressType, UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
 
 export interface LoadProfilePropertiesSetTriggerType {
@@ -20,14 +21,26 @@ export interface LoadProfileAddressTriggerType {
   ():AnyActionType
 }
 
+export interface UpdateProfileAddressTriggerType {
+  (data: {
+    street: string,
+    postalCode: string,
+    city: string,
+    country: string,
+    municipality: string,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
 export interface SET_PROFILE_USER_PROPERTY extends SpecificActionType<"SET_PROFILE_USER_PROPERTY", {
   key: string,
   value: string
 }>{}
 
 export interface SET_PROFILE_USERNAME extends SpecificActionType<"SET_PROFILE_USERNAME", string>{}
-
-export interface SET_PROFILE_ADDRESS extends SpecificActionType<"SET_PROFILE_ADDRESS", StudentUserAddressType>{}
+export interface SET_PROFILE_ADDRESSES extends SpecificActionType<"SET_PROFILE_ADDRESSES", Array<StudentUserAddressType>>{}
+export interface SET_PROFILE_STUDENT extends SpecificActionType<"SET_PROFILE_STUDENT", UserWithSchoolDataType>{}
 
 let loadProfilePropertiesSet:LoadProfilePropertiesSetTriggerType =  function loadProfilePropertiesSet() { 
   return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
@@ -100,15 +113,19 @@ let loadProfileAddress:LoadProfileAddressTriggerType = function loadProfileAddre
     let state = getState();
     
     try {
-      let addresses:Array<StudentUserAddressType> = <Array<StudentUserAddressType>>(await promisify(mApi().user.students.addresses.read(getState().status.userSchoolDataIdentifier), 'callback')());
-      let address = addresses.find(a=>a.defaultAddress);
-      if (!address){
-        address = addresses[0];
-      }
+      let identifier = state.status.userSchoolDataIdentifier;
+      let addresses:Array<StudentUserAddressType> = <Array<StudentUserAddressType>>(await promisify(mApi().user.students.addresses.read(identifier), 'callback')());
+      
+      let student:UserWithSchoolDataType = <UserWithSchoolDataType>(await promisify(mApi().user.students.read(identifier), 'callback')());
       
       dispatch({
-        type: "SET_PROFILE_ADDRESS",
-        payload: address
+        type: "SET_PROFILE_ADDRESSES",
+        payload: addresses
+      });
+      
+      dispatch({
+        type: "SET_PROFILE_STUDENT",
+        payload: student
       });
       
     } catch(err){
@@ -119,4 +136,52 @@ let loadProfileAddress:LoadProfileAddressTriggerType = function loadProfileAddre
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress};
+let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfileAddress(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+    
+    try {
+      if (data.municipality && data.municipality !== "") {
+        let student:UserWithSchoolDataType = {...state.profile.student};
+        student.municipality = data.municipality;
+        
+        dispatch({
+          type: "SET_PROFILE_STUDENT",
+          payload: <UserWithSchoolDataType>(await promisify(mApi().user.students.update(student.id, student), 'callback')())
+        });
+      }
+      
+      let address = state.profile.addresses.find(a=>a.defaultAddress);
+      if (!address){
+        address = state.profile.addresses[0];
+      }
+      
+      let nAddress:StudentUserAddressType = {...address, ...{
+        city: data.city,
+        country: data.country,
+        postalCode: data.postalCode,
+        street: data.street
+      }}
+      
+      let nAddressAsSaidFromServer:StudentUserAddressType = <StudentUserAddressType>await promisify(mApi().user.students.addresses.update(state.status.userSchoolDataIdentifier, nAddress.identifier, nAddress), 'callback')();
+      
+      dispatch({
+        type: "SET_PROFILE_ADDRESSES",
+        payload: state.profile.addresses.map(a=>a.identifier === nAddressAsSaidFromServer.identifier ? nAddressAsSaidFromServer : a)
+      });
+      
+      data.success && data.success();
+      
+    } catch(err){
+      if (!(err instanceof MApiError)){
+        throw err;
+      }
+      
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to update profile address"), 'error'));
+      
+      data.fail && data.fail();
+    }
+  }
+}
+
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress};

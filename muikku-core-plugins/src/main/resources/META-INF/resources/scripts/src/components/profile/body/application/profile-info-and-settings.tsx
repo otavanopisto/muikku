@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import moment from '~/lib/moment';
 
+import UpdateAddressDialog from '../../dialogs/update-address';
 import UpdateUsernamePasswordDialog from '../../dialogs/update-username-password';
 
 interface ProfileInfoAndSettingsProps {
@@ -108,10 +109,18 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
             return <div className="profile-user-data" key={email}>{email}</div>
           })}
         </div> : null}
-        {this.props.status.profile.addresses.length ? <div>
+        {this.props.status.profile.addresses.length && !this.props.profile.addresses ? <div>
           <label>{this.props.i18n.text.get('plugin.profile.addressesLabel')}</label>
           {this.props.status.profile.addresses.map((address)=>{
             return <div className="profile-user-data" key={address}>{address}</div>
+          })}
+        </div> : null}
+        {this.props.profile.addresses ? <div>
+          <label>{this.props.i18n.text.get('plugin.profile.addressesLabel')}</label>
+          {this.props.profile.addresses.map((address)=>{
+            return <div className="profile-user-data" key={address.identifier}>{(address.street ? address.street + " " : "") + 
+              (address.postalCode ? address.postalCode + " " : "") + (address.city ? address.city + " " : "") +
+              (address.country ? address.country + " " : "")}</div>
           })}
         </div> : null}
         {this.props.status.profile.phoneNumbers.length ? <div>
@@ -138,7 +147,9 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         </div>
 
         {this.props.status.isStudent ? <div className="profile-change-address-municipality-container">
-          <div className="profile-change-address-municipality">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</div>
+          <UpdateAddressDialog>
+            <div className="profile-change-address-municipality">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</div>
+          </UpdateAddressDialog>
         </div> : <form>
           <div className="profile-basicinfo-section">
             <div className="profile-phone-wrapper">

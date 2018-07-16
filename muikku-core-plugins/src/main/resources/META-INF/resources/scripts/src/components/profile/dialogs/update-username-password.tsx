@@ -139,10 +139,10 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
     let footer = (closeDialog: ()=>any)=>{
       return <div>
         <Button buttonModifiers="dialog-execute" onClick={this.update.bind(this, closeDialog)} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.discussion.editArea.send')}
+          {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.sendLabel')}
         </Button>
         <Button buttonModifiers="dialog-cancel" onClick={closeDialog} disabled={this.state.locked}>
-          {this.props.i18n.text.get('plugin.discussion.editArea.cancel')}
+          {this.props.i18n.text.get('plugin.profile.changePassword.dialog.button.cancelLabel')}
         </Button>
       </div>
     }
