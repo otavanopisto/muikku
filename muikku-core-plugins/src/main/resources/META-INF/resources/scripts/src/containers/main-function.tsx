@@ -17,7 +17,7 @@ import { loadLastWorkspaceFromServer, loadWorkspacesFromServer } from '~/actions
 import { loadLastMessageThreadsFromServer } from '~/actions/main-function/messages';
 
 import CousePickerBody from '../components/coursepicker/body';
-import { loadUserIndexBySchoolData } from '~/actions/main-function/user-index';
+import { loadUserIndexBySchoolData, loadUserIndex } from '~/actions/main-function/user-index';
 import { loadCoursesFromServer, loadAvaliableEducationFiltersFromServer, loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { CoursesActiveFiltersType } from '~/reducers/main-function/courses';
 import { UserType } from '~/reducers/main-function/user-index';
@@ -318,9 +318,10 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       this.props.store.dispatch(loadProfileUsername() as Action);
       
       if (!this.props.store.getState().status.isStudent){
-        this.props.store.dispatch(loadProfilePropertiesSet() as Action)
+        this.props.store.dispatch(loadProfilePropertiesSet() as Action);
+        this.props.store.dispatch(loadUserIndex(this.props.store.getState().status.userId) as Action);
       } else {
-        this.props.store.dispatch(loadProfileAddress() as Action)
+        this.props.store.dispatch(loadProfileAddress() as Action);
       }
     }
     
