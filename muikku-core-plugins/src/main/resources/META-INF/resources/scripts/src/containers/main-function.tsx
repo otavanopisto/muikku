@@ -319,7 +319,6 @@ export default class MainFunction extends React.Component<MainFunctionProps,{}> 
       
       if (!this.props.store.getState().status.isStudent){
         this.props.store.dispatch(loadProfilePropertiesSet() as Action);
-        this.props.store.dispatch(loadUserIndex(this.props.store.getState().status.userId) as Action);
       } else {
         this.props.store.dispatch(loadProfileAddress() as Action);
       }

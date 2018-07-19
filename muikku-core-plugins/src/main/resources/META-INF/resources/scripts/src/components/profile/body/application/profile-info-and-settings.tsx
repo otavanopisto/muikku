@@ -109,18 +109,10 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
             return <div className="profile-user-data" key={email}>{email}</div>
           })}
         </div> : null}
-        {this.props.status.profile.addresses.length && !this.props.profile.addresses ? <div>
+        {this.props.status.profile.addresses.length ? <div>
           <label>{this.props.i18n.text.get('plugin.profile.addressesLabel')}</label>
           {this.props.status.profile.addresses.map((address)=>{
             return <div className="profile-user-data" key={address}>{address}</div>
-          })}
-        </div> : null}
-        {this.props.profile.addresses ? <div>
-          <label>{this.props.i18n.text.get('plugin.profile.addressesLabel')}</label>
-          {this.props.profile.addresses.map((address)=>{
-            return <div className="profile-user-data" key={address.identifier}>{(address.street ? address.street + " " : "") + 
-              (address.postalCode ? address.postalCode + " " : "") + (address.city ? address.city + " " : "") +
-              (address.country ? address.country + " " : "")}</div>
           })}
         </div> : null}
         {this.props.status.profile.phoneNumbers.length ? <div>

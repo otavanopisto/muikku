@@ -8,36 +8,96 @@ import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 import '~/sass/elements/buttons.scss';
 import Button from '~/components/general/button';
+import ImageEditor, { ImageEditorRetrieverType } from '~/components/general/image-editor';
+import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
+import { bindActionCreators } from 'redux';
+let Slider = require('react-rangeslider').default;
+import 'react-rangeslider/lib/index.css';
+import { uploadProfileImage, UploadProfileImageTriggerType } from '~/actions/main-function/profile';
 
 interface UploadImageDialogProps {
   i18n: i18nType,
+  displayNotification: DisplayNotificationTriggerType,
+  uploadProfileImage: UploadProfileImageTriggerType,
   
   b64?: string,
+  file?: File,
+  
   isOpen: boolean,
   onClose: ()=>any
 }
 
 interface UploadImageDialogState {
-  locked: boolean
+  locked: boolean,
+  
+  scale: number,
+  angle: number
 }
 
 class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadImageDialogState> {
+  private retriever: ImageEditorRetrieverType;
   constructor(props: UploadImageDialogProps){
     super(props);
     
     this.upload = this.upload.bind(this);
+    this.showLoadError = this.showLoadError.bind(this);
+    this.rotate = this.rotate.bind(this);
+    this.onChangeScale = this.onChangeScale.bind(this);
+    this.getRetriever = this.getRetriever.bind(this);
     
     this.state = {
-      locked: false
+      locked: false,
+      scale: 100,
+      angle: 0
     }
   }
   upload(closeDialog: ()=>any){
+    this.setState({locked: true});
+    this.props.uploadProfileImage({
+      croppedB64: this.retriever.getAsDataURL(),
+      originalB64: this.props.b64,
+      file: this.props.file,
+      success: ()=>{
+        closeDialog();
+        this.setState({locked: false});
+      },
+      fail: ()=>{
+        this.setState({locked: false});
+      }
+    })
+  }
+  rotate(){
+    let nAngle = this.state.angle + 90;
+    if (nAngle === 360){
+      nAngle = 0;
+    }
     
+    this.setState({angle: nAngle})
+  }
+  showLoadError(){
+    this.props.displayNotification(this.props.i18n.text.get("TODO ERRORMSG image failed to load"), 'error');
+  }
+  onChangeScale(newValue: number){
+    this.setState({
+      scale: newValue
+    });
+  }
+  getRetriever(retriever: ImageEditorRetrieverType){
+    this.retriever = retriever;
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        <img src={this.props.b64}/>
-      </div>;
+      <ImageEditor onInitializedGetRetriever={this.getRetriever} dataURL={this.props.b64} onLoadError={this.showLoadError} ratio={1}
+       scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={250}/>
+      <Slider
+        value={this.state.scale}
+        orientation="horizontal"
+        max={200}
+        min={100}
+        onChange={this.onChangeScale}
+      />
+      <Button onClick={this.rotate}>rotate</Button>
+    </div>;
     let footer = (closeDialog: ()=>any)=>{
       return <div>
         <Button buttonModifiers="dialog-execute" onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
@@ -60,7 +120,7 @@ function mapStateToProps(state: StateType){
 };
 
 function mapDispatchToProps(dispatch: Dispatch<any>){
-  return {};
+  return bindActionCreators({displayNotification, uploadProfileImage}, dispatch);
 };
 
 export default connect(

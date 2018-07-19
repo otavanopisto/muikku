@@ -1,4 +1,9 @@
-import React from 'react';
+import * as React from 'react';
+
+export interface ImageEditorRetrieverType {
+  getAsDataURL: (mimeType?: string, quality?: number)=>string,
+  getAsBlob: (callback: (result: Blob | null) => void,mimeType?: string,quality?: number)=>void
+}
 
 interface ImageEditorProps {
   dataURL: any,
@@ -6,10 +11,11 @@ interface ImageEditorProps {
   ratio: number,
   scale: number,
   angle: number,
-  displayBoxWidth: number,
-  displayBoxHeight: number,
+  displayBoxWidth?: number,
+  displayBoxHeight?: number,
   style?: any,
-  className?: string
+  className?: string,
+  onInitializedGetRetriever?: (retriever:ImageEditorRetrieverType)=>any
 }
 
 interface ImageEditorState {
@@ -52,12 +58,12 @@ export default class ImageEditor extends React.Component<ImageEditorProps, Image
 
     if (this.props.displayBoxWidth){
       state.displayBoxWidth = this.props.displayBoxWidth;
-      state.displayBoxHeight = this.state.displayBoxWidth*(1/this.props.ratio);
+      state.displayBoxHeight = state.displayBoxWidth*(1/this.props.ratio);
     }
 
     if (this.props.displayBoxHeight){
       state.displayBoxWidth = this.props.displayBoxHeight;
-      state.displayBoxHeight = this.state.displayBoxWidth*(this.props.ratio);
+      state.displayBoxHeight = state.displayBoxWidth*(this.props.ratio);
     }
     
     this.state = state;
@@ -77,6 +83,11 @@ export default class ImageEditor extends React.Component<ImageEditorProps, Image
   componentWillMount(){
     document.body.addEventListener('mouseup', this.onMouseUp as any);
     document.body.addEventListener('mousemove', this.onMouseMove as any);
+    
+    this.props.onInitializedGetRetriever && this.props.onInitializedGetRetriever({
+      getAsBlob: this.getAsBlob.bind(this),
+      getAsDataURL: this.getAsDataURL.bind(this)
+    });
   }
   componentWillUnmount(){
     document.body.removeEventListener('mouseup', this.onMouseUp as any);

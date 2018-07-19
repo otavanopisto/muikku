@@ -1,9 +1,12 @@
-import promisify from '~/util/promisify';
+import promisify, { promisifyNewConstructor } from '~/util/promisify';
 import actions from '../base/notifications';
 import {AnyActionType, SpecificActionType} from '~/actions';
 import mApi, { MApiError } from '~/lib/mApi';
 import {UserType, StudentUserAddressType, UserWithSchoolDataType} from '~/reducers/main-function/user-index';
 import { StateType } from '~/reducers';
+import $ from '~/lib/jquery';
+import { resize } from '~/util/modifiers';
+import { updateStatusProfile, updateStatusHasImage } from '~/actions/base/status';
 
 export interface LoadProfilePropertiesSetTriggerType {
   ():AnyActionType
@@ -28,6 +31,16 @@ export interface UpdateProfileAddressTriggerType {
     city: string,
     country: string,
     municipality: string,
+    success: ()=>any,
+    fail: ()=>any
+  }):AnyActionType
+}
+
+export interface UploadProfileImageTriggerType {
+  (data: {
+    croppedB64: string,
+    originalB64: string,
+    file: File,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -165,10 +178,21 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
       
       let nAddressAsSaidFromServer:StudentUserAddressType = <StudentUserAddressType>await promisify(mApi().user.students.addresses.update(state.status.userSchoolDataIdentifier, nAddress.identifier, nAddress), 'callback')();
       
+      let newAddresses = state.profile.addresses.map(a=>a.identifier === nAddressAsSaidFromServer.identifier ? nAddressAsSaidFromServer : a);
+      
       dispatch({
         type: "SET_PROFILE_ADDRESSES",
-        payload: state.profile.addresses.map(a=>a.identifier === nAddressAsSaidFromServer.identifier ? nAddressAsSaidFromServer : a)
+        payload: newAddresses
       });
+      
+      dispatch(updateStatusProfile({
+        ...state.status.profile,
+        addresses: newAddresses.map((address)=>{
+          return (address.street ? address.street + " " : "") + 
+            (address.postalCode ? address.postalCode + " " : "") + (address.city ? address.city + " " : "") +
+            (address.country ? address.country + " " : "");
+        })
+      }))
       
       data.success && data.success();
       
@@ -184,4 +208,47 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
   }
 }
 
-export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress};
+let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileImage(data){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let state = getState();
+    
+    try {
+      await promisify (mApi().user.files
+        .create({
+          contentType: data.file.type,
+          base64Data: data.originalB64,
+          identifier: 'profile-image-original',
+          name: data.file.name,
+          visibility: 'PUBLIC'
+        }), 'callback')();
+      
+      let image:HTMLImageElement = <HTMLImageElement>await promisifyNewConstructor(Image, 'onload', 'onerror', {
+        src: data.croppedB64
+      })();
+      
+      let sizes = [96, 256];
+      let done = 0;
+
+      for (let i = 0;  i < sizes.length; i++) {
+        let size = sizes[i];
+        await promisify (mApi().user.files
+          .create({
+            contentType: 'image/jpeg',
+            base64Data: resize(image, size),
+            identifier: 'profile-image-' + size,
+            name: 'profile-' + size + '.jpg',
+            visibility: 'PUBLIC'
+          }), 'callback')();
+      }
+      
+      dispatch(updateStatusHasImage(true));
+      
+      data.success && data.success();
+    } catch (err){
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to upload profile images"), 'error'));
+      data.fail && data.fail();
+    }
+  }
+}
+
+export {loadProfilePropertiesSet, saveProfileProperty, loadProfileUsername, loadProfileAddress, updateProfileAddress, uploadProfileImage};
