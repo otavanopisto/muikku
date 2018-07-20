@@ -14,6 +14,29 @@ import moment from '~/lib/moment';
 
 import UpdateAddressDialog from '../../dialogs/update-address';
 import UpdateUsernamePasswordDialog from '../../dialogs/update-username-password';
+import Button from '~/components/general/button';
+
+function ProfileProperty(props: {
+  i18n: i18nType,
+  label: string,
+  condition: boolean,
+  value: string | Array<string | {
+    key: any,
+    value: string
+  }>
+}){
+  if (!props.condition){
+    return null;
+  }
+  return <div className="container container--profile-property">
+    <label className="text text--profile-property-label">{props.i18n.text.get(props.label)}</label>
+    {typeof props.value === "string" ?
+      <div className="text text--profile-property">{props.value}</div> :
+      props.value.map((v)=>{
+        return typeof v === "string" ? <div className="profile-user-data" key={v}>{v}</div> : <div className="profile-user-data" key={v.key}>{v.value}</div>
+      })}
+  </div>
+}
 
 interface ProfileInfoAndSettingsProps {
   i18n: i18nType,
@@ -101,55 +124,44 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     }
   }
   render(){
+    let studyTimeEndValues = [];
+    if (this.props.status.profile.studyTimeEnd){
+      studyTimeEndValues.push(this.props.i18n.time.format(moment(this.props.status.profile.studyTimeEnd, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate()));
+      if (this.props.status.profile.studyTimeLeftStr){
+        studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
+      }
+    }
     return (<div className="container container--full">
-        <h1 className="profile-user-realname">{this.props.status.profile.displayName}</h1>
-        {this.props.status.profile.emails.length ? <div>
-          <label>{this.props.i18n.text.get('plugin.profile.emailsLabel')}</label>
-          {this.props.status.profile.emails.map((email)=>{
-            return <div className="profile-user-data" key={email}>{email}</div>
-          })}
-        </div> : null}
-        {this.props.status.profile.addresses.length ? <div>
-          <label>{this.props.i18n.text.get('plugin.profile.addressesLabel')}</label>
-          {this.props.status.profile.addresses.map((address)=>{
-            return <div className="profile-user-data" key={address}>{address}</div>
-          })}
-        </div> : null}
-        {this.props.status.profile.phoneNumbers.length ? <div>
-          <label>{this.props.i18n.text.get('plugin.profile.phoneNumbers')}</label>
-          {this.props.status.profile.phoneNumbers.map((phoneNumber)=>{
-            return <div className="profile-user-data" key={phoneNumber}>{phoneNumber}</div>
-          })}
-        </div> : null}
-        {this.props.status.profile.studyStartDate ? <div>
-          <label>{this.props.i18n.text.get('plugin.profile.studyStartDateLabel')}</label>
-          <div className="profile-user-data">{this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}</div>
-        </div> : null}
-        {this.props.status.profile.studyTimeEnd ? <div>
-          <label>{this.props.i18n.text.get('plugin.profile.studyTimeEndLabel')}</label>
-          <div className="profile-user-data">{this.props.i18n.time.format(moment(this.props.status.profile.studyTimeEnd, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}</div>
-          {this.props.status.profile.studyTimeLeftStr ? 
-              <div className="profile-user-data">{this.props.status.profile.studyTimeLeftStr}</div> : null}
-        </div> : null}
+        <h1 className="text text--profile-student-header">{this.props.status.profile.displayName}</h1>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel" 
+          value={this.props.status.profile.emails}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel" 
+         value={this.props.status.profile.addresses}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.phoneNumbers.length} label="plugin.profile.phoneNumbers" 
+         value={this.props.status.profile.phoneNumbers}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyStartDate} label="plugin.profile.studyStartDateLabel" 
+        value={this.props.i18n.time.format(moment(this.props.status.profile.studyStartDate, "ddd MMM DD hh:mm:ss ZZ YYYY").toDate())}/>
+        <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel" 
+        value={studyTimeEndValues}/>
 
-        <div className="profile-change-password-container">
+        <div className="container container--profile-item">
           <UpdateUsernamePasswordDialog>
-            <div className="profile-change-password">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</div>
+            <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
           </UpdateUsernamePasswordDialog>
         </div>
 
-        {this.props.status.isStudent ? <div className="profile-change-address-municipality-container">
+        {this.props.status.isStudent ? <div className="container container--profile-item">
           <UpdateAddressDialog>
-            <div className="profile-change-address-municipality">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</div>
+            <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
           </UpdateAddressDialog>
         </div> : <form>
-          <div className="profile-basicinfo-section">
+          <div className="container container--profile-item">
             <div className="profile-phone-wrapper">
               <label>{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
               <input type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
             </div>
           </div>
-          <div className="profile-vacationinfo-section">
+          <div className="container container--profile-item">
             <div className="profile-vacation-wrapper">
               <div className="profile-vacation-date">
                 <label>{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
@@ -163,8 +175,8 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
               </div>
             </div>
 
-            <div className="profile-button-wrapper">
-              <div className="save-profile-fields" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</div>
+            <div className="container container--profile-item">
+              <Button buttonModifiers="profile" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
             </div>
           </div>
         </form>}
