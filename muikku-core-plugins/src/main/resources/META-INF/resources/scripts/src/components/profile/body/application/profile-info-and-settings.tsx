@@ -156,28 +156,21 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           </UpdateAddressDialog>
         </div> : <form>
           <div className="container container--profile-item">
-            <div className="profile-phone-wrapper">
-              <label>{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
-              <input type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
-            </div>
+            <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+            <input className="form-element__input" type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
           </div>
           <div className="container container--profile-item">
-            <div className="profile-vacation-wrapper">
-              <div className="profile-vacation-date">
-                <label>{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
-                <DatePicker selected={this.state.profileVacationStart} onChange={this.handleDateChange.bind(this, "profileVacationStart")}
-                locale={this.props.i18n.time.getLocale()}/>
-              </div>
-              <div className="profile-vacation-date">
-                <label>{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
-                <DatePicker selected={this.state.profileVacationEnd} onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
-                locale={this.props.i18n.time.getLocale()}/>
-              </div>
-            </div>
-
-            <div className="container container--profile-item">
-              <Button buttonModifiers="profile" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
-            </div>
+            <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
+            <DatePicker className="form-element__input" selected={this.state.profileVacationStart} onChange={this.handleDateChange.bind(this, "profileVacationStart")}
+             locale={this.props.i18n.time.getLocale()}/>
+          </div>
+          <div className="container container--profile-item">
+            <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
+            <DatePicker className="form-element__input" selected={this.state.profileVacationEnd} onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
+             locale={this.props.i18n.time.getLocale()}/>
+           </div>
+          <div className="container container--profile-item">
+            <Button buttonModifiers="profile" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
           </div>
         </form>}
     </div>);
