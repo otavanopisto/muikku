@@ -7,7 +7,8 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/form-elements.scss';
 import '~/sass/elements/form.scss';
 import '~/sass/elements/buttons.scss';
-import Button from '~/components/general/button';
+import '~/sass/elements/image-editor.scss';
+import Button, { ButtonPill } from '~/components/general/button';
 import ImageEditor, { ImageEditorRetrieverType } from '~/components/general/image-editor';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { bindActionCreators } from 'redux';
@@ -87,19 +88,23 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-      <ImageEditor onInitializedGetRetriever={this.getRetriever} dataURL={this.props.b64} onLoadError={this.showLoadError} ratio={1}
+      <ImageEditor className="image-editor--profile" onInitializedGetRetriever={this.getRetriever} dataURL={this.props.b64} onLoadError={this.showLoadError} ratio={1}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={250}/>
-      <Slider
-        value={this.state.scale}
-        orientation="horizontal"
-        max={200}
-        min={100}
-        onChange={this.onChangeScale}
-      />
-      <Button onClick={this.rotate}>rotate</Button>
+      <div className="container container--profile-image-tools">
+        <div className="container container--profile-slider">
+          <Slider
+            value={this.state.scale}
+            orientation="horizontal"
+            max={200}
+            min={100}
+            onChange={this.onChangeScale}
+          />
+        </div>
+        <ButtonPill icon="loading" onClick={this.rotate}/>
+      </div>
     </div>;
     let footer = (closeDialog: ()=>any)=>{
-      return <div>
+      return <div className="env-dialog__actions">
         <Button buttonModifiers="dialog-execute" onClick={this.upload.bind(this, closeDialog)} disabled={this.state.locked}>
           {this.props.i18n.text.get('plugin.profile.changeImage.dialog.saveButton.label')}
         </Button>

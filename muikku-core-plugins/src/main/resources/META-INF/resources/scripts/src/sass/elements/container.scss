@@ -236,3 +236,14 @@
 .container--profile-item {
   padding-bottom: 12px;
 }
+
+.container--profile-image-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container--profile-slider {
+  flex: 1 1 auto;
+  padding-right: 15px;
+}
