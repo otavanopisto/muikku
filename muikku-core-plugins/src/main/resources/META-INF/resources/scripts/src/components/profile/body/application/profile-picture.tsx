@@ -57,7 +57,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
           <form className="container container--profile-picture-filled" style={{backgroundImage:`url("${getUserImageUrl(this.props.status.userId, 256, this.props.status.imgVersion)}")`}}>
             <Button buttonModifiers="profile-image-edit">
               <span className="icon icon-edit"/>
-              {this.props.i18n.text.get("TODO edit image")}
+              {this.props.i18n.text.get("plugin.profile.editImage")}
             </Button>
             <input name="file" type="file" accept="image/*" onChange={this.readFile}/>
           </form>
