@@ -12,6 +12,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.infinispan.configuration.global.ShutdownHookBehavior;
 
@@ -21,6 +22,8 @@ import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.openfire.rest.client.RestApiClient;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.AuthenticationToken;
 import fi.otavanopisto.muikku.openfire.rest.client.entity.MUCRoomEntity;
+import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -43,21 +46,25 @@ public class ChatRoomSyncScheduler {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private UserChatSettingsDAO userChatSettingsDao;
 
   @Schedule(second = "0", minute = "*/15", hour = "*", persistent = false)
   @TransactionAttribute(TransactionAttributeType.REQUIRED)
   public void updateChatRooms() {
-    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-    if (enabledUsersCsv == null) {
-      return;
-    }
-    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
 
     String enabledWorkspacesCsv = pluginSettingsController.getPluginSetting("chat", "enabledWorkspaces");
     if (enabledWorkspacesCsv == null) {
-      return;
+     return;
     }
     List<String> enabledWorkspaces = Arrays.asList(enabledWorkspacesCsv.split(","));
+	  
+	List<UserChatSettings> listUsers = userChatSettingsDao.listAll();
+	  
+	  if (CollectionUtils.isEmpty(listUsers)) {
+	    return;
+	  }
 
     String openfireToken = pluginSettingsController.getPluginSetting("chat", "openfireToken");
     if (openfireToken == null) {
@@ -86,9 +93,6 @@ public class ChatRoomSyncScheduler {
 
     for (String enabledWorkspace : enabledWorkspaces) {
       try {
-        // Checking before creating is subject to a race condition, but in the worst
-        // case
-        // the creation just fails, resulting in a log entry
         MUCRoomEntity chatRoomEntity = client.getChatRoom(enabledWorkspace);
         if (chatRoomEntity == null) {
           logger.log(Level.INFO, "Syncing chat workspace " + enabledWorkspace);
@@ -109,26 +113,27 @@ public class ChatRoomSyncScheduler {
 
           List<WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
           List<WorkspaceUser> workspaceStaffs = workspaceController.listWorkspaceStaffMembers(workspaceEntity);
-
           for (WorkspaceUser workspaceStaff : workspaceStaffs) {
 
             SchoolDataIdentifier memberIdentifier = workspaceStaff.getUserIdentifier();
-
-            if (enabledUsers.contains(memberIdentifier.toId())) {
-
-              client.addAdmin(enabledWorkspace, memberIdentifier.toId());
-
+            
+            for (UserChatSettings listUser : listUsers) {
+              if (listUser.getUserIdentifier().equals(memberIdentifier.toId())) {
+            	client.addAdmin(enabledWorkspace, memberIdentifier.toId());
+              break;
+              }
             }
           }
 
           for (WorkspaceUser workspaceUser : workspaceUsers) {
 
             SchoolDataIdentifier memberIdentifier = workspaceUser.getUserIdentifier();
-
-            if (enabledUsers.contains(memberIdentifier.toId())) {
-
-              client.addMember(enabledWorkspace, memberIdentifier.toId());
-
+            
+            for (UserChatSettings listUser : listUsers) {
+              if (listUser.getUserIdentifier().equals(memberIdentifier.toId())) {
+                client.addMember(enabledWorkspace, memberIdentifier.toId());
+                break;
+              }
             }
           }
         }

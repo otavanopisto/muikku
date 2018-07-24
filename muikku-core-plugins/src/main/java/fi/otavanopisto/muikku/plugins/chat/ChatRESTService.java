@@ -19,6 +19,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -30,6 +31,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.plugin.PluginRESTService;
+import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings_;
+import fi.otavanopisto.muikku.plugins.chat.model.UserChatVisibility;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.entity.User;
 import fi.otavanopisto.muikku.session.SessionController;
@@ -49,7 +54,7 @@ import rocks.xmpp.extensions.httpbind.BoshConnectionConfiguration;
 public class ChatRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = -10681497398136513L;
-  
+
   @Inject
   private SessionController sessionController;
   
@@ -64,9 +69,12 @@ public class ChatRESTService extends PluginRESTService {
   
   @Inject
   private ChatClientHolder chatClientHolder;
-
+ 
   @Context
   private HttpServletRequest request;
+  
+  @Inject
+  private ChatController chatController;
   
   @GET
   @Path("/prebind")
@@ -160,27 +168,44 @@ public class ChatRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
     }
 
-    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
-    if (enabledUsersCsv == null) {
-      enabledUsersCsv = "";
-    }
-    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
     SchoolDataIdentifier identifier = sessionController.getLoggedUser();
     
     if (identifier == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Couldn't find logged user").build();
+      }
+	  
+    String enabledUsersCsv = pluginSettingsController.getPluginSetting("chat", "enabledUsers");
+    
+    if (enabledUsersCsv == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
+    List<String> enabledUsers = Arrays.asList(enabledUsersCsv.split(","));
+    boolean chatEnabled = false;
+
+    if (!enabledUsers.contains(identifier.toId())) {
+      return Response.ok(new StatusRESTModel(false, false, null)).build();
+    }
+    
+    UserChatSettings userChatSettings = chatController.findUserChatSettings(identifier);
+    
+    if (userChatSettings != null) {
+      UserChatVisibility visibility = userChatSettings.getVisibility();
+    	
+      if (visibility == UserChatVisibility.VISIBLE_TO_ALL) {
+    	chatEnabled = true;
+      }
+    } 
     
     User user = userController.findUserByIdentifier(identifier);
     
     if (user == null) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Logged user doesn't exist").build();
     }
-    
-    if (enabledUsers.contains(identifier.toId())) {
-      return Response.ok(new StatusRESTModel(true, user.getDisplayName())).build();
+
+    if (chatEnabled) {
+      return Response.ok(new StatusRESTModel(true, true, user.getDisplayName())).build();
     } else {
-      return Response.ok(new StatusRESTModel(false, null)).build();
+      return Response.ok(new StatusRESTModel(false, true, null)).build();
     }
   }
 
@@ -223,5 +248,37 @@ public class ChatRESTService extends PluginRESTService {
       return null;
     }
   }
+  
+  @GET
+  @Path("/settings")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response chatSettingsGet() {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+	}
 
+	SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();	  
+	UserChatSettings userChatSettings = chatController.findUserChatSettings(userIdentifier);
+	  
+	return Response.ok(userChatSettings).build();
+  }
+  @PUT
+  @Path("/settings")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response createOrUpdateUserChatSettings(UserChatSettings userChatSettings) {
+	if (!sessionController.isLoggedIn()) {
+	  return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
+	}
+  UserChatVisibility visibility = userChatSettings.getVisibility();
+	SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+	UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);
+	  
+	if (findUserChatSettings == null) {
+	  chatController.createUserChatSettings(userIdentifier, visibility);
+
+	} else {
+	  chatController.updateUserChatSettings(findUserChatSettings, visibility);
+	}
+	return Response.ok(userChatSettings).build(); 
+  }
 }
