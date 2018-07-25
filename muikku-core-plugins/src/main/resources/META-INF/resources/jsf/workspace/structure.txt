@@ -1,0 +1,14 @@
+FIRST I GOT TO SETUP THE MATERIALS CONFIGURATION UPDATE (that will be hard)
+
+workspace.xhtml					->			/workspace/{wokspaceName}								difficulty: 6											Frontpage
+workspace-management.xhtml		->			/workspace/{workspaceName}/workspace-management			difficulty: 8											Manages the workspace settings (admins and the like)
+workspace_announcer.xhtml		->			/workspace/{workspaceName}/announcer					difficulty: 10											Manages the announcements show in the frontpage (admins and the like)
+permissions.xhtml				->			/workspace/{workspaceName}/permissions					difficulty: 4											Manages the permissions (admins and the like)
+materials-management.xhtml		->			/workspace/{workspaceName}/materials-management			difficulty: it's over 8000		(phase 2) (separated)	Manages the material content ( teachers pretty much)
+frontpage-management.xhtml		->			/workspace/{workspaceName}/frontpage-management			difficulty: phase 2, 8			(phase 2) (separated)	Manages the frontpage content ( teachers pretty much)
+helppage-management.xhtml		->			/workspace/{workspaceName}/helppage-management			difficulty: phase 2, 6			(phase 2) (separated)	Manages the help content ( teachers pretty much)
+help.xhtml						->			/workspace/{workspaceName}/help							difficulty: 6											Shows the halp the teacher put there
+materials.xhtml					->			/workspace/{workspaceName}/materials					difficulty: 12											This is where most of the student action happen
+discussions.xhtml				->			/workspace/{workspaceName}/discussions					difficulty:	10											some discussion/drama area
+users.xhtml						->			/workspace/{workspaceName}/users						difficulty: 6											the list of the students that are part of that workspace
+journal.xhtml					->			/workspace/{workspaceName}/journal						difficulty: ? (currently is broken)						journal I guess
