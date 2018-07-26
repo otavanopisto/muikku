@@ -147,12 +147,24 @@
   
   &:not(:first-child) {
 
-
     @include breakpoint($breakpoint-pad) {
       margin-left: 20px;
     }  
   }
 }
+
+
+.env-dialog__form-element-container--datepicker {
+  flex-grow: 0;
+    
+  &:not(:first-child) {
+    @include breakpoint($breakpoint-pad) {
+      margin-left: 0;
+    }  
+  }
+}
+
+
 
 .env-dialog__label {   
   align-items: center;
