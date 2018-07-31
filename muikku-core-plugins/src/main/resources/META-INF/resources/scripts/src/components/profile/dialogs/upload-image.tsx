@@ -13,7 +13,7 @@ import ImageEditor, { ImageEditorRetrieverType } from '~/components/general/imag
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import { bindActionCreators } from 'redux';
 let Slider = require('react-rangeslider').default;
-import 'react-rangeslider/lib/index.css';
+import '~/sass/elements/rangeslider.scss';
 import { uploadProfileImage, UploadProfileImageTriggerType } from '~/actions/main-function/profile';
 
 interface UploadImageDialogProps {
