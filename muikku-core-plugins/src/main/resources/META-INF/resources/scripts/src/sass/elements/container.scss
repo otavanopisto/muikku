@@ -6,11 +6,11 @@
 
 // TODO: This file needs to be refactored out of existence. Containers should be a part of a component, not a component on it self.
 	
-.container {
+.test_container {
   width: 100%;
 }
   
-.container--full {
+.test_container--full {
   height: 100%;
   position: relative;
   width: 100%;
@@ -96,29 +96,6 @@
     margin-top: 0;
     text-align: left;
   }
-}
-
-.container--announcer-announcement-meta {
-  display: flex;
-  padding: 10px;
-}
-
-.container--new-announcement-options {
-  display: flex;
-  margin-bottom: 10px;
-  flex-direction: column;
-  
-  @include breakpoint($breakpoint-pad) {
-    flex-direction: initial;
-  }
-}
-
-.container--new-announcement-recipients {
-  margin-bottom: 10px;    
-}
-
-.container--new-announcement-title {
-  margin-bottom: 10px;
 }
 
 .container--communicator-subject {

@@ -33,7 +33,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
       <div className="application-list application-list--open">
         <div className={`application-list__item ${this.props.announcements.current.workspaces.length ? "application-list__item--workspace-announcement" : "application-list__item--environment-announcement"}`}>
           <div className="application-list__item-header  application-list__item-header--announcer-announcement">
-            <div className="container container--announcer-announcement-meta">
+            <div className="application-list__item-meta application-list__item-meta--announcer-announcement-meta">
               <div className="application-list__item-header-main application-list__item-header-main--announcer-announcement-dates">
                 <div className="text text--announcer-announcement-header">
                   <span className="text__icon icon-clock"></span>

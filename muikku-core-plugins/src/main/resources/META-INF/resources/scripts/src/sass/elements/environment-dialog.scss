@@ -133,6 +133,19 @@
   }
 }
 
+.env-dialog__row {
+  margin-top: 10px;
+}
+
+.env-dialog__row--new-announcement-options {
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: initial;
+  }
+}
+
 .env-dialog__form-element-container {
   display: flex;
   flex-basis: auto;

@@ -44,7 +44,7 @@ class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, An
         let toolbar = <Toolbar />
  
         //The message view actually appears on top and it's not a replacement, this makes it easier to go back without having to refresh from the server
-        return (<div className="container container--full">
+        return (<div>
           <ApplicationPanel modifier="announcer" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
             <Announcements/>
             <AnnouncementView/>
