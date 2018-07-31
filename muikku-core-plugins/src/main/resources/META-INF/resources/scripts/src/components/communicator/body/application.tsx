@@ -16,7 +16,6 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/container.scss';
 import Button, { ButtonPill } from '~/components/general/button';
 
 interface CommunicatorApplicationProps {

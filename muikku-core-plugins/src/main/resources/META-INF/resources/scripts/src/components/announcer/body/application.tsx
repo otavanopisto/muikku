@@ -14,7 +14,6 @@ import {StateType} from '~/reducers';
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/container.scss';
 
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/loaders.scss';
