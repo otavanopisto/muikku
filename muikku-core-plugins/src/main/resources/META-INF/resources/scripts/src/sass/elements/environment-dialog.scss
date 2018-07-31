@@ -137,6 +137,13 @@
   margin-top: 10px;
 }
 
+.env-dialog__row--communicator-signature {
+  align-items: center;
+  background-color: $color-default;
+  display: flex;
+  padding: 10px 0;
+}
+
 .env-dialog__row--new-announcement-options {
   display: flex;
   flex-direction: column;

@@ -4,7 +4,6 @@ import Aside from './body/aside';
 
 import * as React from 'react';
 
-import '~/sass/elements/container.scss';
 
 interface CommunicatorBodyProps {
   
