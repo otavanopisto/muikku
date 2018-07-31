@@ -49,6 +49,12 @@ export interface GuiderNotificationStudentsDataType {
   assessmentrequest?: string
 }
 
+export interface StudentUserStatistics {
+    login: Date[],
+    activities: {
+      workspaceId: number, assignmentDone: Date[]}[]
+      }
+
 export interface GuiderStudentUserProfileType {
   basic: GuiderStudentType,
   labels: Array<GuiderStudentUserProfileLabelType>,
@@ -61,7 +67,8 @@ export interface GuiderStudentUserProfileType {
   hops: HOPSDataType,
   lastLogin: LastLoginStudentDataType,
   notifications: GuiderNotificationStudentsDataType,
-  workspaces: WorkspaceListType
+  workspaces: WorkspaceListType,
+  statistics: StudentUserStatistics
 }
 
 export interface GuiderType {

@@ -22,6 +22,7 @@ import FileDeleteDialog from '../../dialogs/file-delete';
 
 import Workspaces from './current-student/workspaces';
 import FileUploader from '~/components/general/file-uploader';
+import FilterChart from './current-student/filter-chart';
 import {AddFileToCurrentStudentTriggerType, RemoveFileFromCurrentStudentTriggerType,
   addFileToCurrentStudent} from '~/actions/main-function/guider';
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
@@ -210,8 +211,12 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       <div className="application-sub-panel">
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>
         {files}  
-      </div>     
-      {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
+      </div>
+        {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
+        <div className="application-sub-panel">
+        <div className="application-sub-panel__header text text--guider-header">Statistics</div>
+        <FilterChart/>
+        </div>
     </div>
   }
 }

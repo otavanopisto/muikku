@@ -11,6 +11,7 @@
   "license": "MIT",
   "devDependencies": {},
   "dependencies": {
+    "@amcharts/amcharts3-react": "^3.0.0",
     "@types/deep-equal": "^1.0.1",
     "@types/node": "^8.0.28",
     "@types/query-string": "^5.0.1",
