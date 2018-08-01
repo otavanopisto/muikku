@@ -157,7 +157,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
   }
   render(){
     let content = (closeDialog: ()=>any) => [
-       <div key="1" className="container container--new-discussion-options">
+       <div key="1" className="env-dialog__row env-dialog__row---new-discussion-options">
          <div className="env-dialog__form-element-container">  
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.title')}</div>       
            <input className="env-dialog__input env-dialog__input--new-discussion-thread-title" 
@@ -172,13 +172,13 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
            </select>
          </div>
        </div>,
-       (this.props.status.permissions.LOCK_STICKY_PERMISSION ? <div key="2" className="container container--new-discussion-thread-states">
+       (this.props.status.permissions.LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
          <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
-       </div> : <div key="2" className="container container--new-discussion-thread-states"/>),
-       <div className="container container--discussion-content" key="3">     
+       </div> : <div key="2" className="env-dialog__row env-dialog__row--new-discussion-thread-states"/>),
+       <div className="env-dialog__row" key="3">     
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
            <CKEditor key="3" width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}

@@ -97,33 +97,11 @@
     text-align: left;
   }
 }
-  
-.container--new-discussion-options {
-  display: flex;
-  flex-flow: column wrap;
-  
-  @include breakpoint($breakpoint-pad) {
-    flex-flow: row wrap;
-  }
-}
-
-.container--new-discussion-area-title {
-  margin-bottom: 10px;
-}
-
-.container--new-discussion-thread-states {
-  align-items: center;
-  background-color: $color-default;
-  display: flex;
-  padding: 10px 0;
-
-} 
 
 .container--message-actions {
   padding: 10px 0;    
 }
 
-.container--discussion-profile-image,
 .container--guider-profile-image {
   align-items: center;
   border-radius: 100%;
