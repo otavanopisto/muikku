@@ -4,6 +4,7 @@
 //please remove it
 
 import * as React from 'react';
+import Base from './material-loader/base';
 
 //TODO add the scss files that are necessary to render this material page correctly...
 //this file is temporary use it to dump the content from the deprecated scss files that are necessary
@@ -137,13 +138,17 @@ $.getScript("//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js",
 
 interface MaterialLoaderProps {
   material: MaterialType,
-  workspace: WorkspaceType
+  workspace: WorkspaceType,
+  
+  v2?: boolean
 }
 
 interface MaterialLoaderState {
 }
 
 let materialRepliesCache:{[key: string]: any} = {};
+
+const BASEMODE = true;
 
 export default class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   constructor(props: MaterialLoaderProps){
@@ -158,6 +163,8 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     e.stopPropagation();
   }
   async create(){
+    
+    if (!BASEMODE){
     let fieldAnswers:any = materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
     if (!fieldAnswers){
       fieldAnswers = {};
@@ -182,6 +189,9 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
         readOnlyFields: true,
         fieldlessMode: true
       }).muikkuMaterialLoader('loadMaterial', this.refs.sandbox, fieldAnswers);
+    } else {
+      $('<div/>').muikkuMaterialLoader().muikkuMaterialLoader('loadMaterial', this.refs.sandbox);
+    }
   }
   render(){
     return <div className="__deprecated">
@@ -190,10 +200,14 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
             <div className="text text--studies-assignment-literal-assessment rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
+      <div className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" onClick={this.stopPropagation}>
+        <Base html={this.props.material.html}/>
+      </div>
+      <hr/>
       <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
-      data-material-id={this.props.material.id} data-workspace-material-id={this.props.material.assignment.id}
-      data-material-content={this.props.material.html} data-path={this.props.material.assignment.path} data-material-type="html"
-      data-loaded="false" data-workspace-entity-id={this.props.workspace.id} onClick={this.stopPropagation}/>
+        data-material-id={this.props.material.id} data-workspace-material-id={this.props.material.assignment.id}
+        data-material-content={this.props.material.html} data-path={this.props.material.assignment.path} data-material-type="html"
+        data-loaded="false" data-workspace-entity-id={this.props.workspace.id} onClick={this.stopPropagation}/>
     </div>
   }
 }

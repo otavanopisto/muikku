@@ -12,3 +12,30 @@ materials.xhtml					->			/workspace/{workspaceName}/materials					difficulty: 12
 discussions.xhtml				->			/workspace/{workspaceName}/discussions					difficulty:	10											some discussion/drama area
 users.xhtml						->			/workspace/{workspaceName}/users						difficulty: 6											the list of the students that are part of that workspace
 journal.xhtml					->			/workspace/{workspaceName}/journal						difficulty: ? (currently is broken)						journal I guess
+
+
+
+
+
+workspace.xhtml
+WORSKPACE_DESCRIPTION_MATERIAL_ID
+WORKSPACE_ID													it's in workspaceBackingBean
+workspace activity data (the two balls in the header)			https://dev.muikkuverkko.fi/rest/guider/workspaces/285/activity/?_=1533027060090
+the permissions are in the workspace index backing bean but can be moved to the workspace backing bean
+wokrspace teachers found by										https://dev.muikkuverkko.fi/rest/user/staffMembers/?workspaceEntityId=285&properties=profile-phone%2Cprofile-vacation-start%2Cprofile-vacation-end&_=1533027060094
+announcements													https://dev.muikkuverkko.fi/rest/announcer/announcements/?hideEnvironmentAnnouncements=true&workspaceEntityId=285&_=1533027060093
+Description														NEEDS PASI REST ENDPOINT D:
+Course producers												https://dev.muikkuverkko.fi/rest/workspace/workspaces/285/materialProducers/?_=1533027952149
+
+workspace-management.xhtml
+WORKSPACE_ID													it's in workspaceBackingBean
+
+workspace_announcer.xhtml
+same as announcer
+
+permissions.xhtml
+Leave it
+
+help.xhtml
+WORKSPACE_HELP_MATERIAL_ID
+

@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="/WEB-INF/templates/base.xhtml">
+  
+  <ui:define name="scripts">
+    <script defer="defer" jsf:name="scripts/dist/vendor.js" />
+    <script defer="defer" jsf:name="scripts/dist/workspace.js" />
+    <script>
+	  WORKSPACE_ID = "ID_HERE"; //With this you can get the workspace as http://dev.muikkuverkko.fi/rest/workspace/workspaces/285/
+    </script>
+  </ui:define>
+  
+  <ui:define name="styles">
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/workspace.css" />
+    <link rel="stylesheet" type="text/css" href="/scripts/dist/vendor.css" />
+  </ui:define>
+
+</ui:composition>
