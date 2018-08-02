@@ -2,7 +2,6 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Button, { ButtonSocial } from "~/components/general/button";
 
-import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/logo.scss';
 import '~/sass/elements/buttons.scss';
@@ -18,7 +17,7 @@ interface FrontpageOrganizationState {
 
 export default class FrontpageOrganization extends React.Component<FrontpageOrganizationProps, FrontpageOrganizationState> {
   render() {
-    return <section id="organization" className="container container--frontpage-section">
+    return <section id="organization" className="screen-container__section">
 
       <div className="card card--frontpage-otavan-opisto">
         <div className="ordered-container ordered-container--frontpage-otavan-opisto-info">

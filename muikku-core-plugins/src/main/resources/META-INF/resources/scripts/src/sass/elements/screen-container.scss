@@ -23,6 +23,17 @@
   overflow: visible;
 }
 
+.screen-container__section {
+  margin-top: 1.5rem;
+  padding: 0 $container-mobile-gutter;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 4.375rem;
+    padding: 0 $container-desktop-gutter;
+  }    
+}
+
+
 .screen-container--full-height {
   height: auto;
   
