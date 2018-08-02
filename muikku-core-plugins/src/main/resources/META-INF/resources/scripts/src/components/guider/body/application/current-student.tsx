@@ -13,7 +13,6 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/workspace-activity.scss';
-import '~/sass/elements/container.scss';
 
 import { getUserImageUrl, getName } from '~/util/modifiers';
 import Vops from '~/components/base/vops';
@@ -60,7 +59,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
     
     let studentBasicHeader = this.props.guider.currentStudent.basic && <div className="application-sub-panel__header">
         <object
-         className="container container--guider-profile-image"
+         className="avatar-container"
          data={getUserImageUrl(this.props.guider.currentStudent.basic.userEntityId)}
          type="image/jpeg">
           <div className={`avatar avatar--category-1`}>{this.props.guider.currentStudent.basic.firstName[0]}</div>

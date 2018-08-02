@@ -16,24 +16,12 @@
 }
 
 
-
 .avatar {
   align-items: center;
   border-radius: 100%;
   color: $color-environment-link-icon-color;
   display: flex;
   font-size: $avatar-font-size;
-  height: $avatar-size;
-  justify-content: center;
-  width: $avatar-size;
-}
-
-.container--discussion-profile-image {
-  align-items: center;
-  border-radius: 100%;
-  color: $color-default;
-  display: flex;
-  font-family: $text-font-family;
   height: $avatar-size;
   justify-content: center;
   width: $avatar-size;
