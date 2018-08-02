@@ -1,18 +1,22 @@
 import TextField from './text-field';
 import SelectField from './select-field';
 import MultiSelectField from './multiselect-field';
+import MemoField from './memo-field';
 import * as React from 'react';
 import $ from '~/lib/jquery';
 import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
+import { i18nType } from '~/reducers/base/i18n';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
   "application/vnd.muikku.field.select": SelectField,
-  "application/vnd.muikku.field.multiselect": MultiSelectField
+  "application/vnd.muikku.field.multiselect": MultiSelectField,
+  "application/vnd.muikku.field.memo": MemoField
 }
 
 interface BaseProps {
-  html: string
+  html: string,
+  i18n: i18nType
 }
 
 interface BaseState {
@@ -46,7 +50,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     if (!ActualElement){
       return <span>Invalid Element {element.getAttribute("type")} {element.innerHTML}</span>;
     }
-    let parameters: {[key: string]: string} = {};
+    let parameters: {[key: string]: any} = {};
     for (let i = 0; i < element.childNodes.length; i++){
       let node:HTMLElement = element.childNodes[i] as HTMLElement;
       if (node.tagName === "PARAM"){
@@ -58,6 +62,8 @@ export default class Base extends React.Component<BaseProps, BaseState> {
           parameters["content"] = parameters["content"] && JSON.parse(parameters["content"]);
         } catch (e){}
       }
+      
+      parameters["i18n"] = this.props.i18n;
     }
     return <ActualElement {...parameters}/>
   }

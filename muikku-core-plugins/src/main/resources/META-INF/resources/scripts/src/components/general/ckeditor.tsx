@@ -63,7 +63,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
       
       actualHeight = remainingHeight + ckeditorHeight - 9;
     } else {
-      actualHeight = height;
+      actualHeight = height || "100%";
     }
     
     if (actualHeight !== this.height || this.width !== width){
