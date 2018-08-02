@@ -12,22 +12,6 @@
   justify-content: space-between;
 }
 
-.container--update-label-dialog-fields {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: space-between;
-  padding: 5px 0;
-}
-
-.container--update-label-dialog-picker {
-  align-items: flex-start;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  padding: 5px 0;
-}
-
 .container--message-actions {
   padding: 10px 0;    
 }
@@ -42,9 +26,6 @@
   justify-content: center;
   width: $avatar-size;
 }
-
-
-
 
 .container--error {
   background-color: $color-default;
