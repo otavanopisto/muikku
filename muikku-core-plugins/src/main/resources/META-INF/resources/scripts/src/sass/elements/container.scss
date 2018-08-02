@@ -38,11 +38,6 @@
   padding: 5px 0;
 }
 
-.container--profile-image-in-menu {
-  border-radius: 100%;
-  height: 35px;
-  margin-right: 10px;
-  width: 35px;
 }
   
 
@@ -63,6 +58,9 @@
   justify-content: center;
   width: $avatar-size;
 }
+
+
+
 
 .container--error {
   background-color: $color-default;
