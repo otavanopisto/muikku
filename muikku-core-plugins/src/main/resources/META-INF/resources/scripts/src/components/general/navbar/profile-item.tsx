@@ -59,7 +59,7 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         </Link>}
       })}>
       <Link className="button-pill button-pill--profile">
-        <object className="container container--profile-image"
+        <object className="button__image"
          data={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)}
          type="image/jpeg">
           <span className="button-pill__icon icon-user"></span>

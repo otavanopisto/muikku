@@ -45,58 +45,9 @@
   width: 35px;
 }
   
-.container--muikku-logo {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  flex-flow: nowrap;
-  justify-content: center;
-  
-  @include breakpoint ($breakpoint-pad) {
-    flex-direction: column;
-  }
-}
-  
-.container--frontpage-section {
-  margin-top: 1.5rem;
-  padding: 0 $container-mobile-gutter;
 
-  @include breakpoint($breakpoint-pad) {
-    margin-top: 4.375rem;
-    padding: 0 $container-desktop-gutter;
-  }
-}
   
-.container--otavan-opisto-logo {
-  text-align: center;
-  
-  @include breakpoint($breakpoint-desktop) {
-    text-align: left;
-  }
-}
 
-.container--otavan-opisto-social-media {
-  margin-top: 1.5rem;
-  text-align: center;
-
-  @include breakpoint($breakpoint-pad) {
-    margin-top: 0;
-  }
-
-  @include breakpoint($breakpoint-desktop) {
-    text-align: left;
-  }
-}
-
-.container--otavan-opisto-description {
-  margin-top: 1.5rem;
-  text-align: center;
-  
-  @include breakpoint($breakpoint-desktop) {
-    margin-top: 0;
-    text-align: left;
-  }
-}
 
 .container--message-actions {
   padding: 10px 0;    

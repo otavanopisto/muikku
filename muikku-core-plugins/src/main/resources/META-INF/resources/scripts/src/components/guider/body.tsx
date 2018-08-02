@@ -17,7 +17,7 @@ interface GuiderBodyState {
 export default class GuiderBody extends React.Component<GuiderBodyProps, GuiderBodyState> {
   render(){
     let aside = <Aside />
-    return (<div className="container container--full">
+    return (<div>
       <MainFunctionNavbar activeTrail="guider" navigation={aside}/>
       <Application aside={aside}/>
     </div>);

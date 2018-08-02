@@ -14,7 +14,6 @@ function checkLinkClicked(target: HTMLElement): boolean {
 }
 
 import '~/sass/elements/menu.scss';
-import '~/sass/elements/container.scss';
 import '~/sass/elements/link.scss';
 import { getUserImageUrl } from '~/util/modifiers';
 
@@ -159,7 +158,7 @@ class Menu extends React.Component<MenuProps, MenuState> {
                     {this.props.status.loggedIn ? <li className="menu__item menu__item--space"></li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
                       <Link className="link link--full link--menu link--menu--profile" href="/profile">
-                        <object className="container container--profile-image container--profile-image-in-menu"
+                        <object className="button__image"
                           data={getUserImageUrl(this.props.status.userId)}
                           type="image/jpeg">
                           <span className="link__icon icon-user"></span>
