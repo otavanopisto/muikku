@@ -248,16 +248,19 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
                 )
               ]);
             }
-            
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
-            
-            //sample data
-            let stat =   {
-              login: [new Date("2016-01-13"),new Date("2016-01-14T14:48:00"),new Date("2016-01-15T12:48:00")],
-            activities: [{workspaceId: 1, assignmentDone: [new Date("2016-01-13T14:48:00"),new Date("2016-01-14T14:50:00")]},
-                         {workspaceId: 2, assignmentDone: [new Date("2016-01-14T14:48:00"),new Date("2016-01-15T14:50:00")]}
-            ]};
-            
+          }),
+          promisify(mApi().user.students.loginson.read(id, {from: new Date(new Date().getFullYear(), 0), to: new Date()}), 'callback')()
+          .then((LoginData:Array<LastLoginStudentDataType>)=>{
+            let logins: Date[] = [];
+            LoginData.map((log)=>{
+              logins.push(new Date(log.time));
+            });
+            let stat = {
+              login: logins /*[new Date("2016-01-13"),new Date("2016-01-14T14:48:00"),new Date("2016-01-15T12:48:00")]*/,
+              activities: [{workspaceId: 1, assignmentDone: [new Date("2016-01-13T14:48:00"),new Date("2016-01-14T14:50:00")]},
+                           {workspaceId: 2, assignmentDone: [new Date("2016-01-14T14:48:00"),new Date("2016-01-15T14:50:00")]}
+              ]};
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "statistics", value: stat}})
           })
       ]);

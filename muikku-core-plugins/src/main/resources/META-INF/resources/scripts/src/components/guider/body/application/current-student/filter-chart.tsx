@@ -26,7 +26,6 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
   }
     render(){
-      console.log (this.props.statistics);
       if(!this.props.statistics){
         return (<p>LOADING</p>);
       }
@@ -92,7 +91,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
 //                    "assignmentsDone": 20,
 //                    "exercisesDone": 10
 //                }];
-      //TO DO CHANGE TO LOCALE VARIABLE
+      
+      //TODO: CHANGE TO LOCALE VARIABLE
       let months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
       let logins = Array(12).fill(0);
       let assignments = Array(12).fill(0);
