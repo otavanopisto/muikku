@@ -6,12 +6,16 @@ import * as React from 'react';
 import $ from '~/lib/jquery';
 import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
 import { i18nType } from '~/reducers/base/i18n';
+import FileField from './file-field';
+import ConnectField from './connect-field';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
   "application/vnd.muikku.field.select": SelectField,
   "application/vnd.muikku.field.multiselect": MultiSelectField,
-  "application/vnd.muikku.field.memo": MemoField
+  "application/vnd.muikku.field.memo": MemoField,
+  "application/vnd.muikku.field.file": FileField,
+  "application/vnd.muikku.field.connect": ConnectField
 }
 
 interface BaseProps {

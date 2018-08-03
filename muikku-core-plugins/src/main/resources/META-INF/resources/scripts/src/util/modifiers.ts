@@ -185,3 +185,19 @@ export function resize(img: HTMLImageElement, width: number, mimeType?: string, 
   
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);
 }
+
+export function shuffle(array: Array<any>) {
+  let currentIndex = array.length;
+  let temporaryValue;
+  let randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
