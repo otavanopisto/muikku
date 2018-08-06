@@ -29,7 +29,7 @@ class StudiesApplication extends React.Component<StudiesApplicationProps, Studie
     let toolbar = <Toolbar />      
 
       
-    return (<div className="container container--full">
+    return (<div>
       <ApplicationPanel modifier="records" toolbar={toolbar} title={title} primaryOption={primaryOption} asideBefore={this.props.aside}>
         <Records/>
         <CurrentRecord/>

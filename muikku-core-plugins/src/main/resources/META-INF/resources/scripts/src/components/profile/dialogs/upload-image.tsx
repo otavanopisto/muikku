@@ -90,8 +90,8 @@ class UploadImageDialog extends React.Component<UploadImageDialogProps, UploadIm
     let content = (closeDialog: ()=>any)=><div>
       <ImageEditor className="image-editor--profile" onInitializedGetRetriever={this.getRetriever} dataURL={this.props.b64} onLoadError={this.showLoadError} ratio={1}
        scale={this.state.scale/100} angle={this.state.angle} displayBoxWidth={250}/>
-      <div className="container container--profile-image-tools">
-        <div className="container container--profile-slider">
+      <div className="dialog__image-tools">
+        <div className="dialog__slider">
           <Slider
             value={this.state.scale}
             orientation="horizontal"

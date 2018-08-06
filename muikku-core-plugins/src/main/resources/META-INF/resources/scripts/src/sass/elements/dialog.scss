@@ -65,6 +65,19 @@
   flex-flow: column wrap;
 }
 
+.dialog__image-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog__slider {
+  flex: 1 1 auto;
+  padding-right: 15px;
+}
+
+
+
 .dialog__header {
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
@@ -114,6 +127,10 @@
   position: relative;
   width: 100%;
 }
+
+
+
+
 
 .dialog__footer {
   bottom: 0;

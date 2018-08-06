@@ -11,7 +11,6 @@ import { saveProfileProperty, SaveProfilePropertyTriggerType } from '~/actions/m
 import { bindActionCreators } from 'redux';
 import { displayNotification, DisplayNotificationTriggerType } from '~/actions/base/notifications';
 import moment from '~/lib/moment';
-
 import UpdateAddressDialog from '../../dialogs/update-address';
 import UpdateUsernamePasswordDialog from '../../dialogs/update-username-password';
 import Button from '~/components/general/button';
@@ -28,7 +27,7 @@ function ProfileProperty(props: {
   if (!props.condition){
     return null;
   }
-  return <div className="container container--profile-property">
+  return <div className="profile-element__item">
     <label className="text text--profile-property-label">{props.i18n.text.get(props.label)}</label>
     {typeof props.value === "string" ?
       <div className="text text--profile-property">{props.value}</div> :
@@ -131,7 +130,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         studyTimeEndValues.push(this.props.status.profile.studyTimeLeftStr);
       }
     }
-    return (<div className="container container--full">
+    return (<div className="profile-element">
         <h1 className="text text--profile-student-header">{this.props.status.profile.displayName}</h1>
         <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel" 
           value={this.props.status.profile.emails}/>
@@ -144,32 +143,32 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.studyTimeEnd} label="plugin.profile.studyTimeEndLabel" 
         value={studyTimeEndValues}/>
 
-        <div className="container container--profile-item">
+        <div className="profile-element__item">
           <UpdateUsernamePasswordDialog>
             <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changePassword.buttonLabel')}</Button>
           </UpdateUsernamePasswordDialog>
         </div>
 
-        {this.props.status.isStudent ? <div className="container container--profile-item">
+        {this.props.status.isStudent ? <div className="profile-element__item">
           <UpdateAddressDialog>
             <Button buttonModifiers="profile">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.buttonLabel')}</Button>
           </UpdateAddressDialog>
         </div> : <form>
-          <div className="container container--profile-item">
+          <div className="profile-element__item">
             <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
             <input className="form-element__input" type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
           </div>
-          <div className="container container--profile-item">
+          <div className="profile-element__item">
             <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
             <DatePicker className="form-element__input" selected={this.state.profileVacationStart} onChange={this.handleDateChange.bind(this, "profileVacationStart")}
              locale={this.props.i18n.time.getLocale()}/>
           </div>
-          <div className="container container--profile-item">
+          <div className="profile-element__item">
             <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
             <DatePicker className="form-element__input" selected={this.state.profileVacationEnd} onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
              locale={this.props.i18n.time.getLocale()}/>
            </div>
-          <div className="container container--profile-item">
+          <div className="profile-element__item">
             <Button buttonModifiers="profile" onClick={this.save}>{this.props.i18n.text.get('plugin.profile.save.button')}</Button>
           </div>
         </form>}
