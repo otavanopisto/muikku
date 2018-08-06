@@ -109,6 +109,7 @@ public class ChatRoomSyncScheduler {
 
           Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
           chatRoomEntity = new MUCRoomEntity(enabledWorkspace, workspace.getName(), workspace.getDescription());
+          chatRoomEntity.setPersistent(true);
           client.createChatRoom(chatRoomEntity);
 
           List<WorkspaceUser> workspaceUsers = workspaceController.listWorkspaceStudents(workspaceEntity);
