@@ -8,6 +8,7 @@ import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode
 import { i18nType } from '~/reducers/base/i18n';
 import FileField from './file-field';
 import ConnectField from './connect-field';
+import OrganizerField from './organizer-field';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
@@ -15,7 +16,8 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.multiselect": MultiSelectField,
   "application/vnd.muikku.field.memo": MemoField,
   "application/vnd.muikku.field.file": FileField,
-  "application/vnd.muikku.field.connect": ConnectField
+  "application/vnd.muikku.field.connect": ConnectField,
+  "application/vnd.muikku.field.organizer": OrganizerField
 }
 
 interface BaseProps {

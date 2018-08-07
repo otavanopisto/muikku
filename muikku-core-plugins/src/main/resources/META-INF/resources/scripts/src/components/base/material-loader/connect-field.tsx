@@ -1,5 +1,6 @@
 import * as React from "react";
 import { shuffle } from "~/util/modifiers";
+import Draggable from "~/components/general/draggable";
 
 interface FieldType {
   name: string,
@@ -66,6 +67,9 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     })
   }
   swapCounterpart(fielda: FieldType, fieldb: FieldType){
+    if (fielda.name === fieldb.name){
+      return;
+    }
     this.setState({
       counterparts: this.state.counterparts.map(f=>{
         if (f.name === fielda.name){
@@ -78,6 +82,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     })
   }
   pickField(field: FieldType, isCounterpart: boolean, index: number){
+    console.log(arguments);
     if (!this.state.selectedField){
       this.setState({
         selectedField: field,
@@ -144,12 +149,14 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       </div>
       <div className="muikku-connect-field-gap"></div>
       <div className="muikku-connect-field-counterparts">
-       {this.state.counterparts.map((field, index)=><div onClick={this.pickField.bind(this, field, true, index)}
+       {this.state.counterparts.map((field, index)=><Draggable interactionData={{field, index, isCounterpart: true}} interactionGroup={this.props.content.name + "-counterparts"}
+         onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field" onDrag={this.pickField.bind(this, field, false, index)}
+         onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
          className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
            "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`}
            key={field.name} style={{
              justifyContent: "flex-start"  //TODO lankkinen Add this in classes sadly I had to use the original connect field term class because of missing functionality
-           }}>{field.text}</div>)}
+           }}>{field.text}</Draggable>)}
       </div>
     </div>
   }
