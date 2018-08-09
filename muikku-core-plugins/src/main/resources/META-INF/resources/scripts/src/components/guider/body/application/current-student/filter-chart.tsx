@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import {StudentUserStatistics} from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
+import WorkspaceFilter from './filters/workspace-filter';
 
 var AmCharts = require("@amcharts/amcharts3-react");
 
@@ -10,7 +11,6 @@ var AmCharts = require("@amcharts/amcharts3-react");
 
 interface CurrentStudentStatisticsProps {
   statistics: StudentUserStatistics
-
 }
 
 interface CurrentStudentStatisticsState {
@@ -20,11 +20,22 @@ interface CurrentStudentStatisticsState {
 class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsProps, CurrentStudentStatisticsState> {
   constructor(props: CurrentStudentStatisticsProps){
     super(props);
-    
+    this.handler = this.handler.bind(this);
     this.state = {
-        filteredWorkspaces:[]
-    }
+      filteredWorkspaces: []
+    };
   }
+  
+  handler(workspaceId: number) {
+    const filteredWorkspaces = this.state.filteredWorkspaces.slice();
+    var index = filteredWorkspaces.indexOf(workspaceId);
+    if(index > -1)
+      filteredWorkspaces.splice(index, 1);
+    else 
+      filteredWorkspaces.push(workspaceId);
+    this.setState({filteredWorkspaces: filteredWorkspaces});
+  }
+  
     render(){
       if(!this.props.statistics){
         return (<p>LOADING</p>);
@@ -96,14 +107,19 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       let months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
       let logins = Array(12).fill(0);
       let assignments = Array(12).fill(0);
-      let excersises = Array(12).fill(1);
+      let excersises = Array(12).fill(0);
+      let workspaces: {id:number, name:string}[] = [];
       this.props.statistics.login.map((login) =>{
-          logins[login.getMonth()]++;
+        logins[login.getMonth()]++;
       });
       this.props.statistics.activities.map((activity) =>{
+        workspaces.push({id:activity.workspaceId, name:activity.workspaceName});
         if(!this.state.filteredWorkspaces.includes(activity.workspaceId)){
-          activity.assignmentDone.map((assignment) => {
-          assignments[assignment.getMonth()]++;
+          activity.records.map((record) => {
+            if(record.type=="EVALUATED")
+              assignments[record.date.getMonth()]++;
+            else if(record.type=="EXERCISE")
+              excersises[record.date.getMonth()]++;
           })
         }
       });
@@ -164,14 +180,18 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
                "unit": "",
                "position": "left",
                "title": "",
-           }]}
+           }]
+      }
+      
      return(
-       <AmCharts.React   className="my-class"
+      <div className="react-required-container">
+       	<AmCharts.React className="my-class"
         style={{
         width: "90%",
         height: "400px"
         }} options={config} />
-     )
+      	<WorkspaceFilter workspaces={workspaces} handler={this.handler} filteredWorkspaces={this.state.filteredWorkspaces}/>
+      </div>)
   }
 }
 
