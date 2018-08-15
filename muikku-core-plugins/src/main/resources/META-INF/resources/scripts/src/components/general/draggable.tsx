@@ -209,18 +209,18 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     if (this.state.isDragging){
       if ((new Date()).getTime() - this.timer <= 300){
         this.props.onClick(e as any);
+        this.setState({
+          isDragging: false
+        });
+      } else {
+        this.props.interactionGroup && this.props.onDropInto && this.detectCollisions(true);
+        this.setState({
+          isDragging: false
+        });
       }
-      this.props.interactionGroup && this.props.onDropInto && this.detectCollisions(true);
-      this.setState({
-        isDragging: false
-      });
     }
   }
-  detectCollisions(isDrop: boolean){
-    if (isDrop){
-      debugger;
-    }
-    
+  detectCollisions(isDrop: boolean){    
     //the contestant that showed collisions
     let contestants:Array<{
       interactId: string,

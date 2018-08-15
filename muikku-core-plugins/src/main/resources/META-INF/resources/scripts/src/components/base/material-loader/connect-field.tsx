@@ -45,6 +45,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
     this.swapField = this.swapField.bind(this);
     this.swapCounterpart = this.swapCounterpart.bind(this);
     this.pickField = this.pickField.bind(this);
+    this.cancelPreviousPick = this.cancelPreviousPick.bind(this);
   }
   componentWillReceiveProps(nextProps: ConnectFieldProps){
     if (JSON.stringify(nextProps.content) !== JSON.stringify(this.props.content)){
@@ -138,6 +139,13 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       editedIds
     });
   }
+  cancelPreviousPick(){
+    this.setState({
+      selectedField: null,
+      selectedIsCounterpart: false,
+      selectedIndex: null
+    });
+  }
   render(){
     return <div className="muikku-connect-field muikku-field">
       <div className="muikku-connect-field-terms">
@@ -149,8 +157,10 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       </div>
       <div className="muikku-connect-field-gap"></div>
       <div className="muikku-connect-field-counterparts">
-       {this.state.counterparts.map((field, index)=><Draggable interactionData={{field, index, isCounterpart: true}} interactionGroup={this.props.content.name + "-counterparts"}
-         onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field" onDrag={this.pickField.bind(this, field, false, index)}
+       {this.state.counterparts.map((field, index)=><Draggable interactionData={{field, index, isCounterpart: true}} 
+         interactionGroup={this.props.content.name + "-counterparts"}
+         onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
+         onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field"
          onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
          className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
            "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`}
