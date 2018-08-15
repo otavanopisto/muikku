@@ -54,8 +54,8 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                 </div> : null}
           </div>
           <div className="application-list__item-body">
-            <header className="text text--announcer-announcement-caption">{this.props.announcements.current.caption}</header>
-            <section className="text text--announcer-announcement-content rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
+            <header className="text text--announcement-caption">{this.props.announcements.current.caption}</header>
+            <section className="text text--announcement-content rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>  
         </div>                 
       </div>

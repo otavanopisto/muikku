@@ -4,15 +4,7 @@
 @import "../base/breakpoints";
 
 .text {
-  color: $color-text-default;
-  display: block;
-  font-family: $text-font-family;
-  font-size: $text-mobile-font-size;
-  font-weight: 400;
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: $text-desktop-font-size;
-  }
+  @include text;
 }
   
 .text--branded {
@@ -412,6 +404,7 @@ b {
 }
 
 // Announcer
+
 .text--announcer-times {
   display: inline-block;
   margin-left: 5px;
@@ -431,15 +424,6 @@ b {
   flex-wrap: wrap; 
 }
 
-.text--announcer-announcement-caption {
-  font-weight: 600;  
-  padding: 10px 10px 0; 
-}  
-
-.text--announcer-announcement-content {
-  padding: 0 10px;  
-}
-
 .text--announcer-announcement-workspaces {
   padding: 0 10px; 
 }
@@ -454,15 +438,13 @@ b {
 }
 
 // Announcements
+
 .text--announcement-caption {
   font-size: 1.5rem;
   font-weight: 200;
   margin: 0 0 10px;
 }  
 
-.text--announcer-date {
-  margin: 0 0 10px;
-}
 
 .text--announcement-content {
   line-height: 1.5rem;
@@ -996,6 +978,7 @@ b {
 }
 
 // Error pages
+
 .text--error-title {
   background-color: $color-panel-background;
   color: $color-index-text-for-panels-title;
