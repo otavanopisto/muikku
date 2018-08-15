@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.infinispan.configuration.global.ShutdownHookBehavior;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.EnvironmentUser;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
@@ -69,19 +70,8 @@ public class ChatSyncController {
   private Logger logger;
 
   @Inject
-  private WorkspaceEntityController workspaceEntityController;
-
-  @Inject
   private WorkspaceController workspaceController;
-  
-  @Inject
-  private WorkspaceUserEntity workspaceUserEntity;
-  
-  private Workspace workspace;
-  
-  @Inject
-  private SessionController sessionController;
-  
+
   @Inject
   private CourseMetaController courseMetaController;
     
@@ -127,8 +117,7 @@ public class ChatSyncController {
     RestApiClient client = new RestApiClient(openfireUrl, Integer.parseInt(openfirePort, 10), token);
     
     SecureRandom random = new SecureRandom();
-    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(studentIdentifier.getIdentifier());
-    User user = userController.findUserByUserEntityDefaults(userEntityController.findUserEntityByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier()));
+    User user = userController.findUserByDataSourceAndIdentifier(studentIdentifier.getDataSource(), studentIdentifier.getIdentifier()); 
 
     String userSchoolDataSource = user.getSchoolDataSource();
     String userIdentifier = user.getIdentifier();
@@ -136,22 +125,17 @@ public class ChatSyncController {
     try {
       // Checking before creating is subject to a race condition, but in the worst case
       // the creation just fails, resulting in a log entry
-      String datasource = studentIdentifier.getDataSource();
       UserEntity userEntity = client.getUser(studentIdentifier.toId());
       if (userEntity == null) {
-        logger.log(Level.INFO, "Syncing chat user " + datasource+ "/" + userIdentifier);
-        if (identifier == null) {
-          logger.log(Level.WARNING, "Invalid user identifier " + studentIdentifier.getIdentifier() + ", skipping...");
-
-        }
-          
+        logger.log(Level.INFO, "Syncing chat user " + userSchoolDataSource+ "/" + userIdentifier);
         // Can't leave the password empty, so next best thing is random passwords
+        
         // The passwords are not actually used
         byte[] passwordBytes = new byte[20];
         random.nextBytes(passwordBytes);
         String password = Base64.encodeBase64String(passwordBytes);
 
-        userEntity = new UserEntity(studentIdentifier.toId(), user.getDisplayName(), "", password);
+        userEntity = new UserEntity(userIdentifier, user.getDisplayName(), "", password);
         client.createUser(userEntity);
 
         if (userSchoolDataSource == null || userIdentifier == null) {
@@ -168,7 +152,6 @@ public class ChatSyncController {
         boolean hasCorrectCurriculums = true;
           
         for (SchoolDataIdentifier curriculumIdentifier : curriculumIdentifiers) {
-          curriculumIdentifier.getIdentifier();
           
           Curriculum curriculum = courseMetaController.findCurriculum(curriculumIdentifier);
             
@@ -184,8 +167,8 @@ public class ChatSyncController {
         if (hasCorrectCurriculums) {
           if (chatRoomEntity == null) {
             logger.log(Level.INFO, "Syncing chat workspace " + usersWorkspace.getUrlName());
-            if (identifier == null) {
-              logger.log(Level.WARNING, "Invalid workspace identifier " + identifier + ", skipping...");
+            if (userIdentifier == null) {
+              logger.log(Level.WARNING, "Invalid workspace identifier " + userIdentifier + ", skipping...");
               continue;
             }
             
@@ -202,10 +185,10 @@ public class ChatSyncController {
               
             EnvironmentUser workspaceUserRole = environmentUserController.findEnvironmentUserByUserEntity(userEntityController.findUserEntityByUser(user)); 
             EnvironmentRoleEntity role = workspaceUserRole.getRole();
-            if (role.toString().equals("ADMINISTRATOR") || role.toString().equals("PROGRAMME-STUDY-LEADER")) {
-              client.addAdmin(workspace.getIdentifier(), identifier.toId());
+            if (EnvironmentRoleArchetype.ADMINISTRATOR.equals(role.getArchetype()) || EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER.equals(role.getArchetype())) {
+              client.addAdmin(workspace.getIdentifier(), userIdentifier);
             } else {
-              client.addMember(workspace.getIdentifier(), identifier.toId());
+              client.addMember(workspace.getIdentifier(), userIdentifier);
             }
           }  
         }
