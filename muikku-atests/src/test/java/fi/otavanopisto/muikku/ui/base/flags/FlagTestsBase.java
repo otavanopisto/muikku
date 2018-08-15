@@ -176,13 +176,13 @@ public class FlagTestsBase extends AbstractUITest {
       navigate("/guider", false);
       waitForPresentAndVisible("div.application-panel__main-container .application-list__item.user:nth-child(1) input");
       click("div.application-panel__main-container .application-list__item.user:nth-child(1) input");
-      waitAndClick(".application-panel__toolbar-actions-main a.button-pill--label span.button-pill__icon");
+      waitAndClick(".application-panel__main-container--actions .icon-flag");
       
-      waitForPresentAndVisible(".dropdown--guider-labels .dropdown__container .dropdown__container-item>a.link--guider-label");
-      click(".dropdown--guider-labels .dropdown__container .dropdown__container-item>a.link--guider-label");
-      waitAndClick(".application-panel__toolbar-actions-main a.button-pill--label span.button-pill__icon");
-      waitForPresentAndVisible(".application-panel__helper-container .icon-flag + span.item-list__text-body");
-      click(".application-panel__helper-container .icon-flag + span.item-list__text-body");      
+      waitForPresentAndVisible(".dropdown--guider-labels.visible .link--guider-label.selected");
+      click(".dropdown--guider-labels.visible .link--guider-label.selected");
+      
+      waitAndClick(".application-panel__helper-container .icon-flag");
+      waitForPresentAndVisible(".application-panel__helper-container .item-list__item.active");
       
       assertNotPresent(".application-list__item-header--student");
     } finally {
