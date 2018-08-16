@@ -76,6 +76,9 @@ public class ChatRESTService extends PluginRESTService {
   @Inject
   private ChatController chatController;
   
+  @Inject
+  private ChatSyncController chatSyncController;
+    
   @GET
   @Path("/prebind")
   @RESTPermit(handling = Handling.INLINE)
@@ -269,8 +272,11 @@ public class ChatRESTService extends PluginRESTService {
 	if (!sessionController.isLoggedIn()) {
 	  return Response.status(Status.FORBIDDEN).entity("Must be logged in").build();
 	}
+	 SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
+
+	 chatSyncController.syncStudent(userIdentifier);
+
   UserChatVisibility visibility = userChatSettings.getVisibility();
-	SchoolDataIdentifier userIdentifier = sessionController.getLoggedUser();
 	UserChatSettings findUserChatSettings = chatController.findUserChatSettings(userIdentifier);
 	  
 	if (findUserChatSettings == null) {
