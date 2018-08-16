@@ -133,6 +133,37 @@
   }
 }
 
+.env-dialog__row {
+  margin-top: 10px;
+}
+
+.env-dialog__row--communicator-signature,
+.env-dialog__row--new-discussion-thread-states {
+  align-items: center;
+  background-color: $color-default;
+  display: flex;
+  padding: 10px 0;
+}
+
+.env-dialog__row---new-discussion-options {
+  display: flex;
+  flex-flow: column wrap;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-flow: row wrap;
+  }
+}
+
+
+.env-dialog__row--new-announcement-options {
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-direction: initial;
+  }
+}
+
 .env-dialog__form-element-container {
   display: flex;
   flex-basis: auto;

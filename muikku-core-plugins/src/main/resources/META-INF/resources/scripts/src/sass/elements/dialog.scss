@@ -49,6 +49,35 @@
   }
 }
 
+
+.dialog__container {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;     
+}
+
+.dialog__container--color-picker {
+  flex-flow: row wrap;
+}
+
+.dialog__container--form {
+  flex-flow: column wrap;
+}
+
+.dialog__image-tools {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.dialog__slider {
+  flex: 1 1 auto;
+  padding-right: 15px;
+}
+
+
+
 .dialog__header {
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
@@ -98,6 +127,10 @@
   position: relative;
   width: 100%;
 }
+
+
+
+
 
 .dialog__footer {
   bottom: 0;

@@ -98,18 +98,17 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
     
     let content = (closeDialog: ()=>any) => [
       (
-      <div className="container container--new-discussion-area-title" key="1">    
-      <div className="env-dialog__form-element-container">  
-        <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
-          <input type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"
-          placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
-          value={this.state.name} onChange={this.onNameChange} autoFocus/>
+      <div className="env-dialog__row" key="1">    
+        <div className="env-dialog__form-element-container">  
+          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createarea.name')}</div>          
+            <input type="text" className="env-dialog__input env-dialog__input--new-discussion-area-name"
+            placeholder={this.props.i18n.text.get('plugin.discussion.createarea.name')}
+            value={this.state.name} onChange={this.onNameChange} autoFocus/>
         </div>
       </div>          
       ),
-
       (
-       <div className="container container--new-discussion-area-description" key="2">          
+       <div className="env-dialog__row" key="2">          
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.editArea.description')}</div>          
            <textarea className="env-dialog__textarea"
@@ -117,7 +116,7 @@ class DiscussionModifyArea extends SessionStateComponent<DiscussionModifyAreaPro
          </div>
        </div>
     )]
-       
+           
     let footer = (closeDialog: ()=>any)=>{
       return (          
         <div className="env-dialog__actions">

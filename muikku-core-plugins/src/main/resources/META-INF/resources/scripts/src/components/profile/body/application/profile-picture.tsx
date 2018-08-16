@@ -48,13 +48,13 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
     }
   }
   render(){
-    return (<div className="container container--full">
-        {!this.props.status.hasImage ? <div className="container container--profile-picture">
-          <form className="container container--profile-picture-empty">
+    return (<div className="profile-element">
+        {!this.props.status.hasImage ? <div className="profile-element__user-picture-container">
+          <form className="profile-element__user-picture profile-element__user-picture--empty">
             <input name="file" type="file" accept="image/*" onChange={this.readFile}/>
           </form>
-        </div> : <div className="container container--profile-picture">
-          <form className="container container--profile-picture-filled" style={{backgroundImage:`url("${getUserImageUrl(this.props.status.userId, 256, this.props.status.imgVersion)}")`}}>
+        </div> : <div className="profile-element__user-picture-container">
+          <form className="profile-element__user-picture" style={{backgroundImage:`url("${getUserImageUrl(this.props.status.userId, 256, this.props.status.imgVersion)}")`}}>
             <Button buttonModifiers="profile-image-edit">
               <span className="icon icon-edit"/>
               {this.props.i18n.text.get("plugin.profile.editImage")}

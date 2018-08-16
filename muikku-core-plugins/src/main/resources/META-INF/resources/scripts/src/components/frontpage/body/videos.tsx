@@ -12,7 +12,7 @@ interface FrontpageVideosState {
 
 export default class FrontpageVideos extends React.Component<FrontpageVideosProps, FrontpageVideosState> {
   render() {
-    return <section id="videos" className="container container--frontpage-section">
+    return <section id="videos" className="screen-container__section">
       <Carousel>
         <CarouselVideoItem>
           <iframe width="1280" height="720"

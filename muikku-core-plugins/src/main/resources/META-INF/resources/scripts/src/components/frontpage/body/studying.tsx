@@ -2,7 +2,6 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 import Button from "~/components/general/button";
 
-import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';
@@ -17,7 +16,7 @@ interface FrontpageStudyingState {
 
 export default class FrontpageStudying extends React.Component<FrontpageStudyingProps, FrontpageStudyingState> {
   render() {
-    return <section id="studying" className="container container--frontpage-section">
+    return <section id="studying" className="screen-container__section">
       <h2 className="text text--branded text--frontpage-title">{this.props.i18n.text.get( 'plugin.sectionTitle.studying' )}</h2>
       <div className="ordered-container ordered-container--frontpage-studying">
         <div className="ordered-container__item ordered-container__item--upper-secondary-school">
