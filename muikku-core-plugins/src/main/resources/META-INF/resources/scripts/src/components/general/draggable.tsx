@@ -28,7 +28,7 @@ function checkIsParentOrSelf(element: HTMLElement, comparer: HTMLElement): boole
   return element.parentElement ? checkIsParentOrSelf(element.parentElement, comparer) : false;
 }
 
-class Droppable extends React.Component<DroppableProps, DroppableState>{
+export class Droppable extends React.Component<DroppableProps, DroppableState>{
   id: string;
 
   constructor(props: DroppableProps){
@@ -70,7 +70,8 @@ interface DraggableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HT
   onDropInto?: (interactionData: any)=>any,
   parentContainerSelector?: string,
   voidElement?: any,
-  classNameDragging?: string
+  classNameDragging?: string,
+  clone?: boolean
 }
 
 interface DraggableState {
@@ -80,7 +81,8 @@ interface DraggableState {
   totalWidthWithMargin: number,
   totalHeightWithMargin: number,
   x: number,
-  y: number
+  y: number,
+  display: string
 }
 
 export default class Draggable extends React.Component<DraggableProps, DraggableState> {
@@ -105,7 +107,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       totalWidthWithMargin: null,
       totalHeightWithMargin: null,
       x: null,
-      y: null
+      y: null,
+      display: null
     }
     
     this.onRootSelectStart = this.onRootSelectStart.bind(this);
@@ -172,7 +175,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       x: 0,
       y: 0,
       totalWidthWithMargin: clientRect.width + parseFloat(style.marginLeft) + parseFloat(style.marginRight),
-      totalHeightWithMargin: clientRect.height + parseFloat(style.marginTop) + parseFloat(style.marginBottom)
+      totalHeightWithMargin: clientRect.height + parseFloat(style.marginTop) + parseFloat(style.marginBottom),
+      display: style.display
     });
   }
   onMove(e: MouseEvent){
@@ -180,7 +184,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       
       if (this.isFirstDrag){
         this.isFirstDrag = false;
-        this.props.onDrag(e as any);
+        this.props.onDrag && this.props.onDrag(e as any);
       }
       
       let newX = e.pageX - this.originalPageX;
@@ -208,7 +212,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
   onRootSeletEnd(e: MouseEvent){
     if (this.state.isDragging){
       if ((new Date()).getTime() - this.timer <= 300){
-        this.props.onClick(e as any);
+        this.props.onClick && this.props.onClick(e as any);
         this.setState({
           isDragging: false
         });
@@ -328,6 +332,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     delete nProps["classNameDragging"];
     delete nProps["onClick"];
     delete nProps["onDrag"];
+    delete nProps["clone"];
     
     if (this.state.isDragging) {
       let nStyle = {...this.props.style} || {};
@@ -341,17 +346,23 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       if (this.props.classNameDragging){
         nProps.className = nProps.className ? nProps.className + " " + this.props.classNameDragging : nProps.className;
       }
-      
-      rootElementProps.style = {
-        position: "relative",
-        zIndex: 100,
-        width: this.state.totalWidthWithMargin,
-        height: this.state.totalHeightWithMargin
-      };
+           
+      if (this.props.clone){
+        rootElementProps.className = this.props.className;
+        rootElementProps.style = this.props.style;
+      } else {
+        rootElementProps.style = {
+          position: "relative",
+          zIndex: 100,
+          width: this.state.totalWidthWithMargin,
+          height: this.state.totalHeightWithMargin,
+          display: this.state.display
+        };
+      }
       
       nProps.style = nStyle;
       return <RootElement {...rootElementProps} ref="root">
-        {this.props.voidElement}
+        {this.props.clone ? this.props.children : this.props.voidElement}
         <div ref="draggable" {...nProps}/>
       </RootElement>
     }

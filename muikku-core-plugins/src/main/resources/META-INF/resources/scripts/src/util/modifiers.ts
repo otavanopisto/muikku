@@ -201,3 +201,13 @@ export function shuffle(array: Array<any>) {
 
   return array;
 }
+
+type TypescriptBuggyTakeThisCallbackComeOn =  (element:any)=>any;
+
+export function arrayToObject(array: Array<any>, propertyName: string, propertyValue?: string | TypescriptBuggyTakeThisCallbackComeOn) {
+  let obj:any = {};
+  array.forEach((element: any)=>{
+    obj[element[propertyName]] = propertyValue ? (typeof propertyValue === "string" ? element[propertyValue] : propertyValue(element)) : element;
+  });
+  return obj;
+}
