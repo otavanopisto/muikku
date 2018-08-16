@@ -18,6 +18,7 @@ import promisify from '~/util/promisify';
 
 import '~/sass/elements/rich-text.scss';
 import { i18nType } from '~/reducers/base/i18n';
+import { StatusType } from '~/reducers/base/status';
 
 
 //Bubble gum scripting needs
@@ -141,6 +142,7 @@ interface MaterialLoaderProps {
   material: MaterialType,
   workspace: WorkspaceType,
   i18n: i18nType,
+  status: StatusType,
   
   v2?: boolean
 }
@@ -203,7 +205,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
           </div>
        : null}
       <div className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" onClick={this.stopPropagation}>
-        <Base html={this.props.material.html} i18n={this.props.i18n}/>
+        <Base html={this.props.material.html} i18n={this.props.i18n} status={this.props.status}/>
       </div>
       <hr/>
       <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"

@@ -5,12 +5,14 @@ import { WorkspaceType } from "~/reducers/main-function/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
 import { shortenGrade, getShortenGradeExtension } from "~/util/modifiers";
+import { StatusType } from "~/reducers/base/status";
 
 interface MaterialProps {
   material: MaterialType,
   workspace: WorkspaceType,
   i18n: i18nType,
-  grades: RecordsGradesType
+  grades: RecordsGradesType,
+  status: StatusType
 }
 
 interface MaterialState {
@@ -54,7 +56,7 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
           <span className="text text--list-item-title">{this.props.material.assignment.title}</span>
         </div>
         {this.state.opened ? <div className="application-list__item-body text">
-          <MaterialLoader material={this.props.material} workspace={this.props.workspace} i18n={this.props.i18n}/>
+          <MaterialLoader material={this.props.material} workspace={this.props.workspace} i18n={this.props.i18n} status={this.props.status}/>
         </div> : null}
       </div>
     </div>

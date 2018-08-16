@@ -17,10 +17,12 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
 import '~/sass/elements/rich-text.scss';
 import ApplicationList, { ApplicationListItem, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
+import { StatusType } from '~/reducers/base/status';
 
 interface CurrentRecordProps {
   i18n: i18nType,
-  records: RecordsType
+  records: RecordsType,
+  status: StatusType
 }
 
 interface CurrentRecordState {
@@ -70,7 +72,9 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
           {workspaceEvaluation}
           <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
           {this.props.records.current.materials.map((material)=>{
-            return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
+            return <Material key={material.id} material={material} i18n={this.props.i18n}
+             grades={this.props.records.grades} workspace={this.props.records.current.workspace}
+             status={this.props.status}/>
           })}
         </ApplicationList>
           
@@ -98,7 +102,8 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
 function mapStateToProps(state: StateType){
   return {
     i18n: state.i18n,
-    records: state.records
+    records: state.records,
+    status: state.status
   }
 };
 

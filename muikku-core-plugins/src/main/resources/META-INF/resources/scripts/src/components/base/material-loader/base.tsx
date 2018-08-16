@@ -9,6 +9,8 @@ import { i18nType } from '~/reducers/base/i18n';
 import FileField from './file-field';
 import ConnectField from './connect-field';
 import OrganizerField from './organizer-field';
+import AudioField from './audio-field';
+import { StatusType } from '~/reducers/base/status';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
@@ -17,12 +19,14 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.memo": MemoField,
   "application/vnd.muikku.field.file": FileField,
   "application/vnd.muikku.field.connect": ConnectField,
-  "application/vnd.muikku.field.organizer": OrganizerField
+  "application/vnd.muikku.field.organizer": OrganizerField,
+  "application/vnd.muikku.field.audio": AudioField
 }
 
 interface BaseProps {
   html: string,
-  i18n: i18nType
+  i18n: i18nType,
+  status: StatusType
 }
 
 interface BaseState {
@@ -70,6 +74,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       }
       
       parameters["i18n"] = this.props.i18n;
+      parameters["status"] = this.props.status;
     }
     return <ActualElement {...parameters}/>
   }
