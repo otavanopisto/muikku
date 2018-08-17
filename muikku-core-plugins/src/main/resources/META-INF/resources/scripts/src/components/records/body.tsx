@@ -7,7 +7,7 @@ import * as React from 'react';
 export default class RecordsBody extends React.Component<{},{}> {
   render(){
     let aside = <Aside />
-    return (<div className="container container--full">
+    return (<div>
       <MainFunctionNavbar activeTrail="records" navigation={aside}/>
       <Application aside={aside}/>
     </div>);

@@ -14,7 +14,6 @@ import CurrentThread from './application/current-thread';
 
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/container.scss';
 
 interface DiscussionApplicationState {
   
@@ -36,7 +35,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
     {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}
     </Link></NewThread> : null;
 
-    return <div className="container container--full">
+    return <div>
       <ApplicationPanel title={title} modifier="discussion" primaryOption={primaryOption} toolbar={toolbar}>
         <DiscussionThreads/>
         <CurrentThread/>

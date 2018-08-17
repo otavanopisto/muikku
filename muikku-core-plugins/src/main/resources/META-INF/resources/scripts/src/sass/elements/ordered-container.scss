@@ -57,6 +57,31 @@
   position: relative;
 }
  
+.ordered-container__item-subcontainer {
+  text-align: center;
+  
+  @include breakpoint($breakpoint-desktop) {
+    text-align: left;
+  } 
+}
+  
+.ordered-container__item-subcontainer--otavan-opisto-social-media {
+  margin-top: 1.5rem;
+
+  @include breakpoint($breakpoint-pad) {
+    margin-top: 0;
+  }
+}
+
+.ordered-container__item-subcontainer--otavan-opisto-description {
+  margin-top: 1.5rem;
+  
+  @include breakpoint($breakpoint-desktop) {
+    margin-top: 0;
+  }
+} 
+ 
+ 
 @include breakpoint($breakpoint-pad) {
   // Upper secondary school card (Nettilukio)
   .ordered-container__item--upper-secondary-school {

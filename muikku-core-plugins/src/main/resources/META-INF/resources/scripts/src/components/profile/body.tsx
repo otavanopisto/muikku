@@ -4,7 +4,7 @@ import Application from './body/application';
 
 import * as React from 'react';
 
-import '~/sass/elements/container.scss';
+import '~/sass/elements/profile_element.scss';
 import { StateType } from '~/reducers';
 import { Dispatch, connect } from 'react-redux';
 import { StatusType } from '~/reducers/base/status';
@@ -13,10 +13,10 @@ class ProfileBody extends React.Component<{
   status: StatusType
 },{}> {
   render(){
-    return (<div className="container container--full">
+    return (<div>
       <MainFunctionNavbar/>
       <Application/>
-    </div>);
+    </div>); 
   }
 }
 
