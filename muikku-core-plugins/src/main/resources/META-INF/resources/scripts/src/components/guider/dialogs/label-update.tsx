@@ -37,7 +37,6 @@ interface GuiderLabelUpdateDialogState {
   removed: boolean
 }
 
-
 class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogProps, GuiderLabelUpdateDialogState> {
   constructor(props: GuiderLabelUpdateDialogProps){
     super(props);
@@ -113,6 +112,11 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
         </Button>
+        <GuiderLabelShareDialog label={this.props.label}>
+          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
+            {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
+          </Button>
+        </GuiderLabelShareDialog>
         <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
          {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
        </Button>
@@ -123,15 +127,15 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
-            <div className="text text--label-update-dialog-icon">
+            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}}>
               <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
-            {sliderPicker}
+            {/*{sliderPicker}*/}
           </div>
           <div className="dialog__container dialog__container--form">
             <div className="form-element">
             <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
-              className="form-element__input form-element--guider-label-name"
+              className="form-element__input form-element__input--guider-label-name"
               disabled={this.state.removed}
               onChange={this.onNameChange}/>
             </div>
@@ -142,11 +146,6 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
               onChange={this.onDescriptionChange}/>
             </div>
           </div>
-          <GuiderLabelShareDialog label={this.props.label}>
-            <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
-              {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
-            </Button>
-          </GuiderLabelShareDialog>
         </div>
       )
     }

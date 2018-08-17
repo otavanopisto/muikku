@@ -58,7 +58,10 @@
 }
 
 .dialog__container--color-picker {
+  align-items: center;
   flex-flow: row wrap;
+  justify-content: center;
+  padding: 15px 0;
 }
 
 .dialog__container--form {

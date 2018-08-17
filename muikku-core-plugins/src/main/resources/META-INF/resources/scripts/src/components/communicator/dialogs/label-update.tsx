@@ -104,16 +104,20 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
-          <div className="text text--label-update-dialog-icon">
-            <span className={`text__icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+          <div className="dialog__container dialog__container--color-picker">
+            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}}>
+              <span className={`text__icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+            </div>
+            {/* {sliderPicker} */}
           </div>
-          <div className="form-element">
-            <input value={this.state.name}
-              className="form-element__input form-element__input--label"
-              disabled={this.state.removed}
-              onChange={this.onNameChange}/>
+          <div className="dialog__container dialog__container--form">
+            <div className="form-element">
+              <input placeholder={this.props.i18n.text.get('plugin.communicator.label.editLabelDialog.name')} value={this.state.name}
+                className="form-element__input form-element__input--communicator-label-name"
+                disabled={this.state.removed}
+                onChange={this.onNameChange}/>
+            </div>
           </div>
-          {sliderPicker}
         </div>
       )
     }
