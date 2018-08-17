@@ -10,6 +10,7 @@ import FileField from './file-field';
 import ConnectField from './connect-field';
 import OrganizerField from './organizer-field';
 import AudioField from './audio-field';
+import SorterField from './sorter-field';
 import { StatusType } from '~/reducers/base/status';
 
 const objects: {[key: string]: any} = {
@@ -20,7 +21,8 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.file": FileField,
   "application/vnd.muikku.field.connect": ConnectField,
   "application/vnd.muikku.field.organizer": OrganizerField,
-  "application/vnd.muikku.field.audio": AudioField
+  "application/vnd.muikku.field.audio": AudioField,
+  "application/vnd.muikku.field.sorter": SorterField
 }
 
 interface BaseProps {

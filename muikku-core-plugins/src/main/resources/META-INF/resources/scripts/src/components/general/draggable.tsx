@@ -13,7 +13,8 @@ let interactionData:{[key: string]: any} = {}
 
 interface DroppableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>  {
   interactionData: any,
-  interactionGroup?: string
+  interactionGroup?: string,
+  as?: string
 }
 
 interface DroppableState {
@@ -51,15 +52,16 @@ export class Droppable extends React.Component<DroppableProps, DroppableState>{
     delete interactionData[this.id];
   }
   render(){
+    let Element = this.props.as || 'div';
     let nProps = {...this.props};
     delete nProps["interactionData"];
     delete nProps["interactionGroup"];
-    return <div data-interact-id={this.id} data-interact-group-id={this.props.interactionGroup} {...nProps} ref="base">
+    return <Element data-interact-id={this.id} data-interact-group-id={this.props.interactionGroup} {...nProps} ref="base">
       {this.props.children}
-    </div>
+    </Element>
   }
-  getDOMComponent(): HTMLDivElement {
-    return this.refs.base as HTMLDivElement;
+  getDOMComponent(): HTMLElement {
+    return this.refs.base as HTMLElement;
   }
 }
 
@@ -71,7 +73,12 @@ interface DraggableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HT
   parentContainerSelector?: string,
   voidElement?: any,
   classNameDragging?: string,
-  clone?: boolean
+  clone?: boolean,
+  as?: string,
+  denyWidth?: boolean,
+  denyHeight?: boolean,
+      
+  __debugVoidStyle?: boolean
 }
 
 interface DraggableState {
@@ -82,7 +89,16 @@ interface DraggableState {
   totalHeightWithMargin: number,
   x: number,
   y: number,
-  display: string
+  display: string,
+  
+  stylebox?: {
+    width: number,
+    height: number,
+    marginLeft: string,
+    marginRight: string,
+    marginTop: string,
+    marginBottom: string
+  }
 }
 
 export default class Draggable extends React.Component<DraggableProps, DraggableState> {
@@ -92,6 +108,8 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
   private maxX: number;
   private minY: number;
   private maxY: number;
+  private rootFixedX: number;
+  private rootFixedY: number;
   private currentInteractionId: string;
   private selfId: string;
   private timer: number;
@@ -132,7 +150,7 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     document.body.removeEventListener("mouseup", this.onRootSeletEnd);
   }
   onRootSelectStart(e: MouseEvent){
-    let rootElement:HTMLDivElement;
+    let rootElement:HTMLElement;
     if (this.props.interactionData){
       rootElement = (this.refs.root as Droppable).getDOMComponent();
     } else {
@@ -151,6 +169,9 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     
     this.originalPageX = e.pageX;
     this.originalPageY = e.pageY;
+    
+    this.rootFixedY = clientRect.top - parseFloat(style.marginTop);
+    this.rootFixedX = clientRect.left - parseFloat(style.marginLeft);
     
     if (this.props.parentContainerSelector){
       let parentContainerOffset = $(rootElement).closest(this.props.parentContainerSelector).offset();
@@ -176,10 +197,23 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       y: 0,
       totalWidthWithMargin: clientRect.width + parseFloat(style.marginLeft) + parseFloat(style.marginRight),
       totalHeightWithMargin: clientRect.height + parseFloat(style.marginTop) + parseFloat(style.marginBottom),
+      stylebox: {
+        width: clientRect.width,
+        height: clientRect.height,
+        marginLeft: style.marginLeft,
+        marginRight: style.marginRight,
+        marginTop: style.marginTop,
+        marginBottom: style.marginBottom,
+        verticalAlign: style.verticalAlign
+      },
       display: style.display
     });
   }
   onMove(e: MouseEvent){
+    if (this.props.__debugVoidStyle){
+      return;
+    }
+    
     if (this.state.isDragging){
       
       if (this.isFirstDrag){
@@ -210,6 +244,10 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     }
   }
   onRootSeletEnd(e: MouseEvent){
+    if (this.props.__debugVoidStyle){
+      return;
+    }
+    
     if (this.state.isDragging){
       if ((new Date()).getTime() - this.timer <= 300){
         this.props.onClick && this.props.onClick(e as any);
@@ -268,14 +306,20 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
       //let's check to which amount they intersect
       let intersectionRatio = overlapArea / draggableBoxArea;
         
-      //it becomes a valid contestant if the amount is more than 25% of its area
+      //it becomes a valid contestant if the amount is more than 25% of the draggable box area
       if (intersectionRatio >= 0.25){
-        contestants.push({interactId: element.dataset.interactId, intersectionRatio});
+        //let's make now the overlap relative to the area of the other box, this will allow
+        //for contestants to be defined by how much amount is taken by the target box rather than the source
+        let otherBoxArea = element.offsetHeight * element.offsetWidth;
+        let newIntersectionRatio = overlapArea / otherBoxArea;
+        contestants.push({interactId: element.dataset.interactId, intersectionRatio: newIntersectionRatio});
       }
     });
     
     //now we check the contestants
     if (contestants.length){
+      
+      console.log(contestants);
       
       //the basic winner is the only contestant
       let winner = contestants[0];
@@ -314,10 +358,11 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     }
   }
   render(){
-    let RootElement:any = 'div';
+    let RootElement:any = this.props.as || 'div';
     let rootElementProps:any = {};
     if (this.props.interactionData){
       RootElement = Droppable;
+      rootElementProps.as = this.props.as;
       rootElementProps.interactionData = this.props.interactionData;
       rootElementProps.interactionGroup = this.props.interactionGroup;
     }
@@ -333,14 +378,20 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
     delete nProps["onClick"];
     delete nProps["onDrag"];
     delete nProps["clone"];
+    delete nProps["denyWidth"];
+    delete nProps["denyHeight"];
     
     if (this.state.isDragging) {
       let nStyle = {...this.props.style} || {};
-      nStyle.position = "absolute";
-      nStyle.width = this.state.width;
-      nStyle.height = this.state.height;
-      nStyle.left = this.state.x;
-      nStyle.top = this.state.y;
+      nStyle.position = "fixed";
+      if (!this.props.denyWidth){
+        nStyle.width = this.state.width;
+      }
+      if (!this.props.denyHeight){
+        nStyle.height = this.state.height;
+      }
+      nStyle.left = this.rootFixedX + this.state.x;
+      nStyle.top = this.rootFixedY + this.state.y;
       nStyle.zIndex = 100;
       
       if (this.props.classNameDragging){
@@ -354,16 +405,16 @@ export default class Draggable extends React.Component<DraggableProps, Draggable
         rootElementProps.style = {
           position: "relative",
           zIndex: 100,
-          width: this.state.totalWidthWithMargin,
-          height: this.state.totalHeightWithMargin,
-          display: this.state.display
+          display: this.state.display,
+          ...this.state.stylebox
         };
       }
       
       nProps.style = nStyle;
+      let Element = this.props.as || 'div';
       return <RootElement {...rootElementProps} ref="root">
         {this.props.clone ? this.props.children : this.props.voidElement}
-        <div ref="draggable" {...nProps}/>
+        {this.props.__debugVoidStyle ? null : <Element ref="draggable" {...nProps}/>}
       </RootElement>
     }
     
