@@ -10,7 +10,6 @@ import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/container.scss';
 import {StateType} from '~/reducers';
 import { CoursesType, CoursesBaseFilterType } from '~/reducers/main-function/courses';
 
@@ -52,7 +51,7 @@ class CoursepickerApplication extends React.Component<CoursepickerApplicationPro
         })} 
       </select>
     </div>    
-    return (<div className="container container--full">
+    return (<div>
       <ApplicationPanel modifier="coursepicker" toolbar={toolbar} title={title} asideBefore={this.props.aside} primaryOption={primaryOption}>
         <CoursepickerWorkspaces/>
       </ApplicationPanel>

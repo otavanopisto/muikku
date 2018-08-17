@@ -11,8 +11,6 @@ const ChromePicker:any = require('react-color').ChromePicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
-
-import '~/sass/elements/container.scss';
 import '~/sass/elements/form-elements.scss';
 import Button from '~/components/general/button';
 

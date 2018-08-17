@@ -9,7 +9,6 @@ const ChromePicker:any = require('react-color').ChromePicker;
 import {AnyActionType} from '~/actions';
 import {i18nType } from '~/reducers/base/i18n';
 
-import '~/sass/elements/container.scss';
 import '~/sass/elements/form-elements.scss';
 import { GuiderUserLabelType } from '~/reducers/main-function/guider';
 import { UpdateGuiderFilterLabelTriggerType, RemoveGuiderFilterLabelTriggerType, updateGuiderFilterLabel, removeGuiderFilterLabel } from '~/actions/main-function/guider';
@@ -123,13 +122,13 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     let content = (closeDialog: ()=>any)=>{
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
-          <div className="container container--update-label-dialog-picker">
+          <div className="dialog__container dialog__container--color-picker">
             <div className="text text--label-update-dialog-icon">
               <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
             {sliderPicker}
           </div>
-          <div className="container container--update-label-dialog-fields">
+          <div className="dialog__container dialog__container--form">
             <div className="form-element">
             <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
               className="form-element__input form-element--guider-label-name"
