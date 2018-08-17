@@ -36,6 +36,12 @@
   height: 35px;
   margin-right: 10px;
   width: 35px;  
+  
+  @include breakpoint($breakpoint-pad) {
+   height: auto;
+   margin: 0;
+   width: auto;
+  }
 }
 
 .button--coursepicker-course-action {
