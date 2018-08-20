@@ -14,6 +14,8 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/form-elements.scss';
 import Button from '~/components/general/button';
 
+import '~/sass/elements/color-picker.scss';
+
 const KEYCODES = {
   ENTER: 13
 }
@@ -30,17 +32,19 @@ interface CommunicatorLabelUpdateDialogProps {
 }
 
 interface CommunicatorLabelUpdateDialogState {
+  displayColorPicker: boolean,
   color: string,
   name: string,
   removed: boolean
 }
-
 
 class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpdateDialogProps, CommunicatorLabelUpdateDialogState> {
   constructor(props: CommunicatorLabelUpdateDialogProps){
     super(props);
     
     this.onColorChange = this.onColorChange.bind(this);
+    this.onHandleClick = this.onHandleClick.bind(this);
+    this.onHandleClose = this.onHandleClose.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
     this.removeLabel = this.removeLabel.bind(this);
     this.update = this.update.bind(this);
@@ -48,10 +52,17 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
     this.handleKeydown = this.handleKeydown.bind(this);
     
     this.state = {
+      displayColorPicker: false,
       color: props.label.color,
       name: props.label.text(props.i18n),
       removed: false
     }
+  }
+  onHandleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+  }
+  onHandleClose = () => {
+    this.setState({ displayColorPicker: false })
   }
   handleKeydown(code: number, closeDialog: ()=>any){
     if (code === KEYCODES.ENTER){
@@ -105,10 +116,13 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
-            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}}>
+            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
               <span className={`text__icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
-            {/* {sliderPicker} */}
+            {this.state.displayColorPicker ? <div className="color-picker">
+              <div className="color-picker-overlay" onClick={ this.onHandleClose }/>
+              {sliderPicker}
+            </div> : null}
           </div>
           <div className="dialog__container dialog__container--form">
             <div className="form-element">

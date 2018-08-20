@@ -49,7 +49,6 @@
   }
 }
 
-
 .dialog__container {
   align-items: flex-start;
   display: flex;
@@ -62,6 +61,7 @@
   flex-flow: row wrap;
   justify-content: center;
   padding: 15px 0;
+  position: relative;
 }
 
 .dialog__container--form {
@@ -78,8 +78,6 @@
   flex: 1 1 auto;
   padding-right: 15px;
 }
-
-
 
 .dialog__header {
   background-color: $color-dialog-mobile-background;
@@ -130,10 +128,6 @@
   position: relative;
   width: 100%;
 }
-
-
-
-
 
 .dialog__footer {
   bottom: 0;
