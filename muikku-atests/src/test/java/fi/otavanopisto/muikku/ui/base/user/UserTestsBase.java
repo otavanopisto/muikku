@@ -120,9 +120,9 @@ public class UserTestsBase extends AbstractUITest {
       navigate("/profile", false);
       waitForPresentAndVisible(".text--profile-student-header");
       assertTextIgnoreCase(".text--profile-student-header", "admin user");
-      waitForPresentAndVisible(".container--profile-property .profile-user-data");
-      assertTextIgnoreCase(".container--profile-property .profile-user-data", "admin@example.com");
-      assertVisible("div.application-panel__main-container.loader-empty > div > div.container.container--profile-item > a");
+      waitForPresentAndVisible(".application-panel__main-container .profile-element__item .profile-user-data");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item .profile-user-data", "admin@example.com");
+      
       assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(1) > label", "Puhelinnumero");
       assertVisible("div.application-panel__main-container > div > form > div:nth-child(1) > input");
 

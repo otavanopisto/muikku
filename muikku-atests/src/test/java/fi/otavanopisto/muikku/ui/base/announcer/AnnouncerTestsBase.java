@@ -36,12 +36,12 @@ public class AnnouncerTestsBase extends AbstractUITest {
         waitAndClick("div.application-panel__helper-container.application-panel__helper-container--main-action > a.button--primary-function");
         
         waitForPresent(".cke_wysiwyg_frame");
-        waitForPresent("div.env-dialog__body div.container.container--new-announcement-options div.react-datepicker-wrapper input");
-        selectAllAndClear("div.env-dialog__body div.container.container--new-announcement-options div.react-datepicker-wrapper input");
-        sendKeys("div.env-dialog__body div.container.container--new-announcement-options div.react-datepicker-wrapper input", "21.12.2025");
+        waitForPresent("div.env-dialog__body .env-dialog__form-element-container--datepicker:first-child .react-datepicker__input-container input");
+        selectAllAndClear("div.env-dialog__body .env-dialog__form-element-container--datepicker:first-child .react-datepicker__input-container input");
+        sendKeys("div.env-dialog__body .env-dialog__form-element-container--datepicker:first-child .react-datepicker__input-container input", "21.12.2025");
         waitAndClick(".env-dialog__header");
         waitForNotVisible(".react-datepicker");
-        sendKeys(".container--new-announcement-title .env-dialog__input", "Test title");
+        sendKeys(".env-dialog__form-element-container--title input", "Test title");
         addTextToCKEditor("Announcer test announcement");
         waitAndClick(".button--dialog-execute");
         waitForNotVisible(".env-dialog");
