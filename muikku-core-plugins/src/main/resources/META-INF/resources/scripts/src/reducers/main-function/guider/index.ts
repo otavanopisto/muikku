@@ -49,12 +49,20 @@ export interface GuiderNotificationStudentsDataType {
   assessmentrequest?: string
 }
 
+export interface Record {
+  type:string,
+  date:string
+}
+
+export interface Activity {
+  workspaceUrlName:string,
+  records:Record[]
+}
+
 export interface StudentUserStatistics {
-    login: Date[],
-    activities: {
-      workspaceId: number, workspaceName:string, records:{type:string, date:Date}[]
-    }[]
-  }
+  login: Date[],
+  activities: GuiderActivityDataType
+}
 
 export interface GuiderStudentUserProfileType {
   basic: GuiderStudentType,
@@ -104,6 +112,10 @@ export interface GuiderStudentUserProfileLabelType {
   flagName: string,
   flagColor: string,
   studentIdentifier: string
+}
+
+export interface GuiderActivityDataType {
+  [workspaceId: number]: Activity
 }
 
 export default function guider( state: GuiderType = {

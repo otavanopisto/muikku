@@ -1,5 +1,6 @@
 package fi.otavanopisto.muikku.plugins.guider;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,11 @@ import fi.otavanopisto.muikku.plugins.transcriptofrecords.TranscriptOfRecordsFil
 import fi.otavanopisto.muikku.plugins.transcriptofrecords.model.TranscriptOfRecordsFile;
 import fi.otavanopisto.muikku.schooldata.RestCatchSchoolDataExceptions;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.otavanopisto.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.otavanopisto.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
@@ -79,6 +85,12 @@ public class GuiderRESTService extends PluginRESTService {
 
   @Inject
   private AssesmentRequestNotificationController assessmentRequestNotificationController;
+  
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/activity")
@@ -135,6 +147,40 @@ public class GuiderRESTService extends PluginRESTService {
     WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(workspaceUserEntity);
 
     return Response.ok(toRestModel(activity, assessmentState)).build();
+  }
+  
+  @GET
+  @Path("/user/{IDENTIFIER}/activities")
+  @RESTPermit(GuiderPermissions.GUIDER_FIND_STUDENT_WORKSPACE_ACTIVITY)
+  @Produces("application/json")
+  public Response listUserActivities(@PathParam("IDENTIFIER") String identifierString) {
+    SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(identifierString);
+    UserEntity ue = userEntityController.findUserEntityByUserIdentifier(identifier);
+    if (ue == null) {
+      return Response.status(Status.NOT_FOUND).entity("User entity not found").build();
+    }
+    
+    Map<Long, GuiderStudentActivity> map = new HashMap<>();
+    
+    List<WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByUserEntity(ue);
+    for(WorkspaceMaterialReply workspaceMaterialReply:workspaceMaterialReplies) {
+      WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterialReply.getWorkspaceMaterial().getId());
+      WorkspaceRootFolder workspaceRootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceNode);
+      String type = workspaceMaterialReply.getWorkspaceMaterial().getAssignmentType().toString();
+      Long workspaceId = workspaceRootFolder.getWorkspaceEntityId();
+      String workspaceUrlName = workspaceRootFolder.getUrlName();
+      Record record = new Record(type, workspaceMaterialReply.getCreated());
+      GuiderStudentActivity activity = map.get(workspaceId);
+      List<Record> records;
+      if(activity == null) 
+        records = new ArrayList<Record>();
+      else 
+        records = activity.getRecords();
+      records.add(record);
+      activity = new GuiderStudentActivity(workspaceUrlName, records);
+      map.put(workspaceId, activity);
+    }
+    return Response.ok(map).build();
   }
   
   @GET

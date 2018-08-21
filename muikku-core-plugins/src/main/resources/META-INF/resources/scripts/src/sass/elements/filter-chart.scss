@@ -1,0 +1,122 @@
+@import "../base/mixins";
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.chart-legend {
+  align-items: stretch;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row nowrap;
+  padding-left: 34px;
+  padding-right:21px;
+  width: 90%;
+}
+
+// NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
+.chart-filter {
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-shrink: 0;
+  
+  &.chart-filter--workspace-filter {
+    justify-content: flex-end;
+  }
+  
+  &.chart-filter--legend-filter{
+    input[type="checkbox"] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      align-items: center;
+      appearance: none;
+  	  border: solid 2px;
+      height: 1rem;
+      justify-content: center;
+      margin-right: 10px;
+      margin-left: 10px;
+      vertical-align:middle;
+      width: 1rem;
+      
+      &.Assignments {
+        border-color: $color-assignment;
+      }
+      
+      &.Exercises{
+        border-color: $color-exercise;
+      }
+      
+      &.Logins {
+        border-color: $color-tertiary;
+      }
+  	}
+  	
+  	input[type="checkbox"]:checked {
+      
+      &.Assignments {
+        background-color: $color-assignment;
+      }
+      
+      &.Exercises{
+        background-color: $color-exercise;
+      }
+      
+      &.Logins {
+        background-color: $color-tertiary;
+      }
+    }
+    
+  	input[type="checkbox"]:checked::after {
+      color: #fff;
+      content: "";
+      font-family: muikku;
+      font-size: .875rem;
+    }
+    
+    input[type="checkbox"]:focus {
+      outline: 5px;
+    }
+    
+    span {
+      vertical-align:middle;
+    }
+  }
+}
+
+.dropdown__container {
+
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    align-items: center;
+    appearance: none;
+    border: solid 1px #c7c7c7;
+    border-radius: 3px;
+    height: 1rem;
+    justify-content: center;
+    margin-right: 5px;
+    margin-left: 5px;
+    vertical-align:middle;
+    width: 1rem;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: #29b0c4;
+    border: solid 1px #29b0c4;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    color: #fff;
+    content: "\E639";
+    font-family: muikku;
+    font-size: .875rem;
+  }
+  span {
+    vertical-align: middle;
+  }
+}
+
+.filterAmChart {
+  width: 90%;
+  height: 400px;
+}

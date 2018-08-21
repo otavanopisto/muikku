@@ -5,7 +5,7 @@ import { loadStudentsHelper } from './helpers';
 import promisify from '~/util/promisify';
 import { UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType } from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
-import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType } from '~/reducers/main-function/guider';
+import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType, GuiderActivityDataType } from '~/reducers/main-function/guider';
 import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/workspaces';
 import { VOPSDataType } from '~/reducers/main-function/vops';
 import { HOPSDataType } from '~/reducers/main-function/hops';
@@ -250,19 +250,19 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             }
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           }),
-          promisify(mApi().user.students.loginson.read(id, {from: new Date(new Date().getFullYear(), 0), to: new Date()}), 'callback')()
-          .then((LoginData:Array<LastLoginStudentDataType>)=>{
-            let logins: Date[] = [];
-            LoginData.map((log)=>{
-              logins.push(new Date(log.time));
-            });
-            let stat = {
-              login: logins /*[new Date("2016-01-13"),new Date("2016-01-14T14:48:00"),new Date("2016-01-15T12:48:00")]*/,
-              activities: [{workspaceId: 1, workspaceName: "Finnish Language", records:[{type:"EVALUATED", date:new Date("2016-07-14T14:48:00")}]},
-                           {workspaceId: 2, workspaceName: "Math", records:[{type:"EXERCISE", date:new Date("2016-06-14T14:48:00")}, {type:"EVALUATED", date:new Date("2016-08-15T14:50:00")}]}
-              ]};
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "statistics", value: stat}})
-          })
+		  /*TODO: Change to parrallel promises and await*/
+        promisify(mApi().user.students.loginson.read(id, {from: new Date(new Date().getFullYear(), 0), to: new Date()}), 'callback')()
+        .then((LoginData:Array<LastLoginStudentDataType>)=>{
+          let logins: Date[] = [];
+          LoginData.map((log)=>{
+            logins.push(new Date(log.time));
+          });
+          promisify(mApi().guider.user.activities.read(id), 'callback')()
+          .then((activities:GuiderActivityDataType)=>{
+            let stat = {login: logins, activities: activities};
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "statistics", value: stat}});
+          });
+        })
       ]);
       
       dispatch({

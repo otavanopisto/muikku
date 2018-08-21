@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Dropdown from '~/components/general/dropdown';
 import {StateType} from '~/reducers';
 
 interface WorkspaceFilterProps {
@@ -14,13 +15,12 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
   
   render(){
     return (
-   	  <ul>
-        {this.props.workspaces.map((workspace)=> {
-          let ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
-          //uniq key warning? change attribute to a neutral?
-          return (<li><input type='checkbox' key={workspace.id} onClick={() => {this.props.handler(workspace.id)}} defaultChecked={ifChecked} />{workspace.name}</li>);
-        })}
-      </ul>
+      <Dropdown modifier="workspace-filter" persistant={true} items={this.props.workspaces.map((workspace)=>{
+        let ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
+        return (<li key={workspace.name}><input type='checkbox' onClick={()=>{this.props.handler(workspace.id)}} defaultChecked={ifChecked} /><span>{workspace.name}</span></li>);
+        })}>
+        <input className={`workspace-filter-activator`} value="Workspaces" type="submit"></input>
+      </Dropdown>
     )
   }
 }
