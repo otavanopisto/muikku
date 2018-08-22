@@ -9,7 +9,6 @@ import {StateType} from '~/reducers';
 import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/container.scss';
 
 {/* Reading panel's css */}
 
@@ -27,11 +26,11 @@ interface AnnouncementsApplicationState {
 class AnnouncementsApplication extends React.Component<AnnouncementsApplicationProps, AnnouncementsApplicationState>{
   render(){
         let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcements.pageTitle')}</h2>
-        return (<div className="container container--full">
+        return (<div>
           <ReadingPanel modifier="announcement" title={title} asideAfter={this.props.aside} >
             <Announcements/>
           </ReadingPanel>
-        </div>);
+        </div>);        
   }
 }
 

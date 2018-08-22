@@ -8,7 +8,6 @@ import { i18nType } from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
-import '~/sass/elements/container.scss';
 import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/rich-text.scss';
@@ -75,7 +74,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <object className="container container--discussion-profile-image"
+            avatar = <object className="avatar-container"
               data={getUserImageUrl( user )}
               type="image/jpeg">
               <div className={`avatar avatar--category-${userCategory}`}>{user.firstName[0]}</div>

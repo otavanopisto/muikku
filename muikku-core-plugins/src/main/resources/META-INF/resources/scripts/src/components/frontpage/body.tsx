@@ -12,7 +12,6 @@ import News from './body/news';
 import Organization from './body/organization';
 import Footer from './body/footer';
 
-import '~/sass/elements/container.scss';
 import '~/sass/elements/logo.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/ordered-container.scss';
@@ -32,7 +31,7 @@ interface FrontpageBodyState {
 
 class FrontpageBody extends React.Component<FrontpageBodyProps, FrontpageBodyState> {
   render(){
-    return (<div className="container container--full">
+    return (<div>
       <FrontpageNavbar />
       <Header i18n={this.props.i18n}/>
       
