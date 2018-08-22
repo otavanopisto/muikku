@@ -250,8 +250,8 @@ public class FlagTestsBase extends AbstractUITest {
 
       navigate("/guider", false);
 
-      waitForPresentAndVisible("div.container.container--full > div.container.container--full div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body");
-      assertTextIgnoreCase("div.container.container--full > div.container.container--full div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body", "Test Flaggi");
+      waitForPresentAndVisible("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body");
+      assertTextIgnoreCase("div.application-panel__body > div.application-panel__content > div.application-panel__helper-container .item-list__text-body", "Test Flaggi");
     } finally {
       deleteFlagShares(flagId);
       deleteFlags();

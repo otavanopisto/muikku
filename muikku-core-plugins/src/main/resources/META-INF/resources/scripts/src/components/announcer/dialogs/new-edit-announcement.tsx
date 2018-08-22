@@ -285,7 +285,7 @@ class NewEditAnnouncement extends SessionStateComponent<NewEditAnnouncementProps
         selectedItems={this.state.currentTarget} onChange={this.setTargetItems} autofocus={!this.props.announcement}></InputContactsAutofill>),
       (
       <div className="env-dialog__row" key="3">    
-       <div className="env-dialog__form-element-container">  
+       <div className="env-dialog__form-element-container  env-dialog__form-element-container--title">  
          <div className="env-dialog__label">{this.props.i18n.text.get('plugin.announcer.createannouncement.title.label')}</div>          
          <input type="text" className="env-dialog__input"          
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.announcement}/>
