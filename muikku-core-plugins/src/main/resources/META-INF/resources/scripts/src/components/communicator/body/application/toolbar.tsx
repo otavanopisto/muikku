@@ -74,7 +74,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     //it's a hacky mechanism to make history awesome, once we use a router it gotta be fixed
     if (history.replaceState){
       let canGoBack = (document.referrer.indexOf(window.location.host) !== -1) && (history.length);
-      if (canGoBack){
+      if (canGoBack && location.hash.indexOf("?f") === -1){
         history.back();
       } else {
         history.replaceState('', '', location.hash.split("/")[0]);
