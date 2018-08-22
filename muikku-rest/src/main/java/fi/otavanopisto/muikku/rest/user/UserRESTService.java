@@ -48,6 +48,7 @@ import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.Flag;
 import fi.otavanopisto.muikku.model.users.FlagShare;
 import fi.otavanopisto.muikku.model.users.FlagStudent;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserEntityProperty;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
@@ -339,7 +340,10 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      
+      SearchResult result = elasticSearchProvider.searchUsers(Arrays.asList(organization), searchString, fields, Arrays.asList(EnvironmentRoleArchetype.STUDENT), 
           userGroupFilters, workspaceFilters, userIdentifiers, includeInactiveStudents, includeHidden, false, firstResult, maxResults);
       
       List<Map<String, Object>> results = result.getResults();
@@ -1120,7 +1124,12 @@ public class UserRESTService extends AbstractRESTService {
     if (elasticSearchProvider != null) {
       String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, 
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          searchString, 
           fields, 
           roleArchetype != null ? Arrays.asList(roleArchetype) : null, 
           userGroupFilters, 
@@ -1294,7 +1303,12 @@ public class UserRESTService extends AbstractRESTService {
       List<EnvironmentRoleArchetype> nonStudentArchetypes = new ArrayList<>(Arrays.asList(EnvironmentRoleArchetype.values()));
       nonStudentArchetypes.remove(EnvironmentRoleArchetype.STUDENT);
 
-      SearchResult result = elasticSearchProvider.searchUsers(searchString, 
+      UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+      OrganizationEntity organization = userSchoolDataIdentifier.getOrganization();
+      
+      SearchResult result = elasticSearchProvider.searchUsers(
+          Arrays.asList(organization),
+          searchString, 
           fields, 
           nonStudentArchetypes, 
           userGroupFilters, 

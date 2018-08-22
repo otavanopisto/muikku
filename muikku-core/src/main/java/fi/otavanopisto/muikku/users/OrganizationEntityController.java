@@ -34,6 +34,10 @@ public class OrganizationEntityController {
     return organizationEntityDAO.create(dataSource, identifier, name);
   }
   
+  public List<OrganizationEntity> listUnarchived() {
+    return organizationEntityDAO.listUnarchived();
+  }
+
   public List<OrganizationEntity> listByDataSource(String dataSource) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {

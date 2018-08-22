@@ -73,6 +73,10 @@ public class UserIndexer {
           extra.put("userEntityId", userEntity.getId());
           extra.put("isDefaultIdentifier", isDefaultIdentifier);
           
+          if (userSchoolDataIdentifier.getOrganization() != null) {
+            extra.put("organization", userSchoolDataIdentifier.getOrganization().getId());
+          }
+          
           Set<Long> workspaceEntityIds = new HashSet<Long>();
           Set<Long> userGroupIds = new HashSet<Long>();
 
@@ -101,8 +105,9 @@ public class UserIndexer {
           }
           
           indexer.index(User.class.getSimpleName(), user, extra);
-        } else
+        } else {
           indexer.index(User.class.getSimpleName(), user);
+        }
       } else {
         logger.info(String.format("Removing user %s/%s from index", identifier, dataSource));
         removeUser(dataSource, identifier);

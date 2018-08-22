@@ -37,4 +37,17 @@
     
   <!-- TODO: Remove EnvironmentUser (move role to defaultidentifier), EnvironmentUserPermissionOverride -->  
   
+  <sql>
+    update 
+      UserSchoolDataIdentifier usdi, 
+      EnvironmentUser eu, 
+      UserEntity ue 
+    set 
+      usdi.role_id = eu.role_id 
+    where
+      eu.user_id = ue.id and
+      usdi.identifier = ue.defaultIdentifier and
+      usdi.datasource_id = ue.defaultSchoolDataSource_id;
+  </sql>
+
 </update>

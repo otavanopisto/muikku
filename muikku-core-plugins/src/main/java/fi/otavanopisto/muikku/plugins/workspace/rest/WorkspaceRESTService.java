@@ -123,6 +123,7 @@ import fi.otavanopisto.muikku.search.SearchResult;
 import fi.otavanopisto.muikku.security.MuikkuPermissions;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.FlagController;
+import fi.otavanopisto.muikku.users.OrganizationEntityController;
 import fi.otavanopisto.muikku.users.UserController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
@@ -217,6 +218,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private FileController fileController;
+
+  @Inject
+  private OrganizationEntityController organizationEntityController;
   
   @GET
   @Path("/workspaceTypes")
@@ -853,6 +857,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         String[] fields = new String[] { "firstName", "lastName", "nickName", "email" };
 
         SearchResult result = elasticSearchProvider.searchUsers(
+            organizationEntityController.listUnarchived(),
             searchString,
             fields,
             Arrays.asList(EnvironmentRoleArchetype.STUDENT),

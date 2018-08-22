@@ -24,6 +24,11 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
     return persist(roleSchoolDataIdentifier);
   }
   
+  public List<OrganizationEntity> listUnarchived() {
+    // TODO: Archived?
+    return listAll();
+  }
+  
   public OrganizationEntity findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
     EntityManager entityManager = getEntityManager();
 
