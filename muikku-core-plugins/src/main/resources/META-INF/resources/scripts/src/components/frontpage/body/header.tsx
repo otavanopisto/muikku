@@ -12,8 +12,7 @@ interface FrontpageHeroProps {
   i18n: i18nType
 }
 
-interface FrontpageHeroState {
-  
+interface FrontpageHeroState {  
 }
 
 export default class FrontpageHero extends React.Component<FrontpageHeroProps, FrontpageHeroState> {
@@ -31,13 +30,13 @@ export default class FrontpageHero extends React.Component<FrontpageHeroProps, F
         <div className="hero__item">
           <div className="hero__item-logo-container">
             <img className="logo logo--muikku-verkko" src="/gfx/oo-branded-site-logo.png"></img>
-            <div className="text">
-              <div className="text text--branded text--frontpage-muikku-author">{this.props.i18n.text.get( 'plugin.header.site.author' )}</div>
-              <div className="text text--branded text--frontpage-muikku">MUIKKU</div>
-              <div className="text text--branded text--frontpage-verkko">VERKKO</div>
+            <div className="hero__header-container">
+              <div className="hero__header hero__header--frontpage-muikku-author">{this.props.i18n.text.get( 'plugin.header.site.author' )}</div>
+              <div className="hero__header hero__header--frontpage-muikku">MUIKKU</div>
+              <div className="hero__header hero__header--frontpage-verkko">VERKKO</div>
             </div>
           </div>
-          <div className="text text--branded text--frontpage-muikku-description">{this.props.i18n.text.get( 'plugin.header.site.description' )}</div>
+          <div className="hero__description">{this.props.i18n.text.get( 'plugin.header.site.description' )}</div>
         </div>
         <div className="hero__item">
           <Bubble modifier="goto-materials" title={this.props.i18n.text.get( 'plugin.header.openMaterialsBubble.title' )}

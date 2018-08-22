@@ -26,88 +26,9 @@ b {
   font-weight: 300;
   text-transform: uppercase;
 }
- 
-.text--frontpage-muikku-description {
-  color: $color-frontpage-text-muikku-description;
-  line-height: 1.2rem;
-  margin: 1rem auto 0;
-  max-width: 100%;
-  font-size: 0.925rem;
-  font-weight: 300;
-  text-align: center;
-  text-shadow: 0 5px 10px $color-frontpage-text-description-text-shadow;
-  text-transform: uppercase;
 
-  @include breakpoint($breakpoint-pad) {
-    max-width: 20em;
-  }
-}
-  
-.text--frontpage-muikku-author {
-  color: $color-frontpage-text-muikku-author;
-  font-size: 1.15rem;
-  font-weight: 300;
-  line-height: 1;
-  text-align: left;
-  text-shadow: 0 5px 10px $color-frontpage-text-author-text-shadow;
-  text-transform: uppercase;
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.5rem;
-    text-align: center;
-  }
-}
-
-.text--frontpage-muikku {
-  color: $color-frontpage-text-muikku;
-  font-size: 2rem;
-  font-weight: 900;
-  line-height: 0.9;
-  text-align: left;
-  text-shadow: 0 5px 10px $color-frontpage-text-muikku-text-shadow;
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: 3rem;
-    text-align: center;
-  }
-}
-  
-.text--frontpage-verkko {
-  color: $color-frontpage-text-verkko;
-  font-size: 2rem;
-  letter-spacing: 3px;
-  font-weight: 300;
-  line-height: 0.9;
-  text-align: left;
-  text-shadow: 0 5px 10px $color-frontpage-text-verkko-text-shadow;
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: 3rem;
-    letter-spacing: 5px;
-    text-align: center;
-    text-indent: 7px;
-  }
-}
-  
 .text--frontpage-title {
-  color: $color-frontpage-text-title;
-  font-size: 1.7rem;
-  text-align: left;
-  font-weight: 300;
-  margin-bottom: 20px;
-  
-  @include breakpoint($breakpoint-mobile-xl) {
-    font-size: 1.8rem;
-  }
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: 2rem;
-    font-weight: 200;
-  }
-  
-  @include breakpoint($breakpoint-desktop) {
-    font-size: 2.375rem;
-  }
+
 }
 
 .text--otavan-opisto-info-title {
