@@ -12,6 +12,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.AssessmentRequestNotificationDAO;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.AssesmentRequestNotification;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -28,9 +29,9 @@ public class AssesmentRequestNotificationController {
   @Inject
   private AssessmentRequestNotificationDAO assessmentRequestNotificationDAO;
   
-  public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
+  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, true, 
+    return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, null, null, false, true, true, 
         firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, startedStudiesBefore);
   }
   
