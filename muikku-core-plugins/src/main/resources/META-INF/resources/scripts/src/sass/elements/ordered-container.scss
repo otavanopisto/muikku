@@ -1,4 +1,5 @@
 @import "../base/vars";
+@import "../base/colors";
 @import "../base/breakpoints";
 
 // Ordered containers
@@ -11,8 +12,7 @@
 }
 
 .ordered-container--frontpage-studying,
-.ordered-container--frontpage-news-and-events {
-  
+.ordered-container--frontpage-news-and-events {  
   .ordered-container__item {
     margin-bottom: calc(2 * #{$ordered-container-item-gutter});
   }
@@ -48,6 +48,7 @@
 }
 
 // Ordered container items
+
 .ordered-container__item {
   flex-basis: 100%;
   flex-grow: 1;
@@ -63,6 +64,22 @@
   @include breakpoint($breakpoint-desktop) {
     text-align: left;
   } 
+}
+
+.ordered-container__subcontainer-content {
+  font-family: $text-branded-font-family;  
+  color: $color-frontpage-text-otavan-opisto-description;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  line-height: 1.375rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+ 
+  p {
+    margin: 0 0 1.15rem;
+  }
 }
   
 .ordered-container__item-subcontainer--otavan-opisto-social-media {
@@ -81,6 +98,18 @@
   }
 } 
  
+.ordered-container__subcontainer-header--social-media {
+  font-family: $text-branded-font-family;  
+  color: $color-frontpage-text-otavan-opisto-info-title;
+  font-size: $text-mobile-font-size;
+  font-weight: 600;
+  margin: 0 0 .625rem;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+}
  
 @include breakpoint($breakpoint-pad) {
   // Upper secondary school card (Nettilukio)
@@ -371,6 +400,7 @@
 }
 
 // Error panels
+
 .ordered-container--error-panels {
   flex-flow: column nowrap;
   height: 100%;

@@ -1,7 +1,9 @@
 @import "../base/breakpoints";
 @import "../base/colors";
+@import "../base/vars";
 
 .footer {
+  font-family: $text-branded-font-family;
   background-color: $color-footer-default-background;
   text-align: center;
   width: 100%;
@@ -33,6 +35,32 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-around;
+  }
+}
+
+.footer__header {
+  color: $color-frontpage-text-contact-us;
+  font-size: 1.6rem;
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 2.5rem;
+  }
+}
+
+.footer__subitem {
+  color: $color-frontpage-text-contact-us-information;
+  font-size: $text-mobile-font-size;
+  margin-top: .875rem;
+  margin-bottom: .875rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }
+
+  * {
+    margin-right: .625rem;
   }
 }
 
