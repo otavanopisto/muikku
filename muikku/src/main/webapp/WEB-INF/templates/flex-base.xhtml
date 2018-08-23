@@ -20,6 +20,7 @@
           var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
           var MUIKKU_LOGGED_USER = '#{sessionBackingBean.loggedUser}'||null;
           var MUIKKU_LOGGEDIN = #{sessionBackingBean.loggedIn};
+          var CHAT_CHECKBOX_PERMISSION=#{sessionBackingBean.hasEnvironmentPermission('CHAT_CHECKBOX_PERMISSION')};
       </script>
       
       <ui:fragment rendered="#{sessionBackingBean.bugsnagEnabled}">
