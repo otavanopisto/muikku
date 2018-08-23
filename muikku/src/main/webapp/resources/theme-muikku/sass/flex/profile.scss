@@ -4,6 +4,43 @@
 @import "jquery.datepicker";
 
 #profile {
+  
+  select {
+    background: #fff;
+    border: 2px solid #abdbed;
+    border-radius: 3px;
+    color: #000;
+    display: inline-block;
+    margin: 4px;
+    max-width: 100%;
+    outline: none;
+    padding: 0 5px;
+    word-wrap: break-word;
+    vertical-align: middle;
+    
+    &:focus,
+    &:hover {
+      border: 2px solid #8dd6f1;
+    }
+    
+    &[disabled="disabled"] {
+      border: 2px solid #cae1fc;
+      color: #7c7c7c;
+      
+      &:hover {
+        border: 2px solid #cae1fc;
+        color: #7c7c7c;
+      }
+  
+    }
+  
+    option {
+      background: #fff;
+      font-weight: 300;
+      padding: 5px 10px;
+    }
+    
+  }
 
   .profile-content {
     background: $environment-profile-background-color;

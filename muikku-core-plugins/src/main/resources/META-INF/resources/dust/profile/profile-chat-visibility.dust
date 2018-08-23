@@ -1,0 +1,11 @@
+<label>{#localize key="plugin.profile.chat.visibility"/}</label>
+<div class="profile-user-data">
+  <select>
+    <option value="VISIBLE_TO_ALL" {visible_to_all_selected}>
+      {#localize key="plugin.profile.chat.visibleToAll"/}
+    </option>
+    <option value="DISABLED" {disabled_selected}>
+      {#localize key="plugin.profile.chat.disabled"/}
+    </option>
+  </select>
+</div>
