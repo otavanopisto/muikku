@@ -24,18 +24,32 @@ enum GraphData {
   EXERCISES = "Exercises"
 }
 
+var ignoreZoomed:boolean = true;
+var zoomStartDate:Date = null;
+var zoomEndDate:Date = null;
+//TEST DATA: remove if found in production
+var testData:{"date":Date, "logins":number, "assignments":number,"exercises":number}[] = [];
+
 class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsProps, CurrentStudentStatisticsState> {
   constructor(props: CurrentStudentStatisticsProps){
     super(props);
     this.workspaceFilterHandler = this.workspaceFilterHandler.bind(this);
     this.GraphDataFilterHandler = this.GraphDataFilterHandler.bind(this);
+    this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
+    this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
       filteredWorkspaces: [],
       filteredGraphData: []
     };
+    
+    //TEST DATA: remove if found in production
+    let today:Date = new Date();
+    for (let i=0;i<1000; i++) {
+      testData.push({"date": new Date(today.getTime() + i*24*60*60*1000), "logins": Math.floor(Math.random()*7+3), "assignments": Math.floor(Math.random()*3+1), "exercises": Math.floor(Math.random()*3+1)});
+    }
   }
   
-  workspaceFilterHandler(workspaceId: number) {
+  workspaceFilterHandler(workspaceId: number){
     const filteredWorkspaces = this.state.filteredWorkspaces.slice();
     var index = filteredWorkspaces.indexOf(workspaceId);
     if(index > -1)
@@ -45,7 +59,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     this.setState({filteredWorkspaces: filteredWorkspaces});
   }
   
-  GraphDataFilterHandler(graphData: GraphData) {
+  GraphDataFilterHandler(graphData: GraphData){
     const filteredGraphData = this.state.filteredGraphData.slice();
     var index = filteredGraphData.indexOf(graphData);
     if(index > -1)
@@ -55,68 +69,81 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     this.setState({filteredGraphData: filteredGraphData});
   }
 
+  zoomSaveHandler (e:any){
+    if (!ignoreZoomed) {
+      zoomStartDate = e.startDate;
+      zoomEndDate = e.endDate;
+    }
+  ignoreZoomed = false;
+  }
+  
+  zoomApplyHandler(e:any){
+    if(zoomStartDate != null && zoomEndDate != null)
+      e.chart.zoomToDates(zoomStartDate, zoomEndDate);
+  }
+  
   render(){
     if(!this.props.statistics) {
       //TODO: change to animation?
       return (<p>LOADING</p>);
     }
-      
-    //TODO: CHANGE TO LOCALE VARIABLE
-    let months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
+    
     let logins = Array(12).fill(0);
     let assignments = Array(12).fill(0);
-    let excersises = Array(12).fill(0);
+    let exercises = Array(12).fill(0);
     let workspaces: {id:number, name:string}[] = [];
     
     //TEST DATA. Remove if found in production.
-    workspaces.push({id:1, name:"aaa"});
-    workspaces.push({id:76, name:"bbb"});
-    workspaces.push({id:23, name:"tr"});
-    workspaces.push({id:32, name:"3432a"});
-    workspaces.push({id:28, name:"gddd"});
-    workspaces.push({id:102, name:"asddsa"});
+    workspaces.push({id:1, name:"test1"});
+    workspaces.push({id:76, name:"test2"});
+    workspaces.push({id:23, name:"test3"});
+    workspaces.push({id:32, name:"test4"});
+    workspaces.push({id:28, name:"test5"});
+    workspaces.push({id:102, name:"test6"});
     
-    //NOTE: It is possible not to check data type and calculate everything. There is graph type check below. (Option 1)
-    if(!this.state.filteredGraphData.includes(GraphData.LOGINS)) {
+//NOTE: It is possible to check data type and calculate everything. There is graph type check below. (Option 1)
+    let chartDataMap = new Map<Date, {logins:number, assignments:number, exercises:number}>();
       this.props.statistics.login.map((login)=>{
-        logins[login.getMonth()]++;
+        let entry = chartDataMap.get(login);
+        if(entry == null)
+          entry = {"logins": 0, "assignments": 0, "exercises": 0};
+        entry.logins++;
+        chartDataMap.set(login, entry);
       });
-    }
     
-    if(!this.state.filteredGraphData.includes(GraphData.ASSIGNMENTS) || !this.state.filteredGraphData.includes(GraphData.EXERCISES)) {
-      Object.keys(this.props.statistics.activities).forEach(key=>{
-        let workspaceId:number = parseInt(key);
-        workspaces.push({id:workspaceId, name:this.props.statistics.activities[workspaceId].workspaceUrlName});
-        if(!this.state.filteredWorkspaces.includes(workspaceId)){
-          this.props.statistics.activities[workspaceId].records.map((record)=>{
-            if(record.type === "EVALUATED" && !this.state.filteredGraphData.includes(GraphData.ASSIGNMENTS))
-              assignments[new Date(record.date).getMonth()]++;
-            else if(record.type === "EXERCISE" &&!this.state.filteredGraphData.includes(GraphData.EXERCISES))
-              excersises[new Date(record.date).getMonth()]++;
-          })
-        }
-      });
-    }
-    
+    Object.keys(this.props.statistics.activities).forEach(key=>{
+      let workspaceId:number = parseInt(key);
+      workspaces.push({id:workspaceId, name:this.props.statistics.activities[workspaceId].workspaceUrlName});
+      if(!this.state.filteredWorkspaces.includes(workspaceId)){
+        this.props.statistics.activities[workspaceId].records.map((record)=>{
+          let date = new Date(record.date);
+          let entry = chartDataMap.get(date);
+          if(entry == null)
+            entry = {"logins": 0, "assignments": 0,"exercises": 0};
+          if(record.type === "EVALUATED")
+            entry.assignments++;
+          else if(record.type === "EXERCISE")
+            entry.exercises++;
+          chartDataMap.set(date, entry);
+        })
+      }
+    });
+
     //NOTE: Data can be filtered here also (Option 2)
+    let sortedKeys = Array.from(chartDataMap.keys()).sort((a,b)=>{return a.getTime()>b.getTime()? 1: -1});
     let data = new Array;
-    for(let i = 0; i < 12; i++){
-      let dataEntry:any = {};
-      dataEntry.month = months[i];
-      //if(!this.state.filteredGraphData.includes(GraphData.LOGINS))
-        dataEntry.logins = logins[i];
-      //if(!this.state.filteredGraphData.includes(GraphData.ASSIGNMENTS))
-        dataEntry.assignmentsDone = assignments[i];
-      //if(!this.state.filteredGraphData.includes(GraphData.EXERCISES))
-        dataEntry.exercisesDone = excersises[i];
-      data.push(dataEntry);
-    }
+    sortedKeys.forEach((key)=>{
+      let value = chartDataMap.get(key);
+      data.push({"date": key, "logins": value.logins, "assignments": value.assignments, "exercises": value.exercises});
+    });
     
+    data = data.concat(testData);
     //NOTE: It is possible not to check graphs and leave them with no or 0 data entries. (if data is checked) (Option 3)
     let graphs = new Array;
     if(!this.state.filteredGraphData.includes(GraphData.LOGINS)) {
       graphs.push({
-        "balloonText": "Logins in [[month]] <b>[[logins]]</b>",
+        "id":"logins",
+        "balloonText": "Logins number <b>[[logins]]</b>",
         "fillAlphas": 0.7,
         "lineAlpha": 0.2,
         "lineColor":"#62c3eb",
@@ -131,7 +158,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     
     if(!this.state.filteredGraphData.includes(GraphData.ASSIGNMENTS)) {
       graphs.push({
-        "balloonText": "Assignments done in [[month]] <b>[[assignmentsDone]]</b>",
+        "id":"assignments",
+        "balloonText": "Assignments done <b>[[assignments]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor":"#ce01bd",
@@ -139,13 +167,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "type": "column",
         "clustered":false,
         "columnWidth":0.4,
-        "valueField": "assignmentsDone"
+        "valueField": "assignments"
       });
     }
     
     if(!this.state.filteredGraphData.includes(GraphData.EXERCISES)) {
       graphs.push({
-        "balloonText": "Exercises done in [[month]] <b>[[exercisesDone]]</b>",
+        "id":"exercises",
+        "balloonText": "Exercises done <b>[[exercises]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor":"#ff9900",
@@ -153,35 +182,76 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "type": "column",
         "clustered":false,
         "columnWidth":0.4,
-        "valueField": "exercisesDone"
+        "valueField": "exercises"
       });
     }
     
     let valueAxes = [{
-    "stackType": (graphs.length>1)?"regular":"none",
+    "stackType": (graphs.length>1)? "regular": "none",
     "unit": "",
     "position": "left",
     "title": "",
+    "integersOnly": true
   }];
-    
+
     let config = {
       "theme": "none",
       "type": "serial",
-      "startDuration": 1,
+      "minMarginLeft": 50,
+      "startDuration": 0.4,
       "plotAreaFillAlphas": 0.1,
-      "export": {
-          "enabled": true
-       },
-      "graphs":graphs,
-      "categoryField": "month",
+      "mouseWheelZoomEnabled": true,
+      "minSelectedTime": 604800000,
+      "maxSelectedTime": 31556952000,
+      "dataDateFormat": "YYYY-MM-DD",
+      "categoryField": "date",
       "categoryAxis": {
-          "gridPosition": "start"
+        "parseDates": true,
+        "dashLength": 1,
+        "minorGridEnabled": true,
+        "gridPosition": "start"
       },
+      "categoryAxesSettings": {
+        "minPeriod": "DD"
+      },
+      "chartScrollbar": {
+        "graph": "logins",
+        "oppositeAxis": false,
+        "offset": 30,
+        "scrollbarHeight": 60,
+        "backgroundAlpha": 0,
+        "selectedBackgroundAlpha": 0.1,
+        "selectedBackgroundColor": "#888888",
+        "graphFillAlpha": 0,
+        "graphLineAlpha": 0.5,
+        "selectedGraphFillAlpha": 0,
+        "selectedGraphLineAlpha": 1,
+        "autoGridCount": true,
+        "color": "#AAAAAA"
+      },
+      "chartCursor": { 
+        "categoryBalloonDateFormat": "YYYY-MM-DD",
+        "categoryBalloonColor": "#009FE3",
+        "cursorColor": "#000"
+     },
+     "listeners": [{
+       "event": "zoomed",
+       "method": this.zoomSaveHandler
+       }, {
+       "event": "dataUpdated",
+       "method":  this.zoomApplyHandler
+    }],
+      "valueAxes": valueAxes,
+      "graphs": graphs,
       "dataProvider": data,
-      "valueAxes": valueAxes
+      "export": {
+        "enabled": true
+      }
     };
+    ignoreZoomed=true;
+    console.log(config);
     
-    //Possible to use show/hide graph. requires accessing the graph and call for a method. Responsiveness not through react rerender only?
+    //Possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
     let showGraphs:string[] = [GraphData.LOGINS, GraphData.ASSIGNMENTS, GraphData.EXERCISES];
     return(
     <div className="react-required-container">

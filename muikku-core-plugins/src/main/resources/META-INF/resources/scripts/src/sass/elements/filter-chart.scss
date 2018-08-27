@@ -5,11 +5,10 @@
 
 .chart-legend {
   align-items: stretch;
-  box-sizing: border-box;
   display: flex;
   flex-flow: row nowrap;
-  padding-left: 34px;
-  padding-right:21px;
+  padding-left: 40px;
+  padding-right: 21px;
   width: 90%;
 }
 
@@ -35,7 +34,7 @@
       justify-content: center;
       margin-right: 10px;
       margin-left: 10px;
-      vertical-align:middle;
+      vertical-align: middle;
       width: 1rem;
       
       &.Assignments {
@@ -96,7 +95,7 @@
     justify-content: center;
     margin-right: 5px;
     margin-left: 5px;
-    vertical-align:middle;
+    vertical-align: middle;
     width: 1rem;
   }
   
