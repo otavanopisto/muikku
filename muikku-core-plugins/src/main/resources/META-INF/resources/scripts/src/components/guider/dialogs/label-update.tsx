@@ -16,6 +16,8 @@ import GuiderLabelShareDialog from './label-share';
 import {StateType} from '~/reducers';
 import Button from '~/components/general/button';
 
+import '~/sass/elements/color-picker.scss';
+
 const KEYCODES = {
   ENTER: 13
 }
@@ -31,18 +33,20 @@ interface GuiderLabelUpdateDialogProps {
 }
 
 interface GuiderLabelUpdateDialogState {
+  displayColorPicker: boolean,
   color: string,
   name: string,
   description: string,
   removed: boolean
 }
 
-
 class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogProps, GuiderLabelUpdateDialogState> {
   constructor(props: GuiderLabelUpdateDialogProps){
     super(props);
     
     this.onColorChange = this.onColorChange.bind(this);
+    this.onHandleClick = this.onHandleClick.bind(this);
+    this.onHandleClose = this.onHandleClose.bind(this);
     this.onNameChange = this.onNameChange.bind(this);
     this.onDescriptionChange = this.onDescriptionChange.bind(this);
     this.removeLabel = this.removeLabel.bind(this);
@@ -52,11 +56,18 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
     this.shareLabel = this.shareLabel.bind(this);
     
     this.state = {
+      displayColorPicker: false,
       color: props.label.color,
       name: props.label.name,
       description: props.label.description,
       removed: false
     }
+  }
+  onHandleClick = () => {
+    this.setState({ displayColorPicker: !this.state.displayColorPicker })
+  }
+  onHandleClose = () => {
+    this.setState({ displayColorPicker: false })
   }
   handleKeydown(code: number, closeDialog: ()=>any){
     if (code === KEYCODES.ENTER){
@@ -113,6 +124,11 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
         <Button buttonModifiers={["cancel", "standard-cancel"]} onClick={closeDialog}>
          {this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.cancel')}
         </Button>
+        <GuiderLabelShareDialog label={this.props.label}>
+          <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
+            {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
+          </Button>
+        </GuiderLabelShareDialog>
         <Button buttonModifiers={["fatal", "guider-remove-label"]} disabled={this.state.removed} onClick={this.removeLabel}>
          {this.state.removed ? this.props.i18n.text.get('plugin.guider.flags.confirmFlagDelete.deleted') : this.props.i18n.text.get('plugin.guider.flags.removeFlag.label')}
        </Button>
@@ -123,15 +139,18 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
-            <div className="text text--label-update-dialog-icon">
+            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
               <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
-            {sliderPicker}
+            {this.state.displayColorPicker ? <div className="color-picker">
+              <div className="color-picker-overlay" onClick={ this.onHandleClose }/>
+              {sliderPicker}
+            </div> : null}
           </div>
           <div className="dialog__container dialog__container--form">
             <div className="form-element">
             <input placeholder={this.props.i18n.text.get('plugin.guider.flags.editFlagDialog.name')} value={this.state.name}
-              className="form-element__input form-element--guider-label-name"
+              className="form-element__input form-element__input--guider-label-name"
               disabled={this.state.removed}
               onChange={this.onNameChange}/>
             </div>
@@ -142,11 +161,6 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
               onChange={this.onDescriptionChange}/>
             </div>
           </div>
-          <GuiderLabelShareDialog label={this.props.label}>
-            <Button buttonModifiers={["info", "guider-share-label"]} disabled={this.state.removed} onClick={this.shareLabel}>
-              {this.props.i18n.text.get('plugin.guider.flags.shareFlag.label')}
-            </Button>
-          </GuiderLabelShareDialog>
         </div>
       )
     }

@@ -342,16 +342,20 @@ b {
 
 .text--label-update-dialog-icon {
   align-items: center;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  cursor: pointer;
   display: flex;
-  
-  font-size: 92px;
+  font-size: 72px;
+  padding: 5px;
+  position: relative;
 }
  
 .text--recepient-tag {
   align-items: center;
   display: flex;
   flex-flow: row nowrap;
-  
   font-size: 0.75rem;
   
   @include breakpoint($breakpoint-pad) {
