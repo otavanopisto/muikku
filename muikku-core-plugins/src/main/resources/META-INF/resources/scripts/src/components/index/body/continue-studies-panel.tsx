@@ -30,21 +30,20 @@ class ContinueStudiesPanel extends React.Component<ContinueStudiesPanelProps, Co
       return null;
     } else if (!this.props.lastWorkspace){
       return null;
-    }
-    
+    }    
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--continue-studies">
-      <div className="text text--for-panels-title">
-        <span className="text__panel-icon text__panel-icon--continue-studies icon-revert"></span>
-        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</span>
+      <div className="ordered-container__item-header">
+        <span className="ordered-container__item-header-icon ordered-container__item-header-icon--continue-studies icon-revert"></span>
+        <span className="ordered-container__item-header-text">{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.title')}</span>
       </div>
       <Panel modifier="index">
-        <h2 className="text text--panel-continue-studies-workspace-name">
+        <h2 className="panel__header">
           {this.props.lastWorkspace.workspaceName}
         </h2>
-        <span className="text text--panel-continue-studies">
+        <div className="panel__content">
           {this.props.i18n.text.get('plugin.frontPage.latestWorkspace.material.part1')}{" "}<span className="text text--panel-continue-studies-material-page">{this.props.lastWorkspace.materialName}.</span>{" "}
           <Link className="text__panel-link text--panel-continue-studies-link" href={this.props.lastWorkspace.url}>{this.props.i18n.text.get('plugin.frontPage.latestWorkspace.continueStudiesLink')}</Link>
-        </span>
+        </div>
       </Panel>
     </div>);
   }

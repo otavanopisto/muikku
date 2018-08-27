@@ -18,9 +18,9 @@ interface LastMessagesPanelState {
 class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessagesPanelState> {
   render(){
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--workspaces">   
-      <div className="text text--for-panels-title">
-        <span className="text__panel-icon text__panel-icon--workspaces icon-books"></span>
-        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>
+      <div className="ordered-container__item-header">
+        <span className="ordered-container__item-header-icon ordered-container__item-header-icon--workspaces icon-books"></span>
+        <span className="ordered-container__item-header-text">{this.props.i18n.text.get('plugin.frontPage.workspaces.title')}</span>
       </div>
       <Panel modifier="index">        
         {this.props.workspaces.length ? (
@@ -28,10 +28,10 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
             {this.props.workspaces.map((workspace: WorkspaceType)=>{
               return <Link key={workspace.id} className="item-list__item item-list__item--workspaces" href={`/workspace/${workspace.urlName}`}>
                 <span className="item-list__icon item-list__icon--workspaces icon-books"></span>
-                <span className="item-list__text-body text">
+                <span className="item-list__text-body">
                   {`${workspace.name} ${workspace.nameExtension ? "(" + workspace.nameExtension + ")" : ""}`}
                 </span>
-              </Link>
+              </Link>              
             })}
           </div>
         ) : (
@@ -44,7 +44,7 @@ class WorkspacesPanel extends React.Component<LastMessagesPanelProps, LastMessag
           </div>
         )}
        </Panel>
-     </div>);
+     </div>);      
   }
 }
 

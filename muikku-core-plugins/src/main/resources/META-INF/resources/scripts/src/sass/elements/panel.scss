@@ -19,6 +19,17 @@
   }
 }
 
+.panel__header {
+  font-size: 1.125rem;
+  font-weight: 400;
+  margin: 12px;
+}
+
+.panel__content {
+  margin: 12px;
+}
+
+
 .panel--studies-ended {
   width: 100%;
   padding: 1.5rem 2rem;

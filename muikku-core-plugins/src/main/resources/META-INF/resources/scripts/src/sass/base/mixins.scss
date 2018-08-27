@@ -10,7 +10,6 @@
 
 @mixin text {
   color: $color-text-default;
-  display: block;
   font-family: $text-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 400;

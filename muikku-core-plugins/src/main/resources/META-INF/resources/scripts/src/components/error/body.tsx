@@ -28,7 +28,7 @@ class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
         <div className="ordered-container ordered-container--error-panels">
           <div className="ordered-container__item ordered-container__item--error">
             <div className="text text--error-title">
-              <span className="text__panel-icon text__panel-icon--error icon-error"></span>
+              <span className="ordered-container__item-header-icon ordered-container__item-header-icon--error icon-error"></span>
               <span className="text__panel-title">{this.props.error.title}</span>
             </div>
             <div className="panel panel--error">

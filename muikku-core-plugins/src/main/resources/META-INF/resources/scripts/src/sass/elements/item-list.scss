@@ -46,7 +46,7 @@
 
 // Item-list items in workspaces panel
 .item-list--panel-workspaces .item-list__item {
-
+  @include text;
 }
 
 // Item-list items in lastest messages panel
