@@ -19,7 +19,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
         let ifChecked = !this.props.filteredWorkspaces.includes(workspace.id);
         return (<li key={workspace.name}><input type='checkbox' onClick={()=>{this.props.handler(workspace.id)}} defaultChecked={ifChecked} /><span>{workspace.name}</span></li>);
         })}>
-        <input className={`workspace-filter-activator`} value="Workspaces" type="submit"></input>
+        <input className={"workspace-filter-activator"} value="Workspaces" type="submit"></input>
       </Dropdown>
     )
   }

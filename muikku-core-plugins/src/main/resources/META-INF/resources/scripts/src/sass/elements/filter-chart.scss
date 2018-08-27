@@ -7,6 +7,8 @@
   align-items: stretch;
   display: flex;
   flex-flow: row nowrap;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
   padding-left: 40px;
   padding-right: 21px;
   width: 90%;
@@ -21,6 +23,14 @@
   
   &.chart-filter--workspace-filter {
     justify-content: flex-end;
+    .workspace-filter-activator {
+      border-radius: 2px;
+      border-width: 0px;
+      background-color: #009fe3;
+      color: #fff;
+      padding: 5px 10px;
+      text-transform: uppercase;
+    }
   }
   
   &.chart-filter--legend-filter{
@@ -83,7 +93,8 @@
 }
 
 .dropdown__container {
-
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
   input[type="checkbox"] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -108,7 +119,6 @@
     color: #fff;
     content: "\E639";
     font-family: muikku;
-    font-size: .875rem;
   }
   span {
     vertical-align: middle;
