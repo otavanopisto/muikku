@@ -45,11 +45,13 @@
 }
 
 // Item-list items in workspaces panel
+
 .item-list--panel-workspaces .item-list__item {
   @include text;
 }
 
 // Item-list items in lastest messages panel
+
 .item-list--panel-latest-messages .item-list__item {
   align-items: flex-start;
   border-top: solid 1px $color-default-item-separator-border;
@@ -60,6 +62,7 @@
 }
 
 // Item-list items in announcements
+
 .item-list--panel-announcements .item-list__item {
   align-items: flex-start;
   border-top: solid 1px $color-default-item-separator-border;
@@ -98,6 +101,7 @@
 }
 
 // Unread list items in index page (icons and texts)
+
 .item-list--panel-latest-messages {
 
   .item-list__item--unread .item-list__icon {
@@ -143,6 +147,7 @@
 }
     
 // List item texts
+
 .item-list__text-body {
   flex-basis: auto;
   flex-grow: 1;
@@ -161,9 +166,12 @@
   
 .item-list__text-body--multiline {
   white-space: initial;
+  display: flex;
+  flex-direction: column;  
 }
 
 // List item dates
+
 .item-list__latest-message-date,
 .item-list__announcement-date {
   color: $color-index-text-panels-date-color;
@@ -177,6 +185,7 @@
 }
 
 // List item labels (and similar)
+
 .item-list__announcement-workspaces {
   margin: 10px 0 0;
 }

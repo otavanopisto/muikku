@@ -29,11 +29,11 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
               return (<Link key={thread.id} className={`item-list__item item-list__item--latest-messages ${thread.unreadMessagesInThread ? "item-list__item--unread" : ""}`}
                       to={`/communicator#inbox/${thread.communicatorMessageId}?f`}>
                 <span className={`item-list__icon item-list__icon--latest-messages icon-envelope${thread.unreadMessagesInThread ? "-alt" : ""}`}></span>
-                <span className="text item-list__text-body item-list__text-body--multiline">
-                  <span className="text item-list__latest-message-caption">
+                <span className="item-list__text-body item-list__text-body--multiline">
+                  <span className="item-list__latest-message-caption">
                     {thread.caption}
                   </span>
-                  <span className="text item-list__latest-message-date">
+                  <span className="item-list__latest-message-date">
                     {this.props.i18n.time.format(thread.created)}
                   </span>
                 </span>
@@ -41,7 +41,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
             })}
           </div>
           ) : (
-            <div className="text text--panel-nothing">{this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}</div>
+            <div className="panel__empty">{this.props.i18n.text.get("plugin.frontPage.latestMessages.noMessages")}</div>
           )}
       </Panel>
     </div>);
