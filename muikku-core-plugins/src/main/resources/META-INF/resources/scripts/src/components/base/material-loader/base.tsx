@@ -1,17 +1,21 @@
-import TextField from './text-field';
-import SelectField from './select-field';
-import MultiSelectField from './multiselect-field';
-import MemoField from './memo-field';
+import TextField from './fields/text-field';
+import SelectField from './fields/select-field';
+import MultiSelectField from './fields/multiselect-field';
+import MemoField from './fields/memo-field';
 import * as React from 'react';
 import $ from '~/lib/jquery';
 import {unstable_renderSubtreeIntoContainer, unmountComponentAtNode, findDOMNode} from 'react-dom';
 import { i18nType } from '~/reducers/base/i18n';
-import FileField from './file-field';
-import ConnectField from './connect-field';
-import OrganizerField from './organizer-field';
-import AudioField from './audio-field';
-import SorterField from './sorter-field';
+import FileField from './fields/file-field';
+import ConnectField from './fields/connect-field';
+import OrganizerField from './fields/organizer-field';
+import AudioField from './fields/audio-field';
+import SorterField from './fields/sorter-field';
 import { StatusType } from '~/reducers/base/status';
+import Image from './static/image';
+import WordDefinition from './static/word-definition';
+import { extractDataSet } from '~/util/modifiers';
+import { processMathInPage } from '~/lib/mathjax';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
@@ -35,6 +39,17 @@ interface BaseState {
   
 }
 
+const statics:{[componentKey:string]: {
+  handler: Function
+}} = {
+  'figure[class="image"]': {
+     handler: Image
+   },
+   'mark[data-muikku-word-definition]': {
+     handler: WordDefinition
+   }
+};
+
 export default class Base extends React.Component<BaseProps, BaseState> {
   private elements: Array<HTMLElement>;
   constructor(props: BaseProps){
@@ -46,7 +61,7 @@ export default class Base extends React.Component<BaseProps, BaseState> {
     this.elements.forEach((e)=>(this.refs["base"] as HTMLElement).appendChild(e));
     
     $(this.elements).find("object").each((index: number, element: HTMLElement)=>{
-      let rElement:React.ReactElement<any> = this.getElement(element);
+      let rElement:React.ReactElement<any> = this.getObjectElement(element);
       let parentElement = element.parentElement;
       parentElement.removeChild(element);
       
@@ -56,8 +71,28 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         parentElement
       );
     });
+    
+    Object.keys(statics).forEach((componentKey)=>{
+      $(this.elements).find(componentKey).toArray().forEach((element: HTMLElement)=>{
+        let rElement:React.ReactElement<any> = statics[componentKey].handler({
+          element,
+          dataset: extractDataSet(element),
+          i18n: this.props.i18n
+        });
+        let parentElement = element.parentElement;
+        parentElement.removeChild(element);
+        
+        unstable_renderSubtreeIntoContainer(
+          this,
+          rElement,
+          parentElement
+        );
+      });
+    });
+    
+    processMathInPage();
   }
-  getElement(element: HTMLElement){
+  getObjectElement(element: HTMLElement){
     let ActualElement = objects[element.getAttribute("type")];
     if (!ActualElement){
       return <span>Invalid Element {element.getAttribute("type")} {element.innerHTML}</span>;

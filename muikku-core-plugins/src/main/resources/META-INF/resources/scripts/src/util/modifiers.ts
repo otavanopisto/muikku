@@ -211,3 +211,65 @@ export function arrayToObject(array: Array<any>, propertyName: string, propertyV
   });
   return obj;
 }
+
+const translations:any = {
+  "width": "width",
+  "class": "className",
+  "src": "src",
+  "height": "height"
+}
+
+export function CSSStyleDeclarationToObject(declaraion: CSSStyleDeclaration){
+  let result:any = {};
+  Object.keys(declaraion).forEach((key: string)=>{
+    if (key !== "cssText" && key !== "length" || parseInt(key) === NaN){
+      result[key] = (declaraion as any)[key];
+    }
+  });
+}
+
+export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: string, props: any, children: Array<any>, element: HTMLElement)=>any, key?: number):any {
+  let defaultProcesser = processer ? processer : (a:any, b:any, c:any)=>React.createElement(a,b,c);
+  let props:any = {
+    key
+  }
+  Array.from(element.attributes).forEach((attr:Attr)=>{
+    if (translations[attr.name]){
+      props[translations[attr.name]] = attr.value
+    }
+  });
+  if (element.style.cssText){
+    props.style = CSSStyleDeclarationToObject(element.style);
+  }
+  let children = Array.from(element.childNodes).map((node, index)=>{
+    if (node instanceof HTMLElement){
+      return HTMLtoReactComponent(node, defaultProcesser, index)
+    }
+    return node.textContent;
+  });
+  if (!children.length){
+    children = null;
+  }
+  return defaultProcesser(
+      element.tagName.toLowerCase(),
+      props,
+      children,
+      element
+  );
+}
+
+export function extractDataSet(element: HTMLElement):any{
+  let finalThing:any = {
+     ...element.dataset
+  };
+  Array.from(element.childNodes).map((node, index)=>{
+    if (node instanceof HTMLElement){
+      finalThing = {
+        ...finalThing,
+        ...extractDataSet(node)
+      }
+    }
+  });
+  
+  return finalThing;
+}

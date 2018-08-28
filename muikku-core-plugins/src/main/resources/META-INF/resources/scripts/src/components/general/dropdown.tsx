@@ -10,7 +10,9 @@ type itemType2 = (closeDropdown: ()=>any)=>any
 interface DropdownProps {
   modifier: string,
   children?: React.ReactElement<any>,
-  items: Array<(React.ReactElement<any> | itemType2)>;
+  items?: Array<(React.ReactElement<any> | itemType2)>,
+  content?: any,
+  openByHover?: boolean
 }
 
 interface DropdownState {
@@ -79,8 +81,16 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
   }
   render(){
     let elementCloned : React.ReactElement<any> = React.cloneElement(this.props.children, { ref: "activator" });
-    return <Portal ref="portal" openByClickOn={elementCloned}
-      closeOnEsc closeOnOutsideClick closeOnScroll onOpen={this.onOpen} beforeClose={this.beforeClose}>
+    let portalProps:any = {};
+    if (!this.props.openByHover){
+      portalProps.openByClickOn = elementCloned;
+      portalProps.closeOnEsc = true;
+      portalProps.closeOnOutsideClick = true;
+      portalProps.closeOnScroll = true
+    } else {
+      portalProps.openByHoverOn = elementCloned;
+    }
+    return <Portal ref="portal" {...portalProps} onOpen={this.onOpen} beforeClose={this.beforeClose}>
       <div ref="dropdown"
         style={{
           top: this.state.top,
@@ -89,7 +99,8 @@ export default class Dropdown extends React.Component<DropdownProps, DropdownSta
         className={`dropdown ${this.props.modifier ? 'dropdown--' + this.props.modifier : ''} ${this.state.visible ? "visible" : ""}`}>
         <span className="dropdown__arrow" ref="arrow" style={{left: this.state.arrowLeft, right: this.state.arrowRight}}></span>
         <div className="dropdown__container">
-          {this.props.items.map((item, index)=>{
+          {this.props.content}
+          {this.props.items && this.props.items.map((item, index)=>{
             let element = typeof item === "function" ? item(this.close) : item;
             return (<div className="dropdown__container-item" key={index}>
               {element}
