@@ -38,18 +38,18 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
                 return <Link key={announcement.id} className={`item-list__item item-list__item--announcements ${announcement.workspaces.length ? "item-list__item--has-workspaces" : ""}`}
                   to={`/announcements#${announcement.id}`}>
                   <span className="item-list__icon item-list__icon--announcements icon-announcer"></span>
-                  <span className="text item-list__text-body item-list__text-body--multiline">
-                    <span className="text item-list__announcement-caption">
+                  <span className="item-list__text-body item-list__text-body--multiline">
+                    <span className="item-list__announcement-caption">
                       {announcement.caption}
                     </span>
-                    <span className="text item-list__announcement-date">
+                    <span className="item-list__announcement-date">
                       {this.props.i18n.time.format(announcement.startDate)}
                     </span>
                     {announcement.workspaces && announcement.workspaces.length ? 
                       <div className="labels item-list__announcement-workspaces">
                         <span className="label">
                           <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                          <span className="text label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
+                          <span className="label__text label__text--announcement-workspace">{announcement.workspaces[0].name} {announcement.workspaces[0].nameExtension ? "(" + announcement.workspaces[0].nameExtension + ")" : null }</span>
                         </span>
                         {extraWorkspaces ? <span className="label">{"(+" + extraWorkspaces + ")"}</span> : null}
                       </div> : null}
@@ -58,7 +58,7 @@ class AnnouncementsPanel extends React.Component<AnnouncementsPanelProps, Announ
               })}
             </div>
           :
-            <div className="text text--panel-nothing">
+            <div className="panel__empty">
              {this.props.i18n.text.get("plugin.frontPage.announcements.noAnnouncements")}
             </div>
           }
