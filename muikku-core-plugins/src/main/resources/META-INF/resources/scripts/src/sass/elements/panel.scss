@@ -26,7 +26,20 @@
 }
 
 .panel__content {
+  @include text;  
   margin: 12px;
+}
+
+.panel__empty {
+  padding: 10px;
+}
+
+
+.panel__content-highlight {
+  display: inline;
+  font-style: italic;
+  font-weight: 600;
+  margin: 0 5px 0 0;
 }
 
 

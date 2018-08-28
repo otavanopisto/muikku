@@ -20,7 +20,7 @@ class LastMessagesPanel extends React.Component<LastMessagesPanelProps, LastMess
     return (<div className="ordered-container__item ordered-container__item--index-panel-container ordered-container__item--latest-messages">
       <div className="ordered-container__item-header">
         <span className="ordered-container__item-header-icon ordered-container__item-header-icon--latest-messages icon-envelope"></span>
-        <span className="text__panel-title">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</span>
+        <span className="ordered-container__item-header-text">{this.props.i18n.text.get('plugin.frontPage.latestMessages.title')}</span>
       </div>
       <Panel modifier="index">
         {this.props.lastThreads.length ? (
