@@ -162,7 +162,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       
       result.add(new CommunicatorThreadRESTModel(
           receivedItem.getId(), receivedItem.getCommunicatorMessageId().getId(), receivedItem.getSender(), senderBasicInfo, categoryName, 
-          receivedItem.getCaption(), receivedItem.getCreated(), tags , hasUnreadMsgs, latestMessageDate, 
+          receivedItem.getCaption(), receivedItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
           messageCountInThread, restLabels));
     }
 

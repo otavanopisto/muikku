@@ -242,7 +242,7 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
       
-    List<CommunicatorMessage> receivedItems = communicatorController.listLabelItems(
+    List<CommunicatorMessage> receivedItems = communicatorController.listThreadsByLabel(
         user, label, firstResult, maxResults);
 
     List<CommunicatorThreadRESTModel> result = new ArrayList<CommunicatorThreadRESTModel>();

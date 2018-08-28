@@ -129,7 +129,7 @@ public class CommunicatorController {
     return communicatorMessageRecipientDAO.listByUserAndRead(userEntity, read, trashed);
   }
   
-  public List<CommunicatorMessage> listLabelItems(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
+  public List<CommunicatorMessage> listThreadsByLabel(UserEntity userEntity, CommunicatorLabel label, Integer firstResult, Integer maxResults) {
     return communicatorMessageDAO.listThreadsInLabelFolder(userEntity, label, firstResult, maxResults);
   }
   
