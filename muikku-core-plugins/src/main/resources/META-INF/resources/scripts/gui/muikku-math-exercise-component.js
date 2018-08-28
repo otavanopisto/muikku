@@ -23,6 +23,7 @@
       this.element.addClass("muikku-math-exercise-field");
 
       var fieldOptions = $.extend(this.options, methods);
+      // Input events are triggered by inserting a symbol etc via the digabi control panel
       fieldOptions.trackInput = true;
       this.element.muikkuField(fieldOptions);
 
@@ -151,21 +152,28 @@
     updateImage: function (img, latex) {
       img.addClass('muikku-math-exercise-formula');
       
-      this._updateMathImageSVG(latex, function (svg) {
+      this._updateMathImageSVG(img, latex, function (svg) {
+        var oldImgAlt = img.attr('alt');
+        
         img.prop({
           src: svg,
           alt: latex
         });
-        
-        img.closest('[data-js="answer"]').trigger('input');
+
+        if (oldImgAlt != latex) {
+          // If the latex syntax was changed, trigger change
+          img.closest('[data-js="answer"]').trigger('change');
+        }
       });
     },
     
-    _updateMathImageSVG: function (latex, cb) {
+    _updateMathImageSVG: function (img, latex, cb) {
       // Queue up so we don't trigger before MathJax has fully initialized
       MathJax.Hub.Queue($.proxy(function () {
+        var mathExerciseField = img.closest('.muikku-math-exercise-field');
+        
         // Find the Jax associated with the result field
-        var renderElement = this.element.find('.muikku-math-exercise-field-result');
+        var renderElement = mathExerciseField.find('.muikku-math-exercise-field-result');
         
         if (renderElement.length) {
           var jax = MathJax.Hub.getAllJax(renderElement[0])[0];
@@ -175,7 +183,7 @@
   
           // Take the resulting SVG and return it to the callback
           MathJax.Hub.Queue($.proxy(function () {
-            var svgElement = this.element.find('.muikku-math-exercise-field-result svg');
+            var svgElement = mathExerciseField.find('.muikku-math-exercise-field-result svg');
             if (svgElement.length) {
               var svg = svgElement.attr('xmlns', "http://www.w3.org/2000/svg")
               svg.find('use').each(function () {
