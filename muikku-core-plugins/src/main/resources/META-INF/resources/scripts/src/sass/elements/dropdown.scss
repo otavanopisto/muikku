@@ -84,7 +84,24 @@
       border-bottom-color: $color-environment-dropdown-profile-menu-background;
     }
   }
- 
+  &.dropdown--workspace-chart {
+  
+    .dropdown__container {
+      background-color: $color-environment-dropdown-profile-menu-background;
+      color: $color-environment-dropdown-profile-menu-text;
+      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
+      padding: 5px;
+      text-align: left;
+      
+      .dropdown__container-item {
+        height: auto;
+      }
+    }
+    .dropdown__arrow {
+      border-bottom-color: $color-environment-dropdown-profile-menu-background;
+    }
+  }
+  
   &.dropdown--workspace-filter {
 
     .dropdown__container {
