@@ -210,7 +210,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
           <div className="application-sub-panel__body">
             {records.length ? records.map((record, index)=>{
               return <ApplicationList key={record.groupCurriculumIdentifier || index}>
-                {record.groupCurriculumIdentifier ? <div className="application-list__header"><h3 className="text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
+                {record.groupCurriculumIdentifier ? <div className="application-list__header-container"><h3 className="text text--studies-list-header">{storedCurriculumIndex[record.groupCurriculumIdentifier]}</h3></div> : null}  
                   {record.workspaces.map((workspace)=>{
                     //Do we want an special way to display all these different states? passed is very straightforward but failed and
                     //incomplete might be difficult to understand
@@ -233,7 +233,7 @@ class Records extends React.Component<RecordsProps, RecordsState> {
                     </ApplicationListItem>
                   })}
                 {record.transferCredits.length ? 
-                  <div className="application-list__header"><h3 className="text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
+                  <div className="application-list__header-container"><h3 className="text text--studies-list-header">{this.props.i18n.text.get("plugin.records.transferCredits")} ({storedCurriculumIndex[record.groupCurriculumIdentifier]})</h3></div> : null}
                     {record.transferCredits.map((credit)=>{
                       return <ApplicationListItem className="course course--credits" key={credit.date}>
                         <ApplicationListItemHeader modifiers="course">

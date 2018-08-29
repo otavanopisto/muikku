@@ -669,16 +669,6 @@ b {
   white-space: nowrap;
 }
 
-.text--course-icon {
-  color: $color-course-icon;
-  display: inline-flex;
-  flex-basis: auto;
-  flex-grow: 0;
-  flex-shrink: 0;
-  font-size: 1.25rem;
-  margin-right: 10px;
-}
-
 .text--course-has-fees {
   color: $color-course-icon;
   display: inline-flex;
@@ -704,15 +694,6 @@ b {
   margin: 0 0 10px 0;
 }
 
-.text--list-item-title {
-  display: flex;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-flow: row wrap;
-  flex-shrink: 1;
-  padding: 0 10px 0 0;
-  word-wrap: break-word;
-}
 
 .text--list-item-helper-title {
   color: $color-default-helper;

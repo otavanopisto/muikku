@@ -29,7 +29,7 @@ interface NavigationTopicState {
 
 export class NavigationTopic extends React.Component<NavigationTopicProps, NavigationTopicState> {
   render(){
-    return <div className={this.props.className}>{this.props.name ? <span className="text item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
+    return <div className={this.props.className}>{this.props.name ? <span className="item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
   }
 }
 

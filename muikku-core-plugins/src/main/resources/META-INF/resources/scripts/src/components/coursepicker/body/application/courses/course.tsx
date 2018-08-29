@@ -45,10 +45,10 @@ class Course extends React.Component<CourseProps, CourseState>{
     //you can move the toggle expanded function wherever you want that you need the action to be triggered
     return <ApplicationListItem className={`course ${this.state.expanded ? "course--open" : ""}`} >
       <ApplicationListItemHeader className="application-list__item-header--course" onClick={this.toggleExpanded}>
-        <span className="text text--course-icon icon-books"></span>
-        <span className="text text--list-item-title">{this.props.course.name} {this.props.course.nameExtension ? "(" + this.props.course.nameExtension + ")" : null}</span>
+        <span className="application-list__header-icon icon-books"></span>
+        <span className="application-list__header-primary">{this.props.course.name} {this.props.course.nameExtension ? "(" + this.props.course.nameExtension + ")" : null}</span>
         {this.props.course.feeInfo && this.props.course.feeInfo.evaluationHasFee ? <span className="text text--course-has-fees icon-coin-euro" title={this.props.i18n.text.get("plugin.coursepicker.course.evaluationhasfee")}/> : null}
-        <span className="text text--list-item-type-title">{this.props.course.educationTypeName}</span>
+        <span className="application-list__header-secondary">{this.props.course.educationTypeName}</span>
       </ApplicationListItemHeader>        
       {this.state.expanded ?
         <div>

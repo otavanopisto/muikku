@@ -28,7 +28,7 @@ interface AnnouncerApplicationState {
 
 class AnnouncerApplication extends React.Component<AnnouncerApplicationProps, AnnouncerApplicationState>{
   render(){
-        let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
+        let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.announcer.pageTitle')}</h2>
 //        let icon = <Dropdown modifier="communicator-settings" items={[
 //          closeDropdown=><Link className="link link--full" >
 //          </Link>

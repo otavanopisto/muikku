@@ -37,7 +37,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
       </NavigationTopic>
     </Navigation>
 //    return <div className="item-list item-list--aside-navigation">
-//      <span className="text item-list__title">{this.props.i18n.text.get("plugin.communicator.folders.title")}</span>
+//      <span className="item-list__title">{this.props.i18n.text.get("plugin.communicator.folders.title")}</span>
 //     
 //      {this.props.messages.navigation.map((item)=>{
 //        let style: any = {};

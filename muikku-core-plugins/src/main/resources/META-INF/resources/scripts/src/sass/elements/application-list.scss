@@ -3,7 +3,8 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
-.application-list {  
+.application-list {
+  @include text;
   height: 100%;
   width: 100%;
   overflow: visible;
@@ -13,7 +14,7 @@
   } 
 }
 
-.application-list__header {
+.application-list__header-container {
   align-items: flex-start;
   display: flex;
   flex-flow: row nowrap;
@@ -21,6 +22,43 @@
   
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;
+  }
+}
+
+.application-list__header-icon {
+  color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  margin-right: 10px;
+}
+
+
+.application-list__header-primary {
+  display: flex;
+  flex-basis: 0;
+  flex-grow: 1;
+  flex-flow: row wrap;
+  flex-shrink: 1;
+  padding: 0 10px 0 0;
+  word-wrap: break-word;
+}
+
+
+.application-list__header-secondary {
+  align-items: center;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 1;
+  font-size: $text-capitalized-mobile-font-size;
+  justify-content: flex-end;
+  text-transform: uppercase;
+  
+  @include breakpoint($breakpoint-pad){
+    font-size: $text-capitalized-desktop-font-size;
   }
 }
 
@@ -46,6 +84,7 @@
   }
 
   // Selected application-list item with separate styles for mobile and desktop
+  
   &.selected {
     background-color: $color-application-list-item-background-selected;
 
@@ -252,7 +291,8 @@
 }
 
 // Discussion 
-.application-list__header--discussion {
+
+.application-list__header-container--discussion {
   padding: 10px;
   
   @include breakpoint($breakpoint-pad) {
@@ -347,6 +387,7 @@
 }
 
 // Communicator
+
 .application-list__item--communicator-message {  
   border-bottom: 5px solid $color-message-border;
   padding: 10px 0;
@@ -385,6 +426,7 @@
 }
 
 // Coursepicker
+
 .application-list__item-header--course {
   cursor: pointer;
   padding: 10px 0;
@@ -416,7 +458,7 @@
 }
 
 // Studies
-.application-list__header--studies-detailed-info {
+.application-list__header-container--studies-detailed-info {
   padding: 10px 0;
   
   @include breakpoint($breakpoint-pad) {

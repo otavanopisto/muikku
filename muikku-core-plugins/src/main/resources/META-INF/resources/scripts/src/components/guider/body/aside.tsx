@@ -46,7 +46,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
     </Navigation>
 //    return <div className="item-list item-list--aside-navigation">
 //      {this.props.guider.availableFilters.labels.length !== 0 ? 
-//        <span className="text item-list__title">{this.props.i18n.text.get("plugin.guider.filters.flags")}</span>
+//        <span className="item-list__title">{this.props.i18n.text.get("plugin.guider.filters.flags")}</span>
 //      : null}
 //      {this.props.guider.availableFilters.labels.map((label: GuiderUserLabelType)=>{
 //        let isActive = this.props.guider.activeFilters.labelFilters.includes(label.id);
@@ -63,7 +63,7 @@ class NavigationAside extends React.Component<NavigationProps, NavigationState> 
 //          </LabelUpdateDialog>
 //        </Link>
 //      })}
-//      <span className="text item-list__title">{this.props.i18n.text.get("plugin.guider.filters.workspaces")}</span>
+//      <span className="item-list__title">{this.props.i18n.text.get("plugin.guider.filters.workspaces")}</span>
 //      {this.props.guider.availableFilters.workspaces.map((workspace: GuiderWorkspaceType)=>{
 //        let isActive = this.props.guider.activeFilters.workspaceFilters.includes(workspace.id);
 //        let hash = isActive ?

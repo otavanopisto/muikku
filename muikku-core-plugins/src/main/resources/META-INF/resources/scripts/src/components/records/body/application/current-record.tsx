@@ -68,14 +68,14 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
       <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
         <ApplicationList>
           {workspaceEvaluation}
-          <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
+          <div className="application-list__header-container application-list__header-container--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
           {this.props.records.current.materials.map((material)=>{
             return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
           })}
         </ApplicationList>
           
           {this.props.records.current.journals.length ? <div className="application-list">
-          <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
+          <div className="application-list__header-container application-list__header-container--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
             <div className="application-list_item-wrapper">
               {this.props.records.current.journals.map((journal)=>{
                 return <ApplicationListItem className="journal journal--studies" key={journal.id}>

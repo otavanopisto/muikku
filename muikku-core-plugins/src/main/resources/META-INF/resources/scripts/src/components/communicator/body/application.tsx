@@ -50,7 +50,7 @@ class CommunicatorApplication extends React.Component<CommunicatorApplicationPro
     });
   }
   render(){
-    let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
+    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.communicator.pageTitle')}</h2>
     let icon = <Dropdown modifier="communicator-settings" items={[
       closeDropdown=><Link className="link link--full" onClick={this.openDialogSignature.bind(this, closeDropdown)}>
         <span>{this.props.i18n.text.get("plugin.communicator.settings.signatures")}</span>
