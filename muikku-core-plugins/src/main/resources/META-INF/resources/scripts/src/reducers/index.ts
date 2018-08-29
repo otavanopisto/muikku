@@ -1,32 +1,3 @@
-import notifications from './base/notifications';
-import locales from './base/locales';
-import status from './base/status';
-import i18n from './base/i18n';
-import title from './base/title';
-import websocket from './util/websocket';
-
-import messages from './main-function/messages';
-import announcements from './main-function/announcements';
-import workspaces from './main-function/workspaces';
-
-import {combineReducers} from 'redux';
-
-export default combineReducers({
-  notifications,
-  i18n,
-  locales,
-  status,
-  websocket,
-  title,
-  
-  announcements,
-  workspaces,
-  messages
-});
-
-
-
-//HAD TO PLACE THIS HERE, it should be in a separate file but there's some weird bug that doesn't find .d.ts files
 import {i18nType} from './base/i18n';
 import {LocaleListType} from './base/locales';
 import {NotificationListType} from './base/notifications';
@@ -43,8 +14,9 @@ import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
-import { RecordsType } from '~/reducers/main-function/records/records';
-import { ErrorType } from '~/reducers/base/error';
+import { RecordsType } from './main-function/records/records';
+import { ErrorType } from './base/error';
+import { ProfileType } from './main-function/profile';
 
 export interface StateType {
   notifications: NotificationListType,
@@ -65,5 +37,6 @@ export interface StateType {
   discussion?: DiscussionType,
   guider?: GuiderType,
   records?: RecordsType,
-  error?: ErrorType
+  error?: ErrorType,
+  profile?: ProfileType
 }

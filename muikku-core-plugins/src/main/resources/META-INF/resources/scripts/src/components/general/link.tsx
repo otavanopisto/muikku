@@ -85,8 +85,10 @@ export default class Link extends React.Component<LinkProps, LinkState> {
           location.href = this.props.href;
         }
       }
-    } else {
+    } else if ((window as any).USES_HISTORY_API){
       this.setState({redirect: true});
+    } else {
+      location.href = this.props.to;
     }
     
     if (this.props.onClick){
@@ -137,6 +139,7 @@ export default class Link extends React.Component<LinkProps, LinkState> {
   }
   render(){
     if (this.state.redirect){
+      console.log("REDIRECT");
       return <Redirect push to={this.props.to}/>
     }
     

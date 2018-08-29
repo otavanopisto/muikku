@@ -16,3 +16,23 @@ export default function promisify(fn: any, opts: string | PromisifyOptions){
     });
   }
 }
+
+export function promisifyNewConstructor(Constructor: any, onload: string, onerror: string, setupAttributes?: {[attr: string]: any}){
+  return function(...args:any[]){
+    return new Promise(function(resolve, reject){
+      let obj = new Constructor(...args);
+      obj[onload] = ()=>{
+        resolve(obj);
+      }
+      obj[onerror] = (err:any)=>{
+        reject(err);
+      }
+      
+      if (setupAttributes){
+        Object.keys(setupAttributes).forEach((attr)=>{
+          obj[attr] = setupAttributes[attr];
+        });
+      }
+    });
+  }
+}

@@ -31,6 +31,19 @@
   }
 }
 
+.button-image {
+  border-radius: 100%;
+  height: 35px;
+  margin-right: 10px;
+  width: 35px;  
+  
+  @include breakpoint($breakpoint-pad) {
+    height: auto;
+    margin: 0;
+    width: auto;
+  }
+}
+
 .button--coursepicker-course-action {
   margin: 0 10px 0 0;
 }
@@ -354,13 +367,20 @@
   }
 }  
   
+.button--guider-share-label {
+  order: 2;
+  
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+}
   
 .button--communicator-remove-label,
 .button--guider-remove-label {
   order: 1;
   
   @include breakpoint($breakpoint-desktop) {
-    order: 3;
+    order: 4;
   }
   
   &.disabled,
@@ -371,7 +391,7 @@
 }
 
 .button--standard-ok {
-  order: 3;
+  order: 4;
   
   @include breakpoint($breakpoint-desktop) {
     order: 1;
@@ -379,7 +399,11 @@
 }
 
 .button--standard-cancel {
-  order: 2;
+  order: 3;
+  
+  @include breakpoint($breakpoint-desktop) {
+    order: 2;
+  }
 }
 
 .button-pill {
@@ -883,4 +907,24 @@
       margin: 0 0 0 .3rem;
     }
   }
+}
+
+.button--profile-image-edit {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px 20px;
+  
+  .icon {
+  	padding-right: 5px;
+  }
+}
+
+.button--profile {
+  width: auto;
+  display: inline-block;
+  color: $color-primary-contrast;
+  background-color: $color-primary;
 }

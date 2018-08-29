@@ -77,7 +77,7 @@ class Message extends React.Component<MessageProps, MessageState> {
 
     return <div className="application-list__item application-list__item--communicator-message">
       <div className="application-list__item-header application-list__item-header--communicator-message-thread">
-        <div className="container container--communicator-message-meta">
+        <div className="application-list__item-meta">
           <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
             <span className="text text--communicator-message-sender">
               {this.props.message.sender.firstName ? this.props.message.sender.firstName + " " : ""} {this.props.message.sender.lastName ? this.props.message.sender.lastName : ""}

@@ -199,13 +199,16 @@
   flex-flow: row wrap;
 }
 
+
 .application-list__item-body {
   padding: 0;
 }
 
 .application-list__item-meta {
-  padding: 0 0 10px;
+  display: flex;
+  padding: 10px;
 }
+
 
 .application-list__item-footer {
   align-items: center;

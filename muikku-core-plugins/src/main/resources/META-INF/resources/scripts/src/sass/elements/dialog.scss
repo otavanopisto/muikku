@@ -49,6 +49,36 @@
   }
 }
 
+.dialog__container {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;     
+}
+
+.dialog__container--color-picker {
+  align-items: center;
+  flex-flow: row wrap;
+  justify-content: center;
+  padding: 15px 0;
+  position: relative;
+}
+
+.dialog__container--form {
+  flex-flow: column wrap;
+}
+
+.dialog__image-tools {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.dialog__slider {
+  flex: 1 1 auto;
+  padding-right: 15px;
+}
+
 .dialog__header {
   background-color: $color-dialog-mobile-background;
   color: $color-dialog-mobile-text;
