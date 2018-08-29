@@ -36,6 +36,12 @@
   height: 35px;
   margin-right: 10px;
   width: 35px;  
+  
+  @include breakpoint($breakpoint-pad) {
+    height: auto;
+    margin: 0;
+    width: auto;
+  }
 }
 
 .button--coursepicker-course-action {
@@ -361,13 +367,20 @@
   }
 }  
   
+.button--guider-share-label {
+  order: 2;
+  
+  @include breakpoint($breakpoint-desktop) {
+    order: 3;
+  }
+}
   
 .button--communicator-remove-label,
 .button--guider-remove-label {
   order: 1;
   
   @include breakpoint($breakpoint-desktop) {
-    order: 3;
+    order: 4;
   }
   
   &.disabled,
@@ -378,7 +391,7 @@
 }
 
 .button--standard-ok {
-  order: 3;
+  order: 4;
   
   @include breakpoint($breakpoint-desktop) {
     order: 1;
@@ -386,7 +399,11 @@
 }
 
 .button--standard-cancel {
-  order: 2;
+  order: 3;
+  
+  @include breakpoint($breakpoint-desktop) {
+    order: 2;
+  }
 }
 
 .button-pill {

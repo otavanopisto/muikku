@@ -91,6 +91,11 @@
   }
 }
 
+.form-element__input--guider-label-name,
+.form-element__input--communicator-label-name {
+  width: 100%;
+}
+
 .form-element__input--forgotpassword {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
