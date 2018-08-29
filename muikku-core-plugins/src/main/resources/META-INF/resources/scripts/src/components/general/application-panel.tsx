@@ -12,6 +12,7 @@ interface ApplicationPanelProps {
   asideBefore?: React.ReactElement<any>,   
   asideAfter?: React.ReactElement<any>,
   children?: React.ReactElement<any> | Array<React.ReactElement<any>>,
+  disableStickyScrolling?: boolean
 }
 
 interface ApplicationPanelState {
@@ -73,6 +74,11 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
     });
   }
   calculate(){
+    this.disabled = this.props.disableStickyScrolling;
+    if (this.disabled){
+      return;
+    }
+    
     let computedStyle = document.defaultView.getComputedStyle(this.refs["sticky"] as HTMLElement);
     if (computedStyle.getPropertyValue("position") === "fixed"){
       this.disabled = true;
@@ -181,7 +187,7 @@ export default class ApplicationPanel extends React.Component<ApplicationPanelPr
                right: this.state.extraPaddingRight
              } : null}>
             {this.props.primaryOption ? <div className="application-panel__helper-container application-panel__helper-container--main-action">{this.props.primaryOption}</div> : null}
-            <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div>
+            {this.props.toolbar ? <div className="application-panel__main-container application-panel__main-container--actions">{this.props.toolbar}</div> : null}
           </div>
           <div className="application-panel__content" style={this.state.sticky ? {paddingLeft: this.state.asideBeforeWidth} : null}>
             {this.props.asideBefore ? <div className="application-panel__helper-container" ref="asideBefore" style={{

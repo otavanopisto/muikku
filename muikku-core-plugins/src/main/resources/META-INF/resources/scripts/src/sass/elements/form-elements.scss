@@ -91,9 +91,22 @@
   }
 }
 
+.form-element__input--guider-label-name,
+.form-element__input--communicator-label-name {
+  width: 100%;
+}
+
 .form-element__input--forgotpassword {
   font-size: $text-forgotpassword-font-size;
   width: 100%;
+}
+
+.form-element__input--profile {
+  width: 100%;
+}
+
+.form-element__input--profile-wrong {
+  color: red;
 }
 
 .form-element__input--label {

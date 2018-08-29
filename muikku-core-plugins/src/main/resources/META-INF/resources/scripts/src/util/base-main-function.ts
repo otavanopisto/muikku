@@ -5,6 +5,8 @@ import { updateUnreadMessageThreadsCount } from '~/actions/main-function/message
 import converse from '~/lib/converse';
 import { StateType } from '~/reducers';
 import { Store } from 'redux';
+import $ from '~/lib/jquery';
+import { updateStatusHasImage } from '~/actions/base/status';
 
 export default function(store: Store<StateType>){
   let state:StateType = store.getState();
@@ -51,6 +53,10 @@ export default function(store: Store<StateType>){
       });
     }
   }
+  
+  $.ajax({type:"HEAD", url: `https://dev.muikkuverkko.fi/rest/user/files/user/${state.status.userId}/identifier/profile-image-96`}).done(()=>{
+    store.dispatch(<Action>updateStatusHasImage(true));
+  });
   
   return websocket;
 }

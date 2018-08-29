@@ -153,16 +153,16 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
           placeholder={this.props.i18n.text.get('plugin.communicator.createmessage.title.recipients')}
         selectedItems={this.state.selectedItems} onChange={this.setSelectedItems} autofocus={!this.props.initialSelectedItems}></InputContactsAutofill>),
       (
-       <div className="container container--communicator-subject" key="2">
+       <div className="env-dialog__row" key="2">
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.subject')}</div>
-          <input type="text" className="env-dialog__input"         
+          <input type="text" className="env-dialog__input env-dialog__input--new-message-title"         
           value={this.state.subject} onChange={this.onSubjectChange} autoFocus={!!this.props.initialSelectedItems}/>
         </div> 
         </div>
         ),
       (
-      <div className="container container--communicator-content" key="3">     
+      <div className="env-dialog__row" key="3">     
         <div className="env-dialog__form-element-container">  
           <div className="env-dialog__label">{this.props.i18n.text.get('plugin.communicator.createmessage.title.content')}</div>
           <CKEditor width="100%" height="grow" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
@@ -170,7 +170,7 @@ class CommunicatorNewMessage extends SessionStateComponent<CommunicatorNewMessag
         </div> 
       </div>
       ),
-      (this.props.signature ? <div key="4" className="container container--communicator-signature">
+      (this.props.signature ? <div key="4" className="env-dialog__row env-dialog__row--communicator-signature">
         <input className="env-dialog__input" type="checkbox" checked={this.state.includesSignature} onChange={this.onSignatureToggleClick}/>
         <span className="text text--new-message-signature">{this.props.i18n.text.get('plugin.communicator.createmessage.checkbox.signature')}</span>
       </div> : null)

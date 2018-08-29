@@ -1,17 +1,22 @@
 package fi.otavanopisto.muikku.plugins.communicator.rest;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -23,7 +28,9 @@ import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorLabel;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageIdLabel;
+import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.otavanopisto.muikku.plugins.communicator.model.CommunicatorUserLabel;
+import fi.otavanopisto.muikku.rest.model.UserBasicInfo;
 import fi.otavanopisto.muikku.servlet.BaseUrl;
 import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
@@ -222,24 +229,78 @@ public class CommunicatorLabelRESTService extends PluginRESTService {
   }
 
   @GET
+  @Path ("/userLabels/{USERLABELID}/messages")
+  @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
+  public Response listUserLabeledMessagesByLabel( 
+      @PathParam ("USERLABELID") Long userLabelId,
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+    UserEntity user = sessionController.getLoggedUserEntity();
+
+    CommunicatorLabel label = communicatorController.findUserLabelById(userLabelId);
+    if (label == null || !canAccessLabel(user, label)) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+      
+    List<CommunicatorMessage> receivedItems = communicatorController.listThreadsByLabel(
+        user, label, firstResult, maxResults);
+
+    List<CommunicatorThreadRESTModel> result = new ArrayList<CommunicatorThreadRESTModel>();
+    
+    for (CommunicatorMessage receivedItem : receivedItems) {
+      String categoryName = receivedItem.getCategory() != null ? receivedItem.getCategory().getName() : null;
+      boolean hasUnreadMsgs = false;
+      Date latestMessageDate = receivedItem.getCreated();
+      
+      List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
+          user, receivedItem.getCommunicatorMessageId(), false);
+      
+      for (CommunicatorMessageRecipient recipient : recipients) {
+        hasUnreadMsgs = hasUnreadMsgs || Boolean.FALSE.equals(recipient.getReadByReceiver()); 
+        Date created = recipient.getCommunicatorMessage().getCreated();
+        latestMessageDate = latestMessageDate == null || latestMessageDate.before(created) ? created : latestMessageDate;
+      }
+      
+      UserBasicInfo senderBasicInfo = restModels.getSenderBasicInfo(receivedItem);
+      Long messageCountInThread = communicatorController.countMessagesByUserAndMessageId(user, receivedItem.getCommunicatorMessageId(), false);
+
+      List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, receivedItem.getCommunicatorMessageId());
+      List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
+      
+      Set<String> tags = communicatorController.tagIdsToStr(receivedItem.getTags());
+      
+      result.add(new CommunicatorThreadRESTModel(
+          receivedItem.getId(), receivedItem.getCommunicatorMessageId().getId(), receivedItem.getSender(), senderBasicInfo, categoryName, 
+          receivedItem.getCaption(), receivedItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
+          messageCountInThread, restLabels));
+    }
+
+    return Response.ok(
+      result
+    ).build();
+  }
+  
+  @GET
   @Path ("/userLabels/{USERLABELID}/messages/{COMMUNICATORMESSAGEID}")
   @RESTPermit(handling = Handling.INLINE, requireLoggedIn = true)
-  public Response listUserUnreadCommunicatorMessagesByMessageId( 
+  public Response getUserLabeledMessagesByLabelAndThread( 
       @PathParam ("USERLABELID") Long userLabelId,
-      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+      @PathParam ("COMMUNICATORMESSAGEID") Long threadId) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     CommunicatorUserLabel userLabel = communicatorController.findUserLabelById(userLabelId);
     
     if ((userLabel != null) && canAccessLabel(userEntity, userLabel)) {
-      CommunicatorMessageId threadId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+      CommunicatorMessageId thread = communicatorController.findCommunicatorMessageId(threadId);
       
-      List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(userEntity, threadId, false);
+      List<CommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(userEntity, thread, false);
   
-      List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(userEntity, threadId);
+      List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(userEntity, thread);
       List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
 
-      CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(userEntity, threadId, CommunicatorFolderType.LABEL, userLabel);
-      CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(userEntity, threadId, CommunicatorFolderType.LABEL, userLabel);
+      CommunicatorMessageId olderThread = communicatorController.findOlderThreadId(
+          userEntity, thread, CommunicatorFolderType.LABEL, userLabel);
+      CommunicatorMessageId newerThread = communicatorController.findNewerThreadId(
+          userEntity, thread, CommunicatorFolderType.LABEL, userLabel);
       
       return Response.ok(
         restModels.restThreadViewModel(receivedItems, olderThread, newerThread, restLabels)

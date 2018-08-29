@@ -19,7 +19,6 @@ import fi.otavanopisto.pyramus.rest.model.Sex;
 import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class CommunicatorTestsBase extends AbstractUITest {
-  
   @Test
   public void communicatorSendAndReadMessageTest() throws Exception {
     MockStaffMember admin = new MockStaffMember(1l, 1l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
@@ -34,9 +33,9 @@ public class CommunicatorTestsBase extends AbstractUITest {
         waitForPresent(".env-dialog__body .autocomplete--new-message input.env-dialog__input");
         sendKeys(".env-dialog__body .autocomplete--new-message input.env-dialog__input", "Test");
         waitAndClick(".text--recepient-autocomplete");
-        waitForPresentAndVisible(".container--communicator-subject input.env-dialog__input");
+        waitForPresentAndVisible(".env-dialog__input--new-message-title");
 //      TODO: Recipient input hijacks input after first letter. What do?  
-        sendKeys(".container--communicator-subject input.env-dialog__input", "T");
+        sendKeys(".env-dialog__input--new-message-title", "T");
         waitAndClick("#cke_1_contents");
         addTextToCKEditor("Communicator test");
         waitAndClick(".button--dialog-execute");

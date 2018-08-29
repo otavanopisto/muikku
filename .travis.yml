@@ -5,7 +5,6 @@ branches:
   only:
     - master
     - devel
-    - FTR-3062_redesign-of-muikku
 jdk:
 - oraclejdk8
 cache:

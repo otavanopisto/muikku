@@ -4,7 +4,6 @@ import Aside from './body/aside';
 
 import * as React from 'react';
 
-import '~/sass/elements/container.scss';
 
 interface CommunicatorBodyProps {
   
@@ -25,7 +24,7 @@ export default class CommunicatorBody extends React.Component<CommunicatorBodyPr
   }
   render(){
     let aside = <Aside openSignatureDialog={this.openSignatureDialog}/>
-    return (<div className="container container--full">
+    return (<div>
       <MainFunctionNavbar activeTrail="communicator" navigation={aside}/>
       <Application aside={aside} ref="application"/>
     </div>);

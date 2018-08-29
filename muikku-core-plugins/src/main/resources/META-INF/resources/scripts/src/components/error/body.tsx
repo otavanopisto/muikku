@@ -2,7 +2,6 @@ import MainFunctionNavbar from '~/components/base/main-function/navbar';
 import * as React from 'react';
 import ScreenContainer from '~/components/general/screen-container';
 
-import '~/sass/elements/container.scss';
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/ordered-container.scss';
@@ -22,7 +21,7 @@ interface ErrorBodyState {
 
 class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
   render(){
-    return (<div className="container container--full">
+    return (<div>
       <MainFunctionNavbar/>
         
       <ScreenContainer fullHeight={true}>

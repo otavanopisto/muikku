@@ -116,18 +116,24 @@ public class UserTestsBase extends AbstractUITest {
         .build();
       
       login();
+      selectFinnishLocale();
       navigate("/profile", false);
-      waitForPresentAndVisible(".profile-user-realname");
-      assertTextIgnoreCase(".profile-user-realname", "admin user");
-      waitForPresentAndVisible(".profile-data-wrapper .profile-user-data");
-      assertTextIgnoreCase(".profile-data-wrapper .profile-user-data", "admin@example.com");
-      assertVisible(".profile-change-password");
-      assertVisible("form .profile-basicinfo-section");
-      assertVisible("form .profile-basicinfo-section .profile-phone-wrapper>label + input");
-      assertVisible("form .profile-vacationinfo-section");
-      assertVisible("form .profile-vacationinfo-section .profile-vacation-wrapper .profile-vacation-date>label + input[name=\"profile-vacation-start\"]");
-      assertVisible("form .profile-vacationinfo-section .profile-vacation-wrapper .profile-vacation-date>label + input[name=\"profile-vacation-end\"]");
-      assertVisible("form .profile-button-wrapper .save-profile-fields");
+      waitForPresentAndVisible(".text--profile-student-header");
+      assertTextIgnoreCase(".text--profile-student-header", "admin user");
+      waitForPresentAndVisible(".application-panel__main-container .profile-element__item .profile-user-data");
+      assertTextIgnoreCase(".application-panel__main-container .profile-element__item .profile-user-data", "admin@example.com");
+      
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(1) > label", "Puhelinnumero");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(1) > input");
+
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(2) > label", "Loma alkaa");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(2) .react-datepicker__input-container input");
+      
+      assertTextIgnoreCase("div.application-panel__main-container > div > form > div:nth-child(3) > label", "Loma loppuu");
+      assertVisible("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
+      
+      assertTextIgnoreCase("form .button--profile", "Tallenna");
+      assertVisible("form .button--profile");
     }finally {
       mockBuilder.wiremockReset();
     }
@@ -155,21 +161,28 @@ public class UserTestsBase extends AbstractUITest {
       .addCourseStaffMember(course1.getId(), courseStaffMember)
       .build();
       navigate("/profile", false);
-      waitAndSendKeys("form .profile-basicinfo-section .profile-phone-wrapper>label + input", "121212");    
-      waitAndSendKeys("form .profile-vacationinfo-section .profile-vacation-wrapper .profile-vacation-date>label + input[name=\"profile-vacation-start\"]", "9.4.2018");
-      waitAndSendKeys("form .profile-vacationinfo-section .profile-vacation-wrapper .profile-vacation-date>label + input[name=\"profile-vacation-end\"]", "9.4.2030");
-      waitAndClick("form .profile-button-wrapper .save-profile-fields");
-      waitForPresentAndVisible(".notification-queue-item-info");
+      
+      waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(1) > input", "121212");    
+      waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(2) .react-datepicker__input-container input", "19.04.2018");
+      waitAndClick(".text--profile-student-header");
+      waitAndClick("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input");
+      waitAndSendKeys("div.application-panel__main-container > div > form > div:nth-child(3) .react-datepicker__input-container input", "19.04.2030");
+      waitAndClick(".text--profile-student-header");
+      click("form .button--profile");
+      click("form .button--profile");
+      waitForPresentAndVisible(".notification-queue__item--info");
       navigate("/", false);
       logout();
       mockBuilder.mockLogin(student);
       login();
       selectFinnishLocale();
       navigate("/workspace/" + workspace.getUrlName(), false);
+      waitForPresent(".workspace-frontpage-teachers");
       waitForPresentAndVisible(".workspace-teacher-info.phone");
       assertTextIgnoreCase(".workspace-teacher-info.phone", "Puhelin: 121212");
+// TODO: These don't show at all
       waitForPresentAndVisible(".workspace-teacher-info.vacation-period");
-      assertText(".workspace-teacher-info.vacation-period", "Poissa 9.4.2018 - 9.4.2030"); 
+      assertText(".workspace-teacher-info.vacation-period", "Poissa 19.4.2018 - 19.4.2030"); 
     }finally {
       mockBuilder.wiremockReset();
     }
