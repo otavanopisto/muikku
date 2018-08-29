@@ -18,6 +18,7 @@
         hide_muc_server : true,
         ping_interval: 45,
         auto_minimize: true,
+        auto_list_rooms: true,
         i18n: getLocale() === "fi" ? "fi" : "en",
         hide_occupants:true,
         limit_room_controls:true
