@@ -238,6 +238,10 @@ export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: str
       props[translations[attr.name]] = attr.value
     }
   });
+  if (element.dataset.key){
+    props.key = element.dataset.key;
+    props.dataKey = props.key;
+  }
   if (element.style.cssText){
     props.style = CSSStyleDeclarationToObject(element.style);
   }
@@ -272,4 +276,11 @@ export function extractDataSet(element: HTMLElement):any{
   });
   
   return finalThing;
+}
+
+export function guidGenerator() {
+  let S4 = function() {
+     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+  };
+  return (S4()+S4()+"."+S4()+"."+S4()+"."+S4()+"."+S4()+S4()+S4());
 }

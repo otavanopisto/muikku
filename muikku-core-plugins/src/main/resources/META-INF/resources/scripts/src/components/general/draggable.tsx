@@ -1,13 +1,7 @@
 import Portal from "~/components/general/portal";
 import * as React from "react";
 import $ from '~/lib/jquery';
-
-function guidGenerator() {
-  let S4 = function() {
-     return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-  };
-  return (S4()+S4()+"."+S4()+"."+S4()+"."+S4()+"."+S4()+S4()+S4());
-}
+import { guidGenerator } from "~/util/modifiers";
 
 let interactionData:{[key: string]: any} = {}
 

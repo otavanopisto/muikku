@@ -16,6 +16,7 @@ import Image from './static/image';
 import WordDefinition from './static/word-definition';
 import { extractDataSet } from '~/util/modifiers';
 import { processMathInPage } from '~/lib/mathjax';
+import MathField from './fields/math-field';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
@@ -26,7 +27,8 @@ const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.connect": ConnectField,
   "application/vnd.muikku.field.organizer": OrganizerField,
   "application/vnd.muikku.field.audio": AudioField,
-  "application/vnd.muikku.field.sorter": SorterField
+  "application/vnd.muikku.field.sorter": SorterField,
+  "application/vnd.muikku.field.mathexercise": MathField
 }
 
 interface BaseProps {
