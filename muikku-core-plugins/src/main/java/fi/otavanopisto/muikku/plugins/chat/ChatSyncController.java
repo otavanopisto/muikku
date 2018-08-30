@@ -15,6 +15,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -42,6 +43,7 @@ import fi.otavanopisto.muikku.openfire.rest.client.entity.UserEntity;
 import fi.otavanopisto.muikku.schooldata.CourseMetaController;
 import fi.otavanopisto.muikku.plugins.chat.dao.UserChatSettingsDAO;
 import fi.otavanopisto.muikku.plugins.chat.model.UserChatSettings;
+import fi.otavanopisto.muikku.plugins.workspace.events.WorkspaceMaterialDeleteEvent;
 import fi.otavanopisto.muikku.rest.model.Student;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.WorkspaceController;
@@ -135,7 +137,7 @@ public class ChatSyncController {
         random.nextBytes(passwordBytes);
         String password = Base64.encodeBase64String(passwordBytes);
 
-        userEntity = new UserEntity(userIdentifier, user.getDisplayName(), "", password);
+        userEntity = new UserEntity(userSchoolDataSource + "-" + userIdentifier, user.getDisplayName(), "", password);
         client.createUser(userEntity);
 
         if (userSchoolDataSource == null || userIdentifier == null) {
