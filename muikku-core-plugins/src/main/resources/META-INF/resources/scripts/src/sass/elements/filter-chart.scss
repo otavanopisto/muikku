@@ -11,7 +11,7 @@
   font-size: $text-desktop-font-size;
   padding-left: 40px;
   padding-right: 21px;
-  width: 90%;
+  width: auto;
 }
 
 // NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
@@ -129,6 +129,6 @@
 }
 
 .filterAmChart {
-  width: 90%;
-  height: 400px;
+  width: auto;
+  min-height: 400px;
 }
