@@ -6,7 +6,7 @@ export interface SpecialCharacterType {
 
 export default [
     {
-        label: 'Perusmerit ja kreikkalaiset aakkoset',
+        label: 'basicsAndSymbols',
         characters: [
             { character: '°', popular: true },
             { character: '·', latexCommand: '\\cdot', popular: true },
@@ -55,7 +55,7 @@ export default [
         ]
     },
     {
-        label: 'Algebra',
+        label: 'algebra',
         characters: [
             { character: '≠', latexCommand: '\\neq', popular: true },
             { character: '≈', latexCommand: '\\approx', popular: true },
@@ -72,7 +72,7 @@ export default [
         ]
     },
     {
-        label: 'Geometria ja vektorioppi',
+        label: 'geometryAndVectors',
         characters: [
             { character: '∢', latexCommand: '\\sphericalangle', popular: true },
             { character: '|' , latexCommand: '\\mid', popular: true }, // \pipe,
@@ -89,7 +89,7 @@ export default [
         ]
     },
     {
-        label: 'Logiikka ja joukko-oppi',
+        label: 'logic',
         characters: [
             { character: '→', latexCommand: '\\rightarrow', popular: true },
             { character: '⇒', latexCommand: '\\Rightarrow', popular: true },

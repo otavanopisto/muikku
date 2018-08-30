@@ -1,6 +1,4 @@
 import * as React from 'react';
-import equals = require("deep-equal");
-
 import '~/sass/elements/autocomplete.scss';
 
 interface AutocompleteProps {

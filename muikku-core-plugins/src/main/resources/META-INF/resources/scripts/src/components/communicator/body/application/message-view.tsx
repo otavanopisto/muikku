@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import equals = require("deep-equal");
 
 import Link from '~/components/general/link';
 import {MessageThreadExpandedType, MessageThreadLabelListType, MessagesType} from '~/reducers/main-function/messages';

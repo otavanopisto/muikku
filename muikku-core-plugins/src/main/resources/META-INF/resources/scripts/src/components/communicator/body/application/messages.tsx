@@ -2,7 +2,6 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {colorIntToHex} from '~/util/modifiers';
-import equals = require("deep-equal");
 
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
