@@ -4,7 +4,9 @@ import { WorkspaceType } from "~/reducers/main-function/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
+import {StudentUserStatistics, Activity, Record, GuiderActivityDataType} from '~/reducers/main-function/guider';
 import Dropdown from '~/components/general/dropdown';
+import WorkspaceChart from './workspace/workspace-chart';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
@@ -15,7 +17,8 @@ import { ApplicationListItem, ApplicationListItemHeader } from "~/components/gen
 
 interface StudentWorkspaceProps {
   i18n: i18nType,
-  workspace: WorkspaceType
+  workspace: WorkspaceType,
+  statistics: StudentUserStatistics
 }
 
 interface StudentWorkspaceState {
@@ -110,7 +113,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
         <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
           <span className="text text--course-icon icon-books"></span>
           <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
-          <Dropdown modifier="workspace-chart" persistant={true} items={[<div className="plug" style={{width: "800px", height:"300px" }}><p>Insert the chart into me and make me big</p></div>]}>
+          <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspaceId={workspace.id}/>]}>
             <span className="text text--course-icon icon-books workspace-chart-activator"></span>
           </Dropdown>
           <span className="text text--list-item-type-title workspace-activity">
@@ -174,7 +177,8 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n
+    i18n: state.i18n,
+    statistics: state.guider.currentStudent.statistics
   }
 };
 
