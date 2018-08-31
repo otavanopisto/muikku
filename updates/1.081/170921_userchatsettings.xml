@@ -4,7 +4,7 @@
   <sql>
     create table UserChatSettings (
       id bigint not null auto_increment, 
-      userIdentifier varchar(255) not null, 
+      userIdentifier varchar(255) character set latin1 not null, 
       visibility varchar(255) not null,
       primary key (id),
       constraint UserChatSettings_unique_userIdentifier
