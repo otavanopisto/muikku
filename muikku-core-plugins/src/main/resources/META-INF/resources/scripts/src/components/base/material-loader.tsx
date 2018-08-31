@@ -25,7 +25,7 @@ import { StatusType } from '~/reducers/base/status';
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js");
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.1/jquery.magnific-popup.min.js");
 $.getScript("//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js");
-$.getScript("//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML");
+//$.getScript("//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML");
 $.getScript("//cdn.muikkuverkko.fi/libs/dustjs-linkedin/2.7.1/dust-full.min.js", function(){
   $.getScript("//cdn.muikkuverkko.fi/libs/dustjs-helpers/1.7.1/dust-helpers.min.js", function(){
     var mdust:any = {};

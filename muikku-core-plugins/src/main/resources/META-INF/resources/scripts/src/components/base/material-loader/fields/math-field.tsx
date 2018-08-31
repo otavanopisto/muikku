@@ -19,7 +19,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      value: ""
+      value: '<span class="muikku-math-exercise-formula">\\(cos(x) = y\\)</span>'
     }
     
     this.setValue = this.setValue.bind(this);
@@ -39,7 +39,8 @@ export default class TextField extends React.Component<MathFieldProps, MathField
         algebra: this.props.i18n.text.get("plugin.workspace.mathField.algebra"),
         geometryAndVectors: this.props.i18n.text.get("plugin.workspace.mathField.geometryAndVectors"),
         logic: this.props.i18n.text.get("plugin.workspace.mathField.logic"),
-        mathOperations: this.props.i18n.text.get("plugin.workspace.mathField.mathOperations")
+        moreMath: this.props.i18n.text.get("plugin.workspace.mathField.moreMath"),
+        mathOperations: this.props.i18n.text.get("plugin.workspace.mathField.mathOperations"),
       }}/>
   }
 }

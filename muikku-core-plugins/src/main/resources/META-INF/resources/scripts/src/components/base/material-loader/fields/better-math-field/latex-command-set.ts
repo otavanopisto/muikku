@@ -1,7 +1,7 @@
 //Source https://github.com/digabi/rich-text-editor/blob/master/app/latexCommandsWithSvg.js
 export interface LatexCommandType {
   action: string,
-  label: string,
+  label?: string,
   svg: string
 }
 

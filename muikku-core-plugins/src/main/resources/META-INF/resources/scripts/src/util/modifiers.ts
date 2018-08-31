@@ -238,10 +238,6 @@ export function HTMLtoReactComponent(element: HTMLElement, processer?: (tag: str
       props[translations[attr.name]] = attr.value
     }
   });
-  if (element.dataset.key){
-    props.key = element.dataset.key;
-    props.dataKey = props.key;
-  }
   if (element.style.cssText){
     props.style = CSSStyleDeclarationToObject(element.style);
   }

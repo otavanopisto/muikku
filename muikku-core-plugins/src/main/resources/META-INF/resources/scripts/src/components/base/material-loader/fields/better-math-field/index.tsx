@@ -3,6 +3,8 @@ import { HTMLtoReactComponent, guidGenerator } from "~/util/modifiers";
 import $ from '~/lib/jquery';
 import Toolbar, { MathFieldCommandType } from './toolbar';
 import equals = require("deep-equal");
+import { processMathInPage } from "~/lib/mathjax";
+import Field from './field';
 
 interface MathFieldProps {
   className?: string,
@@ -15,24 +17,24 @@ interface MathFieldProps {
     algebra: string,
     geometryAndVectors: string,
     logic: string,
+    moreMath: string,
     mathOperations: string
   },
   toolbarAlwaysVisible?: boolean
 }
 
 interface MathFieldState {
-  value: string,
   selectedFormulaId: string,
   isFocused: boolean
 }
 
 export default class MathField extends React.Component<MathFieldProps, MathFieldState> {
   private cancelRemovalOfFocus: boolean;
+  private value: string;
   constructor(props: MathFieldProps){
     super(props);
     
     this.state = {
-      value: props.value,
       selectedFormulaId: null,
       isFocused: false
     }
@@ -41,19 +43,12 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
     this.onCommand = this.onCommand.bind(this);
-  }
-  shouldComponentUpdate(nextProps: MathFieldProps, nextState: MathFieldState){
-    let nextPropsNoValue:MathFieldProps = {...nextProps, ...{value: null}};
-    let thisPropsNoValue:MathFieldProps = {...(this.props as any), ...{value: null}};
-    if (!equals(nextPropsNoValue, thisPropsNoValue) || !equals(nextState, this.state)){
-      return true;
-    }
-    return nextProps.value !== this.state.value;
+    this.cancelBlur = this.cancelBlur.bind(this);
   }
   selectFormula(formulaId: string){
-    this.setState({
-      selectedFormulaId: formulaId
-    });
+    //this.setState({
+    //  selectedFormulaId: formulaId
+    //});
   }
   onFocusField(){
     if (!this.state.isFocused){
@@ -63,9 +58,7 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     }
   }
   onCommand(command: MathFieldCommandType){
-    this.cancelRemovalOfFocus = true;
     if (!this.state.selectedFormulaId){
-      (this.refs.input as HTMLDivElement).focus();
       document.execCommand("insertHTML", false, command.html);
     }
   }
@@ -79,27 +72,17 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     }
     this.cancelRemovalOfFocus = false;
   }
+  cancelBlur(){
+    this.cancelRemovalOfFocus = true;
+    (this.refs.input as Field).focus();
+  }
   render(){
     return <div>
-     <Toolbar isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused}
-      className={this.props.toolbarClassName + (this.state.isFocused ? this.props.toolbarClassName + "--focused" : null)} i18n={this.props.i18n} onCommand={this.onCommand}/>
-     <div className={this.props.className} contentEditable spellCheck={false} onFocus={this.onFocusField} ref="input" onBlur={this.onBlurField}>{
-        HTMLtoReactComponent($("<container>" + this.state.value + "</container>")[0], (Tag: string, elementProps: any, children: Array<any>, element: HTMLElement)=>{
-          if (Tag === "container"){
-            return children;
-          } else if (Tag === "span" && elementProps.className === this.props.formulaClassName && elementProps.key !== this.state.selectedFormulaId) {
-            if (!elementProps.dataKey){
-              elementProps.key = guidGenerator();
-            }
-           elementProps.onClick = this.selectFormula.bind(this, elementProps.key);
-          }
-        
-          if (Tag === "span" && elementProps.className === this.props.formulaClassName && elementProps.key === this.state.selectedFormulaId){
-            //TODO return editable math
-          }
-          return <Tag {...elementProps}>{children}</Tag>
-        })
-      }</div>
+     <Toolbar isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused} onToolbarAction={this.cancelBlur}
+      className={this.props.toolbarClassName} i18n={this.props.i18n} onCommand={this.onCommand}/>
+     <Field className={this.props.className} onFocus={this.onFocusField} onBlur={this.onBlurField}
+       onChange={this.props.onChange} value={this.props.value} formulaClassName={this.props.formulaClassName}
+       selectedFormulaId={this.state.selectedFormulaId} ref="input"/>
     </div>
   }
 }

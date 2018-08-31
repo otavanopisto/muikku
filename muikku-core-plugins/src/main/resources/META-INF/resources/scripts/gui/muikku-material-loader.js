@@ -1629,14 +1629,14 @@
     
     if ((typeof MathJax) != 'undefined') {
       
-      MathJax.Hub.Config({
-        "HTML-CSS": {
-          scale: 90
-        },
-        NativeMML: {
-          scale: 90
-        }
-      });
+//      MathJax.Hub.Config({
+//        "HTML-CSS": {
+//          scale: 90
+//        },
+//        NativeMML: {
+//          scale: 90
+//        }
+//      });
       
       MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(data.pageElement)[0]]);
     }
