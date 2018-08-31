@@ -17,7 +17,7 @@ public class ChatPermissions extends AbstractMuikkuPermissionCollection implemen
 
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER, EnvironmentRoleArchetype.TEACHER } )
-  public static final String CHAT_CHECKBOX_PERMISSION = "CHAT_CHECKBOX_PERMISSION";
+  public static final String CREATE_PERMANENT_CHATROOM = "CREATE_PERMANENT_CHATROOM";
   
   @Override
   public List<String> listPermissions() {
