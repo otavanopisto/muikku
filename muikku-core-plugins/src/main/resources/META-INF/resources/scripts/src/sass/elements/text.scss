@@ -33,18 +33,9 @@ b {
   font-weight: 600;
 }
 
-.text--item-counter {
-  align-items: center;
-  background-color: $color-main-function-item-counter-background;
-  border-radius: 3px;
-  display: flex;
-  height: 20px;
-  justify-content: center;
-  min-width: 20px;
-  padding: 0 4px;
-}
 
-// Check Contatc Info 
+// Check Contatc Info
+ 
 .text--check-contact-info-title {
   font-size: 1rem;
   font-weight: 400;
@@ -52,6 +43,7 @@ b {
 }
 
 // Communicator
+
 .text--communicator-message-caption {
   font-size: 1rem;
   padding: 10px;
@@ -81,15 +73,6 @@ b {
   .application-list__item--unread {
     font-weight: 600;
   }
-}
-
-.text--communicator-date {
-  text-align: right;
-  width: 5.2rem;
-}
-  
-.text--communicator-item-body {
-  display: inline-block;
 }
 
 .text--label-update-dialog-icon {

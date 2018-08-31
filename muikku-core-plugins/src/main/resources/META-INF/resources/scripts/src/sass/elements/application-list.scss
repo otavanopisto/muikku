@@ -62,6 +62,29 @@
   }
 }
 
+
+.application-list__header-item-counter {
+  align-items: center;
+  background-color: $color-main-function-item-counter-background;
+  border-radius: 3px;
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  min-width: 20px;
+  padding: 0 4px;
+}
+
+
+.application-list__header-item-date {
+  text-align: right;
+  width: 5.2rem;
+}
+  
+.application-list__header-item-body {
+  display: inline-block;
+}
+
+
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
