@@ -5,7 +5,7 @@ import {StudentUserStatistics, Activity, Record, GuiderActivityDataType} from '~
 import {StateType} from '~/reducers';
 import WorkspaceFilter from './filters/workspace-filter';
 import GraphDataFilter from './filters/graph-data-filter';
-import '~/sass/elements/filter-chart.scss';
+import '~/sass/elements/chart.scss';
 
 var AmCharts = require("@amcharts/amcharts3-react");
 
@@ -102,13 +102,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     workspaces.push({id:102, name:"test6"});
     
 //NOTE: It is possible to check data type and calculate everything. There is graph type check below. (Option 1)
-    let chartDataMap = new Map<Date, {logins:number, assignments:number, exercises:number}>();
+    let chartDataMap = new Map<string, {logins:number, assignments:number, exercises:number}>();
       this.props.statistics.login.map((login)=>{
-        let entry = chartDataMap.get(login);
+        let formatedDate = login.toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'});
+        let entry = chartDataMap.get(formatedDate);
         if(entry == null)
           entry = {"logins": 0, "assignments": 0, "exercises": 0};
         entry.logins++;
-        chartDataMap.set(login, entry);
+        chartDataMap.set(formatedDate, entry);
       });
     
     Object.keys(this.props.statistics.activities).forEach(key=>{
@@ -116,21 +117,20 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       workspaces.push({id:workspaceId, name:this.props.statistics.activities[workspaceId].workspaceUrlName});
       if(!this.state.filteredWorkspaces.includes(workspaceId)){
         this.props.statistics.activities[workspaceId].records.map((record)=>{
-          let date = new Date(record.date);
-          let entry = chartDataMap.get(date);
+          let entry = chartDataMap.get(record.date);
           if(entry == null)
             entry = {"logins": 0, "assignments": 0,"exercises": 0};
           if(record.type === "EVALUATED")
             entry.assignments++;
           else if(record.type === "EXERCISE")
             entry.exercises++;
-          chartDataMap.set(date, entry);
+          chartDataMap.set(new Date(record.date).toLocaleDateString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit'}), entry);
         })
       }
     });
 
     //NOTE: Data can be filtered here also (Option 2)
-    let sortedKeys = Array.from(chartDataMap.keys()).sort((a,b)=>{return a.getTime()>b.getTime()? 1: -1});
+    let sortedKeys = Array.from(chartDataMap.keys()).sort((a,b)=>{return new Date(a).getTime()>new Date(b).getTime()? 1: -1});
     let data = new Array;
     sortedKeys.forEach((key)=>{
       let value = chartDataMap.get(key);
@@ -203,7 +203,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "mouseWheelZoomEnabled": true,
       "minSelectedTime": 604800000,
       "maxSelectedTime": 31556952000,
-      "dataDateFormat": "YYYY-MM-DD",
+      "dataDateFormat": "MM-DD-YYYY",
       "categoryField": "date",
       "categoryAxis": {
         "parseDates": true,
