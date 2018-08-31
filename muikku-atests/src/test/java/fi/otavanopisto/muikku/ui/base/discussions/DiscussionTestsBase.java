@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
 import fi.otavanopisto.muikku.TestEnvironments;
 import fi.otavanopisto.muikku.TestUtilities;
 import fi.otavanopisto.muikku.atests.Discussion;
@@ -45,14 +47,14 @@ public class DiscussionTestsBase extends AbstractUITest {
       try {
         navigate("/discussion", false);
         waitAndClick(".application-panel__helper-container--main-action .button--primary-function");
-        waitAndClick("input.form-field--new-discussion-thread-title");
-        sendKeys("input.form-field--new-discussion-thread-title", "Test title for discussion");
+        waitAndClick("input.env-dialog__input--new-discussion-thread-title");
+        sendKeys("input.env-dialog__input--new-discussion-thread-title", "Test title for discussion");
         addTextToCKEditor("Test text for discussion.");
-        click("a.button--standard-ok");
+        click("a.button--dialog-execute");
         waitForPresent("h3.text--discussion-current-thread-title");
         assertText("h3.text--discussion-current-thread-title", "Test title for discussion");
-        waitForPresent(".text--item-article p");
-        assertTextIgnoreCase(".text--item-article p", "Test text for discussion.");
+        waitForPresent(".text--discussion-message-content>p");
+        assertTextIgnoreCase(".text--discussion-message-content>p", "Test text for discussion.");
       }finally {
         deleteDiscussion(discussionGroup.getId(), discussion.getId());
       }
@@ -82,12 +84,12 @@ public class DiscussionTestsBase extends AbstractUITest {
     try{
       navigate("/discussion", false);
       waitAndClick(".application-panel__toolbar .button-pill__icon.icon-add");
-      waitAndSendKeys("input.form-field--new-discussion-area-name", "Test area");
-      waitAndClick(".form-field--new-discussion-area-description");
-      waitAndSendKeys(".form-field--new-discussion-area-description", "Description of test area");
-      click(".button--standard-ok");
-      waitForPresent(".application-panel__toolbar select.form-field--toolbar-selector option:nth-child(2)");
-      assertTextIgnoreCase(".application-panel__toolbar select.form-field--toolbar-selector option:nth-child(2)", "Test area");
+      waitAndSendKeys("input.env-dialog__input--new-discussion-area-name", "Test area");
+      waitAndClick(".env-dialog__textarea");
+      waitAndSendKeys(".env-dialog__textarea", "Description of test area");
+      click(".button--dialog-execute");
+      waitForPresent(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)");
+      assertTextIgnoreCase(".application-panel__toolbar select.form-element__select--toolbar-selector option:nth-child(2)", "Test area");
     } finally {
       cleanUpDiscussions();
       mockBuilder.wiremockReset();
@@ -188,32 +190,26 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     )
   public void discussionReplyReplyTest() throws Exception {
-    MockStaffMember admin = new MockStaffMember(4l, 4l, "Admin", "User", UserRole.ADMINISTRATOR, "121212-1234", "admin@example.com", Sex.MALE);
-    MockStudent student = new MockStudent(2l, 2l, "Student", "Tester", "student@example.com", 1l, OffsetDateTime.of(1990, 2, 2, 0, 0, 0, 0, ZoneOffset.UTC), "121212-1212", Sex.FEMALE, TestUtilities.toDate(2012, 1, 1), TestUtilities.getNextYear());
-    Builder mockBuilder = mocker();
-    mockBuilder.addStaffMember(admin).addStudent(student).mockLogin(admin).build();
-    login();
+    loginAdmin();
+
     DiscussionGroup discussionGroup = createDiscussionGroup("test group");
     try {
       Discussion discussion = createDiscussion(discussionGroup.getId(), "test discussion");
       try {
         DiscussionThread thread = createDiscussionThread(discussionGroup.getId(), discussion.getId(), "Testing",
             "<p>Testing testing daa daa</p>", false, false);
-        logout();
-        mockBuilder.mockLogin(student);
-        login();
         try {
-          navigate("/discussion", false);
-          waitAndClick(".message__title");
-          waitAndClick(".link--application-list-item-footer:nth-child(1)");
-          addTextToCKEditor("Test reply for test.");
-          click(".button--standard-ok");
-          waitForPresentAndVisible(".application-list .application-list__item--discussion-reply");
-          waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
-          addTextToCKEditor("Test reply to reply.");
-          click(".button--standard-ok");
-          waitForPresentAndVisible(".application-list__item--discussion-reply .message--discussion-reply-of-reply");
-          assertText(".application-list__item--discussion-reply .message--discussion-reply-of-reply .application-list__item__body article", "Test reply to reply.");
+        navigate("/discussion", false);
+        waitAndClick(".text--list-item-title>span");
+        waitAndClick(".link--application-list-item-footer:nth-child(1)");
+        addTextToCKEditor("Test reply for test.");
+        click(".button--dialog-execute");
+        waitForPresentAndVisible(".application-list .application-list__item--discussion-reply");
+        waitAndClick(".application-list .application-list__item--discussion-reply .link--application-list-item-footer:nth-child(1)");
+        addTextToCKEditor("Test reply to reply.");
+        click(".button--dialog-execute");
+        waitForPresentAndVisible(".application-list__item--discussion-reply-of-reply .text--discussion-message-content>p");
+        assertText(".application-list__item--discussion-reply-of-reply .text--discussion-message-content>p", "Test reply to reply.");
         } catch (Exception e) {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         } finally {
@@ -224,8 +220,8 @@ public class DiscussionTestsBase extends AbstractUITest {
       }
     } finally {
       deleteDiscussionGroup(discussionGroup.getId());
-      mockBuilder.wiremockReset();
-      }
+      WireMock.reset();
+    }
   }
 
   @Test
@@ -252,14 +248,14 @@ public class DiscussionTestsBase extends AbstractUITest {
             "<p>Testing testing daa daa</p>", false, false);
         try {
           navigate("/discussion", false);
-          waitAndClick(".message__title");
+          waitAndClick(".text--list-item-title>span");
           waitAndClick(".link--application-list-item-footer:nth-child(2)");
           addToEndCKEditor("Test with quote.");
-          waitAndClick(".button--standard-ok");
-          waitForPresent(".application-list__item--discussion-reply .application-list__item__body article");
-          assertText(".application-list__item--discussion-reply .application-list__item__body article blockquote p strong", "Admin User");
-          assertText(".application-list__item--discussion-reply .application-list__item__body article blockquote p:nth-child(2)", "Testing testing daa daa");
-          assertText(".application-list__item--discussion-reply .application-list__item__body article>p", "Test with quote.");
+          waitAndClick(".button--dialog-execute");
+          waitForPresent(".application-list__item--discussion-reply article blockquote p strong");
+          assertText(".application-list__item--discussion-reply article blockquote p strong", "Admin User");
+          assertText(".application-list__item--discussion-reply article blockquote p:nth-child(2)", "Testing testing daa daa");
+          assertText(".application-list__item--discussion-reply article>p", "Test with quote.");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }
@@ -296,18 +292,21 @@ public class DiscussionTestsBase extends AbstractUITest {
             "<p>Testing testing daa daa</p>", false, false);
         try {
           navigate("/discussion", false);
-          waitAndClick(".message__title");
+          selectFinnishLocale();
+          waitAndClick(".text--list-item-title>span");
           waitAndClick(".link--application-list-item-footer:nth-child(3)");
-          waitAndClick("input.form-field--new-discussion-thread-title");
-          sendKeys("input.form-field--new-discussion-thread-title", "ing");
+          waitAndClick("input.env-dialog__input--new-discussion-thread-title");
+          sendKeys("input.env-dialog__input--new-discussion-thread-title", "ing");
           addToEndCKEditor("ing");
-          waitAndClick(".button--standard-ok");
+          waitAndClick(".button--dialog-execute");
           waitForPresentAndVisible("h3.text--discussion-current-thread-title");
           reloadCurrentPage();
           waitForPresentAndVisible("h3.text--discussion-current-thread-title");
           assertText("h3.text--discussion-current-thread-title", "Testinging");
-          waitForPresent(".text--item-article p");
-          assertTextIgnoreCase(".text--item-article p", "Testing testing daa daaing");
+          waitForPresent(".text--discussion-message-content>p");
+          assertTextIgnoreCase(".text--discussion-message-content>p", "Testing testing daa daaing");
+          waitForPresent(".text--discussion-last-modifier");
+          assertTextIgnoreCase(".text--discussion-last-modifier", "Muokattu: 13.08.2018");
         } finally {
           deleteDiscussionThread(discussionGroup.getId(), discussion.getId(), thread.getId());
         }

@@ -13,7 +13,22 @@ export interface StatusType {
   permissions: any,
   contextPath: string,
   userSchoolDataIdentifier: string,
-  isActiveUser: boolean
+  isActiveUser: boolean,
+  isStudent: boolean,
+  profile: ProfileStatusType,
+  hasImage: boolean,
+  imgVersion: number
+}
+
+export interface ProfileStatusType {
+  displayName: string,
+  loggedUserName: string,
+  emails: Array<string>,
+  addresses: Array<string>,
+  phoneNumbers: Array<string>,
+  studyTimeLeftStr: string,
+  studyStartDate: string,
+  studyTimeEnd: string
 }
 
 export default function status(state: StatusType={
@@ -23,10 +38,18 @@ export default function status(state: StatusType={
   contextPath: (<any>window).CONTEXTPATH,
   userSchoolDataIdentifier: (<any>window).MUIKKU_LOGGED_USER,
   isActiveUser: (<any>window).MUIKKU_IS_ACTIVE_USER,
+  profile: (<any>window).PROFILE_DATA,
+  isStudent: (<any>window).MUIKKU_IS_STUDENT,
+  hasImage: false,
+  imgVersion: 0
 }, action: ActionType): StatusType{
   if (action.type === "LOGOUT"){
     $('#logout').click();
     return state;
+  } else if (action.type === "UPDATE_STATUS_PROFILE"){
+    return {...state, profile: action.payload};
+  } else if (action.type === "UPDATE_STATUS_HAS_IMAGE"){
+    return {...state, hasImage: action.payload, imgVersion: ++state.imgVersion};
   }
   return state;
 }

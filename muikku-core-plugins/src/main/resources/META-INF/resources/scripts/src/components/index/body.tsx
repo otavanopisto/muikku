@@ -9,7 +9,6 @@ import WorkspacesPanel from './body/workspaces-panel';
 
 import * as React from 'react';
 
-import '~/sass/elements/container.scss';
 import '~/sass/elements/ordered-container.scss';
 import { StateType } from '~/reducers';
 import { Dispatch, connect } from 'react-redux';
@@ -23,7 +22,7 @@ class IndexBody extends React.Component<{
   status: StatusType
 },{}> {
   render(){
-    return (<div className="container container--full">
+    return (<div>
       <MainFunctionNavbar activeTrail="index"/>
       <ScreenContainer>
         {this.props.status.isActiveUser ? <div className="ordered-container ordered-container--index-panels">

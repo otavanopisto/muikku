@@ -3,7 +3,6 @@ package fi.otavanopisto.muikku.plugins.transcriptofrecords;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -176,8 +175,8 @@ public class TranscriptofRecordsBackingBean {
     return studyTimeLeftStr;
   }
   
-  public Date getStudyEndDate() {
-    return studyEndDate != null ? Date.from(studyEndDate.toInstant()) : null;
+  public String getStudyEndDate() {
+    return studyEndDate != null ? studyEndDate.toString() : null;
   }
 
   private String grades;

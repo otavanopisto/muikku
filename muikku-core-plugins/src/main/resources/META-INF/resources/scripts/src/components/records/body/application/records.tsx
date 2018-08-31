@@ -191,10 +191,11 @@ class Records extends React.Component<RecordsProps, RecordsState> {
         </div>
       </div>
       <div className="application-sub-panel__item">
-        <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.records.studyTimeEndLabel")}</div>
+        <div className="application-sub-panel__item-title">{this.props.i18n.text.get(this.props.records.studyEndDate ? "plugin.records.studyEndDateLabel" :
+          "plugin.records.studyTimeEndLabel")}</div>
         <div className="application-sub-panel__item-data">
-          <span className="text text--guider-profile-value">{this.props.records.studyTimeEnd ? 
-            this.props.i18n.time.format(this.props.records.studyTimeEnd) : "-"}</span>
+          <span className="text text--guider-profile-value">{this.props.records.studyEndDate || this.props.records.studyTimeEnd ? 
+            this.props.i18n.time.format(this.props.records.studyEndDate || this.props.records.studyTimeEnd) : "-"}</span>
         </div>
       </div>
     </div>  

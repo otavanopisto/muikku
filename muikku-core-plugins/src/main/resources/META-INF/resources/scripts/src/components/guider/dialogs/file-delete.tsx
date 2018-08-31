@@ -6,7 +6,6 @@ import {bindActionCreators} from 'redux'
 import {i18nType } from '~/reducers/base/i18n';
 import Button from '~/components/general/button';
 
-import '~/sass/elements/container.scss';
 import { AnyActionType } from '~/actions';
 import { StateType } from '~/reducers';
 import { removeFileFromCurrentStudent, RemoveFileFromCurrentStudentTriggerType } from '~/actions/main-function/guider';

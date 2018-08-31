@@ -13,7 +13,6 @@ import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/text.scss';
-import '~/sass/elements/container.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
 import '~/sass/elements/rich-text.scss';
@@ -56,7 +55,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
       avatar = <div className="avatar avatar--category-1"></div>;
     } else {
       //This is what it shows when the user is ready
-      avatar = <object className="container container--discussion-profile-image"
+      avatar = <object className="avatar-container"
         data={getUserImageUrl(userCreator)}
         type="image/jpeg">
           <div className={`avatar avatar--category-${userCategory}`}>{userCreator.firstName[0]}</div>
@@ -109,7 +108,7 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
             avatar = <div className="avatar avatar--category-1"></div>;
           } else {
             //This is what it shows when the user is ready
-            avatar = <object className="container container--discussion-profile-image"
+            avatar = <object className="avatar-container"
               data={getUserImageUrl(user)}
               type="image/jpeg">
                 <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>

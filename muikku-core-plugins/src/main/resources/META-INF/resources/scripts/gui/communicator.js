@@ -196,13 +196,12 @@
     
     loadItems: function (firstResult, maxResults, mainCallback) {
       var params = {
-        labelId: this._labelId,
         firstResult: firstResult,
         maxResults: maxResults
       };
       
-      mApi().communicator.items
-        .read(params)
+      mApi().communicator.userLabels.messages
+        .read(this._labelId, params)
         .callback(mainCallback);
     },
     loadThread: function (threadId, firstResult, maxResults, callback) {

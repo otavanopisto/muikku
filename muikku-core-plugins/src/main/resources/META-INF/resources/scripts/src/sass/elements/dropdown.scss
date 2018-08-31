@@ -1,6 +1,7 @@
 @import "../base/colors";
 @import "../base/mixins";
-
+@import "../base/vars";
+@import "../base/breakpoints";
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
   display: block;

@@ -11,7 +11,7 @@
   font-size: $text-desktop-font-size;
   padding-left: 40px;
   padding-right: 21px;
-  width: 90%;
+  width: auto;
 }
 
 // NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
@@ -20,84 +20,88 @@
   flex-basis: 0;
   flex-grow: 1;
   flex-shrink: 0;
+}
+
+.chart-filter--workspace-filter {
+  justify-content: flex-end; 
+} 
+
+.workspace-filter-activator {
+  border-radius: 2px;
+  border-width: 0px;
+  background-color: #009fe3;
+  color: #fff;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+
+.workspace-filter-activator:hover {
+  background-color: #007bb0;
+}
   
-  &.chart-filter--workspace-filter {
-    justify-content: flex-end;
-    .workspace-filter-activator {
-      border-radius: 2px;
-      border-width: 0px;
-      background-color: #009fe3;
-      color: #fff;
-      padding: 5px 10px;
-      text-transform: uppercase;
+.chart-filter--legend-filter {
+  
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    align-items: center;
+    appearance: none;
+	  border: solid 2px;
+    height: 1rem;
+    justify-content: center;
+    margin-right: 10px;
+    margin-left: 10px;
+    vertical-align: middle;
+    width: 1rem;
+    
+    &.Assignments {
+      border-color: $color-assignment;
     }
-    .workspace-filter-activator:hover {
-      background-color: #007bb0;
+    
+    &.Exercises {
+      border-color: $color-exercise;
+    }
+    
+    &.Logins {
+      border-color: $color-tertiary;
+    }
+	}
+	
+	input[type="checkbox"]:checked {
+    
+    &.Assignments {
+      background-color: $color-assignment;
+    }
+    
+    &.Exercises {
+      background-color: $color-exercise;
+    }
+    
+    &.Logins {
+      background-color: $color-tertiary;
     }
   }
   
-  &.chart-filter--legend-filter{
-    input[type="checkbox"] {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      align-items: center;
-      appearance: none;
-  	  border: solid 2px;
-      height: 1rem;
-      justify-content: center;
-      margin-right: 10px;
-      margin-left: 10px;
-      vertical-align: middle;
-      width: 1rem;
-      
-      &.Assignments {
-        border-color: $color-assignment;
-      }
-      
-      &.Exercises{
-        border-color: $color-exercise;
-      }
-      
-      &.Logins {
-        border-color: $color-tertiary;
-      }
-  	}
-  	
-  	input[type="checkbox"]:checked {
-      
-      &.Assignments {
-        background-color: $color-assignment;
-      }
-      
-      &.Exercises{
-        background-color: $color-exercise;
-      }
-      
-      &.Logins {
-        background-color: $color-tertiary;
-      }
-    }
-    
-  	input[type="checkbox"]:checked::after {
-      color: #fff;
-      content: "";
-      font-family: muikku;
-      font-size: .875rem;
-    }
-    
-    input[type="checkbox"]:focus {
-      outline: 5px;
-    }
-    
-    span {
-      vertical-align:middle;
-    }
+	input[type="checkbox"]:checked::after {
+    color: #fff;
+    content: "";
+    font-family: muikku;
+    font-size: .875rem;
+  }
+  
+  input[type="checkbox"]:focus {
+    outline: 5px;
+  }
+  
+  span {
+    vertical-align:middle;
   }
 }
 
 .dropdown__container {
   font-family: $text-font-family;
   font-size: $text-desktop-font-size;
+  
   input[type="checkbox"] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -107,8 +111,7 @@
     border-radius: 3px;
     height: 1rem;
     justify-content: center;
-    margin-right: 5px;
-    margin-left: 5px;
+    margin: 0 5px 0 0;
     vertical-align: middle;
     width: 1rem;
   }
@@ -129,6 +132,6 @@
 }
 
 .filterAmChart {
-  width: 90%;
-  height: 400px;
+  width: auto;
+  min-height: 400px;
 }

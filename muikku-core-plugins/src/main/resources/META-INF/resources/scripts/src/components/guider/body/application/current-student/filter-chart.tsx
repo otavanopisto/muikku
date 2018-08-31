@@ -28,7 +28,7 @@ var ignoreZoomed:boolean = true;
 var zoomStartDate:Date = null;
 var zoomEndDate:Date = null;
 //TEST DATA: remove if found in production
-var testData:{"date":Date, "logins":number, "assignments":number,"exercises":number}[] = [];
+/*var testData:{"date":Date, "logins":number, "assignments":number,"exercises":number}[] = [];*/
 
 class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsProps, CurrentStudentStatisticsState> {
   constructor(props: CurrentStudentStatisticsProps){
@@ -43,10 +43,10 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     };
     
     //TEST DATA: remove if found in production
-    let today:Date = new Date();
+   /* let today:Date = new Date();
     for (let i=0;i<1000; i++) {
       testData.push({"date": new Date(today.getTime() + i*24*60*60*1000), "logins": Math.floor(Math.random()*7+3), "assignments": Math.floor(Math.random()*3+1), "exercises": Math.floor(Math.random()*3+1)});
-    }
+    }*/
   }
   
   workspaceFilterHandler(workspaceId: number){
@@ -137,7 +137,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       data.push({"date": key, "logins": value.logins, "assignments": value.assignments, "exercises": value.exercises});
     });
     
-    data = data.concat(testData);
+    /*data = data.concat(testData);*/
     //NOTE: It is possible not to check graphs and leave them with no or 0 data entries. (if data is checked) (Option 3)
     let graphs = new Array;
     if(!this.state.filteredGraphData.includes(GraphData.LOGINS)) {
