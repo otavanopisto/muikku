@@ -20,6 +20,7 @@
 // Item-list items BASE
 .item-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
+  color: $color-text-default;    
   align-items: center;
   background-color: $color-item-list-item-background;
   cursor: pointer;
@@ -150,7 +151,6 @@
 
 .item-list__text-body {
   flex-basis: auto;
-  color: $color-text-default;
   flex-grow: 1;
   flex-shrink: 100;
   font-size: $text-mobile-font-size;

@@ -626,22 +626,7 @@ b {
 }
 
 // Generic Main function 
-.text--main-function-current-folder {
-  align-items: center;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  display: flex;
-  font-weight: 400;
-  overflow: hidden;
-  position: relative;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  
-  @include breakpoint($breakpoint-pad){
-    display: none;
-  }
-}
+
 
 .text__current-folder-title {
   display: inline-block;

@@ -28,7 +28,7 @@ class AnnouncerAside extends React.Component<AnnouncerAsideProps, AnnouncerAside
           return <Link key={item.id} className={`item-list__item ${this.props.announcements.location === item.location ? "active" : ""}`}
             href={`#${item.location}`}>
             <span className={`item-list__icon icon-${item.icon}`}></span>
-            <span className="item-list__text-body text">
+            <span className="item-list__text-body">
               {item.text(this.props.i18n)}
             </span>
           </Link>
