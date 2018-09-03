@@ -44,19 +44,6 @@ b {
 
 // Communicator
 
-.text--communicator-message-caption {
-  font-size: 1rem;
-  padding: 10px;
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: 1.125rem; 
-  }
-}  
-
-.text--communicator-message-content {
-  padding: 0 10px;  
-}
-
 .text--communicator-usernames {
   align-items: center;
   display: flex;
@@ -609,6 +596,7 @@ b {
 }
 
 // Text icon
+
 .text__icon {
   align-items: center;
   display: flex;

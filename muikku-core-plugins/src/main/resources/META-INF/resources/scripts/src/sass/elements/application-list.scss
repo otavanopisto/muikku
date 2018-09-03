@@ -84,7 +84,6 @@
   display: inline-block;
 }
 
-
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
@@ -266,9 +265,23 @@
   padding: 0;
 }
 
+.application-list__item-content-header {
+  font-size: 1rem;
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem; 
+  }
+}  
+
+.application-list__item-content-body {
+  padding: 0 10px;  
+}
+
 .application-list__item-meta {
   display: flex;
   padding: 10px;
+  width: 100%;
 }
 
 
@@ -284,11 +297,29 @@
   flex-shrink: 1;
 }
 
+.application-list__item-header-main-content {
+  display: inline-block;      
+}
+
+.application-list__item-header-main-content--communicator-sender {
+  font-weight: 600;
+      
+  &::after {
+    content: ">";
+    margin: 0 10px;
+  }
+}
+
+
+
+
 .application-list__item-header-aside {
   align-items: center;
   display: flex;
   justify-content: flex-end;
 }
+
+
 
 .application-list--open {
   -ms-overflow-style: -ms-autohiding-scrollbar;
