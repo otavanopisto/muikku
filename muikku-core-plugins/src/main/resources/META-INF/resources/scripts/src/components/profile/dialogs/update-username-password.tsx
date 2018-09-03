@@ -116,23 +116,24 @@ class UpdateUsernamePasswordDialog extends React.Component<UpdateUsernamePasswor
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        {this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}
-        <br/>
-        <br/>
+        <p>{this.props.i18n.text.get('plugin.profile.changePassword.dialog.desription')}</p>
         <form>
-          <div className="form-element">
-            <input type="text" className="form-element__input form-element__input--profile" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
+          <div className="form-element form-element--profile">
             <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.usernameField.label')}</label>
-        
+            <input type="text" className="form-element__input form-element__input--profile" value={this.state.username} onChange={this.updateField.bind(this, "username")}/>
+          </div>
+          <div className="form-element form-element--profile">
+            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>    
             <input type="password" className="form-element__input form-element__input--profile" value={this.state.oldPassword} onChange={this.updateField.bind(this, "oldPassword")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.oldPasswordField.label')}</label>
-            
+          </div>          
+          <div className="form-element form-element--profile">
+            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>            
             <input type="password" className="form-element__input form-element__input--profile" value={this.state.newPassword} onChange={this.updateField.bind(this, "newPassword")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField1.label')}</label>
-            
+          </div>
+          <div className="form-element form-element--profile">
+            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>            
             <input type="password" className={`form-element__input form-element__input--profile ${this.state.newPassword !== this.state.newPasswordConfirm ? "form-element__input--profile-wrong" : ""}`}
               value={this.state.newPasswordConfirm} onChange={this.updateField.bind(this, "newPasswordConfirm")}/>
-            <label className="form-element__input--label">{this.props.i18n.text.get('plugin.profile.changePassword.dialog.newPasswordField2.label')}</label>
           </div>
         </form>
       </div>;

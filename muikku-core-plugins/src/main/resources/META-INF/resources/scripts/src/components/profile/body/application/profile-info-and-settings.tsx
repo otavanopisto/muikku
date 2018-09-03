@@ -104,7 +104,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
     let cb = ()=>{
       done++;
       if (totals === done){
-        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'info')
+        this.props.displayNotification(this.props.i18n.text.get("plugin.profile.properties.saved"), 'success')
       }
     }
     if (this.props.profile.properties['profile-vacation-start'] !== this.state.profileVacationStart){
