@@ -408,6 +408,7 @@ b {
       
   &:not(:last-child):after {
     content: ",";
+    margin: 0 5px 0 0;
   }
 }
 
