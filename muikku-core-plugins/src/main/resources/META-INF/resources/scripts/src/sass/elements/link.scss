@@ -132,6 +132,7 @@
 .link--language {
   background-color: $color-environment-link-language-background;
   color: $color-environment-link-language-text;
+  justify-content: flex-start;
 
   &:hover,
   &.hover {
