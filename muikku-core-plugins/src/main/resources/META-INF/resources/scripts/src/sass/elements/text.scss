@@ -190,6 +190,8 @@ b {
 }
 
 // Discussion
+
+
 .text--discussion-item-body {
   font-style: italic;
   width: 100%;
@@ -208,63 +210,6 @@ b {
   left: 0;
   bottom: 0;
   background: linear-gradient(rgba(255, 255, 255, 0) 1rem, white);
-}
-
-.text--discussion-thread-meta {
-  display: flex;
-  flex-basis: auto;
-  flex-grow: 1;
-  flex-shrink: 1;
-  justify-content: flex-start;
-  
-  @include breakpoint($breakpoint-mobile-xl) {
-    justify-content: flex-end;
-  }
-}
-
-.text--discussion-thread-user {
-  font-size: 0.8125rem;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 0;
-  padding: 0 0 7px;
-  
-  @include breakpoint($breakpoint-mobile-xl) {
-    flex-basis: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    padding: 0;
-  }
-}
-
-.text--discussion-thread-meta-counter {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  
-  @include breakpoint($breakpoint-mobile-xl) {
-    justify-content: flex-end;
-  }
-}
-
-.text--discussion-thread-meta-counter-title {
-  font-size: 0.8125rem;
-  padding: 0 3px 0 0;
-}
-
-.text--discussion-thread-meta-latest-reply {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  flex-grow: 1;
-  font-size: 0.8125rem;
-  justify-content: flex-end;
-  text-align: right;
-  
-  @include breakpoint($breakpoint-mobile-xl) {
-    max-width: 250px;
-  }
 }
 
 .text--discussion-thread-item-title {

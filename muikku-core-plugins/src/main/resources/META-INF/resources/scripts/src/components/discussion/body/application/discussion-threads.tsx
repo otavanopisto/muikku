@@ -90,7 +90,7 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 {thread.sticky ?
                   <div className="discussion__icon icon-pin"></div> : null
                 }
-                <div className={`text text--list-item-title discussion-category discussion-category--category-${thread.forumAreaId}`}>
+                <div className={`discussion-category discussion-category--category-${thread.forumAreaId}`}>
                   <span>{thread.title}</span>
                 </div>
               </DiscussionThreadHeader>
@@ -101,15 +101,15 @@ class DDiscussionThreads extends React.Component<DiscussionThreadsProps, Discuss
                 </DiscussionThreadBody> : null
               }
               <DiscussionThreadFooter>
-                <div className="text text--discussion-thread-user">
+                <div className="application-list__item-footer-content-main">
                   <span>{user && user.firstName + ' ' + user.lastName}, {this.props.i18n.time.format( thread.created )}</span>
                 </div>
-                <div className="text text--discussion-thread-meta">
-                  <div className="text text--discussion-thread-meta-counter">
-                    <span className="text text--discussion-thread-meta-counter-title">{this.props.i18n.text.get( "plugin.discussion.titleText.replyCount" )} </span>
-                    <span className="text text--item-counter">{thread.numReplies}</span>
+                <div className="application-list__item-footer-content-aside">
+                  <div className="application-list__item-counter-container">
+                    <span className="application-list__item-counter-title">{this.props.i18n.text.get( "plugin.discussion.titleText.replyCount" )} </span>
+                    <span className="application-list__item-counter">{thread.numReplies}</span>
                   </div>
-                  <div className="text text--discussion-thread-meta-latest-reply">
+                  <div className="application-list__item-date">
                     <span>{this.props.i18n.text.get( "plugin.discussion.titleText.lastMessage" )} {this.props.i18n.time.format( thread.updated )}</span>
                   </div>
                 </div>

@@ -113,7 +113,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                   <div className="application-list__header-primary">
                     <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
                   </div>
-                  {thread.messageCountInThread > 1 ? <div className="application-list__header-item-counter">
+                  {thread.messageCountInThread > 1 ? <div className="application-list__item-counter">
                     {thread.messageCountInThread}
                   </div> : null}
                   <div className="application-list__header-item-date">
