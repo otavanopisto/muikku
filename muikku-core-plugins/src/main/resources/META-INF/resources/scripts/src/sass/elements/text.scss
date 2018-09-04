@@ -191,17 +191,6 @@ b {
 
 // Discussion
 
-
-.text--discussion-item-body {
-  font-style: italic;
-  width: 100%;
-  line-height: 1rem;
-  max-height: 5rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
-}
-
 .text--discussion-item-body-overflown:before {
   content: '';
   width: 100%;
