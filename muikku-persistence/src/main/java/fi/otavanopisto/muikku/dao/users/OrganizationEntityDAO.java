@@ -17,11 +17,11 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
   private static final long serialVersionUID = 9086977548291745296L;
 
   public OrganizationEntity create(SchoolDataSource dataSource, String identifier, String name) {
-    OrganizationEntity roleSchoolDataIdentifier = new OrganizationEntity();
-    roleSchoolDataIdentifier.setDataSource(dataSource);
-    roleSchoolDataIdentifier.setIdentifier(identifier);
-    roleSchoolDataIdentifier.setName(name);
-    return persist(roleSchoolDataIdentifier);
+    OrganizationEntity organizationEntity = new OrganizationEntity();
+    organizationEntity.setDataSource(dataSource);
+    organizationEntity.setIdentifier(identifier);
+    organizationEntity.setName(name);
+    return persist(organizationEntity);
   }
   
   public List<OrganizationEntity> listUnarchived() {
