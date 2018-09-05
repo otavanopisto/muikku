@@ -46,6 +46,19 @@
   word-wrap: break-word;
 }
 
+.application-list__header-helper {
+  color: $color-default-helper;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  
+  @include breakpoint($breakpoint-pad) {
+    flex-basis: auto;
+    padding: 0 0 0 15px;
+  }
+}
+
+
 
 .application-list__header-secondary {
   align-items: center;

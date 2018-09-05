@@ -499,19 +499,6 @@ b {
   margin: 0 0 10px 0;
 }
 
-
-.text--list-item-helper-title {
-  color: $color-default-helper;
-  flex-basis: 100%;
-  flex-grow: 1;
-  flex-shrink: 1;
-  
-  @include breakpoint($breakpoint-pad) {
-    flex-basis: auto;
-    padding: 0 0 0 15px;
-  }
-}
-
 .text--list-item-type-title {
   align-items: center;
   display: inline-flex;
