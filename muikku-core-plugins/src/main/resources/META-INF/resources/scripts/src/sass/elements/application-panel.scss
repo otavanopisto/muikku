@@ -191,9 +191,8 @@
     
     @include breakpoint($breakpoint-pad) {
       display: flex;
-      align-items: center;
       justify-content: center;
-      flex-basis: 300px;
+      flex-basis: 294px;
     }
   }
   
