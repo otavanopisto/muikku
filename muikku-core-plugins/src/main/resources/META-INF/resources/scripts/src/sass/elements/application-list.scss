@@ -71,6 +71,21 @@
   display: inline-block;
 }
 
+.application-list__header-title {
+  display: flex;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  font-size: 1rem;
+  font-weight: 600;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+}
+
+
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
@@ -356,8 +371,20 @@
   flex-shrink: 1;
 }
 
+
+
 .application-list__item-header-main-content {
   display: inline-block;      
+}
+
+.application-list__item-header-main-content--discussion-message-creator {
+  font-size: 0.875rem;
+  font-weight: 600;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 1.125rem;
+    font-weight: 400;
+  }  
 }
 
 .application-list__item-header-main-content--communicator-sender {
@@ -431,6 +458,11 @@
   position: relative;  
 }
 
+.application-list__item-edited {
+  font-weight: 600;
+  font-style: italic;
+}
+
 .application-list__item-body--discussion-message-overflow:before {
   content: '';
   width: 100%;
@@ -467,10 +499,6 @@
 
 .application-list__item-content-main--discussion {
   align-self: center;
-}
-
-.application-list__item-header--discussion {
-
 }
 
 .application-list__item-header--discussion-current-thread-title {
