@@ -28,6 +28,7 @@ public class PyramusIdentifierMapper {
   private static final String STUDYPROGRAMMESTUDENT_PREFIX = "STUDYPROGRAMMESTUDENT-";
   private static final String TRANSFERCREDIT_PREFIX = "STC-";
   private static final String SCHOOL_PREFIX = "SC-";
+  private static final String CREDITLINK_PREFIX = "CREDITLINK-";
 
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId != null ? courseId.toString() : null;
@@ -373,6 +374,10 @@ public class PyramusIdentifierMapper {
 
   public Long getPyramusOrganizationId(String organizationIdentifier) {
     return NumberUtils.createLong(organizationIdentifier);
+  }
+
+  public SchoolDataIdentifier getCreditLinkIdentifier(Long creditLinkId) {
+    return creditLinkId != null ? new SchoolDataIdentifier(String.format("%s%d", CREDITLINK_PREFIX, creditLinkId), SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE) : null; 
   }
 
 }

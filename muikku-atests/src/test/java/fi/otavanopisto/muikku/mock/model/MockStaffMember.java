@@ -6,10 +6,11 @@ import fi.otavanopisto.pyramus.rest.model.UserRole;
 
 public class MockStaffMember extends MockLoggable{
 
-  public MockStaffMember(Long id, Long personId, String firstName, String lastName, UserRole role, String socialSecurityNumber, String email, Sex sex) {
+  public MockStaffMember(Long id, Long personId, Long organizationId, String firstName, String lastName, UserRole role, String socialSecurityNumber, String email, Sex sex) {
     super();
     this.id = id;
     this.personId = personId;
+    this.setOrganizationId(organizationId);
     this.firstName = firstName;
     this.lastName = lastName;
     this.role = role;
@@ -80,8 +81,17 @@ public class MockStaffMember extends MockLoggable{
     this.email = email;
   }
 
+  public Long getOrganizationId() {
+    return organizationId;
+  }
+
+  public void setOrganizationId(Long organizationId) {
+    this.organizationId = organizationId;
+  }
+
   private Long id;
   private Long personId;
+  private Long organizationId;
   private String firstName;
   private String lastName;
   private UserRole role;

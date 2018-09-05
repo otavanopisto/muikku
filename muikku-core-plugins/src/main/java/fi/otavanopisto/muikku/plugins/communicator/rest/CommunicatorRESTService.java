@@ -158,9 +158,11 @@ public class CommunicatorRESTService extends PluginRESTService {
       List<CommunicatorMessageIdLabel> labels = communicatorController.listMessageIdLabelsByUserEntity(user, receivedItem.getCommunicatorMessageId());
       List<CommunicatorMessageIdLabelRESTModel> restLabels = restModels.restLabel(labels);
       
+      Set<String> tags = communicatorController.tagIdsToStr(receivedItem.getTags());
+      
       result.add(new CommunicatorThreadRESTModel(
           receivedItem.getId(), receivedItem.getCommunicatorMessageId().getId(), receivedItem.getSender(), senderBasicInfo, categoryName, 
-          receivedItem.getCaption(), receivedItem.getCreated(), tagIdsToStr(receivedItem.getTags()), hasUnreadMsgs, latestMessageDate, 
+          receivedItem.getCaption(), receivedItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
           messageCountInThread, restLabels));
     }
 
@@ -225,9 +227,11 @@ public class CommunicatorRESTService extends PluginRESTService {
 
       Long recipientCount = (long) messageRecipients.size() + userGroupRecipients.size() + workspaceGroupRecipients.size();
       
+      Set<String> tags = communicatorController.tagIdsToStr(sentItem.getTags());
+
       result.add(new CommunicatorSentThreadRESTModel(
           sentItem.getId(), sentItem.getCommunicatorMessageId().getId(), sentItem.getSender(), senderBasicInfo, categoryName, 
-          sentItem.getCaption(), sentItem.getCreated(), tagIdsToStr(sentItem.getTags()), hasUnreadMsgs, latestMessageDate, 
+          sentItem.getCaption(), sentItem.getCreated(), tags, hasUnreadMsgs, latestMessageDate, 
           messageCountInThread, restLabels, restRecipients, restUserGroupRecipients, restWorkspaceRecipients, recipientCount));
     }
     
@@ -493,16 +497,6 @@ public class CommunicatorRESTService extends PluginRESTService {
     }
     
     return Response.noContent().build();
-  }
-
-  private Set<String> tagIdsToStr(Set<Long> tagIds) {
-    Set<String> tagsStr = new HashSet<String>();
-    for (Long tagId : tagIds) {
-      Tag tag = tagController.findTagById(tagId);
-      if (tag != null)
-        tagsStr.add(tag.getText());
-    }
-    return tagsStr;
   }
 
   private Set<Tag> parseTags(Set<String> tags) {

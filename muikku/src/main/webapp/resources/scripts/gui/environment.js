@@ -17,6 +17,7 @@
             muc_domain : 'conference.' + location.hostname,
             muc_nickname : result.mucNickName,
             hide_muc_server : true,
+            auto_list_rooms: true,
             auto_join_rooms : [ 'muikku@conference.' + location.hostname ],
             ping_interval : 45
           });

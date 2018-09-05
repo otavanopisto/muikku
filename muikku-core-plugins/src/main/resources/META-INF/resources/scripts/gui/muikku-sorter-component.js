@@ -50,7 +50,7 @@
         }
         if (!this.isReadonly()) {
           $(itemsContainer).sortable({
-            tolerance: 'pointer',
+            tolerance: 'intersect',
             start: function (event, ui) {
               var width = $(ui.item)[0].getBoundingClientRect().width;
               $(ui.item).css({

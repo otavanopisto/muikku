@@ -5,6 +5,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -28,9 +29,9 @@ import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.GradingSchoolDataBridge;
 import fi.otavanopisto.muikku.schooldata.SchoolDataBridgeInternalException;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGrade;
 import fi.otavanopisto.muikku.schooldata.entity.CompositeGradingScale;
-import fi.otavanopisto.muikku.schooldata.entity.CompositeAssessmentRequest;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScale;
 import fi.otavanopisto.muikku.schooldata.entity.GradingScaleItem;
 import fi.otavanopisto.muikku.schooldata.entity.TransferCredit;
@@ -39,6 +40,7 @@ import fi.otavanopisto.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.CourseAssessmentRequest;
 import fi.otavanopisto.pyramus.rest.model.CourseStudent;
+import fi.otavanopisto.pyramus.rest.model.CreditLinkCourseAssessment;
 import fi.otavanopisto.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
@@ -403,7 +405,21 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       logger.severe(String.format("Could not translate %s to Pyramus student", studentIdentifier));
       return null; 
     }
-    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/assessments/", studentId), CourseAssessment[].class));
+    
+    CourseAssessment[] courseAssessments = pyramusClient.get(String.format("/students/students/%d/assessments/", studentId), CourseAssessment[].class);
+    CreditLinkCourseAssessment[] linkedCourseAssessments = pyramusClient.get(String.format("/students/students/%d/linkedAssessments/", studentId), CreditLinkCourseAssessment[].class);
+    
+    List<WorkspaceAssessment> result = new ArrayList<>();
+    
+    if (courseAssessments != null) {
+      Arrays.stream(courseAssessments).forEach(courseAssessment -> result.add(entityFactory.createEntity(courseAssessment)));
+    }
+    
+    if (linkedCourseAssessments != null) {
+      Arrays.stream(linkedCourseAssessments).forEach(linkedCourseAssessment -> result.add(entityFactory.createLinkedCourseAssessment(linkedCourseAssessment)));
+    }
+    
+    return result;
   }
   
   public List<CompositeAssessmentRequest> listCompositeAssessmentRequestsByWorkspace(String workspaceIdentifier) {
@@ -498,14 +514,16 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     }
     
     fi.otavanopisto.pyramus.rest.model.TransferCredit[] transferCredits = pyramusClient.get(String.format("/students/students/%d/transferCredits", studentId), fi.otavanopisto.pyramus.rest.model.TransferCredit[].class);
-    if (transferCredits == null) {
-      return Collections.emptyList();
+    fi.otavanopisto.pyramus.rest.model.CreditLinkTransferCredit[] linkedTransferCredits = pyramusClient.get(String.format("/students/students/%d/linkedTransferCredits", studentId), fi.otavanopisto.pyramus.rest.model.CreditLinkTransferCredit[].class);
+
+    List<TransferCredit> result = new ArrayList<>();
+
+    if (transferCredits != null) {
+      Arrays.stream(transferCredits).forEach(transferCredit -> result.add(entityFactory.createEntity(transferCredit)));
     }
     
-    List<TransferCredit> result = new ArrayList<>();
-    
-    for (fi.otavanopisto.pyramus.rest.model.TransferCredit transferCredit : transferCredits) {
-      result.add(entityFactory.createEntity(transferCredit));
+    if (linkedTransferCredits != null) {
+      Arrays.stream(linkedTransferCredits).forEach(linkedTransferCredit -> result.add(entityFactory.createLinkedTransferCredit(linkedTransferCredit)));
     }
     
     return Collections.unmodifiableList(result);
