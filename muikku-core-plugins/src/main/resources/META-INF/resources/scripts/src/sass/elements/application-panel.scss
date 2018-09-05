@@ -182,7 +182,10 @@
   }
 } 
 
+
+// Profile
 .application-panel--profile {
+  
   .application-panel__helper-container {
     display: block;
     
@@ -192,5 +195,9 @@
       justify-content: center;
       flex-basis: 300px;
     }
+  }
+  
+  .application-panel__content {
+    padding: 10px 0 0;
   }
 }

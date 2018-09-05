@@ -156,7 +156,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
         </div> : <form>
           <div className="profile-element__item">
             <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
-            <input className="form-element__input" type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
+            <input className="form-element__input" type="text" autoComplete="tel-national" onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
           </div>
           <div className="profile-element__item">
             <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
