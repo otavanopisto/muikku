@@ -80,7 +80,7 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
       </span>
     });
     
-    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body text">
+    let studentBasicInfo = this.props.guider.currentStudent.basic && <div className="application-sub-panel__body">
       <div className="application-sub-panel__item">
         <div className="application-sub-panel__item-title">{this.props.i18n.text.get("plugin.guider.user.details.label.studyStartDateTitle")}</div>
         <div className="application-sub-panel__item-data">
