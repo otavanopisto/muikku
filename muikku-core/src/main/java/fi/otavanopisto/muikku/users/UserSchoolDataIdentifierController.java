@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import fi.otavanopisto.muikku.dao.base.SchoolDataSourceDAO;
 import fi.otavanopisto.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.otavanopisto.muikku.model.base.SchoolDataSource;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -23,18 +25,18 @@ public class UserSchoolDataIdentifierController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
-  public UserSchoolDataIdentifier createUserSchoolDataIdentifier(SchoolDataSource dataSource, String identifier, UserEntity userEntity) {
-    return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity, Boolean.FALSE);
+  public UserSchoolDataIdentifier createUserSchoolDataIdentifier(SchoolDataSource dataSource, String identifier, UserEntity userEntity, EnvironmentRoleEntity environmentRoleEntity, OrganizationEntity organizationEntity) {
+    return userSchoolDataIdentifierDAO.create(dataSource, identifier, userEntity, environmentRoleEntity, organizationEntity, Boolean.FALSE);
   }
 
-  public UserSchoolDataIdentifier createUserSchoolDataIdentifier(String schoolDataSource, String identifier, UserEntity userEntity) {
+  public UserSchoolDataIdentifier createUserSchoolDataIdentifier(String schoolDataSource, String identifier, UserEntity userEntity, EnvironmentRoleEntity environmentRoleEntity, OrganizationEntity organizationEntity) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource == null) {
       logger.severe("Could not find dataSource '" + schoolDataSource + "'");
       return null;
     }
     
-    return createUserSchoolDataIdentifier(dataSource, identifier, userEntity);
+    return createUserSchoolDataIdentifier(dataSource, identifier, userEntity, environmentRoleEntity, organizationEntity);
   }
   
   public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
@@ -85,6 +87,14 @@ public class UserSchoolDataIdentifierController {
   public void unarchiveUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
     userSchoolDataIdentifierDAO.updateArchived(userSchoolDataIdentifier, Boolean.FALSE);
   }
-  
+
+  public void setUserIdentifierRole(UserSchoolDataIdentifier userSchoolDataIdentifier, EnvironmentRoleEntity environmentRoleEntity) {
+    userSchoolDataIdentifierDAO.updateRole(userSchoolDataIdentifier, environmentRoleEntity);
+  }
+
+  public void setUserIdentifierOrganization(UserSchoolDataIdentifier userSchoolDataIdentifier,
+      OrganizationEntity organizationEntity) {
+    userSchoolDataIdentifierDAO.updateOrganization(userSchoolDataIdentifier, organizationEntity);
+  }
   
 }

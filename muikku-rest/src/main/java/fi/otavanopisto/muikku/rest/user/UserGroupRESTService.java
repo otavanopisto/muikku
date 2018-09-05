@@ -23,10 +23,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
+import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.rest.AbstractRESTService;
 import fi.otavanopisto.muikku.rest.RESTPermitUnimplemented;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -39,6 +39,7 @@ import fi.otavanopisto.muikku.session.SessionController;
 import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
+import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 
 @Stateful
 @RequestScoped
@@ -51,6 +52,9 @@ public class UserGroupRESTService extends AbstractRESTService {
 
   @Inject
   private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -116,25 +120,24 @@ public class UserGroupRESTService extends AbstractRESTService {
     } else {
       SearchProvider elasticSearchProvider = getProvider("elastic-search");
       if (elasticSearchProvider != null) {
-        String[] fields = new String[] { "name" };
-        SearchResult result = null;
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierBySchoolDataIdentifier(sessionController.getLoggedUser());
+        OrganizationEntity organization = userSchoolDataIdentifier != null ? userSchoolDataIdentifier.getOrganization() : null;
+        SchoolDataIdentifier organizationIdentifier = organization != null ? new SchoolDataIdentifier(organization.getIdentifier(), organization.getDataSource().getIdentifier()) : null;
+        
+        if (organizationIdentifier != null) {
+          SearchResult result = elasticSearchProvider.searchUserGroups(searchString, organizationIdentifier, firstResult, maxResults);
 
-        if (StringUtils.isBlank(searchString)) {
-          result = elasticSearchProvider.matchAllSearch(firstResult, maxResults, UserGroup.class);
-        } else {
-          result = elasticSearchProvider.search(searchString, fields, firstResult, maxResults, UserGroup.class);
-        }
+          List<Map<String, Object>> results = result.getResults();
 
-        List<Map<String, Object>> results = result.getResults();
+          if (!results.isEmpty()) {
+            for (Map<String, Object> o : results) {
+              String[] id = ((String) o.get("id")).split("/", 2);
 
-        if (!results.isEmpty()) {
-          for (Map<String, Object> o : results) {
-            String[] id = ((String) o.get("id")).split("/", 2);
-
-            UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(
-                id[1], id[0]);
-            if (userGroupEntity != null) {
-              entities.add(userGroupEntity);
+              UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(
+                  id[1], id[0]);
+              if (userGroupEntity != null) {
+                entities.add(userGroupEntity);
+              }
             }
           }
         }

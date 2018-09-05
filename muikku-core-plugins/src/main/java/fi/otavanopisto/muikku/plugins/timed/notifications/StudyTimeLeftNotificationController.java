@@ -12,6 +12,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.plugins.timed.notifications.dao.StudyTimeNotificationDAO;
 import fi.otavanopisto.muikku.plugins.timed.notifications.model.StudyTimeNotification;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -28,13 +29,13 @@ public class StudyTimeLeftNotificationController {
   @Inject
   private StudyTimeNotificationDAO studyTimeNotificationDAO;
   
-  public SearchResult searchActiveStudentIds(Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studyTimeEndsBefore){
+  public SearchResult searchActiveStudentIds(List<OrganizationEntity> activeOrganizations, Collection<Long> groups, int firstResult, int maxResults, List<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date studyTimeEndsBefore){
     SearchProvider searchProvider = getProvider("elastic-search");
-    return searchProvider.searchUsers(null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, 
+    return searchProvider.searchUsers(activeOrganizations, null, null, Collections.singleton(EnvironmentRoleArchetype.STUDENT), groups, 
         null, null, false, true, true, firstResult, maxResults, Collections.singleton("id"), excludeSchoolDataIdentifiers, 
         null, studyTimeEndsBefore);
   }
-  
+
   public List<SchoolDataIdentifier> listNotifiedSchoolDataIdentifiersAfter(Date date){
     List<SchoolDataIdentifier> results = new ArrayList<>();
     List<StudyTimeNotification> studyTimeNotifications = studyTimeNotificationDAO.listByDateAfter(date);

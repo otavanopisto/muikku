@@ -13,14 +13,14 @@ import org.apache.commons.lang3.StringUtils;
 import fi.otavanopisto.muikku.controller.SystemSettingsController;
 import fi.otavanopisto.muikku.i18n.LocaleController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
-import fi.otavanopisto.muikku.model.users.EnvironmentUser;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.otavanopisto.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.muikku.schooldata.entity.User;
-import fi.otavanopisto.muikku.users.EnvironmentUserController;
 import fi.otavanopisto.muikku.users.UserController;
+import fi.otavanopisto.muikku.users.UserEntityController;
 
 @RequestScoped
 @Named
@@ -28,7 +28,7 @@ import fi.otavanopisto.muikku.users.UserController;
 public class SessionBackingBean {
 
   @Inject
-  private EnvironmentUserController environmentUserController;
+  private UserEntityController userEntityController;
 
   @Inject
   private SessionController sessionController;
@@ -63,9 +63,10 @@ public class SessionBackingBean {
       if (loggedUser != null) {
         String activeSchoolDataSource = sessionController.getLoggedUserSchoolDataSource();
         String activeUserIdentifier = sessionController.getLoggedUserIdentifier();
-        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
-        if ((environmentUser != null) && (environmentUser.getRole() != null)) {
-          loggedUserRoleArchetype = environmentUser.getRole().getArchetype();
+        
+        EnvironmentRoleEntity defaultIdentifierRole = userEntityController.getDefaultIdentifierRole(loggedUser);
+        if (defaultIdentifierRole != null) {
+          loggedUserRoleArchetype = defaultIdentifierRole.getArchetype();
         }
 
         User user = userController.findUserByDataSourceAndIdentifier(activeSchoolDataSource, activeUserIdentifier);

@@ -15,6 +15,7 @@ import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper.StudentGroupType;
 import fi.otavanopisto.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
+import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserEventIdentifier;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserDiscoveredEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserRemovedEvent;
 import fi.otavanopisto.muikku.schooldata.events.SchoolDataUserGroupUserUpdatedEvent;
@@ -52,19 +53,22 @@ public class PyramusSchoolDataUserListener {
   private Event<SchoolDataUserGroupUserRemovedEvent> schoolDataUserGroupUserRemovedEvent;
   
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    for (SchoolDataIdentifier identifier : event.getDiscoveredIdentifiers()) {
+    for (SchoolDataUserEventIdentifier eventIdentifier : event.getDiscoveredIdentifiers()) {
+      SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
       if (identifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
         handlePyramusUserDiscovered(identifier);
       }
     }
     
-    for (SchoolDataIdentifier identifier : event.getUpdatedIdentifiers()) {
+    for (SchoolDataUserEventIdentifier eventIdentifier : event.getUpdatedIdentifiers()) {
+      SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
       if (identifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
         handlePyramusUserUpdated(identifier);
       }
     }
     
-    for (SchoolDataIdentifier identifier : event.getRemovedIdentifiers()) {
+    for (SchoolDataUserEventIdentifier eventIdentifier : event.getRemovedIdentifiers()) {
+      SchoolDataIdentifier identifier = eventIdentifier.getIdentifier();
       if (identifier.getDataSource().equals(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE)) {
         handlePyramusUserRemoved(identifier);
       }

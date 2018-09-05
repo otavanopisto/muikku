@@ -530,8 +530,11 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
         Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(identifier);
         if (studyProgrammeId != null) {
           StudyProgramme studyProgramme = pyramusClient.get(String.format("/students/studyProgrammes/%d", studyProgrammeId), StudyProgramme.class);
-          if (studyProgramme != null)
-            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()), studyProgramme.getName(), false);
+          if (studyProgramme != null) {
+            SchoolDataIdentifier organizationIdentifier = studyProgramme.getOrganizationId() != null ? 
+                identifierMapper.getOrganizationIdentifier(studyProgramme.getOrganizationId()) : null;
+            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()), studyProgramme.getName(), false, organizationIdentifier);
+          }
         }
       break;
     }

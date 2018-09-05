@@ -12,6 +12,8 @@ import static org.elasticsearch.index.query.QueryBuilders.termsQuery;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -19,9 +21,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,11 +45,10 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoField;
 
 import fi.otavanopisto.muikku.controller.PluginSettingsController;
 import fi.otavanopisto.muikku.model.users.EnvironmentRoleArchetype;
+import fi.otavanopisto.muikku.model.users.OrganizationEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceAccess;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.schooldata.SchoolDataIdentifier;
@@ -150,9 +153,9 @@ public class ElasticSearchProvider implements SearchProvider {
     }
     return new SearchResult(0, searchResults.size(), searchResults, totalHitCount);
   }
-  
+
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, 
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, 
@@ -194,7 +197,7 @@ public class ElasticSearchProvider implements SearchProvider {
         query.mustNot(excludeIdsQuery);
       }
       
-      if (startedStudiesBefore != null ) {
+      if (startedStudiesBefore != null) {
         query.must(rangeQuery("studyStartDate").lt((long) startedStudiesBefore.getTime() / 1000));
       }
 
@@ -209,6 +212,12 @@ public class ElasticSearchProvider implements SearchProvider {
         }
 
         query.must(termsQuery("archetype", archetypeNames.toArray(new String[0]))); 
+      }
+      
+      // TODO: force to have at least one organization?
+      Set<Long> organizationIds = organizations.stream().filter(Objects::nonNull).map(organization -> organization.getId()).collect(Collectors.toSet());
+      if (CollectionUtils.isNotEmpty(organizationIds)) {
+        query.must(termsQuery("organization", ArrayUtils.toPrimitive(organizationIds.toArray(new Long[0]))));
       }
       
       if (groups != null) {
@@ -317,27 +326,27 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults,
       Collection<String> fields, Collection<SchoolDataIdentifier> excludeSchoolDataIdentifiers, Date startedStudiesBefore) {
-    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
+    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
         onlyDefaultUsers, start, maxResults, fields, excludeSchoolDataIdentifiers, startedStudiesBefore, null);
   }
   
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults) {
-    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
+    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
         onlyDefaultUsers, start, maxResults, null);
   }
   
   @Override
-  public SearchResult searchUsers(String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
+  public SearchResult searchUsers(List<OrganizationEntity> organizations, String text, String[] textFields, Collection<EnvironmentRoleArchetype> archetypes, 
       Collection<Long> groups, Collection<Long> workspaces, Collection<SchoolDataIdentifier> userIdentifiers,
       Boolean includeInactiveStudents, Boolean includeHidden, Boolean onlyDefaultUsers, int start, int maxResults, Collection<String> fields) {
-    return searchUsers(text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
+    return searchUsers(organizations, text, textFields, archetypes, groups, workspaces, userIdentifiers, includeInactiveStudents, includeHidden, 
         onlyDefaultUsers, start, maxResults, fields, null, null);
   }
   
@@ -591,6 +600,50 @@ public class ElasticSearchProvider implements SearchProvider {
   @Override
   public SearchResult searchWorkspaces(String searchTerm, int start, int maxResults) {
     return searchWorkspaces(null, null, null, searchTerm, false, start, maxResults);
+  }
+  
+  @Override
+  public SearchResult searchUserGroups(String query, SchoolDataIdentifier organizationIdentifier, int start, int maxResults) {
+    try {
+      query = sanitizeSearchString(query);
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+          .prepareSearch("muikku")
+          .setTypes("UserGroup")
+          .setFrom(start)
+          .setSize(maxResults);
+      
+      BoolQueryBuilder boolQuery = boolQuery();
+
+      if (StringUtils.isNotBlank(query)) {
+        boolQuery.should(prefixQuery("name", query));
+      }
+
+      if (organizationIdentifier != null) {
+        boolQuery.must(termsQuery("organizationIdentifier.untouched", organizationIdentifier.toId()));
+      }
+  
+      SearchResponse response = requestBuilder
+          .setQuery(boolQuery)
+          .execute()
+          .actionGet();
+      
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHits searchHits = response.getHits();
+      long totalHitCount = searchHits.getTotalHits();
+      SearchHit[] results = searchHits.getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      
+      SearchResult result = new SearchResult(start, maxResults, searchResults, totalHitCount);
+      return result;
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, new ArrayList<Map<String,Object>>(), 0);
+    }
   }
   
   @Override
