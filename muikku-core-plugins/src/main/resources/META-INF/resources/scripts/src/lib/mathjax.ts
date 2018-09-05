@@ -38,17 +38,52 @@ export function processMathInPage(){
   }
 }
 
-export function toSVG(element: HTMLImageElement){
+export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTMLImageElement)=>any, placeholderSrc?: string){
   if (!(window as any).MathJax){
-    queue.push(toSVG.bind(this, element));
+    queue.push(toSVG.bind(this, element, errorSrc, cb, placeholderSrc));
     return;
   }
+  let formula = element.textContent || (element as HTMLImageElement).alt;
   let container = document.createElement('div');
-  container.innerHTML = element.alt;
+  container.textContent = "\\(" + formula.replace(/\\sum/g, "\\displaystyle\\sum") + "\\)";
+  console.log(container.textContent);
+  container.style.visibility = "hidden";
+  document.body.appendChild(container);
+  
+  let actualUsedElementInTheDOM = element;
+  if (placeholderSrc){
+    let placeholderImage = (element as HTMLImageElement).alt ? element as HTMLImageElement : document.createElement("img");
+    placeholderImage.alt = formula;
+    placeholderImage.className = element.className;
+    placeholderImage.src = placeholderSrc
+    
+    element.parentElement.replaceChild(placeholderImage, element);
+    actualUsedElementInTheDOM = placeholderImage;
+  }
   (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub, container]);
   (window as any).MathJax.Hub.Queue(()=>{
+    document.body.removeChild(container);
+    
     let mjOut = container.getElementsByTagName("svg")[0];
-    mjOut.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-    element.src = 'data:image/svg+xml;base64,' + window.btoa(decodeURIComponent(encodeURIComponent(mjOut.outerHTML)));
+    let newImage = (element as HTMLImageElement).alt ? element as HTMLImageElement : document.createElement("img");
+    newImage.alt = formula;
+    newImage.className = element.className;
+    
+    if (mjOut){
+      mjOut.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      newImage.src = 'data:image/svg+xml;base64,' + window.btoa(decodeURIComponent(encodeURIComponent(mjOut.outerHTML)));
+    } else {
+      newImage.src = errorSrc;
+    }
+    
+    newImage.contentEditable = "false";
+    
+    actualUsedElementInTheDOM.parentElement.replaceChild(newImage, actualUsedElementInTheDOM);
+    
+    cb && cb(newImage);
   });
+}
+
+export function getMQInterface(){
+  return (window as any).MathQuill.getInterface(2);
 }

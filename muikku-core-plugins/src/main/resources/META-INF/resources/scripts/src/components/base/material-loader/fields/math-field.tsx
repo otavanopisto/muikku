@@ -19,12 +19,13 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      value: '<span class="muikku-math-exercise-formula">\\(cos(x) = y\\)</span>'
+      value: 'AAAAAAAAAAA<span class="muikku-math-exercise-formula">\\frac{\\sum_{i=k}^n\\binom{n}{i}\\binom{m-n}{n-i}}{\\binom{m}{n}}</span>BBBBBBBBB'
     }
     
     this.setValue = this.setValue.bind(this);
   }
   setValue(newValue: string){
+    console.log(newValue);
     this.setState({
       value: newValue
     });
@@ -34,6 +35,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     return <MathField className="muikku-math-exercise-field-editor"
       value={this.state.value} onChange={this.setValue}
       formulaClassName="muikku-math-exercise-formula"
+      editorClassName="muikku-math-exercise-editor"
       toolbarClassName="muikku-math-exercise-toolbar" i18n={{
         basicsAndSymbols: this.props.i18n.text.get("plugin.workspace.mathField.basicsAndSymbols"),
         algebra: this.props.i18n.text.get("plugin.workspace.mathField.algebra"),

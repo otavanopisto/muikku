@@ -4,7 +4,9 @@ import latexCommands, { LatexCommandType } from './latex-command-set';
 
 export interface MathFieldCommandType {
   latex: string,
-  html?: string
+  latexText: string,
+  html?: string,
+  useWrite: boolean
 }
 
 interface MathFieldToolbarProps {
@@ -40,16 +42,23 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
     this.toggleIsExpanded = this.toggleIsExpanded.bind(this);
     this.toggleMathExpanded = this.toggleMathExpanded.bind(this);
   }
-  triggerCommandOn(s: SpecialCharacterType | LatexCommandType){
+  triggerCommandOn(s: SpecialCharacterType | LatexCommandType, e: React.ChangeEvent<any>){
+    e.preventDefault();
+    
     if ((s as SpecialCharacterType).character){
       this.props.onCommand({
         latex: (s as SpecialCharacterType).latexCommand,
-        html: (s as SpecialCharacterType).character
+        latexText: (s as SpecialCharacterType).latexCommand,
+        html: (s as SpecialCharacterType).character,
+        useWrite: true
       });
+      return;
     }
     
     this.props.onCommand({
-      latex: (s as LatexCommandType).action
+      latex: (s as LatexCommandType).action,
+      latexText: (s as LatexCommandType).label || (s as LatexCommandType).action,
+      useWrite: (s as LatexCommandType).useWrite
     });
   }
   toggleIsExpanded(){
@@ -76,7 +85,7 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
           </div>
           <div className={this.props.className + "--symbol-group-content"}>
             {c.characters.filter((s:SpecialCharacterType)=>!this.state.isExpanded ? s.popular: true)
-              .map(s=><button className={this.props.className + "--symbol"} onClick={this.triggerCommandOn.bind(this, s)} key={s.character}
+              .map(s=><button className={this.props.className + "--symbol"} onMouseDown={this.triggerCommandOn.bind(this, s)} key={s.character}
               dangerouslySetInnerHTML={{__html:s.character}}/>)}
           </div>
         </div>)}
@@ -91,7 +100,7 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
           {this.props.i18n.mathOperations}
         </div> : null}
         {this.state.isMathExpanded ?
-            latexCommands.map((c:LatexCommandType)=><button key={c.action} onClick={this.triggerCommandOn.bind(this, c)} className={this.props.className + "--math-operation"}><img src={c.svg}/></button>) : null}
+            latexCommands.map((c:LatexCommandType)=><button key={c.action} onMouseDown={this.triggerCommandOn.bind(this, c)} className={this.props.className + "--math-operation"}><img src={c.svg}/></button>) : null}
       </div>
     </div>
   }
