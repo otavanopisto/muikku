@@ -18,8 +18,8 @@ interface CurrentStudentWorkspaceStatisticsState {
 }
 
 enum Graph {
-  ASSIGNMENTS = "assignment",
-  EXERCISES = "exercise"
+  ASSIGNMENTS = "assignments",
+  EXERCISES = "exercises"
 }
 
 var ignoreZoomed:boolean = true;

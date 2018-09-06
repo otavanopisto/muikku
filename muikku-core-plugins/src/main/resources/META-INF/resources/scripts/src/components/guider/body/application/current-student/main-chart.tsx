@@ -19,9 +19,9 @@ interface CurrentStudentStatisticsState {
 }
 
 enum Graph {
-  LOGINS = "login",
-  ASSIGNMENTS = "assignment",
-  EXERCISES = "exercise"
+  LOGINS = "logins",
+  ASSIGNMENTS = "assignments",
+  EXERCISES = "exercises"
 }
 
 var ignoreZoomed:boolean = true;

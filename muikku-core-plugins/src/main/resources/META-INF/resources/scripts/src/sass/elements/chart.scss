@@ -126,7 +126,7 @@
   }
 }
 
-.filter-item--assignment {
+.filter-item--assignments {
   input[type="checkbox"] {
     border-color: $color-assignment
   }
@@ -140,7 +140,7 @@
   }
 }
 
-.filter-item--login {
+.filter-item--logins {
   input[type="checkbox"] {
     border-color: $color-tertiary;
   }
@@ -154,7 +154,7 @@
   }
 }
 
-.filter-item--exercise {
+.filter-item--exercises {
   input[type="checkbox"] {
     border-color: $color-exercise;
   }
@@ -168,7 +168,7 @@
   }
 }
 
-.filter-item--workspace {
+.filter-item--workspaces {
   input[type="checkbox"] {
     border-color: $color-main-function-application-list-item-checkbox-border;
   }
