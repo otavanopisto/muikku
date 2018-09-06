@@ -16,7 +16,7 @@ $breakpoint-desktop: 64em;
 $breakpoint-desktop-xl: 75em; 
 
 // This has to be set in absolute pixel value so our max screen width doesn't increase when user increases browser's font size 
-$breakpoint-max-usable-screen: 1280px;
+$breakpoint-max-usable-screen: 80em;
 
 @mixin breakpoint($breakpoint){
   @media screen and (min-width: $breakpoint) {
