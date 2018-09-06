@@ -18,6 +18,7 @@
 }
   
 // Item-list items BASE
+
 .item-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   color: $color-text-default;    
