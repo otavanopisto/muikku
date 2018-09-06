@@ -51,7 +51,7 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
   document.body.appendChild(container);
   
   let actualUsedElementInTheDOM = element;
-  if (placeholderSrc){
+  if (placeholderSrc && !(element as HTMLImageElement).src){
     let placeholderImage = (element as HTMLImageElement).alt ? element as HTMLImageElement : document.createElement("img");
     placeholderImage.alt = formula;
     placeholderImage.className = element.className;

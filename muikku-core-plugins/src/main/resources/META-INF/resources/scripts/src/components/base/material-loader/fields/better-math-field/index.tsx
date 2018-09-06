@@ -25,7 +25,8 @@ interface MathFieldProps {
 }
 
 interface MathFieldState {
-  isFocused: boolean
+  isFocused: boolean,
+  expandMath: boolean
 }
 
 export default class MathField extends React.Component<MathFieldProps, MathFieldState> {
@@ -35,13 +36,17 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      isFocused: false
+      isFocused: false,
+      expandMath: false
     }
     
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
     this.onCommand = this.onCommand.bind(this);
     this.cancelBlur = this.cancelBlur.bind(this);
+    this.openMathExpanded = this.openMathExpanded.bind(this);
+    this.closeMathExpanded = this.closeMathExpanded.bind(this);
+    this.createNewLatex = this.createNewLatex.bind(this);
   }
   onFocusField(){
     //This is triggered when the field itself gains focus
@@ -93,14 +98,30 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     console.log("cancelling the blur from the mousedown event");
     (this.refs.input as Field).focus();
   }
+  openMathExpanded(){
+    this.setState({
+      expandMath: true
+    });
+  }
+  closeMathExpanded(){
+    this.setState({
+      expandMath: false
+    });
+  }
+  createNewLatex(){
+    //this will trigger the onLatexModeOpen from the Field so the toolbar will react after all
+    (this.refs.input as Field).createNewLatex();
+  }
   render(){
     return <div>
      <Toolbar isOpen={this.props.toolbarAlwaysVisible || this.state.isFocused} onToolbarAction={this.cancelBlur}
-      className={this.props.toolbarClassName} i18n={this.props.i18n} onCommand={this.onCommand}/>
+      className={this.props.toolbarClassName} i18n={this.props.i18n} onCommand={this.onCommand}
+      onRequestToOpenMathMode={this.createNewLatex} isMathExpanded={this.state.expandMath}/>
      <Field className={this.props.className} onFocus={this.onFocusField} onBlur={this.onBlurField}
        onChange={this.props.onChange} value={this.props.value} formulaClassName={this.props.formulaClassName}
        editorClassName={this.props.editorClassName} toolbarClassName={this.props.toolbarClassName}
-       ref="input"/>
+       onLatexModeOpen={this.openMathExpanded} onLatexModeClose={this.closeMathExpanded}
+       ref="input" latexPlaceholderText="LaTeX"/>
     </div>
   }
 }

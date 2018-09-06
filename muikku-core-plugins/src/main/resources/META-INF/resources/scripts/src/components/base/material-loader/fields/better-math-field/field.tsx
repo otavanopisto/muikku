@@ -13,9 +13,12 @@ interface FieldProps {
   editorClassName: string,
   toolbarClassName: string,
   value: string,
+  latexPlaceholderText: string,
   onChange: (str: string)=>any,
   onBlur: ()=>any,
-  onFocus: ()=>any
+  onFocus: ()=>any,
+  onLatexModeOpen: ()=>any,
+  onLatexModeClose: ()=>any
 }
 
 interface FieldState {
@@ -61,6 +64,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.unselect = this.unselect.bind(this);
     this.checkTheFocus = this.checkTheFocus.bind(this);
     this.onAceEditorFocus = this.onAceEditorFocus.bind(this);
+    this.onAceEditorInput = this.onAceEditorInput.bind(this);
     this.onDeleteSomethingInMathMode = this.onDeleteSomethingInMathMode.bind(this);
   }
   shouldComponentUpdate(){
@@ -107,7 +111,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       let elem = this.lastMouseedDownElement;
       this.lastMouseedDownElement = null;
       //And we select it
-      this.selectFormula(elem);
+      this.selectFormula(elem as HTMLImageElement);
     }
     
     //Disable any last element just in case of overlap
@@ -129,7 +133,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   convertToText(node: HTMLElement): string{
     if (node.className === this.props.editorClassName){
-      return `<span class="${this.props.formulaClassName}">${this.selectedMathField.latex()}</span>`
+      let latex = this.selectedMathField.latex();
+      if (latex.trim() === ""){
+        return "";
+      }
+      return `<span class="${this.props.formulaClassName}">${latex}</span>`
     }
     let kids = !(node as HTMLImageElement).alt ? Array.from(node.childNodes).map((node)=>{
       if (node.nodeType === Node.TEXT_NODE){
@@ -142,7 +150,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let tag = !(node as HTMLImageElement).alt ? node.tagName.toLowerCase() : "span";
     let extras = "";
     if (node.className){
-      extras += ' className="' + node.className + '"';
+      extras += ' class="' + node.className + '"';
     }
     return "<" + tag + extras + ">" + kids + "</" + tag + ">";
   }
@@ -161,6 +169,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         
         //So we just set the variable to phantom blurred true reset the boolean and exit
         this.cancelBlur = false;
+        
+        //I have no idea why the contenteditable loses focus unless it's recalled on
+        //the blur event but this works
+        if (!this.selectedMathField){
+          this.focus();
+        }
         return;
       }
       console.log("blur");
@@ -169,22 +183,44 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.props.onBlur();
     }
     
+    if (this.cancelBlur){
+      console.log("cancelling blur right away");
+      this.cancelBlur = false;
+      
+      //I have no idea why the contenteditable loses focus unless it's recalled on
+      //the blur event but this works
+      if (!this.selectedMathField){
+        this.focus();
+      }
+      return;
+    }
+    //We want to delay blur execution in order to catch focus events that
+    //might want to stop the blur execution
     console.log("delaying blur execution");
     this.isBlurDelayed = true;
     setTimeout(actualExecution, 10);
   }
-  focus(){
+  focus(avoidCancellingBlur?: boolean){
     console.log("forced focus event");
     
-    if (this.isBlurDelayed){
-      console.log("cancelling next blur");
-      this.cancelBlur = true;
-    } else {
-      console.log("preemtively cancelling blur");
-      this.cancelBlur = true;
-      setTimeout(()=>{
-        this.cancelBlur = false;
-      }, 300);
+    if (!avoidCancellingBlur){
+      //We want to cancel a possible blur if there's a blur event but the focus is forced back
+      if (this.isBlurDelayed){
+        console.log("cancelling next blur");
+        this.cancelBlur = true;
+      } else {
+        //Sometimes however the blur event hasn't been called when the thing
+        //wants to be focused back, for example, on the mousedown event on an external source
+        //it might still want to cancel the blur but we still haven't gotten the blur event
+        //So we cancel the blur just in case
+        //We still reset the variable in case this was just a random blur event
+        //From all the mayhem random focusing that we get
+        console.log("preemtively cancelling blur");
+        this.cancelBlur = true;
+        setTimeout(()=>{
+          this.cancelBlur = false;
+        }, 300);
+      }
     }
     
     //This gets called by the parent component to force the focus back
@@ -224,8 +260,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   execute(command:MathFieldCommandType){
     //This is called by the parent on the case of a toolbar executed command
     if (!this.selectedFormula){
-      //Simple as pie in the case of the contenteditable
-      document.execCommand("insertHTML", false, command.html);
+      (this.refs.input as HTMLDivElement).focus();
+      if (command.html){
+        //Simple as pie in the case of the contenteditable
+        document.execCommand("insertHTML", false, command.html);
+      } else {
+        this.createNewLatex();
+        this.execute(command);
+      }
     } else {
       console.log("executing", command);
       if (!this.isOnAceEditor){
@@ -249,7 +291,12 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.onChange();
     }
   }
-  selectFormula(target: HTMLElement){
+  createNewLatex(){
+    document.execCommand("insertHTML", false, `<img class="${this.props.formulaClassName}"/>`);
+    let image:HTMLImageElement = (this.refs.input as HTMLDivElement).querySelector("img:not([alt])") as HTMLImageElement;
+    this.selectFormula(image);
+  }
+  selectFormula(target: HTMLImageElement){
     
     //Sometimes select formula might trigger with the same formula in that case
     //just cancel it out, this might happen eg, with the focus and handle all clicks that both
@@ -258,6 +305,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       console.log("cancelling due to duplication");
       return;
     }
+    
+    console.log("selecting", target);
     
     //We set the cancel the blur to true as the focus will go out of the contenteditable
     //once we are done
@@ -270,7 +319,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //we set is as clear, this comes from an image hence it hasn't been changed
     //and its true to the image
     this.changedSelected = false;
-    this.selectedFormula = target as HTMLImageElement;
+    this.selectedFormula = target;
     
     //Now we do all this garbage of
     //creating the component by hand
@@ -285,7 +334,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.selectedMathFieldContainer.style.position = "relative";
     
     let newElement = document.createElement('span');
-    newElement.textContent = this.selectedFormula.alt;
+    newElement.textContent = this.selectedFormula.alt || "";
     
     let actualContainerForTheMathField = document.createElement('div');
     actualContainerForTheMathField.className = this.props.editorClassName + "--formula-container";
@@ -313,7 +362,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     editor.style.position = "absolute";
     editor.style.width = "100%"
     editor.style.height = "100%";
-    editor.textContent = this.selectedFormula.alt;
+    editor.textContent = this.selectedFormula.alt || "";
     
     editorContainer.appendChild(editor);
     
@@ -335,27 +384,42 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.aceEditor.renderer.setOption("fontSize", "20px");
     this.aceEditor.session.setUseWrapMode(true);
     this.aceEditor.on("focus", this.onAceEditorFocus);
+    this.aceEditor.on("input", this.onAceEditorInput);
+    setTimeout(this.onAceEditorInput, 100);
     
     this.isOnAceEditor = false;
     
     window.addEventListener("keyup", this.onDeleteSomethingInMathMode, false);
+    
+    this.props.onLatexModeOpen();
   }
   onDeleteSomethingInMathMode(e: KeyboardEvent){
+    //The delete keys are not triggered as an input event so we need to catch them manually
     console.log("wut", e);
     let key = (e as any).keyCode || e.charCode;
     if (key === 8 || key === 46){
       this.onChange();
+    } else if (key === 27){
+      this.unselect();
     }
   }
   onAceEditorFocus(){
     console.log("focus on ace");
-    //we want to make sure that the event
-    //we should cancel the blur if there's a blur event
-//    if (this.isBlurDelayed){
-//      console.log("cancelling next blur");
-//      this.cancelBlur = true;
-//    }
     this.isOnAceEditor = true;
+  }
+  onAceEditorInput(){
+    let shouldShow = !this.aceEditor.session.getValue().length;
+    var node = this.aceEditor.renderer.emptyMessageNode;
+    if (!shouldShow && node) {
+      this.aceEditor.renderer.scroller.removeChild(this.aceEditor.renderer.emptyMessageNode);
+      this.aceEditor.renderer.emptyMessageNode = null;
+    } else if (shouldShow && !node) {
+      node = this.aceEditor.renderer.emptyMessageNode = document.createElement("div");
+      node.textContent = this.props.latexPlaceholderText;
+      node.className = "ace_invisible ace_emptyMessage"
+      node.style.padding = "0 9px"
+      this.aceEditor.renderer.scroller.appendChild(node);
+    }
   }
   handleAllClicks(e: Event){
     //This detects clicks everywhere in any element
@@ -368,7 +432,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       //of the onfocus event and this one both see it, but no problem
       //since there is duplication cancelling in select formula
       //and focus will win every time because it trigger first
-      this.selectFormula(clickedTarget);
+      this.selectFormula(clickedTarget as HTMLImageElement);
     } else {
       //If we didn't click a formula  we need to check whether this is the field
       let areWeInsideTheElement = checkIsParentOrSelf(clickedTarget, this.refs.input as HTMLElement);
@@ -384,11 +448,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         if (!areWeInsideFormulaEditor){
           this.unselect();
         }
+        
+        if (this.selectedMathField && this.isOnAceEditor){
+          console.log("Ace editor bug refocus");
+          this.focus();
+        }
         return;
       }
       
       //We force the focus back if we are in the mathfield as it tends to lose it
       if (this.selectedMathField){
+        console.log("click focusing refocus on mathquill")
         this.focus();
       }
     }
@@ -396,16 +466,19 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   unselect(){
     if (this.selectedFormula){
       console.log("unselect");
-
       
-      this.selectedMathFieldContainer.parentElement.replaceChild(this.selectedFormula, this.selectedMathFieldContainer);
-      if (this.changedSelected){
-        let latex = this.selectedMathField.latex();
-        this.selectedMathField.revert();
-        this.selectedFormula.alt = latex;
-        toSVG(this.selectedFormula, warningImage);
+      let latex = this.selectedMathField.latex();
+      if (latex.trim() === ""){
+        this.selectedMathFieldContainer.parentElement.removeChild(this.selectedMathFieldContainer);
+      } else {
+        this.selectedMathFieldContainer.parentElement.replaceChild(this.selectedFormula, this.selectedMathFieldContainer);
+        if (this.changedSelected){
+          this.selectedFormula.alt = latex;        
+          toSVG(this.selectedFormula, warningImage, null, loadingImage);
+        }
       }
       
+      this.selectedMathField.revert();
       this.selectedMathField = null;
       this.selectedMathFieldContainer = null;
       this.selectedFormula = null;
@@ -415,6 +488,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.isOnAceEditor = false;
       
       window.removeEventListener("keyup", this.onDeleteSomethingInMathMode);
+      
+      this.props.onLatexModeClose();
     }
   }
   componentWillUnmount(){

@@ -21,12 +21,13 @@ interface MathFieldToolbarProps {
     mathOperations: string
   },
   onCommand: (command: MathFieldCommandType)=>any,
-  onToolbarAction: ()=>any
+  onToolbarAction: ()=>any,
+  onRequestToOpenMathMode: ()=>any,
+  isMathExpanded: boolean
 }
 
 interface MathFieldToolbarState {
-  isExpanded: boolean,
-  isMathExpanded: boolean
+  isExpanded: boolean
 }
 
 export default class MathFieldToolbar extends React.Component<MathFieldToolbarProps, MathFieldToolbarState> {
@@ -34,21 +35,19 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
     super(props);
     
     this.state = {
-      isExpanded: false,
-      isMathExpanded: false
+      isExpanded: false
     }
     
     this.triggerCommandOn = this.triggerCommandOn.bind(this);
     this.toggleIsExpanded = this.toggleIsExpanded.bind(this);
-    this.toggleMathExpanded = this.toggleMathExpanded.bind(this);
   }
   triggerCommandOn(s: SpecialCharacterType | LatexCommandType, e: React.ChangeEvent<any>){
     e.preventDefault();
     
     if ((s as SpecialCharacterType).character){
       this.props.onCommand({
-        latex: (s as SpecialCharacterType).latexCommand,
-        latexText: (s as SpecialCharacterType).latexCommand,
+        latex: (s as SpecialCharacterType).latexCommand || (s as SpecialCharacterType).character,
+        latexText: (s as SpecialCharacterType).latexCommand || (s as SpecialCharacterType).character,
         html: (s as SpecialCharacterType).character,
         useWrite: true
       });
@@ -64,11 +63,6 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
   toggleIsExpanded(){
     this.setState({
       isExpanded: !this.state.isExpanded
-    });
-  }
-  toggleMathExpanded(){
-    this.setState({
-      isMathExpanded: !this.state.isMathExpanded
     });
   }
   render(){
@@ -92,14 +86,14 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
         <button className={this.props.className + "--symbols-expand " + (this.state.isExpanded ? this.props.className + "--symbols-expanded" : "")}
           onClick={this.toggleIsExpanded}/>
       </div>
-      <div className={this.props.className + "--math " +  (this.state.isMathExpanded ? this.props.className + "--math-expanded" : "")}>
-        {!this.state.isMathExpanded ?
-          <button className={this.props.className + "--more-math-expand"} onClick={this.toggleMathExpanded}>{this.props.i18n.moreMath}</button> :
-          <button className={this.props.className + "--more-math-shrink"} onClick={this.toggleMathExpanded}/>}
-        {this.state.isMathExpanded ? <div className={this.props.className + "--math-label"}>
+      <div className={this.props.className + "--math " +  (this.props.isMathExpanded ? this.props.className + "--math-expanded" : "")}>
+        {!this.props.isMathExpanded ?
+          <button className={this.props.className + "--more-math-expand"} onClick={this.props.onRequestToOpenMathMode}>{this.props.i18n.moreMath}</button> :
+          null}
+        {this.props.isMathExpanded ? <div className={this.props.className + "--math-label"}>
           {this.props.i18n.mathOperations}
         </div> : null}
-        {this.state.isMathExpanded ?
+        {this.props.isMathExpanded ?
             latexCommands.map((c:LatexCommandType)=><button key={c.action} onMouseDown={this.triggerCommandOn.bind(this, c)} className={this.props.className + "--math-operation"}><img src={c.svg}/></button>) : null}
       </div>
     </div>
