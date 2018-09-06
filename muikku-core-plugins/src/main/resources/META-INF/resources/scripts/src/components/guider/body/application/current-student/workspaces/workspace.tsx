@@ -113,9 +113,6 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
         <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
           <span className="text text--course-icon icon-books"></span>
           <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
-          <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspaceId={workspace.id}/>]}>
-            <span className="text text--course-icon icon-books workspace-chart-activator"></span>
-          </Dropdown>
           <span className="text text--list-item-type-title workspace-activity">
             <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
               workspace.studentActivity.evaluablesDonePercent}%
@@ -125,6 +122,9 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>
+          <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspaceId={workspace.id}/>]}>
+            <span className="icon-statistics chart_activator chart_activator--workspace-chart"></span>
+          </Dropdown>
         </ApplicationListItemHeader>               
               
         {this.state.activitiesVisible ? <div className="application-sub-panel text">      

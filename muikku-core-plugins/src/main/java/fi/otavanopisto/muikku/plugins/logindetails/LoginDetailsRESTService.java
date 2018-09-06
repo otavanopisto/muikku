@@ -84,10 +84,10 @@ public class LoginDetailsRESTService extends AbstractRESTService {
       }
     }
     
-    List<LoginDetailsRestModel> result = new ArrayList<>();
+    List<Date> result = new ArrayList<>();
     List<LoginDetails> Logins = loginDetailController.getLogins(studentIdentifier, from, to);
     for (LoginDetails loginDetails : Logins) {
-      result.add(new LoginDetailsRestModel(loginDetails.getUserIdentifier().toId(), loginDetails.getAuthenticationProvder(), loginDetails.getAddress(), loginDetails.getTime()));
+      result.add(loginDetails.getTime());
     }
     return Response.ok(result).build();
   }

@@ -250,17 +250,12 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
             }
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           }),
-		  /*TODO: Change to parrallel promises and await*/
+		/*TODO: Change to parrallel promises and await*/
         promisify(mApi().user.students.loginson.read(id, {from: new Date(new Date().getFullYear(), 0), to: new Date()}), 'callback')()
-        .then((LoginData:Array<LastLoginStudentDataType>)=>{
-          let logins: Date[] = [];
-          LoginData.map((log)=>{
-            logins.push(new Date(log.time));
-          });
+        .then((logins:Array<string>)=>{
           promisify(mApi().guider.user.activities.read(id), 'callback')()
           .then((activities:GuiderActivityDataType)=>{
-            let stat = {login: logins, activities: activities};
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "statistics", value: stat}});
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "statistics", value: {login: logins, activities: activities}}});
           });
         })
       ]);

@@ -60,7 +60,7 @@ export interface Activity {
 }
 
 export interface StudentUserStatistics {
-  login: Date[],
+  login: string[],
   activities: GuiderActivityDataType
 }
 

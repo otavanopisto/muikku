@@ -5,6 +5,7 @@
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
   display: block;
+  max-width: 97%;
   opacity: 0;
   position: absolute;
   left: 0;
@@ -85,6 +86,7 @@
       border-bottom-color: $color-environment-dropdown-profile-menu-background;
     }
   }
+  
   &.dropdown--workspace-chart {
   
     .dropdown__container {
@@ -103,6 +105,21 @@
     }
   }
   
+  &.dropdown--graph-filter {
+
+    .dropdown__container {
+      background-color: $color-environment-dropdown-profile-menu-background;
+      color: $color-environment-dropdown-profile-menu-text;
+      box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
+      padding: 5px;
+      text-align: left;
+    }
+    
+    .dropdown__arrow {
+      border-bottom-color: $color-environment-dropdown-profile-menu-background;
+    }
+  }
+  
   &.dropdown--workspace-filter {
 
     .dropdown__container {
@@ -111,20 +128,8 @@
       box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
       padding: 5px;
       text-align: left;
-    
-      .dropdown__item:first-child {
-        border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 8);
-      }
-    
-      .dropdown__item {
-        border-bottom: solid 1px darken($color-environment-dropdown-profile-menu-background, 3);
-        height: 42px;
-      }
-    
-      .dropdown__item:last-child {
-        border-bottom: none;
-      }
     }
+    
     .dropdown__arrow {
       border-bottom-color: $color-environment-dropdown-profile-menu-background;
     }

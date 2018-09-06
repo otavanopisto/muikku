@@ -3,140 +3,206 @@
 @import "../base/vars";
 @import "../base/breakpoints";
 
+.chart {
+  max-width:100%;
+}
+
+.chart--main-chart {
+  min-height: 400px;
+  width: auto;
+}
+
+.chart--workspace-chart {
+  height: 250px;
+  width: 600px;
+}
+
+.chart_activator {
+  border-radius: 3px;
+  background-color: $color-primary;
+  color: #fff;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $text-desktop-font-size;
+  padding: 2px;
+  
+  &:hover, 
+  &.hover {
+    background-color: darken($color-primary, 10%);
+  }
+  
+  &:active, 
+  &.active {
+    background-color: darken($color-primary, 20%);
+  }
+}
+
+.chart_activator--workspace-chart {
+  margin-left: 10px;
+  margin-right: 0px;
+}
+
 .chart-legend {
   align-items: stretch;
   display: flex;
   flex-flow: row nowrap;
   font-family: $text-font-family;
   font-size: $text-desktop-font-size;
-  padding-left: 40px;
+  justify-content: flex-end;
+  padding-left: 30px;
   padding-right: 21px;
-  width: auto;
+  @include breakpoint($breakpoint-pad) {
+    justify-content: space-between;
+  }
 }
 
-// NAVBAR LOGIN, FORGOTPASSWORD, AVATAR, LANGUAGE
-.chart-filter {
+.chart-legend-filter {
+  align-items: center;
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}
+
+//Maybe there is no need in them?
+.chart-legend-filter--primary {
+  justify-content: start;
+}
+
+.chart-legend-filter--secondary {
+  justify-content: flex-end;
+}
+
+.filter {
+  margin-left: 10px;
+}
+
+.filter-items {
   display: flex;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 0;
+  flex-flow: row;
+  flex-wrap: wrap;
 }
 
-.chart-filter--workspace-filter {
-  justify-content: flex-end; 
-} 
-
-.workspace-filter-activator {
-  border-radius: 2px;
-  border-width: 0px;
-  background-color: #009fe3;
-  color: #fff;
-  padding: 5px 10px;
-  text-transform: uppercase;
+.filter-items--graph-filter{
+  display: none;
+  @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+  }
 }
 
-.workspace-filter-activator:hover {
-  background-color: #007bb0;
-}
-  
-.chart-filter--legend-filter {
-  
+.filter-item {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  margin-right: 10px;
   input[type="checkbox"] {
     -webkit-appearance: none;
     -moz-appearance: none;
     align-items: center;
     appearance: none;
-	  border: solid 2px;
+    border: solid 2px;
+    border-radius: 3px;
+    display: flex;
     height: 1rem;
     justify-content: center;
-    margin-right: 10px;
-    margin-left: 10px;
+    margin: 5px;
     vertical-align: middle;
     width: 1rem;
-    
-    &.Assignments {
-      border-color: $color-assignment;
-    }
-    
-    &.Exercises {
-      border-color: $color-exercise;
-    }
-    
-    &.Logins {
-      border-color: $color-tertiary;
-    }
-	}
-	
-	input[type="checkbox"]:checked {
-    
-    &.Assignments {
-      background-color: $color-assignment;
-    }
-    
-    &.Exercises {
-      background-color: $color-exercise;
-    }
-    
-    &.Logins {
-      background-color: $color-tertiary;
-    }
-  }
-  
-	input[type="checkbox"]:checked::after {
-    color: #fff;
-    content: "";
-    font-family: muikku;
-    font-size: .875rem;
   }
   
   input[type="checkbox"]:focus {
     outline: 5px;
   }
   
-  span {
-    vertical-align:middle;
-  }
-}
-
-.dropdown__container {
-  font-family: $text-font-family;
-  font-size: $text-desktop-font-size;
-  
-  input[type="checkbox"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    align-items: center;
-    appearance: none;
-    border: solid 1px #c7c7c7;
-    border-radius: 3px;
-    height: 1rem;
-    justify-content: center;
-    margin: 0 5px 0 0;
-    vertical-align: middle;
-    width: 1rem;
-  }
-  
-  input[type="checkbox"]:checked {
-    background-color: #29b0c4;
-    border: solid 1px #29b0c4;
-  }
-  
   input[type="checkbox"]:checked::after {
     color: #fff;
     content: "\E639";
     font-family: muikku;
-  }
-  span {
-    vertical-align: middle;
+    font-size: $text-desktop-font-size;
   }
 }
 
-.filterAmChart {
-  width: auto;
-  min-height: 400px;
+.filter-item--assignment {
+  input[type="checkbox"] {
+    border-color: $color-assignment
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-assignment;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
 }
 
-.workspaceAmChart {
-  width: 600px;
-  height: 250px;
+.filter-item--login {
+  input[type="checkbox"] {
+    border-color: $color-tertiary;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-tertiary;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--exercise {
+  input[type="checkbox"] {
+    border-color: $color-exercise;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-exercise;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--workspace {
+  input[type="checkbox"] {
+    border-color: $color-main-function-application-list-item-checkbox-border;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-form-element-selected;
+    border-color: $color-form-element-selected;
+  }
+}
+
+.filter_activator {
+  border-radius: 3px;
+  background-color: $color-primary;
+  color: #fff;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $button-pill-mobile-font-size;
+  padding: 5px;
+  
+  &:hover, 
+  &.hover {
+    background-color: darken($color-primary, 10%);
+  }
+  
+  &:active, 
+  &.active {
+    background-color: darken($color-primary, 20%);
+  }
+}
+
+.filter_activator--graph-filter {
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
 }
