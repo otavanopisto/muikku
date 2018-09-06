@@ -64,9 +64,9 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                   {checkbox}
                 </div>}>
                   <ApplicationListItemHeader>
-                    <div className="text text--announcer-announcement-header">
+                    <div className="application-list__header-primary">
                       <span className="text__icon icon-clock"></span>
-                      <span className="text text--announcer-times">
+                      <span className="application-list__header-item-dates">
                         {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                       </span>
                     </div> 

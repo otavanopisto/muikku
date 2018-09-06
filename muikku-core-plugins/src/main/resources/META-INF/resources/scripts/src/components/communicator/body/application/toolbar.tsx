@@ -98,7 +98,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
           <ApplicationPanelToolbarActionsMain>         
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick}/>
           
-            <div className="application-panel_tool--current-folder">
+            <div className="application-panel__tool--current-folder">
               <span className={`text__icon text__icon--current-folder icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               <span className="text__current-folder-title">{"  " + currentLocation.text(this.props.i18n)}</span>
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
@@ -156,7 +156,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     let isUnreadOrInboxOrLabel:boolean = (this.props.messages.location === "unread" || this.props.messages.location === "inbox" || this.props.messages.location.startsWith("label"));
     
     return <ApplicationPanelToolbar>
-      <div className="application-panel_tool--current-folder">
+      <div className="application-panel__tool--current-folder">
         <span className={`text__icon application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
