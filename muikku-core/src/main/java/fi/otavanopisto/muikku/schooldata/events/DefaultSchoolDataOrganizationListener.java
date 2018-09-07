@@ -43,11 +43,10 @@ public class DefaultSchoolDataOrganizationListener {
   }
   
   public void onSchoolDataOrganizationRemoved(@Observes SchoolDataOrganizationRemovedEvent event) {
-    throw new RuntimeException("ORGANIZATION REMOVAL NOT IMPLEMENTED");
-//    OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-//    if (organizationEntity != null) {
-//      organizationEntityController.archive(organizationEntity);
-//    }
+    OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (organizationEntity != null) {
+      organizationEntityController.archive(organizationEntity);
+    }
   }
 
   private Map<String, Long> discoveredOrganizations;
