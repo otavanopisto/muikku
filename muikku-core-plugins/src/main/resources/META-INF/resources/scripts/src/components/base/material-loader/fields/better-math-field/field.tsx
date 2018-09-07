@@ -7,6 +7,9 @@ import { toSVG, loadMathJax, getMQInterface } from "~/lib/mathjax";
 import loadingImage from './loading-image';
 import warningImage from './warning-image';
 
+const TIMEOUT_FOR_BLUR_EVENT = 10;
+const TIMEOUT_FOR_CANCELLING_BLUR = 300;
+
 interface FieldProps {
   className?: string,
   formulaClassName: string,
@@ -198,7 +201,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //might want to stop the blur execution
     console.log("delaying blur execution");
     this.isBlurDelayed = true;
-    setTimeout(actualExecution, 10);
+    setTimeout(actualExecution, TIMEOUT_FOR_BLUR_EVENT);
   }
   focus(avoidCancellingBlur?: boolean){
     console.log("forced focus event");
@@ -219,7 +222,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         this.cancelBlur = true;
         setTimeout(()=>{
           this.cancelBlur = false;
-        }, 300);
+        }, TIMEOUT_FOR_CANCELLING_BLUR);
       }
     }
     
@@ -457,9 +460,15 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
       
       //We force the focus back if we are in the mathfield as it tends to lose it
+      //but we have to make sure that there is no blur event going on
       if (this.selectedMathField){
-        console.log("click focusing refocus on mathquill")
-        this.focus();
+        //The reason is that if the click event gets triggered in the 10ms room
+        //that the blur event has then it  will refocus and you'll never be able to
+        //lose the focus
+        if (!this.isBlurDelayed){
+          console.log("click focusing refocus on mathquill")
+          this.focus();
+        }
       }
     }
   }
