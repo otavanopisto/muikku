@@ -50,6 +50,14 @@ public class OrganizationEntity {
     this.name = name;
   }
 
+  public Boolean getArchived() {
+    return archived;
+  }
+
+  public void setArchived(Boolean archived) {
+    this.archived = archived;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -66,4 +74,9 @@ public class OrganizationEntity {
   @Column (nullable = false)
   @NotEmpty
   private String name;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean archived = Boolean.FALSE;
+
 }

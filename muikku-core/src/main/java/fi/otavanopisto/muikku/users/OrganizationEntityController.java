@@ -34,6 +34,10 @@ public class OrganizationEntityController {
     return organizationEntityDAO.create(dataSource, identifier, name);
   }
   
+  public OrganizationEntity archive(OrganizationEntity organizationEntity) {
+    return organizationEntityDAO.archive(organizationEntity);
+  }
+  
   public List<OrganizationEntity> listUnarchived() {
     return organizationEntityDAO.listUnarchived();
   }

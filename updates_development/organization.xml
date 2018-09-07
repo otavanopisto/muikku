@@ -5,7 +5,8 @@
     create table OrganizationEntity (
       id bigint not null auto_increment, 
       identifier varchar(255) not null, 
-      name varchar(255) not null, 
+      name varchar(255) not null,
+      archived bit(1) not null, 
       dataSource_id bigint, 
       primary key (id)
     );
