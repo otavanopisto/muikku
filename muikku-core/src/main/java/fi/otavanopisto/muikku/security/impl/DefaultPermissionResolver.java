@@ -8,16 +8,16 @@ import javax.inject.Inject;
 
 import fi.otavanopisto.muikku.controller.PermissionController;
 import fi.otavanopisto.muikku.model.security.Permission;
+import fi.otavanopisto.muikku.model.users.EnvironmentRoleEntity;
 import fi.otavanopisto.muikku.model.users.RoleEntity;
 import fi.otavanopisto.muikku.model.users.UserEntity;
 import fi.otavanopisto.muikku.model.users.UserGroupEntity;
-import fi.otavanopisto.muikku.model.users.UserSchoolDataIdentifier;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceEntity;
 import fi.otavanopisto.muikku.model.workspace.WorkspaceUserEntity;
 import fi.otavanopisto.muikku.security.AbstractPermissionResolver;
 import fi.otavanopisto.muikku.security.PermissionScope;
+import fi.otavanopisto.muikku.users.UserEntityController;
 import fi.otavanopisto.muikku.users.UserGroupEntityController;
-import fi.otavanopisto.muikku.users.UserSchoolDataIdentifierController;
 import fi.otavanopisto.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
@@ -33,13 +33,13 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
-  
-  @Inject
   private PermissionController permissionController;
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private UserEntityController userEntityController;
   
   @Override
   public boolean handlesPermission(String permission) {
@@ -95,19 +95,15 @@ public class DefaultPermissionResolver extends AbstractPermissionResolver implem
   }
 
   private boolean hasEnvironmentAccess(UserEntity userEntity, Permission permission) {
-    List<UserSchoolDataIdentifier> userSchoolDataIdentifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
-
-    // TODO: not the right approach to just iterate over as it gives the permissions of the biggest role to all organizations i.e. check permission based on organization
-    for (UserSchoolDataIdentifier userSchoolDataIdentifier : userSchoolDataIdentifiers) {
-      if (userSchoolDataIdentifier.getRole() != null) {
-        // Environment access as an individual
-        if (permissionController.hasPermission(userSchoolDataIdentifier.getRole(), permission)) {
-          // TODO Override rules for environment users
-          return true;
-        }
+    EnvironmentRoleEntity defaultIdentifierRole = userEntityController.getDefaultIdentifierRole(userEntity);
+    if (defaultIdentifierRole != null) {
+      // Environment access as an individual
+      if (permissionController.hasPermission(defaultIdentifierRole, permission)) {
+        // TODO Override rules for environment users
+        return true;
       }
     }
-
+    
     if (permission.getScope().equals(PermissionScope.ENVIRONMENT)) {
       // Environment access as a group member
       List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUserEntity(userEntity);
