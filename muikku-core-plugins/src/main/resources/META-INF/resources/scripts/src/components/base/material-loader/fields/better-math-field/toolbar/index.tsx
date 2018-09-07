@@ -1,6 +1,7 @@
 import * as React from "react";
 import specialCharacters, { SpecialCharacterType } from './special-character-set';
 import latexCommands, { LatexCommandType } from './latex-command-set';
+import ToolbarButton from './button';
 
 export interface MathFieldCommandType {
   latex: string,
@@ -79,8 +80,10 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
           </div>
           <div className={this.props.className + "--symbol-group-content"}>
             {c.characters.filter((s:SpecialCharacterType)=>!this.state.isExpanded ? s.popular: true)
-              .map(s=><button className={this.props.className + "--symbol"} onMouseDown={this.triggerCommandOn.bind(this, s)} key={s.character}
-              dangerouslySetInnerHTML={{__html:s.character}}/>)}
+              .map((s: SpecialCharacterType)=>
+              <ToolbarButton key={s.character} className={this.props.className + "--symbol"} html={s.character}
+               onTrigger={this.triggerCommandOn.bind(this, s)} tooltipClassName={this.props.className + "--symbol-latex-tooltip"}
+               tooltip={s.latexCommand || s.character}/>)}
           </div>
         </div>)}
         <button className={this.props.className + "--symbols-expand " + (this.state.isExpanded ? this.props.className + "--symbols-expanded" : "")}
@@ -94,7 +97,10 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
           {this.props.i18n.mathOperations}
         </div> : null}
         {this.props.isMathExpanded ?
-            latexCommands.map((c:LatexCommandType)=><button key={c.action} onMouseDown={this.triggerCommandOn.bind(this, c)} className={this.props.className + "--math-operation"}><img src={c.svg}/></button>) : null}
+            latexCommands.map((c:LatexCommandType)=>
+              <ToolbarButton key={c.action} className={this.props.className + "--math-operation"} image={c.svg}
+               onTrigger={this.triggerCommandOn.bind(this, c)} tooltipClassName={this.props.className + "--math-operation-tooltip"}
+               tooltip={c.action}/>) : null}
       </div>
     </div>
   }
