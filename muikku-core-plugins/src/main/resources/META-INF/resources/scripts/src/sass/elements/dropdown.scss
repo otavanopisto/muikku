@@ -5,10 +5,10 @@
 .dropdown {
   @include prefix(transition, moz ms o webkit, opacity 0.15s);
   display: block;
+  left: 0;
   max-width: 95%;
   opacity: 0;
   position: absolute;
-  left: 0;
   top: 0;
   z-index: 9999;
 
@@ -91,8 +91,8 @@
   
     .dropdown__container {
       background-color: $color-environment-dropdown-profile-menu-background;
-      color: $color-environment-dropdown-profile-menu-text;
       box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
+      color: $color-environment-dropdown-profile-menu-text;
       padding: 5px;
       text-align: left;
       
@@ -100,6 +100,7 @@
         height: auto;
       }
     }
+    
     .dropdown__arrow {
       border-bottom-color: $color-environment-dropdown-profile-menu-background;
     }
@@ -109,8 +110,8 @@
 
     .dropdown__container {
       background-color: $color-environment-dropdown-profile-menu-background;
-      color: $color-environment-dropdown-profile-menu-text;
       box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
+      color: $color-environment-dropdown-profile-menu-text;
       padding: 5px;
       text-align: left;
     }
@@ -124,8 +125,8 @@
 
     .dropdown__container {
       background-color: $color-environment-dropdown-profile-menu-background;
-      color: $color-environment-dropdown-profile-menu-text;
       box-shadow: 0 10px 20px $color-environment-dropdown-profile-menu-shadow;
+      color: $color-environment-dropdown-profile-menu-text;
       padding: 5px;
       text-align: left;
     }
