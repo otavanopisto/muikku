@@ -11,7 +11,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/link.scss';
 
 {/* Reading panel's css */}
-
+import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/reading-panel.scss';
 import '~/sass/elements/loaders.scss';
 

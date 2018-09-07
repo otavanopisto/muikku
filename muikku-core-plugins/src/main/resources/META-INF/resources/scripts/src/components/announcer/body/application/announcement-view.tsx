@@ -10,7 +10,7 @@ import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
-
+import '~/sass/elements/article.scss';
 import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
 interface MessageViewProps {
@@ -35,9 +35,9 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
           <div className="application-list__item-header  application-list__item-header--announcer-announcement">
             <div className="application-list__item-meta">
               <div className="application-list__item-header-main application-list__item-header-main--announcer-announcement-dates">
-                <div className="text text--announcer-announcement-header">
+                <div className="application-list__header-primary">
                   <span className="text__icon icon-clock"></span>
-                  <span className="text text--announcer-times">
+                  <span className="application-list__header-item-dates">
                     {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
                   </span>
                 </div>
@@ -48,14 +48,14 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
                 {this.props.announcements.current.workspaces.map((workspace)=>{ 
                   return <span className="label" key={workspace.id}>
                     <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                    <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                    <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                   </span>
                 })}
                 </div> : null}
           </div>
-          <div className="application-list__item-body">
-            <header className="text text--announcement-caption">{this.props.announcements.current.caption}</header>
-            <section className="text text--announcement-content rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
+          <div className="application-list__item-body article">
+            <header className="article__title">{this.props.announcements.current.caption}</header>
+            <section className="article__body rich-text" dangerouslySetInnerHTML={{__html: this.props.announcements.current.content}}></section>                                
           </div>  
         </div>                 
       </div>

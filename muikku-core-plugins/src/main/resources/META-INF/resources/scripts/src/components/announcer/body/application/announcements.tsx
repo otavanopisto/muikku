@@ -34,7 +34,6 @@ interface AnnouncementsProps {
 }
 
 interface AnnouncementsState {
-
 }
 
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
@@ -72,8 +71,8 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     </div> 
                   </ApplicationListItemHeader>                  
                   <ApplicationListItemBody>
-                    <article className="text text--item-article">
-                      <header className="text text--item-article-header">{announcement.caption}</header>
+                    <article className="application-list-document-short">
+                      <header className="application-list-document-short-header">{announcement.caption}</header>
                       {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
                     </article>
                   </ApplicationListItemBody>
@@ -82,7 +81,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     {announcement.workspaces.map((workspace)=>{ 
                       return <span className="label" key={workspace.id}>
                         <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                        <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                        <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                       </span>
                     })}
                     </div> : null}

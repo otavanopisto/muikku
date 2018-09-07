@@ -4,6 +4,7 @@
 @import "../base/breakpoints";
 
 .reading-panel {
+  @include text;
   align-items: center;
   display: flex;
   justify-content: center;

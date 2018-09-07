@@ -105,6 +105,8 @@
 }
 
 
+
+
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
@@ -183,6 +185,25 @@
 
 .application-list__item-body {
   padding: 0;
+}
+
+.application-list-document-short {  
+  padding: 10px 0 0;
+}
+
+.application-list-document-short-header {
+  font-weight: 600;
+}
+
+.application-list-document {  
+  line-height: 1.5rem;
+  margin: 20px 0 0;
+}
+
+.application-list-document-header {
+  font-size: 1.5rem;
+  font-weight: 200;
+  margin: 0 0 10px;
 }
 
 .application-list__item-counter-container {
