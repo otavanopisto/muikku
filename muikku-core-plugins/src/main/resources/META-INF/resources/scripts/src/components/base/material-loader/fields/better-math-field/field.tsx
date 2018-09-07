@@ -81,21 +81,31 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     
     document.body.addEventListener('click', this.handleAllClicks);
   }
+  componentWillReceiveProps(nextProps: FieldProps){
+    if (nextProps.value === this.value){
+      //console.log("change denied");
+      return;
+    }
+    
+    this.value = nextProps.value;
+    this.createMarkup();
+  }
   createMarkup(){
+    //we might unselect any previously selected equation
+    //this is for when the field updates
+    this.unselect();
+    
     //straightforward process we find all the formulas and convert it to svg
     (this.refs.input as HTMLInputElement).innerHTML = this.value;
     Array.from((this.refs.input as HTMLInputElement).querySelectorAll("." + this.props.formulaClassName)).forEach((element: HTMLElement)=>{
       toSVG(element, warningImage, null, loadingImage);
     });
   }
-  componentDidUpdate(){
-    this.value = this.props.value;
-  }
   onFocusField(e: React.FocusEvent<any>){
-    console.log("focus");
+    //console.log("focus");
     
     if (this.isBlurDelayed){
-      console.log("cancelling next blur");
+      //console.log("cancelling next blur");
       this.cancelBlur = true;
     }
     
@@ -158,7 +168,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     return "<" + tag + extras + ">" + kids + "</" + tag + ">";
   }
   onBlurField(e: React.ChangeEvent<any> | Event){
-    console.log("blur detected");
+    //console.log("blur detected");
     
     let actualExecution = ()=>{
       this.isBlurDelayed = false;
@@ -168,7 +178,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       //To blur the hell out, however we want to still be focused
       //Even when what it concerns to the browser we are not focused
       if (this.cancelBlur){
-        console.log("blur cancelled");
+        //console.log("blur cancelled");
         
         //So we just set the variable to phantom blurred true reset the boolean and exit
         this.cancelBlur = false;
@@ -180,14 +190,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         }
         return;
       }
-      console.log("blur");
+      //console.log("blur");
       
       this.unselect();
       this.props.onBlur();
     }
     
     if (this.cancelBlur){
-      console.log("cancelling blur right away");
+      //console.log("cancelling blur right away");
       this.cancelBlur = false;
       
       //I have no idea why the contenteditable loses focus unless it's recalled on
@@ -199,17 +209,17 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
     //We want to delay blur execution in order to catch focus events that
     //might want to stop the blur execution
-    console.log("delaying blur execution");
+    //console.log("delaying blur execution");
     this.isBlurDelayed = true;
     setTimeout(actualExecution, TIMEOUT_FOR_BLUR_EVENT);
   }
   focus(avoidCancellingBlur?: boolean){
-    console.log("forced focus event");
+    //console.log("forced focus event");
     
     if (!avoidCancellingBlur){
       //We want to cancel a possible blur if there's a blur event but the focus is forced back
       if (this.isBlurDelayed){
-        console.log("cancelling next blur");
+        //console.log("cancelling next blur");
         this.cancelBlur = true;
       } else {
         //Sometimes however the blur event hasn't been called when the thing
@@ -218,7 +228,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         //So we cancel the blur just in case
         //We still reset the variable in case this was just a random blur event
         //From all the mayhem random focusing that we get
-        console.log("preemtively cancelling blur");
+        //console.log("preemtively cancelling blur");
         this.cancelBlur = true;
         setTimeout(()=>{
           this.cancelBlur = false;
@@ -229,7 +239,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //This gets called by the parent component to force the focus back
     //as in like when we use the toolbar
     if (this.selectedMathField){
-      console.log("forcing onto the math field");
+      //console.log("forcing onto the math field");
       if (this.isOnAceEditor){
         this.aceEditor.focus();
       } else {
@@ -272,7 +282,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         this.execute(command);
       }
     } else {
-      console.log("executing", command);
+      //console.log("executing", command);
       if (!this.isOnAceEditor){
         //This one is more complicated, we want to force the focus back yet again
         //just in case because of madness of all the blur and focus, doesn't hurt
@@ -305,15 +315,15 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     //just cancel it out, this might happen eg, with the focus and handle all clicks that both
     //detect the event on first click
     if (target === this.selectedFormula){
-      console.log("cancelling due to duplication");
+      //console.log("cancelling due to duplication");
       return;
     }
     
-    console.log("selecting", target);
+    //console.log("selecting", target);
     
     //We set the cancel the blur to true as the focus will go out of the contenteditable
     //once we are done
-    console.log("cancelling next blur");
+    //console.log("cancelling next blur");
     this.cancelBlur = true;
     
     //we unselect any previously selected equations
@@ -398,7 +408,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   onDeleteSomethingInMathMode(e: KeyboardEvent){
     //The delete keys are not triggered as an input event so we need to catch them manually
-    console.log("wut", e);
+    //console.log("wut", e);
     let key = (e as any).keyCode || e.charCode;
     if (key === 8 || key === 46){
       this.onChange();
@@ -407,7 +417,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     }
   }
   onAceEditorFocus(){
-    console.log("focus on ace");
+    //console.log("focus on ace");
     this.isOnAceEditor = true;
   }
   onAceEditorInput(){
@@ -426,7 +436,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   handleAllClicks(e: Event){
     //This detects clicks everywhere in any element
-    console.log("detected click at", e.target);
+    //console.log("detected click at", e.target);
     let clickedTarget:HTMLElement = e.target as HTMLElement;
     
     if (clickedTarget.className === this.props.formulaClassName){
@@ -453,7 +463,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         }
         
         if (this.selectedMathField && this.isOnAceEditor){
-          console.log("Ace editor bug refocus");
+          //console.log("Ace editor bug refocus");
           this.focus();
         }
         return;
@@ -466,7 +476,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
         //that the blur event has then it  will refocus and you'll never be able to
         //lose the focus
         if (!this.isBlurDelayed){
-          console.log("click focusing refocus on mathquill")
+          //console.log("click focusing refocus on mathquill")
           this.focus();
         }
       }
@@ -474,7 +484,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   unselect(){
     if (this.selectedFormula){
-      console.log("unselect");
+      //console.log("unselect");
       
       let latex = this.selectedMathField.latex();
       if (latex.trim() === ""){
@@ -505,7 +515,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     document.body.removeEventListener('click', this.handleAllClicks);
   }
   checkTheFocus(e: React.MouseEvent<any>){
-    console.log("checking the focus at", e.target);
+    //console.log("checking the focus at", e.target);
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render(){

@@ -19,7 +19,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      value: 'AAAAAAAAAAA<span class="muikku-math-exercise-formula">\\frac{\\sum_{i=k}^n\\binom{n}{i}\\binom{m-n}{n-i}}{\\binom{m}{n}}</span>BBBBBBBBB'
+      value: ''
     }
     
     this.setValue = this.setValue.bind(this);
