@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Dispatch } from 'redux';
-import { connect } from 'react-redux';
-import { StudentUserStatistics, Activity, Record, GuiderActivityDataType } from '~/reducers/main-function/guider';
-import { StateType } from '~/reducers';
+import {Dispatch} from 'redux';
+import {connect} from 'react-redux';
+import {StudentUserStatistics, Activity, Record, GuiderActivityDataType} from '~/reducers/main-function/guider';
+import {StateType} from '~/reducers';
 import GraphFilter from '../../filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
@@ -22,9 +22,9 @@ enum Graph {
   EXERCISES = "exercises"
 }
 
-var ignoreZoomed:boolean = true;
-var zoomStartDate:Date = null;
-var zoomEndDate:Date = null;
+var ignoreZoomed: boolean = true;
+var zoomStartDate: Date = null;
+var zoomEndDate: Date = null;
 
 class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceStatisticsProps, CurrentStudentWorkspaceStatisticsState> {
   constructor(props: CurrentStudentWorkspaceStatisticsProps){
@@ -40,43 +40,43 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   GraphFilterHandler(graph: Graph){
     const filteredGraphs = this.state.filteredGraphs.slice();
     var index = filteredGraphs.indexOf(graph);
-    if(index > -1)
+    if (index > -1)
       filteredGraphs.splice(index, 1);
     else 
       filteredGraphs.push(graph);
     this.setState({filteredGraphs: filteredGraphs});
   }
-
-  zoomSaveHandler (e:any){
-    if (!ignoreZoomed) {
+  
+  zoomSaveHandler(e: any){
+    if (!ignoreZoomed){
       zoomStartDate = e.startDate;
       zoomEndDate = e.endDate;
     }
     ignoreZoomed = false;
   }
   
-  zoomApplyHandler(e:any){
-    if(zoomStartDate != null && zoomEndDate != null)
+  zoomApplyHandler(e: any){
+    if (zoomStartDate != null && zoomEndDate != null)
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
   }
   
   render(){
-    if(!this.props.statistics) {
+    if (!this.props.statistics){
       //TODO: change to animation?
-      return (<p>LOADING</p>);
+      return <p>LOADING</p>
     }
     
     //NOTE: The unused data can be cut here. (Option 1)
-    let chartDataMap = new Map<string, {assignments:number, exercises:number}>();
-    if(this.props.statistics.activities[this.props.workspaceId] != null) {
+    let chartDataMap = new Map<string, {assignments: number, exercises: number}>();
+    if (this.props.statistics.activities[this.props.workspaceId] != null){
       this.props.statistics.activities[this.props.workspaceId].records.map((record)=>{
         let date = record.date.slice(0, 10);
         let entry = chartDataMap.get(date);
-        if(entry == null)
+        if (entry == null)
           entry = {"assignments": 0,"exercises": 0};
-        if(record.type === "EVALUATED")
+        if (record.type === "EVALUATED")
           entry.assignments++;
-        else if(record.type === "EXERCISE")
+        else if (record.type === "EXERCISE")
           entry.exercises++;
         chartDataMap.set(date, entry);
       });
@@ -84,7 +84,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       chartDataMap.set(new Date().toISOString().slice(0, 10), {"assignments": 0,"exercises": 0});
     }
     //NOTE: Data can be filtered here also (Option 2)
-    let sortedKeys = Array.from(chartDataMap.keys()).sort((a,b)=>{return a > b ? 1 : -1;});
+    let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b)=>{return a > b ? 1 : -1;});
     let data = new Array;
     sortedKeys.forEach((key)=>{
       let value = chartDataMap.get(key);
@@ -102,32 +102,32 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
     
-    if(!this.state.filteredGraphs.includes(Graph.ASSIGNMENTS)) {
+    if (!this.state.filteredGraphs.includes(Graph.ASSIGNMENTS)){
       graphs.push({
-        "id":"assignments",
+        "id": "assignments",
         "balloonText": "Assignments done <b>[[assignments]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
-        "lineColor":"#ce01bd",
+        "lineColor": "#ce01bd",
         "title": "assignments",
         "type": "column",
-        "clustered":false,
-        "columnWidth":0.4,
+        "clustered": false,
+        "columnWidth": 0.4,
         "valueField": "assignments"
       });
     }
     
-    if(!this.state.filteredGraphs.includes(Graph.EXERCISES)) {
+    if (!this.state.filteredGraphs.includes(Graph.EXERCISES)){
       graphs.push({
-        "id":"exercises",
+        "id": "exercises",
         "balloonText": "Exercises done <b>[[exercises]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
-        "lineColor":"#ff9900",
+        "lineColor": "#ff9900",
         "title": "exercises",
         "type": "column",
-        "clustered":false,
-        "columnWidth":0.4,
+        "clustered": false,
+        "columnWidth": 0.4,
         "valueField": "exercises"
       });
     }
@@ -138,9 +138,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     "position": "left",
     "title": "",
     "integersOnly": true,
-    "minimum":0
-  }];
-
+    "minimum": 0
+    }];
+    
     let config = {
       "theme": "none",
       "type": "serial",
@@ -180,14 +180,14 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         "categoryBalloonDateFormat": "YYYY-MM-DD",
         "categoryBalloonColor": "#009FE3",
         "cursorColor": "#000"
-     },
-     "listeners": [{
-       "event": "zoomed",
-       "method": this.zoomSaveHandler
-       }, {
-       "event": "dataUpdated",
-       "method":  this.zoomApplyHandler
-    }],
+      },
+      "listeners": [{
+         "event": "zoomed",
+         "method": this.zoomSaveHandler
+         }, {
+         "event": "dataUpdated",
+         "method": this.zoomApplyHandler
+       }],
       "valueAxes": valueAxes,
       "graphs": graphs,
       "dataProvider": data,
@@ -195,21 +195,19 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
         "enabled": true
       }
     };
-    ignoreZoomed=true;
+    ignoreZoomed = true;
     console.log(config);
     
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
     let showGraphs:string[] = [Graph.ASSIGNMENTS, Graph.EXERCISES];
-    return(
-    <div className="react-required-container">
+    return <div className="react-required-container">
       <div className="chart-legend">
         <div className="chart-legend-filter chart-legend-filter--graph-filter">
           <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
         </div>
       </div>
-      <AmCharts.React className="chart chart--workspace-chart" options={config} />
+      <AmCharts.React className="chart chart--workspace-chart" options={config}/>
     </div>
-    )
   }
 }
 

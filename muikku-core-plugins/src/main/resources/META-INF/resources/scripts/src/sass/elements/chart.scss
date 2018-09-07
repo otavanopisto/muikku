@@ -28,12 +28,12 @@
   font-size: $text-desktop-font-size;
   padding: 2px;
   
-  &:hover, 
+  &:hover,
   &.hover {
     background-color: darken($color-primary, 10%);
   }
   
-  &:active, 
+  &:active,
   &.active {
     background-color: darken($color-primary, 20%);
   }
@@ -68,15 +68,6 @@
   }
 }
 
-//Maybe there is no need in them?
-.chart-legend-filter--primary {
-  justify-content: start;
-}
-
-.chart-legend-filter--secondary {
-  justify-content: flex-end;
-}
-
 .filter {
   margin-left: 10px;
 }
@@ -91,12 +82,15 @@
   display: none;
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
+    padding: 0 5px;
   }
 }
 
 .filter-item {
   align-items: center;
   display: flex;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
   height: 100%;
   margin-right: 10px;
   input[type="checkbox"] {
@@ -190,12 +184,12 @@
   font-size: $button-pill-mobile-font-size;
   padding: 5px;
   
-  &:hover, 
+  &:hover,
   &.hover {
     background-color: darken($color-primary, 10%);
   }
   
-  &:active, 
+  &:active,
   &.active {
     background-color: darken($color-primary, 20%);
   }
