@@ -11,6 +11,7 @@ import '~/sass/elements/application-list.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
+import '~/sass/elements/glyph.scss';ss
 import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
 interface MessageViewProps {
@@ -36,7 +37,7 @@ class AnnouncementView extends React.Component<MessageViewProps, MessageVitewSta
             <div className="application-list__item-meta">
               <div className="application-list__item-header-main application-list__item-header-main--announcer-announcement-dates">
                 <div className="application-list__header-primary">
-                  <span className="text__icon icon-clock"></span>
+                  <span className="glyph icon-clock"></span>
                   <span className="application-list__header-item-dates">
                     {this.props.i18n.time.format(this.props.announcements.current.startDate)} - {this.props.i18n.time.format(this.props.announcements.current.endDate)}
                   </span>
