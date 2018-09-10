@@ -53,6 +53,7 @@
   justify-content: flex-end;
   padding-left: 30px;
   padding-right: 21px;
+  
   @include breakpoint($breakpoint-pad) {
     justify-content: space-between;
   }
@@ -79,7 +80,7 @@
   flex-wrap: wrap;
 }
 
-.filter-items--graph-filter{
+.filter-items--graph-filter {
   display: none;
   
   @include breakpoint($breakpoint-pad) {
