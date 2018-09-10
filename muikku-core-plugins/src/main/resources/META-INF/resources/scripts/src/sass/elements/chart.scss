@@ -18,8 +18,8 @@
 }
 
 .chart__activator {
-  border-radius: 3px;
   background-color: $color-primary;
+  border-radius: 3px;
   color: $color-default;
   display: inline-flex;
   flex-basis: auto;
@@ -41,7 +41,7 @@
 
 .chart__activator--workspace-chart {
   margin-left: 10px;
-  margin-right: 0px;
+  margin-right: 0;
 }
 
 .chart-legend {
