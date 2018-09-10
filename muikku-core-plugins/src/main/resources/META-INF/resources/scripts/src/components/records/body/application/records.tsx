@@ -121,7 +121,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         trailWidth: 1,
         svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "text workspace-activity__progressbar-label",
+          className: "workspace-activity__progressbar-label",
           style: {
             left: workspace.studentActivity.evaluablesDonePercent === 0 ? "0%" : null,
             right: workspace.studentActivity.evaluablesDonePercent === 0 ? null : 100 - workspace.studentActivity.evaluablesDonePercent +  "%"
@@ -141,7 +141,7 @@ function getActivity(props: RecordsProps, workspace: WorkspaceType){
         trailWidth: 1,
         svgStyle: {width: "100%", height: "4px"},
         text: {
-          className: "text workspace-activity__progressbar-label",
+          className: "workspace-activity__progressbar-label",
           style: {
             left: workspace.studentActivity.exercisesDonePercent === 0 ? "0%" : null,
             right: workspace.studentActivity.exercisesDonePercent === 0 ? null : 100 - workspace.studentActivity.exercisesDonePercent + "%"

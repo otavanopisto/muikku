@@ -30,7 +30,7 @@ function ProfileProperty(props: {
   return <div className="profile-element__item">
     <label className="profile_element-label">{props.i18n.text.get(props.label)}</label>
     {typeof props.value === "string" ?
-      <div className="text text--profile-property">{props.value}</div> :
+      <div>{props.value}</div> :
       props.value.map((v)=>{
         return typeof v === "string" ? <div className="profile-user-data" key={v}>{v}</div> : <div className="profile-user-data" key={v.key}>{v.value}</div>
       })}

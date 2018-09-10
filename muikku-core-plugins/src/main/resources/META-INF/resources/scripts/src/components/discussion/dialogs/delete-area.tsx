@@ -51,7 +51,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
       return this.props.children;
     }
     
-    let content = (closeDialog: ()=>any) => <div className="text text--delete-area">
+    let content = (closeDialog: ()=>any) => <div>
       {this.props.i18n.text.get('plugin.discussion.deletearea.info')}
     </div>
        

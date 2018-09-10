@@ -53,7 +53,7 @@ class Course extends React.Component<CourseProps, CourseState>{
       {this.state.expanded ?
         <div>
           <ApplicationListItemBody className="application-list__item-body--course">
-            <article className="text text--coursepicker-course-description rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
+            <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.course.description}}></article>
           </ApplicationListItemBody>
           <ApplicationListItemFooter className="application-list__item-footer--course">
             <Button buttonModifiers={["primary-function-content ", "coursepicker-course-action"]} href={`${this.props.status.contextPath}/workspace/${this.props.course.urlName}`}>
