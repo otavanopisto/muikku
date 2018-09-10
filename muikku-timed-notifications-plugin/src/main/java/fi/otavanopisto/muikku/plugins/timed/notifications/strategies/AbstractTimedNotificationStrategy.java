@@ -97,7 +97,8 @@ public abstract class AbstractTimedNotificationStrategy implements TimedNotifica
           SchoolDataIdentifier identifier = SchoolDataIdentifier.fromId(organizationIdentifierStr);
           
           if (identifier != null) {
-            OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+            OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifierAndArchived(
+                identifier.getDataSource(), identifier.getIdentifier(), Boolean.FALSE);
             if (organizationEntity != null) {
               result.add(organizationEntity);
             }

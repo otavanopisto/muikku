@@ -37,6 +37,10 @@ public class OrganizationEntityController {
   public OrganizationEntity archive(OrganizationEntity organizationEntity) {
     return organizationEntityDAO.archive(organizationEntity);
   }
+
+  public OrganizationEntity unarchive(OrganizationEntity organizationEntity) {
+    return organizationEntityDAO.unarchive(organizationEntity);
+  }
   
   public List<OrganizationEntity> listUnarchived() {
     return organizationEntityDAO.listUnarchived();
@@ -55,6 +59,20 @@ public class OrganizationEntityController {
   public List<OrganizationEntity> listByDataSource(SchoolDataSource schoolDataSource) {
     return organizationEntityDAO.listByDataSource(schoolDataSource);
   }
+
+  public List<OrganizationEntity> listByDataSourceAndArchived(String dataSource, Boolean archived) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource == null) {
+      logger.severe("Could not find datasource " + dataSource);
+      return null;
+    }
+    
+    return listByDataSourceAndArchived(schoolDataSource, archived);
+  }
+  
+  public List<OrganizationEntity> listByDataSourceAndArchived(SchoolDataSource schoolDataSource, Boolean archived) {
+    return organizationEntityDAO.listByDataSource(schoolDataSource);
+  }
   
   public OrganizationEntity findByDataSourceAndIdentifier(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
@@ -68,6 +86,20 @@ public class OrganizationEntityController {
   
   public OrganizationEntity findByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
     return organizationEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+
+  public OrganizationEntity findByDataSourceAndIdentifierAndArchived(String dataSource, String identifier, Boolean archived) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource == null) {
+      logger.severe("Could not find datasource " + dataSource);
+      return null;
+    }
+    
+    return findByDataSourceAndIdentifierAndArchived(schoolDataSource, identifier, archived);
+  }
+  
+  public OrganizationEntity findByDataSourceAndIdentifierAndArchived(SchoolDataSource schoolDataSource, String identifier, Boolean archived) {
+    return organizationEntityDAO.findByDataSourceAndIdentifierAndArchived(schoolDataSource, identifier, archived);
   }
 
   public void delete(OrganizationEntity organizationEntity) {

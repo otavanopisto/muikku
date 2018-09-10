@@ -21,6 +21,11 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
     return persist(organizationEntity);
   }
 
+  public OrganizationEntity unarchive(OrganizationEntity organizationEntity) {
+    organizationEntity.setArchived(Boolean.FALSE);
+    return persist(organizationEntity);
+  }
+
   public OrganizationEntity create(SchoolDataSource dataSource, String identifier, String name) {
     OrganizationEntity organizationEntity = new OrganizationEntity();
     organizationEntity.setDataSource(dataSource);
