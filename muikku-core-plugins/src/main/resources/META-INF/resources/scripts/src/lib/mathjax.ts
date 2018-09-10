@@ -10,6 +10,7 @@ export function loadMathJax(triggerOnLoad: boolean){
   }
   let script = document.createElement('script');
   script.src = '//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_SVG';
+  script.async = true;
   script.onload = ()=>{
     (window as any).MathJax.Hub.Config({
       jax: ["input/TeX", "output/SVG"],
@@ -46,7 +47,7 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
   let formula = element.textContent || (element as HTMLImageElement).alt;
   let container = document.createElement('div');
   container.textContent = "\\(" + formula.replace(/\\sum/g, "\\displaystyle\\sum") + "\\)";
-  console.log(container.textContent);
+  //console.log(container.textContent);
   container.style.visibility = "hidden";
   document.body.appendChild(container);
   

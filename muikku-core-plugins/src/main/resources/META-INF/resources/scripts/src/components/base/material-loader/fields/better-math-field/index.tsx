@@ -21,13 +21,21 @@ interface MathFieldProps {
     moreMath: string,
     mathOperations: string
   },
-  toolbarAlwaysVisible?: boolean
+  toolbarAlwaysVisible?: boolean,
+  dontLoadACE?: boolean,
+  dontLoadMQ?: boolean
 }
 
 interface MathFieldState {
   isFocused: boolean,
   expandMath: boolean
 }
+
+const ACE_DEFAULT_SRC = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js";
+const ACE_MODE_SRC = "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/mode-latex.js";
+
+const MQ_DEFAULT_SRC = "//cdn.muikkuverkko.fi/libs/digabi-math-editor/3.4.1/mathquill.min.js";
+const MQ_DEFAULT_CSS = "//cdn.muikkuverkko.fi/libs/digabi-math-editor/3.4.1/mathquill.css";
 
 export default class MathField extends React.Component<MathFieldProps, MathFieldState> {
   //private cancelRemovalOfFocus: boolean;
@@ -47,6 +55,32 @@ export default class MathField extends React.Component<MathFieldProps, MathField
     this.openMathExpanded = this.openMathExpanded.bind(this);
     this.closeMathExpanded = this.closeMathExpanded.bind(this);
     this.createNewLatex = this.createNewLatex.bind(this);
+    
+    if (!props.dontLoadACE){
+      let script = document.createElement('script');
+      script.src = ACE_DEFAULT_SRC;
+      script.async = true;
+      script.onload = ()=>{
+        let script2 = document.createElement('script');
+        script2.src = ACE_MODE_SRC;
+        script2.async = true;
+        document.head.appendChild(script2);
+      }
+      document.head.appendChild(script);
+    }
+    
+    if (!props.dontLoadMQ){
+      let script = document.createElement('script');
+      script.src = MQ_DEFAULT_SRC;
+      script.async = true;
+      document.head.appendChild(script);
+      
+      let css = document.createElement('link');
+      css.rel = "stylesheet";
+      css.type = "text/css";
+      css.href = MQ_DEFAULT_CSS;
+      document.head.appendChild(css);
+    }
   }
   onFocusField(){
     //This is triggered when the field itself gains focus

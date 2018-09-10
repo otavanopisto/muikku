@@ -55,7 +55,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     super(props);
     
     this.value = props.value;
-    this.MQInterface = getMQInterface();
+    this.MQInterface = getMQInterface;
     
     this.onFocusField = this.onFocusField.bind(this);
     this.onBlurField = this.onBlurField.bind(this);
@@ -340,11 +340,11 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.selectedMathFieldContainer.setAttribute("contenteditable", "false");
     this.selectedMathFieldContainer.className = this.props.editorClassName;
     
-    //shitty styles
-    this.selectedMathFieldContainer.style.border = "solid 1px red";
-    this.selectedMathFieldContainer.style.display = "block";
-    this.selectedMathFieldContainer.style.margin = "30px";
-    this.selectedMathFieldContainer.style.position = "relative";
+    //styles, to provide functionality without the SCSS
+//    this.selectedMathFieldContainer.style.border = "solid 1px red";
+//    this.selectedMathFieldContainer.style.display = "block";
+//    this.selectedMathFieldContainer.style.margin = "30px";
+//    this.selectedMathFieldContainer.style.position = "relative";
     
     let newElement = document.createElement('span');
     newElement.textContent = this.selectedFormula.alt || "";
@@ -352,13 +352,13 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let actualContainerForTheMathField = document.createElement('div');
     actualContainerForTheMathField.className = this.props.editorClassName + "--formula-container";
     
-    //shitty styles
-    actualContainerForTheMathField.style.border = "solid 1px blue";
-    actualContainerForTheMathField.style.padding = "5px 10px";
-    actualContainerForTheMathField.style.position = "relative";
-    actualContainerForTheMathField.style.alignItems = "center";
-    actualContainerForTheMathField.style.justifyContent = "center";
-    actualContainerForTheMathField.style.display = "flex";
+    //styles, to provide functionality without the SCSS
+//    actualContainerForTheMathField.style.border = "solid 1px blue";
+//    actualContainerForTheMathField.style.padding = "5px 10px";
+//    actualContainerForTheMathField.style.position = "relative";
+//    actualContainerForTheMathField.style.alignItems = "center";
+//    actualContainerForTheMathField.style.justifyContent = "center";
+//    actualContainerForTheMathField.style.display = "flex";
     
     actualContainerForTheMathField.appendChild(newElement);
     this.selectedMathFieldContainer.appendChild(actualContainerForTheMathField);
@@ -366,10 +366,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     let editorContainer = document.createElement('div');
     editorContainer.className = this.props.editorClassName + "--formula-text-editor";
     
-    //shitty styles
-    editorContainer.style.border = "solid 1px green";
-    editorContainer.style.height = "100px";
-    editorContainer.style.position = "relative";
+    //styles, to provide functionality without the SCSS
+//    editorContainer.style.border = "solid 1px green";
+//    editorContainer.style.height = "100px";
+//    editorContainer.style.position = "relative";
     
     let editor = document.createElement('div');
     editor.style.position = "absolute";
@@ -384,7 +384,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.selectedFormula.parentElement.replaceChild(this.selectedMathFieldContainer, this.selectedFormula);
     
     //Now we create the math field from the span in the middle
-    this.selectedMathField = this.MQInterface.MathField(newElement);
+    this.selectedMathField = this.MQInterface().MathField(newElement);
 
     //And we give it focus, this is when the onblur event of the contenteditable will
     //be called and we will be phantom blurred

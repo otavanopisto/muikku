@@ -1,6 +1,7 @@
 import * as React from "react";
 import MathField from './better-math-field';
 import { i18nType } from "~/reducers/base/i18n";
+import '~/sass/elements/fields/math-field.scss';
 
 interface MathFieldProps {
   type: string,
@@ -25,7 +26,7 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     this.setValue = this.setValue.bind(this);
   }
   setValue(newValue: string){
-    console.log(newValue);
+    //console.log(newValue);
     this.setState({
       value: newValue
     });

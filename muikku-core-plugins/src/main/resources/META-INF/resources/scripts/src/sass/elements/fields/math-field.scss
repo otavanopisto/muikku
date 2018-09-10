@@ -1,0 +1,40 @@
+@import "../../base/vars";
+@import "../../base/colors";
+@import "../../base/breakpoints";
+	
+.muikku-math-exercise-toolbar {
+  position: fixed;
+  top: $navbar-mobile-height;
+  left: 0;
+  right: 0;
+  background-color: $color-math-exercise-toolbar-default-background;
+  box-shadow: 0 2px 4px $color-math-exercise-toolbar-default-shadow;
+  border-bottom: $color-math-exercise-toolbar-default-border;
+  z-index: 9999;
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    top: $navbar-desktop-height;
+  }
+}
+	
+.muikku-math-exercise-editor {
+  border: 1px solid red;
+  display: block;
+  margin: 30px;
+  position: relative;
+}
+	
+.muikku-math-exercise-editor--formula-container {
+  border: solid 1px blue;
+  padding: 5px 10px;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+}
+
+.muikku-math-exercise-editor--formula-text-editor {
+  border: 1px solid green;
+  height: 100px;
+  position: relative;
+}

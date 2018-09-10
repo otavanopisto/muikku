@@ -72,7 +72,7 @@ export default class MathFieldToolbar extends React.Component<MathFieldToolbarPr
     }
     //Please do not change the type of the --symbol unless you ensure that if you change (say to a div) the css expresses that the text cannot be selected
     //so far buttons work well
-    return <div className={this.props.className} onMouseDown={this.props.onToolbarAction}>
+    return <div className={`${this.props.className} ${this.state.isExpanded ? this.props.className + "--expanded" : ""}`} onMouseDown={this.props.onToolbarAction}>
       <div className={this.props.className + "--symbols"}>
         {specialCharacters.map(c=><div className={this.props.className + "--symbol-group"} key={c.label}>
           <div className={this.props.className + "--symbol-group-label"}>
