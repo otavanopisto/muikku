@@ -2,6 +2,7 @@ import actions from '../actions/base/notifications';
 import {Store} from 'react-redux';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
+import { Action } from 'redux';
 
 type ListenerType = {
     [name: string]: {
@@ -47,7 +48,7 @@ export default class MuikkuWebsocket {
         this.openWebSocket();
         this.startPinging();
       } else {
-        this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error'));
+        this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
       }
     });
 
@@ -149,7 +150,7 @@ export default class MuikkuWebsocket {
         });
       }
     } catch (e) {
-      this.store.dispatch(actions.displayNotification("Ticket creation failed on an internal error", 'error'));
+      this.store.dispatch(actions.displayNotification("Ticket creation failed on an internal error", 'error') as Action);
     }
   }
   
@@ -159,7 +160,7 @@ export default class MuikkuWebsocket {
         if (!err) {
           callback(ticket.ticket);
         } else {
-          this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error'));
+          this.store.dispatch(actions.displayNotification("Could not create WebSocket ticket", 'error') as Action);
         }
       });
   }
@@ -200,11 +201,11 @@ export default class MuikkuWebsocket {
           this.onWebSocketConnected();
         break;
         default:
-          this.store.dispatch(actions.displayNotification("WebSocket connection failed", 'error'));
+          this.store.dispatch(actions.displayNotification("WebSocket connection failed", 'error') as Action);
         break;
       }
     } else {
-      this.store.dispatch(actions.displayNotification("Could not open WebSocket connection", 'error'));
+      this.store.dispatch(actions.displayNotification("Could not open WebSocket connection", 'error') as Action);
     }
   }
   
@@ -263,7 +264,7 @@ export default class MuikkuWebsocket {
         if (this.ticket) {
           this.openWebSocket();
         } else {
-          this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error'));
+          this.store.dispatch(actions.displayNotification("Could not open WebSocket because ticket was missing", 'error') as Action);
         }
       });
       

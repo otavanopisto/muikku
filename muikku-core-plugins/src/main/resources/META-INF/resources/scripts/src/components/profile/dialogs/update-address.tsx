@@ -55,12 +55,14 @@ class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, Upda
       if (!address){
         address = nextProps.profile.addresses[0];
       }
-      this.setState({
-        street: address.street || "",
-        postalCode: address.postalCode || "",
-        city: address.city || "",
-        country: address.country || ""
-      });
+      if (address){
+        this.setState({
+          street: address.street || "",
+          postalCode: address.postalCode || "",
+          city: address.city || "",
+          country: address.country || ""
+        });
+      }
     }
     
     if (nextProps.profile.student && JSON.stringify(nextProps.profile.student) !== JSON.stringify(this.props.profile.student)){
