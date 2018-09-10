@@ -60,6 +60,7 @@
 
 .chart-legend-filter {
   align-items: center;
+  
   @include breakpoint($breakpoint-pad) {
     display: flex;
     flex-basis: 0;
@@ -80,6 +81,7 @@
 
 .filter-items--graph-filter{
   display: none;
+  
   @include breakpoint($breakpoint-pad) {
     display: inline-flex;
     padding: 0 5px;
@@ -95,9 +97,9 @@
   margin-right: 10px;
   
   input[type="checkbox"] {
+    align-items: center;
     -moz-appearance: none;
     -webkit-appearance: none;
-    align-items: center;
     appearance: none;
     border: solid 2px;
     border-radius: 3px;
