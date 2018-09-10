@@ -15,6 +15,11 @@ import fi.otavanopisto.muikku.model.users.OrganizationEntity_;
 public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
 
   private static final long serialVersionUID = 9086977548291745296L;
+  
+  public OrganizationEntity archive(OrganizationEntity organizationEntity) {
+    organizationEntity.setArchived(Boolean.TRUE);
+    return persist(organizationEntity);
+  }
 
   public OrganizationEntity create(SchoolDataSource dataSource, String identifier, String name) {
     OrganizationEntity organizationEntity = new OrganizationEntity();
@@ -25,8 +30,35 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
   }
   
   public List<OrganizationEntity> listUnarchived() {
-    // TODO: Archived?
-    return listAll();
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<OrganizationEntity> criteria = criteriaBuilder.createQuery(OrganizationEntity.class);
+    Root<OrganizationEntity> root = criteria.from(OrganizationEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(OrganizationEntity_.archived), Boolean.FALSE)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public OrganizationEntity findByDataSourceAndIdentifierAndArchived(SchoolDataSource dataSource, String identifier, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<OrganizationEntity> criteria = criteriaBuilder.createQuery(OrganizationEntity.class);
+    Root<OrganizationEntity> root = criteria.from(OrganizationEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(OrganizationEntity_.dataSource), dataSource),
+        criteriaBuilder.equal(root.get(OrganizationEntity_.identifier), identifier),
+        criteriaBuilder.equal(root.get(OrganizationEntity_.archived), archived)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
   }
   
   public OrganizationEntity findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
@@ -45,6 +77,23 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
+  
+  public List<OrganizationEntity> listByDataSourceAndArchived(SchoolDataSource schoolDataSource, Boolean archived) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<OrganizationEntity> criteria = criteriaBuilder.createQuery(OrganizationEntity.class);
+    Root<OrganizationEntity> root = criteria.from(OrganizationEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(OrganizationEntity_.dataSource), schoolDataSource),
+        criteriaBuilder.equal(root.get(OrganizationEntity_.archived), archived)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
   public List<OrganizationEntity> listByDataSource(SchoolDataSource schoolDataSource) {
     EntityManager entityManager = getEntityManager();
@@ -60,7 +109,7 @@ public class OrganizationEntityDAO extends CoreDAO<OrganizationEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public OrganizationEntity updateRoleEntity(OrganizationEntity organizationEntity, String name) {
+  public OrganizationEntity updateName(OrganizationEntity organizationEntity, String name) {
     organizationEntity.setName(name);
     return persist(organizationEntity);
   }
