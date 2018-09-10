@@ -93,6 +93,7 @@
   font-size: $text-desktop-font-size;
   height: 100%;
   margin-right: 10px;
+  
   input[type="checkbox"] {
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -122,7 +123,7 @@
 
 .filter-item--assignments {
   input[type="checkbox"] {
-    border-color: $color-assignment
+    border-color: $color-assignment;
   }
   
   input[type="checkbox"]:checked {
