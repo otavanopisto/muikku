@@ -135,7 +135,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
             <div className="application-panel__tool--current-folder">
-              <span className="text__icon application-panel__tool-icon icon-new-section"></span>
+              <span className="glyph application-panel__tool-icon icon-new-section"></span>
               <span className="application-panel__tool-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}

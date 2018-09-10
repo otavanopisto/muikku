@@ -19,17 +19,17 @@ export default class FrontpageFooter extends React.Component<FrontpageFooterProp
         <div className="footer__item footer__item--contact">
           <h2 className="footer__header">{this.props.i18n.text.get( 'plugin.footer.contact.title' )}</h2>
           <p className="footer__subitem">
-            <span className="text-icon icon-location"></span>
+            <span className="glyph icon-location"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.streetAddress.label' )}</b>
             <span>Otavantie 2 B, 50670 Otava</span>
           </p>
           <p className="footer__subitem">
-            <span className="text-icon icon-phone"></span>
+            <span className="glyph icon-phone"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.phoneNumber.label' )}</b>
             <span>015 194 3552</span>
           </p>
           <p className="footer__subitem">
-            <span className="text-icon icon-envelope"></span>
+            <span className="glyph icon-envelope"></span>
             <b>{this.props.i18n.text.get( 'plugin.footer.emailAddress.label' )}</b>
             <span>info@otavanopisto.fi</span>
           </p>

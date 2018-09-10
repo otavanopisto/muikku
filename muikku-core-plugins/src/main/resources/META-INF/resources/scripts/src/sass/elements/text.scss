@@ -7,52 +7,13 @@
   @include text;
 }
 
-.text--recepient-tag {
-  align-items: center;
-  display: flex;
-  flex-flow: row nowrap;
-  font-size: 0.75rem;
-  
-  @include breakpoint($breakpoint-pad) {
-    font-size: 0.8125rem;
-  }
-  
-  .text__icon {
-    display: inline-block;
-    flex-basis: 0;
-    flex-grow: 0;
-    flex-shrink: 0;
-	  margin-right: 5px;
-  }
-	
-  i {
-    margin: 0 0 0 5px;
-    opacity: 0.6;
-  }
-}
- 
-.text--recepient-autocomplete {
-  display: flex;
-  
-  .text__icon {
-    display: inline-block;  
-    margin-right: 5px;
-  }
-  	
-  i {
-    opacity: 0.6;
-  }
-} 
 // Text icon
 
-.text__icon {
+.glyph {
   align-items: center;
   display: flex;
 }
 
-.text__icon--announcement-workspace {
-  padding: 0 5px 0 0;
-}
 
 
 

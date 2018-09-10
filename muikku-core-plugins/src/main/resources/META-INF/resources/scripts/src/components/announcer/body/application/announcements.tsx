@@ -64,7 +64,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                 </div>}>
                   <ApplicationListItemHeader>
                     <div className="application-list__header-primary">
-                      <span className="text__icon icon-clock"></span>
+                      <span className="glyph icon-clock"></span>
                       <span className="application-list__header-item-dates">
                         {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                       </span>

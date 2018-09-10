@@ -13,7 +13,7 @@ import {i18nType } from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import '~/sass/elements/form-elements.scss';
 import Button from '~/components/general/button';
-
+import '~/sass/elements/glyph.scss';
 import '~/sass/elements/color-picker.scss';
 
 const KEYCODES = {
@@ -117,7 +117,7 @@ class CommunicatorLabelUpdateDialog extends React.Component<CommunicatorLabelUpd
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
             <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
-              <span className={`text__icon icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
+              <span className={`glyph icon-${this.props.label.icon}`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
             {this.state.displayColorPicker ? <div className="color-picker">
               <div className="color-picker-overlay" onClick={ this.onHandleClose }/>

@@ -20,6 +20,7 @@ import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/buttons.scss';
+import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
 import { ApplicationPanelToolbar, ApplicationPanelToolbarActionsMain, ApplicationPanelToolbarActionsAside } from '~/components/general/application-panel';
 import { ButtonPill } from '~/components/general/button';
@@ -99,7 +100,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick}/>
           
             <div className="application-panel__tool--current-folder">
-              <span className={`text__icon application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+              <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
               <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
               {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
                 <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>
@@ -157,7 +158,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     
     return <ApplicationPanelToolbar>
       <div className="application-panel__tool--current-folder">
-        <span className={`text__icon application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
+        <span className={`glyph application-panel__tool-icon icon-${currentLocation.icon}`} style={{color: currentLocation.color}}/>
         <span className="application-panel__tool-title">{"  " + currentLocation.text(this.props.i18n)}</span>
         {currentLocation.type === "label" ? <LabelUpdateDialog label={currentLocation}>
           <ButtonPill buttonModifiers="toolbar-edit-label" icon="edit"/>

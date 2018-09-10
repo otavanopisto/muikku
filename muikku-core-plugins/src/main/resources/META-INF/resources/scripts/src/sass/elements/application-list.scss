@@ -175,7 +175,7 @@
     }
 
     .text,
-    .text__icon,
+    .glyph,
     .link {
       color: $color-default;
     }
@@ -209,11 +209,11 @@
         background: $color-label-background;
       }
       
-      &.announcement--environment .text__icon {
+      &.announcement--environment .glyph {
         color: $color-announcement-environment;
       }
       
-      &.announcement--workspace .text__icon {
+      &.announcement--workspace .glyph {
         color: $color-announcement-workspace;
       }
     }
@@ -596,14 +596,14 @@
     padding: 15px 0;
   }
     
-  .text__icon::before {
+  .glyph::before {
     color: $color-announcement-workspace-icon;
   }
 }
 
 .application-list__item--environment-announcement { 
    
-  .text__icon::before {
+  .glyph::before {
     color: $color-announcement-environment-icon;
   }
 }
