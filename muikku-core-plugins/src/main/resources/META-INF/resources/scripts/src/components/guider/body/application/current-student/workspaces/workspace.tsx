@@ -123,7 +123,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             </span>
           </span>
           <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspaceId={workspace.id}/>]}>
-            <span className="icon-statistics chart_activator chart_activator--workspace-chart"></span>
+            <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
           </Dropdown>
         </ApplicationListItemHeader>               
               

@@ -17,7 +17,7 @@
   width: 600px;
 }
 
-.chart_activator {
+.chart__activator {
   border-radius: 3px;
   background-color: $color-primary;
   color: $color-default;
@@ -39,7 +39,7 @@
   }
 }
 
-.chart_activator--workspace-chart {
+.chart__activator--workspace-chart {
   margin-left: 10px;
   margin-right: 0px;
 }
@@ -173,7 +173,7 @@
   }
 }
 
-.filter_activator {
+.filter__activator {
   background-color: $color-primary;
   border-radius: 3px;
   color: $color-default;
@@ -195,8 +195,9 @@
   }
 }
 
-.filter_activator--graph-filter {
+.filter__activator--graph-filter {
   @include breakpoint($breakpoint-pad) {
     display: none;
   }
+  
 }

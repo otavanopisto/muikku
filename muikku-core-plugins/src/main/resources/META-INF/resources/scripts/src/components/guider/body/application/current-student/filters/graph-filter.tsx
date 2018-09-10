@@ -22,17 +22,17 @@ class GraphFilter extends React.Component<GraphFilterProps> {
         let ifChecked = !this.props.filteredGraphs.includes(graph);
         return <div className={"filter-item filter-item--"+graph} key={"w-"+graph}>
           <input type='checkbox' onClick={() => {this.props.handler(graph)}} defaultChecked={ifChecked}/>
-          <span className="filter-item_label">{this.props.i18n.text.get("plugin.guider." + graph + "Title")}</span>
+          <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Title")}</span>
         </div>
         })}>
-        <span className="icon-filter filter_activator filter_activator--graph-filter"></span>
+        <span className="icon-filter filter__activator filter__activator--graph-filter"></span>
       </Dropdown>
       <div className="filter-items filter-items--graph-filter">
         {this.props.graphs.map((graph)=>{
           let ifChecked = !this.props.filteredGraphs.includes(graph);
           return <div className={"filter-item filter-item--"+graph} key={"l-"+graph}>
             <input type='checkbox' onClick={() => {this.props.handler(graph)}} defaultChecked={ifChecked}/>
-            <span className="filter-item_label">{this.props.i18n.text.get("plugin.guider." + graph + "Title")}</span>
+            <span className="filter-item__label">{this.props.i18n.text.get("plugin.guider." + graph + "Title")}</span>
           </div>
         })}
       </div>
