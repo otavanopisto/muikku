@@ -242,10 +242,11 @@ let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileIma
       }
       
       dispatch(updateStatusHasImage(true));
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG image update sucesfully"), 'success'));
       
       data.success && data.success();
     } catch (err){
-      dispatch(actions.displayNotification(getState().i18n.text.get("TODO ERRORMSG failed to upload profile images"), 'error'));
+      dispatch(actions.displayNotification(getState().i18n.text.get("TODOERRORMSG failed to upload profile images"), 'error'));
       data.fail && data.fail();
     }
   }
