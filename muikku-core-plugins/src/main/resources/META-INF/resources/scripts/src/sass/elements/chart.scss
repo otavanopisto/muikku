@@ -78,6 +78,8 @@
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
+  max-height: 3.5rem;
+  overflow-y: auto;
 }
 
 .filter-items--graph-filter {

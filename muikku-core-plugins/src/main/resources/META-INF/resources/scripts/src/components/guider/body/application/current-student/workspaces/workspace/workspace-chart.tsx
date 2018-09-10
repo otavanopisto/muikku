@@ -203,7 +203,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     return <div className="react-required-container">
       <div className="chart-legend">
         <div className="chart-legend-filter chart-legend-filter--graph-filter">
-          <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
+          <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler} modificator="-list-only"/>
         </div>
       </div>
       <AmCharts.React className="chart chart--workspace-chart" options={config}/>
