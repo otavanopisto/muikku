@@ -25,6 +25,12 @@
   }
 }
 
+.application-list__header {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+
 .application-list__header-icon {
   color: $color-course-icon;
   display: inline-flex;
@@ -74,6 +80,37 @@
     font-size: $text-capitalized-desktop-font-size;
   }
 }
+
+.application-list__indicator-badge {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 0 0 15px;
+  text-align: center;
+  width: 1.875rem;
+  
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
+  
+  &.state-INCOMPLETE {
+    background: $color-grade-incomplete;
+  }  
+  
+}
+
+.application-list__indicator-badge--evaluation-request {
+  background-color: $color-evaluation-request;
+}
+
 
 .application-list__header-item-date {
   text-align: right;
@@ -663,11 +700,50 @@
 // Studies
 .application-list__header-container--studies-detailed-info {
   padding: 10px 0;
-  
+  font-size: 1.125rem;
+    
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;
   }
 }
+
+.application-list__indicator-badge {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 15px 0 0;
+  text-align: center;
+  width: 1.875rem;
+
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+  
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
+  
+  &.state-NO-ASSESSMENT {
+    background: $color-grade-not-assessed;
+  }
+} 
+.application-list__fee-indicator {
+  color: $color-course-icon;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  justify-content: flex-end;
+  margin-right: 10px;
+}  
+
+
+
 
 .application-list__item-header--studies-assignment {
   cursor: pointer;

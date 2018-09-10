@@ -28,7 +28,7 @@ function ProfileProperty(props: {
     return null;
   }
   return <div className="profile-element__item">
-    <label className="text text--profile-property-label">{props.i18n.text.get(props.label)}</label>
+    <label className="profile_element-label">{props.i18n.text.get(props.label)}</label>
     {typeof props.value === "string" ?
       <div className="text text--profile-property">{props.value}</div> :
       props.value.map((v)=>{
@@ -131,7 +131,7 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
       }
     }
     return (<div className="profile-element">
-        <h1 className="text text--profile-student-header">{this.props.status.profile.displayName}</h1>
+        <h1 className="profile-element__title">{this.props.status.profile.displayName}</h1>
         <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.emails.length} label="plugin.profile.emailsLabel" 
           value={this.props.status.profile.emails}/>
         <ProfileProperty i18n={this.props.i18n} condition={!!this.props.status.profile.addresses.length} label="plugin.profile.addressesLabel" 
@@ -155,16 +155,16 @@ class ProfileInfoAndSettings extends React.Component<ProfileInfoAndSettingsProps
           </UpdateAddressDialog>
         </div> : <form>
           <div className="profile-element__item">
-            <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
+            <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.phoneNumber.label')}</label>
             <input className="form-element__input" type="text" autoComplete="tel-national" size={20} onChange={this.onPhoneChange} value={this.state.phoneNumber}/>
           </div>
           <div className="profile-element__item">
-            <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
+            <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.awayStartDate.label')}</label>
             <DatePicker className="form-element__input" selected={this.state.profileVacationStart} onChange={this.handleDateChange.bind(this, "profileVacationStart")}
              locale={this.props.i18n.time.getLocale()}/>
           </div>
           <div className="profile-element__item">
-            <label className="text text--profile-property-label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
+            <label className="profile_element-label">{this.props.i18n.text.get('plugin.profile.awayEndDate.label')}</label>
             <DatePicker className="form-element__input" selected={this.state.profileVacationEnd} onChange={this.handleDateChange.bind(this, "profileVacationEnd")}
              locale={this.props.i18n.time.getLocale()}/>
            </div>

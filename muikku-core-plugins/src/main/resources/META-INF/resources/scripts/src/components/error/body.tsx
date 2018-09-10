@@ -27,12 +27,12 @@ class ErrorBody extends React.Component<ErrorBodyProps,ErrorBodyState> {
       <ScreenContainer fullHeight={true}>
         <div className="ordered-container ordered-container--error-panels">
           <div className="ordered-container__item ordered-container__item--error">
-            <div className="text text--error-title">
+            <div className="ordered-container__error-title">
               <span className="ordered-container__item-header-icon ordered-container__item-header-icon--error icon-error"></span>
-              <span className="text__panel-title">{this.props.error.title}</span>
+              <span>{this.props.error.title}</span>
             </div>
             <div className="panel panel--error">
-              <div className="text text--error-body">{this.props.error.description}</div>
+              <div className="panel__error-body ">{this.props.error.description}</div>
             </div>
           </div>
         </div>
