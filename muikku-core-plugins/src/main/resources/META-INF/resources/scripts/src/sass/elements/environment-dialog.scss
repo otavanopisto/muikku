@@ -285,6 +285,10 @@ label {
   }
 }
 
+.env-dialog__input-label {
+  margin: 0 0 0 3px;
+}
+
 .env-dialog__input[type="checkbox"] {
   -webkit-appearance: none;
   -moz-appearance: none;

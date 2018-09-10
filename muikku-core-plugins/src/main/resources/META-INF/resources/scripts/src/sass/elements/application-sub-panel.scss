@@ -134,6 +134,12 @@
    padding: 10px 0 0;
  }
 
+.application-sub-panel__item-header--hops {
+	font-weight: 600;
+	margin: 2px 5px 2px 0;
+	padding: 0;
+}
+
 .application-sub-panel__item-title {
   flex-basis: 100%;
   flex-grow: 0;
@@ -145,6 +151,22 @@
     margin: 0 10px 0 0;
   }
 }
+
+.application-sub-panel__item-label {
+  font-weight: 600;
+  margin: 2px 5px 2px 0;
+  padding: 0;
+}
+
+.application-sub-panel__item-inline-value {
+  background-color: #ecfafe;
+  border-radius: 3px;
+  display: inline-block;
+  padding: 2px 5px;
+  margin-left: 5px;
+  margin-right: 5px;    
+}
+
 
 .application-sub-panel__item-data {
   align-items: center;
@@ -167,6 +189,10 @@
     padding: 4px;  
   }
 } 
+
+
+
+
 
 // HOPS in Guider in readable state
 .application-sub-panel__item--hops-readable {
@@ -220,9 +246,13 @@
 .application-sub-panel__header--studies-hops,
 .application-sub-panel__header--studies-vops {
   padding: 10px;
+  font-size: 1.1875rem;
+  text-transform: uppercase;
+  width: 100%;
   
   @include breakpoint($breakpoint-pad) {
     padding: 0;
+    font-size: 1.375rem;
   }
 }
 

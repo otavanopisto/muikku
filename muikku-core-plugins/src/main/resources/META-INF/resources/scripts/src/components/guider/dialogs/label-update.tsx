@@ -139,7 +139,7 @@ class GuiderLabelUpdateDialog extends React.Component<GuiderLabelUpdateDialogPro
       return (          
         <div style={{opacity: this.state.removed ? 0.5 : null}}>
           <div className="dialog__container dialog__container--color-picker">
-            <div className="text text--label-update-dialog-icon" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
+            <div className="dialog__icon-container" style={{borderColor: this.state.removed ? "#aaa" : this.state.color}} onClick={ this.onHandleClick }>
               <span className={`text__icon icon-tag`} style={{color: this.state.removed ? "#aaa" : this.state.color}}/>
             </div>
             {this.state.displayColorPicker ? <div className="color-picker">
