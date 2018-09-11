@@ -5,9 +5,6 @@ import brace from 'brace';
 import 'brace/mode/html';
 import 'brace/theme/github';
 
-
-
-
 interface PlaygroundProps {
   
 }
