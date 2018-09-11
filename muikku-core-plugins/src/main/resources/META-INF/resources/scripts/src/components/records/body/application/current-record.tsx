@@ -5,14 +5,14 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/application-list.scss';
 import { RecordsType } from '~/reducers/main-function/records/records';
 import Material from './current-record/material';
 
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/assignment.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
 

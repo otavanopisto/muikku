@@ -2,7 +2,7 @@ import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
 
 import '~/sass/elements/footer.scss';
-import '~/sass/elements/text.scss';
+
 
 interface FrontpageFooterProps {
   i18n: i18nType

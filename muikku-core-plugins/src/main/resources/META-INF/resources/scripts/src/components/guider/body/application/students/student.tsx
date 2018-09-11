@@ -3,7 +3,7 @@ import * as React from "react";
 import { getName } from "~/util/modifiers";
 import { GuiderStudentType, GuiderStudentUserProfileLabelType } from "~/reducers/main-function/guider";
 
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/label.scss';
 import '~/sass/elements/user.scss';
 import '~/sass/elements/application-list.scss';

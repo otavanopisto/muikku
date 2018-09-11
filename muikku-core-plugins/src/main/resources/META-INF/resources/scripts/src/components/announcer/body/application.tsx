@@ -12,7 +12,7 @@ import NewEditAnnouncement from '../dialogs/new-edit-announcement';
 import {StateType} from '~/reducers';
 
 import {i18nType} from '~/reducers/base/i18n';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 
 import '~/sass/elements/application-panel.scss';

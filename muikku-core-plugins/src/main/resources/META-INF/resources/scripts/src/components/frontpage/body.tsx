@@ -3,7 +3,6 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import $ from '~/lib/jquery';
-
 import Header from './body/header';
 import Separator from './body/separator';
 import Studying from './body/studying';
@@ -11,9 +10,7 @@ import Videos from './body/videos';
 import News from './body/news';
 import Organization from './body/organization';
 import Footer from './body/footer';
-
 import '~/sass/elements/logo.scss';
-import '~/sass/elements/text.scss';
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/card.scss';
 import '~/sass/elements/buttons.scss';

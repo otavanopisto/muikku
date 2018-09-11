@@ -18,7 +18,7 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/glyph.scss';
 import '~/sass/elements/form-elements.scss';
