@@ -8,7 +8,7 @@ import Toolbar from './application/toolbar';
 import CoursepickerWorkspaces from './application/courses';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 import {StateType} from '~/reducers';
 import { CoursesType, CoursesBaseFilterType } from '~/reducers/main-function/courses';

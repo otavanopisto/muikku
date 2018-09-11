@@ -11,7 +11,7 @@ import {StateType} from '~/reducers';
 import Panel from '~/components/general/panel';
 
 import '~/sass/elements/ordered-container.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/item-list.scss';
 
 interface ContinueStudiesPanelProps {

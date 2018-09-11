@@ -14,7 +14,7 @@ import SignatureUpdateDialog from '../dialogs/signature-update';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 import Button, { ButtonPill } from '~/components/general/button';
 

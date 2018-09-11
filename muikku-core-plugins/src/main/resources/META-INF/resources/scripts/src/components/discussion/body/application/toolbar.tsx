@@ -4,7 +4,7 @@ import {connect, Dispatch} from 'react-redux';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/breadcrumb.scss';
 import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import Link from '~/components/general/link';

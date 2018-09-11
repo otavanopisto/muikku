@@ -10,7 +10,7 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/toc.scss';
 import '~/sass/elements/label.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/item-list.scss';
 
 

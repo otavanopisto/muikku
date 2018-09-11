@@ -5,7 +5,7 @@ import Carousel, { CarouselItem } from "~/components/general/carousel";
 
 
 import '~/sass/elements/ordered-container.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/card.scss';
 
 interface FrontpageNewsProps {

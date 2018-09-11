@@ -7,7 +7,7 @@ import Link from '~/components/general/link';
 import {StateType} from '~/reducers';
 
 import {i18nType} from '~/reducers/base/i18n';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 
 {/* Reading panel's css */}

@@ -11,7 +11,7 @@ import Dialog from "~/components/general/dialog";
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
 
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/text.scss';
+
 
 interface CheckContactInfoDialogProps {
   i18n: i18nType,

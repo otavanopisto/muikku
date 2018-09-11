@@ -7,7 +7,7 @@ import {AnnouncementListType, AnnouncementType} from '~/reducers/main-function/a
 import {StateType} from '~/reducers';
 
 import '~/sass/elements/ordered-container.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/item-list.scss';
 import '~/sass/elements/panel.scss';
 import '~/sass/elements/label.scss';

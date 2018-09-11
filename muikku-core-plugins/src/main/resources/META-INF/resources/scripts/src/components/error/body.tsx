@@ -3,7 +3,7 @@ import * as React from 'react';
 import ScreenContainer from '~/components/general/screen-container';
 
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/ordered-container.scss';
 import '~/sass/elements/panel.scss';
 

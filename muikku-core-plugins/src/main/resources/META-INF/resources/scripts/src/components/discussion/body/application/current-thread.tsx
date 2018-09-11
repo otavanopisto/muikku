@@ -12,7 +12,7 @@ import ModifyThreadReply from '../../dialogs/modify-thread-reply';
 import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
 

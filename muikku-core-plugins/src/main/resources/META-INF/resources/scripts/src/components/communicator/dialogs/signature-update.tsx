@@ -10,7 +10,7 @@ import {MessageSignatureType} from '~/reducers/main-function/messages';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/text.scss';
+
 import Button from '~/components/general/button';
 
 const KEYCODES = {

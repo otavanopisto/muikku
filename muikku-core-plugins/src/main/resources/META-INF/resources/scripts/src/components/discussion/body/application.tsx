@@ -12,7 +12,7 @@ import {StateType} from '~/reducers';
 import DiscussionThreads from './application/discussion-threads';
 import CurrentThread from './application/current-thread';
 
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 
 interface DiscussionApplicationState {

@@ -12,7 +12,7 @@ import { colorIntToHex } from '~/util/modifiers';
 
 import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
 

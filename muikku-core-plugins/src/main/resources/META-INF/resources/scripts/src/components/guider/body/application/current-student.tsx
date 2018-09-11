@@ -6,7 +6,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/label.scss';
 import '~/sass/elements/course.scss';
 import '~/sass/elements/application-list.scss';

@@ -1,5 +1,5 @@
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
