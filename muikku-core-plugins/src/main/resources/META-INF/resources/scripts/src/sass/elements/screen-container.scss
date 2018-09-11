@@ -19,12 +19,12 @@
 }
 
 .screen-container__header {
+  color: $color-frontpage-text-title;
   font-family: $text-branded-font-family;
-  color: $color-frontpage-text-title;  
   font-size: 1.7rem;
-  text-align: left;
   font-weight: 300;
   margin-bottom: 20px;
+  text-align: left;
 
   @include breakpoint($breakpoint-mobile-xl) {
     font-size: 1.8rem;
