@@ -16,11 +16,11 @@
 }
 
 .ordered-container__error-title {
+  align-items: center;
   background-color: $color-panel-background;
   color: $color-index-text-for-panels-title;
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
   font-size: 1.1875rem;
   font-weight: 400;
   padding: 10px 0 0 5px;
@@ -30,7 +30,7 @@
     background: none;
     font-size: 1.375rem;
     font-weight: 300;
-    padding: 0 2px .4rem;
+    padding: 0 2px 0.4rem;
   }    
 }
 
@@ -82,11 +82,11 @@
 }
 
 .ordered-container__item-header {
+  align-items: center;
   background-color: $color-panel-background;
   color: $color-index-text-for-panels-title;
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
   font-size: 1.1875rem;
   font-weight: 400;
   padding: 10px 0 0 5px;
@@ -96,8 +96,8 @@
     background: none;
     font-size: 1.375rem;
     font-weight: 300;
-    padding: 0 2px .4rem;
-  }
+    padding: 0 2px 0.4rem;
+  }  
 }
 
 .ordered-container__item-header-icon {
@@ -164,8 +164,8 @@
 }
 
 .ordered-container__subcontainer-content {
-  font-family: $text-branded-font-family;  
   color: $color-frontpage-text-otavan-opisto-description;
+  font-family: $text-branded-font-family;  
   font-size: $text-mobile-font-size;
   font-weight: 400;
   line-height: 1.375rem;
@@ -196,11 +196,11 @@
 } 
  
 .ordered-container__subcontainer-header--social-media {
-  font-family: $text-branded-font-family;  
   color: $color-frontpage-text-otavan-opisto-info-title;
+  font-family: $text-branded-font-family;  
   font-size: $text-mobile-font-size;
   font-weight: 600;
-  margin: 0 0 .625rem;
+  margin: 0 0 0.625rem;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad) {
