@@ -39,8 +39,8 @@ export interface UpdateProfileAddressTriggerType {
 export interface UploadProfileImageTriggerType {
   (data: {
     croppedB64: string,
-    originalB64: string,
-    file: File,
+    originalB64?: string,
+    file?: File,
     success: ()=>any,
     fail: ()=>any
   }):AnyActionType
@@ -213,14 +213,16 @@ let uploadProfileImage:UploadProfileImageTriggerType = function uploadProfileIma
     let state = getState();
     
     try {
-      await promisify (mApi().user.files
-        .create({
-          contentType: data.file.type,
-          base64Data: data.originalB64,
-          identifier: 'profile-image-original',
-          name: data.file.name,
-          visibility: 'PUBLIC'
-        }), 'callback')();
+      if (data.originalB64){
+        await promisify (mApi().user.files
+            .create({
+              contentType: data.file.type,
+              base64Data: data.originalB64,
+              identifier: 'profile-image-original',
+              name: data.file.name,
+              visibility: 'PUBLIC'
+            }), 'callback')();
+      }
       
       let image:HTMLImageElement = <HTMLImageElement>await promisifyNewConstructor(Image, 'onload', 'onerror', {
         src: data.croppedB64

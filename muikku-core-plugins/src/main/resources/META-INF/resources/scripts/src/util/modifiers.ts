@@ -127,14 +127,14 @@ export function getName(user: UserType | UserWithSchoolDataType){
   return user.firstName + (user.lastName ? " " + user.lastName : "");
 }
 
-export function getUserImageUrl(user: UserType | number, size?: number, version?: number){
+export function getUserImageUrl(user: UserType | number, type?: number | string, version?: number){
   let id:Number;
   if (typeof user === "number"){
     id = user;
   } else {
     id = user.id;
   }
-  return `/rest/user/files/user/${id}/identifier/profile-image-${size || 96}?v=${version || 1}`
+  return `/rest/user/files/user/${id}/identifier/profile-image-${type || 96}?v=${version || 1}`
 }
 
 export function shortenGrade(grade: string){
