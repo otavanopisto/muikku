@@ -11,7 +11,7 @@ import '~/sass/elements/application-list.scss';
 
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
-import '~/sass/elements/glyph.scss';ss
+import '~/sass/elements/glyph.scss';
 import { AnnouncementsType } from '~/reducers/main-function/announcements';
 
 interface MessageViewProps {

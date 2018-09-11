@@ -125,7 +125,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                 return (<Link className={`link link--full link--communicator-label ${isSelected ? "selected" : ""}`}
                   onClick={!isSelected ? this.props.addLabelToCurrentMessageThread.bind(null, label) : this.props.removeLabelFromCurrentMessageThread.bind(null, label)}>
                   <span className="link__icon icon-tag" style={{color: label.color}}></span>
-                  <span className="text">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
+                  <span className="link--selected">{filterHighlight(label.text(this.props.i18n), this.state.labelFilter)}</span>
                 </Link>);
               }))
             }>

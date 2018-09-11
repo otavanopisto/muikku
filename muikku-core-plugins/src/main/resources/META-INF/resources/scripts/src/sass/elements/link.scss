@@ -94,6 +94,11 @@
   text-transform: none;
 }
 
+.link--selected {
+  color: $color-text-link-selected;
+  font-weight: 600;  
+}
+
 .link--highlight {
   background-color: $color-link-highlight-background;
   color: $color-link-highlight-text;
