@@ -779,7 +779,8 @@ public class PyramusUpdater {
     
     // Populate currently known identifiers
 
-    List<OrganizationEntity> existingOrganizationEntities = organizationEntityController.listByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    List<OrganizationEntity> existingOrganizationEntities = organizationEntityController.listByDataSourceAndArchived(
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, Boolean.FALSE);
     for (OrganizationEntity organizationEntity : existingOrganizationEntities) {
       identifiers.add(new SchoolDataIdentifier(organizationEntity.getIdentifier(), organizationEntity.getDataSource().getIdentifier()));
     }
@@ -799,7 +800,7 @@ public class PyramusUpdater {
         
         OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(
             identifier.getDataSource(), identifier.getIdentifier());
-        if (organizationEntity == null) {
+        if (organizationEntity == null || Boolean.TRUE.equals(organizationEntity.getArchived())) {
           schoolDataOrganizationDiscoveredEvent.fire(new SchoolDataOrganizationDiscoveredEvent(
               identifier.getDataSource(), identifier.getIdentifier(), sourceOrganization.getName()));
           count++;

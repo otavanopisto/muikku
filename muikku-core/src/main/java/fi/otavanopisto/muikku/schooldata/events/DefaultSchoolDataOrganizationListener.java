@@ -34,10 +34,15 @@ public class DefaultSchoolDataOrganizationListener {
     OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (organizationEntity == null) {
       organizationEntity = organizationEntityController.createOrganizationEntity(event.getDataSource(), event.getIdentifier(), event.getName());
-      
       discoveredOrganizations.put(discoverId, organizationEntity.getId());
       event.setDiscoveredOrganizationEntityId(organizationEntity.getId());
-    } else {
+    }
+    else if (Boolean.TRUE.equals(organizationEntity.getArchived())) {
+      organizationEntityController.unarchive(organizationEntity);
+      discoveredOrganizations.put(discoverId, organizationEntity.getId());
+      event.setDiscoveredOrganizationEntityId(organizationEntity.getId());
+    }
+    else {
       logger.warning("EnvironmentRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
     }
   }
