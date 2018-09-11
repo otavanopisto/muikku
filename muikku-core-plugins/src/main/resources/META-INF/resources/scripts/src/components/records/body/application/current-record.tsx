@@ -15,7 +15,7 @@ import '~/sass/elements/assignment.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
-import '~/sass/elements/rich-text.scss';
+
 import ApplicationList, { ApplicationListItem, ApplicationListItemBody, ApplicationListItemHeader } from '~/components/general/application-list';
 
 interface CurrentRecordProps {

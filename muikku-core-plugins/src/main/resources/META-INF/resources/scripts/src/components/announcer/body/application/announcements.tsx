@@ -14,7 +14,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
-import '~/sass/elements/rich-text.scss';
+
 import '~/sass/elements/label.scss';
 
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';

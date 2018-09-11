@@ -15,7 +15,7 @@ import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
 import promisify from '~/util/promisify';
 
-import '~/sass/elements/rich-text.scss';
+
 
 
 //Bubble gum scripting needs

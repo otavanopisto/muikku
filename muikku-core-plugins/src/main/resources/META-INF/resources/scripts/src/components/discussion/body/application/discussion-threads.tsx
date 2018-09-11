@@ -10,7 +10,7 @@ import '~/sass/elements/loaders.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/discussion.scss';
 import '~/sass/elements/avatar.scss';
-import '~/sass/elements/rich-text.scss';
+
 
 import { DiscussionType, DiscussionThreadType } from '~/reducers/main-function/discussion';
 import { UserIndexType, UserType } from '~/reducers/main-function/user-index';

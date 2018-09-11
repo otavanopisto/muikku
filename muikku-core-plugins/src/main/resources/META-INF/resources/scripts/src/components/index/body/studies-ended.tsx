@@ -4,7 +4,7 @@ import { Dispatch, connect } from "react-redux";
 import { i18nType } from "~/reducers/base/i18n";
 
 import '~/sass/elements/panel.scss';
-import '~/sass/elements/rich-text.scss';
+
 
 
 interface StudiesEndedProps {

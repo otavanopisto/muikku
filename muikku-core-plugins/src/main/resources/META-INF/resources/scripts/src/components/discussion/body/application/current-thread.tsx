@@ -15,7 +15,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
-import '~/sass/elements/rich-text.scss';
+
 import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
 
 interface CurrentThreadProps {
