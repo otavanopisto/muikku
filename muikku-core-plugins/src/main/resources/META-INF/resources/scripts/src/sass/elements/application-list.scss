@@ -45,8 +45,8 @@
 .application-list__header-primary {
   display: flex;
   flex-basis: 0;
-  flex-grow: 1;
   flex-flow: row wrap;
+  flex-grow: 1;
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
@@ -148,8 +148,8 @@
 }
 
 .application-list__header-item-dates {
-  font-weight: 600;
   display: inline-block;
+  font-weight: 600;
   margin-left: 5px;
 }
   
