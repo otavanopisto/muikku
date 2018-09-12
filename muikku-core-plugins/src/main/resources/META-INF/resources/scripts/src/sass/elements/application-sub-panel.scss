@@ -32,19 +32,19 @@
 }
 
 .application-sub-panel__header--guider-header {
-  width: 100%;
   font-family: $text-font-family;
   font-size: 1.1875rem;
   font-weight: 400;  
   text-transform: uppercase;
+  width: 100%;
 }
 
 .application-sub-panel__header-main-container {
   align-items: flex-start;
   display: flex;
   flex-basis: auto;
-  flex-grow: 1;
   flex-flow: column wrap;
+  flex-grow: 1;
   flex-shrink: 1;
   margin-left: 15px;
   
@@ -102,7 +102,7 @@
   justify-content: flex-end;
   text-transform: uppercase;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
   }
 }

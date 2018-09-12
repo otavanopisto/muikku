@@ -5,8 +5,8 @@
 
 
 .breadcrumb {
-  display: flex;
   align-items: center;
+  display: flex;
   white-space: nowrap; // This prevents mobile wrapping for long topic titles in thread reading view
 }
 

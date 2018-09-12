@@ -81,6 +81,36 @@
   }
 }
 
+
+// Shit shit shit. This is not really a duplicate, but something about studies. TODO: find out where it belongs and name it accordingly
+
+
+.application-list__indicator-badge {
+  align-items: center;
+  border-radius: 2px;
+  color: $color-default;
+  display: flex;
+  font-size: 1rem;
+  height: 1.875rem;
+  justify-content: center;
+  margin: 0 15px 0 0;
+  text-align: center;
+  width: 1.875rem;
+
+  &.state-PASSED {
+    background: $color-grade-passed;
+  }
+  
+  &.state-FAILED {
+    background: $color-grade-failed;
+  }
+  
+  &.state-NO-ASSESSMENT {
+    background: $color-grade-not-assessed;
+  }
+} 
+
+
 .application-list__indicator-badge {
   align-items: center;
   border-radius: 2px;
@@ -540,14 +570,14 @@
   font-style: italic;
 }
 
-.application-list__item-body--discussion-message-overflow:before {
-  content: '';
-  width: 100%;
-  height: 4rem;    
-  position: absolute;
-  left: 0;
+.application-list__item-body--discussion-message-overflow::before {
+  background: linear-gradient(rgba(255, 255, 255, 0) 1rem, #fff);
   bottom: 0;
-  background: linear-gradient(rgba(255, 255, 255, 0) 1rem, white);
+  content: '';
+  height: 4rem;
+  left: 0;    
+  position: absolute;
+  width: 100%;
 }
 
 
@@ -707,30 +737,7 @@
   }
 }
 
-.application-list__indicator-badge {
-  align-items: center;
-  border-radius: 2px;
-  color: $color-default;
-  display: flex;
-  font-size: 1rem;
-  height: 1.875rem;
-  justify-content: center;
-  margin: 0 15px 0 0;
-  text-align: center;
-  width: 1.875rem;
 
-  &.state-PASSED {
-    background: $color-grade-passed;
-  }
-  
-  &.state-FAILED {
-    background: $color-grade-failed;
-  }
-  
-  &.state-NO-ASSESSMENT {
-    background: $color-grade-not-assessed;
-  }
-} 
 .application-list__fee-indicator {
   color: $color-course-icon;
   display: inline-flex;
