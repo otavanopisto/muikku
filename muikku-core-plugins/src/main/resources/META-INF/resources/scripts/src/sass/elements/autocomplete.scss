@@ -1,7 +1,10 @@
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/breakpoints";
-	
+
+
+// Should be flattened
+
 .autocomplete {
   width: 100%;
   display: block;
@@ -73,4 +76,5 @@
     opacity: 0.6;
   }
 }
+
  
