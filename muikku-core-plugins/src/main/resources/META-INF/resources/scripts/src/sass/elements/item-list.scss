@@ -22,9 +22,9 @@
 
 .item-list__item {
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
-  color: $color-text-default;    
   align-items: center;
   background-color: $color-item-list-item-background;
+  color: $color-text-default;    
   cursor: pointer;
   display: flex;
   padding: 12px;
