@@ -3,8 +3,8 @@
 @import "../base/vars";
 
 .footer {
-  font-family: $text-branded-font-family;
   background-color: $color-footer-default-background;
+  font-family: $text-branded-font-family;
   text-align: center;
   width: 100%;
 }
@@ -52,15 +52,15 @@
 .footer__subitem {
   color: $color-frontpage-text-contact-us-information;
   font-size: $text-mobile-font-size;
-  margin-top: .875rem;
-  margin-bottom: .875rem;
+  margin-bottom: 0.875rem;
+  margin-top: 0.875rem;
   
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
 
   * {
-    margin-right: .625rem;
+    margin-right: 0.625rem;
   }
 }
 
