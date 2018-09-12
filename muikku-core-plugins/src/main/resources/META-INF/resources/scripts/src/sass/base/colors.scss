@@ -65,6 +65,8 @@ $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
 $color-grade-failed: #4c4c4c;
+$color-task-evaluation: #e2ffe2;
+
 
 // Assignment & Exercise
 $color-assignment:#ce01bd;
@@ -157,6 +159,10 @@ $color-button-pill-text: $color-default-contrast;
 $color-button-pill-background-disabled: #ccc;
 $color-button-pill-text-disabled: $color-default;
 $color-button-pill-shadow: rgba(255, 255, 255, 0.4);
+
+// HOPS
+
+$color-hops-readable-inline-background: #ecfafe;
 
 // Label theme
 $color-label-default: $color-inverse;
@@ -304,6 +310,7 @@ $color-loader-empty-rotating-piece: #3498db;
 // form fields
 $color-form-element-border: #62c3eb;
 $color-form-element-selected: #29b0c4;
+
 
 // form field input tag
 $color-form-element-selected-item-background:  $color-label-background;
