@@ -131,6 +131,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.lastMouseedDownElement = null;
     
     //And trigger the onfocus event for the parent (it will make the toolbar visible and stuff)
+    (this.refs.input as HTMLElement).classList.add("focused");
     this.props.onFocus();
   }
   calculateOutput(){
@@ -193,6 +194,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       //console.log("blur");
       
       this.unselect();
+      (this.refs.input as HTMLElement).classList.remove("focused");
       this.props.onBlur();
     }
     
@@ -248,6 +250,8 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     } else {
       (this.refs.input as HTMLDivElement).focus();
     }
+    
+    (this.refs.input as HTMLElement).classList.add("focused");
   }
   onChange(){
     //This gets called every time the contenteditable changes
