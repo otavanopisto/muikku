@@ -3,7 +3,7 @@ import {connect, Dispatch} from 'react-redux';
 import {i18nType} from '~/reducers/base/i18n';
 import {StateType} from '~/reducers';
 
-
+import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/feed.scss';
 
 interface FeedProps {

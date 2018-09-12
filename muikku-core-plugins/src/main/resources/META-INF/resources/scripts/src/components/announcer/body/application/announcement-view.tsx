@@ -8,7 +8,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 
 import '~/sass/elements/application-list.scss';
-
+import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/article.scss';
 import '~/sass/elements/glyph.scss';

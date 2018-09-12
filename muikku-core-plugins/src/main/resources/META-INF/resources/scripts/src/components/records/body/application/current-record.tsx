@@ -12,7 +12,7 @@ import Material from './current-record/material';
 
 import '~/sass/elements/workspace-activity.scss';
 import '~/sass/elements/assignment.scss';
-
+import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/journal.scss';
 

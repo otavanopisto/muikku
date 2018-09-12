@@ -12,9 +12,8 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
-
 import '~/sass/elements/announcement.scss';
-
+import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
