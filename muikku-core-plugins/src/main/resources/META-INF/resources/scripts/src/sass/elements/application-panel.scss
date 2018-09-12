@@ -102,17 +102,17 @@
   
 .application-panel__tool--current-folder {
   align-items: center;
+  display: flex;
   flex-basis: auto;
   flex-grow: 1;
   flex-shrink: 1;
-  display: flex;
   font-weight: 400;
   overflow: hidden;
   position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     display: none;
   }
 }
