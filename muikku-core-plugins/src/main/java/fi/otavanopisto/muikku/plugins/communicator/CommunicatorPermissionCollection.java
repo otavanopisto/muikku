@@ -24,7 +24,7 @@ public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCo
   public static final String COMMUNICATOR_GROUP_MESSAGING = "COMMUNICATOR_GROUP_MESSAGING";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultWorkspacePermissionRoles ({ WorkspaceRoleArchetype.TEACHER, WorkspaceRoleArchetype.STUDENT })
+  @DefaultWorkspacePermissionRoles ({ WorkspaceRoleArchetype.TEACHER })
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER })
   public static final String COMMUNICATOR_WORKSPACE_MESSAGING = "COMMUNICATOR_WORKSPACE_MESSAGING";
   

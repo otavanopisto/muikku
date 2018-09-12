@@ -107,7 +107,7 @@
     -moz-appearance: none;
     align-items: center;
     appearance: none;
-    border: solid 1px $color-main-function-application-list-item-checkbox-border;
+    border: solid 2px $color-main-function-application-list-item-checkbox-border;
     border-radius: 3px;
     display: flex;
     height: 1rem;
@@ -117,7 +117,7 @@
 
   input:checked {
     background-color: $color-main-function-application-list-item-checkbox-checked-background;
-    border: solid 1px $color-main-function-application-list-item-checkbox-checked-background;
+    border: solid 2px $color-main-function-application-list-item-checkbox-checked-background;
   }
 
   input:checked::after {
@@ -207,8 +207,8 @@
 .application-list__item-meta {
   display: flex;
   padding: 10px;
+  width: 100%;
 }
-
 
 .application-list__item-footer {
   align-items: center;

@@ -167,13 +167,13 @@ class Menu extends React.Component<MenuProps, MenuState> {
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
-                      <Link className="link link--full link--menu link--menu--instructions">
+                      <Link className="link link--full link--menu link--menu--instructions" href="https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials">
                         <span className="link__icon icon-forgotpassword"/>
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.userGuide')}</span>
                       </Link>
                     </li> : null}
                     {this.props.status.loggedIn ? <li className="menu__item">
-                      <Link className="link link--full link--menu link--menu--helpdesk">
+                      <Link className="link link--full link--menu link--menu--helpdesk" href="mailto:helpdesk@muikkuverkko.fi">
                         <span className="link__icon icon-helpdesk"></span>
                         <span className="link--menu__text">{this.props.i18n.text.get('plugin.profileBadge.links.helpdesk')}</span>
                       </Link>

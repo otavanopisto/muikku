@@ -408,11 +408,18 @@ b {
       
   &:not(:last-child):after {
     content: ",";
+    margin: 0 5px 0 0;
   }
 }
 
 .text--new-message-signature {
   margin: 0 0 0 3px;
+}
+
+.text--new-message-signature-view {
+  margin: 0 0 0 15px;
+  padding-left: 5px;
+  border-left: solid 3px #ccc;
 }
 
 // Announcer

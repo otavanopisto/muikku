@@ -47,32 +47,36 @@ class Message extends React.Component<MessageProps, MessageState> {
     })).filter(user => user.value.id !== this.props.status.userId); //we are filtering the sender from the recepient, just in case
   
     //These are the usergroup recepients
-    let userGroupObject: Array<UserGroupRecepientType> = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
+    let userGroupObject: Array<UserGroupRecepientType> = this.props.message.userGroupRecipients.map((ug: any): UserGroupRecepientType => ( {
       type: "usergroup",
       value: ug
-    })) : [];
+    }));
     
-    let workspaceRecepientsFiltered = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? this.props.message.workspaceRecipients.filter((w, pos, self)=>{
+    let workspaceRecepientsFiltered = this.props.message.workspaceRecipients.filter((w, pos, self)=>{
       return self.findIndex((w2)=>w2.workspaceEntityId === w.workspaceEntityId) === pos;
-    }) : [];
+    });
   
     //And the workspace recepients, sadly has to force it
-    let workspaceObject: Array<WorkspaceRecepientType> = this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
+    let workspaceObject: Array<WorkspaceRecepientType> = workspaceRecepientsFiltered.map((w): WorkspaceRecepientType => ({
       type: "workspace",
       value: ({
         id: w.workspaceEntityId,
         name: w.workspaceName,
       } as WorkspaceType)
-    })) : [];
+    }));
   
     //The basic reply target is the sender
     let replytarget = [senderObject];
     if (senderObject.value.id === this.props.status.userId) {
-      replytarget = [senderObject].concat(recipientsObject as any).concat(userGroupObject as any).concat(workspaceObject as any)
+      replytarget = [senderObject].concat(recipientsObject as any)
+      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupObject as any : [])
+      .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceObject as any : [])
       .filter((t)=>t.value.id !== this.props.status.userId);
     }
     let replyalltarget = [senderObject].concat(recipientsObject as any)
-    .concat(userGroupObject as any).concat(workspaceObject as any).filter((t)=>t.value.id !== senderObject.value.id)
+    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? userGroupObject as any : [])
+    .concat(this.props.status.permissions.COMMUNICATOR_GROUP_MESSAGING ? workspaceObject as any : [])
+    .filter((t)=>t.value.id !== senderObject.value.id)
     .concat(senderObject as any).filter((t)=>t.value.id !== this.props.status.userId);
 
     return <div className="application-list__item application-list__item--communicator-message">
@@ -86,7 +90,7 @@ class Message extends React.Component<MessageProps, MessageState> {
               {this.props.message.recipients.map((recipient)=>{
                 return (
                   <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
-                    {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
+                    {recipient.firstName ? recipient.firstName + "" : ""} {recipient.lastName ? recipient.lastName + "" : ""}
                   </span>
                 )
               })}
