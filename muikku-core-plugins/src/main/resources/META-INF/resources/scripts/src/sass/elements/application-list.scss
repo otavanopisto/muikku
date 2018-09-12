@@ -76,7 +76,7 @@
   justify-content: flex-end;
   text-transform: uppercase;
   
-  @include breakpoint($breakpoint-pad){
+  @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
   }
 }
@@ -148,9 +148,9 @@
 }
 
 .application-list__header-item-dates {
+  font-weight: 600;
   display: inline-block;
   margin-left: 5px;
-  font-weight: 600;
 }
   
 .application-list__header-item-body {
@@ -444,10 +444,10 @@
 }
 
 .application-list__item-footer-content-main {
-  font-size: 0.8125rem;
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
+  font-size: 0.8125rem;  
   padding: 0 0 7px;
   
   @include breakpoint($breakpoint-mobile-xl) {
@@ -557,23 +557,23 @@
 
 .application-list__item-body--discussion-message {
   font-style: italic;
-  width: 100%;
   line-height: 1rem;
   max-height: 5rem;
   overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;  
+  position: relative;
+  text-overflow: ellipsis;  
+  width: 100%;
 }
 
 .application-list__item-edited {
-  font-weight: 600;
   font-style: italic;
+  font-weight: 600;
 }
 
 .application-list__item-body--discussion-message-overflow::before {
-  background: linear-gradient(rgba(255, 255, 255, 0) 1rem, #fff);
+  background: linear-gradient(rgba(255, 255, 255, 0) 1rem, $color-default);
   bottom: 0;
-  content: '';
+  content: "";
   height: 4rem;
   left: 0;    
   position: absolute;
