@@ -93,32 +93,6 @@
   font-size: 1rem;
   height: 1.875rem;
   justify-content: center;
-  margin: 0 15px 0 0;
-  text-align: center;
-  width: 1.875rem;
-
-  &.state-PASSED {
-    background: $color-grade-passed;
-  }
-  
-  &.state-FAILED {
-    background: $color-grade-failed;
-  }
-  
-  &.state-NO-ASSESSMENT {
-    background: $color-grade-not-assessed;
-  }
-} 
-
-
-.application-list__indicator-badge {
-  align-items: center;
-  border-radius: 2px;
-  color: $color-default;
-  display: flex;
-  font-size: 1rem;
-  height: 1.875rem;
-  justify-content: center;
   margin: 0 0 0 15px;
   text-align: center;
   width: 1.875rem;
@@ -136,6 +110,15 @@
   }  
   
 }
+
+.application-list__indicator-badge--task-evaluation {
+  margin: 0 15px 0 0;
+  
+  &.state-NO-ASSESSMENT {
+    background: $color-grade-not-assessed;
+  }
+} 
+
 
 .application-list__indicator-badge--evaluation-request {
   background-color: $color-evaluation-request;
@@ -477,8 +460,6 @@
   flex-grow: 1;
   flex-shrink: 1;
 }
-
-
 
 .application-list__item-header-main-content {
   display: inline-block;      
