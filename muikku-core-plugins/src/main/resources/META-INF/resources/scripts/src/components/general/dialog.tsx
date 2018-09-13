@@ -21,7 +21,9 @@ interface DialogState {
 
 export default class Dialog extends React.Component<DialogProps, DialogState> {
   private oldOverflow:string;
-  
+  private oldBottomMargin:string;  
+
+
   constructor(props: DialogProps){
     super(props);
     
@@ -30,6 +32,7 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.beforeClose = this.beforeClose.bind(this);
     
     this.oldOverflow = null;
+    this.oldBottomMargin = null;
     
     this.state = {
       visible: false
@@ -46,8 +49,13 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         visible: true
       });
     }, 10);
+    this.oldBottomMargin = document.body.style.marginBottom;
     this.oldOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+//    document.body.style.overflow = "hidden";
+    
+
+    
+    document.body.style.marginBottom = "500px";
     this.props.onOpen && this.props.onOpen(element);
   }
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
@@ -55,8 +63,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
       visible: false
     });
     document.body.style.overflow = this.oldOverflow;
+    document.body.style.marginBottom = this.oldBottomMargin;
     setTimeout(removeFromDOM, 300);
-  }
+  }  
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>
