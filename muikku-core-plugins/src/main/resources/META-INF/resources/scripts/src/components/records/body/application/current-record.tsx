@@ -74,21 +74,20 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
           })}
         </ApplicationList>
           
-          {this.props.records.current.journals.length ? <div className="application-list">
-          <div className="application-list__header-container application-list__header-container--studies-detailed-info">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
-            <div className="application-list_item-wrapper">
-              {this.props.records.current.journals.map((journal)=>{
-                return <ApplicationListItem className="journal journal--studies" key={journal.id}>
-                  <ApplicationListItemHeader modifiers="journal">
-                    <div className="journal__entry-title">{journal.title}</div>
-                    <div className="journal__entry-time">{this.props.i18n.time.format(journal.created, "L LT")}</div>
-                  </ApplicationListItemHeader>
-                  <ApplicationListItemBody className="application-list__item-body application-list__item-body--journal rich-text" dangerouslySetInnerHTML={{__html: journal.content}}></ApplicationListItemBody>
-                </ApplicationListItem>
+        {this.props.records.current.journals.length ? <div className="application-list">
+          <div className="application-list__header">{this.props.i18n.text.get("plugin.records.studydiary.title")}</div>
+          <div className="application-list_item-wrapper">
+            {this.props.records.current.journals.map((journal)=>{
+              return <ApplicationListItem className="journal journal--studies" key={journal.id}>
+                <ApplicationListItemHeader modifiers="journal">
+                  <div className="journal__entry-title">{journal.title}</div>
+                  <div className="journal__entry-time">{this.props.i18n.time.format(journal.created, "L LT")}</div>
+                </ApplicationListItemHeader>
+                <ApplicationListItemBody className="application-list__item-body application-list__item-body--journal rich-text" dangerouslySetInnerHTML={{__html: journal.content}}></ApplicationListItemBody>
+              </ApplicationListItem>
             })}
           </div>
-        </div> : null}
-        
+        </div> : null}        
       </div>
           
     </div>
