@@ -108,7 +108,7 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick} />
 
             <div className="application-panel__tool--current-folder">
-              <span className="application-panel__tool--current-folder icon-new-section"></span>
+              <span className="application-panel__tool-icon icon-new-section"></span>
               <span className="application-panel__tool-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
 

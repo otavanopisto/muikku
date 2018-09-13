@@ -35,7 +35,7 @@ class Announcement extends React.Component<AnnouncementProps, AnnouncementState>
     return (
       <section>
         <article className="article">
-          <header className="article__title">{this.props.announcement.caption}</header>
+          <header className="article__header">{this.props.announcement.caption}</header>
           {this.props.announcement.workspaces.length ? <div className="labels">
             {this.props.announcement.workspaces.map((workspace)=>
               <span className="label" key={workspace.id}>
