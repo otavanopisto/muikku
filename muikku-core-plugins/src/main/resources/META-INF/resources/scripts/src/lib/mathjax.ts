@@ -39,9 +39,9 @@ export function processMathInPage(){
   }
 }
 
-export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTMLImageElement)=>any, placeholderSrc?: string){
+export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTMLImageElement)=>any, placeholderSrc?: string, placeholderCb?: (element: HTMLImageElement)=>any){
   if (!(window as any).MathJax){
-    queue.push(toSVG.bind(this, element, errorSrc, cb, placeholderSrc));
+    queue.push(toSVG.bind(this, element, errorSrc, cb, placeholderSrc, placeholderCb));
     return;
   }
   let formula = element.textContent || (element as HTMLImageElement).alt;
@@ -60,6 +60,8 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
     
     element.parentElement.replaceChild(placeholderImage, element);
     actualUsedElementInTheDOM = placeholderImage;
+    
+    placeholderCb && placeholderCb(placeholderImage);
   }
   (window as any).MathJax.Hub.Queue(["Typeset", (window as any).MathJax.Hub, container]);
   (window as any).MathJax.Hub.Queue(()=>{
@@ -76,8 +78,6 @@ export function toSVG(element: HTMLElement, errorSrc: string, cb?: (element: HTM
     } else {
       newImage.src = errorSrc;
     }
-    
-    newImage.contentEditable = "false";
     
     actualUsedElementInTheDOM.parentElement.replaceChild(newImage, actualUsedElementInTheDOM);
     

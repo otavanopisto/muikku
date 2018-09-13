@@ -79,6 +79,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     loadMathJax(false);
     this.createMarkup();
     
+    document.execCommand("enableObjectResizing", false, false);
     document.body.addEventListener('click', this.handleAllClicks);
   }
   componentWillReceiveProps(nextProps: FieldProps){
@@ -417,10 +418,10 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     if (key === 8 || key === 46){
       this.onChange();
     } else if (key === 27){
-      this.unselect();
-    } //else if (key === 13 && !this.isOnAceEditor){
-//      this.unselect();
-//    }
+      this.unselect(true);
+    } else if (key === 13 && !this.isOnAceEditor){
+      this.unselect(true, true);
+    }
   }
   onAceEditorFocus(){
     //console.log("focus on ace");
@@ -488,7 +489,7 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       }
     }
   }
-  unselect(){
+  unselect(focusAfterImage?: boolean, selectAfterUnselect?: boolean){
     if (this.selectedFormula){
       //console.log("unselect");
       
@@ -498,17 +499,27 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       } else {
         this.selectedMathFieldContainer.parentElement.replaceChild(this.selectedFormula, this.selectedMathFieldContainer);
         if (this.changedSelected){
-          this.selectedFormula.alt = latex;        
-          toSVG(this.selectedFormula, warningImage, null, loadingImage);
+          this.selectedFormula.alt = latex;
+          let cb = (newImage:HTMLImageElement)=>{
+            if (focusAfterImage){
+              this.focus();
+              let range = document.createRange()
+              range.setStartAfter(newImage);
+              const sel = window.getSelection()
+              sel.removeAllRanges()
+              sel.addRange(range);
+            }
+          };
+          toSVG(this.selectedFormula, warningImage, cb, loadingImage, cb);
         }
       }
       
-      this.selectedMathField.revert();
+      this.selectedMathField && this.selectedMathField.revert();
       this.selectedMathField = null;
       this.selectedMathFieldContainer = null;
       this.selectedFormula = null;
       
-      this.aceEditor.destroy();
+      this.aceEditor && this.aceEditor.destroy();
       this.aceEditor = null;
       this.isOnAceEditor = false;
       
