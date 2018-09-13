@@ -418,7 +418,9 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
       this.onChange();
     } else if (key === 27){
       this.unselect();
-    }
+    } //else if (key === 13 && !this.isOnAceEditor){
+//      this.unselect();
+//    }
   }
   onAceEditorFocus(){
     //console.log("focus on ace");
@@ -524,6 +526,6 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
   }
   render(){
     return <div className={this.props.className} contentEditable spellCheck={false} onFocus={this.onFocusField} ref="input" onBlur={this.onBlurField}
-       onInput={this.onChange} style={{position: "relative"}} onMouseDown={this.checkTheFocus}/>
+       onInput={this.onChange} onMouseDown={this.checkTheFocus}/>
   }
 }
