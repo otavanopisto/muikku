@@ -68,7 +68,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
       <div className="application-sub-panel__body application-sub-panel__body--studies-detailed-info">
         {workspaceEvaluation}      
         <ApplicationList>
-          <div className="application-list__header-container application-list__header-container--studies-detailed-info">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
+          <div className="application-list__header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
           {this.props.records.current.materials.map((material)=>{
             return <Material key={material.id} material={material} i18n={this.props.i18n} grades={this.props.records.grades} workspace={this.props.records.current.workspace}/>
           })}
