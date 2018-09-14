@@ -12,7 +12,9 @@ interface MemoFieldProps {
     name: string,
     richedit: boolean
   },
-  i18n: i18nType
+  i18n: i18nType,
+  readOnly?: boolean,
+  value?: string
 }
 
 interface MemoFieldState {
@@ -43,14 +45,24 @@ const extraPlugins = {
   'muikku-mathjax': (window as any).CONTEXTPATH + '/scripts/ckplugins/muikku-mathjax/'
 }
 
+function characterCount(rawText: string){
+  return rawText === '' ? 0 : rawText.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length;
+}
+
+function wordCount(rawText: string){
+  return rawText === '' ? 0 : rawText.trim().split(/\s+/).length;
+}
+
 export default class MemoField extends React.Component<MemoFieldProps, MemoFieldState> {
   constructor(props: MemoFieldProps){
     super(props);
     
+    let value = props.value || '';
+    let rawText = this.props.content.richedit ? $(value).text() : value;
     this.state = {
-      value: '',
-      words: 0,
-      characters: 0
+      value,
+      words: wordCount(rawText),
+      characters: characterCount(rawText)
     }
     
     this.onInputChange = this.onInputChange.bind(this);
@@ -59,24 +71,41 @@ export default class MemoField extends React.Component<MemoFieldProps, MemoField
   onInputChange(e: React.ChangeEvent<HTMLTextAreaElement>){
     this.setState({
       value: e.target.value,
-      words: e.target.value === '' ? 0 : e.target.value.trim().split(/\s+/).length,
-      characters: e.target.value === '' ? 0 : e.target.value.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length
+      words: wordCount(e.target.value),
+      characters: characterCount(e.target.value)
     });
   }
   onCKEditorChange(value: string){
     let rawText = $(value).text();
     this.setState({
       value,
-      words: rawText === '' ? 0 : rawText.trim().split(/\s+/).length,
-      characters: rawText === '' ? 0 : rawText.trim().replace(/(\s|\r\n|\r|\n)+/g,'').split("").length
+      words: wordCount(rawText),
+      characters: characterCount(rawText)
     });
   }
+  componentWillReceiveProps(nextProps: MemoFieldProps){
+    if (nextProps.value !== this.state.value){
+      let rawText = nextProps.content.richedit ? $(nextProps.value).text() : nextProps.value;
+      this.setState({
+        value: nextProps.value,
+        words: wordCount(rawText),
+        characters: characterCount(rawText)
+      });
+    }
+  }
   render(){
+    let fields;
+    if  (this.props.readOnly){
+      fields = !this.props.content.richedit ? <div className="muikku-memo-field muikku-field">{this.state.value}</div> :
+              <div className="muikku-memo-field muikku-field" dangerouslySetInnerHTML={{__html:this.state.value}}/>
+    } else {
+      fields = !this.props.content.richedit ? <textarea className="muikku-memo-field muikku-field" cols={parseInt(this.props.content.columns)}
+          rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
+            <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+             onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>
+    }
     return <div>
-      {!this.props.content.richedit ? <textarea className="muikku-memo-field muikku-field" cols={parseInt(this.props.content.columns)}
-        rows={parseInt(this.props.content.rows)} value={this.state.value} onChange={this.onInputChange}/> :
-          <CKEditor width="100%" configuration={ckEditorConfig} extraPlugins={extraPlugins}
-           onChange={this.onCKEditorChange}>{this.state.value}</CKEditor>}
+      {fields}
       <div className="count-container">
         <div className="word-count-container">
           <div className="word-count-title">{this.props.i18n.text.get("plugin.workspace.memoField.wordCount")}</div>

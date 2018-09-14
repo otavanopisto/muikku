@@ -11,11 +11,13 @@ interface MultiSelectFieldProps {
       text: string,
       correct: boolean
     }>
-  }
+  },
+  readOnly?: boolean,
+  value?: string
 }
 
 interface MultiSelectFieldState {
-  values: {[key: string]: boolean}
+  values: Array<string>
 }
 
 export default class MultiSelectField extends React.Component<MultiSelectFieldProps, MultiSelectFieldState> {
@@ -24,33 +26,48 @@ export default class MultiSelectField extends React.Component<MultiSelectFieldPr
     
     this.toggleValue = this.toggleValue.bind(this);
     
+    let values:Array<string> = ((props.value && JSON.parse(props.value)) || []) as Array<string>;
     this.state = {
-      values: {}
+      values: values.sort()
     }
-    
-    props.content.options.forEach(option=>{
-      this.state.values[option.name] = false;
-    });
   }
   componentWillReceiveProps(nextProps: MultiSelectFieldProps){
     if (JSON.stringify(nextProps.content.options) !== JSON.stringify(this.props.content.options)){
-      let nValues:{[key: string]: boolean} = {};
+      let nValues:Array<string> = [];
       nextProps.content.options.forEach(option=>{
-        nValues[option.name] = this.state.values[option.name] || false;
+        if (this.state.values.includes(option.name)){
+          nValues.push(option.name);
+        }
       });
       
       this.setState({
-        values: nValues
+        values: nValues.sort()
+      });
+    }
+    
+    let values = nextProps.value && JSON.parse(nextProps.value);
+    if (values && JSON.stringify(values.sort()) !== JSON.stringify(this.state.values)){
+      this.setState({
+        values: values.sort()
       });
     }
   }
   toggleValue(e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>){
-    this.state.values[e.target.value] = !this.state.values[e.target.value];
+    let nValues = this.state.values.slice(0);
+    if (this.state.values.includes(e.target.value)){
+      nValues.filter(v=>v!==e.target.value)
+    } else {
+      nValues.push(e.target.value);
+      nValues.sort();
+    }
+    this.setState({
+      values: nValues
+    });
   }
   render(){
     return <span className={`muikku-checkbox-field checkbox-${this.props.content.listType === "checkbox-horizontal" ? "horizontal" : "vertical"} muikku-field`}>
       {this.props.content.options.map(o=>{return <span key={o.name}>
-        <input type="checkbox" value={o.name} checked={this.state.values[o.name]} onChange={this.toggleValue}/>
+        <input type="checkbox" value={o.name} checked={this.state.values.includes(o.name)} onChange={this.toggleValue} disabled={this.props.readOnly}/>
         <label>{o.text}</label>
       </span>})}
     </span>

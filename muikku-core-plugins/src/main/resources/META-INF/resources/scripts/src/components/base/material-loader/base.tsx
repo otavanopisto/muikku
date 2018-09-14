@@ -14,9 +14,10 @@ import SorterField from './fields/sorter-field';
 import { StatusType } from '~/reducers/base/status';
 import Image from './static/image';
 import WordDefinition from './static/word-definition';
-import { extractDataSet } from '~/util/modifiers';
+import { extractDataSet, guidGenerator } from '~/util/modifiers';
 import { processMathInPage } from '~/lib/mathjax';
 import MathField from './fields/math-field';
+import { MaterialCompositeRepliesType } from '~/reducers/main-function/records/records';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,
@@ -34,7 +35,10 @@ const objects: {[key: string]: any} = {
 interface BaseProps {
   html: string,
   i18n: i18nType,
-  status: StatusType
+  status: StatusType,
+  
+  compositeReplies?: MaterialCompositeRepliesType,
+  readOnly?: boolean
 }
 
 interface BaseState {
@@ -54,24 +58,93 @@ const statics:{[componentKey:string]: {
 
 export default class Base extends React.Component<BaseProps, BaseState> {
   private elements: Array<HTMLElement>;
+  private fieldRegistry: {
+    node: HTMLElement,
+    subtree: any,
+    element: HTMLElement
+  }[];
+  private staticRegistry: {
+    node: HTMLElement,
+    subtree: any,
+    element: HTMLElement,
+    componentKey: string
+  }[];
   constructor(props: BaseProps){
     super(props);
     
     this.elements = $(props.html).toArray() as Array<HTMLElement>;
+    this.fieldRegistry = [];
+    this.staticRegistry = [];
+  }
+  shouldComponentUpdate(){
+    return false;
   }
   componentDidMount(){
+    this.setupEverything();
+  }
+  componentWillReceiveProps(nextProps: BaseProps){
+    if (nextProps.html !== this.props.html){
+      this.unmountEverything();
+      this.elements = $(nextProps.html).toArray() as Array<HTMLElement>;
+      this.setupEverything(nextProps);
+      return;
+    }
+    
+    console.log(nextProps);
+    this.updateEverything(nextProps);
+  }
+  updateEverything(props: BaseProps = this.props){
+    this.fieldRegistry.forEach((field)=>{
+      let element = field.element;
+      let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
+    
+      field.subtree = unstable_renderSubtreeIntoContainer(
+        this,
+        rElement,
+        field.node
+      );
+    });
+    
+    this.staticRegistry.forEach((statice)=>{
+      let rElement:React.ReactElement<any> = statics[statice.componentKey].handler({
+        element: statice.element,
+        dataset: extractDataSet(statice.element),
+        i18n: props.i18n
+      });
+      
+      statice.subtree = unstable_renderSubtreeIntoContainer(
+        this,
+        rElement,
+        statice.node
+      );
+    });
+  }
+  unmountEverything(){
+    this.fieldRegistry.forEach((field)=>{
+      unmountComponentAtNode(field.node);
+    });
+    
+    this.staticRegistry.forEach((statice)=>{
+      unmountComponentAtNode(statice.node);
+    });
+  }
+  setupEverything(props: BaseProps = this.props){
     this.elements.forEach((e)=>(this.refs["base"] as HTMLElement).appendChild(e));
     
     $(this.elements).find("object").each((index: number, element: HTMLElement)=>{
-      let rElement:React.ReactElement<any> = this.getObjectElement(element);
+      let rElement:React.ReactElement<any> = this.getObjectElement(element, props);
       let parentElement = element.parentElement;
       parentElement.removeChild(element);
       
-      unstable_renderSubtreeIntoContainer(
-        this,
-        rElement,
-        parentElement
-      );
+      this.fieldRegistry.push({
+        node: parentElement,
+        subtree: unstable_renderSubtreeIntoContainer(
+           this,
+           rElement,
+           parentElement
+        ),
+        element
+      });
     });
     
     Object.keys(statics).forEach((componentKey)=>{
@@ -79,22 +152,25 @@ export default class Base extends React.Component<BaseProps, BaseState> {
         let rElement:React.ReactElement<any> = statics[componentKey].handler({
           element,
           dataset: extractDataSet(element),
-          i18n: this.props.i18n
+          i18n: props.i18n
         });
         let parentElement = element.parentElement;
         parentElement.removeChild(element);
         
-        unstable_renderSubtreeIntoContainer(
+        this.staticRegistry.push({subtree: unstable_renderSubtreeIntoContainer(
           this,
           rElement,
           parentElement
-        );
+        ), node: parentElement, element, componentKey});
       });
     });
     
     processMathInPage();
   }
-  getObjectElement(element: HTMLElement){
+  componentWillUnmount(){
+    this.unmountEverything();
+  }
+  getObjectElement(element: HTMLElement, props: BaseProps = this.props){
     let ActualElement = objects[element.getAttribute("type")];
     if (!ActualElement){
       return <span>Invalid Element {element.getAttribute("type")} {element.innerHTML}</span>;
@@ -105,16 +181,21 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       if (node.tagName === "PARAM"){
         parameters[node.getAttribute("name")] = node.getAttribute("value");
       }
-      
-      if (parameters["type"] === "application/json"){
-        try {
-          parameters["content"] = parameters["content"] && JSON.parse(parameters["content"]);
-        } catch (e){}
-      }
-      
-      parameters["i18n"] = this.props.i18n;
-      parameters["status"] = this.props.status;
     }
+    
+    if (parameters["type"] === "application/json"){
+      try {
+        parameters["content"] = parameters["content"] && JSON.parse(parameters["content"]);
+      } catch (e){}
+    }
+    
+    parameters["i18n"] = props.i18n;
+    parameters["status"] = props.status;
+    parameters["readOnly"] = props.readOnly;
+    parameters["value"] = props.compositeReplies && props.compositeReplies.answers.find((answer)=>{
+      return answer.fieldName === (parameters.content && parameters.content.name);
+    });
+    parameters["value"] = parameters["value"] && parameters["value"].value;
     return <ActualElement {...parameters}/>
   }
   render(){

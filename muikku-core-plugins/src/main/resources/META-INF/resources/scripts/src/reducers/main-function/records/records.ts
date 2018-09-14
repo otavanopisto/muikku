@@ -82,6 +82,23 @@ export interface MaterialType {
   assignment?: MaterialAssignmentType
 }
 
+export interface MaterialAnswerType {
+  embedId: string,
+  fieldName: string,
+  materialId: number,
+  value: string,
+  workspaceMaterialId: number
+}
+
+export interface MaterialCompositeRepliesType {
+  answers: Array<MaterialAnswerType>,
+  created: string,
+  lastModified: string,
+  state: string,
+  submitted: string,
+  withdrawn?: string
+}
+
 export interface MaterialEvaluationType {
   id: number,
   evaluated: string,

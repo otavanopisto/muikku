@@ -9,7 +9,7 @@ import Base from './material-loader/base';
 //TODO add the scss files that are necessary to render this material page correctly...
 //this file is temporary use it to dump the content from the deprecated scss files that are necessary
 import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
-import { MaterialType } from '~/reducers/main-function/records/records';
+import { MaterialType, MaterialCompositeRepliesType } from '~/reducers/main-function/records/records';
 
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
@@ -144,21 +144,27 @@ interface MaterialLoaderProps {
   i18n: i18nType,
   status: StatusType,
   
-  v2?: boolean
+  loadCompositeReplies?: boolean,
+  readOnly?: boolean,
+  compositeReplies?: MaterialCompositeRepliesType
 }
 
 interface MaterialLoaderState {
+  compositeReplies: MaterialCompositeRepliesType
 }
 
 let materialRepliesCache:{[key: string]: any} = {};
-
-const BASEMODE = true;
+let compositeRepliesCache:{[key: string]: MaterialCompositeRepliesType} = {};
 
 export default class MaterialLoader extends React.Component<MaterialLoaderProps, MaterialLoaderState> {
   constructor(props: MaterialLoaderProps){
     super(props);
     
     this.stopPropagation = this.stopPropagation.bind(this);
+    
+    this.state = {
+      compositeReplies: null
+    }
   }
   componentDidMount(){
     this.create();
@@ -168,7 +174,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
   }
   async create(){
     
-    if (!BASEMODE){
+    if (this.props.loadCompositeReplies){
     let fieldAnswers:any = materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
     if (!fieldAnswers){
       fieldAnswers = {};
@@ -182,6 +188,10 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
       }
       
       materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = fieldAnswers;
+      
+      setTimeout(()=>{
+        delete materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
+      }, 60000);
     }
     
     //I can't start explaining how wrong this is, oh god... XD
@@ -196,6 +206,26 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     } else {
       $('<div/>').muikkuMaterialLoader().muikkuMaterialLoader('loadMaterial', this.refs.sandbox);
     }
+    
+    if (this.props.loadCompositeReplies){
+      let compositeReplies:MaterialCompositeRepliesType = compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
+      if (!compositeReplies){
+        compositeReplies = (await promisify(mApi().workspace.workspaces.materials.compositeMaterialReplies
+            .read(this.props.workspace.id, this.props.material.assignment.id,
+                {userEntityId: (window as any).MUIKKU_LOGGED_USER_ID}), 'callback')()) as MaterialCompositeRepliesType;
+      
+        materialRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id] = compositeReplies;
+      
+        setTimeout(()=>{
+          delete compositeRepliesCache[this.props.workspace.id + "-" + this.props.material.assignment.id];
+        }, 60000);
+      }
+      
+      console.log(compositeReplies);
+      this.setState({
+        compositeReplies
+      });
+    }
   }
   render(){
     return <div className="__deprecated">
@@ -205,7 +235,8 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
           </div>
        : null}
       <div className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full" onClick={this.stopPropagation}>
-        <Base html={this.props.material.html} i18n={this.props.i18n} status={this.props.status}/>
+        <Base html={this.props.material.html} i18n={this.props.i18n} status={this.props.status}
+         readOnly={this.props.readOnly} compositeReplies={this.props.compositeReplies || this.state.compositeReplies}/>
       </div>
       <hr/>
       <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
