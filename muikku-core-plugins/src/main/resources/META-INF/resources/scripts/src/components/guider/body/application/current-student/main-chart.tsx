@@ -76,11 +76,12 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       else
         filteredCompletedWorkspaces.push(workspaceId);
     } else {
-      if (this.state.filteredCompletedWorkspaces.length == 0){
+      //TODO: Activate when completedWorkspace data added
+      /*if (this.state.filteredCompletedWorkspaces.length == 0){
         this.props.Completedworkspaces.map((workspace)=>
           filteredCompletedWorkspaces.push(workspace.id)
         )
-      }
+      }*/
     }
     this.setState({filteredCompletedWorkspaces: filteredCompletedWorkspaces});
   }
