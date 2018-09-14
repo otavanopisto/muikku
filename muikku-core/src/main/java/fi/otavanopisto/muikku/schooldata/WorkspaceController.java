@@ -195,16 +195,18 @@ public class WorkspaceController {
   
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity, boolean includeUnpublished) {
     List<WorkspaceEntity> result = new ArrayList<>();
-    
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      if (includeUnpublished || workspaceUserEntity.getWorkspaceEntity().getPublished()) {
-        if (!result.contains(workspaceUserEntity.getWorkspaceEntity())) {
-          result.add(workspaceUserEntity.getWorkspaceEntity());
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      if (Boolean.TRUE.equals(workspaceEntity.getArchived())) {
+        continue;
+      }
+      if (includeUnpublished || workspaceEntity.getPublished()) {
+        if (!result.contains(workspaceEntity)) {
+          result.add(workspaceEntity);
         }
       }
     }
-    
     return result;
   }
 
