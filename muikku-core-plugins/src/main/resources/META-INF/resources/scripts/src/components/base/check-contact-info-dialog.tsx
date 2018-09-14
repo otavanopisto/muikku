@@ -11,7 +11,7 @@ import Dialog from "~/components/general/dialog";
 import {displayNotification, DisplayNotificationTriggerType} from '~/actions/base/notifications';
 
 import '~/sass/elements/buttons.scss';
-import '~/sass/elements/text.scss';
+
 
 interface CheckContactInfoDialogProps {
   i18n: i18nType,
@@ -89,7 +89,7 @@ class CheckContactInfoDialog extends React.Component<CheckContactInfoDialogProps
   }
   render(){
     let content = (closeDialog: ()=>any)=><div>
-        <div className="text text--check-contact-info-title">{this.props.i18n.text.get('plugin.frontPage.checkContactInfo.dialog.description')}</div>
+        <div>{this.props.i18n.text.get('plugin.frontPage.checkContactInfo.dialog.description')}</div>
         <dl>
         <dt>{this.props.i18n.text.get("plugin.frontPage.checkContactInfo.dialog.street")}</dt>
         <dd>{this.state.address.street ? this.state.address.street : "-"}</dd>

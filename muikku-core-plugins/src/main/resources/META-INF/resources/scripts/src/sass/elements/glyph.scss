@@ -1,0 +1,22 @@
+@import "../base/colors";
+@import "../base/mixins";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.glyph {
+  align-items: center;
+  display: flex;  
+}
+
+.glyph--autocomplete-recipient {
+  align-items: center;
+  display: flex;  
+}
+
+.glyph--selected-recipient {
+  display: inline-block;
+  flex-basis: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-right: 5px;
+}

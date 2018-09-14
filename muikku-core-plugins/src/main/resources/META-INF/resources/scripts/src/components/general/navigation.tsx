@@ -29,7 +29,7 @@ interface NavigationTopicState {
 
 export class NavigationTopic extends React.Component<NavigationTopicProps, NavigationTopicState> {
   render(){
-    return <div className={this.props.className}>{this.props.name ? <span className="text item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
+    return <div className={this.props.className}>{this.props.name ? <span className="item-list__title">{this.props.name}</span> : null}{this.props.children}</div>
   }
 }
 
@@ -67,7 +67,7 @@ export class NavigationElement extends React.Component<NavigationElementProps, N
     return <Link className={`item-list__item ${this.props.isActive ? "active" : ""}`}
       href={this.props.hash ? "#" + this.props.hash : null} onClick={this.props.onClick}>
       {this.props.icon ? <span className={`item-list__icon icon-${this.props.icon}`} style={{color: this.props.iconColor}}></span> : null}
-      <span className="item-list__text-body text">
+      <span className="item-list__text-body">
         {this.props.children}
       </span>
       {editableComponent}

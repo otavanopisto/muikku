@@ -9,13 +9,13 @@ import * as React from 'react';
 //this file is temporary use it to dump the content from the deprecated scss files that are necessary
 import "~/sass/elements/__ugly-material-loader-deprecated-file-mashup.scss";
 import { MaterialType } from '~/reducers/main-function/records/records';
-
+import '~/sass/elements/rich-text.scss';
 import $ from '~/lib/jquery';
 import mApi from '~/lib/mApi';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
 import promisify from '~/util/promisify';
 
-import '~/sass/elements/rich-text.scss';
+
 
 
 //Bubble gum scripting needs
@@ -187,7 +187,7 @@ export default class MaterialLoader extends React.Component<MaterialLoaderProps,
     return <div className="__deprecated">
       {this.props.material.evaluation.verbalAssessment ?
           <div className="tr-task-content content lg-flex-cell-full md-flex-cell-full sm-flex-cell-full">
-            <div className="text text--studies-assignment-literal-assessment rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
+            <div className="application-sub-panel__text application-sub-panel__text--task-evaluation rich-text" dangerouslySetInnerHTML={{__html: this.props.material.evaluation.verbalAssessment}}></div>
           </div>
        : null}
       <div ref="sandbox" className="tr-task-material material lg-flex-cell-full md-flex-cell-full sm-flex-cell-full"
