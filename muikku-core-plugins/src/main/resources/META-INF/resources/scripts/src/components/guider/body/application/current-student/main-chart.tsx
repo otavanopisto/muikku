@@ -1,20 +1,24 @@
+import {i18nType} from "~/reducers/base/i18n";
 import * as React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {StudentUserStatistics, Activity, Record, GuiderActivityDataType} from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
 import WorkspaceFilter from './filters/workspace-filter';
+import {WorkspaceListType, WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/main-function/workspaces';
 import GraphFilter from './filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
 var AmCharts = require("@amcharts/amcharts3-react");
 
 interface CurrentStudentStatisticsProps {
-  statistics: StudentUserStatistics
+  i18n: i18nType,
+  workspaces: WorkspaceListType,
+  logins: Array<string>
 }
 
 interface CurrentStudentStatisticsState {
   filteredWorkspaces: number[],
+  filteredCompletedWorkspaces: number[],
   filteredGraphs: string[]
 }
 
@@ -28,36 +32,57 @@ var ignoreZoomed: boolean = true;
 var zoomStartDate: Date = null;
 var zoomEndDate: Date = null;
 
-//TEST DATA: remove if found in production
-/*var testData:{"date":Date, "logins":number, "assignments":number,"exercises":number}[] = [];*/
-
 class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsProps, CurrentStudentStatisticsState> {
   constructor(props: CurrentStudentStatisticsProps){
     super(props);
     this.workspaceFilterHandler = this.workspaceFilterHandler.bind(this);
+    this.completedWorkspaceFilterHandler = this.completedWorkspaceFilterHandler.bind(this);
     this.GraphFilterHandler = this.GraphFilterHandler.bind(this);
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
       filteredWorkspaces: [],
+      filteredCompletedWorkspaces: [],
       filteredGraphs: []
     };
-    
-    //TEST DATA: remove if found in production
-    /* let today:Date = new Date();
-    for (let i=0;i<1000; i++) {
-      testData.push({"date": new Date(today.getTime() + i*24*60*60*1000), "logins": Math.floor(Math.random()*7+3), "assignments": Math.floor(Math.random()*3+1), "exercises": Math.floor(Math.random()*3+1)});
-    }*/
   }
   
-  workspaceFilterHandler(workspaceId: number){
-    const filteredWorkspaces = this.state.filteredWorkspaces.slice();
-    var index = filteredWorkspaces.indexOf(workspaceId);
-    if(index > -1)
-      filteredWorkspaces.splice(index, 1);
-    else
-      filteredWorkspaces.push(workspaceId);
+  workspaceFilterHandler(workspaceId?: number){
+    let filteredWorkspaces: number[] = [];
+    if (workspaceId){
+      filteredWorkspaces = this.state.filteredWorkspaces.slice();
+      var index = filteredWorkspaces.indexOf(workspaceId);
+      if (index > -1)
+        filteredWorkspaces.splice(index, 1);
+      else
+        filteredWorkspaces.push(workspaceId);
+    } else {
+      if (this.state.filteredWorkspaces.length == 0){
+        this.props.workspaces.map((workspace)=>
+          filteredWorkspaces.push(workspace.id)
+        )
+      }
+    }
     this.setState({filteredWorkspaces: filteredWorkspaces});
+  }
+  
+  completedWorkspaceFilterHandler(workspaceId?: number){
+    let filteredCompletedWorkspaces: number[] = [];
+    if (workspaceId){
+      filteredCompletedWorkspaces = this.state.filteredCompletedWorkspaces.slice();
+      var index = filteredCompletedWorkspaces.indexOf(workspaceId);
+      if (index > -1)
+        filteredCompletedWorkspaces.splice(index, 1);
+      else
+        filteredCompletedWorkspaces.push(workspaceId);
+    } else {
+      if (this.state.filteredCompletedWorkspaces.length == 0){
+        this.props.Completedworkspaces.map((workspace)=>
+          filteredCompletedWorkspaces.push(workspace.id)
+        )
+      }
+    }
+    this.setState({filteredCompletedWorkspaces: filteredCompletedWorkspaces});
   }
   
   GraphFilterHandler(graph: Graph){
@@ -81,28 +106,23 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
   zoomApplyHandler(e:any){
     if (zoomStartDate != null && zoomEndDate != null)
       e.chart.zoomToDates(zoomStartDate, zoomEndDate);
+    else {
+      let prior: Date;
+      let today: Date = new Date();
+      if (today.getMonth() >= 3)
+        prior = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+      else
+        prior = new Date(today.getFullYear() - 1, today.getMonth() + 9, today.getDate());
+      e.chart.zoomToDates(prior, today);
+    }
   }
   
   render(){
-    if (!this.props.statistics){
-      //TODO: change to animation?
-      return (<p>LOADING</p>);
-    }
-    
-    let workspaces: {id: number, name: string}[] = [];
-    
-    //TEST DATA. Remove if found in production.
-    workspaces.push({id:1, name:"test1"});
-    workspaces.push({id:76, name:"test2"});
-    workspaces.push({id:23, name:"test3"});
-    workspaces.push({id:32, name:"test4"});
-    workspaces.push({id:28, name:"test5"});
-    workspaces.push({id:102, name:"test6"});
-    
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
     let chartDataMap = new Map<string, {logins: number, assignments: number, exercises: number}>();
-      this.props.statistics.login.map((login)=>{
+    chartDataMap.set(new Date().toISOString().slice(0, 10), {"logins": 0, "assignments": 0, "exercises": 0});
+      this.props.logins.map((login)=>{
         let date = login.slice(0, 10);
         let entry = chartDataMap.get(date);
         if(entry == null)
@@ -111,11 +131,11 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         chartDataMap.set(date, entry);
       });
     
-    Object.keys(this.props.statistics.activities).forEach(key=>{
-      let workspaceId: number = parseInt(key);
-      workspaces.push({id: workspaceId, name: this.props.statistics.activities[workspaceId].workspaceUrlName});
-      if (!this.state.filteredWorkspaces.includes(workspaceId)){
-        this.props.statistics.activities[workspaceId].records.map((record)=>{
+    let workspaces: {id: number, name: string, isEmpty: boolean}[] = [];
+    this.props.workspaces.map((workspace)=>{
+      workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityStatistics.records.length == 0 });
+      if (!this.state.filteredWorkspaces.includes(workspace.id)){
+        workspace.activityStatistics.records.map((record)=>{
           let date = record.date.slice(0, 10);
           let entry = chartDataMap.get(date);
           if (entry == null)
@@ -129,6 +149,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       }
     });
     
+    //TODO: load and parse completed workspaces
+    let completedWorkspaces: {id: number, name: string, isEmpty: boolean}[] = [];
+    
     //NOTE: Data can be filtered here also (Option 2)
     let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b)=>{return a > b ? 1 : -1;});
     let data = new Array;
@@ -137,13 +160,12 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       data.push({"date": key, "logins": value.logins, "assignments": value.assignments, "exercises": value.exercises});
     });
     
-    /*data = data.concat(testData);*/
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
     if (!this.state.filteredGraphs.includes(Graph.LOGINS)){
       graphs.push({
         "id": "logins",
-        "balloonText": "Logins number <b>[[logins]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.loginsTitle") + " <b>[[logins]]</b>",
         "fillAlphas": 0.7,
         "lineAlpha": 0.2,
         "lineColor": "#62c3eb",
@@ -159,7 +181,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.ASSIGNMENTS)){
       graphs.push({
         "id": "assignments",
-        "balloonText": "Assignments done <b>[[assignments]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[assignments]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
@@ -174,7 +196,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     if (!this.state.filteredGraphs.includes(Graph.EXERCISES)){
       graphs.push({
         "id": "exercises",
-        "balloonText": "Exercises done <b>[[exercises]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[exercises]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
@@ -257,7 +279,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     return <div className="application-sub-panel__body">
       <div className="chart-legend">
         <GraphFilter graphs={showGraphs} filteredGraphs={this.state.filteredGraphs} handler={this.GraphFilterHandler}/>
-        <WorkspaceFilter workspaces={workspaces} handler={this.workspaceFilterHandler} filteredWorkspaces={this.state.filteredWorkspaces}/>
+        <WorkspaceFilter workspaces={workspaces} filteredWorkspaces={this.state.filteredWorkspaces} workspaceHandler={this.workspaceFilterHandler}
+        completedWorkspaces={completedWorkspaces} filteredCompletedWorkspaces={this.state.filteredCompletedWorkspaces} completedWorkspaceHandler={this.completedWorkspaceFilterHandler}/>
       </div>
       <AmCharts.React className="chart chart--main-chart" options={config}/>
     </div>
@@ -266,7 +289,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
 
 function mapStateToProps(state: StateType){
   return {
-    statistics: state.guider.currentStudent.statistics
+    i18n: state.i18n,
+    workspaces: state.guider.currentStudent.workspaces,
+    logins: state.guider.currentStudent.logins
   }
 };
 

@@ -1,16 +1,16 @@
-import mApi, { MApiError } from '~/lib/mApi';
+import mApi, {MApiError} from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import { GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType } from '~/reducers/main-function/guider';
-import { loadStudentsHelper } from './helpers';
+import {GuiderActiveFiltersType, GuiderPatchType, GuiderStudentsStateType, GuiderStudentType, GuiderStudentUserProfileLabelType, GuiderNotificationStudentsDataType, GuiderStudentUserProfileType, GuiderCurrentStudentStateType, GuiderType} from '~/reducers/main-function/guider';
+import {loadStudentsHelper} from './helpers';
 import promisify from '~/util/promisify';
-import { UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType } from 'reducers/main-function/user-index';
+import {UserGroupListType, UserFileType, StudentUserProfilePhoneType, StudentUserProfileEmailType, StudentUserAddressType, LastLoginStudentDataType} from 'reducers/main-function/user-index';
 import notificationActions from '~/actions/base/notifications';
-import { GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType, GuiderActivityDataType } from '~/reducers/main-function/guider';
-import { WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType } from '~/reducers/main-function/workspaces';
-import { VOPSDataType } from '~/reducers/main-function/vops';
-import { HOPSDataType } from '~/reducers/main-function/hops';
-import { StateType } from '~/reducers';
-import { colorIntToHex } from '~/util/modifiers';
+import {GuiderUserLabelType, GuiderUserLabelListType, GuiderWorkspaceListType} from '~/reducers/main-function/guider';
+import {WorkspaceListType, WorkspaceStudentActivityType, WorkspaceForumStatisticsType, WorkspaceActivityStatisticsType, WorkspaceActivityRecordType} from '~/reducers/main-function/workspaces';
+import {VOPSDataType} from '~/reducers/main-function/vops';
+import {HOPSDataType} from '~/reducers/main-function/hops';
+import {StateType} from '~/reducers';
+import {colorIntToHex} from '~/util/modifiers';
 
 export type UPDATE_GUIDER_ACTIVE_FILTERS = SpecificActionType<"UPDATE_GUIDER_ACTIVE_FILTERS", GuiderActiveFiltersType>
 export type UPDATE_GUIDER_ALL_PROPS = SpecificActionType<"UPDATE_GUIDER_ALL_PROPS", GuiderPatchType>
@@ -245,18 +245,21 @@ let loadStudent:LoadStudentTriggerType = function loadStudent(id){
                       .read(workspace.id, {userIdentifier: id}), 'callback')();
                     workspaces[index].forumStatistics = statistics;
                   })
+                ),
+                Promise.all(workspaces.map(async (workspace, index)=>{
+                  let activityRecords:WorkspaceActivityRecordType[] = <WorkspaceActivityRecordType[]>await promisify(mApi().workspace.workspaces.activityStatistics
+                      .read(workspace.id, {userIdentifier: id}), 'callback')();
+                    workspaces[index].activityStatistics = {records: activityRecords};
+                  })
                 )
               ]);
             }
             dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "workspaces", value: workspaces}})
           }),
-		/*TODO: Change to parrallel promises and await*/
+        //NOTE: This year span for now as a presentation of possible functionality. The logins as datasource for the chart seems to be replased later.
         promisify(mApi().user.students.loginson.read(id, {from: new Date(new Date().getFullYear(), 0), to: new Date()}), 'callback')()
-        .then((logins:Array<string>)=>{
-          promisify(mApi().guider.user.activities.read(id), 'callback')()
-          .then((activities:GuiderActivityDataType)=>{
-            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "statistics", value: {login: logins, activities: activities}}});
-          });
+          .then((logins: string[])=>{
+            dispatch({type: "SET_CURRENT_GUIDER_STUDENT_PROP", payload: {property: "logins", value: logins}});
         })
       ]);
       

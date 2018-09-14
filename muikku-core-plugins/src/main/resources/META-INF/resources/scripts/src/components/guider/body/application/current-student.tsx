@@ -211,11 +211,11 @@ class CurrentStudent extends React.Component<CurrentStudentProps, CurrentStudent
         <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.files")}</div>
         {files}  
       </div>
-      {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
       <div className="application-sub-panel">
-        <div className="application-sub-panel__header text text--guider-header">Statistics</div>
-        <MainChart/>
+        <div className="application-sub-panel__header text text--guider-header">{this.props.i18n.text.get("plugin.guider.user.details.statistics")}</div>
+        {this.props.guider.currentStudent.logins && this.props.guider.currentStudent.workspaces && <MainChart/>}
       </div>
+      {this.props.guider.currentState === "LOADING" ? <div className="application-sub-panel loader-empty"/> : null}
     </div>
   }
 }

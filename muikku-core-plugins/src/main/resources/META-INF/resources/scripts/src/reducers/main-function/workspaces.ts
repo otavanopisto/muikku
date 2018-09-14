@@ -55,6 +55,15 @@ export interface WorkspaceStudentAssessmentsType {
   assessments: Array<WorkspaceStudentAssessmentType>
 }
 
+export interface WorkspaceActivityRecordType {
+  type: string,
+  date: string
+}
+
+export interface WorkspaceActivityStatisticsType {
+  records: WorkspaceActivityRecordType[];
+}
+
 export interface WorkspaceType {
   access: string,
   archived: boolean,
@@ -74,7 +83,8 @@ export interface WorkspaceType {
   //These are optional addons, and are usually not available
   studentActivity?: WorkspaceStudentActivityType,
   forumStatistics?: WorkspaceForumStatisticsType,
-  studentAssessments?: WorkspaceStudentAssessmentsType
+  studentAssessments?: WorkspaceStudentAssessmentsType,
+  activityStatistics?: WorkspaceActivityStatisticsType
 }
 
 export interface ShortWorkspaceType {

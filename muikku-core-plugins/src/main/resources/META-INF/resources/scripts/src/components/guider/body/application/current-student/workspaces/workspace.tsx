@@ -4,7 +4,6 @@ import { WorkspaceType } from "~/reducers/main-function/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
-import {StudentUserStatistics, Activity, Record, GuiderActivityDataType} from '~/reducers/main-function/guider';
 import Dropdown from '~/components/general/dropdown';
 import WorkspaceChart from './workspace/workspace-chart';
 
@@ -17,8 +16,7 @@ import { ApplicationListItem, ApplicationListItemHeader } from "~/components/gen
 
 interface StudentWorkspaceProps {
   i18n: i18nType,
-  workspace: WorkspaceType,
-  statistics: StudentUserStatistics
+  workspace: WorkspaceType
 }
 
 interface StudentWorkspaceState {
@@ -122,11 +120,11 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>
-          <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspaceId={workspace.id}/>]}>
+          <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspace={workspace}/>]}>
             <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
           </Dropdown>
-        </ApplicationListItemHeader>               
-              
+        </ApplicationListItemHeader>
+        
         {this.state.activitiesVisible ? <div className="application-sub-panel text">      
           <div className="application-sub-panel__body">  
             <div className="application-sub-panel__item application-sub-panel__item--course-activity">
@@ -177,8 +175,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
 
 function mapStateToProps(state: StateType){
   return {
-    i18n: state.i18n,
-    statistics: state.guider.currentStudent.statistics
+    i18n: state.i18n
   }
 };
 

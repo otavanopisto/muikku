@@ -1,16 +1,17 @@
+import {i18nType} from "~/reducers/base/i18n";
 import * as React from 'react';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {StudentUserStatistics, Activity, Record, GuiderActivityDataType} from '~/reducers/main-function/guider';
 import {StateType} from '~/reducers';
+import {WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/main-function/workspaces';
 import GraphFilter from '../../filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
 var AmCharts = require("@amcharts/amcharts3-react");
 
 interface CurrentStudentWorkspaceStatisticsProps {
-  statistics: StudentUserStatistics,
-  workspaceId: number
+  i18n: i18nType,
+  workspace: WorkspaceType
 }
 
 interface CurrentStudentWorkspaceStatisticsState {
@@ -61,28 +62,21 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   }
   
   render(){
-    if (!this.props.statistics){
-      //TODO: change to animation?
-      return <p>LOADING</p>
-    }
-    
-    //NOTE: The unused data can be cut here. (Option 1)
+    //NOTE: The filtered data can be cut here. (Option 1)
     let chartDataMap = new Map<string, {assignments: number, exercises: number}>();
-    if (this.props.statistics.activities[this.props.workspaceId] != null){
-      this.props.statistics.activities[this.props.workspaceId].records.map((record)=>{
-        let date = record.date.slice(0, 10);
-        let entry = chartDataMap.get(date);
-        if (entry == null)
-          entry = {"assignments": 0,"exercises": 0};
-        if (record.type === "EVALUATED")
-          entry.assignments++;
-        else if (record.type === "EXERCISE")
-          entry.exercises++;
-        chartDataMap.set(date, entry);
-      });
-    } else {
-      chartDataMap.set(new Date().toISOString().slice(0, 10), {"assignments": 0,"exercises": 0});
-    }
+    chartDataMap.set(new Date().toISOString().slice(0, 10), {"assignments": 0, "exercises": 0});
+    this.props.workspace.activityStatistics.records.map((record)=>{
+      let date = record.date.slice(0, 10);
+      let entry = chartDataMap.get(date);
+      if (entry == null)
+        entry = {"assignments": 0,"exercises": 0};
+      if (record.type === "EVALUATED")
+        entry.assignments++;
+      else if (record.type === "EXERCISE")
+        entry.exercises++;
+      chartDataMap.set(date, entry);
+    });
+    
     //NOTE: Data can be filtered here also (Option 2)
     let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b)=>{return a > b ? 1 : -1;});
     let data = new Array;
@@ -91,21 +85,13 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       data.push({"date": key, "assignments": value.assignments, "exercises": value.exercises});
     });
     
-    //TEST DATA Remove if found in production
-    /*if(this.props.statistics.activities[this.props.workspaceId] != null) {
-      let today:Date = new Date();
-      for (let i = 0;i < 100; i++) {
-        data.push({"date": new Date(today.getTime() + i*24*60*60*1000), "assignments": Math.floor(Math.random()*2), "exercises": Math.floor(Math.random()*3)});
-      }
-    }*/
-    
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)
     let graphs = new Array;
     
     if (!this.state.filteredGraphs.includes(Graph.ASSIGNMENTS)){
       graphs.push({
         "id": "assignments",
-        "balloonText": "Assignments done <b>[[assignments]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.assignmentsTitle") + " <b>[[assignments]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ce01bd",
@@ -120,7 +106,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     if (!this.state.filteredGraphs.includes(Graph.EXERCISES)){
       graphs.push({
         "id": "exercises",
-        "balloonText": "Exercises done <b>[[exercises]]</b>",
+        "balloonText": this.props.i18n.text.get("plugin.guider.exercisesTitle") + " <b>[[exercises]]</b>",
         "fillAlphas": 0.9,
         "lineAlpha": 0.2,
         "lineColor": "#ff9900",
@@ -213,7 +199,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
 
 function mapStateToProps(state: StateType){
   return {
-    statistics: state.guider.currentStudent.statistics
+    i18n: state.i18n,
   }
 };
 

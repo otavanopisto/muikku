@@ -91,6 +91,24 @@
   }
 }
 
+.filter-category {
+  align-items: center;
+  display: flex;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
+  height: 100%;
+}
+
+.filter-category__label {
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.filter-category__link {
+  cursor: pointer;
+  margin-left: 10px;
+}
+
 .filter-item {
   align-items: center;
   display: flex;
@@ -169,6 +187,20 @@
 }
 
 .filter-item--workspaces {
+  input[type="checkbox"] {
+    border-color: $color-main-function-application-list-item-checkbox-border;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-form-element-selected;
+    border-color: $color-form-element-selected;
+  }
+}
+
+.filter-item--workspaces-empty {
+  font-style: italic;
+  opacity: 0.8;
+  
   input[type="checkbox"] {
     border-color: $color-main-function-application-list-item-checkbox-border;
   }
