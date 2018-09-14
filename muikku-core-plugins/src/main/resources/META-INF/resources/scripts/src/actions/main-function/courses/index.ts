@@ -91,7 +91,7 @@ let signupIntoCourse:SignupIntoCourseTriggerType = function signupIntoCourse(dat
       if (!(err instanceof MApiError)){
         throw err;
       }
-      dispatch(notificationActions.displayNotification(getState().i18n.text.get("TODOERRORMSG error for when signing up to the course failed"), 'error'));
+      dispatch(notificationActions.displayNotification(getState().i18n.text.get('plugin.workspaceSignUp.notif.error'), 'error'));
       data.fail();
     }
   }
