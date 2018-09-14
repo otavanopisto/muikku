@@ -194,6 +194,8 @@ let updateProfileAddress:UpdateProfileAddressTriggerType = function updateProfil
         })
       }))
       
+      dispatch(actions.displayNotification(getState().i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.notif.successful'), 'success'));
+      
       data.success && data.success();
       
     } catch(err){
