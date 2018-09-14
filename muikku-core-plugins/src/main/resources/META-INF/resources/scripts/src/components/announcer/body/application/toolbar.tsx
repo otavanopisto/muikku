@@ -8,7 +8,7 @@ import { StateType } from '~/reducers';
 
 import '~/sass/elements/link.scss';
 import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { AnnouncementsType, AnnouncementType } from '~/reducers/main-function/announcements';
@@ -107,9 +107,9 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
           <ApplicationPanelToolbarActionsMain>
             <ButtonPill buttonModifiers="go-back" icon="goback" onClick={this.onGoBackClick} />
 
-            <div className="text text--main-function-current-folder">
-              <span className="text__icon text__icon--current-folder icon-new-section"></span>
-              <span className="text__current-folder-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
+            <div className="application-panel__tool--current-folder">
+              <span className="application-panel__tool-icon icon-new-section"></span>
+              <span className="application-panel__tool-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
 
             <NewEditAnnouncement announcement={this.props.announcements.current}>
@@ -134,9 +134,9 @@ class AnnouncerToolbar extends React.Component<AnnouncerToolbarProps, AnnouncerT
       return (
         <ApplicationPanelToolbar>
           <ApplicationPanelToolbarActionsMain>
-            <div className="text text--main-function-current-folder">
-              <span className="text__icon text__icon--current-folder icon-new-section"></span>
-              <span className="text__current-folder-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
+            <div className="application-panel__tool--current-folder">
+              <span className="glyph application-panel__tool-icon icon-new-section"></span>
+              <span className="application-panel__tool-title">{this.props.i18n.text.get( "plugin.announcer.cat." + this.props.announcements.location )}</span>
             </div>
             {/* Delete announcement button is hidden in archived folder as backend does not support the feature yet */}
             {this.props.announcements.location !== "archived" ?

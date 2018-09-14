@@ -1,7 +1,10 @@
 @import "../base/colors";
 @import "../base/mixins";
 @import "../base/breakpoints";
-	
+
+
+// Should be flattened
+
 .autocomplete {
   width: 100%;
   display: block;
@@ -49,3 +52,30 @@
     margin-bottom: 10px;
   }
 }
+
+.autocomplete__recipient {
+  display: flex;
+  	
+  i {
+    opacity: 0.6;
+  }
+} 
+
+.autocomplete__selected-item {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  font-size: 0.75rem;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: 0.8125rem;
+  }
+ 	
+  i {
+    margin: 0 0 0 5px;
+    opacity: 0.6;
+  }
+}
+ 
+ 
+ 

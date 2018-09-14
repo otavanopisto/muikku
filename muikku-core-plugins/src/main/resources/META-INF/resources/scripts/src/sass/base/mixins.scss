@@ -7,3 +7,14 @@
 
   #{$property}: $values;
 }
+
+@mixin text {
+  color: $color-text-default;
+  font-family: $text-font-family;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
+  
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
+  }  
+}

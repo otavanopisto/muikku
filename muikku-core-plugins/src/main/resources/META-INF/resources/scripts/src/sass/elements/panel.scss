@@ -19,6 +19,41 @@
   }
 }
 
+.panel__header {
+  font-size: 1.125rem;
+  font-weight: 400;
+  margin: 12px;
+}
+
+.panel__content {
+  @include text;  
+  margin: 12px;
+}
+
+.panel__empty {
+  padding: 10px;
+}
+
+.panel__error-body {
+  padding: 10px;
+  
+  @include breakpoint($breakpoint-pad) {
+    background: none;
+    font-weight: 300;
+    padding: 20px;
+  }
+}
+
+
+
+.panel__content-highlight {
+  display: inline;
+  font-style: italic;
+  font-weight: 600;
+  margin: 0 5px 0 0;
+}
+
+
 .panel--studies-ended {
   width: 100%;
   padding: 1.5rem 2rem;

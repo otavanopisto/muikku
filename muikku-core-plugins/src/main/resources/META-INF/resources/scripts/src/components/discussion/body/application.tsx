@@ -12,7 +12,7 @@ import {StateType} from '~/reducers';
 import DiscussionThreads from './application/discussion-threads';
 import CurrentThread from './application/current-thread';
 
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 
 interface DiscussionApplicationState {
@@ -29,7 +29,7 @@ class DiscussionApplication extends React.Component<DiscussionApplicationProps, 
     super(props);
   }
   render(){
-    let title = <h2 className="text text--application-title">{this.props.i18n.text.get('plugin.forum.pageTitle')}</h2>
+    let title = <h2 className="application-panel__header-title">{this.props.i18n.text.get('plugin.forum.pageTitle')}</h2>
     let toolbar = <Toolbar/>
     let primaryOption = !this.props.discussion.current ? <NewThread><Link className="button button--primary-function">    
     {this.props.i18n.text.get('plugin.discussion.createmessage.topic')}

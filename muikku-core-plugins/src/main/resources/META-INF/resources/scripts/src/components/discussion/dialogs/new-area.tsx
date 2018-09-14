@@ -9,7 +9,7 @@ import SessionStateComponent from '~/components/general/session-state-component'
 import Button from '~/components/general/button';
 
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import {createDiscussionArea, CreateDiscussionAreaTriggerType} from '~/actions/main-function/discussion';

@@ -1,5 +1,5 @@
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
@@ -63,7 +63,7 @@ class DeleteAnnouncementDialog extends React.Component<DeleteAnnouncementDialogP
     }
   }
   render(){
-    let content = (closeDialog: ()=>any) => <div className="text text--delete-announcement">
+    let content = (closeDialog: ()=>any) => <div>
       {this.props.announcement ?
        this.props.i18n.text.get('plugin.announcer.deleteDialog.description') :
        this.props.i18n.text.get('plugin.announcer.deleteDialog.description')}

@@ -12,7 +12,6 @@ import {i18nType} from '~/reducers/base/i18n';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
-import '~/sass/elements/text.scss';
 import '~/sass/elements/announcement.scss';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
@@ -34,7 +33,6 @@ interface AnnouncementsProps {
 }
 
 interface AnnouncementsState {
-
 }
 
 class Announcements extends React.Component<AnnouncementsProps, AnnouncementsState> {
@@ -64,16 +62,16 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                   {checkbox}
                 </div>}>
                   <ApplicationListItemHeader>
-                    <div className="text text--announcer-announcement-header">
-                      <span className="text__icon icon-clock"></span>
-                      <span className="text text--announcer-times">
+                    <div className="application-list__header-primary">
+                      <span className="glyph icon-clock"></span>
+                      <span className="application-list__header-item-dates">
                         {this.props.i18n.time.format(announcement.startDate)} - {this.props.i18n.time.format(announcement.endDate)}
                       </span>
                     </div> 
                   </ApplicationListItemHeader>                  
                   <ApplicationListItemBody>
-                    <article className="text text--item-article">
-                      <header className="text text--item-article-header">{announcement.caption}</header>
+                    <article className="application-list-document-short">
+                      <header className="application-list-document-short-header">{announcement.caption}</header>
                       {/*<p className="rich-text" dangerouslySetInnerHTML={{__html:announcement.content}}></p>*/}
                     </article>
                   </ApplicationListItemBody>
@@ -82,7 +80,7 @@ class Announcements extends React.Component<AnnouncementsProps, AnnouncementsSta
                     {announcement.workspaces.map((workspace)=>{ 
                       return <span className="label" key={workspace.id}>
                         <span className="label__icon label__icon--announcement-workspace icon-books"></span>
-                        <span className="text label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
+                        <span className="label__text label__text--announcement-workspace">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null }</span>
                       </span>
                     })}
                     </div> : null}

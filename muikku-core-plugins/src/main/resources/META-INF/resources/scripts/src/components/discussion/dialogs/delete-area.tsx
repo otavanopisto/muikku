@@ -8,7 +8,7 @@ import {AnyActionType} from '~/actions';
 import {i18nType} from '~/reducers/base/i18n';
 
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import { deleteDiscussionArea, DeleteDiscussionAreaTriggerType } from '~/actions/main-function/discussion';
 import { DiscussionAreaType, DiscussionType } from '~/reducers/main-function/discussion';
@@ -51,7 +51,7 @@ class DiscussionDeleteArea extends React.Component<DiscussionDeleteAreaProps, Di
       return this.props.children;
     }
     
-    let content = (closeDialog: ()=>any) => <div className="text text--delete-area">
+    let content = (closeDialog: ()=>any) => <div>
       {this.props.i18n.text.get('plugin.discussion.deletearea.info')}
     </div>
        
