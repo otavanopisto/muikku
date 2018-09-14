@@ -87,22 +87,6 @@ public class WorkspaceMaterialReplyDAO extends CorePluginsDAO<WorkspaceMaterialR
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<WorkspaceMaterialReply> listByUserEntity(UserEntity userEntity) {
-    EntityManager entityManager = getEntityManager();
-
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceMaterialReply> criteria = criteriaBuilder.createQuery(WorkspaceMaterialReply.class);
-    Root<WorkspaceMaterialReply> root = criteria.from(WorkspaceMaterialReply.class);
-    criteria.select(root);
-    criteria.where(
-      criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.userEntityId), userEntity.getId())
-      )
-    );
-
-    return entityManager.createQuery(criteria).getResultList();
-  }
-  
   public WorkspaceMaterialReply update(WorkspaceMaterialReply workspaceMaterialReply, Long numberOfTries, Date lastModified) {
     workspaceMaterialReply.setNumberOfTries(numberOfTries);
     workspaceMaterialReply.setLastModified(lastModified);
