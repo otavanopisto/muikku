@@ -8,7 +8,7 @@ import { createGuiderFilterLabel, CreateGuiderFilterLabelTriggerType } from "~/a
 import { addGuiderLabelToCurrentUser, removeGuiderLabelFromCurrentUser, AddGuiderLabelToCurrentUserTriggerType, RemoveGuiderLabelFromCurrentUserTriggerType, AddGuiderLabelToSelectedUsersTriggerType, addGuiderLabelToSelectedUsers, RemoveGuiderLabelFromSelectedUsersTriggerType, removeGuiderLabelFromSelectedUsers } from "~/actions/main-function/guider";
 
 import '~/sass/elements/link.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/form-elements.scss';
 import { bindActionCreators } from "redux";
 import {StateType} from '~/reducers';

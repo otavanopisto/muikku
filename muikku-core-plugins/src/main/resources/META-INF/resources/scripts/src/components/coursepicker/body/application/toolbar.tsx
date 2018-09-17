@@ -5,7 +5,7 @@ import Link from '~/components/general/link';
 import {i18nType} from '~/reducers/base/i18n';
 import * as queryString from 'query-string';
 
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import { CoursesType } from '~/reducers/main-function/courses';

@@ -237,6 +237,7 @@
  
 }
 
+
 .env-dialog__selected-item-action {
   background-position: center center;
   background-repeat: no-repeat;
@@ -283,6 +284,15 @@ label {
   @include breakpoint($breakpoint-pad) { 
     font-size: $text-desktop-font-size; 
   }
+}
+
+.env-dialog__input-label {
+  margin: 0 0 0 3px;
+}
+
+.env-dialog__input-description {
+  margin: 0 0 0 15px;
+  padding: 0 0 0 5px;
 }
 
 .env-dialog__input[type="checkbox"] {

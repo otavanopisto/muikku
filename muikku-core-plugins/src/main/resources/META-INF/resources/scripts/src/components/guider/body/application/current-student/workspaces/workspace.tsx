@@ -7,7 +7,7 @@ import {StateType} from '~/reducers';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/course.scss';
 import '~/sass/elements/workspace-activity.scss';
 import { ApplicationListItem, ApplicationListItemHeader } from "~/components/general/application-list";
@@ -52,7 +52,7 @@ function CourseActivityRow(props: {
   return <div className="application-sub-panel__item application-sub-panel__item--course-activity">
     <div className="application-sub-panel__item-title">{props.i18n.text.get(props.labelTranslationString)}</div>
     <div className="application-sub-panel__item-data">
-      <span className="text text--guider-profile-value">{output}</span>
+      <span>{output}</span>
     </div>
   </div>
 }
@@ -107,9 +107,9 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
     
     return <ApplicationListItem className={`course ${this.state.activitiesVisible ? "course--open" : ""} ${extraClasses}`}>
         <ApplicationListItemHeader modifiers="course" onClick={this.toggleActivitiesVisible}>
-          <span className="text text--course-icon icon-books"></span>
-          <span className="text text--list-item-title">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
-          <span className="text text--list-item-type-title workspace-activity">
+          <span className="application-list__header-icon icon-books"></span>
+          <span className="application-list__header-primary">{workspace.name} {workspace.nameExtension ? "(" + workspace.nameExtension + ")" : null}</span> 
+          <span className="application-list__header-secondary workspace-activity">
             <span className="workspace-activity__assignment-done-percent" title={this.props.i18n.text.get("plugin.guider.headerEvaluatedTitle", workspace.studentActivity.evaluablesDonePercent)}>{
               workspace.studentActivity.evaluablesDonePercent}%
             </span>
@@ -125,7 +125,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
             <div className="application-sub-panel__item application-sub-panel__item--course-activity">
               <div className="application-sub-panel__item-title"> {this.props.i18n.text.get("plugin.guider.assessmentStateLabel")}</div>        
               <div className="application-sub-panel__item-data">
-                <span className="text text--guider-profile-value">{resultingStateText}</span></div>
+                <span>{resultingStateText}</span></div>
               </div>              
                 
             <CourseActivityRow conditionalAttributeLocale="plugin.guider.user.details.numberOfVisits" givenDateAttributeLocale="plugin.guider.user.details.lastVisit" labelTranslationString="plugin.guider.visitedLabel" conditionalAttribute="numVisits"
