@@ -5,8 +5,8 @@
 
 .env-dialog {
   @include prefix(transition, moz ms webkit o, opacity 0.3s);
+  @include text;
   background-color: $color-overlay-background;
-  // background-color: $color-application-dialog-background-color;
   bottom: 0;
   display: block;
   left: 0;
@@ -275,24 +275,25 @@ label {
   border: 2px solid $color-env-dialog-form-element-border;
   border-radius: 3px;
   display: inline-block;
-  font-family: $text-font-family;
-  font-size: $text-mobile-font-size;
   margin: 0 4px 0 0;
   padding: 4px 8px;
   width: 100%;
-  
-  @include breakpoint($breakpoint-pad) { 
-    font-size: $text-desktop-font-size; 
-  }
 }
 
 .env-dialog__input-label {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 0;
   margin: 0 0 0 3px;
 }
 
 .env-dialog__input-description {
+  border-left: 2px solid $color-default-separator-border;
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
   margin: 0 0 0 15px;
-  padding: 0 0 0 5px;
+  padding: 0 0 0 10px;
 }
 
 .env-dialog__input[type="checkbox"] {
