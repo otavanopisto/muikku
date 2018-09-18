@@ -16,13 +16,12 @@ interface DialogProps {
 }
 
 interface DialogState {
-  visible: boolean
+  visible: boolean,
 }
 
 export default class Dialog extends React.Component<DialogProps, DialogState> {
   private oldOverflow:string;
-  private oldBottomMargin:string;  
-
+ 
 
   constructor(props: DialogProps){
     super(props);
@@ -30,42 +29,35 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.beforeClose = this.beforeClose.bind(this);
-    
     this.oldOverflow = null;
-    this.oldBottomMargin = null;
-    
-    this.state = {
-      visible: false
-    }
+    this.state = {visible: false}
   }
+    
   onOverlayClick(close: ()=>any, e: Event){
     if (e.target === e.currentTarget){
       close();
     }
   }
+  
   onOpen(element: HTMLElement){
     setTimeout(()=>{
       this.setState({
         visible: true
       });
     }, 10);
-    this.oldBottomMargin = document.body.style.marginBottom;
-    this.oldOverflow = document.body.style.overflow;
-//    document.body.style.overflow = "hidden";
-    
-
-    
-    document.body.style.marginBottom = "500px";
     this.props.onOpen && this.props.onOpen(element);
+    document.body.style.marginBottom = element.firstChild.firstChild.offsetHeight + "px";      
   }
+  
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
     this.setState({
       visible: false
     });
-    document.body.style.overflow = this.oldOverflow;
-    document.body.style.marginBottom = this.oldBottomMargin;
+    document.body.style.marginBottom = "0px";
     setTimeout(removeFromDOM, 300);
   }  
+  
+
   render(){
     return (<Portal onKeyStroke={this.props.onKeyStroke} isOpen={this.props.isOpen}
         openByClickOn={this.props.children} onOpen={this.onOpen} onClose={this.props.onClose} beforeClose={this.beforeClose} closeOnEsc>

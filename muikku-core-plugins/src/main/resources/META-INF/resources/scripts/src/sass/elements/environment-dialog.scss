@@ -175,6 +175,13 @@
     flex-grow: 1;
   }
   
+
+  
+  textarea {
+    // This is needed for the bottom margins to work on main functions
+    min-height: 210px;
+  }
+  
   &:not(:first-child) {
 
     @include breakpoint($breakpoint-pad) {
