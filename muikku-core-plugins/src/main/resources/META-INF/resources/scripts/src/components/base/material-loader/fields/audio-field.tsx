@@ -19,12 +19,21 @@ interface AudioFieldProps {
   content: {
     name: string
   },
-  i18n: i18nType
+  i18n: i18nType,
+  
+  readOnly?: boolean,
+  value?: string
 }
 
 interface AudioFieldState {
   recording: boolean,
-  blobs: Array<Blob>,
+  values: Array<{
+    blob?: Blob,
+    url: string,
+    id?: string,
+    name?: string,
+    contentType?: string
+  }>,
   time: number
 }
 
@@ -40,12 +49,24 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     this.state = {
       recording: false,
       time: 0,
-      blobs: []
+      values: []
     }
     
     this.start = this.start.bind(this);
     this.stop = this.stop.bind(this);
     this.removeClip = this.removeClip.bind(this);
+  }
+  componentWillReceiveProps(nextProps: AudioFieldProps){
+    if (nextProps.value !== this.props.value){
+      this.setState({
+        values: JSON.parse(nextProps.value).map((v:any)=>({
+          id: v.id,
+          name: v.name,
+          contentType: v.contentType,
+          url: `/rest/workspace/audioanswer/${v.id}`
+        }))
+      });
+    }
   }
   async start(){
     this.stream = await navigator.mediaDevices.getUserMedia({
@@ -53,8 +74,12 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
     });
     this.recorder = new (window as any).MediaRecorder(this.stream);
     this.recorder.addEventListener('dataavailable', (e: Event)=>{
+      let blob = (e as any).data as Blob;
       this.setState({
-        blobs: this.state.blobs.concat([(e as any).data as Blob])
+        values: this.state.values.concat([{
+          blob,
+          url: URL.createObjectURL(blob)
+        }])
       })
     });
     this.recorder.start();
@@ -84,17 +109,18 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
   }
   removeClip(index: number){
     this.setState({
-      blobs: [...this.state.blobs.slice(0, index), ...this.state.blobs.slice(index+1)]
+      values: [...this.state.values.slice(0, index), ...this.state.values.slice(index+1)]
     });
   }
   render(){
     return <div className="audio-record muikku-field">
       <div className="clips">
-        {this.state.blobs.map((blob:Blob, index)=>{
+        {this.state.values.map((value, index)=>{
           return <div className="clip flex-row flex-align-items-center" key={index}>
-            <audio controls src={URL.createObjectURL(blob)}/>
-            <Link className="remove-clip icon-remove-clip" title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
-             onClick={this.removeClip.bind(this, index)}/>
+            <audio controls src={value.url}/>
+            {!this.props.readOnly ? <Link className="remove-clip icon-remove-clip"
+                title={this.props.i18n.text.get('plugin.workspace.audioField.removeLink')}
+             onClick={this.removeClip.bind(this, index)}/> : null}
           </div>
         })}
         {this.state.recording ? <ProgressBarLine containerClassName="clip flex-row flex-align-items-center" options={{
@@ -120,14 +146,14 @@ export default class AudioField extends React.Component<AudioFieldProps, AudioFi
             .format('mm:ss'))}
            progress={this.state.time/MAX_RECORDING_TIME_IN_SECONDS}/> : null}
       </div>
-      <div className="controls flex-row flex-align-items-center">
+      {!this.props.readOnly ? <div className="controls flex-row flex-align-items-center">
         {!this.state.recording ? <Link className="start-record icon-record" onClick={this.start}>
           <span className="start-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.startLink")}</span>
         </Link> : <Link className="stop-record icon-stop" onClick={this.stop}>
           <span className="stop-record-label">{this.props.i18n.text.get("plugin.workspace.audioField.stopLink")}</span>
         </Link>}
         <label className="hint-text">{this.props.i18n.text.get("plugin.workspace.audioField.rtcHint")}</label>
-      </div>
+      </div> : null}
     </div>
   }
 }

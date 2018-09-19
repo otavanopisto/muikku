@@ -17,7 +17,10 @@ interface ConnectFieldProps {
       field: string,
       counterpart: string
     }[]
-  }
+  },
+  
+  readOnly?: boolean,
+  value?: string
 }
 
 interface ConnectFieldState {
@@ -33,13 +36,40 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
   constructor(props: ConnectFieldProps){
     super(props);
     
+    let fields:FieldType[];
+    let counterparts:FieldType[];
+    let editedIdsArray:Array<string> = [];
+    if (props.value){
+      let value = JSON.parse(props.value);
+      fields = [];
+      counterparts = [];
+      
+      Object.keys(value).forEach((fieldId)=>{
+        let counterpartId = value[fieldId];
+        editedIdsArray.push(fieldId);
+        editedIdsArray.push(counterpartId);
+        
+        fields.push(props.content.fields.find((f)=>f.name === fieldId));
+        counterparts.push(props.content.counterparts.find((c)=>c.name === counterpartId))
+      });
+    } else {
+      fields = shuffle(props.content.fields);
+      counterparts = shuffle(props.content.counterparts);
+    }
+    
+    this.setState({
+      fields,
+      counterparts,
+      editedIds: new Set(editedIdsArray)
+    });
+    
     this.state = {
-      fields: shuffle(props.content.fields),
-      counterparts: shuffle(props.content.counterparts),
+      fields,
+      counterparts,
       selectedField: null,
       selectedIsCounterpart: false,
       selectedIndex: null,
-      editedIds: new Set([])
+      editedIds: new Set(editedIdsArray)
     }
     
     this.swapField = this.swapField.bind(this);
@@ -52,6 +82,28 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       this.setState({
         fields: shuffle(nextProps.content.fields),
         counterparts: shuffle(nextProps.content.counterparts)
+      });
+    }
+    
+    if (nextProps.value !== this.props.value && nextProps.value){
+      let value = JSON.parse(nextProps.value);
+      let fields:FieldType[] = [];
+      let counterparts:FieldType[] = [];
+      let editedIdsArray:Array<string> = [];
+      
+      Object.keys(value).forEach((fieldId)=>{
+        let counterpartId = value[fieldId];
+        editedIdsArray.push(fieldId);
+        editedIdsArray.push(counterpartId);
+        
+        fields.push(nextProps.content.fields.find((f)=>f.name === fieldId));
+        counterparts.push(nextProps.content.counterparts.find((c)=>c.name === counterpartId))
+      });
+      
+      this.setState({
+        fields,
+        counterparts,
+        editedIds: new Set(editedIdsArray)
       });
     }
   }
@@ -149,7 +201,7 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
   render(){
     return <div className="muikku-connect-field muikku-field">
       <div className="muikku-connect-field-terms">
-        {this.state.fields.map((field, index)=><div key={field.name} onClick={this.pickField.bind(this, field, false, index)}>
+        {this.state.fields.map((field, index)=><div key={field.name} onClick={this.props.readOnly ? null : this.pickField.bind(this, field, false, index)}>
           <span className="muikku-connect-field-number">{index + 1}</span>
           <div className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
             "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`}>{field.text}</div>
@@ -157,16 +209,24 @@ export default class ConnectField extends React.Component<ConnectFieldProps, Con
       </div>
       <div className="muikku-connect-field-gap"></div>
       <div className="muikku-connect-field-counterparts">
-       {this.state.counterparts.map((field, index)=><Draggable interactionData={{field, index, isCounterpart: true}} 
-         interactionGroup={this.props.content.name + "-counterparts"}
-         onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
-         onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field"
-         onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
-         className={`muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
-           "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`}
-           key={field.name} style={{
+       {this.state.counterparts.map((field, index)=>{
+         let className = `muikku-connect-field-term ${this.state.selectedField && this.state.selectedField.name === field.name ?
+           "muikku-connect-field-term-selected" : ""} ${this.state.editedIds.has(field.name) ? "muikku-connect-field-edited" : ""}`;
+         let style:React.CSSProperties = {
              justifyContent: "flex-start"  //TODO lankkinen Add this in classes sadly I had to use the original connect field term class because of missing functionality
-           }}>{field.text}</Draggable>)}
+         };
+         if (this.props.readOnly){
+           return <div className={className}
+             key={field.name} style={style}>{field.text}</div>
+         }
+         
+         return <Draggable interactionData={{field, index, isCounterpart: true}} 
+           interactionGroup={this.props.content.name + "-counterparts"}
+           onDrag={()=>{this.cancelPreviousPick(); this.pickField(field, true, index);}}
+           onClick={this.pickField.bind(this, field, true, index)} parentContainerSelector=".muikku-field"
+           onDropInto={(data)=>this.pickField(data.field, data.isCounterpart, data.index)}
+           className={className} key={field.name} style={style}>{field.text}</Draggable>
+       })}
       </div>
     </div>
   }

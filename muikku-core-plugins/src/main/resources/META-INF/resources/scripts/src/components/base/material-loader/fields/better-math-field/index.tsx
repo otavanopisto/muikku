@@ -23,7 +23,8 @@ interface MathFieldProps {
   },
   toolbarAlwaysVisible?: boolean,
   dontLoadACE?: boolean,
-  dontLoadMQ?: boolean
+  dontLoadMQ?: boolean,
+  readOnly?: boolean
 }
 
 interface MathFieldState {
@@ -133,7 +134,7 @@ export default class MathField extends React.Component<MathFieldProps, MathField
        onChange={this.props.onChange} value={this.props.value} formulaClassName={this.props.formulaClassName}
        editorClassName={this.props.editorClassName} toolbarClassName={this.props.toolbarClassName}
        onLatexModeOpen={this.openMathExpanded} onLatexModeClose={this.closeMathExpanded}
-       ref="input" latexPlaceholderText="LaTeX"/>
+       ref="input" latexPlaceholderText="LaTeX" readOnly={this.props.readOnly}/>
     </div>
   }
 }

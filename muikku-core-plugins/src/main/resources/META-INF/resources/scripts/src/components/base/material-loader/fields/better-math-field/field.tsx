@@ -21,7 +21,8 @@ interface FieldProps {
   onBlur: ()=>any,
   onFocus: ()=>any,
   onLatexModeOpen: ()=>any,
-  onLatexModeClose: ()=>any
+  onLatexModeClose: ()=>any,
+  readOnly?: boolean
 }
 
 interface FieldState {
@@ -80,9 +81,28 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     this.createMarkup();
     
     document.execCommand("enableObjectResizing", false, false);
-    document.body.addEventListener('click', this.handleAllClicks);
+    
+    if (!this.props.readOnly){
+      document.body.addEventListener('click', this.handleAllClicks);
+    }
   }
   componentWillReceiveProps(nextProps: FieldProps){
+    if (nextProps.className !== this.props.className){
+      (this.refs.input as HTMLElement).className = nextProps.className;
+    }
+    
+    if (nextProps.readOnly !== this.props.readOnly){
+      if (nextProps.readOnly){
+        (this.refs.input as HTMLElement).classList.add("disabled");
+        (this.refs.input as HTMLElement).removeAttribute("contentEditable");
+        document.body.removeEventListener('click', this.handleAllClicks);
+      } else {
+        (this.refs.input as HTMLElement).classList.remove("disabled");
+        (this.refs.input as HTMLElement).contentEditable = "true";
+        document.body.addEventListener('click', this.handleAllClicks);
+      }
+    }
+    
     if (nextProps.value === this.value){
       //console.log("change denied");
       return;
@@ -532,11 +552,14 @@ export default class MathField extends React.Component<FieldProps, FieldState> {
     document.body.removeEventListener('click', this.handleAllClicks);
   }
   checkTheFocus(e: React.MouseEvent<any>){
+    if (this.props.readOnly){
+      return;
+    }
     //console.log("checking the focus at", e.target);
     this.lastMouseedDownElement = e.target as HTMLElement;
   }
   render(){
-    return <div className={this.props.className} contentEditable spellCheck={false} onFocus={this.onFocusField} ref="input" onBlur={this.onBlurField}
+    return <div className={this.props.className} contentEditable={!this.props.readOnly} spellCheck={false} onFocus={this.onFocusField} ref="input" onBlur={this.onBlurField}
        onInput={this.onChange} onMouseDown={this.checkTheFocus}/>
   }
 }

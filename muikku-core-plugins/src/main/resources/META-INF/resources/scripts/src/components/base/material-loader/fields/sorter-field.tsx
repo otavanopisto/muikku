@@ -14,7 +14,10 @@ interface SorterFieldProps {
     orientation: "vertical" | "horizontal",
     capitalize: boolean,
     items: Array<SorterFieldItemType>
-  }
+  },
+  
+  readOnly?: boolean,
+  value?: string
 }
 
 interface SorterFieldState {
@@ -25,11 +28,34 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
   constructor(props: SorterFieldProps){
     super(props);
     
+    let value = null;
+    let items;
+    if (props.value){
+      value = JSON.parse(value);
+      items = value.map((v:string)=>this.props.content.items.find(i=>i.id === v));
+    } else {
+      items = shuffle(props.content.items) || [];
+    }
+    
     this.state = {
-      items: shuffle(props.content.items) || []
+      items
     }
     
     this.swap = this.swap.bind(this);
+  }
+  componentWillReceiveProps(nextProps: SorterFieldProps){
+    if (JSON.stringify(nextProps.content) !== JSON.stringify(this.props.content)){
+      this.setState({
+        items: shuffle(nextProps.content.items) || []
+      });
+    }
+    
+    if (nextProps.value !== this.props.value){
+      let value = JSON.parse(nextProps.value);
+      let items = value.map((v:string)=>nextProps.content.items.find(i=>i.id === v));
+      
+      this.setState({items});
+    }
   }
   swap(itemA: SorterFieldItemType, itemB: SorterFieldItemType){
     if (itemA.id === itemB.id){
@@ -54,6 +80,9 @@ export default class SorterField extends React.Component<SorterFieldProps, Sorte
          let text = item.name;
          if (index === 0 && this.props.content.capitalize){
            text = text.charAt(0).toUpperCase() + text.slice(1);
+         }
+         if (this.props.readOnly){
+           return <Element className="muikku-sorter-item" key={item.id}>{text}</Element>
          }
          return <Draggable denyWidth={this.props.content.orientation === "horizontal"} as={Element} parentContainerSelector=".muikku-sorter-items-container"
            className="muikku-sorter-item" key={item.id} interactionGroup={this.props.content.name}

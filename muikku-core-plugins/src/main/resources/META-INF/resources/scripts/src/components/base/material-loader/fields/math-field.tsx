@@ -8,7 +8,10 @@ interface MathFieldProps {
   content: {
     name: string
   },
-  i18n: i18nType
+  i18n: i18nType,
+  
+  readOnly?: boolean,
+  value?: string
 }
 
 interface MathFieldState {
@@ -20,10 +23,15 @@ export default class TextField extends React.Component<MathFieldProps, MathField
     super(props);
     
     this.state = {
-      value: ''
+      value: props.value || ''
     }
     
     this.setValue = this.setValue.bind(this);
+  }
+  componentWillReceiveProps(nextProps: MathFieldProps){
+    if (this.props.value !== nextProps.value){
+      this.setValue(nextProps.value);
+    }
   }
   setValue(newValue: string){
     //console.log(newValue);
@@ -44,6 +52,6 @@ export default class TextField extends React.Component<MathFieldProps, MathField
         logic: this.props.i18n.text.get("plugin.workspace.mathField.logic"),
         moreMath: this.props.i18n.text.get("plugin.workspace.mathField.moreMath"),
         mathOperations: this.props.i18n.text.get("plugin.workspace.mathField.mathOperations"),
-      }}/>
+      }} readOnly={this.props.readOnly} dontLoadACE={this.props.readOnly} dontLoadMQ={this.props.readOnly}/>
   }
 }
