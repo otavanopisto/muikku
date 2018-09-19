@@ -90,7 +90,6 @@ export default class Base extends React.Component<BaseProps, BaseState> {
       return;
     }
     
-    console.log(nextProps);
     this.updateEverything(nextProps);
   }
   updateEverything(props: BaseProps = this.props){
