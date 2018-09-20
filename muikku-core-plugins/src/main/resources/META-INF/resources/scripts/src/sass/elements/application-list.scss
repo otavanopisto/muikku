@@ -84,8 +84,8 @@
   flex-grow: 0;
   flex-shrink: 1;
   font-size: $text-capitalized-mobile-font-size;
-  margin: 0 0 0 15px;
   justify-content: flex-end;
+  margin: 0 0 0 15px;
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad) {
