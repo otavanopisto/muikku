@@ -21,13 +21,13 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;
 
-	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, OrganizationEntity organization, WorkspaceAccess access, Boolean published, Boolean archived) {
+	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, OrganizationEntity organizationEntity, WorkspaceAccess access, Boolean published, Boolean archived) {
     WorkspaceEntity workspaceEntity = new WorkspaceEntity();
     
     workspaceEntity.setDataSource(dataSource);
     workspaceEntity.setIdentifier(identifier);
     workspaceEntity.setUrlName(urlName);
-    workspaceEntity.setOrganization(organization);
+    workspaceEntity.setOrganizationEntity(organizationEntity);
     workspaceEntity.setAccess(access);
     workspaceEntity.setArchived(archived);
     workspaceEntity.setPublished(published);
@@ -221,8 +221,8 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     return persist(workspaceEntity);
   }
 
-  public WorkspaceEntity updateOrganization(WorkspaceEntity workspaceEntity, OrganizationEntity organization) {
-    workspaceEntity.setOrganization(organization);
+  public WorkspaceEntity updateOrganizationEntity(WorkspaceEntity workspaceEntity, OrganizationEntity organizationEntity) {
+    workspaceEntity.setOrganizationEntity(organizationEntity);
     return persist(workspaceEntity);
   }
 

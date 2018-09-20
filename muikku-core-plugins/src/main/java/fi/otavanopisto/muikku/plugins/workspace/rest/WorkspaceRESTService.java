@@ -2001,7 +2001,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     boolean hasCustomImage = workspaceEntityFileController.getHasCustomImage(workspaceEntity);
 
     return new fi.otavanopisto.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(),
-        workspaceEntity.getOrganization() == null ? null : workspaceEntity.getOrganization().getId(),
+        workspaceEntity.getOrganizationEntity() == null ? null : workspaceEntity.getOrganizationEntity().getId(),
         workspaceEntity.getUrlName(),
         workspaceEntity.getAccess(),
         workspaceEntity.getArchived(), 

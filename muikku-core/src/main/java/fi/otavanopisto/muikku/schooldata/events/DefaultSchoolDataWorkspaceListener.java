@@ -89,8 +89,8 @@ public class DefaultSchoolDataWorkspaceListener {
       String organizationId = String.valueOf(event.getExtra().get("organizationId"));
       OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), organizationId);
       if (organizationEntity != null) {
-        if (workspaceEntity.getOrganization() == null || !organizationEntity.getId().equals(workspaceEntity.getOrganization().getId())) {
-          workspaceEntityController.updateOrganization(workspaceEntity, organizationEntity);
+        if (workspaceEntity.getOrganizationEntity() == null || !organizationEntity.getId().equals(workspaceEntity.getOrganizationEntity().getId())) {
+          workspaceEntityController.updateOrganizationEntity(workspaceEntity, organizationEntity);
         }
       }
       // TODO: How should we handle the updating of URL names?

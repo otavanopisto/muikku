@@ -113,8 +113,8 @@ public class WorkspaceEntityController {
     return workspaceEntityDAO.updateAccess(workspaceEntity, access);
   }
 
-  public WorkspaceEntity updateOrganization(WorkspaceEntity workspaceEntity, OrganizationEntity organizationEntity) {
-    return workspaceEntityDAO.updateOrganization(workspaceEntity, organizationEntity);
+  public WorkspaceEntity updateOrganizationEntity(WorkspaceEntity workspaceEntity, OrganizationEntity organizationEntity) {
+    return workspaceEntityDAO.updateOrganizationEntity(workspaceEntity, organizationEntity);
   }
 
   public WorkspaceEntity updateDefaultMaterialLicense(WorkspaceEntity workspaceEntity, String defaultMaterialLicense) {

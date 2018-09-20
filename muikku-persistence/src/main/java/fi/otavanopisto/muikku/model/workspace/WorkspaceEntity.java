@@ -85,12 +85,12 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
     this.defaultMaterialLicense = defaultMaterialLicense;
   }
 
-  public OrganizationEntity getOrganization() {
-    return organization;
+  public OrganizationEntity getOrganizationEntity() {
+    return organizationEntity;
   }
 
-  public void setOrganization(OrganizationEntity organization) {
-    this.organization = organization;
+  public void setOrganizationEntity(OrganizationEntity organizationEntity) {
+    this.organizationEntity = organizationEntity;
   }
 
   @Id
@@ -106,7 +106,7 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   private SchoolDataSource dataSource;
 
 	@ManyToOne
-  private OrganizationEntity organization;
+  private OrganizationEntity organizationEntity;
 
 	@NotEmpty
 	@NotNull
