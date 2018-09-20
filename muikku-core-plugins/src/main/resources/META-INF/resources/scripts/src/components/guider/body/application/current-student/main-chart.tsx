@@ -148,7 +148,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     }
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
-    let chartDataMap = new Map<string, {logins?: number, assignments?: number, exercises?: number}>();
+    let chartDataMap = new Map<string, {logins?: number, assignments?: number, exercises?: number,
+    evaluationRequested?: number, evaluationFailed?: number, evaluationIncompleted?: number, evaluationPassed?: number}>();
+    
     chartDataMap.set(new Date().toISOString().slice(0, 10), {"logins": 0, "assignments": 0, "exercises": 0});
       this.props.logins.map((login)=>{
         let date = login.slice(0, 10);
@@ -160,6 +162,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         chartDataMap.set(date, entry);
       });
     
+    //TODO: Combine new and old workspaces as well as filtered IDs
     let workspaces: {id: number, name: string, isEmpty: boolean}[] = [];
     this.props.workspaces.map((workspace)=>{
       workspaces.push({id: workspace.id, name: workspace.name, isEmpty: workspace.activityStatistics.records.length == 0 });
@@ -192,6 +195,54 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     //TODO: load and parse completed workspaces
     let completedWorkspaces: {id: number, name: string, isEmpty: boolean}[] = [];
     
+    //NOTE: name EVENTS and store all?
+    //TODO: Load events and change code to use this.props.{smth}
+    //Test Data, remove if found in production!
+    let evaluations: {date: string, type: string}[] = [{date: "2018-08-20T00:00:00.000", type: "EVALUATION_REQUESTED"},
+    {date: "2018-08-22T00:00:00.000", type: "EVALUATION_INCOMPLETED"},{date: "2018-08-22T00:00:00.000", type: "EVALUATION_REQUESTED"},
+    {date: "2018-08-24T00:00:00.000", type: "EVALUATION_REQUESTED"},{date: "2018-08-25T00:00:00.000", type: "EVALUATION_FAILED"},
+    {date: "2018-09-12T00:00:00.000", type: "EVALUATION_REQUESTED"},{date: "2018-09-15T00:00:00.000", type: "EVALUATION_PASSED"}];
+    
+    evaluations.map((evaluation)=>{
+      let date = evaluation.date.slice(0, 10);
+      let entry = chartDataMap.get(date);
+      if (evaluation.type === "EVALUATION_REQUESTED"){
+        if (entry == null)
+          entry = {"evaluationRequested": 1};
+        else if (entry.evaluationRequested == null)
+          entry = {...entry, "evaluationRequested": 1};
+        else
+          entry.evaluationRequested++;
+      }
+      
+      if (evaluation.type === "EVALUATION_FAILED"){
+        if (entry == null)
+          entry = {"evaluationFailed": 1};
+        else if (entry.evaluationFailed == null)
+          entry = {...entry, "evaluationFailed": 1};
+        else
+          entry.evaluationFailed++;
+      }
+      
+      if (evaluation.type === "EVALUATION_INCOMPLETED"){
+        if (entry == null)
+          entry = {"evaluationIncompleted": 1};
+        else if (entry.evaluationIncompleted == null)
+          entry = {...entry, "evaluationIncompleted": 1};
+        else
+          entry.evaluationIncompleted++;
+      }
+      
+      if (evaluation.type === "EVALUATION_PASSED"){
+        if (entry == null)
+          entry = {"evaluationPassed": 1};
+        else if (entry.evaluationPassed == null)
+          entry = {...entry, "evaluationPassed": 1};
+        else
+          entry.evaluationPassed++;
+      }
+      chartDataMap.set(date, entry);
+    });
     //NOTE: Data can be filtered here also (Option 2)
     let sortedKeys = Array.from(chartDataMap.keys()).sort((a, b)=>{return a > b ? 1 : -1;});
     let data = new Array;
@@ -247,6 +298,74 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "valueField": "exercises"
       });
     }
+    //Evaluation request graphs
+    graphs.push({
+      "id": "evaluationRequested",
+      "balloonText": "evaluationRequested" + " <b>[[evaluationRequested]]</b>",
+      "bulletBorderAlpha": 0.2,
+      "bulletAlpha": 0.8,
+      "lineAlpha": 0,
+      "fillAlphas": 0,
+      "title": "evaluationRequested",
+      "type": "column",
+      "clustered": false,
+      "valueField": "evaluationRequested",
+      "bullet": "circle",
+      "color": "#009fe3",
+      "bulletOffset": 0,
+      "bulletSize": 30,
+    });
+    
+    graphs.push({
+      "id": "evaluationFailed",
+      "balloonText": "evaluationFailed" + " <b>[[evaluationFailed]]</b>",
+      "bulletBorderAlpha": 0.2,
+      "bulletAlpha": 0.8,
+      "lineAlpha": 0,
+      "fillAlphas": 0,
+      "title": "evaluationFailed",
+      "type": "column",
+      "clustered": false,
+      "valueField": "evaluationFailed",
+      "bullet": "circle",
+      "color": "#4c4c4c",
+      "bulletOffset": 0,
+      "bulletSize": 30,
+    });
+    
+    graphs.push({
+      "id": "evaluationIncompleted",
+      "balloonText": "evaluationIncompleted" + " <b>[[evaluationIncompleted]]</b>",
+      "bulletBorderAlpha": 0.2,
+      "bulletAlpha": 0.8,
+      "lineAlpha": 0,
+      "fillAlphas": 0,
+      "title": "evaluationIncompleted",
+      "type": "column",
+      "clustered": false,
+      "valueField": "evaluationIncompleted",
+      "bullet": "circle",
+      "color": "#ea7503",
+      "bulletOffset": 0,
+      "bulletSize": 30,
+    });
+    
+    graphs.push({
+      "id": "evaluationPassed",
+      "balloonText": "evaluationPassed" + " <b>[[evaluationPassed]]</b>",
+      "bulletBorderAlpha": 0.2,
+      "bulletAlpha": 0.8,
+      "lineAlpha": 0,
+      "fillAlphas": 0,
+      "title": "evaluationPassed",
+      "type": "column",
+      "clustered": false,
+      "valueField": "evaluationPassed",
+      "bullet": "circle",
+      "color": "#2ed31c",
+      "bulletOffset": 0,
+      "bulletSize": 30,
+    });
     
     let valueAxes = [{
     "stackType": (graphs.length>1)? "regular": "none",
