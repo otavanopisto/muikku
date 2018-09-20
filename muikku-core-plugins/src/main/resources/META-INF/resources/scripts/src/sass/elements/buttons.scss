@@ -502,6 +502,7 @@
 
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
+    border: 1px solid $color-default;
     box-shadow: 0 0 5px $color-button-pill-shadow;
     display: inline-flex;
     font-size: $button-pill-navbar-desktop-font-size;

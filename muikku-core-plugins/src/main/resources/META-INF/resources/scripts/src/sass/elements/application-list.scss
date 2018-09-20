@@ -77,8 +77,6 @@
   }
 }
 
-
-
 .application-list__header-secondary {
   align-items: center;
   display: inline-flex;
@@ -86,6 +84,7 @@
   flex-grow: 0;
   flex-shrink: 1;
   font-size: $text-capitalized-mobile-font-size;
+  margin: 0 0 0 15px;
   justify-content: flex-end;
   text-transform: uppercase;
   
@@ -97,7 +96,6 @@
 
 // Shit shit shit. This is not really a duplicate, but something about studies. TODO: find out where it belongs and name it accordingly
 
-
 .application-list__indicator-badge {
   align-items: center;
   border-radius: 2px;
@@ -106,7 +104,7 @@
   font-size: 1rem;
   height: 1.875rem;
   justify-content: center;
-  margin: 0 0 0 15px;
+  margin: 0 0 0 10px;
   text-align: center;
   width: 1.875rem;
   
@@ -122,16 +120,18 @@
     background: $color-grade-incomplete;
   }  
   
-}
-
-.application-list__indicator-badge--task-evaluation {
-  margin: 0 15px 0 0;
-  
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
-} 
+}
 
+.application-list__indicator-badge--course {
+  margin: 0 0 0 10px;
+}
+
+.application-list__indicator-badge--task {
+  margin: 0 10px 0 0;
+}
 
 .application-list__indicator-badge--evaluation-request {
   background-color: $color-evaluation-request;
