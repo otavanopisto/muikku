@@ -191,7 +191,7 @@ $color-navbar-default-shadow: rgba(0, 0, 0, 0.2);
 
 // Links
 $color-link-frontpage-text: $color-inverse;
-$color-link-highlight-text: $color-secondary;
+$color-link-highlight-text: #00af00;
 $color-link-default-text: $color-primary;
 $color-link-inverse-text: $color-default;
 $color-link-default-background: rgba(0, 0, 0, 0);
@@ -224,6 +224,7 @@ $color-bubble-default-shadow: rgba(0, 0, 0, 0.15);
 // footer
 $color-footer-default-background: #454545;
 $color-footer-default-text: $color-default;
+$color-footer-plagscan-background: #343333;
 
 // card
 $color-card-default-background: $color-default;

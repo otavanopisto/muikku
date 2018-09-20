@@ -105,6 +105,7 @@
   
 .hero__header--frontpage-verkko {
   color: $color-frontpage-text-verkko;
+  font-weight: 200;
   letter-spacing: 3px;
   
   @include breakpoint($breakpoint-pad) {

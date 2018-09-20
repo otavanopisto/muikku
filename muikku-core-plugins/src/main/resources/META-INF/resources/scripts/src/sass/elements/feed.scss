@@ -1,26 +1,11 @@
-//
-// Basic feed list for RSS feeds
-//
-// ul.feed
-//   li.feed-item
-//     span.feed-item-description
-//       a
-//         (BODY)
-//       (BODY)
-//     span.feed-item-date
-//       (BODY)
-//
-
 @import "../base/colors";
 @import "../base/vars";
 @import "../base/mixins";
 @import "../base/breakpoints";
 
-$feed-font-family: "Exo 2", Arial, sans-serif;
-
 .feed {
   color: $color-feed-default-text;
-  font-family: $feed-font-family;
+  font-family: $text-branded-font-family;
   font-size: $text-mobile-font-size;
   font-weight: 300;
   list-style-type: none;
@@ -29,7 +14,6 @@ $feed-font-family: "Exo 2", Arial, sans-serif;
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
-  
 }
 
 .feed__item {
