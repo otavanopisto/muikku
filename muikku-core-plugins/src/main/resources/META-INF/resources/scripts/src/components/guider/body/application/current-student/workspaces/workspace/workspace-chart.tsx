@@ -7,7 +7,7 @@ import {WorkspaceType, WorkspaceActivityStatisticsType} from '~/reducers/main-fu
 import GraphFilter from '../../filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
-var AmCharts = require("@amcharts/amcharts3-react");
+let AmCharts: any = null;
 
 interface CurrentStudentWorkspaceStatisticsProps {
   i18n: i18nType,
@@ -15,6 +15,7 @@ interface CurrentStudentWorkspaceStatisticsProps {
 }
 
 interface CurrentStudentWorkspaceStatisticsState {
+  amChartsLoaded: boolean,
   filteredGraphs: string[]
 }
 
@@ -34,8 +35,30 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
+      amChartsLoaded: (window as any).AmCharts != null,
       filteredGraphs: []
     };
+    if (!this.state.amChartsLoaded)
+      this.loadAmCharts();
+    else
+      AmCharts = require("@amcharts/amcharts3-react");
+  }
+  
+  loadAmCharts(){
+    let amcharts = document.createElement('script');
+    amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
+    amcharts.async = true;
+    amcharts.onload = ()=>{
+      let serial = document.createElement('script');
+      serial.src = "https://www.amcharts.com/lib/3/serial.js";
+      serial.async = true;
+      serial.onload = ()=>{
+        AmCharts = require("@amcharts/amcharts3-react");
+        this.setState({amChartsLoaded: true});
+      };
+      document.head.appendChild(serial);
+    };
+    document.head.appendChild(amcharts);
   }
   
   GraphFilterHandler(graph: Graph){
@@ -62,18 +85,33 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
   }
   
   render(){
+    if (!this.state.amChartsLoaded){
+      return null;
+    }
     //NOTE: The filtered data can be cut here. (Option 1)
-    let chartDataMap = new Map<string, {assignments: number, exercises: number}>();
+    let chartDataMap = new Map<string, {assignments?: number, exercises?: number}>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), {"assignments": 0, "exercises": 0});
     this.props.workspace.activityStatistics.records.map((record)=>{
       let date = record.date.slice(0, 10);
       let entry = chartDataMap.get(date);
-      if (entry == null)
-        entry = {"assignments": 0,"exercises": 0};
-      if (record.type === "EVALUATED")
-        entry.assignments++;
-      else if (record.type === "EXERCISE")
-        entry.exercises++;
+      
+      if (record.type === "EVALUATED"){
+        if (entry == null)
+          entry = {"assignments": 1};
+        else if (entry.assignments == null)
+          entry = {...entry, "assignments": 1};
+        else
+          entry.assignments++;
+      }
+      
+      if (record.type === "EXERCISE"){
+        if (entry == null)
+          entry = {"exercises": 1};
+        else if (entry.exercises == null)
+          entry = {...entry, "exercises": 1};
+        else
+          entry.exercises++;
+      }
       chartDataMap.set(date, entry);
     });
     
@@ -82,7 +120,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
     let data = new Array;
     sortedKeys.forEach((key)=>{
       let value = chartDataMap.get(key);
-      data.push({"date": key, "assignments": value.assignments, "exercises": value.exercises});
+      data.push({"date": key, ...value});
     });
     
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)

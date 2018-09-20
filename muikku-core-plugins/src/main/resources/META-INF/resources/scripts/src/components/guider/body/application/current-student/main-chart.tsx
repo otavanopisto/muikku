@@ -8,7 +8,7 @@ import {WorkspaceListType, WorkspaceType, WorkspaceActivityStatisticsType} from 
 import GraphFilter from './filters/graph-filter';
 import '~/sass/elements/chart.scss';
 
-var AmCharts = require("@amcharts/amcharts3-react");
+let AmCharts: any = null;
 
 interface CurrentStudentStatisticsProps {
   i18n: i18nType,
@@ -17,6 +17,7 @@ interface CurrentStudentStatisticsProps {
 }
 
 interface CurrentStudentStatisticsState {
+  amChartsLoaded: boolean,
   filteredWorkspaces: number[],
   filteredCompletedWorkspaces: number[],
   filteredGraphs: string[]
@@ -41,10 +42,33 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     this.zoomSaveHandler = this.zoomSaveHandler.bind(this);
     this.zoomApplyHandler = this.zoomApplyHandler.bind(this);
     this.state = {
+      amChartsLoaded: (window as any).AmCharts != null,
       filteredWorkspaces: [],
       filteredCompletedWorkspaces: [],
       filteredGraphs: []
     };
+    
+    if (!this.state.amChartsLoaded)
+      this.loadAmCharts();
+    else
+      AmCharts = require("@amcharts/amcharts3-react");
+  }
+  
+  loadAmCharts(){
+    let amcharts = document.createElement('script');
+    amcharts.src = "https://www.amcharts.com/lib/3/amcharts.js";
+    amcharts.async = true;
+    amcharts.onload = ()=>{
+      let serial = document.createElement('script');
+      serial.src = "https://www.amcharts.com/lib/3/serial.js";
+      serial.async = true;
+      serial.onload = ()=>{
+        AmCharts = require("@amcharts/amcharts3-react");
+        this.setState({amChartsLoaded: true});
+      };
+      document.head.appendChild(serial);
+    };
+    document.head.appendChild(amcharts);
   }
   
   workspaceFilterHandler(workspaceId?: number){
@@ -119,15 +143,19 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
   }
   
   render(){
+    if (!this.state.amChartsLoaded){
+      return null;
+    }
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
-    let chartDataMap = new Map<string, {logins: number, assignments: number, exercises: number}>();
+    let chartDataMap = new Map<string, {logins?: number, assignments?: number, exercises?: number}>();
     chartDataMap.set(new Date().toISOString().slice(0, 10), {"logins": 0, "assignments": 0, "exercises": 0});
       this.props.logins.map((login)=>{
         let date = login.slice(0, 10);
         let entry = chartDataMap.get(date);
-        if(entry == null)
-          entry = {"logins": 0, "assignments": 0, "exercises": 0};
+        if (entry == null)
+          entry = {"logins": 1};
+        else
         entry.logins++;
         chartDataMap.set(date, entry);
       });
@@ -139,12 +167,23 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         workspace.activityStatistics.records.map((record)=>{
           let date = record.date.slice(0, 10);
           let entry = chartDataMap.get(date);
-          if (entry == null)
-            entry = {"logins": 0, "assignments": 0, "exercises": 0};
-          if (record.type === "EVALUATED")
-            entry.assignments++;
-          else if (record.type === "EXERCISE")
-            entry.exercises++;
+          if (record.type === "EVALUATED"){
+            if (entry == null)
+              entry = {"assignments": 1};
+            else if (entry.assignments == null)
+              entry = {...entry, "assignments": 1};
+            else
+              entry.assignments++;
+          }
+          
+          if (record.type === "EXERCISE"){
+            if (entry == null)
+              entry = {"exercises": 1};
+            else if (entry.exercises == null)
+              entry = {...entry, "exercises": 1};
+            else
+              entry.exercises++;
+          }
           chartDataMap.set(date, entry);
         })
       }
@@ -158,7 +197,7 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     let data = new Array;
     sortedKeys.forEach((key)=>{
       let value = chartDataMap.get(key);
-      data.push({"date": key, "logins": value.logins, "assignments": value.assignments, "exercises": value.exercises});
+      data.push({"date": key, ...value});
     });
     
     //NOTE: Here the graphs are filtered. May be not optimal, since it is the end part of the data processing (Option 3)

@@ -2700,6 +2700,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   @RESTPermit(handling = Handling.INLINE)
   public Response getActivityStatistics(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userIdentifier") String userId) {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    if (!sessionController.hasWorkspacePermission(MuikkuPermissions.LIST_USER_WORKSPACE_ACTIVITY, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     SchoolDataIdentifier userIdentifier = null;
     if (StringUtils.isNotBlank(userId)) {
       userIdentifier = SchoolDataIdentifier.fromId(userId);
