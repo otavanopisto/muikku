@@ -17,7 +17,7 @@ import WordDefinition from './static/word-definition';
 import { extractDataSet, guidGenerator } from '~/util/modifiers';
 import { processMathInPage } from '~/lib/mathjax';
 import MathField from './fields/math-field';
-import { MaterialCompositeRepliesType } from '~/reducers/main-function/records/records';
+import { MaterialCompositeRepliesType } from '~/reducers/main-function/records';
 
 const objects: {[key: string]: any} = {
   "application/vnd.muikku.field.text": TextField,

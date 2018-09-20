@@ -7,7 +7,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/link.scss';
 import '~/sass/elements/text.scss';
 import '~/sass/elements/application-list.scss';
-import { RecordsType } from '~/reducers/main-function/records/records';
+import { RecordsType } from '~/reducers/main-function/records';
 import Material from './current-record/material';
 
 import '~/sass/elements/workspace-activity.scss';
@@ -73,7 +73,7 @@ class CurrentRecord extends React.Component<CurrentRecordProps, CurrentRecordSta
           <div className="application-list__header application-list__header--studies-detailed-info text text--studies-list-header">{this.props.i18n.text.get("plugin.records.assignments.title")}</div>
           {this.props.records.current.materials.map((material)=>{
             return <Material key={material.id} material={material} i18n={this.props.i18n}
-             grades={this.props.records.grades} workspace={this.props.records.current.workspace}
+             workspace={this.props.records.current.workspace}
              status={this.props.status}/>
           })}
         </ApplicationList>

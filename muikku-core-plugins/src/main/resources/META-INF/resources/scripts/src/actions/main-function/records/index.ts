@@ -2,9 +2,9 @@ import actions from '../../base/notifications';
 import promisify from '~/util/promisify';
 import mApi, { MApiError } from '~/lib/mApi';
 import {AnyActionType, SpecificActionType} from '~/actions';
-import {UserWithSchoolDataType} from '~/reducers/main-function/user-index';
+import {UserWithSchoolDataType, UserFileType} from '~/reducers/main-function/user-index';
 import { WorkspaceType, WorkspaceStudentAssessmentsType, WorkspaceStudentActivityType } from 'reducers/main-function/workspaces';
-import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records/records';
+import { AllStudentUsersDataType, TransferCreditType, RecordGroupType, AllStudentUsersDataStatusType, TranscriptOfRecordLocationType, CurrentStudentUserAndWorkspaceStatusType, JournalListType, MaterialType, MaterialAssignmentType, MaterialEvaluationType, CurrentRecordType } from '~/reducers/main-function/records';
 import { StateType } from '~/reducers';
 
 export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA = SpecificActionType<"UPDATE_RECORDS_ALL_STUDENT_USERS_DATA", AllStudentUsersDataType>;
@@ -12,6 +12,7 @@ export type UPDATE_RECORDS_ALL_STUDENT_USERS_DATA_STATUS = SpecificActionType<"U
 export type UPDATE_RECORDS_LOCATION = SpecificActionType<"UPDATE_RECORDS_LOCATION", TranscriptOfRecordLocationType>;
 export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE_STATUS", CurrentStudentUserAndWorkspaceStatusType>;
 export type UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE = SpecificActionType<"UPDATE_RECORDS_CURRENT_STUDENT_AND_WORKSPACE", CurrentRecordType>;
+export type UPDATE_RECORDS_SET_FILES = SpecificActionType<"UPDATE_RECORDS_SET_FILES", Array<UserFileType>>;
 
 export interface UpdateAllStudentUsersAndSetViewToRecordsTriggerType {
   ():AnyActionType
@@ -26,6 +27,10 @@ export interface SetLocationToVopsInTranscriptOfRecordsTriggerType {
 }
 
 export interface SetLocationToHopsInTranscriptOfRecordsTriggerType {
+  ():AnyActionType
+}
+
+export interface UpdateTranscriptOfRecordsFilesTriggerType {
   ():AnyActionType
 }
 
@@ -341,7 +346,17 @@ let setLocationToHopsInTranscriptOfRecords:SetLocationToHopsInTranscriptOfRecord
   };
 }
 
-export default {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords}
+let updateTranscriptOfRecordsFiles:UpdateTranscriptOfRecordsFilesTriggerType = function updateTranscriptOfRecordsFiles(){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let files:Array<UserFileType> = <Array<UserFileType>>(
+        await promisify(mApi().guider.users.files.read(getState().status.userSchoolDataIdentifier), 'callback')());
+    
+    dispatch({
+      type: "UPDATE_RECORDS_SET_FILES",
+      payload: files
+    });
+  }
+}
+
 export {updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace,
-  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords}
+  setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords, updateTranscriptOfRecordsFiles}

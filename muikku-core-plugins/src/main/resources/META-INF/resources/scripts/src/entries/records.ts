@@ -8,7 +8,7 @@ import * as queryString from 'query-string';
 import mainFunctionDefault from '~/util/base-main-function';
 
 import titleActions from '~/actions/base/title';
-import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records/records';
+import { updateAllStudentUsersAndSetViewToRecords, setCurrentStudentUserViewAndWorkspace, setLocationToVopsInTranscriptOfRecords, setLocationToHopsInTranscriptOfRecords } from '~/actions/main-function/records';
 import { loadAvaliableCurriculumFiltersFromServer } from '~/actions/main-function/courses';
 import { updateVops } from '~/actions/main-function/vops';
 import { updateHops } from '~/actions/main-function/hops';

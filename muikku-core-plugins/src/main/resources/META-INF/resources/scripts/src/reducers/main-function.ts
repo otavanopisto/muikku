@@ -19,6 +19,10 @@ import guider from './main-function/guider';
 
 import profile from './main-function/profile';
 
+import records from '~/reducers/main-function/records';
+import vops from '~/reducers/main-function/vops';
+import hops from '~/reducers/main-function/hops';
+
 import {combineReducers} from 'redux';
 
 export default combineReducers({
@@ -30,6 +34,10 @@ export default combineReducers({
   title,
   
   userIndex,
+  
+  records,
+  vops,
+  hops,
   
   announcements,
   workspaces,

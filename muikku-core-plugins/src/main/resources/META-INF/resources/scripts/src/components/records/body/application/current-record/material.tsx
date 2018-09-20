@@ -1,6 +1,6 @@
 import * as React from "react";
 import { i18nType } from "~/reducers/base/i18n";
-import { RecordsGradesType, MaterialType } from "~/reducers/main-function/records/records";
+import { RecordsGradesType, MaterialType } from "~/reducers/main-function/records";
 import { WorkspaceType } from "~/reducers/main-function/workspaces";
 
 import MaterialLoader from "~/components/base/material-loader";
@@ -11,7 +11,6 @@ interface MaterialProps {
   material: MaterialType,
   workspace: WorkspaceType,
   i18n: i18nType,
-  grades: RecordsGradesType,
   status: StatusType
 }
 
@@ -45,12 +44,8 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
       <div className="application-list__item-content application-list__item-content--main">
         <div className="application-list__item-header application-list__item-header--studies-assignment" onClick={this.props.material.evaluation ? this.toggleOpened : null}>
           {evaluation ?
-            <span title={this.props.grades[[
-              evaluation.gradingScaleSchoolDataSource,
-              evaluation.gradingScaleIdentifier,
-              evaluation.gradeSchoolDataSource,
-              evaluation.gradeIdentifier].join("-")].scale + getShortenGradeExtension(evaluation.grade)}
-              className={`text text--assignment-assesment-grade ${evaluation.grade ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
+            <span title={evaluation.gradingScale + getShortenGradeExtension(evaluation.grade)}
+              className={`text text--assignment-assesment-grade ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
             : <span className={`text text--assignment-assesment-grade state-NO-ASSESSMENT`}>N</span>}
           
           <span className="text text--list-item-title">{this.props.material.assignment.title}</span>

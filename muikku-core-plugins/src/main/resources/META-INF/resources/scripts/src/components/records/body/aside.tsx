@@ -5,7 +5,7 @@ import { i18nType } from '~/reducers/base/i18n';
 
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/item-list.scss';
-import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records/records';
+import { TranscriptOfRecordLocationType } from '~/reducers/main-function/records';
 import {StateType} from '~/reducers';
 
 interface NavigationProps {

@@ -41,6 +41,8 @@ export interface WorkspaceStudentAssessmentType {
   evaluated: string,
   gradeIdentifier: string,
   gradeSchoolDataSource: string,
+  grade: string,
+  gradingScale: string,
   gradingScaleIdentifier: string,
   gradingScaleSchoolDataSource: string,
   identifier: string,

@@ -14,7 +14,7 @@ import {WorkspacesType} from './main-function/workspaces';
 import { CoursesType } from './main-function/courses';
 import { DiscussionType } from './main-function/discussion';
 import { GuiderType } from './main-function/guider';
-import { RecordsType } from './main-function/records/records';
+import { RecordsType } from './main-function/records';
 import { ErrorType } from './base/error';
 import { ProfileType } from './main-function/profile';
 
