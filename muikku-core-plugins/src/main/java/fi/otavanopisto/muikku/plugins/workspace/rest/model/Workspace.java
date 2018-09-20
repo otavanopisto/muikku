@@ -12,6 +12,7 @@ public class Workspace {
 
   public Workspace(
       Long id,
+      Long organizationId,
       String urlName,
       WorkspaceAccess access,
       Boolean archived,
@@ -27,6 +28,7 @@ public class Workspace {
       boolean hasCustomImage) {
     super();
     this.id = id;
+    this.organizationId = organizationId;
     this.urlName = urlName;
     this.materialDefaultLicense = materialDefaultLicense;
     this.archived = archived;
@@ -154,7 +156,16 @@ public class Workspace {
     this.hasCustomImage = hasCustomImage;
   }
 
+  public Long getOrganizationId() {
+    return organizationId;
+  }
+
+  public void setOrganizationId(Long organizationId) {
+    this.organizationId = organizationId;
+  }
+
   private Long id;
+  private Long organizationId;
   private String urlName;
   private Boolean archived;
   private String name;

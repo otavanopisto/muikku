@@ -47,6 +47,13 @@ public class DefaultSchoolDataOrganizationListener {
     }
   }
   
+  public void onSchoolDataOrganizationUpdated(@Observes SchoolDataOrganizationUpdatedEvent event) {
+    OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (organizationEntity != null) {
+      organizationEntityController.updateName(organizationEntity, event.getName());
+    }
+  }
+  
   public void onSchoolDataOrganizationRemoved(@Observes SchoolDataOrganizationRemovedEvent event) {
     OrganizationEntity organizationEntity = organizationEntityController.findByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (organizationEntity != null) {

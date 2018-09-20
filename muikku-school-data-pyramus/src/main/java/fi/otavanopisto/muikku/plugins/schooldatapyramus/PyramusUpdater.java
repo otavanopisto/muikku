@@ -823,6 +823,7 @@ public class PyramusUpdater {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
     Map<String, Object> extra = new HashMap<>();
     extra.put("pyramusVariables", course.getVariables());
+    extra.put("organizationId", course.getOrganizationId());
     schoolDataWorkspaceDiscoveredEvent.fire(new SchoolDataWorkspaceDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName(), extra));
   }
 
@@ -830,6 +831,7 @@ public class PyramusUpdater {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
     Map<String, Object> extra = new HashMap<>();
     extra.put("pyramusVariables", course.getVariables());
+    extra.put("organizationId", course.getOrganizationId());
     schoolDataWorkspaceUpdatedEvent.fire(new SchoolDataWorkspaceUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName(), extra));
   }
 
