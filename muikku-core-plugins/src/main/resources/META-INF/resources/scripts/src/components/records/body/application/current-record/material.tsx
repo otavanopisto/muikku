@@ -48,7 +48,7 @@ export default class Material extends React.Component<MaterialProps, MaterialSta
               evaluation.gradingScaleIdentifier,
               evaluation.gradeSchoolDataSource,
               evaluation.gradeIdentifier].join("-")].scale + getShortenGradeExtension(evaluation.grade)}
-              className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.grade ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
+              className={`application-list__indicator-badge application-list__indicator-badge--task ${evaluation.passed ? "state-PASSED" : "state-FAILED"}`}>{shortenGrade(evaluation.grade)}</span>
             : <span className={`application-list__indicator-badge application-list__indicator-badge--task state-NO-ASSESSMENT`}>N</span>}
           
           <span className="application-list__header-primary">{this.props.material.assignment.title}</span>
