@@ -52,9 +52,16 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
   blur(){
     (this.refs["input"] as HTMLElement).blur();
   }
-  getHeight(){
+  getInputHeight(){
     return (this.refs["input"] as HTMLElement).offsetHeight;
   }
+  getInputBodyHeight(){
+    return (this.refs["inputbody"] as HTMLElement).offsetHeight;
+  }
+  getSelectedHeight(){
+    return (this.refs["selected"] as HTMLElement).offsetHeight;
+  }
+  
   componentDidUpdate(){
     if (this.props.isFocused){
       this.focus();
@@ -70,13 +77,16 @@ export default class TagInput extends React.Component<TagInputProps, TagInputSta
       <div className="env-dialog__form-element-container" ref="inputbody" onClick={(e)=>this.props.onFocus(e as any)}>
         <div className="env-dialog__label">{this.props.placeholder}</div>
         <input className="env-dialog__input" value={this.props.inputValue} ref="input" onBlur={this.props.onBlur} onFocus={this.props.onFocus}
-        onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} />            
-        {this.props.tags.map((tag, index)=>{
-          return <span key={index} className="env-dialog__selected-item">
-            <span className="env-dialog__selected-item-label">{tag.node}</span>
-            <span className="env-dialog__selected-item-action icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
-          </span>
-        })}
+        onChange={this.props.onInputDataChange} onKeyDown={this.onKeyDown} /> 
+        
+        <div ref="selected" className="env-dialog__selected-items">
+          {this.props.tags.map((tag, index)=>{
+            return <span key={index} className="env-dialog__selected-item">
+              <span className="env-dialog__selected-item-label">{tag.node}</span>
+              <span className="env-dialog__selected-item-action icon-close" onClick={this.onDeleteTag.bind(this, tag)}></span>
+            </span>
+          })}
+        </div>
       </div>
     </div>
   }

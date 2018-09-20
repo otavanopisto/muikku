@@ -28,6 +28,7 @@ export interface InputContactsAutofillState {
   textInput: string,
   autocompleteOpened: boolean,
   fieldHeight?: number,
+  selectedHeight?: number,
   isFocused: boolean
 }
 
@@ -50,6 +51,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       textInput: "",
       autocompleteOpened: false,
       fieldHeight: undefined,
+      selectedHeight: undefined,
       isFocused: this.props.autofocus === true
     }
     
@@ -60,6 +62,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
     this.setHeight = this.setHeight.bind(this);
+    this.setBodyMargin = this.setBodyMargin.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
   componentWillReceiveProps(nextProps: InputContactsAutofillProps){
@@ -67,11 +70,28 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       this.setState({selectedItems: nextProps.selectedItems})
     }
   }
+  
+  
+// Deprecated? 
+  
   setHeight(){
-    let fieldHeight = (this.refs["taginput"] as TagInput).getHeight();
+    let fieldHeight = (this.refs["taginput"] as TagInput).getInputHeight();
     if (fieldHeight !== this.state.fieldHeight){
       this.setState({fieldHeight});
     }
+  }
+  
+  setBodyMargin() {
+    let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
+    let prevSelectedHeight= this.state.selectedHeight;
+    let currentBodyMargin = parseFloat(document.body.style.marginBottom);       
+    let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
+    
+    if (selectedHeight !== this.state.selectedHeight){
+      let bodyMargin = defaultBodyMargin + selectedHeight + "px";        
+        document.body.style.marginBottom = bodyMargin;
+        this.setState({selectedHeight: selectedHeight});
+      }
   }
   onInputBlur(e: React.FocusEvent<any>){
     this.blurTimeout = setTimeout(()=>this.setState({isFocused: false}), 100);
@@ -124,11 +144,14 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.setState({
       selectedItems: nfilteredValue,
       isFocused: true
-    }, this.setHeight);
+    }, this.setBodyMargin
+    );
+
     this.props.onChange(nfilteredValue);
   }
   onAutocompleteItemClick(item: ContactRecepientType, selected: boolean){
     clearTimeout(this.blurTimeout);
+    this.setBodyMargin;
     if (!selected){
       let nvalue = this.state.selectedItems.concat([item]);
       this.setState({
@@ -136,14 +159,21 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         autocompleteOpened: false,
         textInput: "",
         isFocused: true
-      }, this.setHeight);
+      }, this.setBodyMargin
+      );
       this.props.onChange(nvalue);
     } else {
       this.setState({isFocused: true});
     }
   }
+  
+  componentDidMount () {
+    let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
+    this.setState({selectedHeight: selectedHeight});        
+  }
+  
   render(){
-    let selectedItems = this.state.selectedItems.map((item)=>{
+    let selectedItems = this.state.selectedItems.map((item)=>{      
       if (item.type === "user" || item.type === "staff"){
         return {
           node: <span className="text text--recepient-tag">
