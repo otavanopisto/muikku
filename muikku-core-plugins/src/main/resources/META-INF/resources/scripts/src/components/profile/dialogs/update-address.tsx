@@ -96,23 +96,23 @@ class UpdateAddressDialog extends React.Component<UpdateAddressDialogProps, Upda
         <p>{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.desription')}</p>
         <form>
           <div className="form-element form-element--profile">
-            <label className="form-element__input form-element__input--label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>    
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.streetField.label')}</label>    
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.street} onChange={this.updateField.bind(this, "street")} autoComplete="address-line1"/>
           </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__input form-element__input--label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label')}</label>
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.postalCodeField.label')}</label>
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.postalCode} onChange={this.updateField.bind(this, "postalCode")} autoComplete="postal-code"/>
           </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__input form-element__input--label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.cityField.label')}</label>
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.cityField.label')}</label>
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.city} onChange={this.updateField.bind(this, "city")} autoComplete="address-level2"/>
           </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__input form-element__input--label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.countryField.label')}</label>
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.countryField.label')}</label>
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.country} onChange={this.updateField.bind(this, "country")} autoComplete="country-name"/>
           </div>
           <div className="form-element form-element--profile">
-            <label className="form-element__input form-element__input--label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.municipalityField.label')}</label>
+            <label className="form-element__label">{this.props.i18n.text.get('plugin.profile.changeAddressMunicipality.dialog.municipalityField.label')}</label>
             <input type="text" className="form-element__input form-element__input--profile" value={this.state.municipality} onChange={this.updateField.bind(this, "municipality")} autoComplete="address-level3"/>
           </div>
         </form>
