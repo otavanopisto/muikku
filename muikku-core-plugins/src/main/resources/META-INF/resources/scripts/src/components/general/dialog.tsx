@@ -45,8 +45,9 @@ export default class Dialog extends React.Component<DialogProps, DialogState> {
         visible: true
       });
     }, 10);
-    this.props.onOpen && this.props.onOpen(element);
-    document.body.style.marginBottom = element.firstChild.firstChild.offsetHeight + "px";      
+    let el = element.childNodes[0].firstChild as HTMLElement;
+    let marginOffset = 20;
+    document.body.style.marginBottom = el.offsetHeight - marginOffset + "px";      
   }
   
   beforeClose(DOMNode: HTMLElement, removeFromDOM: ()=>any){
