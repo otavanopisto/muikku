@@ -54,7 +54,6 @@
   margin-right: 10px;
 }
 
-
 .application-list__header-primary {
   display: flex;
   flex-basis: 0;
@@ -63,6 +62,10 @@
   flex-shrink: 1;
   padding: 0 10px 0 0;
   word-wrap: break-word;
+}
+
+.application-list__header-primary--highlight {
+  font-weight: 700;
 }
 
 .application-list__header-helper {
@@ -92,7 +95,6 @@
     font-size: $text-capitalized-desktop-font-size;
   }
 }
-
 
 // Shit shit shit. This is not really a duplicate, but something about studies. TODO: find out where it belongs and name it accordingly
 
@@ -153,8 +155,6 @@
   display: inline-block;
 }
 
-
-
 .application-list__item-content-wrapper {
   align-items: flex-start;
   display: flex;
@@ -185,9 +185,11 @@
       background-color: $color-label-mobile-selected-background;
     }
 
-    .text,
     .glyph,
-    .link {
+    .link,
+    .application-list__header-primary,
+    .application-list__header-item-date,
+    .application-list__header-item-body {
       color: $color-default;
     }
     
@@ -203,13 +205,11 @@
       background-color: $color-default;
       border-radius: 3px;
       
-      .text,
-      .label__text {
+      .label__text,
+      .application-list__header-primary,
+      .application-list__header-item-date,
+      .application-list__header-item-body {
         color: $color-default-contrast;
-      }
-      
-      .text--list-item-helper-title {
-        color: $color-default-helper;
       }
       
       .link {
@@ -227,6 +227,19 @@
       &.announcement--workspace .glyph {
         color: $color-announcement-workspace;
       }
+    }
+  }
+}
+
+.application-list__item--highlight {  
+  background-color: $color-message-unread-background;
+  border-top: 3px solid $color-default;
+  
+  @include breakpoint($breakpoint-pad) {
+    border-width: 1px;
+    
+    &.selected {
+      background: $color-message-unread-background;
     }
   }
 }
@@ -382,9 +395,6 @@
   display: flex;
   flex-flow: row wrap;
 }
-
-
-
 
 .application-list__item-content-header {
   font-size: 1rem;

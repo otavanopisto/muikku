@@ -105,7 +105,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
           let isSelected:boolean = this.props.selectedThreadsIds.includes(thread.communicatorMessageId);
           return {
             as: ApplicationListItem,
-            className: `message message--communicator ${thread.unreadMessagesInThread ? "message--unread" : ""}`,
+            className: `message ${thread.unreadMessagesInThread ? "application-list__item--highlight" : ""}`,
             onSelect: this.props.addToMessagesSelectedThreads.bind(null, thread),
             onDeselect: this.props.removeFromMessagesSelectedThreads.bind(null, thread),
             onEnter: this.setCurrentThread.bind(this, thread),
@@ -116,7 +116,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                 {checkbox}
               </div>}>
                 <ApplicationListItemHeader modifiers="communicator-message">
-                  <div className="application-list__header-primary">
+                  <div className={`application-list__header-primary ${thread.unreadMessagesInThread ? "application-list__header-primary--highlight" : ""}`}>
                     <span>{this.getThreadUserNames(thread, this.props.status.userId)}</span>
                   </div>
                   {thread.messageCountInThread > 1 ? <div className="application-list__item-counter">

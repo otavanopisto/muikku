@@ -16,27 +16,6 @@
     border-width: 1px;
     padding: 15px 0;
   }
-  
-  &.message--unread {  
-    background-color: $color-message-unread-background;
-    border-top: 3px solid $color-default;
-    
-    &.selected {
-      background: $color-application-list-item-background-selected;
-    }
-    
-    @include breakpoint($breakpoint-pad) {
-      border-width: 1px;
-      
-      &.selected {
-        background: $color-message-unread-background;
-      }
-    }
-    
-    .application-list__header-primary {
-      font-weight: 700;
-    }
-  }
 }
 
 .message__select-container {
