@@ -18,8 +18,9 @@
   }
 }
 
-.message--unread {
-  background: $color-message-unread-background;
+// We have to override application-list__item background-color by adding .message selector because application-list.scss is loaded before message.scss and we cannot be sure what is the load order in the future as well.
+.message.message--unread {  
+  background-color: $color-message-unread-background;
   border-top: 3px solid $color-default;
   
   &.selected {
@@ -34,7 +35,7 @@
     }
   }
   
-  .text--list-item-title {
+  .application-list__header-primary {
     font-weight: 700;
   }
 }
