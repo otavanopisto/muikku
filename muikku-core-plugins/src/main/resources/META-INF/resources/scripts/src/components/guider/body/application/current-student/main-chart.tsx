@@ -10,6 +10,8 @@ import '~/sass/elements/chart.scss';
 
 let AmCharts: any = null;
 
+const MAX_BULLET_SIZE = 30;
+
 interface CurrentStudentStatisticsProps {
   i18n: i18nType,
   workspaces: WorkspaceListType,
@@ -149,7 +151,8 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     //NOTE: The unused data can be cut here. (Option 1)
     //NOTE: For the sake of keeping the same chart borders it might be wise to leave the data rows with 0 values, but keep date points.
     let chartDataMap = new Map<string, {logins?: number, assignments?: number, exercises?: number,
-    evaluationRequested?: number, evaluationFailed?: number, evaluationIncompleted?: number, evaluationPassed?: number}>();
+    evaluationRequested?: number, evaluationRequestedBulletSize?: number, evaluationFailed?: number,  evaluationFailedBulletSize?: number,
+    evaluationIncompleted?: number, evaluationIncompletedBulletSize?: number, evaluationPassed?: number, evaluationPassedBulletSize?: number}>();
     
     chartDataMap.set(new Date().toISOString().slice(0, 10), {"logins": 0, "assignments": 0, "exercises": 0});
       this.props.logins.map((login)=>{
@@ -201,45 +204,66 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
     let evaluations: {date: string, type: string}[] = [{date: "2018-08-20T00:00:00.000", type: "EVALUATION_REQUESTED"},
     {date: "2018-08-22T00:00:00.000", type: "EVALUATION_INCOMPLETED"},{date: "2018-08-22T00:00:00.000", type: "EVALUATION_REQUESTED"},
     {date: "2018-08-24T00:00:00.000", type: "EVALUATION_REQUESTED"},{date: "2018-08-25T00:00:00.000", type: "EVALUATION_FAILED"},
-    {date: "2018-09-12T00:00:00.000", type: "EVALUATION_REQUESTED"},{date: "2018-09-15T00:00:00.000", type: "EVALUATION_PASSED"}];
+    {date: "2018-09-12T00:00:00.000", type: "EVALUATION_REQUESTED"},{date: "2018-09-15T00:00:00.000", type: "EVALUATION_PASSED"},
+    {date: "2018-08-22T00:00:00.000", type: "EVALUATION_REQUESTED"}];
     
     evaluations.map((evaluation)=>{
       let date = evaluation.date.slice(0, 10);
       let entry = chartDataMap.get(date);
       if (evaluation.type === "EVALUATION_REQUESTED"){
         if (entry == null)
-          entry = {"evaluationRequested": 1};
+          entry = {"evaluationRequested": 1, "evaluationRequestedBulletSize": 20};
         else if (entry.evaluationRequested == null)
-          entry = {...entry, "evaluationRequested": 1};
-        else
+          entry = {...entry, "evaluationRequested": 1, "evaluationRequestedBulletSize": 20};
+        else {
           entry.evaluationRequested++;
+          if (MAX_BULLET_SIZE - entry.evaluationRequestedBulletSize > 5)
+            entry.evaluationRequestedBulletSize += 5;
+          else
+            entry.evaluationRequestedBulletSize = MAX_BULLET_SIZE;
+        }
       }
       
       if (evaluation.type === "EVALUATION_FAILED"){
         if (entry == null)
-          entry = {"evaluationFailed": 1};
+          entry = {"evaluationFailed": 1, "evaluationFailedBulletSize": 20};
         else if (entry.evaluationFailed == null)
-          entry = {...entry, "evaluationFailed": 1};
-        else
+          entry = {...entry, "evaluationFailed": 1, "evaluationFailedBulletSize": 20};
+        else {
           entry.evaluationFailed++;
+          if (MAX_BULLET_SIZE - entry.evaluationFailedBulletSize > 5)
+            entry.evaluationFailedBulletSize += 5;
+          else
+            entry.evaluationFailedBulletSize = MAX_BULLET_SIZE;
+        }
       }
       
       if (evaluation.type === "EVALUATION_INCOMPLETED"){
         if (entry == null)
-          entry = {"evaluationIncompleted": 1};
+          entry = {"evaluationIncompleted": 1, "evaluationIncompletedBulletSize": 20};
         else if (entry.evaluationIncompleted == null)
-          entry = {...entry, "evaluationIncompleted": 1};
-        else
+          entry = {...entry, "evaluationIncompleted": 1, "evaluationIncompletedBulletSize": 20};
+        else {
           entry.evaluationIncompleted++;
+          if (MAX_BULLET_SIZE - entry.evaluationIncompletedBulletSize > 5)
+            entry.evaluationIncompletedBulletSize += 5;
+          else
+            entry.evaluationIncompletedBulletSize = MAX_BULLET_SIZE;
+        }
       }
       
       if (evaluation.type === "EVALUATION_PASSED"){
         if (entry == null)
-          entry = {"evaluationPassed": 1};
+          entry = {"evaluationPassed": 1, "evaluationPassedBulletSize": 20};
         else if (entry.evaluationPassed == null)
-          entry = {...entry, "evaluationPassed": 1};
-        else
+          entry = {...entry, "evaluationPassed": 1, "evaluationPassedBulletSize": 20};
+        else {
           entry.evaluationPassed++;
+          if (MAX_BULLET_SIZE - entry.evaluationPassedBulletSize > 5)
+            entry.evaluationPassedBulletSize += 5;
+          else
+            entry.evaluationPassedBulletSize = MAX_BULLET_SIZE;
+        }
       }
       chartDataMap.set(date, entry);
     });
@@ -311,9 +335,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "clustered": false,
       "valueField": "evaluationRequested",
       "bullet": "circle",
-      "color": "#009fe3",
+      "lineColor": "#009fe3",
       "bulletOffset": 0,
-      "bulletSize": 30,
+      "bulletSizeField": "evaluationRequestedBulletSize",
     });
     
     graphs.push({
@@ -328,9 +352,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "clustered": false,
       "valueField": "evaluationFailed",
       "bullet": "circle",
-      "color": "#4c4c4c",
+      "lineColor": "#4c4c4c",
       "bulletOffset": 0,
-      "bulletSize": 30,
+      "bulletSizeField": "evaluationFailedBulletSize",
     });
     
     graphs.push({
@@ -345,9 +369,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "clustered": false,
       "valueField": "evaluationIncompleted",
       "bullet": "circle",
-      "color": "#ea7503",
+      "lineColor": "#ea7503",
       "bulletOffset": 0,
-      "bulletSize": 30,
+      "bulletSizeField": "evaluationIncompletedBulletSize",
     });
     
     graphs.push({
@@ -362,9 +386,9 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
       "clustered": false,
       "valueField": "evaluationPassed",
       "bullet": "circle",
-      "color": "#2ed31c",
+      "lineColor": "#2ed31c",
       "bulletOffset": 0,
-      "bulletSize": 30,
+      "bulletSizeField": "evaluationPassedBulletSize",
     });
     
     let valueAxes = [{
@@ -417,12 +441,12 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentStatisticsP
         "cursorColor": "#000"
      },
      "listeners": [{
-       "event": "zoomed",
-       "method": this.zoomSaveHandler
+         "event": "zoomed",
+         "method": this.zoomSaveHandler
        }, {
-       "event": "dataUpdated",
-       "method":  this.zoomApplyHandler
-    }],
+         "event": "dataUpdated",
+         "method":  this.zoomApplyHandler
+       }],
       "valueAxes": valueAxes,
       "graphs": graphs,
       "dataProvider": data,
