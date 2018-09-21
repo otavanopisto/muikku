@@ -27,7 +27,7 @@
   justify-content: center;
   position: relative;
   width: 180px;
-  
+
   @include breakpoint($breakpoint-pad) {
     height: 250px;
     width: 250px;
