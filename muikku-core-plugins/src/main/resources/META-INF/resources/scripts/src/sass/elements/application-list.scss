@@ -237,7 +237,7 @@
   
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
-    
+
     &.selected {
       background: $color-message-unread-background;
     }
