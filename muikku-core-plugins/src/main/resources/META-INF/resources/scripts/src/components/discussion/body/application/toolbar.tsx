@@ -2,8 +2,9 @@ import * as React from 'react';
 import {connect, Dispatch} from 'react-redux';
 
 import '~/sass/elements/link.scss';
+import '~/sass/elements/breadcrumb.scss';
 import '~/sass/elements/application-panel.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/buttons.scss';
 import '~/sass/elements/form-elements.scss';
 import Link from '~/components/general/link';
@@ -58,14 +59,14 @@ class CommunicatorToolbar extends React.Component<DiscussionToolbarProps, Discus
       let currentArea = this.props.discussion.areas.find((area)=>area.id === this.props.discussion.current.forumAreaId);
       return <div className="application-panel__toolbar">
         <ButtonPill buttonModifiers="go-back" onClick={this.onGoBackClick} icon="goback"/>
-        <div className="text text--discussion-current-thread">
-          <div className={`text__discussion-breadcrumb-item text__discussion-breadcrumb-item--area-${currentArea.id}`}>
+        <div className="breadcrumb">
+          <div className={`breadcrumb__item breadcrumb__item--area-${currentArea.id}`}>
             {currentArea.name}
           </div>
-          <div className="text__discussion-breadcrumb-arrow">
-            <span className=" icon-arrow-right"></span>
+          <div className="breadcrumb__arrow">
+            <span className="icon-arrow-right"></span>
           </div>
-          <div className="text__discussion-breadcrumb-item">
+          <div className="breadcrumb__item">
             {this.props.discussion.current.title}
           </div>
         </div>

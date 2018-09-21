@@ -174,9 +174,9 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
        </div>,
        (this.props.status.permissions.LOCK_STICKY_PERMISSION ? <div key="2" className="env-dialog__row  env-dialog__row--new-discussion-thread-states">
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadPinned} onChange={this.togglePinned}/>
-         <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
+         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.pinned')}</span>
          <input type="checkbox" className="env-dialog__input" checked={this.state.threadLocked} onChange={this.toggleLocked}/>
-         <span className="text text--new-discussion-create-state">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
+         <span className="env-dialog__input-label">{this.props.i18n.text.get('plugin.discussion.createmessage.locked')}</span>
        </div> : <div key="2" className="env-dialog__row env-dialog__row--new-discussion-thread-states"/>),
        <div className="env-dialog__row" key="3">     
          <div className="env-dialog__form-element-container">

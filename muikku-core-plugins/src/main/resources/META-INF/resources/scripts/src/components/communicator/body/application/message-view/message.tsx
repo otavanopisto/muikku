@@ -12,7 +12,7 @@ import { colorIntToHex } from '~/util/modifiers';
 import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/label.scss';
 import '~/sass/elements/application-list.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/link.scss';
 import { WorkspaceType } from '~/reducers/main-function/workspaces';
 
@@ -79,27 +79,27 @@ class Message extends React.Component<MessageProps, MessageState> {
       <div className="application-list__item-header application-list__item-header--communicator-message-thread">
         <div className="application-list__item-meta">
           <div className="application-list__item-header-main application-list__item-header-main--communicator-message-participants">
-            <span className="text text--communicator-message-sender">
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--communicator-sender">
               {this.props.message.sender.firstName ? this.props.message.sender.firstName + " " : ""} {this.props.message.sender.lastName ? this.props.message.sender.lastName : ""}
             </span>
-            <span className="text text--communicator-message-recipients">
+            <span className="application-list__item-header-main-content">
               {this.props.message.recipients.map((recipient)=>{
                 return (
-                  <span className="text text--communicator-message-recipient" key={recipient.recipientId}>
+                  <span key={recipient.recipientId}>
                     {recipient.firstName ? recipient.firstName + " " : ""} {recipient.lastName ? recipient.lastName + " " : ""}
                   </span>
                 )
               })}
               {this.props.message.userGroupRecipients.map((userGroupRecepient: UserGroupType)=>{
                 return (
-                  <span className="text text--communicator-message-recipient" key={userGroupRecepient.id}>
+                  <span key={userGroupRecepient.id}>
                     {userGroupRecepient.name}
                   </span>
                 )
               })}
               {workspaceRecepientsFiltered.map((workspaceRecepient)=>{
                 return (
-                  <span className="text text--communicator-message-recipient" key={workspaceRecepient.workspaceEntityId}>
+                  <span key={workspaceRecepient.workspaceEntityId}>
                     {workspaceRecepient.workspaceName}
                   </span>
                 )
@@ -107,21 +107,21 @@ class Message extends React.Component<MessageProps, MessageState> {
             </span>
           </div>
           <div className="application-list__item-header-aside application-list__item-header-aside--communicator-message-time">
-            <span className="text text--communicator-message-created">{this.props.i18n.time.format(this.props.message.created)}</span>
+            <span>{this.props.i18n.time.format(this.props.message.created)}</span>
           </div>
         </div>
         {this.props.labels && this.props.labels.length ? <div className="labels labels--communicator-message">
           {this.props.labels && this.props.labels.map((label)=>{
             return <span className="label" key={label.id}>
               <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-              <span className="text label__text">{label.labelName}</span>
+              <span className="label__text">{label.labelName}</span>
             </span>
-          })}
+          })} 
         </div> : null}
       </div>
       <div className="application-list__item-body application-list__item-body--communicator-message-thread">
-        <header className="text text--communicator-message-caption">{this.props.message.caption}</header>
-        <section className="text text--communicator-message-content rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
+        <header className="application-list__item-content-header">{this.props.message.caption}</header>
+        <section className="application-list__item-content-body rich-text" dangerouslySetInnerHTML={{__html: this.props.message.content}}></section>
       </div>
       <div className="application-list__item-footer application-list__item-footer--communicator-message-thread-actions">
         <NewMessage replyThreadId={this.props.message.communicatorMessageId} messageId={this.props.message.id}

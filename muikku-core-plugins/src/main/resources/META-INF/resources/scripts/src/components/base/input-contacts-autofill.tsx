@@ -6,6 +6,8 @@ import {filterHighlight} from '~/util/modifiers';
 import mApi from '~/lib/mApi';
 import {WorkspaceType} from '~/reducers/main-function/workspaces';
 import { ContactRecepientType, UserRecepientType, UserGroupRecepientType, WorkspaceRecepientType, UserWithSchoolDataType, UserGroupType, UserType, UserStaffType, StaffRecepientType } from '~/reducers/main-function/user-index';
+import '~/sass/elements/autocomplete.scss';
+import '~/sass/elements/glyph.scss';
 
 export interface InputContactsAutofillProps {
   placeholder?: string,
@@ -176,8 +178,8 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     let selectedItems = this.state.selectedItems.map((item)=>{      
       if (item.type === "user" || item.type === "staff"){
         return {
-          node: <span className="text text--recepient-tag">
-            <span className="text__icon icon-user"/>
+          node: <span className="autocomplete__selected-item">
+            <span className="glyph glyph--selected-recipient icon-user"/>
             {
               (item.value.firstName + " " || "") + (item.value.lastName || "")
             } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
@@ -186,15 +188,15 @@ export default class InputContactsAutofill extends React.Component<InputContacts
         };
       } else if (item.type === "usergroup"){
         return {
-          node: <span className="text text--recepient-tag">
-            <span className="text__icon icon-members"/>{item.value.name}
+          node: <span className="autocomplete__selected-item">
+            <span className="glyph glyph--selected-recipient icon-members"/>{item.value.name}
           </span>,
           value: item
         };
       } else if (item.type === "workspace"){
         return {
-          node: <span className="text text--recepient-tag">
-            <span className="text__icon icon-books"/>{item.value.name}
+          node: <span className="autocomplete__selected-item">
+            <span className="glyph glyph--selected-recipient icon-books"/>{item.value.name}
           </span>,
           value: item
         };
@@ -205,20 +207,20 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     let autocompleteItems = this.state.autocompleteSearchItems.map((item)=>{
       let node;
       if (item.type === "user" || item.type === "staff"){
-        node = <div className="text text--recepient-autocomplete">
-          <span className="text__icon icon-user"></span>
+        node = <div className="autocomplete__recipient">
+          <span className="glyph glyph--autocomplete-recipient icon-user"></span>
           {
             filterHighlight((item.value.firstName + " " || "") + (item.value.lastName || ""), this.state.textInput)
           } {checkHasPermission(this.props.showEmails) ? <i>{item.value.email}</i> : null}
         </div>;
       } else if (item.type === "usergroup"){
-        node = <div className="text text--recepient-autocomplete">
-          <span className="text__icon icon-members"></span>
+        node = <div className="autocomplete__recipient">
+          <span className="glyph glyph--autocomplete-recipient icon-members"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
       } else if (item.type === "workspace"){
-        node = <div className="text text--recepient-autocomplete">
-          <span className="text__icon icon-books"></span>
+        node = <div className="autocomplete__recipient">
+          <span className="glyph glyph--autocomplete-recipient icon-books"></span>
           {filterHighlight(item.value.name, this.state.textInput)}
         </div>;
       }

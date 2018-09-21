@@ -10,7 +10,7 @@ import {StateType} from '~/reducers';
 import '~/sass/elements/empty.scss';
 import '~/sass/elements/loaders.scss';
 import '~/sass/elements/application-list.scss';
-import '~/sass/elements/text.scss';
+
 import '~/sass/elements/label.scss';
 import '~/sass/elements/message.scss';
 
@@ -110,24 +110,24 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                 {checkbox}
               </div>}>
                 <ApplicationListItemHeader modifiers="communicator-message">
-                  <div className="text text--list-item-title">
+                  <div className="application-list__header-primary">
                     <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
                   </div>
-                  {thread.messageCountInThread > 1 ? <div className="text text--item-counter">
+                  {thread.messageCountInThread > 1 ? <div className="application-list__item-counter">
                     {thread.messageCountInThread}
                   </div> : null}
-                  <div className="text text--communicator-date">
+                  <div className="application-list__header-item-date">
                     {this.props.i18n.time.format(thread.threadLatestMessageDate)}
                   </div> 
                 </ApplicationListItemHeader>
                 <ApplicationListItemBody modifiers="communicator-message">
-                  <span className="text text--communicator-item-body">{thread.caption}</span>
+                  <span className="application-list__header-item-body">{thread.caption}</span>
                 </ApplicationListItemBody>
                 {thread.labels.length ? <ApplicationListItemFooter modifiers="communicator-message-labels">
                   <div className="labels">{thread.labels.map((label)=>{
                     return <span className="label" key={label.id}>
                       <span className="label__icon icon-tag" style={{color: colorIntToHex(label.labelColor)}}></span>
-                      <span className="text label__text">{label.labelName}</span>
+                      <span className="label__text">{label.labelName}</span>
                     </span>
                   })}</div>
                 </ApplicationListItemFooter> : null}

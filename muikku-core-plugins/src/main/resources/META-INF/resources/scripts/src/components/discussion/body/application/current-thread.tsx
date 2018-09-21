@@ -12,10 +12,10 @@ import ModifyThreadReply from '../../dialogs/modify-thread-reply';
 import { getName, getUserImageUrl } from "~/util/modifiers";
 import {StateType} from '~/reducers';
 
-import '~/sass/elements/text.scss';
+import '~/sass/elements/rich-text.scss';
 import '~/sass/elements/avatar.scss';
 import '~/sass/elements/discussion.scss';
-import '~/sass/elements/rich-text.scss';
+
 import { DiscussionCurrentThread, DiscussionCurrentThreadElement, DiscussionThreadHeader, DiscussionThreadBody, DiscussionThreadFooter } from "./threads/threads";
 
 interface CurrentThreadProps {
@@ -65,16 +65,16 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
     let canRemoveThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.removeThread;
     let canEditThread = this.props.userId === this.props.discussion.current.creator || areaPermissions.editMessage;
 
-        
+    
     return <DiscussionCurrentThread sticky={this.props.discussion.current.sticky} locked={this.props.discussion.current.locked}
-      title={<h3 className="text text--discussion-current-thread-title">{this.props.discussion.current.title}</h3>}>
+      title={<h3 className="application-list__header-title">{this.props.discussion.current.title}</h3>}>
         <DiscussionCurrentThreadElement isOpMessage avatar={<div className="avatar avatar--category-1">{avatar}</div>}>
-          <DiscussionThreadHeader aside={<span className="text">{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
-            <span className="text text--discussion-message-creator">{getName(userCreator)}</span> 
+          <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(this.props.discussion.current.created)}</span>}>
+            <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(userCreator)}</span> 
           </DiscussionThreadHeader>
           <DiscussionThreadBody>
-            <article className="text text--discussion-message-content rich-text" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
-            {this.props.discussion.current.created !== this.props.discussion.current.lastModified ? <span className="text text--discussion-last-modifier">
+            <article className="rich-text" dangerouslySetInnerHTML={{__html: this.props.discussion.current.message}}></article>
+            {this.props.discussion.current.created !== this.props.discussion.current.lastModified ? <span className="application-list__item-edited">
               {this.props.i18n.text.get("plugin.discussion.content.isEdited", this.props.i18n.time.format(this.props.discussion.current.lastModified))}
             </span> : null}
           </DiscussionThreadBody>
@@ -113,18 +113,17 @@ class CurrentThread extends React.Component<CurrentThreadProps, CurrentThreadSta
               type="image/jpeg">
                 <div className={`avatar  avatar--category-${userCategory}`}>{user.firstName[0]}</div>
              </object>;
-          }          
-          
+          }                    
           return (
             <DiscussionCurrentThreadElement key={reply.id} isReplyOfReply={!!reply.parentReplyId} avatar={avatar}>
-              <DiscussionThreadHeader aside={<span className="text">{this.props.i18n.time.format(reply.created)}</span>}>
-                <span className="text text--discussion-message-creator">{getName(user)}</span> 
+              <DiscussionThreadHeader aside={<span>{this.props.i18n.time.format(reply.created)}</span>}>
+                <span className="application-list__item-header-main-content application-list__item-header-main-content--discussion-message-creator">{getName(user)}</span> 
               </DiscussionThreadHeader>
               <DiscussionThreadBody>
                 {reply.deleted ? 
-                  <article className="text text--discussion-message-content">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
-                  <article className="text text--discussion-message-content rich-text" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
-                {reply.created !== reply.lastModified ? <span className="text text--discussion-last-modifier">
+                  <article className="rich-text">[{this.props.i18n.text.get("plugin.discussion.infomessage.message.removed")}]</article> :
+                  <article className="rich-text" dangerouslySetInnerHTML={{__html: reply.message}}></article>}
+                {reply.created !== reply.lastModified ? <span className="application-list__item-edited">
                   {this.props.i18n.text.get("plugin.discussion.content.isEdited", this.props.i18n.time.format(reply.lastModified))}
                 </span> : null}
               </DiscussionThreadBody>

@@ -65,6 +65,8 @@ $color-grade-not-assessed: #b3b2b2;
 $color-grade-incomplete: #ea7503;
 $color-grade-passed: #2ed31c;
 $color-grade-failed: #4c4c4c;
+$color-task-evaluation: #e2ffe2;
+
 
 // Assignment & Exercise
 $color-assignment:#ce01bd;
@@ -158,6 +160,10 @@ $color-button-pill-background-disabled: #ccc;
 $color-button-pill-text-disabled: $color-default;
 $color-button-pill-shadow: rgba(255, 255, 255, 0.4);
 
+// HOPS
+
+$color-hops-readable-inline-background: #ecfafe;
+
 // Label theme
 $color-label-default: $color-inverse;
 $color-label-primary: $color-primary;
@@ -173,6 +179,7 @@ $color-label-inverse: $color-default;
 // Text
 $color-text-default: $color-inverse;
 $color-text-link: $color-primary;
+$color-text-link-selected: $color-default;
 
 // Separator
 $color-separator-background: $color-inverse;
@@ -290,6 +297,7 @@ $color-toc-box-border: $color-panel-border;
 
 // application list
 $color-application-list-item-background: #fff;
+$color-application-list-item-fade-background: rgba(255, 255, 255, 0);
 $color-application-list-item-background-hover: $color-list-hover-background;
 $color-application-list-item-background-active: $color-list-active-background;
 $color-application-list-item-background-selected: $color-list-selected-background;
@@ -303,6 +311,7 @@ $color-loader-empty-rotating-piece: #3498db;
 // form fields
 $color-form-element-border: #62c3eb;
 $color-form-element-selected: #29b0c4;
+
 
 // form field input tag
 $color-form-element-selected-item-background:  $color-label-background;
