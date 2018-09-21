@@ -56,7 +56,7 @@
   </sql>
   
   <sql>
-    alter table WorkspaceEntity add constraint FKet6mlgtrsl51daa1yfr025evd foreign key (organizationEntity_id) references OrganizationEntity (id);
+    alter table WorkspaceEntity add constraint FKkhciievukpels39xnq7ej7qyo foreign key (organizationEntity_id) references OrganizationEntity (id);
   </sql>
 
 </update>

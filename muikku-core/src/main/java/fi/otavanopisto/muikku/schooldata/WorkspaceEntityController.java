@@ -37,14 +37,14 @@ public class WorkspaceEntityController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
 
-  public WorkspaceEntity createWorkspaceEntity(String dataSource, String identifier, String urlName, OrganizationEntity organization) {
+  public WorkspaceEntity createWorkspaceEntity(String dataSource, String identifier, String urlName, OrganizationEntity organizationEntity) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find school data source: " + dataSource);
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, organization, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, organizationEntity, WorkspaceAccess.LOGGED_IN, Boolean.FALSE, Boolean.FALSE);
     
     return workspaceEntity;
   }
