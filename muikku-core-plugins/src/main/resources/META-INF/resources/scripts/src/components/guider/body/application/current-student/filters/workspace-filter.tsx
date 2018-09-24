@@ -49,7 +49,7 @@ class WorkspaceFilter extends React.Component<WorkspaceFilterProps> {
     }
     
     return <div className="filter filter--workspace-filter">
-      <Dropdown modifier="workspace-filter" persistant={true} items={items}>
+      <Dropdown persistent modifier="workspace-filter" items={items}>
         <span className="icon-books filter__activator filter__activator--workspace-filter"></span>
       </Dropdown>
     </div>

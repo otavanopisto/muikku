@@ -20,7 +20,7 @@ class GraphFilter extends React.Component<GraphFilterProps> {
   dropdownFilter(){
     let modificator = this.props.modificator || "";
     if (modificator == "-dropdown-only" || modificator == ""){
-      return <Dropdown modifier={"graph-filter" + modificator} persistant={true} items={this.props.graphs.map((graph)=>{
+      return <Dropdown persistent modifier={"graph-filter" + modificator} items={this.props.graphs.map((graph)=>{
         let ifChecked = !this.props.filteredGraphs.includes(graph);
         return <div className={"filter-item filter-item--"+graph} key={"w-"+graph}>
           <input type='checkbox' onClick={() => {this.props.handler(graph)}} defaultChecked={ifChecked}/>
