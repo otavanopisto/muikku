@@ -175,57 +175,56 @@
   &:active {
   	// background-color: $color-application-list-item-background-active;
   }
-}
-
-// Selected application-list item with separate styles for mobile and desktop
-.application-list__item.selected {
-  background-color: $color-application-list-item-background-selected;
-
-  .label {
-    background-color: $color-label-mobile-selected-background;
-  }
-
-  .glyph,
-  .link,
-  .application-list__header-primary,
-  .application-list__header-item-date,
-  .application-list__header-item-body {
-    color: $color-default;
-  }
-
-  .label__text {
-    color: $color-default-contrast;
-  }
-
-  .text--item-counter {
-    color: $color-default-contrast;
-  }
-
-  @include breakpoint($breakpoint-pad) {
-    background-color: $color-default;
-    border-radius: 3px;
-
-    .label__text,
+  
+  &.selected {
+    background-color: $color-application-list-item-background-selected;
+    border-top: 3px solid $color-default;
+  
+    .label {
+      background-color: $color-label-mobile-selected-background;
+    }
+  
+    .glyph,
+    .link,
     .application-list__header-primary,
     .application-list__header-item-date,
     .application-list__header-item-body {
+      color: $color-default;
+    }
+  
+    .label__text {
       color: $color-default-contrast;
     }
-
-    .link {
-      color: $color-text-link;
+  
+    .text--item-counter {
+      color: $color-default-contrast;
     }
-
-    .label {
-      background: $color-label-background;
-    }
-
-    &.announcement--environment .glyph {
-      color: $color-announcement-environment;
-    }
-
-    &.announcement--workspace .glyph {
-      color: $color-announcement-workspace;
+  
+    @include breakpoint($breakpoint-pad) {
+      background-color: $color-default;
+  
+      .label__text,
+      .application-list__header-primary,
+      .application-list__header-item-date,
+      .application-list__header-item-body {
+        color: $color-default-contrast;
+      }
+  
+      .link {
+        color: $color-text-link;
+      }
+  
+      .label {
+        background: $color-label-background;
+      }
+  
+      &.announcement--environment .glyph {
+        color: $color-announcement-environment;
+      }
+  
+      &.announcement--workspace .glyph {
+        color: $color-announcement-workspace;
+      }
     }
   }
 }
@@ -233,16 +232,16 @@
 .application-list__item--highlight {
   background-color: $color-message-unread-background;
   border-top: 3px solid $color-default;
-}
-
-// Selected application-list item highlight with separate styles for mobile and desktop
-.application-list__item--highlight.selected {
-
+  
   @include breakpoint($breakpoint-pad) {
     border-width: 1px;
+  }
 
-    &.selected {
-      background: $color-message-unread-background;
+  &.selected {
+    background-color: $color-application-list-item-background-selected;
+
+    @include breakpoint($breakpoint-pad) {
+      background-color: $color-message-unread-background;
     }
   }
 }
