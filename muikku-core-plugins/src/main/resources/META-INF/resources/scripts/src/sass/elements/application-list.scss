@@ -230,7 +230,7 @@
 
 .application-list__item--highlight {
   background-color: $color-message-unread-background;
-  
+
   @include breakpoint($breakpoint-pad) {
     border-top: solid 1px $color-default;
   }
