@@ -178,7 +178,6 @@
   
   &.selected {
     background-color: $color-application-list-item-background-selected;
-    border-top: 3px solid $color-default;
   
     .label {
       background-color: $color-label-mobile-selected-background;
@@ -231,10 +230,9 @@
 
 .application-list__item--highlight {
   background-color: $color-message-unread-background;
-  border-top: 3px solid $color-default;
   
   @include breakpoint($breakpoint-pad) {
-    border-width: 1px;
+    border-top: solid 1px $color-default;
   }
 
   &.selected {
