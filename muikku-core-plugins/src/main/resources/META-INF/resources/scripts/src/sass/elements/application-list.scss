@@ -500,7 +500,7 @@
   overflow: -moz-scrollbars-none;
   overflow-y: auto;
 
-   &::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none; 
   }
 }
