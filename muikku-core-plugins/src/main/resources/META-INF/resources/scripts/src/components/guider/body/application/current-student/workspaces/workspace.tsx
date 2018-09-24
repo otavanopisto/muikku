@@ -120,7 +120,7 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>
-          <Dropdown modifier={"workspace-chart workspace-" + workspace.id} persistant={true} items={[<WorkspaceChart workspace={workspace}/>]}>
+          <Dropdown persistant modifier={"workspace-chart workspace-" + workspace.id} items={[<WorkspaceChart workspace={workspace}/>]}>
             <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
           </Dropdown>
         </ApplicationListItemHeader>
