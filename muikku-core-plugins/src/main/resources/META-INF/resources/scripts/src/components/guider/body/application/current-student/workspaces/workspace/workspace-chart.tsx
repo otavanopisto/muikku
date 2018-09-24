@@ -220,7 +220,6 @@ class CurrentStudentStatistics extends React.Component<CurrentStudentWorkspaceSt
       }
     };
     ignoreZoomed = true;
-    console.log(config);
     
     //Maybe it is possible to use show/hide graph without re-render. requires accessing the graph and call for a method. Responsiveness not through react re-render only?
     let showGraphs:string[] = [Graph.ASSIGNMENTS, Graph.EXERCISES];
