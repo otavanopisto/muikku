@@ -8,7 +8,7 @@
   height: 100%;
   width: 100%;
   overflow: visible;
-  
+
   &::-webkit-scrollbar { 
     display: none; 
   } 
@@ -19,7 +19,7 @@
   display: flex;
   flex-flow: row nowrap;
   padding: 10px;
-  
+
   @include breakpoint($breakpoint-pad) {
     padding: 14px 0;
   }
@@ -37,7 +37,7 @@
   flex-shrink: 1;
   font-size: 1rem;
   font-weight: 600;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: 1.25rem;
     font-weight: 400;
@@ -73,7 +73,7 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 1;
-  
+
   @include breakpoint($breakpoint-pad) {
     flex-basis: auto;
     padding: 0 0 0 15px;
@@ -90,7 +90,7 @@
   justify-content: flex-end;
   margin: 0 0 0 15px;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-capitalized-desktop-font-size;
   }
@@ -109,7 +109,7 @@
   margin: 0 0 0 10px;
   text-align: center;
   width: 1.875rem;
-  
+
   &.state-PASSED {
     background: $color-grade-passed;
   }
@@ -117,11 +117,11 @@
   &.state-FAILED {
     background: $color-grade-failed;
   }
-  
+
   &.state-INCOMPLETE {
     background: $color-grade-incomplete;
   }  
-  
+
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
   }
@@ -150,7 +150,7 @@
   font-weight: 600;
   margin-left: 5px;
 }
-  
+
 .application-list__header-item-body {
   display: inline-block;
 }
@@ -165,24 +165,24 @@
   @include prefix(transition, webkit ms o moz, background-color 0.2s ease-in-out);
   background-color: $color-application-list-item-background;
   position: relative;
- 
-  &.hover, 
+
+  &.hover,
   &:hover {
   	// background-color: $color-application-list-item-background-hover;
   }
- 
-  &.active, 
+
+  &.active,
   &:active {
   	// background-color: $color-application-list-item-background-active;
   }
-  
+
   &.selected {
     background-color: $color-application-list-item-background-selected;
-  
+
     .label {
       background-color: $color-label-mobile-selected-background;
     }
-  
+
     .glyph,
     .link,
     .application-list__header-primary,
@@ -190,37 +190,37 @@
     .application-list__header-item-body {
       color: $color-default;
     }
-  
+
     .label__text {
       color: $color-default-contrast;
     }
-  
+
     .text--item-counter {
       color: $color-default-contrast;
     }
-  
+
     @include breakpoint($breakpoint-pad) {
       background-color: $color-default;
-  
+
       .label__text,
       .application-list__header-primary,
       .application-list__header-item-date,
       .application-list__header-item-body {
         color: $color-default-contrast;
       }
-  
+
       .link {
         color: $color-text-link;
       }
-  
+
       .label {
         background: $color-label-background;
       }
-  
+
       &.announcement--environment .glyph {
         color: $color-announcement-environment;
       }
-  
+
       &.announcement--workspace .glyph {
         color: $color-announcement-workspace;
       }
