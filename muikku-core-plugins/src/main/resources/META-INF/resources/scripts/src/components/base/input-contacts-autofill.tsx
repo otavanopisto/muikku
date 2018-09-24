@@ -29,7 +29,6 @@ export interface InputContactsAutofillState {
   selectedItems: ContactRecepientType[],
   textInput: string,
   autocompleteOpened: boolean,
-  fieldHeight?: number,
   selectedHeight?: number,
   isFocused: boolean
 }
@@ -52,7 +51,6 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       selectedItems: props.selectedItems || [],
       textInput: "",
       autocompleteOpened: false,
-      fieldHeight: undefined,
       selectedHeight: undefined,
       isFocused: this.props.autofocus === true
     }
@@ -63,7 +61,6 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
     this.onInputFocus = this.onInputFocus.bind(this);
-    this.setHeight = this.setHeight.bind(this);
     this.setBodyMargin = this.setBodyMargin.bind(this);
     this.onDelete = this.onDelete.bind(this);
   }
@@ -72,17 +69,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       this.setState({selectedItems: nextProps.selectedItems})
     }
   }
-  
-  
-// Deprecated? 
-  
-  setHeight(){
-    let fieldHeight = (this.refs["taginput"] as TagInput).getInputHeight();
-    if (fieldHeight !== this.state.fieldHeight){
-      this.setState({fieldHeight});
-    }
-  }
-  
+    
   setBodyMargin() {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
     let prevSelectedHeight= this.state.selectedHeight;
@@ -232,7 +219,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     });
     
     return <Autocomplete items={autocompleteItems} onItemClick={this.onAutocompleteItemClick}
-      opened={this.state.autocompleteOpened} pixelsOffset={this.state.fieldHeight} modifier={this.props.modifier}>
+      opened={this.state.autocompleteOpened} modifier={this.props.modifier}>
       <TagInput ref="taginput" modifier={this.props.modifier}
         isFocused={this.state.isFocused} onBlur={this.onInputBlur} onFocus={this.onInputFocus}
         placeholder={this.props.placeholder}
