@@ -17,7 +17,6 @@ interface CKEditorProps {
   onChange(arg: string):any,
   children?: string,
   autofocus?: boolean,
-  growReference?: string
 }
 
 interface CKEditorState {
@@ -45,26 +44,7 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
   }
   resize(width: number | string, height: number | string){
     let actualHeight:number | string;
-    if (height === "grow"){
-      let computedStyle = getComputedStyle(getCKEDITOR().instances[this.name].container.$, null);
-      let ckeditorHeight = parseInt(computedStyle.getPropertyValue("height")) -
-          parseInt(computedStyle.getPropertyValue("padding-top")) -
-          parseInt(computedStyle.getPropertyValue("padding-top"));
-      
-      let growReference:HTMLElement = $(this.refs["ckeditor"]).closest(this.props.growReference)[0];
-      let wholeHeight = growReference.offsetHeight;
-      let remainingHeight = wholeHeight;
-      Array.from(growReference.childNodes).forEach((node: HTMLElement)=>{
-        let nComputedStyle = getComputedStyle(node, null);
-        remainingHeight -= parseInt(nComputedStyle.getPropertyValue("height")) +
-          parseInt(nComputedStyle.getPropertyValue("margin-top")) +
-          parseInt(nComputedStyle.getPropertyValue("margin-bottom"));
-      });
-      
-      actualHeight = remainingHeight + ckeditorHeight - 9;
-    } else {
-      actualHeight = height;
-    }
+    actualHeight = height;    
     
     if (actualHeight !== this.height || this.width !== width){
       getCKEDITOR().instances[this.name].resize(width, actualHeight);
