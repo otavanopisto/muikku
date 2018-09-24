@@ -29,7 +29,7 @@ export interface InputContactsAutofillState {
   selectedItems: ContactRecepientType[],
   textInput: string,
   autocompleteOpened: boolean,
-  selectedHeight?: number,
+
   isFocused: boolean
 }
 
@@ -42,7 +42,8 @@ function checkHasPermission(which: boolean, defaultValue?: boolean){
 
 export default class InputContactsAutofill extends React.Component<InputContactsAutofillProps, InputContactsAutofillState> {
   private blurTimeout:NodeJS.Timer;
-  
+  private selectedHeight:number;
+
   constructor(props: InputContactsAutofillProps){
     super(props);
     
@@ -51,12 +52,12 @@ export default class InputContactsAutofill extends React.Component<InputContacts
       selectedItems: props.selectedItems || [],
       textInput: "",
       autocompleteOpened: false,
-      selectedHeight: undefined,
+
       isFocused: this.props.autofocus === true
     }
     
     this.blurTimeout = null;
-    
+    this.selectedHeight= null;
     this.onInputChange = this.onInputChange.bind(this);
     this.onAutocompleteItemClick = this.onAutocompleteItemClick.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
@@ -72,14 +73,14 @@ export default class InputContactsAutofill extends React.Component<InputContacts
     
   setBodyMargin() {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
-    let prevSelectedHeight= this.state.selectedHeight;
+    let prevSelectedHeight= this.selectedHeight;
     let currentBodyMargin = parseFloat(document.body.style.marginBottom);       
     let defaultBodyMargin = currentBodyMargin - prevSelectedHeight;
     
-    if (selectedHeight !== this.state.selectedHeight){
+    if (selectedHeight !== this.selectedHeight){
       let bodyMargin = defaultBodyMargin + selectedHeight + "px";        
         document.body.style.marginBottom = bodyMargin;
-        this.setState({selectedHeight: selectedHeight});
+        this.selectedHeight = selectedHeight;
       }
   }
   onInputBlur(e: React.FocusEvent<any>){
@@ -158,7 +159,7 @@ export default class InputContactsAutofill extends React.Component<InputContacts
   
   componentDidMount () {
     let selectedHeight = (this.refs["taginput"] as TagInput).getSelectedHeight();
-    this.setState({selectedHeight: selectedHeight});        
+    this.selectedHeight = selectedHeight;        
   }
   
   render(){
