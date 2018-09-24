@@ -9,9 +9,9 @@
   width: 100%;
   overflow: visible;
 
-  &::-webkit-scrollbar { 
-    display: none; 
-  } 
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .application-list__header-container {
@@ -120,7 +120,7 @@
 
   &.state-INCOMPLETE {
     background: $color-grade-incomplete;
-  }  
+  }
 
   &.state-NO-ASSESSMENT {
     background: $color-grade-not-assessed;
@@ -168,12 +168,12 @@
 
   &.hover,
   &:hover {
-  	// background-color: $color-application-list-item-background-hover;
+  // background-color: $color-application-list-item-background-hover;
   }
 
   &.active,
   &:active {
-  	// background-color: $color-application-list-item-background-active;
+  // background-color: $color-application-list-item-background-active;
   }
 
   &.selected {
@@ -248,7 +248,7 @@
   padding: 0;
 }
 
-.application-list-document-short {  
+.application-list-document-short {
   padding: 10px 0 0;
 }
 
@@ -256,7 +256,7 @@
   font-weight: 600;
 }
 
-.application-list-document {  
+.application-list-document {
   line-height: 1.5rem;
   margin: 20px 0 0;
 }
@@ -289,12 +289,10 @@
   padding: 0 4px;
 }
 
-
 .application-list__item-counter-title {
   font-size: 0.8125rem;
   padding: 0 3px 0 0;
 }
-
 
 .application-list__item-content-aside {
   display: none;
@@ -401,12 +399,12 @@
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
-    font-size: 1.125rem; 
+    font-size: 1.125rem;
   }
-}  
+}
 
 .application-list__item-content-body {
-  padding: 0 10px;  
+  padding: 0 10px;
 }
 
 .application-list__item-meta {
@@ -417,7 +415,7 @@
 
 .application-list__item-footer {
   align-items: center;
-  display: flex;   
+  display: flex;
   padding: 0;
 }
 
@@ -437,7 +435,7 @@
   flex-basis: 100%;
   flex-grow: 1;
   flex-shrink: 0;
-  font-size: 0.8125rem;  
+  font-size: 0.8125rem;
   padding: 0 0 7px;
 
   @include breakpoint($breakpoint-mobile-xl) {
@@ -479,7 +477,7 @@
   @include breakpoint($breakpoint-pad) {
     font-size: 1.125rem;
     font-weight: 400;
-  }  
+  }
 }
 
 .application-list__item-header-main-content--communicator-sender {
@@ -502,7 +500,7 @@
   overflow: -moz-scrollbars-none;
   overflow-y: auto;
 
-   &::-webkit-scrollbar { 
+   &::-webkit-scrollbar {
     display: none; 
   }
 }
@@ -530,7 +528,7 @@
   }
 }
 
-.application-list__item--discussion-message {  
+.application-list__item--discussion-message {
   padding: 10px;
 
   @include breakpoint($breakpoint-pad) {
@@ -544,7 +542,7 @@
   max-height: 5rem;
   overflow: hidden;
   position: relative;
-  text-overflow: ellipsis;  
+  text-overflow: ellipsis;
   width: 100%;
 }
 
@@ -558,12 +556,12 @@
   bottom: 0;
   content: "";
   height: 4rem;
-  left: 0;    
+  left: 0;
   position: absolute;
   width: 100%;
 }
 
-.application-list__item--discussion-reply {  
+.application-list__item--discussion-reply {
   border-top: 5px solid $color-message-border;
   margin: 10px 0 0;
   padding: 10px;
@@ -613,7 +611,7 @@
   }
 }
 
-.application-list__item--environment-announcement { 
+.application-list__item--environment-announcement {
 
   .glyph::before {
     color: $color-announcement-environment-icon;
@@ -638,7 +636,7 @@
 }
 
 // Communicator
-.application-list__item--communicator-message {  
+.application-list__item--communicator-message {
   border-bottom: 5px solid $color-message-border;
   padding: 10px 0;
 
@@ -652,7 +650,7 @@
 }
 
 .application-list__item-header--communicator-message-thread {
-	align-items: flex-start;
+  align-items: flex-start;
   flex-direction: column;
 }
 
