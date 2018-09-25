@@ -181,7 +181,7 @@ class DicussionNewThread extends SessionStateComponent<DicussionNewThreadProps, 
        <div className="env-dialog__row" key="3">     
          <div className="env-dialog__form-element-container">
            <div className="env-dialog__label">{this.props.i18n.text.get('plugin.discussion.createmessage.content')}</div>
-           <CKEditor key="3" width="100%" height="210" growReference=".env-dialog__body" configuration={ckEditorConfig} extraPlugins={extraPlugins}
+           <CKEditor key="3" width="100%" height="210" configuration={ckEditorConfig} extraPlugins={extraPlugins}
            onChange={this.onCKEditorChange}>{this.state.text}</CKEditor>
          </div>
        </div>
