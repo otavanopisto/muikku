@@ -20,6 +20,7 @@ import SelectableList from '~/components/general/selectable-list';
 import { loadMoreMessageThreads, removeFromMessagesSelectedThreads, addToMessagesSelectedThreads, LoadMoreMessageThreadsTriggerType, RemoveFromMessagesSelectedThreadsTriggerType, AddToMessagesSelectedThreadsTriggerType } from '~/actions/main-function/messages';
 import { MessageThreadListType, MessagesStateType, MessageThreadExpandedType, MessageThreadType, MessagesType } from '~/reducers/main-function/messages';
 import ApplicationList, { ApplicationListItemContentWrapper, ApplicationListItemHeader, ApplicationListItemBody, ApplicationListItemFooter, ApplicationListItem } from '~/components/general/application-list';
+import { StatusType } from '~/reducers/base/status';
 
 
 interface CommunicatorMessagesProps {
@@ -36,7 +37,7 @@ interface CommunicatorMessagesProps {
   addToMessagesSelectedThreads: AddToMessagesSelectedThreadsTriggerType,
   
   i18n: i18nType,
-  userId: number
+  status: StatusType
 }
 
 interface CommunicatorMessagesState {
@@ -71,7 +72,12 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
         return this.props.i18n.text.get("plugin.communicator.sender.self");
       }
       return (recipient.firstName ? recipient.firstName + " " : "")+(recipient.lastName ? recipient.lastName : "");
-    }).join(", ");
+    })
+    .concat(thread.userGroupRecipients.map(group=>group.name))
+    .concat(thread.workspaceRecipients.filter((w, pos, self)=>{
+      return self.findIndex((w2)=>w2.workspaceEntityId === w.workspaceEntityId) === pos;
+    }).map(workspace=>workspace.workspaceName))
+    .join(", ");
   }
   setCurrentThread(thread: MessageThreadType){
     window.location.hash = window.location.hash.split("/")[0] + "/" + thread.communicatorMessageId;
@@ -99,7 +105,7 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
           let isSelected:boolean = this.props.selectedThreadsIds.includes(thread.communicatorMessageId);
           return {
             as: ApplicationListItem,
-            className: `message message--communicator ${thread.unreadMessagesInThread ? "message--unread" : ""}`,
+            className: `message ${thread.unreadMessagesInThread ? "application-list__item--highlight" : ""}`,
             onSelect: this.props.addToMessagesSelectedThreads.bind(null, thread),
             onDeselect: this.props.removeFromMessagesSelectedThreads.bind(null, thread),
             onEnter: this.setCurrentThread.bind(this, thread),
@@ -110,8 +116,8 @@ class CommunicatorMessages extends BodyScrollLoader<CommunicatorMessagesProps, C
                 {checkbox}
               </div>}>
                 <ApplicationListItemHeader modifiers="communicator-message">
-                  <div className="application-list__header-primary">
-                    <span>{this.getThreadUserNames(thread, this.props.userId)}</span>
+                  <div className={`application-list__header-primary ${thread.unreadMessagesInThread ? "application-list__header-primary--highlight" : ""}`}>
+                    <span>{this.getThreadUserNames(thread, this.props.status.userId)}</span>
                   </div>
                   {thread.messageCountInThread > 1 ? <div className="application-list__item-counter">
                     {thread.messageCountInThread}
@@ -150,7 +156,7 @@ function mapStateToProps(state: StateType){
     currentThread: state.messages.currentThread,
     messages: state.messages,
     i18n: state.i18n,
-    userId: state.status.userId
+    status: state.status
   }
 };
 

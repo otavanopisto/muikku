@@ -18,7 +18,8 @@ interface ProfilePictureProps {
 interface ProfilePictureState {
   isImageDialogOpen: boolean,
   b64?: string,
-  file?: File
+  file?: File,
+  src?: string
 }
 
 class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePictureState> {
@@ -30,6 +31,7 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
     }
     
     this.readFile = this.readFile.bind(this);
+    this.editCurrentImage = this.editCurrentImage.bind(this);
   }
   readFile(e: React.ChangeEvent<HTMLInputElement>){
     let file = e.target.files[0];
@@ -39,13 +41,25 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
       this.setState({
         b64: reader.result,
         file,
-        isImageDialogOpen: true
+        isImageDialogOpen: true,
+        src: null
       })
     }, false);
 
     if (file) {
       reader.readAsDataURL(file);
     }
+  }
+  editCurrentImage(e: React.MouseEvent<HTMLAnchorElement>){
+    e.stopPropagation();
+    e.preventDefault();
+    
+    this.setState({
+      src: getUserImageUrl(this.props.status.userId, "original", this.props.status.imgVersion),
+      isImageDialogOpen: true,
+      b64: null,
+      file: null
+    });
   }
   render(){
     return (<div className="profile-element">
@@ -55,14 +69,15 @@ class ProfilePicture extends React.Component<ProfilePictureProps, ProfilePicture
           </form>
         </div> : <div className="profile-element__user-picture-container">
           <form className="profile-element__user-picture" style={{backgroundImage:`url("${getUserImageUrl(this.props.status.userId, 256, this.props.status.imgVersion)}")`}}>
-            <Button buttonModifiers="profile-image-edit">
+            <input name="file" type="file" accept="image/*" onChange={this.readFile}/>
+            <Button buttonModifiers="profile-image-edit" onClick={this.editCurrentImage}>
               <span className="icon icon-edit"/>
               {this.props.i18n.text.get("plugin.profile.editImage")}
-            </Button>
-            <input name="file" type="file" accept="image/*" onChange={this.readFile}/>
+             </Button>
           </form>
         </div>}
-        <UploadImageDialog isOpen={this.state.isImageDialogOpen} b64={this.state.b64} file={this.state.file} onClose={()=>this.setState({isImageDialogOpen: false})}/>
+        <UploadImageDialog isOpen={this.state.isImageDialogOpen} b64={this.state.b64} file={this.state.file}
+          onClose={()=>this.setState({isImageDialogOpen: false})} src={this.state.src}/>
     </div>);
   }
 }

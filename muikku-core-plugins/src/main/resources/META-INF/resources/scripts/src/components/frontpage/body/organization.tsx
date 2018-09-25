@@ -42,7 +42,7 @@ export default class FrontpageOrganization extends React.Component<FrontpageOrga
 
           <div className="ordered-container__item ordered-container__item--otavan-opisto-description">
             <div className="ordered-container__item-subcontainer ordered-container__item-subcontainer--otavan-opisto-description">
-              <div className="ordered-container__subcontainer-content rich-text"
+              <div className="ordered-container__subcontainer-content ordered-container__subcontainer-content--otavan-opisto-description"
                 dangerouslySetInnerHTML={{ __html: this.props.i18n.text.get( 'plugin.organization.description')}}>
               </div>
               <Button href="http://www.otavanopisto.fi" target="top" buttonModifiers={["branded", "frontpage-website"]}>

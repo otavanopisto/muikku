@@ -49,12 +49,12 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
           [
           <div className="form-element">
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-              type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
+              type="text" placeholder={this.props.i18n.text.get('plugin.guider.flags.create.textfield.placeholder')} />
           </div>
           ,
           <Link className="link link--full link--new"
             onClick={this.props.createGuiderFilterLabel.bind(null, this.state.labelFilter)}>
-            {this.props.i18n.text.get("plugin.communicator.label.create")}
+            {this.props.i18n.text.get("plugin.guider.flags.create")}
           </Link>
         ].concat(this.props.guider.availableFilters.labels.filter((item)=>{
           return filterMatch(item.name, this.state.labelFilter);
@@ -87,11 +87,11 @@ class GuiderToolbarLabels extends React.Component<GuiderToolbarLabelsProps, Guid
       [
         <div className="form-element">
           <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
-          type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
+          type="text" placeholder={this.props.i18n.text.get('plugin.guider.flags.create.textfield.placeholder')} />
         </div>
         ,
         <span className="link link--full" onClick={this.props.createGuiderFilterLabel.bind(null, this.state.labelFilter)}>
-          {this.props.i18n.text.get("plugin.communicator.label.create")}
+          {this.props.i18n.text.get("plugin.guider.flags.create")}
         </span>
       ].concat(this.props.guider.availableFilters.labels.filter((item)=>{
         return filterMatch(item.name, this.state.labelFilter);
