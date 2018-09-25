@@ -1,24 +1,41 @@
-import {SpecificActionType} from '~/actions';
+import {SpecificActionType, AnyActionType} from '~/actions';
 import {NotificationSeverityType, NotificationType} from '~/reducers/base/notifications';
+import { StateType } from 'reducers';
 
 export interface ADD_NOTIFICATION extends SpecificActionType<"ADD_NOTIFICATION", NotificationType>{}
 export interface HIDE_NOTIFICATION extends SpecificActionType<"HIDE_NOTIFICATION", NotificationType>{}
 
 export interface DisplayNotificationTriggerType {
-  (message: string, severity: NotificationSeverityType):ADD_NOTIFICATION
+  (message: string, severity: NotificationSeverityType):AnyActionType
 }
 
 export interface HideNotificationTriggerType {
   (notification: NotificationType):HIDE_NOTIFICATION
 }
 
-let displayNotification:DisplayNotificationTriggerType = function displayNotification(message, severity){
-  return {
-    'type': 'ADD_NOTIFICATION',
-    'payload': {
+const DEFAULT_TIMEOUT = 5000;
+const PERMANENT_LIST = ["warning", "fatal", "error"];
+
+let displayNotification:DisplayNotificationTriggerType = function displayNotification(message, severity, timeout?: number){
+  return async (dispatch:(arg:AnyActionType)=>any, getState:()=>StateType)=>{
+    let notification:NotificationType = {
       'id': (new Date()).getTime(),
       'severity': severity,
       'message': message
+    };
+    
+    dispatch({
+      'type': 'ADD_NOTIFICATION',
+      'payload': notification
+    });
+    
+    if (!PERMANENT_LIST.includes(severity) || timeout){
+      setTimeout(()=>{
+        dispatch({
+          'type': 'HIDE_NOTIFICATION',
+          'payload': notification
+         });
+      }, timeout || DEFAULT_TIMEOUT);
     }
   }
 }

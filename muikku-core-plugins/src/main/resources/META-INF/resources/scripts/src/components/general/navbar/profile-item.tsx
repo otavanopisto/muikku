@@ -38,11 +38,13 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
       },
       {
         icon: "forgotpassword",
-        text: 'plugin.profileBadge.links.userGuide'
+        text: 'plugin.profileBadge.links.userGuide',
+        href: "https://otavanopisto.muikkuverkko.fi/workspace/ohjeet/materials"
       },
       {
         icon: "helpdesk",
-        text: 'plugin.profileBadge.links.helpdesk'
+        text: 'plugin.profileBadge.links.helpdesk',
+        href: "mailto:helpdesk@muikkuverkko.fi"
       },
       {
         icon: "signout",

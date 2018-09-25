@@ -52,6 +52,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
     this.updateLabelFilter = this.updateLabelFilter.bind(this);
     this.onGoBackClick = this.onGoBackClick.bind(this);
     this.loadMessage = this.loadMessage.bind(this);
+    this.onCreateNewLabel = this.onCreateNewLabel.bind(this);
     
     this.state = {
       labelFilter: ""
@@ -69,6 +70,14 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
   } 
   updateLabelFilter(e: React.ChangeEvent<HTMLInputElement>){
     this.setState({labelFilter: e.target.value});
+  }
+  onCreateNewLabel(){
+    if (this.state.labelFilter.trim()){
+      this.props.addMessagesNavigationLabel(this.state.labelFilter.trim());
+      this.setState({
+        labelFilter: ""
+      });
+    }
   }
   onGoBackClick(e: React.MouseEvent<HTMLAnchorElement>){
     //TODO this is a retarded way to do things if we ever update to a SPA
@@ -115,7 +124,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
                   <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
                   type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
                 </div>,
-                <Link className="link link--full link--new" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
+                <Link className="link link--full link--new" onClick={this.onCreateNewLabel}>
                   {this.props.i18n.text.get("plugin.communicator.label.create")}
                 </Link>
               ].concat(this.props.messages.navigation.filter((item)=>{
@@ -176,7 +185,7 @@ class CommunicatorToolbar extends React.Component<CommunicatorToolbarProps, Comm
             <input className="form-element__input" value={this.state.labelFilter} onChange={this.updateLabelFilter}
             type="text" placeholder={this.props.i18n.text.get('plugin.communicator.label.create.textfield.placeholder')} />
           </div>,
-          <span className="link link--full" onClick={this.props.addMessagesNavigationLabel.bind(null, this.state.labelFilter)}>
+          <span className="link link--full" onClick={this.onCreateNewLabel}>
             {this.props.i18n.text.get("plugin.communicator.label.create")}
           </span>
         ].concat(this.props.messages.navigation.filter((item)=>{

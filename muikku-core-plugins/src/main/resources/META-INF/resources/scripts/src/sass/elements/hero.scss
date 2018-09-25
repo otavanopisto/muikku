@@ -24,7 +24,7 @@
   display: flex;
   flex-flow: column nowrap;
   margin: 0 auto;
-  max-width: 64rem;
+  max-width: $breakpoint-max-usable-screen;
   padding: 1.5rem 0 0;
   position: relative;
   
@@ -105,6 +105,7 @@
   
 .hero__header--frontpage-verkko {
   color: $color-frontpage-text-verkko;
+  font-weight: 200;
   letter-spacing: 3px;
   
   @include breakpoint($breakpoint-pad) {

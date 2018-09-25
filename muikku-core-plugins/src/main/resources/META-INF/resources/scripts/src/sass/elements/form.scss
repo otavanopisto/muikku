@@ -18,3 +18,10 @@
   display: none;
 }
 
+input,
+select,
+option,
+textarea {
+  @include text;
+}
+
