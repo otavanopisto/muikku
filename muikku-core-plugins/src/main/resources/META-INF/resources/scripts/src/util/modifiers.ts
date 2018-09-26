@@ -165,27 +165,13 @@ export function hashCode(str: string) {
 export function resize(img: HTMLImageElement, width: number, mimeType?: string, quality?: number) {
   let canvas = document.createElement('canvas');
   let ctx = canvas.getContext("2d");
-  let oc = document.createElement('canvas');
-  let octx = oc.getContext('2d');
   
   // set size proportional to image
   canvas.width = width;
   canvas.height = canvas.width * (img.height / img.width);
-  
-  let stepsWidth = (img.width - canvas.width) / 3;
-  let stepsHeight = (img.height - canvas.height) / 3;
-
-  oc.width = img.width - stepsWidth;
-  oc.height = img.height - stepsHeight;
-  octx.drawImage(img, 0, 0, oc.width, oc.height);
-
-  // step 2
-  let step2Width = oc.width - stepsWidth;
-  let step2Height = oc.width - stepsHeight;
-  octx.drawImage(oc, 0, 0, step2Width, step2Height);
 
   // step 3, resize to final size
-  ctx.drawImage(oc, 0, 0, step2Width, step2Height,
+  ctx.drawImage(img, 0, 0, img.width, img.height,
   0, 0, canvas.width, canvas.height);
   
   return canvas.toDataURL(mimeType || "image/jpeg", quality || 0.9);

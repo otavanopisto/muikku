@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -163,6 +164,44 @@ public class UserEntityFileRESTService extends PluginRESTService {
       .header("Content-Disposition", String.format("attachment; filename=\"%s\"", userEntityFile.getName()))
       .type(userEntityFile.getContentType())
       .build();
+  }
+  
+  @DELETE
+  @Path("/{USERENTITYID}/identifier/{IDENTIFIER}")
+  @RESTPermit (handling = Handling.INLINE)
+  public Response deleteFile(@PathParam("USERENTITYID") Long userEntityId, @PathParam("IDENTIFIER") String identifier, @Context Request request) {
+	// Check if the file exist
+	UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+	if (userEntity == null) {
+	  return Response.status(Status.NOT_FOUND).build();
+	}
+	UserEntityFile userEntityFile = userEntityFileController.findByUserEntityAndIdentifier(userEntity, identifier);
+	if (userEntityFile == null) {
+	  return Response.status(Status.NOT_FOUND).build();
+	}
+	
+	//Check wheter the logged in user is the same as this user or whether it's an administrator
+	UserEntity loggedUserEntity = sessionController.getLoggedUserEntity();
+	if (loggedUserEntity == null) {
+		return Response.status(Status.FORBIDDEN).build();
+	}
+	EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUserEntity);
+	boolean isOwnerOfTheFileAndFileIsPublic = userEntity.getId().equals(loggedUserEntity.getId()) && userEntityFile.getVisibility() == UserEntityFileVisibility.PUBLIC;
+	boolean isAdministrator = environmentUser != null && environmentUser.getRole() != null && environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.ADMINISTRATOR;
+	boolean isStaff = environmentUser != null && environmentUser.getRole() != null && (
+			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.MANAGER ||
+			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.TEACHER ||
+			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDY_GUIDER ||
+			environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDY_PROGRAMME_LEADER
+	);
+	boolean isStaffAndFileIsAccessibleByStaff = isStaff && userEntityFile.getVisibility() == UserEntityFileVisibility.STAFF;
+	if (!isOwnerOfTheFileAndFileIsPublic && !isAdministrator && !isStaffAndFileIsAccessibleByStaff) {
+		return Response.status(Status.FORBIDDEN).build();
+	}
+	
+	userEntityFileController.deleteUserEntityFile(userEntityFile);
+	
+    return Response.noContent().build();
   }
 
   private RestUserEntityFile createRestModel(UserEntityFile userEntityFile) {

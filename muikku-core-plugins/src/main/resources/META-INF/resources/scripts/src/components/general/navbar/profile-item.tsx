@@ -61,11 +61,11 @@ class ProfileItem extends React.Component<ProfileItemProps, ProfileItemState> {
         </Link>}
       })}>
       <Link className="button-pill button-pill--profile">
-        <object className="button-image"
-         data={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)}
-         type="image/jpeg">
-          <span className="button-pill__icon icon-user"></span>
-        </object>
+        {
+          this.props.status.hasImage ? 
+            <img src={getUserImageUrl(this.props.status.userId, null, this.props.status.imgVersion)} className="button-image"/> :
+              <div className="button-image"><span className="button-pill__icon icon-user"/></div>
+        }
       </Link>
     </Dropdown>
   }
