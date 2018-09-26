@@ -914,18 +914,18 @@
 
 .button--profile-image-edit,
 .button--profile-image-delete {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: $color-button-profile-image-edit-delete-background;
   bottom: 0;
   color: white;
   left: 0;
   padding: 10px 20px;
   position: absolute;
-  transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
   width: 50%;
 
   &:hover,
   &:active {
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: $color-button-profile-image-edit-delete-hover-background;
   }
 
   .icon {
