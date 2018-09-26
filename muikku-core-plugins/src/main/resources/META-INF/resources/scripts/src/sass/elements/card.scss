@@ -61,18 +61,18 @@
   text-transform: uppercase;
   
   @include breakpoint($breakpoint-pad){
-    font-size: 1.5rem;
+    font-size: 1.625rem;
     font-weight: 300;
     padding-bottom: 1.6rem;
   }
 }
     
 .card__text {
-  font-size: 0.875rem;
-  font-weight: 300;
+  font-size: $text-mobile-font-size;
+  font-weight: 400;
   
-  @include breakpoint($breakpoint-pad){
-    font-size: 1rem;
+  @include breakpoint($breakpoint-pad) {
+    font-size: $text-desktop-font-size;
   }
 }
 

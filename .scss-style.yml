@@ -17,7 +17,7 @@ linters:
     space_after_bang: false
 
   BemDepth:
-    enabled: false
+    enabled: true
     max_elements: 1
 
   BorderZero:
@@ -82,7 +82,7 @@ linters:
     enabled: true
 
   ImportantRule:
-    enabled: false # these are needed for overwrites, sometimes the specificity is considered lower when using a single selector
+    enabled: true # these are needed for overwrites, sometimes the specificity is considered lower when using a single selector
 
   ImportPath:
     enabled: true
@@ -110,8 +110,8 @@ linters:
 
   NestingDepth:
     enabled: true
-    max_depth: 4
-    ignore_parent_selectors: false
+    max_depth: 3
+    ignore_parent_selectors: true
 
   PlaceholderInExtend:
     enabled: true
@@ -154,16 +154,17 @@ linters:
 
   QualifyingElement:
     enabled: true
-    allow_element_with_attribute: false
-    allow_element_with_class: false
+    allow_element_with_attribute: true
+    allow_element_with_class: true
     allow_element_with_id: false
 
   SelectorDepth:
     enabled: true
-    max_depth: 4
+    max_depth: 2
 
   SelectorFormat:
-    enabled: false
+    enabled: true
+    convention: hyphenated_BEM
 
   Shorthand:
     enabled: true
@@ -220,7 +221,7 @@ linters:
     enabled: true
 
   TrailingWhitespace:
-    enabled: false
+    enabled: true
 
   TrailingZero:
     enabled: true
@@ -241,11 +242,11 @@ linters:
     enabled: true
 
   VariableForProperty:
-    enabled: false
-    properties: []
+    enabled: true
+    properties: [color, font]
 
   VendorPrefix:
-    enabled: false
+    enabled: true
     identifier_list: base
     additional_identifiers: []
     excluded_identifiers: []

@@ -4,6 +4,8 @@ import { WorkspaceType } from "~/reducers/main-function/workspaces";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
 import {StateType} from '~/reducers';
+import Dropdown from '~/components/general/dropdown';
+import WorkspaceChart from './workspace/workspace-chart';
 
 import '~/sass/elements/application-list.scss';
 import '~/sass/elements/application-sub-panel.scss';
@@ -118,8 +120,11 @@ class StudentWorkspace extends React.Component<StudentWorkspaceProps, StudentWor
               workspace.studentActivity.exercisesDonePercent}%
             </span>
           </span>
-        </ApplicationListItemHeader>               
-              
+          <Dropdown persistent modifier={"workspace-chart workspace-" + workspace.id} items={[<WorkspaceChart workspace={workspace}/>]}>
+            <span className="icon-statistics chart__activator chart__activator--workspace-chart"></span>
+          </Dropdown>
+        </ApplicationListItemHeader>
+        
         {this.state.activitiesVisible ? <div className="application-sub-panel text">      
           <div className="application-sub-panel__body">  
             <div className="application-sub-panel__item application-sub-panel__item--course-activity">

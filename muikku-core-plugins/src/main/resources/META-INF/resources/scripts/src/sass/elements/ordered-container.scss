@@ -194,7 +194,15 @@
     margin-top: 0;
   }
 } 
- 
+
+.ordered-container__subcontainer-content--otavan-opisto-description {
+  font-size: 1rem;
+
+  @include breakpoint($breakpoint-desktop) {
+    font-size: 1.0625rem;
+  }
+}
+
 .ordered-container__subcontainer-header--social-media {
   color: $color-frontpage-text-otavan-opisto-info-title;
   font-family: $text-branded-font-family;  
@@ -202,12 +210,12 @@
   font-weight: 600;
   margin: 0 0 0.625rem;
   text-transform: uppercase;
-  
+
   @include breakpoint($breakpoint-pad) {
     font-size: $text-desktop-font-size;
   }
 }
- 
+
 @include breakpoint($breakpoint-pad) {
   // Upper secondary school card (Nettilukio)
   .ordered-container__item--upper-secondary-school {

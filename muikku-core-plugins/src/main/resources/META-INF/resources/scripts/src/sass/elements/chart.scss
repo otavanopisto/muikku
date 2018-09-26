@@ -1,0 +1,241 @@
+@import "../base/mixins";
+@import "../base/colors";
+@import "../base/vars";
+@import "../base/breakpoints";
+
+.chart {
+  max-width: 100%;
+}
+
+.chart--main-chart {
+  min-height: 400px;
+  width: auto;
+}
+
+.chart--workspace-chart {
+  height: 250px;
+  width: 600px;
+}
+
+.chart__activator {
+  background-color: $color-primary;
+  border-radius: 3px;
+  color: $color-default;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $text-desktop-font-size;
+  padding: 2px;
+  
+  &:hover,
+  &.hover {
+    background-color: darken($color-primary, 10%);
+  }
+  
+  &:active,
+  &.active {
+    background-color: darken($color-primary, 20%);
+  }
+}
+
+.chart__activator--workspace-chart {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.chart-legend {
+  align-items: stretch;
+  display: flex;
+  flex-flow: row nowrap;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
+  justify-content: flex-end;
+  padding-left: 30px;
+  padding-right: 21px;
+  
+  @include breakpoint($breakpoint-pad) {
+    justify-content: space-between;
+  }
+}
+
+.chart-legend-filter {
+  align-items: center;
+  
+  @include breakpoint($breakpoint-pad) {
+    display: flex;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 0;
+  }
+}
+
+.filter {
+  margin-left: 10px;
+}
+
+.filter-items {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  max-height: 3.5rem;
+  overflow-y: auto;
+}
+
+.filter-items--graph-filter {
+  display: none;
+  
+  @include breakpoint($breakpoint-pad) {
+    display: inline-flex;
+    padding: 0 5px;
+  }
+}
+
+.filter-category {
+  align-items: center;
+  display: flex;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
+  height: 100%;
+}
+
+.filter-category__label {
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.filter-category__link {
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.filter-item {
+  align-items: center;
+  display: flex;
+  font-family: $text-font-family;
+  font-size: $text-desktop-font-size;
+  height: 100%;
+  margin-right: 10px;
+  
+  input[type="checkbox"] {
+    align-items: center;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: solid 2px;
+    border-radius: 3px;
+    display: flex;
+    height: 1rem;
+    justify-content: center;
+    margin: 5px;
+    vertical-align: middle;
+    width: 1rem;
+  }
+  
+  input[type="checkbox"]:focus {
+    outline: 5px;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    color: $color-default;
+    content: "\E639";
+    font-family: muikku;
+    font-size: $text-desktop-font-size;
+  }
+}
+
+.filter-item--assignments {
+  input[type="checkbox"] {
+    border-color: $color-assignment;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-assignment;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--logins {
+  input[type="checkbox"] {
+    border-color: $color-tertiary;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-tertiary;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--exercises {
+  input[type="checkbox"] {
+    border-color: $color-exercise;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-exercise;
+  }
+  
+  input[type="checkbox"]:checked::after {
+    content: "";
+  }
+}
+
+.filter-item--workspaces {
+  input[type="checkbox"] {
+    border-color: $color-main-function-application-list-item-checkbox-border;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-form-element-selected;
+    border-color: $color-form-element-selected;
+  }
+}
+
+.filter-item--workspaces-empty {
+  font-style: italic;
+  opacity: 0.8;
+  
+  input[type="checkbox"] {
+    border-color: $color-main-function-application-list-item-checkbox-border;
+  }
+  
+  input[type="checkbox"]:checked {
+    background-color: $color-form-element-selected;
+    border-color: $color-form-element-selected;
+  }
+}
+
+.filter__activator {
+  background-color: $color-primary;
+  border-radius: 3px;
+  color: $color-default;
+  display: inline-flex;
+  flex-basis: auto;
+  flex-grow: 0;
+  flex-shrink: 0;
+  font-size: $button-pill-mobile-font-size;
+  padding: 5px;
+  
+  &:hover,
+  &.hover {
+    background-color: darken($color-primary, 10%);
+  }
+  
+  &:active,
+  &.active {
+    background-color: darken($color-primary, 20%);
+  }
+}
+
+.filter__activator--graph-filter {
+  @include breakpoint($breakpoint-pad) {
+    display: none;
+  }
+  
+}

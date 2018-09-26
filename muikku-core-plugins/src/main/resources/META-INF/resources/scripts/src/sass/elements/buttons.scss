@@ -202,6 +202,7 @@
 .button--login {
   background-color: $color-frontpage-button-login-background;
   color: $color-frontpage-button-login-text;
+  font-size: 0.9375rem;
   
   &:hover, 
   &.hover {
@@ -321,12 +322,13 @@
  
 .button--frontpage-bubble {
   border-radius: 5px;
-	height: auto;
+  height: auto;
+  letter-spacing: 1px;
   overflow-wrap: break-word;
-  white-space: normal;
-  width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
+  white-space: normal;
+  width: 100%;
 }
  
 .button--primary-function {
@@ -501,6 +503,7 @@
 
   @include breakpoint($breakpoint-pad) {
     background: $color-default;
+    border: 1px solid $color-default;
     box-shadow: 0 0 5px $color-button-pill-shadow;
     display: inline-flex;
     font-size: $button-pill-navbar-desktop-font-size;

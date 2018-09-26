@@ -43,6 +43,7 @@
   	  ANNOUNCER_CAN_PUBLISH_GROUPS: #{sessionBackingBean.hasEnvironmentPermission('CREATE_ANNOUNCEMENT')},
       
       COMMUNICATOR_GROUP_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_GROUP_MESSAGING')},
+      COMMUNICATOR_WORKSPACE_MESSAGING: #{sessionBackingBean.hasEnvironmentPermission('COMMUNICATOR_WORKSPACE_MESSAGING')},
 
       AREA_PERMISSIONS: #{sessionBackingBean.areaPermissions},
       LOCK_STICKY_PERMISSION: #{sessionBackingBean.hasEnvironmentPermission('FORUM_LOCK_OR_STICKIFY_MESSAGES')},
@@ -116,7 +117,7 @@
   
   <!-- locales -->
   <script defer="defer" jsf:name="scripts/gui/locales.js" />
-  
+
   <!-- Flex Grid, DEPRECATED -->
   <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/libs/fni-flexgrid/1.0.0/flexgrid.css" />
 
@@ -128,7 +129,7 @@
   </ui:fragment>
   
   <!-- Muikku icons -->
-  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.3/style.css" />
+  <link rel="stylesheet" type="text/css" href="//cdn.muikkuverkko.fi/assets/muikku-icons/1.2.4/style.css" />
   <ui:insert name="styles"></ui:insert>
   
   <!-- Here goes what a page needs, usually their controllers -->
