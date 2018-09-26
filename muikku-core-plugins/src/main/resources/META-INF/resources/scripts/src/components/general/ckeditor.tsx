@@ -42,17 +42,15 @@ export default class CKEditor extends React.Component<CKEditorProps, CKEditorSta
     
     this.cancelNextChangeTrigger = false;
   }
+  
   resize(width: number | string, height: number | string){
-    let actualHeight:number | string;
-    actualHeight = height;    
     
-    if (actualHeight !== this.height || this.width !== width){
-      getCKEDITOR().instances[this.name].resize(width, actualHeight);
-    }
+    getCKEDITOR().instances[this.name].resize(width, height);
     
     this.width = width;
-    this.height = actualHeight;
+    this.height = height;
   }
+  
   componentDidMount(){
     let extraConfig: any = {
       height: 0,
